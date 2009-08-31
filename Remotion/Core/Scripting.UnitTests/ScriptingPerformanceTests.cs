@@ -195,8 +195,6 @@ def PropertyPathAccess(cascade) :
       ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
       ExecuteAndLogTimings ("script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
       ExecuteAndLogTimings ("script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
-      //ExecuteAndTime ("uncompiled expression", nrLoopsArray, () => expression.Execute ());
-      //ExecuteAndTime ("uncompiled expression", nrLoopsArray, () => expression.ExecuteUncompiled ());
     }
 
 
@@ -348,44 +346,6 @@ def PropertyPathAccess(cascade) :
     }
 
 
-//    [Test]
-//    [Explicit]
-//    public void CascadeStableBinding ()
-//    {
-////      const string scriptFunctionSourceCode = @"
-////import clr
-////def PropertyPathAccess(cascade) :
-////  if cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == 'C0' :
-////    return cascade.Child.Child.Child.Child.Child.Child.Child.Name
-////  return 'FAILED'
-////";
-
-//      const string scriptFunctionSourceCode = @"
-//import clr
-//def PropertyPathAccess(cascade) :
-//  if cascade.GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetName() == 'C0' :
-//    return cascade.GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetName()
-//  return 'FAILED'
-//";
-
-
-//      const int numberChildren = 10;
-//      var cascadeStableBinding = ObjectFactory.Create<CascadeStableBinding> (ParamList.Create (numberChildren));
-
-//      var privateScriptEnvironment = ScriptEnvironment.Create ();
-//      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
-
-//      var scriptContext = ScriptContext.Create ("CascadeStableBinding",
-//          //new TypeLevelTypeFilter (new[] { typeof (Cascade), typeof (CascadeStableBinding) }));
-//          new TypeLevelTypeFilter (new[] { typeof (CascadeStableBinding) }));
-
-//      var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-//        scriptContext, ScriptLanguageType.Python,
-//        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-//      );
-
-//      propertyPathAccessScript.Execute (cascadeStableBinding);
-//    }
 
 
 
@@ -407,35 +367,6 @@ def PropertyPathAccess(cascade) :
 
       ScriptContext.ReleaseScriptContext (_scriptContext);
     }
-
-
-
-//    [Test]
-//    [Explicit]
-//    public void SimplePropertyAccess_CascadeStableBinding_PropertyExpose ()
-//    {
-//      const string scriptFunctionSourceCode = @"
-//import clr
-//def PropertyPathAccess(cascade) :
-//  return cascade.Name
-//";
-
-//      const int numberChildren = 10;
-//      var cascadeStableBinding = new CascadeStableBinding (numberChildren);
-
-//      var privateScriptEnvironment = ScriptEnvironment.Create ();
-
-//      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
-
-//      var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-//        _scriptContext, ScriptLanguageType.Python,
-//        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-//      );
-
-//      propertyPathAccessScript.Execute (cascadeStableBinding);
-//    }
-
-
 
 
     public void ExecuteAndTimeLongPropertyPathAccess (string testName, int nrLoops, Func<Cascade, string> func)
@@ -506,7 +437,6 @@ def PropertyPathAccess(cascade) :
     }
   }
 
-  //[Uses (typeof (StableBindingMixin))]
   public class CascadeStableBinding : Cascade
   {
     public CascadeStableBinding (int nrChildren) 
@@ -628,7 +558,6 @@ def PropertyPathAccess(cascade) :
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      //To.ConsoleLine.s ("CascadeGetCustomMemberReturnsAttributeProxyFromMap.GetCustomMember").e(() => name);
       var type = this.GetType();
       return _attributeProxyMap[new Tuple<Type, string> (type, name)];
     }

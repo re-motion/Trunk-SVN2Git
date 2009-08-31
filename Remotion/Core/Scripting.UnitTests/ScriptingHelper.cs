@@ -37,16 +37,6 @@ namespace Remotion.Scripting.UnitTests
     public static void ToConsoleLine (MethodInfo mi)
     {
       var pis = mi.GetParameters ();
-      //if (mi.IsGenericMethod)
-      //{
-      //  To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.Attributes).
-      //      e (pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).e (pis.Select (pi => pi.Position)).
-      //      e (pis.Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1)).e (
-      //      pis.Select (pi => pi.MetadataToken)).e (pis.Select (pi => pi.ToString())).se().
-      //      e (mi.DeclaringType);
-      //}
-      //else
-
 
       To.ConsoleLine.sb().e (mi.Name).e (mi.MetadataToken).e (mi.GetBaseDefinition().MetadataToken).
       e(mi.MemberType.GetTypeCode()).e(mi.MethodHandle.Value).
@@ -127,14 +117,7 @@ namespace Remotion.Scripting.UnitTests
 
     public static MethodInfo GetExplicitInterfaceMethod (Type interfaceType, Type type, string name, Type[] argumentTypes)
     {
-      //type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic).Select (mi => To.ConsoleLine.e(mi.Name).e(mi.ReflectedType)).ToArray();
-      
-      //var interfaceMethod = interfaceType.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.Public, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
-      //return type.GetMethod (interfaceMethod.Name, BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
       return type.GetMethod (interfaceType.FullName + "." + name, BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
-      
-      //return type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic).Where (
-      //  mi => (mi.Name == interfaceMethod.Name && mi.GetParameters ().Select (pi => pi.ParameterType).SequenceEqual (argumentTypes))).Single ();
     }
 
     public static TResult ExecuteScriptExpression<TResult> (string expressionScriptSourceCode, params object[] scriptParameter)
@@ -185,25 +168,6 @@ namespace Remotion.Scripting.UnitTests
 
     public static void ExecuteAndTime (string testName, int[] nrLoopsArray, Func<Object> func)
     {
-      //var timings = new System.Collections.Generic.List<long> ();
-
-      //foreach (var nrLoops in nrLoopsArray)
-      //{
-      //  System.GC.Collect (2);
-      //  System.GC.WaitForPendingFinalizers ();
-
-      //  Stopwatch stopwatch = new Stopwatch ();
-      //  stopwatch.Start ();
-
-      //  for (int i = 0; i < nrLoops; i++)
-      //  {
-      //    func ();
-      //  }
-
-      //  stopwatch.Stop ();
-      //  timings.Add (stopwatch.ElapsedMilliseconds);
-      //}
-
       var timings = ExecuteAndTime (nrLoopsArray, func);
 
       To.ConsoleLine.s ("Timings ").e (testName).s (",").e (() => nrLoopsArray).s (": ").nl ().sb ();
@@ -223,8 +187,6 @@ namespace Remotion.Scripting.UnitTests
 
     public static object GetProxiedFieldValue (object proxy)
     {
-      //Type proxyType = GetActualType (proxy);
-      //var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
       var proxiedField = GetProxiedField (proxy);
       return proxiedField.GetValue (proxy);
     }
