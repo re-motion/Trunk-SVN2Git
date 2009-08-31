@@ -211,20 +211,17 @@ namespace Remotion.Scripting.UnitTests
               scriptContext = (ScriptContext) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "CreateScriptContextUnsafe", name, s_typeFilterStub);
             }
             scriptContexts[name] = scriptContext;
-            //To.ConsoleLine.e (() => name).e (scriptContext);
             CheckGetScriptContextConsistency (name, scriptContext);
           }
           catch (ArgumentException)
           {
             // Exception intentionally ignored; threads are expected to try to create same ScriptContext|s.
-            //To.ConsoleLine.s ("ArgumentException");
           }
         }
 
         foreach (var pair in scriptContexts)
         {
           CheckGetScriptContextConsistency (pair.Key, pair.Value);
-          //To.ConsoleLine.e (pair.Value.Name).e(Thread.CurrentThread.Name);
         }
       }
 

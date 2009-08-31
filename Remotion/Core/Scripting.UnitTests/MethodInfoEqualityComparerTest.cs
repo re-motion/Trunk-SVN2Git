@@ -86,10 +86,6 @@ namespace Remotion.Scripting.UnitTests
     {
       var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (Proxied), "PrependName", new[] { typeof (string) });
       var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "PrependName", new[] { typeof (string) });
-
-      //ScriptingHelper.ToConsoleLine (methodFromBaseType);
-      //ScriptingHelper.ToConsoleLine (method);
-
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
 
@@ -215,14 +211,6 @@ namespace Remotion.Scripting.UnitTests
       var method = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
       var methodWithSameSignature = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test1), "OverloadedGenericToString", 2);
       var methodWithSwappedGenericArguments = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test2), "OverloadedGenericToString", 2);
-      //var method3 = GetAnyGenericInstanceMethod (typeof (Test1), "MixedArgumentsTest", 2);
-      //var method4 = GetAnyGenericInstanceMethod (typeof (Test1), "ComplexGenericArgumentTest", 2);
-
-      //ScriptingHelper.ToConsoleLine (method);
-      //ScriptingHelper.ToConsoleLine (methodWithSameSignature);
-      //ScriptingHelper.ToConsoleLine (methodWithSwappedGenericArguments);
-      //ScriptingHelper.ToConsoleLine (method3);
-      //ScriptingHelper.ToConsoleLine (method4);
 
       Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSameSignature), Is.True);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSwappedGenericArguments), Is.False);
