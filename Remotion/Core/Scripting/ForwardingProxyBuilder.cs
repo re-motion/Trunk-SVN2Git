@@ -248,14 +248,12 @@ namespace Remotion.Scripting
       {
         // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
         // desired attributes such as Final, Virtual and HideBySig.
-
         methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes);
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo);
 
       ImplementForwardingMethod (methodInfo, methodEmitter);
-      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo, false); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       // TODO: Test return type
       return methodEmitter;

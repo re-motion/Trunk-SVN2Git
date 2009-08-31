@@ -1,7 +1,7 @@
 ﻿*) DONE: Implement stable binding performance tests (to make sure refactorings do not break caching and lead to e.g. 10000x worse runtime behavior)
-*) Implement "ScriptContextNone" scheme: Special ScriptContext which is enabled by default and creates no proxy but instead just returns the proxied 
-object itself. 
 *) Clean code (start with StableBindingProxyBuilder)
+*) Implement "ScriptContextNone" scheme: Special ScriptContext which is enabled by default and creates no proxy but instead just returns the proxied 
+object itself. Postponed until need for this feature actually arises.
 
 *) Introduce MethodInfoExtended / PropertyInfoExtended. 
    A lot of reflection code would be much easier to write and maintain, if one would introduce a MethodInfoExtended class,
