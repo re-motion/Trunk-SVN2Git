@@ -27,7 +27,7 @@ namespace Remotion.Scripting
 {
   // TODO: Introduce MethodInfoExtended / PropertyInfoExtended. 
   // A lot of reflection code would be much easier to write and maintain, if one would introduce a MethodInfoExtended class,
-  // which is self-contained in the sense that it holds enough context information where it comes from 
+  // which is self-contained in the sense that it holds enough context information about where it comes from 
   // (e.g. if it is an explicit interface implementation etc) so one can e.g. implement a proxying method just from a
   // MethodInfoExtended instance.
   // This would remove the requirement to have different methods for the different cases, which all need to be called with specific

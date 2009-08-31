@@ -33,7 +33,7 @@ namespace Remotion.Scripting
   public class ExpressionScript<TResult> : ScriptBase
   {
     private readonly ScriptSource _scriptSource;
-    private readonly CompiledCode _compiledScript;
+    private CompiledCode _compiledScript;
     private readonly ScriptEnvironment _scriptEnvironment;
 
     public ExpressionScript (
@@ -53,8 +53,17 @@ namespace Remotion.Scripting
       _scriptEnvironment = scriptEnvironment;
     }
 
+    /// <summary>
+    /// Executes the script expression in compiled form.  
+    /// </summary>
+    /// <returns>The result of running the script.</returns>   
     public TResult Execute ()
     {
+      if (_compiledScript == null)
+      {
+         _compiledScript = _scriptSource.Compile ();
+      }
+
       ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
       TResult result;
       try
@@ -68,6 +77,12 @@ namespace Remotion.Scripting
       return result;
     }
 
+    /// <summary>
+    /// Executes the script expression without compiling it. Use to avoid the compilation overhead of running a script.
+    /// </summary>
+    /// <remarks>Note that an uncompiled script executes orders of magnitude slower than a compiled one. So make sure the
+    /// compiliation overhead saved is not offset by the increased runtime cost.</remarks>
+    /// <returns>The result of running the script.</returns>
     public TResult ExecuteUncompiled ()
     {
       ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
