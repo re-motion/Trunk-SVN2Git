@@ -55,6 +55,9 @@ def PropertyPathAccess(cascade) :
       );
 
       var nrLoopsArray = new[] { 1, 1, 10000 };
+      // Warm up
+      ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding)).Last ();
+      
       double timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding)).Last ();
       double timingWithoutStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeWithoutStableBinding)).Last ();
 

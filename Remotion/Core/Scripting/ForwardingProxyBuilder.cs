@@ -263,17 +263,17 @@ namespace Remotion.Scripting
 
     private static HashSet<MethodInfo> s_objectMethods;
 
-    protected HashSet<MethodInfo> ObjectMethods
-    {
-      get
-      {
-        if (s_objectMethods == null)
-        {
-          s_objectMethods = new HashSet<MethodInfo> (typeof (Object).GetMethods (), MethodInfoEqualityComparer.Get);
-        }
-        return s_objectMethods;
-      }
-    }
+    //protected HashSet<MethodInfo> ObjectMethods
+    //{
+    //  get
+    //  {
+    //    if (s_objectMethods == null)
+    //    {
+    //      s_objectMethods = new HashSet<MethodInfo> (typeof (Object).GetMethods (), MethodInfoEqualityComparer.Get);
+    //    }
+    //    return s_objectMethods;
+    //  }
+    //}
 
 
     // Create proxy ctor which takes proxied instance and stores it in field in class

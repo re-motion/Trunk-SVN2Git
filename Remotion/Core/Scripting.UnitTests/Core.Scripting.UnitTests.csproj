@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MethodInfoEqualityComparer.cs" />
     <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="MethodInfoFromRelatedTypesEqualityComparerTest.cs" />
     <Compile Include="ReflectionHelperTest.cs" />
