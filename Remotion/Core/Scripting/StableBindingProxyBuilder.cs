@@ -14,13 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Remotion.Collections;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -60,7 +58,6 @@ namespace Remotion.Scripting
       BuildClassMethodToInterfaceMethodsMap ();
 
       _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
-      //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, new Type[0]);
 
       _firstKnownBaseType = GetFirstKnownBaseType();
       if (_firstKnownBaseType != null)
@@ -88,17 +85,16 @@ namespace Remotion.Scripting
 
     private void ImplementKnownProperties ()
     {
-      //throw new NotImplementedException();
       var specialMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (mi => mi.IsSpecialName);
 
       var implementedProperties = new HashSet<PropertyInfo>();
 
-      // TODO: Turn into field, move initialization into ctor
-      MethodInfo[] methodsInFirstKnownBaseType = new MethodInfo[0];
-      if (_firstKnownBaseType != null)
-      {
-        methodsInFirstKnownBaseType = _firstKnownBaseType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      }
+      //// TODO: Turn into field, move initialization into ctor
+      //MethodInfo[] methodsInFirstKnownBaseType = new MethodInfo[0];
+      //if (_firstKnownBaseType != null)
+      //{
+      //  methodsInFirstKnownBaseType = _firstKnownBaseType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      //}
 
       // TODO: Turn into field, move initialization into ctor
       //Dictionary<StableMetadataToken,HashSet<PropertyInfo>> firstKnownBaseTypeSpecialMethodsToPropertyMap = null;
@@ -107,70 +103,28 @@ namespace Remotion.Scripting
       if (_firstKnownBaseType != null)
       {
         firstKnownBaseTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap(_firstKnownBaseType);
-        
-        //To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap(multiple entries)", 
-        //  firstKnownBaseTypeSpecialMethodsToPropertyMap.Where(x => x.Value.Count > 1).Select(y => new object[] { y.Key, y.Value.Select(z => z.Name).ToArray() }));
-
-        //To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap", firstKnownBaseTypeSpecialMethodsToPropertyMap.Keys);
-        //To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap", firstKnownBaseTypeSpecialMethodsToPropertyMap).nl (2).e (proxiedTypeSpecialMethodsToPropertyMap);
       }
-
-      // TODO: Turn into field, move initialization into ctor
-      //var proxiedTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap (_proxiedType);
 
 
       foreach (var proxiedTypeMethod in specialMethodsInProxiedType)
       {
-        //if (proxiedTypeMethod.Name == "get_NameProperty")
-        //{
-        //  To.ConsoleLine.e ("proxiedTypeMethod", new StableMethodMetadataToken (proxiedTypeMethod)).e ("proxiedTypeMethod.MetadataToken",proxiedTypeMethod.MetadataToken);
-        //}
-
         PropertyInfo knownBaseTypeProperty = null;
         if (_firstKnownBaseType != null)
         {
           firstKnownBaseTypeSpecialMethodsToPropertyMap.TryGetValue (new StableMethodMetadataToken(proxiedTypeMethod), out knownBaseTypeProperty);
-          //knownBaseTypeProperty = GetHashSetFromMap (firstKnownBaseTypeSpecialMethodsToPropertyMap, new StableMethodMetadataToken (proxiedTypeMethod)).SingleOrDefault();
         }
 
-        //if (knownBaseTypeProperty != null && // property exists in first known base type
-        //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
         if (knownBaseTypeProperty != null)
         {
-          // TODO: Check if we need IsMethodBound condition.
-          // property exists in first known base type
-          //if (
-          //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
-          //{
-            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
-            _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
-          //}
+           _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
         }
       }
 
-
-      //var proxiedTypeNonPublicProperties =  _proxiedType.CreateSequence(t => t.BaseType).
-      //  SelectMany(t => t.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic));
-
-      //To.ConsoleLine.nl().e (() => _classMethodToInterfaceMethodsMap).nl();
-
-      //foreach (var proxiedTypeNonPublicProperty in proxiedTypeNonPublicProperties)
-      //{
-      //  var proxiedTypeNonPublicPropertyAccessors =
-      //      proxiedTypeNonPublicProperty.GetAccessors (true);
-      //  if (proxiedTypeNonPublicPropertyAccessors.Any (mi => GetInterfaceMethodsToClassMethod (mi).Any ()))
-      //  {
-      //    _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (proxiedTypeNonPublicProperty);
-      //  }
-      //}
 
 
       Type type = _proxiedType;
       while (type != null)
       {
-
-        //To.ConsoleLine.nl ().e(type.Name).e (() => typeNonPublicProperties).nl ();
-
         // Build class method to interface method map for current type
         // TODO: Optimize (cache)
         var classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>>();
@@ -195,8 +149,6 @@ namespace Remotion.Scripting
           }
         }
 
-        //To.ConsoleLine.e (classMethodToInterfaceMethodsMap);
-
         var typePublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
 
         foreach (var publicProperty in typePublicProperties)
@@ -204,7 +156,6 @@ namespace Remotion.Scripting
           var typeNonPublicPropertyAccessors = publicProperty.GetAccessors (true);
           if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
           {
-            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property from interface: ").e (publicProperty.Name);
             _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (publicProperty);
           }
         }
@@ -214,15 +165,12 @@ namespace Remotion.Scripting
 
         foreach (var nonPublicProperty in typeNonPublicProperties)
         {
-          // implementedProperties.Contains(property)
-
           var typeNonPublicPropertyAccessors = nonPublicProperty.GetAccessors (true);
           if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
           {
             var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
             var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
 
-            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing non-public property: ").e (nonPublicProperty.Name);
             _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
           }
         }
@@ -232,39 +180,18 @@ namespace Remotion.Scripting
     }
 
 
-   private HashSet<T1> GetHashSetFromMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod)
-    {
-      HashSet<T1> hashSet;
-      map.TryGetValue (classMethod, out hashSet);
-      return hashSet ?? new HashSet<T1>();
-    }
+   //private HashSet<T1> GetHashSetFromMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod)
+   // {
+   //   HashSet<T1> hashSet;
+   //   map.TryGetValue (classMethod, out hashSet);
+   //   return hashSet ?? new HashSet<T1>();
+   // }
 
 
-    //private Dictionary<StableMetadataToken, HashSet<PropertyInfo>> BuildSpecialMethodsToPropertyMap (Type startType)
-   private Dictionary<StableMetadataToken, PropertyInfo> BuildSpecialMethodsToPropertyMap (Type startType)
+    private Dictionary<StableMetadataToken, PropertyInfo> BuildSpecialMethodsToPropertyMap (Type startType)
     {
-      //const BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
       const BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public; 
       
-      //var specialMethodsToPropertyMap = startType.CreateSequence (t => t.BaseType).SelectMany (
-      //    t => t.GetProperties (bindingFlags).
-      //             SelectMany (
-      //             pi =>
-      //             new[] { new Tuple<MethodInfo, PropertyInfo> (pi.GetGetMethod (), pi), new Tuple<MethodInfo, PropertyInfo> (pi.GetSetMethod (), pi) })).
-      //    Where(tu => tu.A != null).
-      //    ToDictionary (x => (StableMetadataToken) new StableMethodMetadataToken (x.A), x => x.B);
-
-      //var specialMethodsToPropertiesMap = new Dictionary<StableMetadataToken , HashSet<PropertyInfo>>();
-
-      //var declaredOnlyProperties = _firstKnownBaseType.CreateSequence (t => t.BaseType).SelectMany (t => t.GetProperties (bindingFlags));
-      //foreach (var property in declaredOnlyProperties)
-      //{
-      //  foreach (var getterSetter in property.GetAccessors(true))
-      //  {
-      //    AddTo_HashSetMap (specialMethodsToPropertiesMap, new StableMethodMetadataToken (getterSetter), property);
-      //  }
-      //}
-
       var specialMethodsToPropertiesMap = new Dictionary<StableMetadataToken, PropertyInfo> ();
 
       var declaredOnlyProperties = _firstKnownBaseType.CreateSequence (t => t.BaseType).SelectMany (t => t.GetProperties (bindingFlags));
@@ -284,14 +211,14 @@ namespace Remotion.Scripting
       return specialMethodsToPropertiesMap;
     }
 
-    private void AddTo_HashSetMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod, T1 interfaceMethod)
-    {
-      if (!map.ContainsKey (classMethod))
-      {
-        map[classMethod] = new HashSet<T1> ();
-      }
-      map[classMethod].Add (interfaceMethod);
-    }
+    //private void AddTo_HashSetMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod, T1 interfaceMethod)
+    //{
+    //  if (!map.ContainsKey (classMethod))
+    //  {
+    //    map[classMethod] = new HashSet<T1> ();
+    //  }
+    //  map[classMethod].Add (interfaceMethod);
+    //}
 
 
 
@@ -300,24 +227,15 @@ namespace Remotion.Scripting
       var regularMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(mi => !mi.IsSpecialName);
       foreach (var proxiedTypeMethod in regularMethodsInProxiedType)
       {
-        //// Skip property getter/setter
-        //if (proxiedTypeMethod.IsSpecialName)
-        //{
-        //  continue; 
-        //}
-
         MethodInfo proxiedTypeMethodInKnownBaseType = null;
         if (_firstKnownBaseType != null)
         {
           proxiedTypeMethodInKnownBaseType = _knownBaseTypeStableMetadataTokenToMethodInfoMap.GetMethod (proxiedTypeMethod);
         }
 
-        //if (IsMethodKnownInBaseType (proxiedTypeMethod) && 
-        //  IsMethodBound (proxiedTypeMethod, _publicMethodsInFirstKnwonBaseType))
         if (proxiedTypeMethodInKnownBaseType != null && // method exists in first known base type
             IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnownBaseType)) // method is visible in first known base type
         {
-          //_forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethodInKnownBaseType);
         }
         else
@@ -339,7 +257,6 @@ namespace Remotion.Scripting
     public static bool IsMethodBound (MethodInfo method, MethodInfo[] candidateMethods)
     {
       var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
-      //To.ConsoleLine.e (method.Name).nl ().e (candidateMethods).nl ().e (parameterTypes);
 
       // Note: SelectMethod needs the candidateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
       candidateMethods = candidateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
@@ -352,11 +269,6 @@ namespace Remotion.Scripting
 
       var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, 
         candidateMethods, parameterTypes, null);
-
-      //if (method.Name == "get_NameProperty")
-      //{
-      //  To.ConsoleLine.e ("method", new StableMethodMetadataToken (method)).e ("boundMethod", new StableMethodMetadataToken ((MethodInfo) boundMethod));
-      //}
 
       return Object.ReferenceEquals (method, boundMethod);
     }
@@ -383,21 +295,7 @@ namespace Remotion.Scripting
 
     public bool IsMethodEqualToBaseTypeMethod (MethodInfo method, MethodInfo baseTypeMethod)
     {
-      #if(true)
-        return method.GetBaseDefinition().MetadataToken == baseTypeMethod.GetBaseDefinition().MetadataToken;
-      #else
-        if (!method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.GetBaseDefinition ().DeclaringType))
-        {
-          return false;
-        }
-        else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
-        //else if (MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (method, baseTypeMethod))
-        {
-          return true;
-        }
-
-        return false;
-      #endif
+      return method.GetBaseDefinition().MetadataToken == baseTypeMethod.GetBaseDefinition().MetadataToken;
     }
 
  
@@ -429,8 +327,6 @@ namespace Remotion.Scripting
 
     private Type GetFirstKnownBaseType ()
     {
-      //return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid);
-
       // Object is always known.
       return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid) ?? typeof(object);
     }
@@ -482,39 +378,5 @@ namespace Remotion.Scripting
     }
   }
 
-  /// <summary>
-  /// Approximate equality for <see cref="MethodInfo"/>.
-  /// </summary>
-  public class MethodInfoApproximateEqualityComparer : CompoundValueEqualityComparer<MethodInfo>, IComparer<MethodInfo>
-  {
-    private static readonly MethodInfoApproximateEqualityComparer s_equalityComparer = new MethodInfoApproximateEqualityComparer ();
-
-    public MethodInfoApproximateEqualityComparer (MethodAttributes methodAttributeMask)
-      : base (
-          x => new object[] {
-                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, 
-                x.GetParameters().Length,
-                x.IsGenericMethod ? x.GetGenericArguments().Length : 0
-            })
-    {
-    }
-
-    public MethodInfoApproximateEqualityComparer ()
-      : this (~MethodAttributes.ReservedMask)
-    {
-    }
-
-
-    public static MethodInfoApproximateEqualityComparer Get
-    {
-      get { return s_equalityComparer; }
-    }
-
-
-    public int Compare (MethodInfo x, MethodInfo y)
-    {
-      return Comparer<int>.Default.Compare (
-          MethodInfoApproximateEqualityComparer.Get.GetHashCode (x), MethodInfoApproximateEqualityComparer.Get.GetHashCode (y));  
-    }
-  }
+ 
 }
