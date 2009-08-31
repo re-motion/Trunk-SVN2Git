@@ -50,19 +50,15 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptingHost
   {
-    //// ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
-    //// singleton instance to every thread through a thread static member.
-    //[ThreadStatic]
-    //private static ScriptingHost s_scriptingHost;
-
     private const string scriptingHostCurrentSafeContextTag = "Remotion.Scripting.ScriptingHost.Current";
 
     private ScriptRuntime _scriptRuntime;
     private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> _scriptEngines;
 
 
-    // ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
-    // singleton instance to every thread through a thread static member.
+    /// <summary>
+    /// The currently active <see cref="ScriptingHost"/>. Thread safe through <see cref="SafeContext"/>.
+    /// </summary>
     public static ScriptingHost Current
     {
       get
