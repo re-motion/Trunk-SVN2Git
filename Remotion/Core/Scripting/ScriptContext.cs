@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Castle.DynamicProxy;
 using Remotion.Context;
 using Remotion.Utilities;
 
@@ -35,7 +34,9 @@ namespace Remotion.Scripting
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
 
-
+    /// <summary>
+    /// The currently active <see cref="ScriptContext"/>. Thread safe through <see cref="SafeContext"/>.
+    /// </summary>
     public static ScriptContext Current
     {
       get { return CurrentScriptContext; }

@@ -22,6 +22,10 @@ using Remotion.Reflection;
 
 namespace Remotion.Context
 {
+  /// <summary>
+  /// Superior alternative to [ThreadStatic] (see <see cref="ThreadStaticAttribute"/>) for making member variables
+  /// thread safe, which also works with ASP.NET threads.
+  /// </summary>
   public class SafeContext
   {
     private static readonly object s_lock = new object ();
