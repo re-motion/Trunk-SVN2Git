@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Text;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Remotion.Diagnostics.ToText;
@@ -89,15 +91,11 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNullOrEmpty ("nameSpace", nameSpace);
       ArgumentUtility.CheckNotNullOrEmpty ("symbols", symbols);
 
-      // TODO: Implement Stringify(sb,ss,se,elementToStringFunc) etc extension methods for IEnumerable instead
-      var toString = To.String;
-      toString.ToTextProvider.Settings.UseAutomaticStringEnclosing = false;
-
       string scriptText = @"
 import clr
 clr.AddReferenceByPartialName('" + assembly + "')" +
- @"
-from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (symbols).se ();
+@"
+from " + nameSpace + " import " + Stringify (symbols, "", ",", "");
 
       const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
@@ -158,5 +156,26 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
       }
     }
 
+
+    private string Stringify (IEnumerable elements, string sequencePrefix, string separator, string sequencePostfix)
+    {
+      var sb = new StringBuilder();
+      sb.Append (sequencePrefix);
+      bool firstElement = true;
+      foreach (var element in elements)
+      {
+        if (firstElement)
+        {
+          firstElement = false;
+        }
+        else
+        {
+          sb.Append (separator);
+        }
+        sb.Append (element);
+      }
+      sb.Append (sequencePostfix);
+      return sb.ToString();
+    }
   }
 }
