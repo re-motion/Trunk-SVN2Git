@@ -58,7 +58,7 @@ def PropertyPathAccess(cascade) :
       double timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding)).Last ();
       double timingWithoutStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeWithoutStableBinding)).Last ();
 
-      Assert.That (timingStableBinding / timingWithoutStableBinding, Is.LessThanOrEqualTo (5.0));
+      Assert.That (timingStableBinding / timingWithoutStableBinding, Is.LessThan (7.0));
     }
 
 

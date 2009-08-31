@@ -32,9 +32,6 @@ namespace Remotion.Scripting
   {
     private const string scriptContextCurrentSafeContextTag = "Remotion.Scripting.ScriptContext.Current";
     
-    //[ThreadStatic]
-    //private static ScriptContext s_currentScriptContext;
-
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
 
@@ -78,7 +75,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContexToRelease", scriptContexToRelease);
       if (!Object.ReferenceEquals (scriptContexToRelease, CurrentScriptContext))
       {
-        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context is '{1}'.", scriptContexToRelease.Name, CurrentScriptContext));
+        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context was '{1}'.", scriptContexToRelease.Name, CurrentScriptContext));
       }
       CurrentScriptContext = null;
     }
@@ -138,13 +135,11 @@ namespace Remotion.Scripting
 
  
     private readonly string _name;
-    //private readonly ITypeFilter _typeFilter;
     private readonly StableBindingProxyProvider _proxyProvider;
 
     private ScriptContext (string name, ITypeFilter typeFilter)
     {
       _name = name;
-      //_typeFilter = typeFilter;
       _proxyProvider = new StableBindingProxyProvider (typeFilter, ReflectionHelper.CreateModuleScope ("Scripting.ScriptContext." + name,false));
     }
 

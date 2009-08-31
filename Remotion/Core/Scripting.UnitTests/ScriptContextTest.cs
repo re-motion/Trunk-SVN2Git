@@ -172,7 +172,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "Tried to release script context 'ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext' while active script context is 'Remotion.Scripting.ScriptContext'.")]
+    [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "Tried to release script context 'ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext' while active script context was 'Remotion.Scripting.ScriptContext'.")]
     public void ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext ()
     {
       ScriptContext scriptContext0 = CreateScriptContext ("SwitchAndHoldScriptContext");
