@@ -184,30 +184,6 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    //[Test]
-    //[Explicit]
-    //public void GetAttributeProxyPerformance ()
-    //{
-    //  var providerCached = new StableBindingProxyProviderCached (
-    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
-      
-    //  var providerUncached = new StableBindingProxyProviderUncached (
-    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
-
-    //  var providerCachedUsingDictionary = new StableBindingProxyProvider (
-    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
-
-
-    //  var proxied0 = new ProxiedChildChildChild ("ABC");
-
-    //   //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
-    //  var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-    //   ScriptingHelper.ExecuteAndTime ("ProxyProviderCached",nrLoopsArray, () => providerCached.GetAttributeProxy (proxied0, "PrependName"));
-    //   ScriptingHelper.ExecuteAndTime ("ProxyProviderUncached", nrLoopsArray, () => providerUncached.GetAttributeProxy (proxied0, "PrependName"));
-    //   ScriptingHelper.ExecuteAndTime ("ProxyProviderUncachedUsingDictionary", nrLoopsArray, () => providerCachedUsingDictionary.GetAttributeProxy (proxied0, "PrependName"));
-    //}
-
-
     [Test]
     [Explicit]
     public void GetAttributeProxyChainCallPerformance ()
@@ -227,32 +203,6 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-
-    //private FieldInfo GetProxiedField (object proxy)
-    //{
-    //  Type proxyType = GetActualType (proxy);
-    //  return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
-    //}
-
-    //private object GetProxiedFieldValue (object proxy)
-    //{
-    //  //Type proxyType = GetActualType (proxy);
-    //  //var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
-    //  var proxiedField = GetProxiedField (proxy);
-    //  return proxiedField.GetValue (proxy);
-    //}
-
-    //private void SetProxiedFieldValue (object proxy, object value)
-    //{
-    //  var proxiedField = GetProxiedField (proxy);
-    //  proxiedField.SetValue (proxy, value);
-    //}
-
-    //private Type GetActualType (object proxy)
-    //{
-    //  var objectGetType = typeof (object).GetMethod ("GetType");
-    //  return (Type) objectGetType.Invoke (proxy, new object[0]);
-    //}
   }
 
 

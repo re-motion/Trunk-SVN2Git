@@ -20,7 +20,7 @@ using System.Reflection;
 namespace Remotion.Scripting.UnitTests
 {
  
-  public static partial class TypeExtensions {
+  public static class TypeExtensions {
     /// <summary>
     /// Same as <see cref="Type.GetMethod(string,System.Reflection.BindingFlags)"/>, but also matches the
     /// passed parameter types.
