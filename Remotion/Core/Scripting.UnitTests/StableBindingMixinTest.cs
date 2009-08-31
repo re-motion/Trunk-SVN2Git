@@ -15,11 +15,9 @@
 // 
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
 using Remotion.Reflection;
 using Remotion.Scripting;
 using Remotion.Scripting.UnitTests;
@@ -45,9 +43,6 @@ namespace Remotion.Scripting.UnitTests
     [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'MixinTest' object has no attribute 'StringTimes'")]
     public void MixinTest_IsAmbigous ()
     {
-      //var mixinTest = new MixinTest();
-      //ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTest);
-      
       AssertGetCustomMemberFromScript (new MixinTest (), "MixinTest_IsAmbigous");
     }
 
@@ -57,17 +52,6 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void MixinTestChildExplicitGetCustomMemberNoMix_IsNotAmbigous ()
     {
-      //ScriptContext scriptContext = ScriptContext.Create ("StableBindingMixinTest.MixinTestChild_IsNotAmbigous",
-      //  new TypeLevelTypeFilter (typeof (IAmbigous1)));
-      //ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-
-      //var mixinTestChildExplicitGetCustomMemberNoMix = new MixinTestChildExplicitGetCustomMemberNoMix ();
-
-      //var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChildExplicitGetCustomMemberNoMix);
-      //Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
-
-      //ScriptContext.ReleaseScriptContext (scriptContext);
-
       AssertGetCustomMemberFromScript (new MixinTestChildExplicitGetCustomMemberNoMix(), "MixinTestChildExplicitGetCustomMemberNoMix_IsNotAmbigous");
     }
 
@@ -76,8 +60,6 @@ namespace Remotion.Scripting.UnitTests
     {
       ScriptContext scriptContext = ScriptContext.Create (scriptContextName, new TypeLevelTypeFilter (typeof (IAmbigous1)));
       ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-
-      //var mixinTestChildExplicitGetCustomMemberNoMix = new MixinTestChildExplicitGetCustomMemberNoMix ();
 
       var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild);
       Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
@@ -88,65 +70,22 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChildUsesMix_IsNotAmbigous ()
     {
-      //ScriptContext scriptContext = ScriptContext.Create ("StableBindingMixinTest.MixinTestChild_IsNotAmbigous", 
-      //  new TypeLevelTypeFilter (typeof(IAmbigous1)));
-      //ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-
-      ////var mixinTestChild = new MixinTestChild ();
-
-      //var mixinTestChild = ObjectFactory.Create<MixinTestChildUsesMix> (ParamList.Empty);
-      ////To.ConsoleLine.e ("mixinTestChild.GetType().GetAllMethods()", mixinTestChild.GetType ().GetAllMethods ().Where (mi => mi.Name == "GetCustomMember"));
-
-      //var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild);
-      //Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
-      
-      //ScriptContext.ReleaseScriptContext (scriptContext);
-
       AssertGetCustomMemberFromScript (ObjectFactory.Create<MixinTestChildUsesMix> (ParamList.Empty), "MixinTestChildUsesMix_IsNotAmbigous");
     }
 
     [Test]
-    //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChildAssemblyMix_IsNotAmbigous ()
     {
-      //ScriptContext scriptContext = ScriptContext.Create ("StableBindingMixinTest.MixinTestChild_IsNotAmbigous",
-      //  new TypeLevelTypeFilter (typeof (IAmbigous1)));
-      //ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-
-      //var mixinTestChild2 = ObjectFactory.Create<MixinTestChildAssemblyMix> (ParamList.Empty);
-
-      //var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild2);
-      //Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
-
-      //ScriptContext.ReleaseScriptContext (scriptContext);
-
       AssertGetCustomMemberFromScript (ObjectFactory.Create<MixinTestChildAssemblyMix> (ParamList.Empty), "MixinTestChildAssemblyMix_IsNotAmbigous");
     }
 
     [Test]
-    //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChild_IsNotAmbigous_Scope ()
     {
       using (MixinConfiguration.BuildNew ().ForClass<MixinTestChild> ().AddMixin<StableBindingMixin> ().EnterScope ())
       {
-        //ScriptContext scriptContext = ScriptContext.Create (
-        //    "StableBindingMixinTest.MixinTestChild_IsNotAmbigous",
-        //    new TypeLevelTypeFilter (typeof (IAmbigous1)));
-        //ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-
-        ////var mixinTestChild = new MixinTestChild ();
-
-        //var mixinTestChild = ObjectFactory.Create<MixinTestChild> (ParamList.Empty);
-        ////To.ConsoleLine.e ("mixinTestChild.GetType().GetAllMethods()", mixinTestChild.GetType ().GetAllMethods ().Where (mi => mi.Name == "GetCustomMember"));
-
-        //var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild);
-        //Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
-
-        //ScriptContext.ReleaseScriptContext (scriptContext);
-
         AssertGetCustomMemberFromScript (ObjectFactory.Create<MixinTestChild> (ParamList.Empty), "MixinTestChild_IsNotAmbigous_Scope");
 
       }
@@ -182,7 +121,6 @@ namespace Remotion.Scripting.UnitTests
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      //return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (this, name);
       return ScriptContext.GetAttributeProxy (this, name);
     }
   }

@@ -14,15 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Reflection;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -90,7 +86,6 @@ namespace Remotion.Scripting.UnitTests
         mi => (mi.Name == name)).ToArray ();
       var method = methods[0];
       var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
-      //To.ConsoleLine.e (ScriptingHelper.GetAnyPublicInstanceMethodArray (typeof (ProxiedChildChildChild), "PrependName"));
       var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, methods, parameterTypes, null);
 
       ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
@@ -108,16 +103,12 @@ namespace Remotion.Scripting.UnitTests
       var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
       var methodNames = new[] { "PrependName", "PrependNameVirtual" };
 
-      //var instance = new ProxiedChildChildChild("x");
-
       foreach (var methodName in methodNames)
       {
         To.ConsoleLine.nl (2).e (methodName).s (": ");
         foreach (var type in types)
         {
           type.GetAllInstanceMethods (methodName, typeof (string)).Process (mi => To.ConsoleLine.e (mi.MetadataToken).e (mi.GetBaseDefinition ().MetadataToken).e (mi.DeclaringType.FullName + mi.Name));
-          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name).e (method.Invoke (instance, new[] {"name"}));
-          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name);
         }
       }
     }
@@ -138,8 +129,6 @@ namespace Remotion.Scripting.UnitTests
         foreach (var type in types)
         {
           type.GetAllInstanceMethods (methodName).Process (mi => To.ConsoleLine.e (mi.MetadataToken).e (mi.GetBaseDefinition ().MetadataToken).e (mi.DeclaringType.FullName + mi.Name));
-          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name).e (method.Invoke (instance, new[] {"name"}));
-          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name);
         }
       }
     }
@@ -158,8 +147,6 @@ namespace Remotion.Scripting.UnitTests
         foreach (var type in types)
         {
           type.GetAllProperties (propertyName).Process (pi => To.ConsoleLine.e (pi.MetadataToken).e (GetPropertyGetterSetterMetaDataToken (pi, true)).e (GetPropertyGetterSetterMetaDataToken (pi, false)));
-          //var property = type.GetAllProperties (propertyName).Last ();
-          //To.ConsoleLine.e (property.MetadataToken).e (GetPropertyGetterSetterMetaDataToken (property, true)).e (GetPropertyGetterSetterMetaDataToken (property, false));
         }
       }
     }
@@ -218,38 +205,10 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    //[Test]
-    //public void DiscoverScriptContext ()
-    //{
-    //  const bool excludeGlobalTypes = true;
-    //  // TODO: Use ContextAwareTypeDiscoveryUtility.GetInstance() instead to make use of assembly caching
-    //  ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-    //      new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
 
-    //  ICollection types = _typeDiscoveryService.GetTypes (typeof (T), excludeGlobalTypes);
-
-    //  foreach (Type type in types)
-    //  {
-    //    if (RetrieveTextHandlerAttribute (type) != null)
-    //    {
-    //      Type baseType = type.BaseType;
-    //      //Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
-    //      Assertion.IsTrue (baseType.Name == baseTypeName); // Note: This check disallows use of derived type handlers
-    //      // TODO: Refactor check to use Type objects and IsAssignableFrom instead.
-    //      // TODO: Throw exception instead if attribute is attached to wrong type
-    //      // Idea: If IToTextSpecificHandler had a membler "HandledType", the check (and the following two lines) could be removed.
-    //      Type[] genericArguments = baseType.GetGenericArguments ();
-    //      Type handledType = genericArguments[0];
-
-    //      handlerMap[handledType] = (T) Activator.CreateInstance (type);
-    //    }
-    //  }
-    //  return handlerMap;
-    //}
 
     public int GetPropertyGetterSetterMetaDataToken (PropertyInfo property, bool getGetter)
     {
-      //property.
       var method = getGetter ? property.GetGetMethod() : property.GetSetMethod();
       int token = -1;
       if(method != null)
