@@ -89,6 +89,13 @@ namespace Remotion.Scripting
 
     private void ImplementKnownProperties ()
     {
+      ImplementKnownClassProperties();
+      ImplementKnownInterfaceProperties();
+    }
+
+
+    private void ImplementKnownClassProperties ()
+    {
       var specialMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (mi => mi.IsSpecialName);
 
       foreach (var proxiedTypeMethod in specialMethodsInProxiedType)
@@ -96,52 +103,60 @@ namespace Remotion.Scripting
         PropertyInfo knownBaseTypeProperty = null;
         if (_firstKnownBaseType != null)
         {
-          _firstKnownBaseTypeSpecialMethodsToPropertyMap.TryGetValue (new StableMethodMetadataToken(proxiedTypeMethod), out knownBaseTypeProperty);
+          _firstKnownBaseTypeSpecialMethodsToPropertyMap.TryGetValue (new StableMethodMetadataToken (proxiedTypeMethod), out knownBaseTypeProperty);
         }
 
         if (knownBaseTypeProperty != null)
         {
-           _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
+          _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
         }
       }
+    }
 
-
-
+    private void ImplementKnownInterfaceProperties ()
+    {
       Type type = _proxiedType;
       while (type != null)
       {
-        // Build class method to interface method map for current type
         var classMethodToInterfaceMethodsMap = GetClassMethodToInterfaceMethodsMap(type);
-
-        var typePublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-
-        foreach (var publicProperty in typePublicProperties)
-        {
-          var typeNonPublicPropertyAccessors = publicProperty.GetAccessors (true);
-          if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
-          {
-            _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (publicProperty);
-          }
-        }
-
-
-        var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
-
-        foreach (var nonPublicProperty in typeNonPublicProperties)
-        {
-          var typeNonPublicPropertyAccessors = nonPublicProperty.GetAccessors (true);
-          if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
-          {
-            var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
-            var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
-
-            _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
-          }
-        }
-
+        ImplementPublicInterfaceProperties(type, classMethodToInterfaceMethodsMap);
+        ImplementNonPublicInterfaceProperties(type, classMethodToInterfaceMethodsMap);
         type = type.BaseType;
       }
     }
+
+
+    private void ImplementPublicInterfaceProperties (Type type, Dictionary<MethodInfo, HashSet<MethodInfo>> classMethodToInterfaceMethodsMap)
+    {
+      var typePublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+
+      foreach (var publicProperty in typePublicProperties)
+      {
+        var typeNonPublicPropertyAccessors = publicProperty.GetAccessors (true);
+        if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
+        {
+          _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (publicProperty);
+        }
+      }
+    }
+    
+    private void ImplementNonPublicInterfaceProperties (Type type, Dictionary<MethodInfo, HashSet<MethodInfo>> classMethodToInterfaceMethodsMap)
+    {
+      var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+
+      foreach (var nonPublicProperty in typeNonPublicProperties)
+      {
+        var typeNonPublicPropertyAccessors = nonPublicProperty.GetAccessors (true);
+        if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
+        {
+          var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
+          var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
+
+          _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
+        }
+      }
+    }
+
 
     private Dictionary<MethodInfo, HashSet<MethodInfo>> GetClassMethodToInterfaceMethodsMap (Type type)
     {
