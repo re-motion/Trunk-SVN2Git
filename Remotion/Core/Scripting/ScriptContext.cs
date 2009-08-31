@@ -42,6 +42,75 @@ namespace Remotion.Scripting
       get { return CurrentScriptContext; }
     }
 
+    /// <summary>
+    /// Returns the DLR proxy object for the proxied objects member with the passed name.
+    /// </summary>
+    public static object GetAttributeProxy (object proxied, string attributeName)
+    {
+      return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
+    }
+
+   
+    /// <summary>
+    /// Switches to the passed <see cref="ScriptContext"/>. All re-motion script classes (e.g. <see cref="ExpressionScript{TResult}"/>, 
+    /// <see cref="ScriptFunction{TFixedArg1,TResult}"/>, etc) do this automatically before executing their DLR script.
+    /// </summary>
+    public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)
+    {
+      // Note: Currently switching to the same ScriptContext twice is not supported. 
+      // (Would need to use a stack of ScriptContext|s to support interleaving of ScriptContext|s).
+      ArgumentUtility.CheckNotNull ("newScriptContex", newScriptContex);
+      Assertion.IsNull (CurrentScriptContext, CurrentScriptContext == null ? "" : String.Format ("ReleaseScriptContext: There is already an active script context ('{0}') on this thread.", CurrentScriptContext.Name));
+      CurrentScriptContext = newScriptContex;
+    }
+
+    /// <summary>
+    /// Releases the the passed <see cref="ScriptContext"/>. All re-motion script classes (e.g. <see cref="ExpressionScript{TResult}"/>, 
+    /// <see cref="ScriptFunction{TFixedArg1,TResult}"/>, etc) do this automatically after having executed their DLR script.
+    /// </summary>
+    public static void ReleaseScriptContext (ScriptContext scriptContexToRelease)
+    {
+      ArgumentUtility.CheckNotNull ("scriptContexToRelease", scriptContexToRelease);
+      if (!Object.ReferenceEquals (scriptContexToRelease, CurrentScriptContext))
+      {
+        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context was '{1}'.", scriptContexToRelease.Name, CurrentScriptContext));
+      }
+      CurrentScriptContext = null;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="ScriptContext"/>.
+    /// </summary>
+    /// <param name="name">The tag name of the <see cref="ScriptContext"/>. Must be unique. Suggested naming scheme: 
+    /// company domain name + namespace of module (e.g. "rubicon.eu.Remotion.Data.DomainObjects.Scripting", "microsoft.com.Word.Scripting").
+    /// </param>
+    /// <param name="typeFilter">The <see cref="ITypeFilter"/> which decides which <see cref="Type"/>|s are known in the <see cref="ScriptContext"/>.</param>
+    public static ScriptContext Create (string name, ITypeFilter typeFilter)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);
+      lock (s_scriptContextLock)
+      {
+        return CreateScriptContextUnsafe(name, typeFilter);
+      }
+    }
+
+    /// <summary>
+    /// Retrieves the <see cref="ScriptContext"/> corresponding the passed <paramref name="name"/>. 
+    /// </summary>
+    /// <returns>The <see cref="ScriptContext"/> or null if none with the passed name has been defined using <see cref="Create"/>.</returns>
+    public static ScriptContext GetScriptContext (string name)
+    {
+      // Note: Null-or-empty for name OK
+      lock (s_scriptContextLock)
+      {
+        ScriptContext scriptContext;
+        ScriptContexts.TryGetValue (name, out scriptContext);
+        return scriptContext;
+      }
+    }
+
+
     private static ScriptContext CurrentScriptContext
     {
       get
@@ -55,45 +124,9 @@ namespace Remotion.Scripting
       }
     }
 
-    public static object GetAttributeProxy (object proxied, string attributeName)
-    {
-      return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
-    }
-
-
-
-    // Note: Currently switching to the same ScriptContext twice is not supported. 
-    // (Would need to use a stack of ScriptContext|s to support interleaving of ScriptContext|s).
-    public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)
-    {
-      ArgumentUtility.CheckNotNull ("newScriptContex", newScriptContex);
-      Assertion.IsNull (CurrentScriptContext, CurrentScriptContext == null ? "" : String.Format ("ReleaseScriptContext: There is already an active script context ('{0}') on this thread.", CurrentScriptContext.Name));
-      CurrentScriptContext = newScriptContex;
-    }
-
-    public static void ReleaseScriptContext (ScriptContext scriptContexToRelease)
-    {
-      ArgumentUtility.CheckNotNull ("scriptContexToRelease", scriptContexToRelease);
-      if (!Object.ReferenceEquals (scriptContexToRelease, CurrentScriptContext))
-      {
-        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context was '{1}'.", scriptContexToRelease.Name, CurrentScriptContext));
-      }
-      CurrentScriptContext = null;
-    }
-
     private static Dictionary<string, ScriptContext> ScriptContexts
     {
       get { return s_scriptContexts; }
-    }
-
-    public static ScriptContext Create (string name, ITypeFilter typeFilter)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);
-      lock (s_scriptContextLock)
-      {
-        return CreateScriptContextUnsafe(name, typeFilter);
-      }
     }
 
     private static ScriptContext CreateScriptContextUnsafe (string name, ITypeFilter typeFilter)
@@ -105,17 +138,6 @@ namespace Remotion.Scripting
       var scriptContext = new ScriptContext (name, typeFilter);
       ScriptContexts[name] = scriptContext;
       return scriptContext;
-    }
-
-    public static ScriptContext GetScriptContext (string name)
-    {
-      // Note: Null-or-empty for name OK
-      lock (s_scriptContextLock)
-      {
-        ScriptContext scriptContext;
-        ScriptContexts.TryGetValue (name, out scriptContext);
-        return scriptContext;
-      }
     }
 
     // Test-only method
