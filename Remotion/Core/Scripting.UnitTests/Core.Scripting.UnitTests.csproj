@@ -89,7 +89,6 @@
     <Compile Include="TestDomain\Document.cs" />
     <Compile Include="ExpressionScriptTest.cs" />
     <Compile Include="ForwardingProxyBuilderTest.cs" />
-    <Compile Include="MethodInfoEqualityComparer2Test.cs" />
     <Compile Include="MethodInfoEqualityComparerTest.cs" />
     <Compile Include="ScriptContextTest.cs" />
     <Compile Include="ScriptContextTestHelper.cs" />
