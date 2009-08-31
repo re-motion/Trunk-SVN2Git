@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
-using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -25,18 +24,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
-  // TODO: Introduce MethodInfoExtended / PropertyInfoExtended. 
-  // A lot of reflection code would be much easier to write and maintain, if one would introduce a MethodInfoExtended class,
-  // which is self-contained in the sense that it holds enough context information about where it comes from 
-  // (e.g. if it is an explicit interface implementation etc) so one can e.g. implement a proxying method just from a
-  // MethodInfoExtended instance.
-  // This would remove the requirement to have different methods for the different cases, which all need to be called with specific
-  // parameters, but especially would make it much simpler to write helper functions which are 99% the same but need to differ in one call or 
-  // passed attribute depending on whether the method is an explicit interface implementation.
-  // This is even more true for PropertyInfoExtended, because properties have the additional complication of being made up of 3 objects 
-  // (the property itself, getter & setter) instead of just one as in the case of a method.
-
-
   /// <summary>
   /// Helper class to create a proxy object which forwards explcitely added methods/properties to its proxied instance. 
   /// </summary>
@@ -66,18 +53,11 @@ namespace Remotion.Scripting
       _proxied = CreateProxiedField();
       CreateProxyCtor(proxiedType);
 
-      
-      
       _classEmitter.TypeBuilder.AddInterfaceImplementation (typeof (IProxy));
 
-
-      // IProxy.SetProxied
       var setProxiedMethod =_classEmitter.CreateInterfaceMethodImplementation (
           typeof (IProxy).GetMethod ("SetProxied", _declaredInstanceBindingFlags));
       var arg = setProxiedMethod.ArgumentReferences[0];
-      //var arg = new ArgumentReference (proxiedType);
-      //var ctor = _classEmitter.CreateConstructor (new[] { arg });
-      //setProxiedMethod.AddStatement (new AssignStatement (_proxied, arg.ToExpression ()));
       var argAsProxiedType = new ConvertExpression (proxiedType, arg.ToExpression ());
       setProxiedMethod.AddStatement (new AssignStatement (_proxied, argAsProxiedType));
       setProxiedMethod.AddStatement (new ReturnStatement ());
@@ -115,26 +95,19 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreatePublicInterfaceMethodImplementation (methodInfo);
-
-      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
       ImplementForwardingMethod (methodInfo, methodEmitter);
     }
 
     // Implement method in proxy by forwarding call to proxied instance
     private void ImplementForwardingMethod (MethodInfo methodInfo, CustomMethodEmitter methodEmitter)
     {
-      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
       methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
     }
 
-    // Return type added by FS
-    // TODO : Consider unifying this with AddForwardingMethodFromClassOrInterfaceMethodInfoCopy by passing the lookup map into the
-    // ForwardingProxyBuilder via the ctor (as discussed, added by FS)
     public CustomMethodEmitter AddForwardingMethod (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
-      // Added by FS
       if (!methodInfo.IsPublic)
       {
         var message = string.Format (
@@ -145,22 +118,8 @@ namespace Remotion.Scripting
       }
 
       return AddForwardingMethod (methodInfo, methodInfo.Name);
-
-      //if (methodInfo.IsPublic)
-      //{
-      //  return AddForwardingMethod (methodInfo, methodInfo.Name);
-      //}
-      //else
-      //{
-      //  // _classMethodToInterfaceMethodsMap
-      //  var forwardingMethodInfo = GetInterfaceMethodsToClassMethod (methodInfo).Single();
-      //  return AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (forwardingMethodInfo);
-      //}
     }
 
-    // Return type added by FS
-    // TODO : Consider unifying this with AddForwardingExplicitInterfaceProperty and AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy by 
-    // passing the lookup map into the ForwardingProxyBuilder via the ctor (as discussed, added by FS)
     public CustomPropertyEmitter AddForwardingProperty (PropertyInfo propertyInfo)
     {
       string propertyName = propertyInfo.Name;
@@ -180,10 +139,6 @@ namespace Remotion.Scripting
           var getMethodEmitter = AddForwardingMethod (proxiedGetMethodInfo);
           propertyEmitter.GetMethod = getMethodEmitter;
         }
-
-        //var getMethodEmitter = propertyEmitter.CreateGetMethod ();
-        //var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
-        //getMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedGetMethodInfo);
       }
 
       if (propertyInfo.CanWrite)
@@ -195,10 +150,6 @@ namespace Remotion.Scripting
           var setMethodEmitter = AddForwardingMethod (proxiedSetMethodInfo);
           propertyEmitter.SetMethod = setMethodEmitter;
         }
-
-        //var setMethodEmitter = propertyEmitter.CreateSetMethod ();
-        //var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);
-        //setMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedSetMethodInfo);
       }
     }
 
@@ -217,8 +168,6 @@ namespace Remotion.Scripting
     private void CreateGetterAndSetterForExplicitInterfaceProperty (PropertyInfo propertyInfo, 
       MethodInfo getterMethodInfo, MethodInfo setterMethodInfo, CustomPropertyEmitter propertyEmitter)
     {
-      // TODO(!): Pass parameter to AddForwardingMethodFromClassOrInterfaceMethodInfoCopy, which makes the created methods private
-      // (otherwise the property will be public)
       if (propertyInfo.CanRead)
       {
         var getMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (getterMethodInfo, 
@@ -248,9 +197,7 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      //var methodAttributes = propertyInfo.Attributes;
       CustomPropertyEmitter propertyEmitter;
-
 
       if (propertyInfo.DeclaringType.IsInterface)
       {
@@ -258,7 +205,6 @@ namespace Remotion.Scripting
       }
       else
       {
-        //propertyEmitter = _classEmitter.CreatePropertyOverride (propertyInfo);
         propertyEmitter = _classEmitter.CreateProperty (propertyInfo.Name, PropertyKind.Instance, propertyInfo.PropertyType);
       }
 
@@ -276,32 +222,6 @@ namespace Remotion.Scripting
     /// </remarks>
     public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
     {
-      //ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-
-      //var methodAttributes = methodInfo.Attributes;
-
-      //CustomMethodEmitter methodEmitter;
-
-      //if (methodInfo.DeclaringType.IsInterface)
-      //{
-      //  methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (
-      //      methodInfo, true, methodAttributes & MethodAttributes.MemberAccessMask);
-      //}
-      //else
-      //{
-      //  // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
-      //  // desired attributes such as Final, Virtual and HideBySig.
-        
-      //  methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
-      //}
-
-      //methodEmitter.CopyParametersAndReturnType (methodInfo);
-
-      //ImplementForwardingMethod (methodInfo, methodEmitter);
-      ////methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo, false); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-      //// TODO: Test return type
-      //return methodEmitter;
       return AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (methodInfo, methodInfo.Attributes);
     }
 
@@ -316,8 +236,6 @@ namespace Remotion.Scripting
     public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo, MethodAttributes methodAttributes)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-
-      //var methodAttributes = methodInfo.Attributes;
 
       CustomMethodEmitter methodEmitter;
 
@@ -373,7 +291,6 @@ namespace Remotion.Scripting
     // Create the field which holds the proxied instance
     private FieldReference CreateProxiedField ()
     {
-      //return _classEmitter.CreateField ("_proxied", _proxiedType, FieldAttributes.Private | FieldAttributes.InitOnly);
       return _classEmitter.CreateField ("_proxied", _proxiedType, FieldAttributes.Private);
     }
 
@@ -395,7 +312,6 @@ namespace Remotion.Scripting
       var methodEmitter = _classEmitter.CreateMethod (forwardingMethodName, methodInfo.Attributes);
       methodEmitter.CopyParametersAndReturnType (methodInfo);
      
-      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
       ImplementForwardingMethod (methodInfo, methodEmitter);
 
       return methodEmitter;
