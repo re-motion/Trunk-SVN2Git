@@ -47,11 +47,19 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       _control.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "MyTabbedMultiView_BottomControl" });
 
       var tabStrip = MockRepository.GenerateStub<IWebTabStrip>();
+      tabStrip.Stub (stub => stub.RenderControl (Html.Writer)).WhenCalled (
+          delegate (MethodInvocation obj)
+          {
+            HtmlTextWriter writer = (HtmlTextWriter) obj.Arguments[0];
+            writer.AddAttribute (HtmlTextWriterAttribute.Class, tabStrip.CssClass);
+            writer.RenderBeginTag ("tabStrip");
+            writer.RenderEndTag ();
+          });
+
       _control.Stub (stub => stub.TabStrip).Return (tabStrip);
 
       _control.Stub (stub => stub.ActiveViewClientID).Return (_control.ClientID + "_ActiveView");
       _control.Stub (stub => stub.ActiveViewContentClientID).Return (_control.ActiveViewClientID + "_Content");
-      _control.Stub (stub => stub.TabStripContainerClientID).Return (_control.ClientID + "_TabStripContainer");
       _control.Stub (stub => stub.WrapperClientID).Return ("WrapperClientID");
       
 
@@ -254,7 +262,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
 
     private void AssertTabStrip (XmlNode container, TabbedMultiViewRenderer renderer)
     {
-      var divTabStrip = container.GetAssertedChildElement ("div", 1);
+      var divTabStrip = container.GetAssertedChildElement ("tabStrip", 1);
       divTabStrip.AssertChildElementCount (0);
 
       divTabStrip.AssertAttributeValueEquals ("class", renderer.CssClassTabStrip);

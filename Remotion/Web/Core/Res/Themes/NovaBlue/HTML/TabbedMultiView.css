@@ -40,7 +40,7 @@ div.tabbedMultiView div.content
 div.tabbedMultiViewActiveView
 {
   overflow: hidden;
-  margin-top: -1px;
+  margin-top: 0;
   margin-bottom: 0;
   margin-left: 1em;
   margin-right: 1em;
@@ -126,12 +126,6 @@ div.tabbedMultiViewTopControls.emtpy
   background-color: White;
 }
 
-div.tabbedMultiViewTabStrip div
-{
-  position: static;
-  left: auto;
-}
-
 /* Applied to the bottom section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewBottomControls
 {
@@ -179,7 +173,10 @@ div.tabbedMultiViewTabStrip
   right: 0;
   padding: 0;
   background-color: White;
-  margin: 0em 0.5em;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane

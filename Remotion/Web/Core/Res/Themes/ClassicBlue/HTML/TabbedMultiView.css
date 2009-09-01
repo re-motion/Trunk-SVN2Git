@@ -39,12 +39,6 @@ div.tabbedMultiViewTopControls
 	overflow: hidden;
 }
 
-div.tabbedMultiViewTabStrip div
-{
-  position: static;
-  left: auto;
-}
-
 /* Applied to the bottom section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewBottomControls
 {
@@ -163,10 +157,10 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.bottom
 /* Content area of the tab */
 div.tabbedMultiViewTabStrip a span.anchorBody
 {
-  padding-top: 0.1em; /* Value must also be set in the Non-IE browsers section as padding for the separator. */
-  padding-bottom: 0.1em; /* Value must also be set in the Non-IE browsers section as padding for the separator. */
-  padding-left: 0.3em;
-  padding-right: 0.3em;
+  padding-top: 0.15em;
+  padding-bottom: 0.25em; 
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
@@ -188,13 +182,13 @@ div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   margin-bottom: 1px; /* The width of the top-border of the tabs. */
-  padding-top: 1px; /* The padding used for the anchorBody span. */
-  padding-bottom: 1px; /* The padding used for the anchorBody span. */
+  padding-top: 0.2em; /* The padding used for the content span. */
+  padding-bottom: 0.2em; /* The padding used for the content span. */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody, 
 div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody, 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
-  height: 1.4em;
+  height: 1.2em;
 }

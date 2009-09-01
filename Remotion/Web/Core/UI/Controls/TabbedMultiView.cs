@@ -307,11 +307,6 @@ namespace Remotion.Web.UI.Controls
       nextActiveTab.IsSelected = true;
     }
 
-    public string TabStripContainerClientID
-    {
-      get { return ClientID + ClientIDSeparator + c_tabstripID; }
-    }
-
     string ITabbedMultiView.ActiveViewContentClientID
     {
       get { return ActiveViewClientID + "_Content"; }

@@ -64,14 +64,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
     protected virtual void RenderTabStrip ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TabStripContainerClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabStrip);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
       Control.TabStrip.CssClass = CssClassTabStrip;
       Control.TabStrip.RenderControl (Writer);
-
-      Writer.RenderEndTag();
     }
 
     protected virtual void RenderActiveView ()
