@@ -620,6 +620,8 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ReverseExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SkipExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\UnionExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\TestDomain\GenericClass.cs" />
+    <Compile Include="Linq\Parsing\Structure\TestDomain\NonGenericFakeCollection.cs" />
     <Compile Include="Linq\TestDomain\GoodStudent.cs" />
     <Compile Include="Linq\TestDomain\IndustrialSector.cs" />
     <Compile Include="Linq\Backend\DetailParsing\DetailParserTestBase.cs" />
