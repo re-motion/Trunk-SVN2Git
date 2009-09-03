@@ -15,8 +15,12 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -251,6 +255,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   where c.DomainBase.CreatedAt == new DateTime (2006, 01, 03)
                   select c;
       CheckQueryResult (query, new TableInheritance.DomainObjectIDs ().ClassWithUnidirectionalRelation);
+    }
+
+    [Test]
+    public void QueryWithCustomParser ()
+    {
+      foreach (StorageProviderDefinition definition in DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions)
+      {
+        Assert.That (
+            definition.LinqSqlGenerator.DetailParserRegistries.WhereConditionParser.GetParsers (typeof (ConditionalExpression)).Any (), 
+            Is.False, 
+            "Choose another expression type for the test; ConditionalExpression is already supported.");
+        ConditionalExpressionWhereConditionParser.Register (definition);
+      }
+
+      var query1 = GetQueryWithIif (true);
+      var query2 = GetQueryWithIif (false);
+
+      CheckQueryResult (query1, DomainObjectIDs.Order1);
+      CheckQueryResult (
+          query2, 
+          DomainObjectIDs.Order1, 
+          DomainObjectIDs.Order2, 
+          DomainObjectIDs.Order3, 
+          DomainObjectIDs.Order4, 
+          DomainObjectIDs.OrderWithoutOrderItem, 
+          DomainObjectIDs.InvalidOrder);
+    }
+
+    private IQueryable<Order> GetQueryWithIif (bool selectNumberOne)
+    {
+      return from o in QueryFactory.CreateLinqQuery<Order> ()
+             where o.OrderNumber == (selectNumberOne ? 1 : o.OrderNumber)
+             select o;
     }
   }
 }
