@@ -159,8 +159,14 @@ namespace Remotion.Mixins.Context
     /// <seealso cref="ContextAwareTypeDiscoveryUtility"/>
     public static MixinConfiguration BuildDefaultConfiguration ()
     {
-      ICollection types = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService().GetTypes (null, false);
+      ICollection types = GetTypeDiscoveryService().GetTypes (null, false);
       return BuildConfigurationFromTypes (null, EnumerableUtility.Cast<Type> (types));
+    }
+
+    // Separate method because of tests
+    private static ITypeDiscoveryService GetTypeDiscoveryService ()
+    {
+      return ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
     }
 
     private readonly MixinConfiguration _parentConfiguration;
