@@ -652,7 +652,7 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\FieldInfoBindingTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\MemberBindingTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\MemberBindingTestBase.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\EvaluatableTreeFindingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\EvaluatableTreeFindingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\UnknownExpression.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\TypeForNewExpression.cs" />
     <Compile Include="Linq\Backend\FieldResolving\FieldResolverTest.cs" />
@@ -712,10 +712,10 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\DistinctExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\CountExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeTestBase.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\SubQueryFindingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\SubQueryFindingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TransparentIdentifierRemovingVisitorTest.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\PartialTreeEvaluatingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TransparentIdentifierRemovingExpressionTreeVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\PartialEvaluatingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserTest.cs" />
     <Compile Include="Linq\Parsing\TestThrowingExpressionTreeVisitor.cs" />
     <Compile Include="Linq\Parsing\ThrowingExpressionTreeVisitorTest.cs" />
