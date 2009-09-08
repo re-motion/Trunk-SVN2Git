@@ -206,7 +206,7 @@
         <include name="Castle.MicroKernel.*"/>
         <include name="Castle.Windsor.*"/>
         <include name="CommonServiceLocator.WindsorAdapter.*"/>
-        <include name="AjaxControlToolkit.dll" />
+        <include name="ICSharpCode.SharpZipLib.dll" />
         <include name="Microsoft.Practices.ServiceLocation.dll" />
 
         <include name="IronPython.dll" />
@@ -239,8 +239,6 @@
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.Core.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.DynamicProxy2.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Rhino.Mocks.dll" overwrite="true"/>
-      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/AjaxControlToolkit.dll" overwrite="true" />
-      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Microsoft.Practices.ServiceLocation.dll" overwrite="true" />
       <copy todir="${build.test.outputdir}">
         <fileset basedir="${build.outputdir}">
           <include name="*.exe" />
