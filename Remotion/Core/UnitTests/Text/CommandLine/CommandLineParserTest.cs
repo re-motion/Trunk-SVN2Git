@@ -78,6 +78,7 @@ public class CommandLineParserTest
     return CreateParser (out argSourceDir, out argDestinationDir, out argCopyBinary, out argEnumOption);
   }
 
+  [Test]
   public void TestParsingSucceed ()
   {
     CommandLineStringArgument argSourceDir;
@@ -99,6 +100,7 @@ public class CommandLineParserTest
     Assert.AreEqual (TestOption.yes, argEnumOption.Value);
   }
 
+  [Test]
   public void TestParsingLeaveOutOptional ()
   {
     CommandLineStringArgument argSourceDir;
@@ -116,6 +118,7 @@ public class CommandLineParserTest
     Assert.AreEqual (false, argEnumOption.HasValue);
   }
 
+  [Test]
   [ExpectedException (typeof (MissingRequiredCommandLineParameterException))]
   public void TestParsingLeaveOutRequired ()
   {
@@ -130,6 +133,7 @@ public class CommandLineParserTest
         "source"} );
   }
 
+  [Test]
   [ExpectedException (typeof (InvalidCommandLineArgumentNameException))]
   public void TestParsingCaseSensitiveFail ()
   {
@@ -143,6 +147,7 @@ public class CommandLineParserTest
         "/Re:y" });
   }
 
+  [Test]
   [ExpectedException (typeof (InvalidCommandLineArgumentNameException))]
   public void TestParsingNotIncrementalFail ()
   {
@@ -156,6 +161,7 @@ public class CommandLineParserTest
         "/re:y" });
   }
 
+  [Test]
   public void TestParsingNotIncrementalSucceed ()
   {
     CommandLineStringArgument argSourceDir;
@@ -176,6 +182,7 @@ public class CommandLineParserTest
     Assert.AreEqual (TestOption.yes, argEnumOption.Value);
   }
 
+  [Test]
   [ExpectedException (typeof (InvalidNumberOfCommandLineArgumentsException))]
   public void TestParsingTooManyPositionalFail ()
   {
@@ -188,6 +195,7 @@ public class CommandLineParserTest
         "another"} );
   }
 
+  [Test]
   public void TestSynopsis ()
   {
     CommandLineParser parser = CreateParser();
