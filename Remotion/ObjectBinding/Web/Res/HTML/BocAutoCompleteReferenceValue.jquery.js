@@ -842,7 +842,7 @@
     function fillList()
     {
       list.empty();
-      var max = limitNumberOfItems(data.length);
+      var max = data.length;
       for (var i = 0; i < max; i++)
       {
         if (!data[i])
