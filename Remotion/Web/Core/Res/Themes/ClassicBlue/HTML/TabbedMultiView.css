@@ -1,5 +1,6 @@
 @import url("TabStrip.css");
 
+
 /* Non-IE Browsers hack \*/
 html > body div.tabbedMultiViewActiveView
 {
