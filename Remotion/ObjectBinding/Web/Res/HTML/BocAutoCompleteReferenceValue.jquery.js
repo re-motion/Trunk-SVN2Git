@@ -970,7 +970,7 @@
 
   $.Autocompleter.Selection = function(field, start, end)
   {
-    if (field.value == '')
+    if (field.value.length < 2)
       return;
 
     if (field.createTextRange)
