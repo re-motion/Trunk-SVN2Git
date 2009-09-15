@@ -94,6 +94,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void QueryWithFirstOrDefault ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
+                   select o).FirstOrDefault();
+      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
+    }
+    
+    [Test]
     public void QueryWithCount ()
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order>()
