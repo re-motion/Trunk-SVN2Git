@@ -27,9 +27,6 @@ ViewLayout.AdjustTop = function(topSibling, elementToAdjust)
 ViewLayout.AdjustBottom = function(bottomSibling, elementToAdjust)
 {
   $(elementToAdjust).css('bottom', bottomSibling.parent().height() - bottomSibling.position().top);
-  if (jQuery.browser.msie && parseInt(jQuery.browser.version) == 7)
-  setTimeout(function() { $(elementToAdjust).children().css('display', 'block'); }, 10);
-
 };
 
 ViewLayout.AdjustSingleView = function(containerElement)
@@ -79,6 +76,7 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement)
   ViewLayout.AdjustViewContentBorder(viewContentBorder);
 
   ViewLayout.FixIE6(view, bottom);
+  ViewLayout.FixIE7(view);
 };
 
 ViewLayout.AdjustViewContentBorder = function(viewContentBorder)
@@ -100,6 +98,14 @@ ViewLayout.SetParentUpdatePanelHeight = function(element)
     element.parent('#' + updatePanelClientID).css('height', '100%');
   }
 }
+
+
+ViewLayout.FixIE7 = function(view) {
+  if (!jQuery.browser.msie || parseInt(jQuery.browser.version) != 7)
+    return;
+  setTimeout(function() { $(view).children().css('display', 'block'); }, 1);
+}
+
 
 ViewLayout.FixIE6 = function(view, bottom)
 {
