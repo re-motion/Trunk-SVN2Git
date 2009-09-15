@@ -27,6 +27,9 @@ ViewLayout.AdjustTop = function(topSibling, elementToAdjust)
 ViewLayout.AdjustBottom = function(bottomSibling, elementToAdjust)
 {
   $(elementToAdjust).css('bottom', bottomSibling.parent().height() - bottomSibling.position().top);
+  if (jQuery.browser.msie && parseInt(jQuery.browser.version) == 7)
+  setTimeout(function() { $(elementToAdjust).children().css('display', 'block'); }, 10);
+
 };
 
 ViewLayout.AdjustSingleView = function(containerElement)
