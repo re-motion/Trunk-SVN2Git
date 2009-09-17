@@ -200,7 +200,7 @@ div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator
 {
-  width: 0.6em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
+  width: 1em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
   border-bottom: solid 1px #02537c;
 }
 
