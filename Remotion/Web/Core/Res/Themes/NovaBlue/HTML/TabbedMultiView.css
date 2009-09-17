@@ -202,6 +202,7 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator
 {
   width: 0.6em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
   border-bottom: solid 1px #083779;
+  *padding-bottom: 1px; /* * CSS Hack for IE7 */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab
@@ -217,6 +218,7 @@ div.tabbedMultiViewTabStrip span.tabStripTab a
   background-repeat: repeat-x;
   background-position: top;
   color: White;
+  *padding-bottom: 2px; /* * CSS Hack for IE7 */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
@@ -238,6 +240,7 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a
   border: none;
   background-color: White;
   color: #0D4EBA;
+  *padding-bottom: 2px; /* * CSS Hack for IE7 */
 }
 
 /* Bottom tab border */
