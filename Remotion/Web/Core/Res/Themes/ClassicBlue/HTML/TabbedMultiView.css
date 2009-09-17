@@ -217,6 +217,7 @@ div.tabbedMultiViewTabStrip span.tabStripTab a
   background-repeat: repeat-x;
   background-position: top;
   color: blue;
+  *padding-bottom: 2px; /* * CSS Hack for IE7 */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
@@ -238,6 +239,7 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a
   border: none;
   background-color: White;
   color: #0D4EBA;
+  *padding-bottom: 2px; /* * CSS Hack for IE7 */
 }
 
 /* Bottom tab border */
