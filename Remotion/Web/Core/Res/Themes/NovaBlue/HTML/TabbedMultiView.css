@@ -57,6 +57,7 @@ div.tabbedMultiViewActiveView div.contentBorder
   border-left:  solid 1px #083779;
   border-right:  solid 1px #083779;
   border-bottom:  solid 1px #083779;
+  margin-top:-1px;
 }
 
 div.tabbedMultiViewActiveView *.top, 
@@ -71,6 +72,7 @@ div.tabbedMultiViewActiveView *.bottomRight
   display: none;
 }
 
+/*
 div.tabbedMultiViewActiveView *.topLeft, 
 div.tabbedMultiViewActiveView *.bottomLeft, 
 div.tabbedMultiViewActiveView *.topRight, 
@@ -112,7 +114,7 @@ div.tabbedMultiViewActiveView *.bottomRight
   bottom: 0px;
   right: 0px;
 }
-
+*/
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewTopControls
 {
