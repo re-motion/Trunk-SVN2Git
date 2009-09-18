@@ -1039,7 +1039,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   
   // methods and properties
 
-  IPage IControl.Page
+  public new IPage Page
   {
     get { return PageWrapper.CastOrCreate (base.Page); }
   }
@@ -1236,7 +1236,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     if (!HtmlHeadAppender.Current.IsRegistered (key))
     {
       string url = ResourceUrlResolver.GetResourceUrl (
-          this, new HttpContextWrapper (Context), typeof (FormGridManager), ResourceType.Html, ResourceTheme, "FormGrid.css");
+          this, Page.Context, typeof (FormGridManager), ResourceType.Html, ResourceTheme, "FormGrid.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
   }
@@ -2867,7 +2867,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     string relativeUrl = image + ImageExtension;
 
     string imageUrl = ResourceUrlResolver.GetResourceUrl (
-        this, new HttpContextWrapper (Context), typeof (FormGridManager), ResourceType.Image, ResourceTheme, relativeUrl);
+        this, Page.Context, typeof (FormGridManager), ResourceType.Image, ResourceTheme, relativeUrl);
 
     if (imageUrl != null)
       return imageUrl;

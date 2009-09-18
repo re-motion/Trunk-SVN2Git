@@ -28,6 +28,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -490,7 +491,7 @@ namespace Remotion.Web.UI.Controls
           }
         }
         href = UrlUtility.AddParameters (href, additionalUrlParameters);
-        href = UrlUtility.GetAbsoluteUrl (HttpContext.Current, href);
+        href = UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (HttpContext.Current), href);
       }
       writer.AddAttribute (HtmlTextWriterAttribute.Href, href);
       if (!StringUtility.IsNullOrEmpty (HrefCommand.Target))

@@ -92,7 +92,7 @@ namespace Remotion.Web.UI.Controls
 
       if (!IsDesignMode)
       {
-        RegisterHtmlHeadContents(new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }
     }
 
@@ -241,7 +241,7 @@ namespace Remotion.Web.UI.Controls
       EvaluateWaiConformity ();
 
       var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, writer, this);
       renderer.Render();
     }
 
@@ -723,7 +723,7 @@ namespace Remotion.Web.UI.Controls
       get { return SubMenuTabStrip; }
     }
 
-    IPage IControl.Page
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

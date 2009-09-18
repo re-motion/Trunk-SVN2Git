@@ -54,7 +54,7 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, writer, this);
       renderer.Render();
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.Web.UI.Controls
       base.OnInit (e);
       if (!IsDesignMode)
       {
-        RegisterHtmlHeadContents (new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }
     }
 
@@ -81,7 +81,7 @@ namespace Remotion.Web.UI.Controls
     protected override void OnPreRender (EventArgs e)
     {
       var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
       preRenderer.PreRender();
     }
 

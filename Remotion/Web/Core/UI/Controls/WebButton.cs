@@ -62,7 +62,7 @@ namespace Remotion.Web.UI.Controls
       base.OnInit (e);
 
       var factory = ServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper(Context), this);
+      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
       preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
     }
 
@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls
 
       if (_requiresSynchronousPostBack)
       {
-        var scriptManager = ScriptManager.GetCurrent (Page);
+        var scriptManager = ScriptManager.GetCurrent (base.Page);
         if (scriptManager != null)
           scriptManager.RegisterPostBackControl (this);
       }
@@ -458,8 +458,8 @@ namespace Remotion.Web.UI.Controls
       get { return _requiresSynchronousPostBack; }
       set { _requiresSynchronousPostBack = value; }
     }
-  
-    IPage IControl.Page
+
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

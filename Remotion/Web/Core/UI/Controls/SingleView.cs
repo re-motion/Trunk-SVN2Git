@@ -73,7 +73,7 @@ namespace Remotion.Web.UI.Controls
 
       if (!IsDesignMode )
       {
-        RegisterHtmlHeadContents(new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }
     }
 
@@ -128,14 +128,14 @@ namespace Remotion.Web.UI.Controls
       base.OnPreRender (e);
 
       var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
       preRenderer.PreRender();
     }
 
     public override void RenderControl (HtmlTextWriter writer)
     {
       var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper(Context), writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, writer, this);
       renderer.Render();
     }
 
@@ -154,7 +154,7 @@ namespace Remotion.Web.UI.Controls
       get { return ClientID + "_Wrapper"; }
     }
 
-    IPage IControl.Page
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

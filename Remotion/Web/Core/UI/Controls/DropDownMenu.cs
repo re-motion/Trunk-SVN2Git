@@ -59,9 +59,9 @@ namespace Remotion.Web.UI.Controls
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       if (!IsDesignMode)
       {
-        var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+        var preRenderer = factory.CreatePreRenderer (Page.Context, this);
         _isBrowserCapableOfScripting = preRenderer.GetBrowserCapableOfScripting();
-        RegisterHtmlHeadContents (new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.Web.UI.Controls
       base.OnPreRender (e);
 
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
       preRenderer.PreRender();
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, writer, this);
       renderer.Render();
     }
 

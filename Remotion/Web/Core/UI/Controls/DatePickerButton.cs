@@ -53,20 +53,20 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
       if (!IsDesignMode)
-        RegisterHtmlHeadContents (new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
     }
 
     protected override void OnPreRender (EventArgs e)
     {
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
       preRenderer.PreRender ();
     }
     
     public override void RenderControl (HtmlTextWriter writer)
     {
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, writer, this);
       renderer.Render();
     }
 
@@ -75,7 +75,7 @@ namespace Remotion.Web.UI.Controls
       get { return (IControl) Parent; }
     }
 
-    IPage IControl.Page
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

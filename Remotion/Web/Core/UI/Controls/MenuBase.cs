@@ -170,7 +170,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    IPage IControl.Page
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

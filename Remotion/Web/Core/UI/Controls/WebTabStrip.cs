@@ -100,7 +100,7 @@ namespace Remotion.Web.UI.Controls
 
       if (!IsDesignMode)
       {
-        RegisterHtmlHeadContents(new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
 
         Page.RegisterRequiresControlState (this);
         Page.RegisterRequiresPostBack (this);
@@ -259,7 +259,7 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, writer, this);
       renderer.Render();
     }
 
@@ -521,7 +521,7 @@ namespace Remotion.Web.UI.Controls
       get { return _disabledTabStyle; }
     }
 
-    IPage IControl.Page
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

@@ -50,7 +50,7 @@ public class HtmlHeadContents : Control, IControl
     bool isTextXml = false;
 
     if (!ControlHelper.IsDesignMode ((IControl)this))
-      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (new HttpContextWrapper(Context));
+      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Page.Context);
 
     foreach (Control control in Controls)
     {
@@ -87,7 +87,7 @@ public class HtmlHeadContents : Control, IControl
     get { return s_isDesignMode; }
   }
 
-  IPage IControl.Page
+  public new IPage Page
   {
     get { return PageWrapper.CastOrCreate (base.Page); }
   }

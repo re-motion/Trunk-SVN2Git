@@ -203,7 +203,7 @@ namespace Remotion.Web.ExecutionEngine
         internalUrlParameters = NameValueCollectionUtility.Clone (urlParameters);
       }
       internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
-      return WxeContext.GetPermanentUrl (new HttpContextWrapper (System.Web.HttpContext.Current), function.GetType (), internalUrlParameters);
+      return WxeContext.GetPermanentUrl (WxeContext.Current.HttpContext, function.GetType (), internalUrlParameters);
     }
 
 
