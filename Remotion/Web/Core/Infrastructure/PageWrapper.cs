@@ -636,7 +636,7 @@ namespace Remotion.Web.Infrastructure
     {
       get
       {
-        if (_httpApplicationState == null)
+        if (_httpApplicationState == null && _page.Application != null)
           _httpApplicationState = new HttpApplicationStateWrapper (_page.Application);
         return _httpApplicationState;
       }
@@ -853,7 +853,7 @@ namespace Remotion.Web.Infrastructure
     {
       get
       {
-        if (_httpRequest == null)
+        if (_httpRequest == null && _page.Request != null)
           _httpRequest = new HttpRequestWrapper (_page.Request);
         return _httpRequest;
       }
@@ -872,7 +872,7 @@ namespace Remotion.Web.Infrastructure
     {
       get
       {
-        if (_httpResponse == null)
+        if (_httpResponse == null && _page.Response != null)
           _httpResponse = new HttpResponseWrapper (_page.Response);
         return _httpResponse;
       }
@@ -888,7 +888,7 @@ namespace Remotion.Web.Infrastructure
     {
       get
       {
-        if (_httpServerUtility == null)
+        if (_httpServerUtility == null && _page.Server != null)
           _httpServerUtility = new HttpServerUtilityWrapper (_page.Server);
         return _httpServerUtility;
       }
@@ -919,7 +919,7 @@ namespace Remotion.Web.Infrastructure
     {
       get
       {
-        if (_httpSessionState == null)
+        if (_httpSessionState == null && _page.Session != null)
           _httpSessionState = new HttpSessionStateWrapper (_page.Session);
         return _httpSessionState;
       }

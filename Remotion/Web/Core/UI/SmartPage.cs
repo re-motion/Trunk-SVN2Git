@@ -49,32 +49,32 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 
   IClientScriptManager IPage.ClientScript
   {
-    get { return new ClientScriptManagerWrapper (ClientScript); }
+    get { return _clientScriptManager; }
   }
 
   IHttpApplicationState IPage.Application
   {
-    get { return _httpContext.Application; }
+    get { return _httpContext != null ?_httpContext.Application : null; }
   }
 
   IHttpRequest IPage.Request
   {
-    get { return _httpContext.Request; }
+    get { return _httpContext != null ? _httpContext.Request : null; }
   }
 
   IHttpResponse IPage.Response
   {
-    get { return _httpContext.Response; }
+    get { return _httpContext != null ? _httpContext.Response : null; }
   }
 
   IHttpServerUtility IPage.Server
   {
-    get { return _httpContext.Server; }
+    get { return _httpContext != null ? _httpContext.Server : null; }
   }
 
   IHttpSessionState IPage.Session
   {
-    get { return _httpContext.Session; }
+    get { return _httpContext != null ? _httpContext.Session : null; }
   }
 
   #endregion
@@ -221,12 +221,14 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
   private bool? _enableStatusIsSubmittingMessage;
   private bool? _enableSmartScrolling;
   private bool? _enableSmartFocusing;
+  private readonly ClientScriptManagerWrapper _clientScriptManager;
 
   public SmartPage()
   {
     _smartPageInfo = new SmartPageInfo (this);
     _validatableControlInitializer = new ValidatableControlInitializer (this);
     _postLoadInvoker = new PostLoadInvoker (this);
+    _clientScriptManager = new ClientScriptManagerWrapper (ClientScript);
   }
 
   protected override NameValueCollection DeterminePostBackMode()
