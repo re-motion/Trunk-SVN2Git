@@ -400,10 +400,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
     ///   <see cref="BocReferenceValueBase.TargetControl"/>.
     /// </summary>
-    /// <value> Always <see langword="false"/>. </value>
+    /// <value> Returns always <see langword="true"/>. </value>
     public override bool UseLabel
     {
-      get { return false; }
+      get { return true; }
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>

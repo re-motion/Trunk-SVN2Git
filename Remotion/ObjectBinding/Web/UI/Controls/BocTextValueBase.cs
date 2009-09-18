@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : ClientID; }
+      get { return IsReadOnly ? null : GetTextBoxClientID(); }
     }
 
     /// <summary>
