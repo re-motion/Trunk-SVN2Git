@@ -21,14 +21,14 @@ StyleUtility.CreateBorderSpans = function(selector)
 {
   var element = $(selector);
 
-  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'top');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'left');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottom');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'right');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'topLeft');
-  var topRight = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'topRight');
-  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottomLeft');
-  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottomRight');
+  StyleUtility.CreateAndAppendBorderSpan(element, 'top');
+  StyleUtility.CreateAndAppendBorderSpan(element, 'left');
+  StyleUtility.CreateAndAppendBorderSpan(element, 'bottom');
+  StyleUtility.CreateAndAppendBorderSpan(element, 'right');
+  StyleUtility.CreateAndAppendBorderSpan(element, 'topLeft');
+  var topRight = StyleUtility.CreateAndAppendBorderSpan(element, 'topRight');
+  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(element, 'bottomLeft');
+  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, 'bottomRight');
 
   if (StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight))
     PageUtility.Instance.RegisterResizeHandler(selector, StyleUtility.OnResize);
@@ -73,10 +73,9 @@ StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRig
   }
 }
 
-StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, className)
+StyleUtility.CreateAndAppendBorderSpan = function(elementBody, className)
 {
   var borderSpan = document.createElement('SPAN');
-  borderSpan.id = elementID + '_' + className;
   borderSpan.className = className;
 
   elementBody[0].appendChild(borderSpan);
@@ -84,11 +83,11 @@ StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, classN
   return borderSpan
 }
 
-StyleUtility.OnResize = function(element)
-{
-  var topRight = element.find('#' + element.attr('id') + '_topRight');
-  var bottomLeft = element.find('#' + element.attr('id') + '_bottomLeft');
-  var bottomRight = element.find('#' + element.attr('id') + '_bottomRight');
+StyleUtility.OnResize = function(element) {
+
+  var topRight = element.find('.topRight');
+  var bottomLeft = element.find('.bottomLeft');
+  var bottomRight = element.find('.bottomRight');
 
   StyleUtility.ShowBorderSpans(element, topRight[0], bottomLeft[0], bottomRight[0]);
 }
