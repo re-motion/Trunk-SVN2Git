@@ -118,15 +118,14 @@ ViewLayout.FixIE6 = function(view, bottom)
   view.height(bottom.offset().top - view.offset().top);
 
   view.width(contentElement.innerWidth());
-  var margin = view.outerWidth(true) - view.outerWidth(false);
-  view.width(view.width() - margin);
 
   var contentBorder = view.children(':first');
+  var marginH = (contentBorder.outerHeight(true) - contentBorder.innerHeight()) * 4;
+  var marginV = (contentBorder.outerWidth(true) - contentBorder.innerWidth()) * 4;
   contentBorder.css('top', 0);
   contentBorder.css('left', 0);
-  contentBorder.height(view.innerHeight());
-  contentBorder.width(view.innerWidth());
-
+  contentBorder.height((view.outerHeight(true) - marginH));
+  contentBorder.width((view.outerWidth(true) - marginV));
   // fix absolute positioning issues
   $('span.bocReferenceValue span.content').each(function()
   {
