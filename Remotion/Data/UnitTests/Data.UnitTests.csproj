@@ -611,10 +611,10 @@
     <Compile Include="Linq\EagerFetching\TestFetchRequest.cs" />
     <Compile Include="Linq\ExpressionHelper.cs" />
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
-    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CSharp\Count.cs" />
-    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CSharp\Select.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CountTests.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\SelectTest.cs" />
     <Compile Include="Linq\IntegrationTests\TestBase.cs" />
-    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CSharp\Where.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\WhereTest.cs" />
     <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\Customer.cs" />
     <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\Employee.cs" />
     <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\Order.cs" />
