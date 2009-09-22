@@ -611,6 +611,15 @@
     <Compile Include="Linq\EagerFetching\TestFetchRequest.cs" />
     <Compile Include="Linq\ExpressionHelper.cs" />
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CSharp\Count.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CSharp\Select.cs" />
+    <Compile Include="Linq\IntegrationTests\TestBase.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\Parsing\CSharp\Where.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\Customer.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\Employee.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\Order.cs" />
+    <Compile Include="Linq\IntegrationTests\LinqSamples101\TestDomain\QuerySource.cs" />
+    <Compile Include="Linq\IntegrationTests\TestQueryable.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\AverageExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ContainsExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\DefaultIfEmptyExpressionNodeTest.cs" />
