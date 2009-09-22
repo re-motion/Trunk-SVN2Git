@@ -12,5 +12,6 @@ Source:
 
 http://www.icsharpcode.net/OpenSource/SharpZipLib/
 
+See also the SharpZipLibLicense.zip-file for a snapshot of the relevant webpage.
 
 
