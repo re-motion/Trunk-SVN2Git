@@ -92,7 +92,6 @@
     <Compile Include="Mixins\MemberVisibilityAttribute.cs" />
     <Compile Include="Mixins\MixAttribute.cs" />
     <Compile Include="Mixins\Mixin.cs" />
-    <Compile Include="Mixins\MixinParameterAttributes.cs" />
     <Compile Include="Mixins\MixinRelationship.cs" />
     <Compile Include="Mixins\MixinRelationshipAttribute.cs" />
     <Compile Include="Mixins\NonIntroducedAttribute.cs" />

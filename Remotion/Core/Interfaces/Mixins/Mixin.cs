@@ -120,7 +120,7 @@ namespace Remotion.Mixins
   /// </list>
   /// </remarks>
   [Serializable]
-  public class Mixin<[This]TThis, [Base]TBase> : Mixin<TThis>, IInitializableMixin
+  public class Mixin<TThis, TBase> : Mixin<TThis>, IInitializableMixin
       where TThis: class
       where TBase: class
   {
@@ -213,7 +213,7 @@ namespace Remotion.Mixins
   /// </list>
   /// </remarks>
   [Serializable]
-  public class Mixin<[This]TThis> : IInitializableMixin
+  public class Mixin<TThis> : IInitializableMixin
       where TThis: class
   {
     [NonSerialized]
