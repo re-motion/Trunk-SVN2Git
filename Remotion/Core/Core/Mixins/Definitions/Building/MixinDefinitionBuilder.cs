@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
@@ -33,8 +33,8 @@ namespace Remotion.Mixins.Definitions.Building
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
       _targetClass = targetClass;
-      _faceRequirementsAnalyzer = new RequirementsAnalyzer (targetClass, typeof (ThisAttribute));
-      _baseRequirementsAnalyzer = new RequirementsAnalyzer (targetClass, typeof (BaseAttribute));
+      _faceRequirementsAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.ThisArgumentFinder);
+      _baseRequirementsAnalyzer = new RequirementsAnalyzer (MixinGenericArgumentFinder.BaseArgumentFinder);
     }
 
     public TargetClassDefinition TargetClass
@@ -123,10 +123,10 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeDependencies (MixinDefinition mixin, IEnumerable<Type> additionalDependencies)
     {
       var thisDependencyBuilder = new ThisDependencyDefinitionBuilder (mixin);
-      thisDependencyBuilder.Apply (_faceRequirementsAnalyzer.Analyze (mixin));
+      thisDependencyBuilder.Apply (_faceRequirementsAnalyzer.GetRequirements (mixin.Type));
 
       var baseDependencyBuilder = new BaseDependencyDefinitionBuilder (mixin);
-      baseDependencyBuilder.Apply (_baseRequirementsAnalyzer.Analyze (mixin));
+      baseDependencyBuilder.Apply (_baseRequirementsAnalyzer.GetRequirements (mixin.Type));
       
       var mixinDependencyBuilder = new MixinDependencyDefinitionBuilder (mixin);
       mixinDependencyBuilder.Apply (additionalDependencies);

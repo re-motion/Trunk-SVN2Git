@@ -26,17 +26,19 @@ namespace Remotion.Mixins.Utilities
   {
     public enum InitializationMode { Construction, Deserialization }
 
-    public static Type GetMixinBaseType (Type concreteMixinType)
+    public static Type GetMixinBaseType (Type mixinType)
     {
-      ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      Type currentType = concreteMixinType;
-      Type mixinBaseOne = typeof (Mixin<>);
-      Type mixinBaseTwo = typeof (Mixin<,>);
+      Type currentType = mixinType;
 
-      while (currentType != null && !ReflectionUtility.IsEqualOrInstantiationOf (currentType, mixinBaseOne)
-          && !ReflectionUtility.IsEqualOrInstantiationOf (currentType, mixinBaseTwo))
+      while (currentType != null
+          && !ReflectionUtility.IsEqualOrInstantiationOf (currentType, typeof (Mixin<>))
+          && !ReflectionUtility.IsEqualOrInstantiationOf (currentType, typeof (Mixin<,>)))
+      {
         currentType = currentType.BaseType;
+      }
+
       return currentType;
     }
 

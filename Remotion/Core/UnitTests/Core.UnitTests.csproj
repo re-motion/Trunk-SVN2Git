@@ -156,6 +156,8 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
+    <Compile Include="Mixins\Definitions\RequirementsAnalyzerTest.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\GenericMixinWithSameRequirementTwice.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAndConstraintBoundParameter.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixin.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAfterTargetBoundParameter.cs" />
@@ -191,6 +193,7 @@
     <Compile Include="Mixins\SampleTypes\GenericMixinWithUnsatisfiableConstraints.cs" />
     <Compile Include="Mixins\SampleTypes\MixinAddingSpecialNameMethod.cs" />
     <Compile Include="Mixins\TargetClassDefinitionUtilityTest.cs" />
+    <Compile Include="Mixins\Utilities\MixinGenericArgumentFinderTest.cs" />
     <Compile Include="Mixins\Utilities\MixinReflectorTest.cs" />
     <Compile Include="Mixins\Utilities\TestDomain\GenericClassWithStructAndInterfaceConstraint.cs" />
     <Compile Include="Mixins\Utilities\TestDomain\GenericClassWithStructConstraint.cs" />

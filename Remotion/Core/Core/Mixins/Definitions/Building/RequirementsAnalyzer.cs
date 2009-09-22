@@ -15,107 +15,65 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
+using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
 {
+  /// <summary>
+  /// Finds the requirements imposed by a given <see cref="MixinDefinition"/> on its <see cref="TargetClassDefinition"/> by analyzing the types
+  /// passed as generic arguments of the <see cref="Mixin{TThis}"/> and <see cref="Mixin{TThis,TBase}"/> base classes.
+  /// </summary>
+  /// <remarks>
+  /// A <see cref="MixinDefinition"/> can either pass an ordinary type (<c>Mixin&lt;IRequirements&gt;</c>) or one of its own generic parameters 
+  /// (<c>Mixin&lt;T&gt;</c>) to its to its <see cref="Mixin{TThis}"/> or <see cref="Mixin{TThis,TBase}"/> base classes. This class detects these
+  /// two scenarios and gathers concrete requirement information from either the type itself or its generic parameter constraints.
+  /// </remarks>
   public class RequirementsAnalyzer
   {
-    private readonly Type _filterAttribute;
-    private readonly TargetClassDefinition _targetClass;
+    private readonly MixinGenericArgumentFinder _genericArgumentFinder;
 
-    public RequirementsAnalyzer (TargetClassDefinition targetClass, Type filterAttribute)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequirementsAnalyzer"/> class.
+    /// </summary>
+    /// <param name="genericArgumentFinder">The <see cref="MixinGenericArgumentFinder"/> used to determine the generic argument defining the
+    /// requirements to be analyzed.</param>
+    public RequirementsAnalyzer (MixinGenericArgumentFinder genericArgumentFinder)
     {
-      ArgumentUtility.CheckNotNull ("targetClass", targetClass);
-      ArgumentUtility.CheckNotNull ("filterAttribute", filterAttribute);
-
-      _targetClass = targetClass;
-      _filterAttribute = filterAttribute;
+      ArgumentUtility.CheckNotNull ("genericArgumentFinder", genericArgumentFinder);
+      _genericArgumentFinder = genericArgumentFinder;
     }
 
-    public IEnumerable<Type> Analyze (MixinDefinition mixin)
+    public Type[] GetRequirements (Type mixinType)
     {
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      Dictionary<Type, Type> requirements = new Dictionary<Type, Type>();
-
-      Type mixinBase = GetMixinBase (mixin);
-      if (mixinBase != null)
-      {
-        if (mixinBase.Equals (mixin.Type))
-        {
-          string message = string.Format ("The Mixin classes cannot be directly applied to a target class ({0}) as mixins.", _targetClass.FullName);
-          throw new ConfigurationException (message);
-        }
-
-        Debug.Assert (mixinBase.IsGenericType);
-
-        foreach (Type genericArgument in GetFilteredGenericArguments (mixinBase))
-          AnalyzeRequirementsForMixinBaseArgument (genericArgument, requirements);
-      }
-      return requirements.Keys;
-    }
-
-    private IEnumerable<Type> GetFilteredGenericArguments (Type mixinBase)
-    {
-      Assertion.IsFalse (mixinBase.IsGenericTypeDefinition); // the mixinBase is always a specialization of Mixin<,> or Mixin<>
-
-      Type[] genericArguments = mixinBase.GetGenericArguments();
-      Type[] originalGenericParameters = mixinBase.GetGenericTypeDefinition().GetGenericArguments();
-
-      for (int i = 0; i < genericArguments.Length; ++i)
-      {
-        if (originalGenericParameters[i].IsDefined (_filterAttribute, false))
-          yield return genericArguments[i];
-      }
-    }
-
-    private Type GetMixinBase (MixinDefinition mixin)
-    {
-      Type mixinBase = mixin.Type.BaseType;
-      while (mixinBase != null && !(IsSpecializationOf (mixinBase, typeof (Mixin<,>)) || IsSpecializationOf (mixinBase, typeof (Mixin<>))))
-        mixinBase = mixinBase.BaseType;
-      return mixinBase;
-    }
-
-    private bool IsSpecializationOf (Type typeToCheck, Type requestedType)
-    {
-      if (requestedType.IsAssignableFrom (typeToCheck))
-        return true;
-      else if (typeToCheck.IsGenericType && !typeToCheck.IsGenericTypeDefinition)
-      {
-        Type typeDefinition = typeToCheck.GetGenericTypeDefinition();
-        return IsSpecializationOf (typeDefinition, requestedType);
-      }
+      var genericArgument = _genericArgumentFinder.FindGenericArgument (mixinType);
+      if (genericArgument != null)
+        return GetRequirementsForType (genericArgument).Distinct().ToArray();
       else
-        return false;
+        return Type.EmptyTypes;
     }
 
     // The generic arguments used for MixinBase<,> are bound to either to real types or to new type parameters
     // The real types are directly taken as required interfaces; the type parameters have constraints which are taken as required interfaces
-    private void AnalyzeRequirementsForMixinBaseArgument (Type genericArgument, Dictionary<Type, Type> requirements)
+    private IEnumerable<Type> GetRequirementsForType (Type mixinBaseGenericArgument)
     {
-      if (genericArgument.IsGenericParameter)
+      ArgumentUtility.CheckNotNull ("mixinBaseGenericArgument", mixinBaseGenericArgument);
+
+      if (mixinBaseGenericArgument.IsGenericParameter)
       {
-        Type[] constraints = genericArgument.GetGenericParameterConstraints();
-        foreach (Type constraint in constraints)
-          AnalyzeRequirementForType (constraint, requirements);
+        return from constraint in mixinBaseGenericArgument.GetGenericParameterConstraints ()
+               from requirement in GetRequirementsForType (constraint)
+               select requirement;
       }
       else
-        AnalyzeRequirementForType (genericArgument, requirements);
-    }
-
-    private void AnalyzeRequirementForType (Type requiredType, Dictionary<Type, Type> requirements)
-    {
-      Debug.Assert (!requiredType.IsGenericParameter);
-      if (!requirements.ContainsKey (requiredType))
-        requirements.Add (requiredType, requiredType);
-
-      if (requiredType.IsInterface) // if this is an interface, add all inherited interfaces as requirements as well
       {
-        foreach (Type inheritedInterface in requiredType.GetInterfaces())
-          AnalyzeRequirementForType (inheritedInterface, requirements);
+        if (mixinBaseGenericArgument.IsInterface) // if this is an interface, add all inherited interfaces as requirements as well
+          return new[] { mixinBaseGenericArgument }.Concat (mixinBaseGenericArgument.GetInterfaces());
+        else
+          return new[] { mixinBaseGenericArgument };
       }
     }
   }

@@ -184,6 +184,7 @@
     <Compile Include="Mixins\MixerTool\IConcreteTypeBuilderFactory.cs" />
     <Compile Include="Mixins\MixerTool\ValidationErrorEventArgs.cs" />
     <Compile Include="Mixins\Utilities\DependencySort\IDependentObjectSorter.cs" />
+    <Compile Include="Mixins\Utilities\MixinGenericArgumentFinder.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
