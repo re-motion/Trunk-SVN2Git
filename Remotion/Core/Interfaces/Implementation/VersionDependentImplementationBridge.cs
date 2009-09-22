@@ -14,11 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.Implementation
 {
+  /// <summary>
+  /// Provides a bridge between a version-independent interface and a version-dependent implementation of that interface by querying for
+  /// a <see cref="ConcreteImplementationAttribute"/> in the interface and instantiating the type mentioned by that interface using 
+  /// <see cref="FrameworkVersion.Value"/>.
+  /// </summary>
+  /// <typeparam name="T">The interface type to be resolved with a version-dependent implementation.</typeparam>
   public static class VersionDependentImplementationBridge<T>
   {
     public static T Implementation
@@ -36,7 +40,7 @@ namespace Remotion.Implementation
       }
     }
 
-    private class ImplementationClass
+    private static class ImplementationClass
     {
       public static readonly T Implementation = GetImplementation ();
 
