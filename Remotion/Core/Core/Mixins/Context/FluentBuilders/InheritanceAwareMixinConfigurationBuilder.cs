@@ -83,32 +83,44 @@ namespace Remotion.Mixins.Context.FluentBuilders
       ArgumentUtility.CheckNotNull ("type", type);
 
       // First probe the store...
-      ClassContext finishedContext = GetFinishedContextFromCache (type);
-      if (finishedContext != null)
-        return finishedContext;
+      var cachedContext = GetFinishedContextFromCache (type);
+      if (cachedContext != null)
+        return cachedContext;
 
       // If we have nothing in the store, get the combined context from the base classes, get the context from the parent configuration, then 
       // derive the new context from those two.
       // This is recursive, the _inheritanceAlgorithm will call this method for the different base classes (base, generic type definition, interfaces)
       // it combines.
+      // For cases where we have no builder, return the context from the base class, or an empty one if none exists.
       
       ClassContext contextInheritedFromBaseClasses = _inheritanceAlgorithm.GetWithInheritance (type);
-      if (_buildersWithParentContexts.ContainsKey (type))
-      {
-        var builderWithParentContext = _buildersWithParentContexts[type];
-        var builder = builderWithParentContext.A;
-        var parentContext = builderWithParentContext.B;
 
-        var inheritedContexts = new[] { parentContext, contextInheritedFromBaseClasses }.Where (c => c != null); // filter out nulls
-        finishedContext = builder.BuildClassContext (inheritedContexts);
-      }
+      Tuple<ClassContextBuilder, ClassContext> builderWithParentContext;
+      ClassContext builtContext;
+      if (_buildersWithParentContexts.TryGetValue (type, out builderWithParentContext))
+        builtContext = CreateContextWithBuilder (builderWithParentContext.A, builderWithParentContext.B, contextInheritedFromBaseClasses);
       else
-      {
-        finishedContext = contextInheritedFromBaseClasses ?? new ClassContext (type);
-      }
+        builtContext = CreateContextWithoutBuilder (type, contextInheritedFromBaseClasses);
 
-      _finishedContextCache.Add (type, finishedContext);
-      return finishedContext;
+      _finishedContextCache.Add (type, builtContext);
+      return builtContext;
+    }
+
+    private ClassContext CreateContextWithBuilder (
+        ClassContextBuilder builder, 
+        ClassContext contextFromParentConfiguration, 
+        ClassContext contextFromBaseClasses)
+    {
+      var inheritedContexts = new[] { contextFromParentConfiguration, contextFromBaseClasses }.Where (c => c != null);
+      var builtContext = builder.BuildClassContext (inheritedContexts);
+      return builtContext;
+    }
+
+    private ClassContext CreateContextWithoutBuilder (Type type, ClassContext contextInheritedFromBaseClasses)
+    {
+      var builtContext = contextInheritedFromBaseClasses ?? new ClassContext (type);
+      Assertion.IsTrue (builtContext.Type == type, "Guaranteed by ClassContextCollector");
+      return builtContext;
     }
 
     private ClassContext GetFinishedContextFromCache (Type type)
