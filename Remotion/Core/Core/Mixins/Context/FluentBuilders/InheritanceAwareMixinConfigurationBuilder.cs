@@ -22,31 +22,21 @@ namespace Remotion.Mixins.Context.FluentBuilders
 {
   internal class InheritanceAwareMixinConfigurationBuilder
   {
-    private readonly MixinConfiguration _builtConfiguration;
-    private readonly Dictionary<Type, ClassContext> _finishedContexts = new Dictionary<Type, ClassContext>();
-    private readonly Dictionary<Type, ClassContextBuilder> _builders = new Dictionary<Type, ClassContextBuilder> ();
+    private readonly MixinConfiguration _parentConfiguration;
+    private readonly Dictionary<Type, ClassContext> _finishedContexts;
+    private readonly Dictionary<Type, ClassContextBuilder> _builders;
 
     private readonly InheritedClassContextRetrievalAlgorithm _inheritanceAlgorithm;
 
-    // TODO: Change to not take a MixinConfiguration object
-    public InheritanceAwareMixinConfigurationBuilder (MixinConfiguration builtConfiguration, IEnumerable<ClassContext> parentContexts, IEnumerable<ClassContextBuilder> classContextBuilders)
+    public InheritanceAwareMixinConfigurationBuilder (MixinConfiguration parentConfiguration, IEnumerable<ClassContextBuilder> classContextBuilders)
     {
-      ArgumentUtility.CheckNotNull ("builtConfiguration", builtConfiguration);
-      ArgumentUtility.CheckNotNull ("parentContexts", parentContexts);
       ArgumentUtility.CheckNotNull ("classContextBuilders", classContextBuilders);
 
-      _builtConfiguration = builtConfiguration;
+      _parentConfiguration = parentConfiguration;
+      _builders = classContextBuilders.ToDictionary (builder => builder.TargetType);
 
-      foreach (ClassContextBuilder builder in classContextBuilders)
-      {
-        _builders.Add (builder.TargetType, builder);
-      }
-
-      foreach (ClassContext parentContext in parentContexts)
-      {
-        if (!_builders.ContainsKey (parentContext.Type))
-          _finishedContexts.Add (parentContext.Type, parentContext);
-      }
+      var parentContexts = parentConfiguration != null ? (IEnumerable<ClassContext>) _parentConfiguration.ClassContexts : new ClassContext[0];
+      _finishedContexts = parentContexts.Where (parentContext => !_builders.ContainsKey (parentContext.Type)).ToDictionary (c => c.Type);
 
       _inheritanceAlgorithm = new InheritedClassContextRetrievalAlgorithm (GetFinishedContextNonRecursive, GetFinishedContext);
       ProcessBuilders();
@@ -74,7 +64,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       ClassContext inheritedContext = _inheritanceAlgorithm.GetWithInheritance (type);
       if (_builders.ContainsKey (type))
       {
-        List<ClassContext> inheritedContexts = new List<ClassContext>(1);
+        var inheritedContexts = new List<ClassContext>(1);
         if (inheritedContext != null)
           inheritedContexts.Add (inheritedContext);
         finishedContext = _builders[type].BuildClassContext (inheritedContexts);
@@ -88,12 +78,14 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
     public MixinConfiguration BuildMixinConfiguration ()
     {
-      foreach (var contextWithType in _finishedContexts)
+      var builtConfiguration = new MixinConfiguration (_parentConfiguration);
+      var contextsOfBuilders = _builders.Keys.Select (type => _finishedContexts[type]);
+      foreach (var context in contextsOfBuilders)
       {
-        if (_builders.ContainsKey (contextWithType.Key))
-          _builtConfiguration.ClassContexts.AddOrReplace (contextWithType.Value);
+        builtConfiguration.ClassContexts.AddOrReplace (context);
       }
-      return _builtConfiguration;
+
+      return builtConfiguration;
     }
   }
 }

@@ -142,12 +142,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A new <see cref="MixinConfiguration"/> instance incorporating all the data acquired so far.</returns>
     public virtual MixinConfiguration BuildConfiguration ()
     {
-      IEnumerable<ClassContext> parentContexts = ParentConfiguration != null ?
-          (IEnumerable<ClassContext>) ParentConfiguration.ClassContexts : new ClassContext[0];
-      MixinConfiguration builtConfiguration = new MixinConfiguration (ParentConfiguration);
-      InheritanceAwareMixinConfigurationBuilder builder = new InheritanceAwareMixinConfigurationBuilder (builtConfiguration, parentContexts, ClassContextBuilders);
-      builtConfiguration = builder.BuildMixinConfiguration();
-      return builtConfiguration;
+      var builder = new InheritanceAwareMixinConfigurationBuilder (ParentConfiguration, ClassContextBuilders);
+      return builder.BuildMixinConfiguration ();
     }
 
     /// <summary>
