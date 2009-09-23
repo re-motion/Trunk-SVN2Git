@@ -245,21 +245,21 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void SortingWithExplicitDependencies ()
     {
-      ClassContext context = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (TargetClassWithAdditionalDependencies), null)
+      ClassContext context = new ClassContextBuilder (typeof (TargetClassWithAdditionalDependencies))
           .AddMixin<MixinWithAdditionalClassDependency> ().WithDependency<MixinWithNoAdditionalDependency>()
           .AddMixin<MixinWithNoAdditionalDependency>()
           .AddMixin<MixinWithAdditionalInterfaceDependency> ().WithDependency<IMixinWithAdditionalClassDependency> ()
           .BuildClassContext(new ClassContext[0]);
       CheckExplicitDependencyOrdering (context);
 
-      context = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (TargetClassWithAdditionalDependencies), null)
+      context = new ClassContextBuilder (typeof (TargetClassWithAdditionalDependencies))
           .AddMixin<MixinWithNoAdditionalDependency> ()
           .AddMixin<MixinWithAdditionalClassDependency> ().WithDependency<MixinWithNoAdditionalDependency> ()
           .AddMixin<MixinWithAdditionalInterfaceDependency> ().WithDependency<IMixinWithAdditionalClassDependency> ()
           .BuildClassContext (new ClassContext[0]);
       CheckExplicitDependencyOrdering (context);
 
-      context = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (TargetClassWithAdditionalDependencies), null)
+      context = new ClassContextBuilder (typeof (TargetClassWithAdditionalDependencies))
           .AddMixin<MixinWithNoAdditionalDependency> ()
           .AddMixin<MixinWithAdditionalInterfaceDependency> ().WithDependency<IMixinWithAdditionalClassDependency> ()
           .AddMixin<MixinWithAdditionalClassDependency> ().WithDependency<MixinWithNoAdditionalDependency> ()

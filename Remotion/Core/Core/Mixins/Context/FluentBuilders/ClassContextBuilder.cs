@@ -23,6 +23,12 @@ namespace Remotion.Mixins.Context.FluentBuilders
   /// <summary>
   /// Assists <see cref="MixinConfigurationBuilder"/> by providing a fluent interface for building <see cref="ClassContext"/> objects.
   /// </summary>
+  /// <remarks>
+  /// This class gathers configuration data to be associated with a specific <see cref="TargetType"/>. That data is combined with inherited
+  /// contexts (from base classes or parent configuration, for example) and pushed into a <see cref="ClassContext"/> by the 
+  /// <see cref="BuildClassContext(System.Collections.Generic.IEnumerable{Remotion.Mixins.Context.ClassContext})"/> method. That method is called
+  /// by <see cref="MixinConfigurationBuilder.BuildConfiguration"/>.
+  /// </remarks>
   public class ClassContextBuilder
   {
     private readonly MixinConfigurationBuilder _parent;
@@ -32,27 +38,17 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private readonly Set<Type> _suppressedMixins = new Set<Type> ();
     private bool _suppressInheritance = false;
 
-    public ClassContextBuilder (Type targetType)
-        : this (new MixinConfigurationBuilder (null), targetType, null)
+    public ClassContextBuilder (Type targetType) : this (new MixinConfigurationBuilder (null), targetType)
     {
     }
 
-    public ClassContextBuilder (MixinConfigurationBuilder parent, Type targetType, ClassContext parentContext)
+    public ClassContextBuilder (MixinConfigurationBuilder parent, Type targetType)
     {
       ArgumentUtility.CheckNotNull ("parent", parent);
       ArgumentUtility.CheckNotNull ("targetType", targetType);
 
       _parent = parent;
       _targetType = targetType;
-
-      if (parentContext != null)
-      {
-        foreach (MixinContext mixin in parentContext.Mixins)
-          AddMixin (mixin.MixinType).WithDependencies (EnumerableUtility.ToArray (mixin.ExplicitDependencies));
-
-        foreach (Type completeInterface in parentContext.CompleteInterfaces)
-          AddCompleteInterface (completeInterface);
-      }
     }
 
     /// <summary>
@@ -133,7 +129,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
             string.Format ("{0} is already configured as a mixin for type {1}.", mixinTypeForException.FullName, TargetType.FullName), "mixinType");
       }
 
-      MixinContextBuilder mixinContextBuilder = new MixinContextBuilder (this, mixinType);
+      var mixinContextBuilder = new MixinContextBuilder (this, mixinType);
       _mixinContextBuilders.Add (mixinType, mixinContextBuilder);
       return mixinContextBuilder;
     }
@@ -469,7 +465,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A <see cref="ClassContext"/> for the <see cref="TargetType"/> holding all mixin configuration data collected so far.</returns>
     public virtual ClassContext BuildClassContext (IEnumerable<ClassContext> inheritedContexts)
     {
-      ClassContext classContext = new ClassContext (_targetType, GetMixins(), CompleteInterfaces);
+      var classContext = new ClassContext (_targetType, GetMixins(), CompleteInterfaces);
       classContext = ApplyInheritance(classContext, inheritedContexts);
       classContext = classContext.SuppressMixins (SuppressedMixins);
       return classContext;

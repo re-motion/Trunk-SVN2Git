@@ -60,8 +60,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       if (!_classContextBuilders.ContainsKey (targetType))
       {
-        ClassContext parentContext = ParentConfiguration != null ? ParentConfiguration.ClassContexts.GetExact (targetType) : null;
-        var builder = new ClassContextBuilder (this, targetType, parentContext);
+        var builder = new ClassContextBuilder (this, targetType);
         _classContextBuilders.Add (targetType, builder);
       }
       return _classContextBuilders[targetType];

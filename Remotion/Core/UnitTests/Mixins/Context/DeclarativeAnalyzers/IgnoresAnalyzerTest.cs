@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     {
       _mockRepository = new MockRepository ();
       _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
-      _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, s_targetClassType, null);
+      _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, s_targetClassType);
       _analyzer = new IgnoresAnalyzer (_configurationBuilderMock);
     }
 

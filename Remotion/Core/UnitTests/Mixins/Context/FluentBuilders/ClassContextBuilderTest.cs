@@ -15,13 +15,13 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.Utilities;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
@@ -41,8 +41,8 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     {
       _mockRepository = new MockRepository();
       _parentBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration)null);
-      _classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), null);
-      _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_parentBuilderMock, typeof (BaseType2), null);
+      _classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
+      _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_parentBuilderMock, typeof (BaseType2));
       _mixinBuilderMock = _mockRepository.StrictMock<MixinContextBuilder> (_classBuilderMock, typeof (BT2Mixin1));
     }
 
@@ -53,14 +53,13 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
 
     private Type[] GetMixinTypes (ClassContextBuilder classBuilder)
     {
-      return EnumerableUtility.ToArray (EnumerableUtility.Select<MixinContextBuilder, Type> (classBuilder.MixinContextBuilders,
-          delegate (MixinContextBuilder mcb) { return mcb.MixinType; }));
+      return classBuilder.MixinContextBuilders.Select (mcb => mcb.MixinType).ToArray();
     }
 
     [Test]
     public void Initialization_Standalone ()
     {
-      ClassContextBuilder classBuilder = new ClassContextBuilder (typeof (BaseType2));
+      var classBuilder = new ClassContextBuilder (typeof (BaseType2));
       Assert.AreSame (typeof (BaseType2), classBuilder.TargetType);
       Assert.IsNotNull (classBuilder.Parent);
       Assert.That (_classBuilder.MixinContextBuilders, Is.Empty);
@@ -85,31 +84,9 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
-    public void Initialization_WithParentContext ()
-    {
-      ClassContext existingClassContext = new ClassContextBuilder (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin1))
-          .AddCompleteInterface (typeof (IBT1Mixin1))
-          .BuildClassContext();
-
-      ClassContextBuilder classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType1), existingClassContext);
-      Assert.That (GetMixinTypes (classBuilder),
-        Is.EquivalentTo (new object[] {typeof (BT1Mixin1)}));
-      Assert.That(classBuilder.CompleteInterfaces, Is.EquivalentTo(new object[] { typeof(IBT1Mixin1) }));
-
-      ClassContext classContext = classBuilder.BuildClassContext (new ClassContext[0]);
-      Assert.AreEqual (1, classContext.Mixins.Count);
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
-      Assert.AreEqual (1, classContext.CompleteInterfaces.Count);
-      Assert.IsTrue (classContext.CompleteInterfaces.ContainsKey (typeof (IBT1Mixin1)));
-    }
-
-    [Test]
     public void Clear ()
     {
-      ClassContext existingClassContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
-
-      ClassContextBuilder classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType1), existingClassContext);
+      var classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType1));
       classBuilder.AddMixin<BT1Mixin2> ();
       classBuilder.AddCompleteInterface<IBaseType31> ();
       
@@ -173,16 +150,6 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1 is already configured as a "
-        + "mixin for type Remotion.UnitTests.Mixins.SampleTypes.BaseType2.", MatchType = MessageMatch.Contains)]
-    public void AddMixin_ConflictWithParentContext ()
-    {
-      ClassContext parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
-      ClassContextBuilder classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), parentContext);
-      classBuilder.AddMixin (typeof (BT2Mixin1));
-    }
-
-    [Test]
     public void AddMixin_Generic ()
     {
       Expect.Call (_classBuilderMock.AddMixin<BT2Mixin1> ()).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
@@ -235,7 +202,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddOrderedMixins_NonGeneric ()
     {
       Assert.AreSame (_classBuilder, _classBuilder.AddOrderedMixins (typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)));
-      List<MixinContextBuilder> mixinBuilders = new List<MixinContextBuilder> (_classBuilder.MixinContextBuilders);
+      var mixinBuilders = new List<MixinContextBuilder> (_classBuilder.MixinContextBuilders);
       Assert.AreEqual (3, mixinBuilders.Count);
       Assert.AreSame (typeof (BT2Mixin1), mixinBuilders[0].MixinType);
       Assert.That (mixinBuilders[0].Dependencies, Is.Empty);
@@ -249,7 +216,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddOrderedMixins_Generic2 ()
     {
       Assert.AreSame (_classBuilder, _classBuilder.AddOrderedMixins<BT2Mixin1, BT3Mixin1>());
-      List<MixinContextBuilder> mixinBuilders = new List<MixinContextBuilder> (_classBuilder.MixinContextBuilders);
+      var mixinBuilders = new List<MixinContextBuilder> (_classBuilder.MixinContextBuilders);
       Assert.AreEqual (2, mixinBuilders.Count);
       Assert.AreSame (typeof (BT2Mixin1), mixinBuilders[0].MixinType);
       Assert.That (mixinBuilders[0].Dependencies, Is.Empty);
@@ -261,7 +228,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddOrderedMixins_Generic3 ()
     {
       Assert.AreSame (_classBuilder, _classBuilder.AddOrderedMixins<BT2Mixin1, BT3Mixin1, BT3Mixin2>());
-      List<MixinContextBuilder> mixinBuilders = new List<MixinContextBuilder> (_classBuilder.MixinContextBuilders);
+      var mixinBuilders = new List<MixinContextBuilder> (_classBuilder.MixinContextBuilders);
       Assert.AreEqual (3, mixinBuilders.Count);
       Assert.AreSame (typeof (BT2Mixin1), mixinBuilders[0].MixinType);
       Assert.That (mixinBuilders[0].Dependencies, Is.Empty);
@@ -285,32 +252,17 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void EnsureMixin_Inheritance ()
     {
-      ClassContext contextWithMixin = new ClassContext (typeof (BaseType3), typeof (NullTarget));
+      var contextWithMixin = new ClassContext (typeof (BaseType3), typeof (NullTarget));
       
       MixinContextBuilder builder = _classBuilder.EnsureMixin (typeof (DerivedNullTarget));
       Assert.AreEqual (typeof (DerivedNullTarget), builder.MixinType);
       Type[] mixinTypes = GetMixinTypes ();
       Assert.That (mixinTypes, Is.EquivalentTo (new object[] { typeof (DerivedNullTarget) }));
 
-      ClassContext builtContext = _classBuilder.BuildClassContext (new ClassContext[] {contextWithMixin});
+      ClassContext builtContext = _classBuilder.BuildClassContext (new[] {contextWithMixin});
       Assert.AreEqual (1, builtContext.Mixins.Count);
       Assert.IsTrue (builtContext.Mixins.ContainsKey (typeof (DerivedNullTarget)));
       Assert.IsFalse (builtContext.Mixins.ContainsKey (typeof (NullTarget)));
-    }
-
-    [Test]
-    public void EnsureMixin_Parent ()
-    {
-      ClassContext parentContext = new ClassContext (typeof (BaseType3), typeof (BT2Mixin1));
-      ClassContextBuilder classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), parentContext);
-
-      Type[] mixinTypes = GetMixinTypes (classBuilder);
-      Assert.That (mixinTypes, Is.EquivalentTo (new object[] { typeof (BT2Mixin1) }));
-
-      MixinContextBuilder builder = classBuilder.EnsureMixin (typeof (BT2Mixin1));
-      Assert.AreEqual (typeof (BT2Mixin1), builder.MixinType);
-      mixinTypes = GetMixinTypes (classBuilder);
-      Assert.That (mixinTypes, Is.EquivalentTo (new object[] { typeof (BT2Mixin1) }));
     }
 
     [Test]
@@ -375,17 +327,6 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddCompleteInterface_Twice ()
     {
       _classBuilder.AddCompleteInterface (typeof (IBT6Mixin1)).AddCompleteInterface (typeof (IBT6Mixin1));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Remotion.UnitTests.Mixins.SampleTypes.IBT6Mixin1 is already configured as a "
-        + "complete interface for type Remotion.UnitTests.Mixins.SampleTypes.BaseType2.", MatchType = MessageMatch.Contains)]
-    public void AddCompleteInterface_ConflictWithParentContext ()
-    {
-      ClassContext parentContext = new ClassContext (typeof (BaseType2), new MixinContext[0], new Type[]{typeof (IBT6Mixin1)});
-
-      ClassContextBuilder classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), parentContext);
-      classBuilder.AddCompleteInterface (typeof (IBT6Mixin1));
     }
 
     [Test]
@@ -533,7 +474,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _classBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
       _classBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2> ();
 
-      ClassContext builtContext = _classBuilder.BuildClassContext (new ClassContext[] { inheritedContext });
+      ClassContext builtContext = _classBuilder.BuildClassContext (new[] { inheritedContext });
 
       Assert.AreEqual (2, builtContext.Mixins.Count);
       Assert.IsTrue (builtContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
@@ -555,7 +496,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _classBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
       _classBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2> ();
 
-      ClassContext builtContext = _classBuilder.BuildClassContext (new ClassContext[] { inheritedContext });
+      ClassContext builtContext = _classBuilder.BuildClassContext (new[] { inheritedContext });
 
       Assert.AreEqual (3, builtContext.Mixins.Count);
       Assert.IsTrue (builtContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
@@ -571,15 +512,11 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void BuildContext_ExtendParentContext ()
     {
-      ClassContext parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
-
-      MixinConfiguration parentConfiguration = new MixinConfiguration (null);
-      parentConfiguration.ClassContexts.Add (parentContext);
-
-      ClassContextBuilder classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), parentContext);
+      var classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
       classContextBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
 
-      ClassContext builtContext = classContextBuilder.BuildClassContext (new ClassContext[0]);
+      var parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
+      ClassContext builtContext = classContextBuilder.BuildClassContext (new[] { parentContext });
       
       Assert.AreEqual (3, builtContext.Mixins.Count);
       Assert.IsTrue (builtContext.Mixins.ContainsKey (typeof (BT2Mixin1)));
@@ -590,15 +527,11 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void BuildContext_ReplaceParentContext ()
     {
-      ClassContext parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
-
-      MixinConfiguration parentConfiguration = new MixinConfiguration (null);
-      parentConfiguration.ClassContexts.Add (parentContext);
-
-      ClassContextBuilder classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), parentContext);
+      var classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
       classContextBuilder.Clear ().AddMixins<BT1Mixin1, BT1Mixin2> ();
 
-      ClassContext builtContext = classContextBuilder.BuildClassContext (new ClassContext[0]);
+      var parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
+      ClassContext builtContext = classContextBuilder.BuildClassContext (new[] { parentContext });
 
       Assert.AreEqual (2, builtContext.Mixins.Count);
       Assert.IsTrue (builtContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
@@ -608,19 +541,14 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void BuildContext_Suppression ()
     {
-      ClassContext inheritedContext = new ClassContext (typeof (BaseType2), typeof (BT3Mixin1), typeof (BT3Mixin3<IBaseType33, IBaseType33>));
-
-      ClassContext parentContext = new ClassContext (typeof (BaseType2), typeof (BT5Mixin1), typeof (BT5Mixin2));
-
-      MixinConfiguration parentConfiguration = new MixinConfiguration (null);
-      parentConfiguration.ClassContexts.Add (parentContext);
-
-      ClassContextBuilder classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), parentContext);
+      var classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
       classContextBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
 
       classContextBuilder.SuppressMixins (typeof (IBT1Mixin1), typeof (BT5Mixin1), typeof (BT3Mixin3<,>));
 
-      ClassContext builtContext = classContextBuilder.BuildClassContext (new ClassContext[] { inheritedContext });
+      var inheritedContext = new ClassContext (typeof (BaseType2), typeof (BT3Mixin1), typeof (BT3Mixin3<IBaseType33, IBaseType33>));
+      var parentContext = new ClassContext (typeof (BaseType2), typeof (BT5Mixin1), typeof (BT5Mixin2));
+      ClassContext builtContext = classContextBuilder.BuildClassContext (new[] { inheritedContext, parentContext });
 
       Assert.AreEqual (3, builtContext.Mixins.Count);
       Assert.IsTrue (builtContext.Mixins.ContainsKey (typeof (BT3Mixin1)));
@@ -633,9 +561,9 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     {
       _mockRepository.BackToRecordAll();
       
-      ClassContextBuilder r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object), null);
-      MixinConfiguration r2 = new MixinConfiguration (null);
-      IDisposable r3 = _mockRepository.StrictMock<IDisposable> ();
+      var r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object));
+      var r2 = new MixinConfiguration (null);
+      var r3 = _mockRepository.StrictMock<IDisposable> ();
 
       using (_mockRepository.Ordered ())
       {

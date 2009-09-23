@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void AnalyzeCompleteInterfaceAttribute ()
     {
       CompleteInterfaceAttribute attribute = new CompleteInterfaceAttribute (typeof (string));
-      ClassContextBuilder classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, typeof (string), null);
+      ClassContextBuilder classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, typeof (string));
 
       using (_mockRepository.Ordered ())
       {
