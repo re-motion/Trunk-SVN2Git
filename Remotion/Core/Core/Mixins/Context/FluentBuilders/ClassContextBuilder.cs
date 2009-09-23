@@ -294,7 +294,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// order.
     /// </summary>
     /// <typeparam name="TMixin1">The first mixin type to collect with dependencies.</typeparam>
-    /// <typeparam name="TMixin2">The first mixin type to collect with dependencies.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect with dependencies.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
     public virtual ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2> ()
     {
@@ -306,8 +306,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// order.
     /// </summary>
     /// <typeparam name="TMixin1">The first mixin type to collect with dependencies.</typeparam>
-    /// <typeparam name="TMixin2">The first mixin type to collect with dependencies.</typeparam>
-    /// <typeparam name="TMixin3">The first mixin type to collect with dependencies.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect with dependencies.</typeparam>
+    /// <typeparam name="TMixin3">The third mixin type to collect with dependencies.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
     public virtual ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2, TMixin3> ()
     {
