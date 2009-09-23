@@ -62,6 +62,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       return result;
     }
 
+    private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
     private readonly Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersWithParentContexts;
     private readonly Dictionary<Type, ClassContext> _finishedContextCache;
 
@@ -86,11 +87,10 @@ namespace Remotion.Mixins.Context.FluentBuilders
         return cachedContext;
 
       // If we have nothing in the cache, get the contexts of the base classes we need to derive our mixins from, then create a new context.
-      var typesToInheritFrom = InheritedClassContextRetrievalAlgorithm.GetTypesToInheritFrom (type);
-      var contextsToInheritFrom = typesToInheritFrom.Select (t => GetFinishedContext (t)); // recursion!
-
+      var contextsToInheritFrom = _inheritancePolicy.GetClassContextsToInheritFrom (type, GetFinishedContext); // recursion!
       ClassContext builtContext = CreateContext (type, contextsToInheritFrom);
       _finishedContextCache.Add (type, builtContext);
+
       return builtContext;
     }
 

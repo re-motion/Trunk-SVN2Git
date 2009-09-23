@@ -26,12 +26,7 @@ namespace Remotion.Mixins.Context
     public event EventHandler<ClassContextEventArgs> ClassContextRemoved;
 
     private readonly Dictionary<Type, ClassContext> _values = new Dictionary<Type, ClassContext> ();
-    private readonly InheritedClassContextRetrievalAlgorithm _inheritanceAlgorithm;
-
-    public ClassContextCollection ()
-    {
-      _inheritanceAlgorithm = new InheritedClassContextRetrievalAlgorithm (GetExact, GetWithInheritance);
-    }
+    private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
 
     public int Count
     {
@@ -62,7 +57,7 @@ namespace Remotion.Mixins.Context
 
     public void Clear ()
     {
-      List<Type> keys = new List<Type> (_values.Keys);
+      var keys = new List<Type> (_values.Keys);
       foreach (Type type in keys)
         RemoveExact (type);
     }
@@ -123,7 +118,16 @@ namespace Remotion.Mixins.Context
     public ClassContext GetWithInheritance (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return _inheritanceAlgorithm.GetWithInheritance (type);
+
+      var exactMatch = GetExact (type);
+      if (exactMatch != null)
+        return exactMatch;
+
+      var contextsToInheritFrom = _inheritancePolicy.GetClassContextsToInheritFrom (type, GetWithInheritance); // Recursion!
+
+      var inheritedContextCombiner = new ClassContextCombiner ();
+      inheritedContextCombiner.AddRangeAllowingNulls (contextsToInheritFrom);
+      return inheritedContextCombiner.GetCombinedContexts (type);
     }
 
     public bool ContainsExact (Type type)

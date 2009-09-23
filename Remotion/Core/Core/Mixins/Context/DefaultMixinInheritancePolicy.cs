@@ -16,18 +16,28 @@
 using System;
 using Remotion.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Remotion.Mixins.Context
 {
-  public class InheritedClassContextRetrievalAlgorithm
+  /// <summary>
+  /// Encapsulates the rules governing mixin inheritance for target types.
+  /// </summary>
+  public class DefaultMixinInheritancePolicy : IMixinInheritancePolicy
   {
+    public static readonly DefaultMixinInheritancePolicy Instance = new DefaultMixinInheritancePolicy();
+
+    private DefaultMixinInheritancePolicy ()
+    {
+    }
+
     /// <summary>
     /// Gets the types this <paramref name="targetType"/> inherits mixins from. A target type inherits mixins from its generic type definition,
     /// its base class, and its interfaces.
     /// </summary>
     /// <param name="targetType">The type whose "base" types should be retrieved.</param>
     /// <returns>The types from which the given <paramref name="targetType"/> inherits its mixins.</returns>
-    public static IEnumerable<Type> GetTypesToInheritFrom (Type targetType)
+    public IEnumerable<Type> GetTypesToInheritFrom (Type targetType)
     {
       ArgumentUtility.CheckNotNull ("targetType", targetType);
 
@@ -39,29 +49,16 @@ namespace Remotion.Mixins.Context
         yield return interfaceType;
     }
 
-    private readonly Func<Type, ClassContext> _exactGetter;
-    private readonly Func<Type, ClassContext> _inheritanceAwareGetter;
-
-    public InheritedClassContextRetrievalAlgorithm (Func<Type, ClassContext> exactGetter, Func<Type, ClassContext> inheritanceAwareGetter)
+    /// <summary>
+    /// Gets the class contexts this <paramref name="targetType"/> inherits mixins from. A target type inherits mixins from its generic type 
+    /// definition, its base class, and its interfaces.
+    /// </summary>
+    /// <param name="targetType">The type whose "base" <see cref="ClassContext"/> instances should be retrieved.</param>
+    /// <param name="classContextRetriever">A function returning the <see cref="ClassContext"/> for a given type.</param>
+    /// <returns><see cref="ClassContext"/> objects for the types from which the given <paramref name="targetType"/> inherits its mixins.</returns>
+    public IEnumerable<ClassContext> GetClassContextsToInheritFrom (Type targetType, Func<Type, ClassContext> classContextRetriever)
     {
-      ArgumentUtility.CheckNotNull ("exactGetter", exactGetter);
-      ArgumentUtility.CheckNotNull ("inheritanceAwareGetter", inheritanceAwareGetter);
-
-      _exactGetter = exactGetter;
-      _inheritanceAwareGetter = inheritanceAwareGetter;
-    }
-
-    public ClassContext GetWithInheritance (Type type)
-    {
-      ClassContext exactValue = _exactGetter (type);
-      if (exactValue != null)
-        return exactValue;
-
-      var combiner = new ClassContextCombiner();
-      foreach (var typeToInheritFrom in GetTypesToInheritFrom (type))
-        combiner.AddIfNotNull (_inheritanceAwareGetter (typeToInheritFrom));
-
-      return combiner.GetCombinedContexts (type);
+      return GetTypesToInheritFrom (targetType).Select (classContextRetriever);
     }
   }
 }

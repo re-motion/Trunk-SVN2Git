@@ -489,7 +489,7 @@
     <Compile Include="Mixins\Context\FluentBuilders\ClassContextBuilderTest.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\MixinConfigurationBuilderTest.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\MixinContextBuilderTest.cs" />
-    <Compile Include="Mixins\Context\InheritedClassContextRetrievalAlgorithmTest.cs" />
+    <Compile Include="Mixins\Context\DefaultMixinInheritancePolicyTest.cs" />
     <Compile Include="Mixins\Context\MixinContextCollectionTest.cs" />
     <Compile Include="Mixins\Context\MixinContextTest.cs" />
     <Compile Include="Mixins\Context\ReadOnlyContextCollectionTest.cs" />
