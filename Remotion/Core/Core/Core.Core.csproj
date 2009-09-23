@@ -330,7 +330,7 @@
     <Compile Include="Mixins\Context\DeclarativeAnalyzers\UsesAnalyzer.cs" />
     <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\ClassContextBuilder.cs" />
-    <Compile Include="Mixins\Context\FluentBuilders\InheritanceAwareMixinConfigurationBuilder.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\InheritanceResolvingClassContextBuilder.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\MixinConfigurationBuilder.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\MixinContextBuilder.cs" />
     <Compile Include="Mixins\Context\DefaultMixinInheritancePolicy.cs" />

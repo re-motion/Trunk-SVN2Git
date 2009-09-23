@@ -156,6 +156,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\InheritanceResolvingClassContextBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\RequirementsAnalyzerTest.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\GenericMixinWithSameRequirementTwice.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAndConstraintBoundParameter.cs" />

@@ -22,12 +22,13 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Context.FluentBuilders
 {
   /// <summary>
-  /// Builds a <see cref="MixinConfiguration"/> from a parent configuration and a list of <see cref="ClassContextBuilder"/> objects.
+  /// Builds <see cref="ClassContext"/> instances from <see cref="ClassContextBuilder"/> objects and applies inheritance from a parent configuration 
+  /// and the types indicated by a <see cref="IMixinInheritancePolicy"/>.
   /// This is done as follows:
   /// <list type="bullet">
-  /// <item>Each <see cref="ClassContext"/> that exists in the parent configuration is kept as is, unless there is a 
+  /// <item>A <see cref="ClassContext"/> that exists in the parent configuration is kept as is, unless there is a 
   /// <see cref="ClassContextBuilder"/> for the same type.</item>
-  /// <item>Each <see cref="ClassContextBuilder"/> is transformed into a new <see cref="ClassContext"/>:</item>
+  /// <item>A <see cref="ClassContextBuilder"/> is transformed into a new <see cref="ClassContext"/>:</item>
   ///   <list type="bullet">
   ///   <item>First, the <see cref="ClassContext"/> objects for its base classes and interfaces are retrieved or created.</item> 
   ///   <item>Then, the corresponding <see cref="ClassContext"/> from the parent configuration is retrieved.</item>
@@ -36,48 +37,43 @@ namespace Remotion.Mixins.Context.FluentBuilders
   ///   </list>
   /// </list>
   /// </summary>
-  internal class InheritanceAwareMixinConfigurationBuilder
+  public class InheritanceResolvingClassContextBuilder
   {
-    public static MixinConfiguration BuildMixinConfiguration (
-        MixinConfiguration parentConfiguration, 
-        IEnumerable<ClassContextBuilder> classContextBuilders)
-    {
-      ArgumentUtility.CheckNotNull ("classContextBuilders", classContextBuilders);
-
-      var parentContexts = parentConfiguration != null ? parentConfiguration.ClassContexts : new ClassContextCollection();
-      var buildersWithParentContexts = classContextBuilders.ToDictionary (
-          classContextBuilder => classContextBuilder.TargetType, 
-          classContextBuilder => Tuple.NewTuple (classContextBuilder, parentContexts.GetExact (classContextBuilder.TargetType)));
-
-      var unchangedContextsFromParent = parentContexts.Where (parentContext => !buildersWithParentContexts.ContainsKey (parentContext.Type));
-
-      var mixinConfigurationBuilder = new InheritanceAwareMixinConfigurationBuilder (buildersWithParentContexts, unchangedContextsFromParent);
-
-      var result = new MixinConfiguration (parentConfiguration);
-      
-      var finishedContextsOfBuilders = buildersWithParentContexts.Keys.Select (type => mixinConfigurationBuilder.GetFinishedContext (type));
-      foreach (var context in finishedContextsOfBuilders)
-        result.ClassContexts.AddOrReplace (context);
-
-      return result;
-    }
-
-    private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
-    private readonly Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersWithParentContexts;
+    private readonly IMixinInheritancePolicy _inheritancePolicy;
+    private readonly Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersAndParentContexts;
     private readonly Dictionary<Type, ClassContext> _finishedContextCache;
 
-    public InheritanceAwareMixinConfigurationBuilder (
-        Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> buildersWithParentContexts, 
-        IEnumerable<ClassContext> initialContexts)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InheritanceResolvingClassContextBuilder"/> class.
+    /// </summary>
+    /// <param name="classContextBuilders">All class context builders relevant for the inheritance hierarchy of the target types involved.</param>
+    /// <param name="parentContexts">The <see cref="ClassContext"/> instances defined by the parent configuration.</param>
+    /// <param name="inheritancePolicy">The inheritance policy to use when resolving the inheritance hierarchy of the target types.</param>
+    public InheritanceResolvingClassContextBuilder (
+        IEnumerable<ClassContextBuilder> classContextBuilders,
+        ClassContextCollection parentContexts, 
+        IMixinInheritancePolicy inheritancePolicy)
     {
-      ArgumentUtility.CheckNotNull ("buildersWithParentContexts", buildersWithParentContexts);
-      ArgumentUtility.CheckNotNull ("initialContexts", initialContexts);
+      ArgumentUtility.CheckNotNull ("classContextBuilders", classContextBuilders);
+      ArgumentUtility.CheckNotNull ("parentContexts", parentContexts);
+      ArgumentUtility.CheckNotNull ("inheritancePolicy", inheritancePolicy);
 
-      _buildersWithParentContexts = buildersWithParentContexts;
+      _buildersAndParentContexts = classContextBuilders.ToDictionary (
+          classContextBuilder => classContextBuilder.TargetType,
+          classContextBuilder => Tuple.NewTuple (classContextBuilder, parentContexts.GetExact (classContextBuilder.TargetType)));
+
+      var initialContexts = parentContexts.Where (parentContext => !_buildersAndParentContexts.ContainsKey (parentContext.Type));
+      
       _finishedContextCache = initialContexts.ToDictionary (c => c.Type);
+      _inheritancePolicy = inheritancePolicy;
     }
 
-    public ClassContext GetFinishedContext (Type type)
+    public IEnumerable<ClassContext> BuildAll ()
+    {
+      return _buildersAndParentContexts.Keys.Select (type => Build (type));
+    }
+
+    public ClassContext Build (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -87,7 +83,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
         return cachedContext;
 
       // If we have nothing in the cache, get the contexts of the base classes we need to derive our mixins from, then create a new context.
-      var contextsToInheritFrom = _inheritancePolicy.GetClassContextsToInheritFrom (type, GetFinishedContext); // recursion!
+      var contextsToInheritFrom = _inheritancePolicy.GetClassContextsToInheritFrom (type, Build); // recursion!
       ClassContext builtContext = CreateContext (type, contextsToInheritFrom);
       _finishedContextCache.Add (type, builtContext);
 
@@ -107,7 +103,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       inheritedContextCombiner.AddRangeAllowingNulls (baseContextsToInheritFrom);
 
       Tuple<ClassContextBuilder, ClassContext> builderWithParentContext;
-      if (_buildersWithParentContexts.TryGetValue (type, out builderWithParentContext))
+      if (_buildersAndParentContexts.TryGetValue (type, out builderWithParentContext))
       {
         inheritedContextCombiner.AddIfNotNull (builderWithParentContext.B);
         return CreateContextWithBuilder (builderWithParentContext.A, inheritedContextCombiner.GetCombinedContexts (type));
