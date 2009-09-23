@@ -317,7 +317,7 @@
     <Compile Include="Mixins\ConfigurationException.cs" />
     <Compile Include="Mixins\Context\ClassContext.cs" />
     <Compile Include="Mixins\Context\ClassContextCollection.cs" />
-    <Compile Include="Mixins\Context\ClassContextCollector.cs" />
+    <Compile Include="Mixins\Context\ClassContextCombiner.cs" />
     <Compile Include="Mixins\Context\ClassContextDeriver.cs" />
     <Compile Include="Mixins\Context\ClassContextEventArgs.cs" />
     <Compile Include="Mixins\Context\DeclarativeAnalyzers\CompleteInterfaceAnalyzer.cs" />

@@ -38,15 +38,15 @@ namespace Remotion.Mixins.Context
       if (exactValue != null)
         return exactValue;
 
-      ClassContextCollector collector = new ClassContextCollector();
+      ClassContextCombiner combiner = new ClassContextCombiner();
       if (type.IsGenericType && !type.IsGenericTypeDefinition)
-        collector.Add (_inheritanceAwareGetter (type.GetGenericTypeDefinition ()));
+        combiner.Add (_inheritanceAwareGetter (type.GetGenericTypeDefinition ()));
       if (type.BaseType != null)
-        collector.Add (_inheritanceAwareGetter (type.BaseType));
+        combiner.Add (_inheritanceAwareGetter (type.BaseType));
       foreach (Type interfaceType in type.GetInterfaces ())
-        collector.Add (_inheritanceAwareGetter (interfaceType));
+        combiner.Add (_inheritanceAwareGetter (interfaceType));
 
-      return collector.GetCombinedContexts (type);
+      return combiner.GetCombinedContexts (type);
     }
   }
 }

@@ -467,7 +467,7 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\SerializationCallbackTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\SerializationTest.cs" />
     <Compile Include="Mixins\Context\ClassContextCollectionTest.cs" />
-    <Compile Include="Mixins\Context\ClassContextCollectorTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextCombinerTest.cs" />
     <Compile Include="Mixins\Context\ClassContextTest.cs" />
     <Compile Include="Mixins\Context\ClassContextInheritanceTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeAnalyzers\CompleteInterfaceAnalyzerTest.cs" />

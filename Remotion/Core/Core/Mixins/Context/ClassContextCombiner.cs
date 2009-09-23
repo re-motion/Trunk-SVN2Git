@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Mixins.Context
 {
-  public class ClassContextCollector
+  public class ClassContextCombiner
   {
     private readonly List<ClassContext> _classContexts = new List<ClassContext>();
 

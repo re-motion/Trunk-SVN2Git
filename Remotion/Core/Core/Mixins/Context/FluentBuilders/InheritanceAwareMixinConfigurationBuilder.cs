@@ -119,7 +119,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private ClassContext CreateContextWithoutBuilder (Type type, ClassContext contextInheritedFromBaseClasses)
     {
       var builtContext = contextInheritedFromBaseClasses ?? new ClassContext (type);
-      Assertion.IsTrue (builtContext.Type == type, "Guaranteed by ClassContextCollector");
+      Assertion.IsTrue (builtContext.Type == type, "Guaranteed by ClassContextCombiner");
       return builtContext;
     }
 
