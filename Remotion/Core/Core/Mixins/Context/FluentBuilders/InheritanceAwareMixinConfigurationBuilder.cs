@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context.FluentBuilders
 {
@@ -23,7 +24,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
   {
     private readonly MixinConfiguration _builtConfiguration;
     private readonly Dictionary<Type, ClassContext> _finishedContexts = new Dictionary<Type, ClassContext>();
-    private readonly List<ClassContext> _finishedContextsForBuilders = new List<ClassContext> ();
     private readonly Dictionary<Type, ClassContextBuilder> _builders = new Dictionary<Type, ClassContextBuilder> ();
 
     private readonly InheritedClassContextRetrievalAlgorithm _inheritanceAlgorithm;
@@ -37,13 +37,15 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
       _builtConfiguration = builtConfiguration;
 
-      foreach (ClassContext parentContext in parentContexts)
-        _finishedContexts.Add (parentContext.Type, parentContext);
-
       foreach (ClassContextBuilder builder in classContextBuilders)
       {
-        _finishedContexts.Remove (builder.TargetType);
         _builders.Add (builder.TargetType, builder);
+      }
+
+      foreach (ClassContext parentContext in parentContexts)
+      {
+        if (!_builders.ContainsKey (parentContext.Type))
+          _finishedContexts.Add (parentContext.Type, parentContext);
       }
 
       _inheritanceAlgorithm = new InheritedClassContextRetrievalAlgorithm (GetFinishedContextNonRecursive, GetFinishedContext);
@@ -76,7 +78,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
         if (inheritedContext != null)
           inheritedContexts.Add (inheritedContext);
         finishedContext = _builders[type].BuildClassContext (inheritedContexts);
-        _finishedContextsForBuilders.Add (finishedContext);
       }
       else
         finishedContext = inheritedContext ?? new ClassContext (type);
@@ -87,8 +88,11 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
     public MixinConfiguration BuildMixinConfiguration ()
     {
-      foreach (ClassContext context in _finishedContextsForBuilders)
-        _builtConfiguration.ClassContexts.AddOrReplace (context);
+      foreach (var contextWithType in _finishedContexts)
+      {
+        if (_builders.ContainsKey (contextWithType.Key))
+          _builtConfiguration.ClassContexts.AddOrReplace (contextWithType.Value);
+      }
       return _builtConfiguration;
     }
   }
