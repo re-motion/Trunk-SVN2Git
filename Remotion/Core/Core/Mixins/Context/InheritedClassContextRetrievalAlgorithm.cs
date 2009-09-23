@@ -15,11 +15,30 @@
 // 
 using System;
 using Remotion.Utilities;
+using System.Collections.Generic;
 
 namespace Remotion.Mixins.Context
 {
   public class InheritedClassContextRetrievalAlgorithm
   {
+    /// <summary>
+    /// Gets the types this <paramref name="targetType"/> inherits mixins from. A target type inherits mixins from its generic type definition,
+    /// its base class, and its interfaces.
+    /// </summary>
+    /// <param name="targetType">The type whose "base" types should be retrieved.</param>
+    /// <returns>The types from which the given <paramref name="targetType"/> inherits its mixins.</returns>
+    public static IEnumerable<Type> GetTypesToInheritFrom (Type targetType)
+    {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
+
+      if (targetType.IsGenericType && !targetType.IsGenericTypeDefinition)
+        yield return targetType.GetGenericTypeDefinition ();
+      if (targetType.BaseType != null)
+        yield return targetType.BaseType;
+      foreach (Type interfaceType in targetType.GetInterfaces ())
+        yield return interfaceType;
+    }
+
     private readonly Func<Type, ClassContext> _exactGetter;
     private readonly Func<Type, ClassContext> _inheritanceAwareGetter;
 
@@ -38,13 +57,9 @@ namespace Remotion.Mixins.Context
       if (exactValue != null)
         return exactValue;
 
-      ClassContextCombiner combiner = new ClassContextCombiner();
-      if (type.IsGenericType && !type.IsGenericTypeDefinition)
-        combiner.Add (_inheritanceAwareGetter (type.GetGenericTypeDefinition ()));
-      if (type.BaseType != null)
-        combiner.Add (_inheritanceAwareGetter (type.BaseType));
-      foreach (Type interfaceType in type.GetInterfaces ())
-        combiner.Add (_inheritanceAwareGetter (interfaceType));
+      var combiner = new ClassContextCombiner();
+      foreach (var typeToInheritFrom in GetTypesToInheritFrom (type))
+        combiner.AddIfNotNull (_inheritanceAwareGetter (typeToInheritFrom));
 
       return combiner.GetCombinedContexts (type);
     }

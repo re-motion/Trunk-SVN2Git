@@ -39,15 +39,15 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void Add_NonNull ()
     {
-      _combiner.Add (_context1);
-      _combiner.Add (_context2);
+      _combiner.AddIfNotNull (_context1);
+      _combiner.AddIfNotNull (_context2);
       Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new object[] {_context1, _context2}));
     }
 
     [Test]
     public void Add_Null ()
     {
-      _combiner.Add (null);
+      _combiner.AddIfNotNull (null);
       Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new object[0]));
     }
 
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void GetCombinedContexts_One ()
     {
-      _combiner.Add (_context1);
+      _combiner.AddIfNotNull (_context1);
       ClassContext result = _combiner.GetCombinedContexts (typeof (int));
       Assert.AreEqual (typeof (int), result.Type);
       Assert.That (result.CompleteInterfaces, Is.EquivalentTo (_context1.CompleteInterfaces));
@@ -69,8 +69,8 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void GetCombinedContexts_Many ()
     {
-      _combiner.Add (_context1);
-      _combiner.Add (_context2);
+      _combiner.AddIfNotNull (_context1);
+      _combiner.AddIfNotNull (_context2);
 
       ClassContext result = _combiner.GetCombinedContexts (typeof (int));
       Assert.AreEqual (typeof (int), result.Type);

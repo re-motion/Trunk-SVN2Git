@@ -27,13 +27,12 @@ namespace Remotion.Mixins.Context
       get { return _classContexts; }
     }
 
-    public void Add (ClassContext context)
+    public void AddIfNotNull (ClassContext context)
     {
       if (context != null)
         _classContexts.Add (context);
     }
-
-
+    
     public ClassContext GetCombinedContexts (Type contextType)
     {
       switch (_classContexts.Count)

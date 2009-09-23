@@ -64,7 +64,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
     private readonly Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersWithParentContexts;
     private readonly Dictionary<Type, ClassContext> _finishedContextCache;
-    private readonly InheritedClassContextRetrievalAlgorithm _inheritanceAlgorithm;
 
     public InheritanceAwareMixinConfigurationBuilder (
         Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> buildersWithParentContexts, 
@@ -75,7 +74,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
       _buildersWithParentContexts = buildersWithParentContexts;
       _finishedContextCache = initialContexts.ToDictionary (c => c.Type);
-      _inheritanceAlgorithm = new InheritedClassContextRetrievalAlgorithm (GetFinishedContextFromCache, GetFinishedContext);
     }
 
     public ClassContext GetFinishedContext (Type type)
@@ -87,39 +85,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
       if (cachedContext != null)
         return cachedContext;
 
-      // If we have nothing in the store, get the combined context from the base classes, get the context from the parent configuration, then 
-      // derive the new context from those two.
-      // This is recursive, the _inheritanceAlgorithm will call this method for the different base classes (base, generic type definition, interfaces)
-      // it combines.
-      // For cases where we have no builder, return the context from the base class, or an empty one if none exists.
-      
-      ClassContext contextInheritedFromBaseClasses = _inheritanceAlgorithm.GetWithInheritance (type);
-
-      Tuple<ClassContextBuilder, ClassContext> builderWithParentContext;
-      ClassContext builtContext;
-      if (_buildersWithParentContexts.TryGetValue (type, out builderWithParentContext))
-        builtContext = CreateContextWithBuilder (builderWithParentContext.A, builderWithParentContext.B, contextInheritedFromBaseClasses);
-      else
-        builtContext = CreateContextWithoutBuilder (type, contextInheritedFromBaseClasses);
-
+      // If we have nothing in the caching, get the contexts of the base classes we need to derive our mixins from, then create a new context.
+      ClassContext builtContext = CreateContext (type, InheritedClassContextRetrievalAlgorithm.GetTypesToInheritFrom (type));
       _finishedContextCache.Add (type, builtContext);
-      return builtContext;
-    }
-
-    private ClassContext CreateContextWithBuilder (
-        ClassContextBuilder builder, 
-        ClassContext contextFromParentConfiguration, 
-        ClassContext contextFromBaseClasses)
-    {
-      var inheritedContexts = new[] { contextFromParentConfiguration, contextFromBaseClasses }.Where (c => c != null);
-      var builtContext = builder.BuildClassContext (inheritedContexts);
-      return builtContext;
-    }
-
-    private ClassContext CreateContextWithoutBuilder (Type type, ClassContext contextInheritedFromBaseClasses)
-    {
-      var builtContext = contextInheritedFromBaseClasses ?? new ClassContext (type);
-      Assertion.IsTrue (builtContext.Type == type, "Guaranteed by ClassContextCombiner");
       return builtContext;
     }
 
@@ -128,6 +96,41 @@ namespace Remotion.Mixins.Context.FluentBuilders
       ClassContext finishedContext;
       _finishedContextCache.TryGetValue (type, out finishedContext);
       return finishedContext;
+    }
+
+    private ClassContext CreateContext (Type type, IEnumerable<Type> baseTypesToInheritFrom)
+    {
+      var inheritedContextCombiner = new ClassContextCombiner ();
+      foreach (var baseTypes in baseTypesToInheritFrom)
+      {
+        var inheritedContext = GetFinishedContext (baseTypes); // recursion!
+        inheritedContextCombiner.AddIfNotNull (inheritedContext);
+      }
+
+      Tuple<ClassContextBuilder, ClassContext> builderWithParentContext;
+      if (_buildersWithParentContexts.TryGetValue (type, out builderWithParentContext))
+      {
+        inheritedContextCombiner.AddIfNotNull (builderWithParentContext.B);
+        return CreateContextWithBuilder (builderWithParentContext.A, inheritedContextCombiner.GetCombinedContexts (type));
+      }
+      else
+      {
+        return CreateContextWithoutBuilder (type, inheritedContextCombiner.GetCombinedContexts (type));
+      }
+    }
+
+    private ClassContext CreateContextWithBuilder (ClassContextBuilder builder, ClassContext inheritedContext)
+    {
+      var inheritedContexts = inheritedContext != null ? new[] { inheritedContext } : new ClassContext[0];
+      var builtContext = builder.BuildClassContext (inheritedContexts);
+      return builtContext;
+    }
+
+    private ClassContext CreateContextWithoutBuilder (Type type, ClassContext inheritedContext)
+    {
+      var builtContext = inheritedContext ?? new ClassContext (type);
+      Assertion.IsTrue (builtContext.Type == type, "Guaranteed by ClassContextCombiner");
+      return builtContext;
     }
   }
 }
