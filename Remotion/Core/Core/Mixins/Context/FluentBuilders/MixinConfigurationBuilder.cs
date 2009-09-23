@@ -61,7 +61,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       if (!_classContextBuilders.ContainsKey (targetType))
       {
         ClassContext parentContext = ParentConfiguration != null ? ParentConfiguration.ClassContexts.GetExact (targetType) : null;
-        ClassContextBuilder builder = new ClassContextBuilder (this, targetType, parentContext);
+        var builder = new ClassContextBuilder (this, targetType, parentContext);
         _classContextBuilders.Add (targetType, builder);
       }
       return _classContextBuilders[targetType];
@@ -142,8 +142,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A new <see cref="MixinConfiguration"/> instance incorporating all the data acquired so far.</returns>
     public virtual MixinConfiguration BuildConfiguration ()
     {
-      var builder = new InheritanceAwareMixinConfigurationBuilder (ParentConfiguration, ClassContextBuilders);
-      return builder.BuildMixinConfiguration ();
+      return InheritanceAwareMixinConfigurationBuilder.BuildMixinConfiguration (ParentConfiguration, ClassContextBuilders);
     }
 
     /// <summary>
