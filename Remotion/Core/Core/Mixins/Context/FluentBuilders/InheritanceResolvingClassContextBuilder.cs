@@ -60,7 +60,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
       _buildersAndParentContexts = classContextBuilders.ToDictionary (
           classContextBuilder => classContextBuilder.TargetType,
-          classContextBuilder => Tuple.NewTuple (classContextBuilder, parentContexts.GetExact (classContextBuilder.TargetType)));
+          classContextBuilder => Tuple.NewTuple (classContextBuilder, parentContexts.GetWithInheritance (classContextBuilder.TargetType)));
 
       var initialContexts = parentContexts.Where (parentContext => !_buildersAndParentContexts.ContainsKey (parentContext.Type));
       

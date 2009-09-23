@@ -34,6 +34,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
 
     private ClassContextBuilder _classContextBuilderWithParent;
     private ClassContext _parentContextWithBuilder;
+    private ClassContextBuilder _classContextBuilderWithIndirectParent;
     private ClassContextBuilder _classContextBuilderWithoutParent;
 
     private Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersWithParentContexts;
@@ -46,10 +47,12 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [SetUp]
     public void SetUp ()
     {
-      _classContextBuilderWithParent = new ClassContextBuilder (typeof (BaseType3));
-      _classContextBuilderWithParent.AddMixin (typeof (BT3Mixin2));
-      _parentContextWithBuilder = new ClassContext (typeof (BaseType3), typeof (BT3Mixin1));
+      _classContextBuilderWithParent = new ClassContextBuilder (typeof (NullTarget));
+      _classContextBuilderWithParent.AddMixin (typeof (NullMixin2));
+      _parentContextWithBuilder = new ClassContext (typeof (NullTarget), typeof (NullMixin));
 
+      _classContextBuilderWithIndirectParent = new ClassContextBuilder (typeof (DerivedNullTarget));
+      
       _classContextBuilderWithoutParent = new ClassContextBuilder (typeof (BaseType4));
       _classContextBuilderWithParent.AddMixin (typeof (BT4Mixin1));
 
@@ -63,7 +66,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _inheritancePolicyMock = MockRepository.GenerateMock<IMixinInheritancePolicy> ();
       _inheritedContext = new ClassContext (typeof (object), typeof (NullMixin));
 
-      var classContextBuilders = new[] { _classContextBuilderWithoutParent, _classContextBuilderWithParent };
+      var classContextBuilders = new[] { _classContextBuilderWithoutParent, _classContextBuilderWithIndirectParent, _classContextBuilderWithParent };
       _builder = new InheritanceResolvingClassContextBuilder (classContextBuilders, _parentContexts, _inheritancePolicyMock);
     }
 
@@ -143,6 +146,18 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
+    public void Build_WithoutCachedContext_WithBuilder_WithIndirectParent ()
+    {
+      _inheritancePolicyMock
+          .Expect (mock => mock.GetClassContextsToInheritFrom (Arg<Type>.Is.Anything, Arg<Func<Type, ClassContext>>.Is.Anything))
+          .Return (new ClassContext[0]);
+      _inheritancePolicyMock.Replay ();
+
+      var result = _builder.Build (_classContextBuilderWithIndirectParent.TargetType);
+      Assert.That (result, Is.EqualTo (_classContextBuilderWithIndirectParent.BuildClassContext (new[] { _parentContextWithBuilder })));
+    }
+
+    [Test]
     public void Build_WithoutCachedContext_WithBuilder_WithInherited ()
     {
       _inheritancePolicyMock
@@ -191,8 +206,9 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       var result = _builder.BuildAll ();
 
       var expectedContextWithParent = _classContextBuilderWithParent.BuildClassContext (new[] { _parentContextWithBuilder });
+      var expectedContextWithIndirectParent = _classContextBuilderWithIndirectParent.BuildClassContext (new[] { _parentContextWithBuilder });
       var expectedContextWithoutParent = _classContextBuilderWithoutParent.BuildClassContext (new ClassContext[0]);
-      Assert.That (result.ToArray (), Is.EquivalentTo (new[] { expectedContextWithParent, expectedContextWithoutParent } ));
+      Assert.That (result.ToArray (), Is.EquivalentTo (new[] { expectedContextWithParent, expectedContextWithIndirectParent, expectedContextWithoutParent }));
     }
   }
 }
