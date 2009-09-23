@@ -80,12 +80,12 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      // First probe the store...
+      // First probe the cache...
       var cachedContext = GetFinishedContextFromCache (type);
       if (cachedContext != null)
         return cachedContext;
 
-      // If we have nothing in the caching, get the contexts of the base classes we need to derive our mixins from, then create a new context.
+      // If we have nothing in the cache, get the contexts of the base classes we need to derive our mixins from, then create a new context.
       var typesToInheritFrom = InheritedClassContextRetrievalAlgorithm.GetTypesToInheritFrom (type);
       var contextsToInheritFrom = typesToInheritFrom.Select (t => GetFinishedContext (t)); // recursion!
 
