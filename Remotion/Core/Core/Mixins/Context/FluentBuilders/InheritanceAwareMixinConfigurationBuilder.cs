@@ -86,7 +86,10 @@ namespace Remotion.Mixins.Context.FluentBuilders
         return cachedContext;
 
       // If we have nothing in the caching, get the contexts of the base classes we need to derive our mixins from, then create a new context.
-      ClassContext builtContext = CreateContext (type, InheritedClassContextRetrievalAlgorithm.GetTypesToInheritFrom (type));
+      var typesToInheritFrom = InheritedClassContextRetrievalAlgorithm.GetTypesToInheritFrom (type);
+      var contextsToInheritFrom = typesToInheritFrom.Select (t => GetFinishedContext (t)); // recursion!
+
+      ClassContext builtContext = CreateContext (type, contextsToInheritFrom);
       _finishedContextCache.Add (type, builtContext);
       return builtContext;
     }
@@ -98,14 +101,10 @@ namespace Remotion.Mixins.Context.FluentBuilders
       return finishedContext;
     }
 
-    private ClassContext CreateContext (Type type, IEnumerable<Type> baseTypesToInheritFrom)
+    private ClassContext CreateContext (Type type, IEnumerable<ClassContext> baseContextsToInheritFrom)
     {
       var inheritedContextCombiner = new ClassContextCombiner ();
-      foreach (var baseTypes in baseTypesToInheritFrom)
-      {
-        var inheritedContext = GetFinishedContext (baseTypes); // recursion!
-        inheritedContextCombiner.AddIfNotNull (inheritedContext);
-      }
+      inheritedContextCombiner.AddRangeAllowingNulls (baseContextsToInheritFrom);
 
       Tuple<ClassContextBuilder, ClassContext> builderWithParentContext;
       if (_buildersWithParentContexts.TryGetValue (type, out builderWithParentContext))

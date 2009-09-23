@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
 {
@@ -31,6 +32,14 @@ namespace Remotion.Mixins.Context
     {
       if (context != null)
         _classContexts.Add (context);
+    }
+
+    public void AddRangeAllowingNulls (IEnumerable<ClassContext> contexts)
+    {
+      ArgumentUtility.CheckNotNull ("contexts", contexts);
+
+      foreach (var context in contexts)
+        AddIfNotNull (context);
     }
     
     public ClassContext GetCombinedContexts (Type contextType)

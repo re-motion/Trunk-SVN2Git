@@ -32,8 +32,8 @@ namespace Remotion.UnitTests.Mixins.Context
     public void SetUp ()
     {
       _combiner = new ClassContextCombiner ();
-      _context1 = new ClassContext (typeof (object), new MixinContext[0], new Type[] { typeof (int), typeof (float) });
-      _context2 = new ClassContext (typeof (string), new Type[] { typeof (double), typeof (int) });
+      _context1 = new ClassContext (typeof (object), new MixinContext[0], new[] { typeof (int), typeof (float) });
+      _context2 = new ClassContext (typeof (string), new[] { typeof (double), typeof (int) });
     }
 
     [Test]
@@ -41,14 +41,28 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _combiner.AddIfNotNull (_context1);
       _combiner.AddIfNotNull (_context2);
-      Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new object[] {_context1, _context2}));
+      Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new[] {_context1, _context2}));
     }
 
     [Test]
     public void Add_Null ()
     {
       _combiner.AddIfNotNull (null);
-      Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new object[0]));
+      Assert.That (_combiner.CollectedContexts, Is.Empty);
+    }
+
+    [Test]
+    public void AddRange_NonNull ()
+    {
+      _combiner.AddRangeAllowingNulls (new[] { _context1, _context2 });
+      Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new[] { _context1, _context2 }));
+    }
+
+    [Test]
+    public void AddRange_Null ()
+    {
+      _combiner.AddRangeAllowingNulls (new[] { _context1, null });
+      Assert.That (_combiner.CollectedContexts, Is.EquivalentTo (new[] { _context1 }));
     }
 
     [Test]
