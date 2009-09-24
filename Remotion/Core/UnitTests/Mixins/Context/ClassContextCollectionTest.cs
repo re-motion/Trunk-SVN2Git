@@ -36,10 +36,21 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _cc1 = new ClassContext (typeof (object), typeof (NullMixin2));
       _cc2 = new ClassContext (typeof (string));
-      _collection = new ClassContextCollection ();
+      _collection = new ClassContextCollection (_cc1, _cc2);
+    }
 
-      _collection.Add (_cc1);
-      _collection.Add (_cc2);
+    [Test]
+    public void Initialization_ParamsArray ()
+    {
+      var collection = new ClassContextCollection (_cc1, _cc2);
+      Assert.That (collection, Is.EquivalentTo (new[] { _cc1, _cc2 }));
+    }
+
+    [Test]
+    public void Initialization_Enumerable ()
+    {
+      var collection = new ClassContextCollection (((IEnumerable<ClassContext>) new[] { _cc1, _cc2 }));
+      Assert.That (collection, Is.EquivalentTo (new[] { _cc1, _cc2 }));
     }
 
     [Test]

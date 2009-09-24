@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context
 {
@@ -27,6 +28,16 @@ namespace Remotion.Mixins.Context
 
     private readonly Dictionary<Type, ClassContext> _values = new Dictionary<Type, ClassContext> ();
     private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
+
+    public ClassContextCollection (IEnumerable<ClassContext> classContexts)
+    {
+      _values = classContexts.ToDictionary (cc => cc.Type);
+    }
+
+    public ClassContextCollection (params ClassContext[] classContexts)
+        : this ((IEnumerable<ClassContext>) classContexts)
+    {
+    }
 
     public int Count
     {
