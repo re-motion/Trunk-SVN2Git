@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Mixins;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -32,9 +33,9 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       using (MixinConfiguration.BuildNew ().ForClass<BaseType7> ().AddMixin<BT7Mixin0> ().EnterScope ())
       {
         Assert.AreNotSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType7)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)));
-        Assert.IsFalse (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
+        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)));
+        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)));
+        Assert.IsNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)));
       }
       Assert.AreSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
     }
@@ -51,10 +52,10 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       {
         Assert.AreNotSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
         Assert.AreNotSame (parentConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType7)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)));
-        Assert.IsFalse (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType2)));
+        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)));
+        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)));
+        Assert.IsNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)));
+        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType2)));
       }
       Assert.AreSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
     }
@@ -67,10 +68,10 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       using (MixinConfiguration.BuildFromActive ().ForClass<BaseType4> ().AddMixin<BT4Mixin1> ().EnterScope ())
       {
         Assert.AreNotSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType1)).Mixins.ContainsKey (typeof (BT1Mixin1)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType4)));
-        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType4)).Mixins.ContainsKey (typeof (BT4Mixin1)));
+        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)));
+        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)).Mixins.ContainsKey (typeof (BT1Mixin1)));
+        Assert.IsNotNull (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)));
+        Assert.IsTrue (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)).Mixins.ContainsKey (typeof (BT4Mixin1)));
       }
       Assert.AreSame (previousConfiguration, MixinConfiguration.ActiveConfiguration);
     }

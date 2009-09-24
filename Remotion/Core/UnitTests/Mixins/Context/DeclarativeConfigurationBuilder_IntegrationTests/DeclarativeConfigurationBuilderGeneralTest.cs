@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Reflection;
@@ -39,54 +38,66 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void BuildFromAssemblies()
     {
-      var ac = new MixinConfiguration (new ClassContextCollection (new ClassContext(typeof (object))));
       var assemblies = new[] { typeof (BaseType1).Assembly, typeof (object).Assembly };
-      MixinConfiguration ac2 = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (assemblies);
-      Assert.IsTrue (ac2.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-      Assert.IsFalse (ac2.ClassContexts.ContainsWithInheritance (typeof (object)));
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (assemblies);
 
-      MixinConfiguration ac3 = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (ac, assemblies);
-      Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-      Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (object)));
-      Assert.IsTrue (ac3.ClassContexts.GetWithInheritance (typeof (BaseType6)).CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)));
-      Assert.AreSame (ac3.ClassContexts.GetWithInheritance (typeof (BaseType6)), ac3.ResolveCompleteInterface (typeof (ICBT6Mixin1)));
-
-      MixinConfiguration ac4 = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (ac, (IEnumerable<Assembly>) assemblies);
-      Assert.IsTrue (ac4.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-      Assert.IsTrue (ac4.ClassContexts.ContainsWithInheritance (typeof (object)));
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
     }
 
     [Test]
-    public void DoubleAssembliesAreIgnored ()
+    public void BuildFromAssemblies_WithParentConfiguration ()
     {
-      MixinConfiguration context = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly (), Assembly.GetExecutingAssembly ());
+      var parentConfiguration = new MixinConfiguration (new ClassContextCollection (new ClassContext (typeof (object))));
 
-      ClassContext classContext = context.ClassContexts.GetWithInheritance (typeof (BaseType1));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      var assemblies = new[] { typeof (BaseType1).Assembly, typeof (object).Assembly };
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (parentConfiguration, assemblies);
 
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT1Mixin2)));
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.True);
+      Assert.That (configuration.GetContext (typeof (BaseType6)).CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)), Is.True);
+      Assert.That (configuration.ResolveCompleteInterface (typeof (ICBT6Mixin1)), Is.SameAs (configuration.GetContext (typeof (BaseType6))));
     }
 
     [Test]
-    public void DoubleTypesAreIgnored ()
+    public void DuplicateAssembliesAreIgnored ()
     {
-      MixinConfiguration context = new DeclarativeConfigurationBuilder (null).AddType (typeof (BaseType1)).AddType (typeof (BaseType1))
-          .AddType (typeof (BT1Mixin1)).AddType (typeof (BT1Mixin1)).AddType (typeof (BT1Mixin2)).AddType (typeof (BT1Mixin2)).BuildConfiguration ();
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (
+          Assembly.GetExecutingAssembly (), 
+          Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = context.ClassContexts.GetWithInheritance (typeof (BaseType1));
-      Assert.AreEqual (2, classContext.Mixins.Count);
+      ClassContext classContext = configuration.GetContext (typeof (BaseType1));
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
 
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT1Mixin2)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
+    }
+
+    [Test]
+    public void DuplicateTypesAreIgnored ()
+    {
+      MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null)
+          .AddType (typeof (BaseType1))
+          .AddType (typeof (BaseType1))
+          .AddType (typeof (BT1Mixin1))
+          .AddType (typeof (BT1Mixin1))
+          .AddType (typeof (BT1Mixin2))
+          .AddType (typeof (BT1Mixin2))
+          .BuildConfiguration ();
+
+      ClassContext classContext = configuration.GetContext (typeof (BaseType1));
+      Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
+
+      Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
     }
 
     [Test]
     public void BuildDefault()
     {
       MixinConfiguration ac = DeclarativeConfigurationBuilder.BuildDefaultConfiguration();
-      Assert.IsNotNull (ac);
-      Assert.AreNotEqual (0, ac.ClassContexts.Count);
+      Assert.That (ac, Is.Not.Null);
+      Assert.That (ac.ClassContexts.Count, Is.Not.EqualTo (0));
     }
 
     [Test]
@@ -97,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       string[] paths = ConcreteTypeBuilder.Current.SaveAndResetDynamicScope();
       try
       {
-        Assert.AreEqual (1, paths.Length);
+        Assert.That (paths.Length, Is.EqualTo (1));
         ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
         DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
       }
@@ -124,8 +135,8 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       var service =
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
-      Assert.IsFalse (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()));
-      Assert.IsFalse (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (Uri).Assembly.GetName ()));
+      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()), Is.False);
+      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (Uri).Assembly.GetName ()), Is.False);
     }
 
     [Test]
@@ -138,11 +149,11 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assembly signedAssembly = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration).Assembly;
       Assembly unsignedAssembly = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration).Assembly;
 
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (signedAssembly));
-      Assert.IsFalse (ReflectionUtility.IsAssemblySigned (unsignedAssembly));
+      Assert.That (ReflectionUtility.IsAssemblySigned (signedAssembly), Is.True);
+      Assert.That (ReflectionUtility.IsAssemblySigned (unsignedAssembly), Is.False);
 
-      Assert.IsFalse (service.AssemblyFinder.Filter.ShouldIncludeAssembly (signedAssembly));
-      Assert.IsFalse (service.AssemblyFinder.Filter.ShouldIncludeAssembly (unsignedAssembly));
+      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (signedAssembly), Is.False);
+      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (unsignedAssembly), Is.False);
     }
 
     [Test]
@@ -152,12 +163,12 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-      Assert.IsTrue (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly.GetName ()));
-      Assert.IsTrue (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilder).Assembly.GetName ()));
-      Assert.IsTrue (service.AssemblyFinder.Filter.ShouldConsiderAssembly (new AssemblyName ("whatever")));
+      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly.GetName ()), Is.True);
+      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilder).Assembly.GetName ()), Is.True);
+      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (new AssemblyName ("whatever")), Is.True);
 
-      Assert.IsTrue (service.AssemblyFinder.Filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly));
-      Assert.IsTrue (service.AssemblyFinder.Filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilder).Assembly));
+      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly), Is.True);
+      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilder).Assembly), Is.True);
     }
 
     [Test]
@@ -165,7 +176,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     {
       var service =
           (ITypeDiscoveryService) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
-      Assert.IsInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), service);
+      Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
 
       var repository = new MockRepository();
       var designModeHelperMock = repository.StrictMock<IDesignModeHelper> ();
@@ -182,8 +193,8 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       {
         service = (ITypeDiscoveryService) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-        Assert.IsNotInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), service);
-        Assert.AreSame (designerServiceMock, service);
+        Assert.That (service, Is.Not.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+        Assert.That (service, Is.SameAs (designerServiceMock));
       }
       finally
       {
@@ -196,37 +207,37 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void MixinAttributeOnTargetClass ()
     {
-      MixinConfiguration context = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = context.ClassContexts.GetWithInheritance (typeof (TargetClassWithAdditionalDependencies));
-      Assert.IsNotNull (classContext);
+      ClassContext classContext = configuration.GetContext (typeof (TargetClassWithAdditionalDependencies));
+      Assert.That (classContext, Is.Not.Null);
 
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (MixinWithAdditionalClassDependency)));
-      Assert.IsTrue (classContext.Mixins[typeof (MixinWithAdditionalClassDependency)].ExplicitDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinWithAdditionalClassDependency)), Is.True);
+      Assert.That (classContext.Mixins[typeof (MixinWithAdditionalClassDependency)].ExplicitDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)), Is.True);
     }
 
     [Test]
     public void MixinAttributeOnMixinClass ()
     {
-      MixinConfiguration context = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = context.ClassContexts.GetWithInheritance (typeof (BaseType1));
-      Assert.IsNotNull (classContext);
+      ClassContext classContext = configuration.GetContext (typeof (BaseType1));
+      Assert.That (classContext, Is.Not.Null);
 
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)));
+      Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
     }
 
     [Test]
     public void CompleteInterfaceConfiguredViaAttribute ()
     {
-      MixinConfiguration context = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = context.ClassContexts.GetWithInheritance (typeof (BaseType6));
-      Assert.IsNotNull (classContext);
+      ClassContext classContext = configuration.GetContext (typeof (BaseType6));
+      Assert.That (classContext, Is.Not.Null);
 
-      Assert.IsTrue (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)));
-      Assert.IsTrue (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin2)));
-      Assert.IsTrue (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin3)));
+      Assert.That (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)), Is.True);
+      Assert.That (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin2)), Is.True);
+      Assert.That (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin3)), Is.True);
     }
 
     [Extends (typeof (BaseType1))]

@@ -42,10 +42,8 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
     [Test]
     public void GetContext_Configured ()
     {
-      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
-
       var context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
-      Assert.That (context, Is.SameAs (MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType1))));
+      Assert.That (context, Is.Not.Null);
     }
 
     [Test]
@@ -83,7 +81,7 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
 
       var context = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
-      Assert.That (context, Is.SameAs (MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType1))));
+      Assert.That (context, Is.SameAs (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
     }
 
     [Test]

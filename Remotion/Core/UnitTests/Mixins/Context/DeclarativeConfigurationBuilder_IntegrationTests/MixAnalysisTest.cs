@@ -28,21 +28,21 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void MixAttributeIsAnalyzed ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (TargetClassForGlobalMix));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
       Assert.That (context.Mixins.ContainsKey (typeof (MixinForGlobalMix)), Is.True);
     }
 
     [Test]
     public void AdditionalDependenciesAreAnalyzed ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (TargetClassForGlobalMix));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
       Assert.That (context.Mixins[typeof (MixinForGlobalMix)].ExplicitDependencies, List.Contains (typeof (AdditionalDependencyForGlobalMix)));
     }
 
     [Test]
     public void SuppressedMixinsAreAnalyzed ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (TargetClassForGlobalMix));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
       Assert.That (context.Mixins.ContainsKey (typeof (SuppressedMixinForGlobalMix)), Is.False);
     }
   }

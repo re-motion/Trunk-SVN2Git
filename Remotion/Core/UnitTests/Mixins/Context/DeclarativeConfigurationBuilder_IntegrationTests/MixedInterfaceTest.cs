@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void ImplementingClass_InheritsMixins ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (ClassWithMixedInterface));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassWithMixedInterface));
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (NullMixin)));
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)));
     }
