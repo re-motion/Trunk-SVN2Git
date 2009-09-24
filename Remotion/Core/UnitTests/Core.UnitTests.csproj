@@ -193,7 +193,6 @@
     <Compile Include="Mixins\SampleTypes\GenericMixinWithoutBindingInformation.cs" />
     <Compile Include="Mixins\SampleTypes\GenericMixinWithUnsatisfiableConstraints.cs" />
     <Compile Include="Mixins\SampleTypes\MixinAddingSpecialNameMethod.cs" />
-    <Compile Include="Mixins\TargetClassDefinitionUtilityTest.cs" />
     <Compile Include="Mixins\Utilities\MixinGenericArgumentFinderTest.cs" />
     <Compile Include="Mixins\Utilities\MixinReflectorTest.cs" />
     <Compile Include="Mixins\Utilities\TestDomain\GenericClassWithStructAndInterfaceConstraint.cs" />
@@ -547,7 +546,7 @@
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationBuildTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCompleteInterfaceTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCurrentConfigurationTest.cs" />
-    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationGeneralTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationInheritanceTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationValidationTest.cs" />
     <Compile Include="Mixins\MixinTargetMockUtilityTest.cs" />
