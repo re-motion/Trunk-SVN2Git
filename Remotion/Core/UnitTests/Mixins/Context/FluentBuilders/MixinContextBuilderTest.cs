@@ -180,7 +180,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _mockRepository.BackToRecordAll ();
 
       ClassContextBuilder r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object));
-      MixinConfiguration r2 = new MixinConfiguration (null);
+      MixinConfiguration r2 = new MixinConfiguration ();
       IDisposable r3 = _mockRepository.StrictMock<IDisposable> ();
       MixinContextBuilder r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1));
       ClassContext r5 = new ClassContext (typeof (object));

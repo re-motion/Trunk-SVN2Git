@@ -121,9 +121,15 @@ namespace Remotion.Mixins.Context
     {
       ArgumentUtility.CheckNotNull ("type", type);
       if (_values.ContainsKey (type))
-        return _values[type];
+      {
+        var result = _values[type];
+        Assertion.IsTrue (result.Type == type);
+        return result;
+      }
       else
+      {
         return null;
+      }
     }
 
     public ClassContext GetWithInheritance (Type type)
@@ -138,7 +144,10 @@ namespace Remotion.Mixins.Context
 
       var inheritedContextCombiner = new ClassContextCombiner ();
       inheritedContextCombiner.AddRangeAllowingNulls (contextsToInheritFrom);
-      return inheritedContextCombiner.GetCombinedContexts (type);
+      
+      var result = inheritedContextCombiner.GetCombinedContexts (type);
+      Assertion.IsTrue (result == null || result.Type == type);
+      return result;
     }
 
     public bool ContainsExact (Type type)

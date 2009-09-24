@@ -16,11 +16,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Mixins.Samples.PhotoStuff.Variant1;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Context
@@ -175,6 +177,29 @@ namespace Remotion.UnitTests.Mixins.Context
       ClassContext c1 = new ClassContextBuilder (typeof (User)).AddMixin (typeof (NullMixin)).OfKind (MixinKind.Used).BuildClassContext ();
       Assert.That (configuration.ClassContexts,
           Is.EquivalentTo (new object[] { c1, parentConfiguration.ClassContexts.GetExact (typeof (int)), _globalClassContext }));
+    }
+
+    [Test]
+    public void BuildConfigurationFromAssemblies ()
+    {
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
+
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
+
+      ClassContext contextForBaseType1 = configuration.GetContext (typeof (BaseType1));
+      Assert.That (contextForBaseType1.Mixins.Count, Is.EqualTo (2));
+
+      Assert.That (contextForBaseType1.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
+      Assert.That (contextForBaseType1.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
+    }
+
+    [Test]
+    public void BuildConfigurationFromAssemblies_Multiple ()
+    {
+      var assemblies = new[] { typeof (BaseType1).Assembly, typeof (Photo).Assembly };
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (null, assemblies);
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
+      Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (Photo)), Is.True);
     }
   }
 }

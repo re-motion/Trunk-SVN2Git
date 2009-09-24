@@ -269,7 +269,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     private void CheckExplicitDependencyOrdering (ClassContext classContext)
     {
-      var configuration = new MixinConfiguration (null);
+      var configuration = new MixinConfiguration ();
       configuration.ClassContexts.Add (classContext);
 
       using (configuration.EnterScope())

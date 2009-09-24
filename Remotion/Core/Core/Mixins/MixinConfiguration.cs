@@ -91,7 +91,7 @@ namespace Remotion.Mixins
     /// Initializes a new empty mixin configuarion that does not inherit anything from another configuration.
     /// </summary>
     public MixinConfiguration ()
-        : this (null)
+        : this ((MixinConfiguration) null)
     {
     }
 
@@ -108,6 +108,20 @@ namespace Remotion.Mixins
  
       if (parentConfiguration != null)
         parentConfiguration.CopyTo (this);
+    }
+
+    /// <summary>
+    /// Initializes a new non-empty configuration.
+    /// </summary>
+    /// <param name="classContexts">The class contexts to be held by this <see cref="MixinConfiguration"/>.</param>
+    public MixinConfiguration (ClassContextCollection classContexts)
+    {
+      _classContexts = classContexts;
+      _classContexts.ClassContextAdded += ClassContextAdded;
+      _classContexts.ClassContextRemoved += ClassContextRemoved;
+
+      foreach (var classContext in classContexts)
+        ClassContextAdded (this, new ClassContextEventArgs (classContext)); // register interfaces
     }
 
     /// <summary>
@@ -140,8 +154,8 @@ namespace Remotion.Mixins
     /// <remarks>
     /// <para>
     /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used for mixed type code 
-    /// generation. Besides looking up the target type in the <see cref="ClassContexts"/> collection, this method also specializes the generic
-    /// arguments in the class context with those of <paramref name="targetOrConcreteType"/> (if any).
+    /// generation. Besides looking up the target type in the <see cref="ClassContexts"/> collection, this method also checks whether the class
+    /// context is empty, and returns <see langword="null" /> if so.
     /// </para>
     /// <para>
     /// Use the <see cref="GetContextForce(System.Type)"/> method to reveive an empty but valid <see cref="ClassContext"/> for types that do not have 
@@ -162,8 +176,6 @@ namespace Remotion.Mixins
 
       if (context == null || context.IsEmpty())
         return null;
-      else if (targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
-        return context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
       else
         return context;
     }
@@ -179,8 +191,7 @@ namespace Remotion.Mixins
     /// <para>
     /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used to create the
     /// <see cref="TargetClassDefinition"/> object for the target type. Besides looking up the target type in the given mixin configuration, this
-    /// includes generating a default context if necessary, and the specialization of generic arguments in the class context with those of 
-    /// <paramref name="targetOrConcreteType"/>, if any.
+    /// includes generating a default context if necessary.
     /// </para>
     /// <para>
     /// Use the <see cref="GetContext(System.Type)"/> method to avoid generating an empty default <see cref="ClassContext"/> for non-configured
@@ -198,9 +209,6 @@ namespace Remotion.Mixins
 
       if (context == null)
         return new ClassContext (targetOrConcreteType);
-
-      if (targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
-        return context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
       else
         return context;
     }
@@ -316,15 +324,6 @@ namespace Remotion.Mixins
         return _registeredInterfaces[interfaceType];
       else
         return null;
-    }
-
-    /// <summary>
-    /// Removes all <see cref="ClassContext"/> instances and registered interfaces from this <see cref="MixinConfiguration"/> object.
-    /// </summary>
-    public void Clear ()
-    {
-      _classContexts.Clear();
-      _registeredInterfaces.Clear();
     }
 
     /// <summary>

@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void Intitialization_WithParent ()
     {
-      MixinConfiguration parent = new MixinConfiguration (null);
+      MixinConfiguration parent = new MixinConfiguration ();
       parent.ClassContexts.Add (new ClassContext (typeof (string)));
 
       MixinConfigurationBuilder builder = new MixinConfigurationBuilder (parent);
@@ -96,7 +96,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void BuildConfiguration_IncludesParentConfiguration_WithClassContext_Unmodified ()
     {
       ClassContext existingContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
-      MixinConfiguration parentConfiguration = new MixinConfiguration (null);
+      MixinConfiguration parentConfiguration = new MixinConfiguration ();
       parentConfiguration.ClassContexts.Add (existingContext);
 
       MixinConfigurationBuilder builder = new MixinConfigurationBuilder (parentConfiguration);
@@ -114,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void BuildConfiguration_IncludesParentConfiguration_WithClassContext_Modified ()
     {
       ClassContext existingContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
-      MixinConfiguration parentConfiguration = new MixinConfiguration (null);
+      MixinConfiguration parentConfiguration = new MixinConfiguration ();
       parentConfiguration.ClassContexts.Add (existingContext);
 
       MixinConfigurationBuilder builder = new MixinConfigurationBuilder (parentConfiguration);
@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void BuildConfiguration_IncludesParentConfiguration_WithCompleteInterfaces ()
     {
-      var parentConfiguration = new MixinConfiguration (null);
+      var parentConfiguration = new MixinConfiguration ();
       parentConfiguration.ClassContexts.Add (new ClassContext (typeof (BaseType3)));
       parentConfiguration.RegisterInterface (typeof (IBaseType31), typeof (BaseType3));
       

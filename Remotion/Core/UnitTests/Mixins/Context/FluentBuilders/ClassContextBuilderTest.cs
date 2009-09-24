@@ -562,7 +562,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _mockRepository.BackToRecordAll();
       
       var r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object));
-      var r2 = new MixinConfiguration (null);
+      var r2 = new MixinConfiguration ();
       var r3 = _mockRepository.StrictMock<IDisposable> ();
 
       using (_mockRepository.Ordered ())
