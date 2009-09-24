@@ -16,15 +16,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Mixins.Context
 {
+  /// <summary>
+  /// Holds the <see cref="ClassContext"/> instances for a <see cref="MixinConfiguration"/>, providing easy means to search exactly for a given type
+  /// (<see cref="GetExact"/>) and with inheritance rules (<see cref="GetWithInheritance"/>).
+  /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class ClassContextCollection : ICollection, ICollection<ClassContext>
   {
     private readonly Dictionary<Type, ClassContext> _values = new Dictionary<Type, ClassContext> ();
     private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
+
+    private readonly InterlockedCache<Type, ClassContext> _inheritedContextCache = new InterlockedCache<Type, ClassContext> ();
 
     public ClassContextCollection (IEnumerable<ClassContext> classContexts)
     {
@@ -66,16 +74,11 @@ namespace Remotion.Mixins.Context
     public ClassContext GetExact (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      if (_values.ContainsKey (type))
-      {
-        var result = _values[type];
-        Assertion.IsTrue (result.Type == type);
-        return result;
-      }
-      else
-      {
-        return null;
-      }
+
+      ClassContext result;
+      _values.TryGetValue (type, out result);
+      Assertion.IsTrue (result == null || result.Type == type);
+      return result;
     }
 
     public ClassContext GetWithInheritance (Type type)
@@ -85,12 +88,17 @@ namespace Remotion.Mixins.Context
       var exactMatch = GetExact (type);
       if (exactMatch != null)
         return exactMatch;
+      else
+        return _inheritedContextCache.GetOrCreateValue (type, DeriveInheritedContext);
+    }
 
+    private ClassContext DeriveInheritedContext (Type type)
+    {
       var contextsToInheritFrom = _inheritancePolicy.GetClassContextsToInheritFrom (type, GetWithInheritance); // Recursion!
 
       var inheritedContextCombiner = new ClassContextCombiner ();
       inheritedContextCombiner.AddRangeAllowingNulls (contextsToInheritFrom);
-      
+
       var result = inheritedContextCombiner.GetCombinedContexts (type);
       Assertion.IsTrue (result == null || result.Type == type);
       return result;
