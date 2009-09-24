@@ -15,27 +15,37 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
   /// <summary>
   /// Assists in importing data exported by a <see cref="DomainObjectTransporter"/> object. This class is used by
-  /// <see cref="DomainObjectTransporter.LoadTransportData(byte[])"/> and is usually not instantiated by users.
+  /// <see cref="DomainObjectTransporter.LoadTransportData(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IImportStrategy)"/> and is usually 
+  /// not instantiated by users.
   /// </summary>
   public class DomainObjectImporter
   {
+    public static DomainObjectImporter CreateImporterFromStream (Stream stream, IImportStrategy strategy)
+    {
+      ArgumentUtility.CheckNotNull ("stream", stream);
+      ArgumentUtility.CheckNotNull ("strategy", strategy);
+
+      var transportItems = strategy.Import (stream).ToArray();
+      return new DomainObjectImporter (transportItems);
+    }
+
     private readonly TransportItem[] _transportItems;
 
-    public DomainObjectImporter (byte[] data, IImportStrategy importStrategy)
+    public DomainObjectImporter (TransportItem[] transportItems)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("data", data);
-      ArgumentUtility.CheckNotNull ("importStrategy", importStrategy);
-
-      _transportItems = EnumerableUtility.ToArray (importStrategy.Import (data));
+      ArgumentUtility.CheckNotNull ("transportItems", transportItems);
+      _transportItems = transportItems;
     }
 
     public TransportedDomainObjects GetImportedObjects ()

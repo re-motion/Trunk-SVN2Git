@@ -14,13 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 {
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
       byte[] data = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForOrder1Order2);
 
-      TransportItem[] items = EnumerableUtility.ToArray (XmlImportStrategy.Instance.Import (data));
+      TransportItem[] items = Import (data);
       Assert.AreEqual (2, items.Length);
 
       Assert.AreEqual (expectedContainer1.ID, items[0].ID);
@@ -53,20 +54,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [ExpectedException (typeof (TransportationException), ExpectedMessage = "Invalid data specified: There is an error in XML document (0, 0).")]
     public void Import_ThrowsOnInvalidFormat ()
     {
-      byte[] data = new byte[0];
-      XmlImportStrategy.Instance.Import (data);
+      var data = new byte[0];
+      Import (data);
     }
 
     [Test]
     public void Import_ExportStrategy_IntegrationTest ()
     {
-      TransportItem item1 = new TransportItem (DomainObjectIDs.Order1);
+      var item1 = new TransportItem (DomainObjectIDs.Order1);
       item1.Properties.Add ("Foo", 12);
-      TransportItem item2 = new TransportItem (DomainObjectIDs.Order2);
+      var item2 = new TransportItem (DomainObjectIDs.Order2);
       item2.Properties.Add ("Bar", "42");
 
-      byte[] package = XmlExportStrategy.Instance.Export (new TransportItem[] { item1, item2 });
-      TransportItem[] importedItems = EnumerableUtility.ToArray (XmlImportStrategy.Instance.Import (package));
+      byte[] package = XmlExportStrategyTest.Export (item1, item2);
+      TransportItem[] importedItems = Import (package);
 
       Assert.AreEqual (2, importedItems.Length);
       Assert.AreEqual (item1.ID, importedItems[0].ID);
@@ -76,6 +77,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       Assert.AreEqual (item2.ID, importedItems[1].ID);
       Assert.AreEqual (1, importedItems[1].Properties.Count);
       Assert.AreEqual (item2.Properties["Bar"], importedItems[1].Properties["Bar"]);
+    }
+
+    public static TransportItem[] Import (byte[] data)
+    {
+      using (var stream = new MemoryStream (data))
+      {
+        return XmlImportStrategy.Instance.Import (stream).ToArray ();
+      }
     }
   }
 }

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
@@ -27,15 +28,14 @@ namespace Remotion.Data.DomainObjects.Transport
   {
     public static readonly XmlImportStrategy Instance = new XmlImportStrategy();
 
-    public IEnumerable<TransportItem> Import (byte[] data)
+    public IEnumerable<TransportItem> Import (Stream inputStream)
     {
+      ArgumentUtility.CheckNotNull ("inputStream", inputStream);
+
       try
       {
-        using (MemoryStream dataStream = new MemoryStream (data))
-        {
-          XmlSerializer formatter = new XmlSerializer (typeof (XmlTransportItem[]));
-          return XmlTransportItem.Unwrap (PerformDeserialization(dataStream, formatter));
-        }
+        var formatter = new XmlSerializer (typeof (XmlTransportItem[]));
+        return XmlTransportItem.Unwrap (PerformDeserialization (inputStream, formatter));
       }
       catch (Exception ex)
       {
@@ -43,8 +43,11 @@ namespace Remotion.Data.DomainObjects.Transport
       }
     }
 
-    protected virtual XmlTransportItem[] PerformDeserialization (MemoryStream dataStream, XmlSerializer formatter)
+    protected virtual XmlTransportItem[] PerformDeserialization (Stream dataStream, XmlSerializer formatter)
     {
+      ArgumentUtility.CheckNotNull ("dataStream", dataStream);
+      ArgumentUtility.CheckNotNull ("formatter", formatter);
+
       return (XmlTransportItem[]) formatter.Deserialize (dataStream);
     }
   }

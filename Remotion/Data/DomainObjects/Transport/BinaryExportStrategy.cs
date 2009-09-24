@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
@@ -27,27 +28,32 @@ namespace Remotion.Data.DomainObjects.Transport
   {
     public static readonly BinaryExportStrategy Instance = new BinaryExportStrategy();
 
-    public byte[] Export (TransportItem[] transportedItems)
+    public void Export (Stream outputStream, TransportItem[] transportedItems)
     {
-      using (MemoryStream dataStream = new MemoryStream ())
-      {
-        BinaryFormatter formatter = new BinaryFormatter ();
-        KeyValuePair<string, Dictionary<string, object>>[] versionIndependentItems = GetVersionIndependentItems (transportedItems);
-        PerformSerialization(versionIndependentItems, dataStream, formatter);
-        return dataStream.ToArray ();
-      }
+      ArgumentUtility.CheckNotNull ("outputStream", outputStream);
+      ArgumentUtility.CheckNotNull ("transportedItems", transportedItems);
+
+      var formatter = new BinaryFormatter ();
+      KeyValuePair<string, Dictionary<string, object>>[] versionIndependentItems = GetVersionIndependentItems (transportedItems);
+      PerformSerialization (versionIndependentItems, outputStream, formatter);
     }
 
-    protected virtual void PerformSerialization (KeyValuePair<string, Dictionary<string, object>>[] versionIndependentItems, MemoryStream dataStream,
+    protected virtual void PerformSerialization (
+        KeyValuePair<string, Dictionary<string, object>>[] versionIndependentItems, 
+        Stream dataStream,
         BinaryFormatter formatter)
     {
+      ArgumentUtility.CheckNotNull ("versionIndependentItems", versionIndependentItems);
+      ArgumentUtility.CheckNotNull ("dataStream", dataStream);
+      ArgumentUtility.CheckNotNull ("formatter", formatter);
+
       formatter.Serialize (dataStream, versionIndependentItems);
     }
 
     private KeyValuePair<string, Dictionary<string, object>>[] GetVersionIndependentItems (TransportItem[] transportItems)
     {
-      return Array.ConvertAll<TransportItem, KeyValuePair<string, Dictionary<string, object>>> (transportItems, 
-          delegate (TransportItem item) { return new KeyValuePair<string, Dictionary<string, object>> (item.ID.ToString (), item.Properties); });
+      return Array.ConvertAll (transportItems,
+                               item => new KeyValuePair<string, Dictionary<string, object>> (item.ID.ToString(), item.Properties));
     }
   }
 }

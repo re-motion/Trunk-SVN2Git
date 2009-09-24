@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -33,35 +34,38 @@ namespace Remotion.Data.DomainObjects.Transport
     /// <summary>
     /// Loads the data transported from another system into a <see cref="TransportedDomainObjects"/> container using the <see cref="BinaryImportStrategy"/>.
     /// </summary>
-    /// <param name="data">The transported data to be loaded.</param>
+    /// <param name="stream">The <see cref="Stream"/> from which to load the data.</param>
     /// <returns>A container holding the objects loaded from the given data.</returns>
     /// <exception cref="ObjectNotFoundException">A referenced related object is not part of the transported data and does not exist on the
     /// target system.</exception>
     /// <remarks>
-    /// Given a <see cref="DomainObjectTransporter"/>, the binary data can be retrieved from <see cref="GetBinaryTransportData()"/>.
+    /// Given a <see cref="DomainObjectTransporter"/>, the binary data can be retrieved from <see cref="Export(System.IO.Stream)"/>.
     /// </remarks>
-    public static TransportedDomainObjects LoadTransportData (byte[] data)
+    public static TransportedDomainObjects LoadTransportData (Stream stream)
     {
+      ArgumentUtility.CheckNotNull ("stream", stream);
+
       BinaryImportStrategy strategy = BinaryImportStrategy.Instance;
-      return LoadTransportData(data, strategy);
+      return LoadTransportData (stream, strategy);
     }
 
     /// <summary>
     /// Loads the data transported from another system into a <see cref="TransportedDomainObjects"/> container.
     /// </summary>
-    /// <param name="data">The transported data to be loaded.</param>
-    /// <param name="strategy">The strategy to use when importing data. This must match the strategy being used with <see cref="GetBinaryTransportData(IExportStrategy)"/>.</param>
+    /// <param name="stream">The <see cref="Stream"/> from which to load the data.</param>
+    /// <param name="strategy">The strategy to use when importing data. This must match the strategy being used with <see cref="Export(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IExportStrategy)"/>.</param>
     /// <returns>A container holding the objects loaded from the given data.</returns>
     /// <exception cref="ObjectNotFoundException">A referenced related object is not part of the transported data and does not exist on the
     /// target system.</exception>
     /// <remarks>
-    /// Given a <see cref="DomainObjectTransporter"/>, the binary data can be retrieved from <see cref="GetBinaryTransportData(IExportStrategy)"/>.
+    /// Given a <see cref="DomainObjectTransporter"/>, the binary data can be retrieved from <see cref="Export(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IExportStrategy)"/>.
     /// </remarks>
-    public static TransportedDomainObjects LoadTransportData (byte[] data, IImportStrategy strategy)
+    public static TransportedDomainObjects LoadTransportData (Stream stream, IImportStrategy strategy)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("data", data);
+      ArgumentUtility.CheckNotNull ("stream", stream);
       ArgumentUtility.CheckNotNull ("strategy", strategy);
-      return new DomainObjectImporter (data, strategy).GetImportedObjects ();
+
+      return DomainObjectImporter.CreateImporterFromStream (stream, strategy).GetImportedObjects ();
     }
 
     private readonly ClientTransaction _transportTransaction;
@@ -123,11 +127,11 @@ namespace Remotion.Data.DomainObjects.Transport
     /// <para>
     /// If an object has the foreign key side of a relationship and the related object is not loaded into this transporter, the relationship
     /// will still be transported. The related object must exist at the target system, otherwise an exception is thrown in
-    /// <see cref="LoadTransportData(byte[])"/>.
+    /// <see cref="LoadTransportData(System.IO.Stream)"/>.
     /// </para>
     /// <para>
     /// If an object has the virtual side of a relationship and the related object is not loaded into this transporter, the relationship
-    /// will not be transported. Its status after <see cref="LoadTransportData(byte[])"/> depends on the objects at the target system. This
+    /// will not be transported. Its status after <see cref="LoadTransportData(System.IO.Stream)"/> depends on the objects at the target system. This
     /// also applies to the 1-side of a 1-to-n relationship because the n-side is the foreign key side.
     /// </para>
     /// </remarks>
@@ -219,26 +223,27 @@ namespace Remotion.Data.DomainObjects.Transport
     }
 
     /// <summary>
-    /// Gets a the objects loaded into this transporter (including their contents) in a binary format for transport to another system using <see cref="BinaryExportStrategy"/>.
-    /// At the target system, the data can be loaded via <see cref="LoadTransportData(byte[])"/>.
+    /// Exports the objects loaded into this transporter (including their contents) in a binary format for transport to another system using 
+    /// <see cref="BinaryExportStrategy"/>. At the target system, the data can be loaded via <see cref="LoadTransportData(Stream)"/>.
     /// </summary>
-    /// <returns>The loaded objects in a binary format.</returns>
-    public byte[] GetBinaryTransportData ()
+    /// <param name="stream">The <see cref="Stream"/> to which to export the loaded objects.</param>
+    public void Export (Stream stream)
     {
-      return GetBinaryTransportData (BinaryExportStrategy.Instance);
+      Export (stream, BinaryExportStrategy.Instance);
     }
 
     /// <summary>
-    /// Gets a the objects loaded into this transporter (including their contents) in a binary format for transport to another system.
-    /// At the target system, the data can be loaded via <see cref="LoadTransportData(byte[],IImportStrategy)"/>.
+    /// Exports the objects loaded into this transporter (including their contents) in a custom format for transport to another system.
+    /// At the target system, the data can be loaded via <see cref="LoadTransportData(Stream,IImportStrategy)"/>.
     /// </summary>
-    /// <param name="strategy">The strategy to be used for exporting data. This must match the strategy used with <see cref="LoadTransportData(byte[],IImportStrategy)"/>.</param>
-    /// <returns>The loaded objects in a binary format.</returns>
-    public byte[] GetBinaryTransportData (IExportStrategy strategy)
+    /// <param name="stream">The <see cref="Stream"/> to which to export the loaded objects.</param>
+    /// <param name="strategy">The strategy to be used for exporting data. This must match the strategy used with 
+    /// <see cref="LoadTransportData(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IImportStrategy)"/>.</param>
+    public void Export (Stream stream, IExportStrategy strategy)
     {
       IEnumerable<DataContainer> transportedContainers = GetTransportedContainers();
       TransportItem[] transportItems = EnumerableUtility.ToArray (TransportItem.PackageDataContainers (transportedContainers));
-      return strategy.Export (transportItems);
+      strategy.Export (stream, transportItems);
     }
 
     private IEnumerable<DataContainer> GetTransportedContainers ()

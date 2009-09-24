@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
@@ -27,37 +28,34 @@ namespace Remotion.Data.DomainObjects.Transport
   {
     public static readonly BinaryImportStrategy Instance = new BinaryImportStrategy ();
 
-    public IEnumerable<TransportItem> Import (byte[] data)
+    public IEnumerable<TransportItem> Import (Stream inputStream)
     {
-      using (MemoryStream stream = new MemoryStream (data))
+      ArgumentUtility.CheckNotNull ("inputStream", inputStream);
+
+      var formatter = new BinaryFormatter ();
+      try
       {
-        BinaryFormatter formatter = new BinaryFormatter ();
-        try
-        {
-          KeyValuePair<string, Dictionary<string, object>>[] deserializedData = PerformDeserialization(stream, formatter);
-          TransportItem[] transportedObjects = GetTransportItems (deserializedData);
-          return transportedObjects;
-        }
-        catch (Exception ex)
-        {
-          throw new TransportationException ("Invalid data specified: " + ex.Message, ex);
-        }
+        KeyValuePair<string, Dictionary<string, object>>[] deserializedData = PerformDeserialization (inputStream, formatter);
+        TransportItem[] transportedObjects = GetTransportItems (deserializedData);
+        return transportedObjects;
+      }
+      catch (Exception ex)
+      {
+        throw new TransportationException ("Invalid data specified: " + ex.Message, ex);
       }
     }
 
-    protected virtual KeyValuePair<string, Dictionary<string, object>>[] PerformDeserialization (MemoryStream stream, BinaryFormatter formatter)
+    protected virtual KeyValuePair<string, Dictionary<string, object>>[] PerformDeserialization (Stream stream, BinaryFormatter formatter)
     {
+      ArgumentUtility.CheckNotNull ("stream", stream);
+      ArgumentUtility.CheckNotNull ("formatter", formatter);
+
       return (KeyValuePair<string, Dictionary<string, object>>[]) formatter.Deserialize (stream);
     }
 
     private TransportItem[] GetTransportItems (KeyValuePair<string, Dictionary<string, object>>[] deserializedData)
     {
-      return Array.ConvertAll<KeyValuePair<string, Dictionary<string, object>>, TransportItem> (deserializedData,
-          delegate (KeyValuePair<string, Dictionary<string, object>> pair)
-          {
-            ObjectID objectID = ObjectID.Parse (pair.Key);
-            return new TransportItem (objectID, pair.Value);
-          });
+      return Array.ConvertAll (deserializedData, pair => new TransportItem (ObjectID.Parse (pair.Key), pair.Value));
     }
   }
 }

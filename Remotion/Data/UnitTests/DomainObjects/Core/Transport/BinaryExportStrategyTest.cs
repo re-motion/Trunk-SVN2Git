@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -36,15 +37,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       TransportItem item1 = TransportItem.PackageDataContainer (expectedContainer1);
       TransportItem item2 = TransportItem.PackageDataContainer (expectedContainer2);
 
-      TransportItem[] items = new TransportItem[] { item1, item2 };
-      KeyValuePair<string, Dictionary<string, object>> versionIndependentItem1 =
-          new KeyValuePair<string, Dictionary<string, object>> (item1.ID.ToString(), item1.Properties);
-      KeyValuePair<string, Dictionary<string, object>> versionIndependentItem2 = 
-          new KeyValuePair<string, Dictionary<string, object>> (item2.ID.ToString(), item2.Properties);
+      var items = new[] { item1, item2 };
+      var versionIndependentItem1 = new KeyValuePair<string, Dictionary<string, object>> (item1.ID.ToString(), item1.Properties);
+      var versionIndependentItem2 = new KeyValuePair<string, Dictionary<string, object>> (item2.ID.ToString(), item2.Properties);
+      byte[] expectedData = Serializer.Serialize (new[] {versionIndependentItem1, versionIndependentItem2});
 
-      byte[] expectedData = Serializer.Serialize (new KeyValuePair<string, Dictionary<string, object>>[] {versionIndependentItem1, versionIndependentItem2});
-      byte[] actualData = BinaryExportStrategy.Instance.Export (items);
+      byte[] actualData = Export (items);
       Assert.That (actualData, Is.EqualTo (expectedData));
+    }
+
+    public static byte[] Export (params TransportItem[] transportItems)
+    {
+      using (var stream = new MemoryStream ())
+      {
+        BinaryExportStrategy.Instance.Export (stream, transportItems);
+        return stream.ToArray ();
+      }
     }
   }
 }

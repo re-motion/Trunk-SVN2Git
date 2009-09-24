@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -34,10 +35,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       TransportItem item1 = TransportItem.PackageDataContainer (container1);
       TransportItem item2 = TransportItem.PackageDataContainer (container2);
 
-      TransportItem[] items = new TransportItem[] { item1, item2 };
-      byte[] actualData = XmlExportStrategy.Instance.Export (items);
-      string actualString = Encoding.UTF8.GetString (actualData);
-      Assert.AreEqual (XmlSerializationStrings.XmlForOrder1Order2, actualString);
+      var items = new[] { item1, item2 };
+      using (var stream = new MemoryStream ())
+      {
+        XmlExportStrategy.Instance.Export (stream, items);
+        string actualString = Encoding.UTF8.GetString (stream.ToArray());
+        Assert.AreEqual (XmlSerializationStrings.XmlForOrder1Order2, actualString);
+      }
+    }
+
+    public static byte[] Export (params TransportItem[] transportItems)
+    {
+      using (var stream = new MemoryStream ())
+      {
+        XmlExportStrategy.Instance.Export (stream, transportItems);
+        return stream.ToArray ();
+      }
     }
   }
 }

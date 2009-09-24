@@ -29,13 +29,13 @@ namespace Remotion.Data.DomainObjects.Transport
     public static XmlTransportItem[] Wrap (TransportItem[] items)
     {
       ArgumentUtility.CheckNotNull ("items", items);
-      return Array.ConvertAll<TransportItem, XmlTransportItem> (items, delegate (TransportItem item) { return new XmlTransportItem (item); });
+      return Array.ConvertAll (items, item => new XmlTransportItem (item));
     }
 
     public static TransportItem[] Unwrap (XmlTransportItem[] xmlItems)
     {
       ArgumentUtility.CheckNotNull ("xmlItems", xmlItems);
-      return Array.ConvertAll<XmlTransportItem, TransportItem> (xmlItems, delegate (XmlTransportItem item) { return item.TransportItem; });
+      return Array.ConvertAll (xmlItems, item => item.TransportItem);
     }
 
     private TransportItem _transportItem;
@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
     private TransportItem CreateTransportItem (ObjectID id, List<KeyValuePair<string, object>> properties)
     {
-      Dictionary<string, object> propertyDictionary = new Dictionary<string, object> ();
+      var propertyDictionary = new Dictionary<string, object> ();
       for (int i = 0; i < properties.Count; ++i)
       {
         propertyDictionary.Add (properties[i].Key, properties[i].Value);
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Transport
     private List<KeyValuePair<string, object>> DeserializeProperties (XmlReader reader, ClassDefinition classDefinition)
     {
       reader.ReadStartElement ("Properties");
-      List<KeyValuePair<string, object>> properties = new List<KeyValuePair<string, object>> ();
+      var properties = new List<KeyValuePair<string, object>> ();
       while (reader.IsStartElement ("Property"))
         properties.Add (DeserializeProperty (reader, classDefinition));
       reader.ReadEndElement ();
@@ -124,30 +124,26 @@ namespace Remotion.Data.DomainObjects.Transport
 
     private void SerializePropertyValue (XmlWriter writer, PropertyDefinition propertyDefinition, object value)
     {
-      Type valueType;
-      if (propertyDefinition == null)
-        valueType = SerializeCustomValueType(writer, value);
-      else
-        valueType = propertyDefinition.PropertyType;
+      Type valueType = propertyDefinition == null ? SerializeCustomValueType(writer, value) : propertyDefinition.PropertyType;
 
       if (value == null)
+      {
         writer.WriteElementString ("null", "");
+      }
       else if (valueType == typeof (ObjectID))
-        writer.WriteString (value.ToString ());
+      {
+        writer.WriteString (value.ToString());
+      }
       else
       {
-        XmlSerializer valueSerializer = new XmlSerializer (valueType);
+        var valueSerializer = new XmlSerializer (valueType);
         valueSerializer.Serialize (writer, value);
       }
     }
 
     private object DeserializePropertyValue (XmlReader reader, PropertyDefinition propertyDefinition)
     {
-      Type valueType;
-      if (propertyDefinition == null)
-        valueType = DeserializeCustomValueType (reader);
-      else
-        valueType = propertyDefinition.PropertyType;
+      Type valueType = propertyDefinition == null ? DeserializeCustomValueType (reader) : propertyDefinition.PropertyType;
 
       reader.ReadStartElement ("Property");
 
@@ -164,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Transport
       }
       else
       {
-        XmlSerializer valueDeserializer = new XmlSerializer (valueType);
+        var valueDeserializer = new XmlSerializer (valueType);
         value = valueDeserializer.Deserialize (reader);
       }
       reader.ReadEndElement ();

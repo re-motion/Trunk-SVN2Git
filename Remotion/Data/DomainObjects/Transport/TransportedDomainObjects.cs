@@ -16,8 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Transport;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
@@ -26,8 +24,8 @@ namespace Remotion.Data.DomainObjects.Transport
   /// Represents the data transported via a <see cref="DomainObjectTransporter"/> object on the target system.
   /// </summary>
   /// <remarks>
-  /// Instantiate this class via <see cref="DomainObjectTransporter.LoadTransportData(byte[])"/> with the data obtained from
-  /// <see cref="DomainObjectTransporter.GetBinaryTransportData()"/>.
+  /// Instantiate this class via <see cref="DomainObjectTransporter.LoadTransportData(System.IO.Stream)"/> with the data obtained from
+  /// <see cref="DomainObjectTransporter.Export(System.IO.Stream)"/>.
   /// </remarks>
   public struct TransportedDomainObjects
   {
@@ -36,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransportedDomainObjects"/> class. This constructor is typically only used internally,
-    /// use <see cref="DomainObjectTransporter.LoadTransportData(byte[])"/> to instantiate this class.
+    /// use <see cref="DomainObjectTransporter.LoadTransportData(System.IO.Stream)"/> to instantiate this class.
     /// </summary>
     /// <param name="dataTransaction">The transaction containing the transported objects' data.</param>
     /// <param name="transportedObjects">The transported objects.</param>

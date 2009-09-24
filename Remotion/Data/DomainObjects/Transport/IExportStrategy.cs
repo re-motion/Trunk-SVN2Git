@@ -13,15 +13,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.IO;
 namespace Remotion.Data.DomainObjects.Transport
 {
   /// <summary>
-  /// Implements a strategy to export a set of <see cref="DomainObject"/> instances to a byte array. The exported objects are
+  /// Implements a strategy to export a set of <see cref="DomainObject"/> instances to a <see cref="Stream"/>. The exported objects are
   /// wrapped as <see cref="TransportItem"/> property holders by the <see cref="DomainObjectTransporter"/> class.
   /// </summary>
   /// <remarks>
-  /// Supply an implementation of this interface to <see cref="DomainObjectTransporter.GetBinaryTransportData(IExportStrategy)"/>. The strategy
-  /// must match the <see cref="IImportStrategy"/> supplied to <see cref="DomainObjectTransporter.LoadTransportData(byte[],IImportStrategy)"/>.
+  /// Supply an implementation of this interface to 
+  /// <see cref="DomainObjectTransporter.Export(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IExportStrategy)"/>. The strategy
+  /// must match the <see cref="IImportStrategy"/> supplied to <see cref="DomainObjectTransporter.LoadTransportData(Stream,IImportStrategy)"/>.
   /// </remarks>
   public interface IExportStrategy
   {
@@ -29,8 +31,9 @@ namespace Remotion.Data.DomainObjects.Transport
     /// Exports the specified transported objects.
     /// </summary>
     /// <param name="transportedObjects">The objects to be exported.</param>
+    /// <param name="outputStream">The <see cref="Stream"/> to which the data should be exported.</param>
     /// <returns>A byte array representing the transported objects.</returns>
     /// <exception cref="TransportationException">The objects could not be exported using this strategy.</exception>
-    byte[] Export (TransportItem[] transportedObjects);
+    void Export (Stream outputStream, TransportItem[] transportedObjects);
   }
 }
