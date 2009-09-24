@@ -39,10 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void IsInParentContext_WithNullParentContext ()
+    public void IsInParentContext_WithEmptyParentContext ()
     {
       var finder = new PersistentMixinFinder (typeof (TargetClassBase), false);
-      Assert.That (finder.ParentClassContext, Is.Null);
+      Assert.That (finder.ParentClassContext.IsEmpty(), Is.True);
       Assert.That (finder.IsInParentContext (typeof (MixinBase)), Is.False);
     }
 
@@ -134,7 +134,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           .ForClass (typeof (TargetClassBase))
           .AddMixins (typeof (MixinA))
           .ForClass (typeof (TargetClassA))
-          .AddMixin (typeof (MixinB)).SuppressMixin (typeof (MixinA))
+          .AddMixin (typeof (MixinC))
+          .SuppressMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        new PersistentMixinFinder (typeof (TargetClassA), false).GetPersistentMixins ();
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping."
+      + "MixinTestDomain.TargetClassA' suppresses mixin 'MixinA' inherited from its base class 'TargetClassBase'. This is not allowed because "
+      + "the mixin adds persistence information to the base class which must also be present in the derived class.")]
+    public void PersistenceRelevant_MixinClearingContext ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClassBase))
+          .AddMixins (typeof (MixinA))
+          .ForClass (typeof (TargetClassA))
+          .Clear()
           .EnterScope ())
       {
         new PersistentMixinFinder (typeof (TargetClassA), false).GetPersistentMixins ();
