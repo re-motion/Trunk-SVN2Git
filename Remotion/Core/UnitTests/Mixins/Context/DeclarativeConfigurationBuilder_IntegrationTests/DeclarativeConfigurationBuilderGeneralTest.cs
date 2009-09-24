@@ -49,7 +49,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
       Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (object)));
       Assert.IsTrue (ac3.ClassContexts.GetWithInheritance (typeof (BaseType6)).CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)));
-      Assert.AreSame (ac3.ClassContexts.GetWithInheritance (typeof (BaseType6)), ac3.ResolveInterface (typeof (ICBT6Mixin1)));
+      Assert.AreSame (ac3.ClassContexts.GetWithInheritance (typeof (BaseType6)), ac3.ResolveCompleteInterface (typeof (ICBT6Mixin1)));
 
       MixinConfiguration ac4 = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (ac, (IEnumerable<Assembly>) assemblies);
       Assert.IsTrue (ac4.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));

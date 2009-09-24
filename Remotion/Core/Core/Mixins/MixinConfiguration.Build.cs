@@ -42,7 +42,8 @@ namespace Remotion.Mixins
 
     /// <summary>
     /// Returns a <see cref="MixinConfigurationBuilder"/> object to build a new <see cref="MixinConfiguration"/> which inherits data from a 
-    /// <paramref name="parentConfiguration"/>.
+    /// <paramref name="parentConfiguration"/>. This method indirectly creates a copy of the <paramref name="parentConfiguration"/>. Use 
+    /// <see cref="BuildNew"/> to avoid the costs of copying.
     /// </summary>
     /// <param name="parentConfiguration">A <see cref="MixinConfiguration"/> whose data should be inherited from the built
     /// <see cref="MixinConfiguration"/>.</param>
@@ -66,7 +67,8 @@ namespace Remotion.Mixins
 
     /// <summary>
     /// Returns a <see cref="MixinConfigurationBuilder"/> object to build a new <see cref="MixinConfiguration"/> which inherits data from the
-    /// <see cref="ActiveConfiguration"/>.
+    /// <see cref="ActiveConfiguration"/>. This method indirectly creates a copy of the <see cref="ActiveConfiguration"/>. Use <see cref="BuildNew"/> 
+    /// to avoid the costs of copying.
     /// </summary>
     /// <returns>A <see cref="MixinConfigurationBuilder"/> for building a new <see cref="MixinConfiguration"/> with a fluent interface.</returns>
     /// <remarks>

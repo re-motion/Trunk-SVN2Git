@@ -31,7 +31,7 @@ namespace Remotion.Mixins.BridgeImplementations
       Type targetType;
       if (baseType.IsInterface)
       {
-        ClassContext registeredContext = MixinConfiguration.ActiveConfiguration.ResolveInterface (baseType);
+        ClassContext registeredContext = MixinConfiguration.ActiveConfiguration.ResolveCompleteInterface (baseType);
         if (registeredContext == null)
         {
           string message = string.Format ("The interface '{0}' has not been registered in the current configuration, no instances of the "

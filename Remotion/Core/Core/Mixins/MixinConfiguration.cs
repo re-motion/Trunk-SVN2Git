@@ -27,27 +27,30 @@ using Remotion.Utilities;
 namespace Remotion.Mixins
 {
   /// <summary>
-  /// Constitutes a mixin configuration (ie. a set of classes associated with mixins) and manages the mixin configuration for the
-  /// current thread.
+  /// Constitutes a mixin configuration (ie. a set of classes associated with mixins) and manages the mixin configuration for the current thread
+  /// (actually: <see cref="SafeContext"/>).
   /// </summary>
   /// <remarks>
   /// <para>
   /// Instances of this class represent a single mixin configuration, ie. a set of classes associated with mixins. The class manages a thread-local
   /// (actually <see cref="SafeContext"/>-local) single active configuration instance via its <see cref="ActiveConfiguration"/> property and
-  /// related methods; the active configuration can conveniently be replaced via the <see cref="EnterScope"/> method. The also provides entry points
-  /// for building new mixin configuration objects: <see cref="BuildNew"/>, <see cref="BuildFromActive"/>, and <see cref="BuildFrom"/>.
+  /// related methods; the active configuration can conveniently be replaced via the <see cref="EnterScope"/> method.
   /// </para>
   /// <para>
-  /// While the <see cref="MixinConfiguration.ActiveConfiguration"/> will usually be accessed only indirectly via <see cref="ObjectFactory"/> or <see cref="TypeFactory"/>,
-  /// <see cref="EnterScope"/> and the <see cref="BuildFromActive">BuildFrom...</see> methods can be very useful to adjust a thread's mixin
-  /// configuration at runtime.
+  /// <see cref="MixinConfiguration"/> also provides entry points for building new mixin configuration objects: <see cref="BuildNew"/>, 
+  /// <see cref="BuildFromActive"/>, and <see cref="BuildFrom"/>.
   /// </para>
   /// <para>
-  /// The master mixin configuration - the configuration in effect for a thread if not specifically replaced by another configuration - is obtained
-  /// by analyzing the assemblies in the application's bin directory  for attributes such as <see cref="UsesAttribute"/>,
+  /// While the <see cref="MixinConfiguration.ActiveConfiguration"/> will usually be accessed only indirectly via <see cref="ObjectFactory"/> or 
+  /// <see cref="TypeFactory"/>, <see cref="EnterScope"/> and the <see cref="BuildFromActive">BuildFrom...</see> methods can be very useful to adjust 
+  /// a thread's mixin configuration at runtime.
+  /// </para>
+  /// <para>
+  /// The master mixin configuration - the default configuration in effect for a thread if not specifically replaced by another configuration - is 
+  /// obtained by analyzing the assemblies in the application's bin directory for attributes such as <see cref="UsesAttribute"/>,
   /// <see cref="ExtendsAttribute"/>, and <see cref="CompleteInterfaceAttribute"/>. (For more information about the default configuration, see
-  /// <see cref="DeclarativeConfigurationBuilder.BuildDefaultConfiguration"/>.) The master configuration can also be manipulated via
-  /// <see cref="EditMasterConfiguration"/>.
+  /// <see cref="DeclarativeConfigurationBuilder.BuildDefaultConfiguration"/>.) The master configuration can be accessed via 
+  /// <see cref="GetMasterConfiguration"/> and <see cref="SetMasterConfiguration"/>.
   /// </para>
   /// <example>
   /// The following shows an exemplary application of the <see cref="MixinConfiguration"/> class that manually builds mixin configuration instances
@@ -79,49 +82,32 @@ namespace Remotion.Mixins
   /// </code>
   /// </example>
   /// </remarks>
-  /// <threadsafety static="true" instance="false">
-  ///    <para>Instances of this class are meant to be used one-per-thread, see <see cref="ActiveConfiguration"/>.</para>
-  /// </threadsafety>
+  /// <threadsafety static="true" instance="true" />
   public partial class MixinConfiguration
   {
     private readonly ClassContextCollection _classContexts;
     private readonly Dictionary<Type, ClassContext> _registeredInterfaces = new Dictionary<Type,ClassContext> ();
 
     /// <summary>
-    /// Initializes a new empty mixin configuarion that does not inherit anything from another configuration.
+    /// Initializes an empty mixin configuration.
     /// </summary>
-    public MixinConfiguration ()
-        : this ((MixinConfiguration) null)
+    public MixinConfiguration () : this (new ClassContextCollection ())
     {
     }
 
     /// <summary>
-    /// Initializes a new configuration that inherits from another configuration.
-    /// </summary>
-    /// <param name="parentConfiguration">The parent configuration. The new configuration will inherit all class contexts from its parent configuration. Can be
-    /// <see langword="null"/>.</param>
-    public MixinConfiguration (MixinConfiguration parentConfiguration)
-    {
-      _classContexts = new ClassContextCollection();
-      _classContexts.ClassContextAdded += ClassContextAdded;
-      _classContexts.ClassContextRemoved += ClassContextRemoved;
- 
-      if (parentConfiguration != null)
-        parentConfiguration.CopyTo (this);
-    }
-
-    /// <summary>
-    /// Initializes a new non-empty configuration.
+    /// Initializes a non-empty mixin configuration.
     /// </summary>
     /// <param name="classContexts">The class contexts to be held by this <see cref="MixinConfiguration"/>.</param>
     public MixinConfiguration (ClassContextCollection classContexts)
     {
       _classContexts = classContexts;
-      _classContexts.ClassContextAdded += ClassContextAdded;
-      _classContexts.ClassContextRemoved += ClassContextRemoved;
 
       foreach (var classContext in classContexts)
-        ClassContextAdded (this, new ClassContextEventArgs (classContext)); // register interfaces
+      {
+        foreach (Type completeInterface in classContext.CompleteInterfaces)
+          RegisterCompleteInterface (completeInterface, classContext);
+      }
     }
 
     /// <summary>
@@ -249,16 +235,27 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Registers an interface to be associated with the given <see cref="ClassContext"/>. Later calls to <see cref="ResolveInterface"/>
-    /// with the given interface type will result in the registered context being returned.
+    /// Resolves the given interface into a class context.
     /// </summary>
-    /// <param name="interfaceType">Type of the interface to be registered.</param>
-    /// <param name="associatedClassContext">The class context to be associated with the interface type.</param>
-    /// <exception cref="InvalidOperationException">The interface has already been registered.</exception>
-    /// <exception cref="ArgumentNullException">One of the parameters is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface or
-    /// <paramref name="associatedClassContext"/> has not been added to this configuration.</exception>
-    private void RegisterInterface (Type interfaceType, ClassContext associatedClassContext)
+    /// <param name="interfaceType">The interface type to be resolved.</param>
+    /// <returns>The <see cref="ClassContext"/> previously registered for the given type, or <see langword="null"/> if the no context was registered.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="interfaceType"/> argument is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface.</exception>
+    public ClassContext ResolveCompleteInterface (Type interfaceType)
+    {
+      ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
+
+      if (!interfaceType.IsInterface)
+        throw new ArgumentException ("The argument is not an interface.", "interfaceType");
+
+      if (_registeredInterfaces.ContainsKey (interfaceType))
+        return _registeredInterfaces[interfaceType];
+      else
+        return null;
+    }
+
+    private void RegisterCompleteInterface (Type interfaceType, ClassContext associatedClassContext)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
       ArgumentUtility.CheckNotNull ("associatedClassContext", associatedClassContext);
@@ -274,103 +271,6 @@ namespace Remotion.Mixins
       }
 
       _registeredInterfaces.Add (interfaceType, associatedClassContext);
-    }
-
-    /// <summary>
-    /// Registers an interface to be associated with the <see cref="ClassContext"/> for the given type. Later calls to <see cref="ResolveInterface"/>
-    /// with the given interface type will result in the registered context being returned.
-    /// </summary>
-    /// <param name="interfaceType">Type of the interface to be registered.</param>
-    /// <param name="associatedClassType">The type whose class context is to be associated with the interface type.</param>
-    /// <exception cref="InvalidOperationException">The interface has already been registered.</exception>
-    /// <exception cref="ArgumentNullException">One of the parameters is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface or no <see cref="ClassContext"/> for
-    /// <paramref name="associatedClassType"/> has been added to this configuration.</exception>
-    private void RegisterInterface (Type interfaceType, Type associatedClassType)
-    {
-      ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
-      ArgumentUtility.CheckNotNull ("associatedClassType", associatedClassType);
-
-      ClassContext context = ClassContexts.GetExact (associatedClassType);
-      if (context == null)
-      {
-        string message = string.Format ("There is no class context for the given type {0}.", associatedClassType.FullName);
-        throw new ArgumentException (message, "associatedClassType");
-      }
-      else
-        RegisterInterface (interfaceType, context);
-    }
-
-
-    /// <summary>
-    /// Resolves the given interface into a class context.
-    /// </summary>
-    /// <param name="interfaceType">The interface type to be resolved.</param>
-    /// <returns>The <see cref="ClassContext"/> previously registered for the given type, or <see langword="null"/> if the no context was registered.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="interfaceType"/> argument is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface.</exception>
-    public ClassContext ResolveInterface (Type interfaceType)
-    {
-      ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
-
-      if (!interfaceType.IsInterface)
-        throw new ArgumentException ("The argument is not an interface.", "interfaceType");
-
-      if (_registeredInterfaces.ContainsKey (interfaceType))
-        return _registeredInterfaces[interfaceType];
-      else
-        return null;
-    }
-
-    /// <summary>
-    /// Copies all configuration data of this configuration to a destination object, replacing class contexts and registered interfaces
-    /// for types that are configured in both objects.
-    /// </summary>
-    /// <param name="destination">The destination to copy all configuration data to..</param>
-    public void CopyTo (MixinConfiguration destination)
-    {
-      ArgumentUtility.CheckNotNull ("destination", destination);
-
-      foreach (ClassContext classContext in ClassContexts)
-      {
-        try
-        {
-          destination.ClassContexts.AddOrReplace (classContext);
-        }
-        catch (ConfigurationException ex)
-        {
-          throw new ArgumentException (
-              "The given destination configuration object conflicts with the source configuration: " + ex.Message,
-              "destination",
-              ex);
-        }
-      }
-
-      foreach (KeyValuePair<Type, ClassContext> interfaceRegistration in _registeredInterfaces)
-      {
-        if (destination._registeredInterfaces.ContainsKey (interfaceRegistration.Key))
-          destination._registeredInterfaces.Remove (interfaceRegistration.Key);
-        destination.RegisterInterface (interfaceRegistration.Key, interfaceRegistration.Value.Type);
-      }
-    }
-
-    private void ClassContextAdded (object sender, ClassContextEventArgs e)
-    {
-      foreach (Type completeInterface in e.ClassContext.CompleteInterfaces)
-        RegisterInterface (completeInterface, e.ClassContext);
-    }
-
-    private void ClassContextRemoved (object sender, ClassContextEventArgs e)
-    {
-      var interfacesToBeRemoved = new List<Type> ();
-      foreach (KeyValuePair<Type, ClassContext> item in _registeredInterfaces)
-      {
-        if (ReferenceEquals (item.Value, e.ClassContext))
-          interfacesToBeRemoved.Add (item.Key);
-      }
-      foreach (Type type in interfacesToBeRemoved)
-        _registeredInterfaces.Remove (type);
     }
   }
 }

@@ -138,7 +138,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       var builder = new MixinConfigurationBuilder (parentConfiguration);
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
-      Assert.That (configuration.ResolveInterface (typeof (IBaseType31)), Is.SameAs (configuration.GetContext (typeof (BaseType3))));
+      Assert.That (configuration.ResolveCompleteInterface (typeof (IBaseType31)), Is.SameAs (configuration.GetContext (typeof (BaseType3))));
     }
 
     [Test]
@@ -293,7 +293,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
           .ForClass (typeof (BaseType6))
           .AddMixin (typeof (BT6Mixin1))
           .AddCompleteInterface (typeof (ICBT6Mixin1)).BuildConfiguration();
-      ClassContext resolvedContext = configuration.ResolveInterface (typeof (ICBT6Mixin1));
+      ClassContext resolvedContext = configuration.ResolveCompleteInterface (typeof (ICBT6Mixin1));
       Assert.IsNotNull (resolvedContext);
       Assert.AreEqual (typeof (BaseType6), resolvedContext.Type);
       Assert.AreEqual (1, resolvedContext.Mixins.Count);

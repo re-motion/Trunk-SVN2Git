@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -28,12 +29,11 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
     [Test]
     public void AddClassContextCausesInterfaceToBeRegistered ()
     {
-      var ac = new MixinConfiguration ();
       ClassContext cc = new ClassContextBuilder (typeof (BaseType2))
           .AddCompleteInterface (typeof (IBaseType2))
           .BuildClassContext ();
-      ac.ClassContexts.Add (cc);
-      Assert.AreSame (cc, ac.ResolveInterface (typeof (IBaseType2)));
+      var ac = new MixinConfiguration (new ClassContextCollection (cc));
+      Assert.That (ac.ResolveCompleteInterface (typeof (IBaseType2)), Is.SameAs (cc));
     }
 
     [Test]

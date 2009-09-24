@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -36,114 +37,6 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
     {
       var configuration = new MixinConfiguration();
       Assert.IsEmpty (configuration.ClassContexts);
-    }
-
-    [Test]
-    public void CopyTo_Simple ()
-    {
-      MixinConfiguration source = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin1)).WithDependency (typeof (IBaseType34))
-          .AddCompleteInterface (typeof (IBaseType33))
-          .BuildConfiguration ();
-
-      var destination = new MixinConfiguration ();
-      source.CopyTo (destination);
-      Assert.That(destination.ClassContexts, Is.EquivalentTo(source.ClassContexts));
-      Assert.IsNotNull (destination.ResolveInterface (typeof (IBaseType33)));
-      Assert.AreSame (destination.ClassContexts.GetExact (typeof (BaseType1)), destination.ResolveInterface (typeof (IBaseType33)));
-    }
-
-    [Test]
-    public void CopyTo_WithParent ()
-    {
-      MixinConfiguration parent = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType2))
-          .AddMixin (typeof (BT2Mixin1))
-          .AddCompleteInterface (typeof (IBaseType31))
-          .BuildConfiguration();
-      
-      MixinConfiguration source = new MixinConfigurationBuilder (parent)
-          .ForClass (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin1)).WithDependency (typeof (IBaseType34))
-          .AddCompleteInterface (typeof (IBaseType33))
-          .BuildConfiguration ();
-
-      var destination = new MixinConfiguration ();
-      source.CopyTo (destination);
-      Assert.That(destination.ClassContexts, Is.EquivalentTo(source.ClassContexts));
-      Assert.IsNotNull (destination.ResolveInterface (typeof (IBaseType33)));
-      Assert.AreSame (destination.ClassContexts.GetExact (typeof (BaseType1)), destination.ResolveInterface (typeof (IBaseType33)));
-      Assert.IsNotNull (destination.ResolveInterface (typeof (IBaseType31)));
-      Assert.AreSame (destination.ClassContexts.GetExact (typeof (BaseType2)), destination.ResolveInterface (typeof (IBaseType31)));
-    }
-
-    [Test]
-    public void CopyTo_WithReplacement ()
-    {
-      MixinConfiguration source = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin1)).WithDependency (typeof (IBaseType34))
-          .AddCompleteInterface (typeof (IBaseType33))
-          .BuildConfiguration ();
-
-      MixinConfiguration destination = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin2)).WithDependency (typeof (IBaseType35))
-          .AddCompleteInterface (typeof (IBaseType34))
-          .BuildConfiguration ();
-
-      source.CopyTo (destination);
-
-      Assert.That(destination.ClassContexts, Is.EquivalentTo(source.ClassContexts));
-      Assert.IsNotNull (destination.ResolveInterface (typeof (IBaseType33)));
-      Assert.AreSame (destination.ClassContexts.GetExact (typeof (BaseType1)), destination.ResolveInterface (typeof (IBaseType33)));
-      Assert.IsNull (destination.ResolveInterface (typeof (IBaseType35)));
-    }
-
-    [Test]
-    public void CopyTo_WithAddition ()
-    {
-      MixinConfiguration source = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin1)).WithDependency (typeof (IBaseType34))
-          .AddCompleteInterface (typeof (IBaseType33))
-          .BuildConfiguration ();
-
-      MixinConfiguration destination = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType2))
-          .AddMixin (typeof (BT1Mixin2)).WithDependency (typeof (IBaseType35))
-          .AddCompleteInterface (typeof (IBaseType34))
-          .BuildConfiguration ();
-
-      source.CopyTo (destination);
-
-      Assert.IsTrue (destination.ClassContexts.ContainsExact (typeof (BaseType1)));
-      Assert.IsTrue (destination.ClassContexts.ContainsExact (typeof (BaseType2)));
-
-      Assert.AreSame (destination.ClassContexts.GetExact (typeof (BaseType1)), destination.ResolveInterface (typeof (IBaseType33)));
-      Assert.AreSame (destination.ClassContexts.GetExact (typeof (BaseType2)), destination.ResolveInterface (typeof (IBaseType34)));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given destination configuration object conflicts with the source "
-          + "configuration: There is an ambiguity in complete interfaces: interface 'Remotion.UnitTests.Mixins.SampleTypes.IBaseType33' refers to "
-          + "both class", MatchType = MessageMatch.Contains)] // cannot write full message, order undefined
-    public void CopyTo_ThrowsWhenConflictWithRegisteredInterface ()
-    {
-      MixinConfiguration source = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType1))
-          .AddMixin (typeof (BT1Mixin1)).WithDependency (typeof (IBaseType34))
-          .AddCompleteInterface (typeof (IBaseType33))
-          .BuildConfiguration ();
-
-      MixinConfiguration destination = new MixinConfigurationBuilder (null)
-          .ForClass (typeof (BaseType2))
-          .AddMixin (typeof (BT1Mixin2)).WithDependency (typeof (IBaseType35))
-          .AddCompleteInterface (typeof (IBaseType33))
-          .BuildConfiguration ();
-
-      source.CopyTo (destination);
     }
 
     [Test]
@@ -225,5 +118,32 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       Assert.That (context2, Is.Null);
     }
 
+    [Test]
+    public void SetMasterConfiguration ()
+    {
+      var mixinConfiguration = new MixinConfiguration ();
+      MixinConfiguration.SetMasterConfiguration (mixinConfiguration);
+      Assert.That (MixinConfiguration.GetMasterConfiguration (), Is.SameAs (mixinConfiguration));
+    }
+
+    [Test]
+    public void GetMasterConfiguration_Default ()
+    {
+      var oldMasterConfiguration = MixinConfiguration.GetMasterConfiguration ();
+
+      try
+      {
+        MixinConfiguration.SetMasterConfiguration (null);
+        var newMasterConfiguration = MixinConfiguration.GetMasterConfiguration ();
+
+        Assert.That (newMasterConfiguration, Is.Not.Null);
+        Assert.That (newMasterConfiguration, Is.Not.SameAs (oldMasterConfiguration));
+        Assert.That (newMasterConfiguration.GetContext (typeof (BaseType1)), Is.Not.Null);
+      }
+      finally
+      {
+        MixinConfiguration.SetMasterConfiguration (oldMasterConfiguration);
+      }
+    }
   }
 }

@@ -20,43 +20,43 @@ namespace Remotion.Mixins
 {
   public partial class MixinConfiguration
   {
-    private static MixinConfiguration _masterConfiguration = null;
-    private static readonly object _masterConfigurationLock = new object ();
+    private static MixinConfiguration s_masterConfiguration = null;
+    private static readonly object s_masterConfigurationLock = new object ();
 
-    private static MixinConfiguration GetMasterConfiguration ()
+    /// <summary>
+    /// Gets the master <see cref="MixinConfiguration"/>. The master configuration is the default <see cref="MixinConfiguration"/> used whenever a 
+    /// thread first accesses its <see cref="ActiveConfiguration"/>. If no master configuration has been set via <see cref="SetMasterConfiguration"/>,
+    /// a default configuration will be built by <see cref="DeclarativeConfigurationBuilder.BuildDefaultConfiguration"/>.
+    /// </summary>
+    /// <returns>The master <see cref="MixinConfiguration"/>.</returns>
+    /// <seealso cref="SetMasterConfiguration"/>
+    public static MixinConfiguration GetMasterConfiguration ()
     {
-      lock (_masterConfigurationLock)
+      lock (s_masterConfigurationLock)
       {
-        if (_masterConfiguration == null)
-          _masterConfiguration = DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
-        return _masterConfiguration;
-      }
-    }
-
-    private static MixinConfiguration CopyMasterConfiguration ()
-    {
-      lock (_masterConfigurationLock)
-      {
-        MixinConfiguration masterConfiguration = GetMasterConfiguration ();
-        return new MixinConfiguration (masterConfiguration);
+        if (s_masterConfiguration == null)
+          s_masterConfiguration = DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
+        return s_masterConfiguration;
       }
     }
 
     /// <summary>
-    /// Locks access to the application's master mixin configuration and accepts a delegate to edit the configuration while it is locked.
+    /// Sets the master <see cref="MixinConfiguration"/>. The master configuration is the default <see cref="MixinConfiguration"/> used whenever a 
+    /// thread first accesses its <see cref="ActiveConfiguration"/>. If the master configuration is set to <see langword="null" />, the next call
+    /// to <see cref="GetMasterConfiguration"/> (or the next thread first accessing its <see cref="ActiveConfiguration"/>) will trigger a new
+    /// default configuration to be built.
     /// </summary>
-    /// <param name="editor">A delegate performing changes to the master configuration.</param>
+    /// <param name="newMasterConfiguration">The <see cref="MixinConfiguration"/> to be used as the new master configuration.</param>
     /// <remarks>
-    /// The master mixin configuration is the default mixin configuration used whenever a thread first accesses
-    /// <see cref="ActiveConfiguration"/>. Changes made to it will affect any thread accessing its mixin configuration for the
-    /// first time after this method has been called. If a thread attempts to access its mixin configuration for the first time while
-    /// a change is in progress, it will block until until that process has finished (i.e. until <paramref name="editor"/> has returned).
+    /// Changes made to the master configuration will affect any thread accessing its mixin configuration for the
+    /// first time after this method has been called.
     /// </remarks>
-    public static void EditMasterConfiguration (Action<MixinConfiguration> editor)
+    /// <seealso cref="GetMasterConfiguration"/>
+    public static void SetMasterConfiguration (MixinConfiguration newMasterConfiguration)
     {
-      lock (_masterConfigurationLock)
+      lock (s_masterConfigurationLock)
       {
-        editor (GetMasterConfiguration ());
+        s_masterConfiguration = newMasterConfiguration;
       }
     }
 
@@ -70,9 +70,9 @@ namespace Remotion.Mixins
     /// </remarks>
     public static void ResetMasterConfiguration ()
     {
-      lock (_masterConfigurationLock)
+      lock (s_masterConfigurationLock)
       {
-        _masterConfiguration = null;
+        s_masterConfiguration = null;
       }
     }
   }

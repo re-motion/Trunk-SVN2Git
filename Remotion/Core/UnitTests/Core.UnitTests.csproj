@@ -547,7 +547,6 @@
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCompleteInterfaceTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCurrentConfigurationTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationTest.cs" />
-    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationInheritanceTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationValidationTest.cs" />
     <Compile Include="Mixins\MixinTargetMockUtilityTest.cs" />
     <Compile Include="Mixins\ObjectFactoryTest.cs" />
