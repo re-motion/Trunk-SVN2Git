@@ -37,29 +37,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
   public class DeclarativeConfigurationBuilderGeneralTest
   {
     [Test]
-    public void BuildFromClassContexts()
-    {
-      MixinConfiguration ac = DeclarativeConfigurationBuilder.BuildConfigurationFromClasses (null, new ClassContext (typeof (BaseType1)));
-      Assert.IsTrue (ac.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-      Assert.IsFalse (ac.ClassContexts.ContainsWithInheritance (typeof (BaseType2)));
-
-      MixinConfiguration ac2 = DeclarativeConfigurationBuilder.BuildConfigurationFromClasses (ac, new ClassContext (typeof (BaseType2)), new ClassContext (typeof (BaseType3)));
-      Assert.IsTrue (ac2.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-      Assert.IsTrue (ac2.ClassContexts.ContainsWithInheritance (typeof (BaseType2)));
-      Assert.AreEqual (0, ac2.ClassContexts.GetWithInheritance (typeof (BaseType2)).Mixins.Count);
-      Assert.IsTrue (ac2.ClassContexts.ContainsWithInheritance (typeof (BaseType3)));
-
-      MixinConfiguration ac3 = DeclarativeConfigurationBuilder.BuildConfigurationFromClasses (ac2, new ClassContext (typeof (BaseType2), typeof (BT2Mixin1)));
-      Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
-      Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (BaseType2)));
-      Assert.AreEqual (1, ac3.ClassContexts.GetWithInheritance (typeof (BaseType2)).Mixins.Count);
-      Assert.IsTrue (ac3.ClassContexts.ContainsWithInheritance (typeof (BaseType3)));
-    }
-
-    [Test]
     public void BuildFromAssemblies()
     {
-      MixinConfiguration ac = DeclarativeConfigurationBuilder.BuildConfigurationFromClasses (null, new ClassContext(typeof (object)));
+      var ac = new MixinConfiguration (new ClassContextCollection (new ClassContext(typeof (object))));
       var assemblies = new[] { typeof (BaseType1).Assembly, typeof (object).Assembly };
       MixinConfiguration ac2 = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (assemblies);
       Assert.IsTrue (ac2.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));

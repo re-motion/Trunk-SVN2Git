@@ -23,6 +23,7 @@ using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context
 {
@@ -35,42 +36,17 @@ namespace Remotion.Mixins.Context
   public class DeclarativeConfigurationBuilder
   {
     /// <summary>
-    /// Builds a new <see cref="MixinConfiguration"/> from the declarative configuration information in the given assemblies.
+    /// Builds a new <see cref="MixinConfiguration"/> from the declarative configuration information in the given assemblies without inheriting
+    /// from a parent configuration.
     /// </summary>
-    /// <param name="parentConfiguration">The parent configuration to derive the new configuration from (can be <see langword="null"/>).</param>
     /// <param name="assemblies">The assemblies to be scanned for declarative mixin information.</param>
-    /// <returns>An mixin configuration inheriting from <paramref name="parentConfiguration"/> and incorporating the configuration information
-    /// held by the given assemblies.</returns>
+    /// <returns>A mixin configuration incorporating the configuration information held by the given assemblies.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> parameter is <see langword="null"/>.</exception>
-    public static MixinConfiguration BuildConfigurationFromAssemblies (MixinConfiguration parentConfiguration, IEnumerable<Assembly> assemblies)
+    public static MixinConfiguration BuildConfigurationFromAssemblies (params Assembly[] assemblies)
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 
-      return BuildDerivedConfiguration (parentConfiguration, delegate (DeclarativeConfigurationBuilder builder)
-      {
-        foreach (Assembly assembly in assemblies)
-          builder.AddAssembly (assembly);
-      });
-    }
-
-    private static MixinConfiguration BuildDerivedConfiguration (MixinConfiguration parentConfiguration, System.Action<DeclarativeConfigurationBuilder> overrideGenerator)
-    {
-      ArgumentUtility.CheckNotNull ("overrideGenerator", overrideGenerator);
-      
-      // DeclarativeConfigurationBuilder will not overwrite any existing class contexts, but instead augment them with any new definitions.
-      // This is exactly what we want for the generated overrides, since all of these are of equal priority. However, we want to replace any
-      // conflicting contexts inherited from the parent configuration.
-
-      // Therefore, we first analyze all overrides into a temporary configuration without replacements:
-      DeclarativeConfigurationBuilder tempConfigurationBuilder = new DeclarativeConfigurationBuilder (null);
-      overrideGenerator (tempConfigurationBuilder);
-
-      MixinConfiguration tempConfiguration = tempConfigurationBuilder.BuildConfiguration ();
-
-      // Then, we add the analyzed data to the result context, replacing the respective inherited class contexts:
-      MixinConfiguration fullConfiguration = new MixinConfiguration (parentConfiguration);
-      tempConfiguration.CopyTo (fullConfiguration);
-      return fullConfiguration;
+      return BuildConfigurationFromAssemblies (null, (IEnumerable<Assembly>) assemblies);
     }
 
     /// <summary>
@@ -89,35 +65,22 @@ namespace Remotion.Mixins.Context
     }
 
     /// <summary>
-    /// Builds a new <see cref="MixinConfiguration"/> from the declarative configuration information in the given assemblies without inheriting
-    /// from a parent configuration.
+    /// Builds a new <see cref="MixinConfiguration"/> from the declarative configuration information in the given assemblies.
     /// </summary>
+    /// <param name="parentConfiguration">The parent configuration to derive the new configuration from (can be <see langword="null"/>).</param>
     /// <param name="assemblies">The assemblies to be scanned for declarative mixin information.</param>
-    /// <returns>A mixin configuration incorporating the configuration information held by the given assemblies.</returns>
+    /// <returns>An mixin configuration inheriting from <paramref name="parentConfiguration"/> and incorporating the configuration information
+    /// held by the given assemblies.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> parameter is <see langword="null"/>.</exception>
-    public static MixinConfiguration BuildConfigurationFromAssemblies (params Assembly[] assemblies)
+    public static MixinConfiguration BuildConfigurationFromAssemblies (MixinConfiguration parentConfiguration, IEnumerable<Assembly> assemblies)
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 
-      return BuildConfigurationFromAssemblies (null, (IEnumerable<Assembly>) assemblies);
-    }
+      var builder = new DeclarativeConfigurationBuilder (parentConfiguration);
+      foreach (Assembly assembly in assemblies)
+        builder.AddAssembly (assembly);
 
-    /// <summary>
-    /// Builds a new <see cref="MixinConfiguration"/> containing the given class contexts (replacing conflicting inherited ones, if any).
-    /// </summary>
-    /// <param name="parentConfiguration">The parent configuration to derive the new configuration from (can be <see langword="null"/>).</param>
-    /// <param name="classContexts">The class contexts to be contained in the new mixin configuration.</param>
-    /// <returns>A mixin configuration inheriting from <paramref name="parentConfiguration"/> and incorporating the given class contexts.</returns>
-    public static MixinConfiguration BuildConfigurationFromClasses (MixinConfiguration parentConfiguration, params ClassContext[] classContexts)
-    {
-      ArgumentUtility.CheckNotNull ("classContexts", classContexts);
-
-      MixinConfiguration configuration = new MixinConfiguration (parentConfiguration);
-
-      foreach (ClassContext classContext in classContexts)
-        configuration.ClassContexts.AddOrReplace (classContext);
-
-      return configuration;
+      return builder.BuildConfiguration ();
     }
 
     /// <summary>
@@ -132,14 +95,14 @@ namespace Remotion.Mixins.Context
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
-      return BuildDerivedConfiguration (parentConfiguration, delegate (DeclarativeConfigurationBuilder builder)
+      var builder = new DeclarativeConfigurationBuilder (parentConfiguration);
+      foreach (Type type in types)
       {
-        foreach (Type type in types)
-        {
-          if (!type.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false))
-            builder.AddType (type);
-        }
-      });
+        if (!type.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false))
+          builder.AddType (type);
+      }
+
+      return builder.BuildConfiguration ();
     }
 
     /// <summary>
@@ -160,7 +123,7 @@ namespace Remotion.Mixins.Context
     public static MixinConfiguration BuildDefaultConfiguration ()
     {
       ICollection types = GetTypeDiscoveryService().GetTypes (null, false);
-      return BuildConfigurationFromTypes (null, EnumerableUtility.Cast<Type> (types));
+      return BuildConfigurationFromTypes (null, types.Cast<Type>());
     }
 
     // Separate method because of tests
