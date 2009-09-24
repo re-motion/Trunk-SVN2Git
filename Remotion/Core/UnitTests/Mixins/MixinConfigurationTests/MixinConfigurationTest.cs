@@ -453,6 +453,16 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
     }
 
     [Test]
+    public void GetContext_Configured_ButEmpty ()
+    {
+      var configuration = MixinConfiguration.BuildNew ().ForClass<NullTarget> ().BuildConfiguration ();
+      Assert.That (configuration.ClassContexts.ContainsExact (typeof (NullTarget)), Is.True);
+
+      var context = configuration.GetContext (typeof (NullTarget));
+      Assert.That (context, Is.Null);
+    }
+
+    [Test]
     public void GetContext_ReturnsNull_IfNotConfigured ()
     {
       Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);

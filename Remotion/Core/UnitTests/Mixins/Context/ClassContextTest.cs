@@ -89,6 +89,27 @@ namespace Remotion.UnitTests.Mixins.Context
     }
 
     [Test]
+    public void IsEmpty_True ()
+    {
+      var context = new ClassContext (typeof (BaseType1));
+      Assert.That (context.IsEmpty (), Is.True);
+    }
+
+    [Test]
+    public void IsEmpty_False_Mixins ()
+    {
+      var context = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
+      Assert.That (context.IsEmpty (), Is.False);
+    }
+
+    [Test]
+    public void IsEmpty_False_CompleteInterfaces ()
+    {
+      var context = new ClassContext (typeof (BaseType1), new MixinContext[0], new[] { typeof (ICBT6Mixin3) });
+      Assert.That (context.IsEmpty (), Is.False);
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The mixin type System.Object was tried to be added twice.\r\n"
                                                                       + "Parameter name: mixinTypes")]
     public void ConstructorThrows_OnDuplicateMixinTypes ()

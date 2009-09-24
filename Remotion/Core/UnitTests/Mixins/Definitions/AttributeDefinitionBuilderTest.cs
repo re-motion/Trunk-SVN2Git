@@ -22,6 +22,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Mixins.Context;
 
 namespace Remotion.UnitTests.Mixins.Definitions
 {
@@ -81,11 +82,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void InternalAttributesAreIgnored()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass<ClassWithInternalAttribute>().Clear().EnterScope())
-      {
-        Assert.That (
-                      DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInternalAttribute)).CustomAttributes.ContainsKey (typeof (InternalStuffAttribute)), Is.False);
-      }
+      var context = new ClassContext (typeof (ClassWithInternalAttribute));
+      var definition = TargetClassDefinitionFactory.CreateTargetClassDefinition (context);
+      Assert.That (definition.CustomAttributes.ContainsKey (typeof (InternalStuffAttribute)), Is.False);
     }
 
     [Test]

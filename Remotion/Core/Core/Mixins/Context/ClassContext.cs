@@ -152,6 +152,17 @@ namespace Remotion.Mixins.Context
     }
 
     /// <summary>
+    /// Determines whether this <see cref="ClassContext"/> is empty, i.e. it contains no <see cref="Mixins"/> or <see cref="CompleteInterfaces"/>.
+    /// </summary>
+    /// <returns>
+    /// 	<see langword="true" /> if this <see cref="ClassContext"/> is empty; otherwise, <see langword="false" />.
+    /// </returns>
+    public bool IsEmpty ()
+    {
+      return Mixins.Count == 0 && CompleteInterfaces.Count == 0;
+    }
+
+    /// <summary>
     /// Determines whether the specified <see cref="T:System.Object"></see> is equal to the current <see cref="ClassContext"/>.
     /// </summary>
     /// <param name="obj">The <see cref="T:System.Object"></see> to compare with this <see cref="ClassContext"/>.</param>
@@ -165,20 +176,20 @@ namespace Remotion.Mixins.Context
       if (other == null)
         return false;
       
-        if (!other.Type.Equals (Type) || other._mixins.Count != _mixins.Count || other._completeInterfaces.Count != _completeInterfaces.Count)
+      if (!other.Type.Equals (Type) || other._mixins.Count != _mixins.Count || other._completeInterfaces.Count != _completeInterfaces.Count)
+        return false;
+
+      foreach (MixinContext mixinContext in _mixins)
+      {
+        if (!other._mixins.ContainsKey (mixinContext.MixinType) || !other._mixins[mixinContext.MixinType].Equals (mixinContext))
           return false;
+      }
 
-        foreach (MixinContext mixinContext in _mixins)
-        {
-          if (!other._mixins.ContainsKey (mixinContext.MixinType) || !other._mixins[mixinContext.MixinType].Equals (mixinContext))
-            return false;
-        }
-
-        foreach (Type completeInterface in _completeInterfaces)
-        {
-          if (!other._completeInterfaces.ContainsKey (completeInterface))
-            return false;
-        }
+      foreach (Type completeInterface in _completeInterfaces)
+      {
+        if (!other._completeInterfaces.ContainsKey (completeInterface))
+          return false;
+      }
 
       return true;
     }

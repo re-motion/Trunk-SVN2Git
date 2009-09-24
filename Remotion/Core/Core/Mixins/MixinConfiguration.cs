@@ -160,7 +160,9 @@ namespace Remotion.Mixins
               ? MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType) 
               : ClassContexts.GetWithInheritance (targetOrConcreteType);
 
-      if (context != null && targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
+      if (context == null || context.IsEmpty())
+        return null;
+      else if (targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
         return context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
       else
         return context;
