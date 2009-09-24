@@ -267,26 +267,20 @@ namespace Remotion.UnitTests.Mixins.Definitions
       CheckExplicitDependencyOrdering (context);
     }
 
-    private void CheckExplicitDependencyOrdering (ClassContext classContext)
-    {
-      var configuration = new MixinConfiguration ();
-      configuration.ClassContexts.Add (classContext);
-
-      using (configuration.EnterScope())
-      {
-        TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
-        Assert.That (targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)].MixinIndex, Is.EqualTo (0));
-        Assert.That (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinIndex, Is.EqualTo (1));
-        Assert.That (targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)].MixinIndex, Is.EqualTo (2));
-      }
-    }
-
     [Test]
     public void AlphabeticOrdering ()
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithMixinsAcceptingAlphabeticOrdering));
       Assert.That (targetClass.Mixins[0].Type, Is.EqualTo (typeof (MixinAcceptingAlphabeticOrdering1)));
       Assert.That (targetClass.Mixins[1].Type, Is.EqualTo (typeof (MixinAcceptingAlphabeticOrdering2)));
+    }
+
+    private void CheckExplicitDependencyOrdering (ClassContext classContext)
+    {
+      TargetClassDefinition targetClass = TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
+      Assert.That (targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)].MixinIndex, Is.EqualTo (0));
+      Assert.That (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinIndex, Is.EqualTo (1));
+      Assert.That (targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)].MixinIndex, Is.EqualTo (2));
     }
   }
 }

@@ -23,9 +23,6 @@ namespace Remotion.Mixins.Context
 {
   public class ClassContextCollection : ICollection, ICollection<ClassContext>
   {
-    public event EventHandler<ClassContextEventArgs> ClassContextAdded;
-    public event EventHandler<ClassContextEventArgs> ClassContextRemoved;
-
     private readonly Dictionary<Type, ClassContext> _values = new Dictionary<Type, ClassContext> ();
     private readonly IMixinInheritancePolicy _inheritancePolicy = DefaultMixinInheritancePolicy.Instance;
 
@@ -64,57 +61,6 @@ namespace Remotion.Mixins.Context
     {
       ArgumentUtility.CheckNotNull ("array", array);
       ((ICollection) _values.Values).CopyTo (array, index);
-    }
-
-    public void Clear ()
-    {
-      var keys = new List<Type> (_values.Keys);
-      foreach (Type type in keys)
-        RemoveExact (type);
-    }
-
-    public void Add (ClassContext value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-      if (ContainsExact (value.Type))
-      {
-        string message = string.Format ("A class context for type {0} was already added.", value.Type.FullName);
-        throw new InvalidOperationException (message);
-      }
-      
-      _values.Add (value.Type, value);
-      if (ClassContextAdded != null)
-        ClassContextAdded (this, new ClassContextEventArgs (value));
-    }
-
-    public void AddOrReplace (ClassContext value)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-      RemoveExact (value.Type);
-      Add (value);
-    }
-
-    public bool RemoveExact (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ClassContext removed = GetExact (type);
-      bool result = _values.Remove (type);
-      if (result && ClassContextRemoved != null)
-        ClassContextRemoved (this, new ClassContextEventArgs (removed));
-      return result;
-    }
-
-    bool ICollection<ClassContext>.Remove (ClassContext item)
-    {
-      if (!Contains (item))
-        return false;
-      else
-      {
-        bool result = RemoveExact (item.Type);
-        Assertion.IsTrue (result);
-        Assertion.IsFalse (Contains (item));
-        return result;
-      }
     }
 
     public ClassContext GetExact (Type type)
@@ -180,7 +126,22 @@ namespace Remotion.Mixins.Context
 
     bool ICollection<ClassContext>.IsReadOnly
     {
-      get { return false; }
+      get { return true; }
+    }
+
+    void ICollection<ClassContext>.Clear ()
+    {
+      throw new NotSupportedException ("This collection is read-only.");
+    }
+
+    void ICollection<ClassContext>.Add (ClassContext value)
+    {
+      throw new NotSupportedException ("This collection is read-only.");
+    }
+
+    bool ICollection<ClassContext>.Remove (ClassContext item)
+    {
+      throw new NotSupportedException ("This collection is read-only.");
     }
   }
 }

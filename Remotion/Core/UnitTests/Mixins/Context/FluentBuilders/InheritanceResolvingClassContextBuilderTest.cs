@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _buildersWithParentContexts.Add (_classContextBuilderWithoutParent.TargetType, Tuple.NewTuple (_classContextBuilderWithoutParent, (ClassContext) null));
 
       _parentContextWithoutBuilder = new ClassContext (typeof (BaseType1));
-      _parentContexts = new ClassContextCollection { _parentContextWithoutBuilder, _parentContextWithBuilder };
+      _parentContexts = new ClassContextCollection (_parentContextWithoutBuilder, _parentContextWithBuilder);
 
       _inheritancePolicyMock = MockRepository.GenerateMock<IMixinInheritancePolicy> ();
       _inheritedContext = new ClassContext (typeof (object), typeof (NullMixin));

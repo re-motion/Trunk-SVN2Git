@@ -47,11 +47,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       _genericClassContext = new ClassContext (typeof (GenericTargetClass<>));
       _interfaceClassContext = new ClassContext (typeof (IBaseType2));
 
-      _configuration = new MixinConfiguration ();
-      _configuration.ClassContexts.Add (_configuredClassContext1);
-      _configuration.ClassContexts.Add (_configuredClassContext2);
-      _configuration.ClassContexts.Add (_genericClassContext);
-      _configuration.ClassContexts.Add (_interfaceClassContext);
+      var classContexts = new ClassContextCollection (_configuredClassContext1, _configuredClassContext2, _genericClassContext, _interfaceClassContext);
+      _configuration = new MixinConfiguration (classContexts);
 
       _emptyTypeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub ();
     }
