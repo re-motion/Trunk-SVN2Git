@@ -71,7 +71,7 @@ namespace Remotion.Mixins.BridgeImplementations
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext classContext = GetConcreteClassContext(targetOrConcreteType);
+      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
       return classContext != null && classContext.Mixins.Count > 0;
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.Mixins.BridgeImplementations
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      ClassContext classContext = GetConcreteClassContext (targetOrConcreteType);
+      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
       return classContext != null && classContext.Mixins.ContainsKey (mixinType);
     }
 
@@ -102,19 +102,11 @@ namespace Remotion.Mixins.BridgeImplementations
       return GetAscribableMixinType (targetOrConcreteType, mixinType) != null;
     }
 
-    private ClassContext GetConcreteClassContext (Type targetOrConcreteType)
-    {
-      if (IsGeneratedConcreteMixedType (targetOrConcreteType))
-        return MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType);
-      else
-        return MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (targetOrConcreteType);
-    }
-
     public IEnumerable<Type> GetMixinTypes (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext classContext = GetConcreteClassContext (targetOrConcreteType);
+      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
       if (classContext != null)
       {
         foreach (MixinContext mixinContext in classContext.Mixins)

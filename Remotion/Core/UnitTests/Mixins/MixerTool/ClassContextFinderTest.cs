@@ -37,26 +37,26 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
     private MixinConfiguration _configuration;
 
-    private ITypeDiscoveryService _emptyTypeDiscoveryServiceStub;
+    private ITypeDiscoveryService _configuredTypeDiscoveryServiceStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _configuredClassContext1 = new ClassContext (typeof (BaseType1));
-      _configuredClassContext2 = new ClassContext (typeof (NullTarget));
-      _genericClassContext = new ClassContext (typeof (GenericTargetClass<>));
-      _interfaceClassContext = new ClassContext (typeof (IBaseType2));
+      _configuredClassContext1 = new ClassContext (typeof (BaseType1), typeof (NullMixin));
+      _configuredClassContext2 = new ClassContext (typeof (NullTarget), typeof (NullMixin));
+      _genericClassContext = new ClassContext (typeof (GenericTargetClass<>), typeof (NullMixin));
+      _interfaceClassContext = new ClassContext (typeof (IBaseType2), typeof (NullMixin));
 
       var classContexts = new ClassContextCollection (_configuredClassContext1, _configuredClassContext2, _genericClassContext, _interfaceClassContext);
       _configuration = new MixinConfiguration (classContexts);
 
-      _emptyTypeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub ();
+      _configuredTypeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub (_configuredClassContext1.Type, _configuredClassContext2.Type, _genericClassContext.Type, _interfaceClassContext.Type);
     }
 
     [Test]
     public void FindClassContexts_ConfiguredContexts ()
     {
-      var finder = new ClassContextFinder (_emptyTypeDiscoveryServiceStub);
+      var finder = new ClassContextFinder (_configuredTypeDiscoveryServiceStub);
       var result = finder.FindClassContexts (_configuration).ToArray ();
 
       Assert.That (result, List.Contains (_configuredClassContext1));
@@ -66,7 +66,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_ConfiguredContexts_NoGenerics ()
     {
-      var finder = new ClassContextFinder (_emptyTypeDiscoveryServiceStub);
+      var finder = new ClassContextFinder (_configuredTypeDiscoveryServiceStub);
       var result = finder.FindClassContexts (_configuration).ToArray ();
 
       Assert.That (result, List.Not.Contains (_genericClassContext));
@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_ConfiguredContexts_NoInterfaces ()
     {
-      var finder = new ClassContextFinder (_emptyTypeDiscoveryServiceStub);
+      var finder = new ClassContextFinder (_configuredTypeDiscoveryServiceStub);
       var result = finder.FindClassContexts (_configuration).ToArray ();
 
       Assert.That (result, List.Not.Contains (_interfaceClassContext));

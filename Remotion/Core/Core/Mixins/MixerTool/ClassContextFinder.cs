@@ -46,15 +46,11 @@ namespace Remotion.Mixins.MixerTool
           configuration.ClassContexts.Count,
           types.Count);
 
-      var inheritedContexts = from t in types.Cast<Type>()
-                              where !t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false)
-                              let configuredContext = configuration.ClassContexts.GetExact (t)
-                              where configuredContext == null
-                              let inheritedContext = configuration.ClassContexts.GetWithInheritance (t)
-                              where inheritedContext != null
-                              select inheritedContext;
-
-      return configuration.ClassContexts.Concat (inheritedContexts).Where (ShouldProcessContext);
+      return from t in types.Cast<Type>()
+             where !t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false)
+             let context = configuration.GetContext (t)
+             where context != null && ShouldProcessContext (context)
+             select context;
     }
 
     private bool ShouldProcessContext (ClassContext context)
