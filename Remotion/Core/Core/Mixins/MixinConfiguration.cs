@@ -286,7 +286,7 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">One of the parameters is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface or no <see cref="ClassContext"/> for
     /// <paramref name="associatedClassType"/> has been added to this configuration.</exception>
-    public void RegisterInterface (Type interfaceType, Type associatedClassType)
+    private void RegisterInterface (Type interfaceType, Type associatedClassType)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
       ArgumentUtility.CheckNotNull ("associatedClassType", associatedClassType);
@@ -338,7 +338,7 @@ namespace Remotion.Mixins
         {
           destination.ClassContexts.AddOrReplace (classContext);
         }
-        catch (InvalidOperationException ex)
+        catch (ConfigurationException ex)
         {
           throw new ArgumentException (
               "The given destination configuration object conflicts with the source configuration: " + ex.Message,

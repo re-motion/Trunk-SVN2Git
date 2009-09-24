@@ -133,14 +133,12 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void BuildConfiguration_IncludesParentConfiguration_WithCompleteInterfaces ()
     {
       var parentConfiguration = new MixinConfiguration ();
-      parentConfiguration.ClassContexts.Add (new ClassContext (typeof (BaseType3)));
-      parentConfiguration.RegisterInterface (typeof (IBaseType31), typeof (BaseType3));
+      parentConfiguration.ClassContexts.Add (new ClassContext (typeof (BaseType3), new MixinContext[0], new[] { typeof (IBaseType31) }));
       
       var builder = new MixinConfigurationBuilder (parentConfiguration);
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
-      Assert.That (configuration.ResolveInterface (typeof (IBaseType31)), 
-          Is.SameAs (configuration.ClassContexts.GetWithInheritance (typeof (BaseType3))));
+      Assert.That (configuration.ResolveInterface (typeof (IBaseType31)), Is.SameAs (configuration.GetContext (typeof (BaseType3))));
     }
 
     [Test]

@@ -127,8 +127,8 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given destination configuration object conflicts with the source "
-          + "configuration: The interface Remotion.UnitTests.Mixins.SampleTypes.IBaseType33 has already been associated with a class context.\r\n"
-          + "Parameter name: destination")]
+          + "configuration: There is an ambiguity in complete interfaces: interface 'Remotion.UnitTests.Mixins.SampleTypes.IBaseType33' refers to "
+          + "both class", MatchType = MessageMatch.Contains)] // cannot write full message, order undefined
     public void CopyTo_ThrowsWhenConflictWithRegisteredInterface ()
     {
       MixinConfiguration source = new MixinConfigurationBuilder (null)
@@ -140,9 +140,8 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       MixinConfiguration destination = new MixinConfigurationBuilder (null)
           .ForClass (typeof (BaseType2))
           .AddMixin (typeof (BT1Mixin2)).WithDependency (typeof (IBaseType35))
+          .AddCompleteInterface (typeof (IBaseType33))
           .BuildConfiguration ();
-
-      destination.RegisterInterface (typeof (IBaseType33), typeof (BaseType2));
 
       source.CopyTo (destination);
     }
