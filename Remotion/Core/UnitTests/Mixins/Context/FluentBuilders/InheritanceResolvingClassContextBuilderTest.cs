@@ -210,5 +210,22 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       var expectedContextWithoutParent = _classContextBuilderWithoutParent.BuildClassContext (new ClassContext[0]);
       Assert.That (result.ToArray (), Is.EquivalentTo (new[] { expectedContextWithParent, expectedContextWithIndirectParent, expectedContextWithoutParent }));
     }
+
+    [Test]
+    public void BuildAllAndCombineWithParentContexts ()
+    {
+      _inheritancePolicyMock
+          .Expect (mock => mock.GetClassContextsToInheritFrom (Arg<Type>.Is.Anything, Arg<Func<Type, ClassContext>>.Is.Anything))
+          .Return (new ClassContext[0])
+          .Repeat.Any ();
+      _inheritancePolicyMock.Replay ();
+
+      var result = _builder.BuildAllAndCombineWithParentContexts ();
+
+      var expectedContextWithParent = _classContextBuilderWithParent.BuildClassContext (new[] { _parentContextWithBuilder });
+      var expectedContextWithIndirectParent = _classContextBuilderWithIndirectParent.BuildClassContext (new[] { _parentContextWithBuilder });
+      var expectedContextWithoutParent = _classContextBuilderWithoutParent.BuildClassContext (new ClassContext[0]);
+      Assert.That (result.ToArray (), Is.EquivalentTo (new[] { _parentContextWithoutBuilder, expectedContextWithParent, expectedContextWithIndirectParent, expectedContextWithoutParent }));
+    }
   }
 }

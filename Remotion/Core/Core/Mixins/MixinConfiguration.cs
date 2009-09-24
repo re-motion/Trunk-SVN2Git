@@ -258,22 +258,19 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">One of the parameters is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="interfaceType"/> argument is not an interface or
     /// <paramref name="associatedClassContext"/> has not been added to this configuration.</exception>
-    public void RegisterInterface (Type interfaceType, ClassContext associatedClassContext)
+    private void RegisterInterface (Type interfaceType, ClassContext associatedClassContext)
     {
       ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
       ArgumentUtility.CheckNotNull ("associatedClassContext", associatedClassContext);
 
-      if (!interfaceType.IsInterface)
-        throw new ArgumentException ("The argument is not an interface.", "interfaceType");
-
-      if (!_classContexts.ContainsExact (associatedClassContext.Type)
-          || !ReferenceEquals (_classContexts.GetExact (associatedClassContext.Type), associatedClassContext))
-        throw new ArgumentException ("The class context hasn't been added to this configuration.", "associatedClassContext");
-
       if (_registeredInterfaces.ContainsKey (interfaceType))
       {
-        string message = string.Format ("The interface {0} has already been associated with a class context.", interfaceType.FullName);
-        throw new InvalidOperationException (message);
+        string message = string.Format (
+            "There is an ambiguity in complete interfaces: interface '{0}' refers to both class '{1}' and '{2}'.",
+            interfaceType,
+            _registeredInterfaces[interfaceType].Type,
+            associatedClassContext.Type);
+        throw new ConfigurationException (message);
       }
 
       _registeredInterfaces.Add (interfaceType, associatedClassContext);

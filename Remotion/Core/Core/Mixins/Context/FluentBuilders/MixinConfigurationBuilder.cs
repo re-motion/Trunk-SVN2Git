@@ -144,12 +144,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
       var parentContexts = ParentConfiguration != null ? ParentConfiguration.ClassContexts : new ClassContextCollection();
       var builder = new InheritanceResolvingClassContextBuilder (ClassContextBuilders, parentContexts, DefaultMixinInheritancePolicy.Instance);
 
-      var result = new MixinConfiguration (ParentConfiguration);
-      foreach (var context in builder.BuildAll ())
-        result.ClassContexts.AddOrReplace (context);
-
-      return result;
-
+      var allContexts = builder.BuildAllAndCombineWithParentContexts();
+      var classContextCollection = new ClassContextCollection (allContexts);
+      return new MixinConfiguration (classContextCollection);
     }
 
     /// <summary>

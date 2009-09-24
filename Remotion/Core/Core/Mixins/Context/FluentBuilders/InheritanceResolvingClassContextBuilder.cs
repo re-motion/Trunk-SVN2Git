@@ -39,9 +39,10 @@ namespace Remotion.Mixins.Context.FluentBuilders
   /// </summary>
   public class InheritanceResolvingClassContextBuilder
   {
-    private readonly IMixinInheritancePolicy _inheritancePolicy;
     private readonly Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersAndParentContexts;
+    private readonly IEnumerable<ClassContext> _unmodifiedParentContexts;
     private readonly Dictionary<Type, ClassContext> _finishedContextCache;
+    private readonly IMixinInheritancePolicy _inheritancePolicy;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InheritanceResolvingClassContextBuilder"/> class.
@@ -62,10 +63,15 @@ namespace Remotion.Mixins.Context.FluentBuilders
           classContextBuilder => classContextBuilder.TargetType,
           classContextBuilder => Tuple.NewTuple (classContextBuilder, parentContexts.GetWithInheritance (classContextBuilder.TargetType)));
 
-      var initialContexts = parentContexts.Where (parentContext => !_buildersAndParentContexts.ContainsKey (parentContext.Type));
-      
-      _finishedContextCache = initialContexts.ToDictionary (c => c.Type);
+      _unmodifiedParentContexts = parentContexts.Where (parentContext => !_buildersAndParentContexts.ContainsKey (parentContext.Type));
+
+      _finishedContextCache = _unmodifiedParentContexts.ToDictionary (c => c.Type);
       _inheritancePolicy = inheritancePolicy;
+    }
+
+    public IEnumerable<ClassContext> BuildAllAndCombineWithParentContexts ()
+    {
+      return BuildAll().Concat (_unmodifiedParentContexts);
     }
 
     public IEnumerable<ClassContext> BuildAll ()
