@@ -27,14 +27,14 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void MixedInterface_GetsClassContext_ViaUses ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (IMixedInterface));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (IMixedInterface));
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (NullMixin)));
     }
 
     [Test]
     public void MixedInterface_GetsClassContext_ViaExtends ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (IMixedInterface));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (IMixedInterface));
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)));
     }
 

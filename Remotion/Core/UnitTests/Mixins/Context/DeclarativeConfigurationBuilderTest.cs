@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.Context
       _builder.AddType (typeof (object));
       _builder.AddType (typeof (string));
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new Type[] { typeof (object), typeof (string) }));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (object), typeof (string) }));
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Mixins.Context
       _builder.AddType (typeof (object));
       _builder.AddType (typeof (object));
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new Type[] { typeof (object) }));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (object) }));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _builder.AddType (typeof (string));
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new Type[] { typeof (object), typeof (string) }));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (object), typeof (string) }));
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _builder.AddType (typeof (List<>));
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new Type[] { typeof (List<>), typeof (object) }));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (List<>), typeof (object) }));
     }
 
     [Test]
@@ -82,7 +82,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _builder.AddType (typeof (List<int>));
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new Type[] { typeof (List<>) }));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (List<>) }));
     }
 
     class DerivedList : List<int> { }
@@ -92,7 +92,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _builder.AddType (typeof (DerivedList));
 
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new Type[] { typeof (DerivedList), typeof (List<>), typeof (object) }));
+      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (DerivedList), typeof (List<>), typeof (object) }));
     }
 
     [IgnoreForMixinConfiguration]
@@ -129,7 +129,7 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _builder.AddAssembly (typeof (DeclarativeConfigurationBuilderTest).Assembly);
 
-      DeclarativeConfigurationBuilder referenceBuilder = new DeclarativeConfigurationBuilder (null);
+      var referenceBuilder = new DeclarativeConfigurationBuilder (null);
       foreach (Type t in typeof (DeclarativeConfigurationBuilderTest).Assembly.GetTypes ())
       {
         if (!t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false) && !MixinTypeUtility.IsGeneratedByMixinEngine (t))
@@ -170,13 +170,13 @@ namespace Remotion.UnitTests.Mixins.Context
     public void BuildConfiguration_WithParentConfiguration ()
     {
       MixinConfiguration parentConfiguration = MixinConfiguration.BuildNew().ForClass<int>().AddMixin<string>().BuildConfiguration();
-      DeclarativeConfigurationBuilder builder = new DeclarativeConfigurationBuilder (parentConfiguration);
+      var builder = new DeclarativeConfigurationBuilder (parentConfiguration);
       builder.AddType (typeof (User));
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
       ClassContext c1 = new ClassContextBuilder (typeof (User)).AddMixin (typeof (NullMixin)).OfKind (MixinKind.Used).BuildClassContext ();
       Assert.That (configuration.ClassContexts,
-          Is.EquivalentTo (new object[] { c1, parentConfiguration.ClassContexts.GetExact (typeof (int)), _globalClassContext }));
+          Is.EquivalentTo (new object[] { c1, parentConfiguration.GetContext (typeof (int)), _globalClassContext }));
     }
 
     [Test]

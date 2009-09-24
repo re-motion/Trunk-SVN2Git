@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       ClassContext context = attributes[0].GetClassContext ();
-      Assert.That (context, Is.EqualTo (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType3))));
+      Assert.That (context, Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType3))));
     }
 
     [Test]

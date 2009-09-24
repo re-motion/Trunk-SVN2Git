@@ -121,12 +121,11 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void IgnoreForMixinConfiguration()
     {
-      MixinConfiguration ac = DeclarativeConfigurationBuilder.BuildConfigurationFromTypes (
+      MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromTypes (
           null, 
           new[] { typeof (BaseType1), typeof (BT1Mixin1), typeof (MixinWithIgnoreForMixinConfigurationAttribute) });
 
-      Assert.That (ac.ClassContexts.GetExact (typeof (BaseType1)).Mixins.ContainsKey (typeof (MixinWithIgnoreForMixinConfigurationAttribute)), 
-          Is.False);
+      Assert.That (configuration.GetContext (typeof (BaseType1)).Mixins.ContainsKey (typeof (MixinWithIgnoreForMixinConfigurationAttribute)), Is.False);
     }
 
     [Test]

@@ -201,8 +201,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
       Assert.That (configuration.ClassContexts.ContainsExact (typeof (SimpleBusinessObjectClass)));
       Assert.That (configuration.ClassContexts.ContainsExact (typeof (ClassWithIdentity)));
 
-      Assert.That (configuration.ClassContexts.GetExact (typeof (BaseBusinessObjectClass)).Mixins.ContainsKey (typeof (BindableObjectMixin)));
-      Assert.That (configuration.ClassContexts.GetExact (typeof (ClassWithIdentity)).Mixins.ContainsKey (typeof (BindableObjectWithIdentityMixin)));
+      Assert.That (configuration.GetContext (typeof (BaseBusinessObjectClass)).Mixins.ContainsKey (typeof (BindableObjectMixin)));
+      Assert.That (configuration.GetContext (typeof (ClassWithIdentity)).Mixins.ContainsKey (typeof (BindableObjectWithIdentityMixin)));
 
       _mockRepository.VerifyAll ();
     }

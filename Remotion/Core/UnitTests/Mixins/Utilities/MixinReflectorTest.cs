@@ -79,8 +79,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
     public void GetMixinConfigurationFromConcreteType ()
     {
       Type bt1Type = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.That (MixinReflector.GetClassContextFromConcreteType (bt1Type), 
-          Is.EqualTo (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType1))));
+      Assert.That (MixinReflector.GetClassContextFromConcreteType (bt1Type),
+          Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
     }
 
     [Test]
@@ -95,8 +95,8 @@ namespace Remotion.UnitTests.Mixins.Utilities
       Type concreteType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
       var customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
       Type derivedType = customClassEmitter.BuildType ();
-      Assert.That (MixinReflector.GetClassContextFromConcreteType (derivedType), 
-          Is.EqualTo (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType1))));
+      Assert.That (MixinReflector.GetClassContextFromConcreteType (derivedType),
+          Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
     }
 
     [Test]

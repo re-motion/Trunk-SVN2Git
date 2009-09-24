@@ -99,7 +99,7 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));
       var newContext = MixinConfiguration.ActiveConfiguration.GetContextForce (generatedType);
-      var baseContext = MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType1));
+      var baseContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
 
       Assert.That (newContext, Is.Not.EqualTo (baseContext));
       Assert.That (newContext.Type, Is.SameAs (generatedType));
