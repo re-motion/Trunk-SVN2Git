@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// calls the <see cref="IRenderer{TControl}.Render"/> method.
     /// </summary>
     /// <param name="writer">The writer used to render the control.</param>
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
 

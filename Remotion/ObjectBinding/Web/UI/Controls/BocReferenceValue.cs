@@ -346,7 +346,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       preRenderer.PreRender();
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
 

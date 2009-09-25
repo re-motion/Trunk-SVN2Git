@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 {
   public class StubDropDownList : DropDownList
   {
-    public override void RenderControl (System.Web.UI.HtmlTextWriter writer)
+    protected override void Render (System.Web.UI.HtmlTextWriter writer)
     {
       writer.WriteLine ("DropDownList");
     }

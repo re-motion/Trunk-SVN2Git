@@ -194,7 +194,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
 

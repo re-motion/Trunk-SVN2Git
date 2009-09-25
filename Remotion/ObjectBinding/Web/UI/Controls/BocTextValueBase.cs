@@ -244,8 +244,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         eventHandler (this, EventArgs.Empty);
     }
 
-    public abstract override void RenderControl (HtmlTextWriter writer);
-
     /// <summary> Checks whether the control conforms to the required WAI level. </summary>
     /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
     protected virtual void EvaluateWaiConformity ()

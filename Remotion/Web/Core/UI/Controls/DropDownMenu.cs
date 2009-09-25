@@ -84,7 +84,7 @@ namespace Remotion.Web.UI.Controls
       preRenderer.PreRender();
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);

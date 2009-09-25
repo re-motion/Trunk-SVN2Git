@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
 {
   public class StubTextBox : TextBox
   {
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       writer.WriteLine ("TextBox");
     }

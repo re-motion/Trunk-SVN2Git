@@ -63,7 +63,7 @@ namespace Remotion.Web.UI.Controls
       preRenderer.PreRender ();
     }
     
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);

@@ -137,7 +137,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       var factory = !IsDesignMode ? ServiceLocator.GetInstance<IBocTextValueRendererFactory>() : new BocTextValueRendererFactory();
       var renderer = factory.CreateRenderer (Context, writer, this);

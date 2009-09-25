@@ -251,7 +251,7 @@ namespace Remotion.Web.UI.Controls
       OnPreRender (EventArgs.Empty);
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 

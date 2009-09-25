@@ -352,7 +352,7 @@ namespace Remotion.Web.UI.Controls
       get { return ControlHelper.IsDesignMode (this, Context); }
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       EnsureChildControls();
 

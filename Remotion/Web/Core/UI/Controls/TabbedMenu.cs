@@ -232,8 +232,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    /// <summary> Overrides the <see cref="WebControl.RenderContents"/> method. </summary>
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       EnsureChildControls ();

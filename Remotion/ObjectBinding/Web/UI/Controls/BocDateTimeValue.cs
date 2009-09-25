@@ -259,7 +259,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EvaluateWaiConformity();
     }
 
-    public override void RenderControl (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
       var renderer = factory.CreateRenderer (Context, writer, this);
