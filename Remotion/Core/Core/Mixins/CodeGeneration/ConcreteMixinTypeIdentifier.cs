@@ -59,7 +59,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// <param name="mixinType">The mixin type for which a concrete type was generated.</param>
     /// <param name="externalOverriders">Target class members that override members of the mixin. These are called by the concrete mixin type.</param>
     /// <param name="wrappedProtectedMembers">The protected members of the mixin for which public wrappers are required. These are called by
-    /// the mixin's target classes.</param>
+    /// the mixin's target classes (when the mixin overrides a member of the target class).</param>
     public ConcreteMixinTypeIdentifier (Type mixinType, HashSet<MethodInfo> externalOverriders, HashSet<MethodInfo> wrappedProtectedMembers)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);

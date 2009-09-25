@@ -13,10 +13,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
@@ -176,6 +178,23 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       DerivedClassOverridingMixinMethod2 ();
       DerivedClassOverridingMixinMethod ();
       BaseClassNotOverridingMixinMethod ();
+    }
+
+    [Test]
+    [Ignore ("TODO 1624, 1623")]
+    public void Sharing_WithProtectedOverriders ()
+    {
+      SkipDeletion ();
+
+      var tc = ObjectFactory.Create<TargetClassWithProtectedOverrider> (ParamList.Empty);
+      var mixin1 = Mixin.Get<MixinOverriddenByProtectedOverrider> (tc);
+      Assert.That (mixin1.M1 (), Is.EqualTo ("TargetClassWithProtectedOverrider.M1()"));
+
+      var dtc = ObjectFactory.Create<DerivedTargetClassWithProtectedOverrider> (ParamList.Empty);
+      var mixin2 = Mixin.Get<MixinOverriddenByProtectedOverrider> (dtc);
+      Assert.That (mixin2.M1 (), Is.EqualTo ("DerivedTargetClassWithProtectedOverrider.M1()"));
+
+      Assert.That (mixin1.GetType (), Is.SameAs (mixin2.GetType ()));
     }
   }
 }
