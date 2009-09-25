@@ -183,9 +183,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       if (withStyle)
       {
         Html.AssertStyleAttribute (span, "height", Height.ToString());
-
-        if (!inStandardProperties)
-          Html.AssertStyleAttribute (span, "display", "inline-block");
       }
 
       var label = Html.GetAssertedChildElement (span, "span", 0);

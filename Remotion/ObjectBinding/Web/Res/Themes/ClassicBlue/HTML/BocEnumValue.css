@@ -1,5 +1,6 @@
 .bocEnumValue
 {
+  display: inline-block;
 }
 
 .bocEnumValue.readOnly

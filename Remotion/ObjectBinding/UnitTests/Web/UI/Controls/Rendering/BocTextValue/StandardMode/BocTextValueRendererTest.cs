@@ -286,8 +286,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       string width = withStyle ? Width.ToString() : /* default constant in BocTextValueRendererBase */ "150pt";
       if (withStyle)
       {
-        Html.AssertStyleAttribute (span, "display", "inline-block");
-
         Html.AssertStyleAttribute (span, "height", height);
 
         if (height != null)

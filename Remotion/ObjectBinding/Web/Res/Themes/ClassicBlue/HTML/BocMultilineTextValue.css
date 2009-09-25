@@ -3,6 +3,7 @@
 
 .bocMultilineTextValue
 {
+  display: inline-block;
 }
 
 .bocMultilineTextValue.readOnly

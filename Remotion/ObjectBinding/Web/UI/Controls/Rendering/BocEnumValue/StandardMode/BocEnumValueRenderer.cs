@@ -160,7 +160,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
 
     protected override void AddAdditionalAttributes ()
     {
-      Writer.AddStyleAttribute ("display", "inline");
     }
 
     public override string CssClassBase

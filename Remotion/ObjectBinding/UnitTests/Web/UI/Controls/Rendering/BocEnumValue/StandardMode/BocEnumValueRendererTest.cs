@@ -352,8 +352,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       if (isDisabled)
         Html.AssertAttribute (div, "class", renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      Html.AssertStyleAttribute (div, "display", "inline");
-
       if (withStyle)
       {
         Html.AssertStyleAttribute (div, "height", _height.ToString());

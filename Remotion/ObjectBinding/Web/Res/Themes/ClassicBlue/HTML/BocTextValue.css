@@ -3,6 +3,7 @@
 
 .bocTextValue
 {
+  display: inline-block;
 }
 
 .bocTextValue.readOnly
