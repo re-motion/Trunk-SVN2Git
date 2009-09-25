@@ -76,16 +76,20 @@ namespace Remotion.Mixins.Definitions
     /// This method remedies this by aligning the returned <see cref="MethodInfo"/> instances with the stored ones.</remarks>
     public InterfaceMapping GetAdjustedInterfaceMap(Type interfaceType)
     {
-      const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
       InterfaceMapping mapping = Type.GetInterfaceMap (interfaceType);
       for (int i = 0; i < mapping.InterfaceMethods.Length; ++i)
       {
         MethodInfo targetMethod = mapping.TargetMethods[i];
-        if (targetMethod.DeclaringType != Type) // need to adjust all methods declared up the type hierarchy
+        
+        if (targetMethod.DeclaringType != Type)
         {
-          Type[] types = targetMethod.GetParameters().Select (p => p.ParameterType).ToArray();
-          mapping.TargetMethods[i] = targetMethod.DeclaringType.GetMethod (targetMethod.Name, bindingFlags, null, types, null);
+          // The MethodInfo objects returned by the Methods property has the ReflectedType == DeclaringType; the interface map must reflect this.
+          Assertion.IsFalse (targetMethod.ReflectedType == targetMethod.DeclaringType);
+
+          var newTargetMethod = (MethodInfo) MethodBase.GetMethodFromHandle (targetMethod.MethodHandle, targetMethod.DeclaringType.TypeHandle);
+          Assertion.IsTrue (newTargetMethod.ReflectedType == newTargetMethod.DeclaringType);
+
+          mapping.TargetMethods[i] = newTargetMethod;
         }
       }
       return mapping;
