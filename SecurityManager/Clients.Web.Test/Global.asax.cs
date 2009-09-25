@@ -23,11 +23,13 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.Security.UI;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web.Test
@@ -44,15 +46,15 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ()));
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ()));
+      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
+      container.Register (Component.For<ResourceTheme> ().Instance (ResourceTheme.NovaBlue));
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

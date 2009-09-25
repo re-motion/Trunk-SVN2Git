@@ -16,8 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Globalization;
-using System.Threading;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
@@ -73,13 +72,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     private void RegisterStyleSheets ()
     {
-      string url = ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (ResourceUrlResolver), ResourceType.Html, "style.css");
+      string url = ResourceUrlResolver.GetResourceUrl (this, typeof (ResourceUrlResolver), ResourceType.Html,  ResourceTheme, "style.css");
 
       HtmlHeadAppender.Current.RegisterStylesheetLink (this.GetType () + "style", url);
 
       if (!HtmlHeadAppender.Current.IsRegistered (c_globalStyleFileKey))
       {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (BasePage), ResourceType.Html, c_globalStyleFileUrl);
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (this, typeof (BasePage), ResourceType.Html, ResourceTheme, c_globalStyleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (c_globalStyleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -97,6 +96,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
         return MultiLingualResources.GetResourceManager (type, true);
       else
         return null;
+    }
+
+    protected IServiceLocator ServiceLocator
+    {
+      get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.GetInstance<ResourceTheme> (); }
     }
   }
 }

@@ -27,6 +27,7 @@ using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Web;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -118,11 +119,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (IsCollapsed)
       {
-        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry);
-        CollapsedTenantInformation.SetRenderMethodDelegate (collapsedRenderer.RenderTenant);
-        CollapsedGroupInformation.SetRenderMethodDelegate (collapsedRenderer.RenderGroup);
-        CollapsedUserInformation.SetRenderMethodDelegate (collapsedRenderer.RenderUser);
-        CollapsedAbstractRoleInformation.SetRenderMethodDelegate (collapsedRenderer.RenderAbstractRole);
+        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry, ServiceLocator);
+        CollapsedTenantInformation.SetRenderMethodDelegate (
+            (writer, control) => collapsedRenderer.RenderTenant (writer, new ControlWrapper (control)));
+        CollapsedGroupInformation.SetRenderMethodDelegate (
+            (writer, control) => collapsedRenderer.RenderGroup (writer, new ControlWrapper (control)));
+        CollapsedUserInformation.SetRenderMethodDelegate (
+            (writer, control) => collapsedRenderer.RenderUser (writer, new ControlWrapper (control)));
+        CollapsedAbstractRoleInformation.SetRenderMethodDelegate (
+            (writer, control) => collapsedRenderer.RenderAbstractRole (writer, new ControlWrapper (control)));
       }
 
       DetailsCell.Attributes.Add ("colspan", (4 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count + 3).ToString());
@@ -377,7 +382,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private string GetIconUrl (string url)
     {
-      return ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (EditAccessControlEntryControl), ResourceType.Image, url);
+      return ResourceUrlResolver.GetResourceUrl (this, typeof (EditAccessControlEntryControl), ResourceType.Image, ResourceTheme, url);
     }
   }
 }

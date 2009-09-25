@@ -1,0 +1,247 @@
+﻿html
+{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+body
+{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+form
+{
+  height: 100%;
+  width: 100%;
+}
+
+
+div#ErrorContainer
+{
+  background-color: White;
+  color: Red;
+  font-size: 1.1em;
+  font-weight: bold;
+  height: 1.1em;
+  padding: 0.5em;
+  padding-bottom: 0;
+}
+/*
+div.singleView
+{
+  background-color:#083779;
+  padding: 0.3em;
+  padding-top: 0;
+}        
+
+td.singleViewView
+{
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+div.singleViewView div.content
+{
+  padding-bottom: 0;
+  padding-bottom: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+td.singleViewTopControls
+{
+  background-color: White;
+  padding-bottom: 0.5em;
+}
+
+td.singleViewTopControls div.content
+{
+  background-color:#083779;
+}*/
+
+div.singleViewBottomControls
+{
+  padding: 0.5em;
+  padding-left: 1em;
+}
+
+/*
+td.singleViewTopControls div.content div#CurrentTenantControl
+{
+  background-color: White;
+  text-align: right;
+  padding: 0.5em;
+}
+
+td.singleViewTopControls div.content h1.pageTitle
+{
+  width: 100%;
+  background-color: White;
+  padding: 0.5em;
+  padding-top: 0;
+}*/
+
+h2.accessControlListTitle
+{
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+div.singleViewBottomControls button
+{
+  margin-right:0.5em;
+}
+
+button.imageButton
+{
+  border: none;
+  background-color: Transparent;
+}
+
+div.accessControlListContainer
+{
+  width: 100%;
+  border-top: solid 2px black;
+}
+
+table.accessControlList
+{
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td.stateCombinationsButtons button
+{
+  width:100%;
+  margin-bottom: 0.5em;
+}
+
+td.stateCombinationsButtons,
+td.stateCombinationsContainer
+{
+  border-right: solid 1px #d4d0c8;
+  width: 12em;
+}
+
+td.stateCombinationsButtons
+{
+  vertical-align: top;  
+}
+
+td.accessControlEntriesButtons,
+td.accessControlEntriesContainer
+{
+  border-left: solid 1px #d4d0c8;
+  padding-left: 0.5em;
+  padding-top: 0.5em;
+}
+
+td.stateCombinationsButtons,
+td.accessControlEntriesButtons
+{
+  padding-bottom: 0.5em;
+}
+
+td.accessControlEntriesButtons
+{
+  text-align: right;
+  vertical-align: top;
+}
+
+table.accessControlEntriesTable
+{
+  border-collapse: collapse;
+  border-style: none;
+  width: 100%;
+}
+
+table.accessControlEntriesTable th.titleCellHorizontal,
+table.accessControlEntriesTable th.titleCellVertical
+{
+  border-bottom: solid 1px black;
+}
+
+table.accessControlEntriesTable th.titleCellHorizontal
+{
+  text-align: left;
+  vertical-align: bottom;
+}
+
+table.accessControlEntriesTable th.titleCellVertical
+{
+  text-align: left;
+  vertical-align: bottom;
+  width: 1.5em;
+}
+
+table.accessControlEntriesTable th.titleCellVertical div
+{
+  /*Preserves space of original box so it's not useable*/
+  /*-moz-transform: rotate(-90deg);
+  -moz-transform-origin:  left center;
+  -webkit-transform: rotate(-90deg);
+  -webkit-transform-origin: left center;
+  white-space: nowrap;*/
+  
+  writing-mode: tb-rl; 
+  filter: FlipV() FlipH();
+  padding-top: 0.25em;
+  display: inline;
+}
+
+table.accessControlEntriesTable tr.odd
+{
+	background-color: White;
+}
+
+table.accessControlEntriesTable tr.even
+{
+	background-color: #F4F4F4;
+}
+
+table.accessControlEntriesTable td.conditionCell
+{
+  width: 20%;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  padding-right: 1em;
+}
+
+table.accessControlEntriesTable td.permissionCell
+{
+  padding: 0.25em;
+  border-left: solid 1px #d4d0c8;
+  border-right: solid 1px #d4d0c8;
+  text-align: center;
+}
+
+table.accessControlEntriesTable td.buttonCell
+{
+  padding: 0.25em;
+  width: 1em;
+}
+
+table.accessControlEntryExpanded
+{
+  background-color: White;
+}
+
+table.accessControlEntryExpanded td.formGridTopDataRow
+{
+  border-top: 0;
+}
+
+table.accessControlEntryExpanded td.formGridTitleCell
+{
+  display: none;
+}
+
+tr.underlinedMarkerCellRow td.formGridMarkersCell
+{
+  border-top: 0;
+  border-bottom: 0;
+}

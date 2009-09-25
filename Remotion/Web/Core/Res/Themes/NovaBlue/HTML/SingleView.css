@@ -32,6 +32,7 @@ div.singleView div.wrapper > *.bottomRight
   display: none;
 }
 
+/*
 div.singleView div.wrapper > *.topLeft, 
 div.singleView div.wrapper > *.bottomLeft, 
 div.singleView div.wrapper > *.topRight, 
@@ -72,7 +73,7 @@ div.singleView div.wrapper > *.bottomRight
   background-position: bottom right;
   bottom: 0px;
   right: 0px;
-}
+}*/
 
 div.singleView div.content
 {
@@ -110,6 +111,7 @@ div.singleViewView *.bottomRight
   display: none;
 }
 
+/*
 div.singleViewView *.topLeft, 
 div.singleViewView *.bottomLeft, 
 div.singleViewView *.topRight, 
@@ -150,7 +152,7 @@ div.singleViewView *.bottomRight
   background-position: bottom right;
   bottom: 0px;
   right: 0px;
-}
+}*/
 
 /* Non-IE Browsers hack \*/
 html > body div.singleViewView

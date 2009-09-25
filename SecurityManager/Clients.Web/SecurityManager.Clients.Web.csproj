@@ -44,18 +44,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.MicroKernel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\prereq\Assemblies\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\prereq\Assemblies\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="CommonServiceLocator.WindsorAdapter, Version=1.0.0.1, Culture=neutral, PublicKeyToken=5f888aefae8667bf, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\prereq\Assemblies\CommonServiceLocator.WindsorAdapter.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -83,19 +71,33 @@
     </None>
     <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
-    <Content Include="res\Image\CancelButton.gif" />
-    <Content Include="res\Image\Collapse.gif" />
-    <Content Include="res\Image\DeleteItem.gif" />
-    <Content Include="res\Image\EditItem.gif" />
-    <Content Include="res\Image\Expand.gif" />
-    <Content Include="res\Image\HierarchyThis.gif" />
-    <Content Include="res\Image\HierarchyThisAndChildren.gif" />
-    <Content Include="res\Image\HierarchyThisAndParent.gif" />
-    <Content Include="res\Image\HierarchyThisAndParentAndChildren.gif" />
-    <Content Include="res\Image\PermissionDenied.gif" />
-    <Content Include="res\Image\PermissionGranted.gif" />
-    <Content Include="res\Image\PermissionUndefined.gif" />
-    <Content Include="res\Image\SaveButton.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\CancelButton.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\Collapse.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\DeleteItem.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\EditItem.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\Expand.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThis.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThisAndChildren.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThisAndParent.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThisAndParentAndChildren.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\PermissionDenied.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\PermissionGranted.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\PermissionUndefined.gif" />
+    <Content Include="res\Themes\ClassicBlue\Image\SaveButton.gif" />
+    <Content Include="res\Themes\NovaBlue\Html\Style.css" />
+    <Content Include="res\Themes\NovaBlue\Image\CancelButton.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\Collapse.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\DeleteItem.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\EditItem.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\Expand.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\HierarchyThis.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\HierarchyThisAndChildren.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\HierarchyThisAndParent.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\HierarchyThisAndParentAndChildren.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\PermissionDenied.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\PermissionGranted.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\PermissionUndefined.gif" />
+    <Content Include="res\Themes\NovaBlue\Image\SaveButton.gif" />
     <Content Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
     <Content Include="UI\SecurityManagerSearchWebService.asmx" />
     <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
@@ -113,7 +115,7 @@
     <Content Include="UI\SecurityManagerMasterPage.Master" />
     <Content Include="UI\ErrorMessageControl.ascx" />
     <Content Include="SecurityManagerUrlMapping.xml" />
-    <Content Include="res\Html\Style.css" />
+    <Content Include="res\Themes\ClassicBlue\Html\Style.css" />
     <Content Include="UI\OrganizationalStructure\EditGroupTypePositionControl.ascx" />
     <Content Include="UI\OrganizationalStructure\EditGroupTypePositionForm.aspx" />
     <Content Include="UI\OrganizationalStructure\EditGroupControl.ascx" />

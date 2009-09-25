@@ -58,9 +58,6 @@
         <include name="${build.outputdir}/Remotion.Web.dll" />
         <include name="${build.outputdir}/Remotion.Web.Security.dll" />
         <include name="${build.outputdir}/Castle.Core.dll" />
-        <include name="${build.outputdir}/Castle.MicroKernel.dll" />
-        <include name="${build.outputdir}/Castle.Windsor.dll" />
-        <include name="${build.outputdir}/CommonServiceLocator.WindsorAdapter.dll" />
         <include name="${build.outputdir}/Microsoft.Practices.ServiceLocation.dll" />
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Configuration.dll"/>

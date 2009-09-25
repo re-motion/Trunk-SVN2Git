@@ -16,10 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -102,6 +104,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
         return MultiLingualResources.GetResourceManager (type, true);
       else
         return null;
+    }
+
+    protected IServiceLocator ServiceLocator
+    {
+      get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.GetInstance<ResourceTheme> (); }
     }
   }
 }

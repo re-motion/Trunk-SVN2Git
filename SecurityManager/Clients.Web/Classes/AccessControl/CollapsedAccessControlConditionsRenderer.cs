@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -31,11 +32,15 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
   public class CollapsedAccessControlConditionsRenderer
   {
     private readonly AccessControlEntry _accessControlEntry;
+    private readonly IServiceLocator _serviceLocator;
 
-    public CollapsedAccessControlConditionsRenderer (AccessControlEntry accessControlEntry)
+    public CollapsedAccessControlConditionsRenderer (AccessControlEntry accessControlEntry, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("currentAccessControlEntry", accessControlEntry);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
       _accessControlEntry = accessControlEntry;
+      _serviceLocator = serviceLocator;
     }
 
     public AccessControlEntry AccessControlEntry
@@ -43,7 +48,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       get { return _accessControlEntry; }
     }
 
-    public void RenderTenant (HtmlTextWriter writer, Control container)
+    public void RenderTenant (HtmlTextWriter writer, IControl container)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("container", container);
@@ -66,7 +71,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
     }
 
-    public void RenderGroup (HtmlTextWriter writer, Control container)
+    public void RenderGroup (HtmlTextWriter writer, IControl container)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("container", container);
@@ -95,7 +100,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
     }
 
-    public void RenderUser (HtmlTextWriter writer, Control container)
+    public void RenderUser (HtmlTextWriter writer, IControl container)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("container", container);
@@ -119,7 +124,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
     }
 
-    public void RenderAbstractRole (HtmlTextWriter writer, Control container)
+    public void RenderAbstractRole (HtmlTextWriter writer, IControl container)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("container", container);
@@ -162,7 +167,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       return propertyPath.Properties[propertyPath.Properties.Length - 2].DisplayName;
     }
 
-    private void RenderTenantHierarchyIcon (HtmlTextWriter writer, Control container)
+    private void RenderTenantHierarchyIcon (HtmlTextWriter writer, IControl container)
     {
       string url;
       string text;
@@ -188,7 +193,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       icon.Render (writer);
     }
 
-    private void RenderGroupHierarchyIcon (HtmlTextWriter writer, Control container)
+    private void RenderGroupHierarchyIcon (HtmlTextWriter writer, IControl container)
     {
       string url;
       string text;
@@ -224,9 +229,14 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       icon.Render (writer);
     }
 
-    private string GetIconUrl (string url, Control container)
+    private string GetIconUrl (string url, IControl container)
     {
-      return ResourceUrlResolver.GetResourceUrl (container, typeof (CollapsedAccessControlConditionsRenderer), ResourceType.Image, url);
+      return ResourceUrlResolver.GetResourceUrl (container, typeof (CollapsedAccessControlConditionsRenderer), ResourceType.Image, ResourceTheme, url);
+    }
+  
+    protected ResourceTheme ResourceTheme
+    {
+      get { return _serviceLocator.GetInstance<ResourceTheme> (); }
     }
   }
 }

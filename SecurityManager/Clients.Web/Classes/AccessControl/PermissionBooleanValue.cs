@@ -28,9 +28,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
     {
       return new BocBooleanValueResourceSet (
           "Permission",
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (PermissionBooleanValue), ResourceType.Image, "PermissionGranted.gif"),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (PermissionBooleanValue), ResourceType.Image, "PermissionDenied.gif"),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (PermissionBooleanValue), ResourceType.Image, "PermissionUndefined.gif"),
+          ResourceUrlResolver.GetResourceUrl (
+              this, Context, typeof (PermissionBooleanValue), ResourceType.Image, ResourceTheme, "PermissionGranted.gif"),
+          ResourceUrlResolver.GetResourceUrl (
+              this, Context, typeof (PermissionBooleanValue), ResourceType.Image, ResourceTheme, "PermissionDenied.gif"),
+          ResourceUrlResolver.GetResourceUrl (
+              this, Context, typeof (PermissionBooleanValue), ResourceType.Image, ResourceTheme, "PermissionUndefined.gif"),
           "Granted",
           "Denied",
           "Undefined"
