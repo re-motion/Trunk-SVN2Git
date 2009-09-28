@@ -25,14 +25,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   internal class BaseCallMethodGenerator
   {
-    private readonly CustomMethodEmitter _methodEmitter;
+    private readonly IMethodEmitter _methodEmitter;
     private readonly ConcreteMixinType[] _concreteMixinTypes;
     private readonly TargetClassDefinition _targetClassConfiguration;
     private readonly FieldReference _depthField;
     private readonly FieldReference _thisField;
     private readonly TypeGenerator _surroundingType;
 
-    public BaseCallMethodGenerator (CustomMethodEmitter methodEmitter, BaseCallProxyGenerator baseCallProxyGenerator,
+    public BaseCallMethodGenerator (IMethodEmitter methodEmitter, BaseCallProxyGenerator baseCallProxyGenerator,
         ConcreteMixinType[] concreteMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("methodEmitter", methodEmitter);

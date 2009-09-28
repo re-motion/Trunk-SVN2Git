@@ -16,7 +16,6 @@
 using System;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -28,7 +27,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void Block ()
     {
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       methodEmitter.SetReturnType (typeof (int));
       var local = methodEmitter.DeclareLocal (typeof (int));
       var blockStatement = new BlockStatement (

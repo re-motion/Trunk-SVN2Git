@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       FieldReference tryField = ClassEmitter.CreateField ("TryExecuted", typeof (bool));
       FieldReference finallyField = ClassEmitter.CreateField ("FinallyExecuted", typeof (bool));
 
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       Statement[] tryBlock = new Statement[]
       {
         new AssignStatement (tryField, new ConstReference (true).ToExpression())
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       FieldReference tryField = ClassEmitter.CreateField ("TryExecuted", typeof (bool));
       FieldReference finallyField = ClassEmitter.CreateField ("FinallyExecuted", typeof (bool));
 
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       Statement[] tryBlock = new Statement[]
       {
         new ThrowStatement (typeof (Exception), "Expected exception"),

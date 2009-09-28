@@ -122,7 +122,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsTrue (methodDefinitionOnTarget.DeclaringClass == _targetClassConfiguration);
 
       MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-      CustomMethodEmitter methodOverride = _emitter.CreateMethod (methodDefinitionOnTarget.FullName, attributes);
+      var methodOverride = _emitter.CreateMethod (methodDefinitionOnTarget.FullName, attributes);
       methodOverride.CopyParametersAndReturnType (methodDefinitionOnTarget.MethodInfo);
       
       BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodOverride, this, _concreteMixinTypes);
@@ -157,7 +157,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     // If overridden, delegate to next in chain, else simply delegate to "this" field
     private void ImplementBaseCallForRequirementOnTarget (RequiredMethodDefinition requiredMethod)
     {
-      CustomMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
+      IMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
       BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodImplementation, this, _concreteMixinTypes);
       if (requiredMethod.ImplementingMethod.Overrides.Count == 0) // this is not an overridden method, call method directly on _this
         methodGenerator.AddBaseCallToTarget (requiredMethod.ImplementingMethod);
@@ -174,7 +174,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     // If an overridde, delegate to next in chain, else simply delegate to the extension implementing it field
     private void ImplementBaseCallForRequirementOnMixin (RequiredMethodDefinition requiredMethod)
     {
-      CustomMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
+      IMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
       BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodImplementation, this, _concreteMixinTypes);
       if (requiredMethod.ImplementingMethod.Base == null) // this is not an override, call method directly on extension
         methodGenerator.AddBaseCallToTarget (requiredMethod.ImplementingMethod);

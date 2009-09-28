@@ -99,12 +99,12 @@ namespace Remotion.Scripting
     }
 
     // Implement method in proxy by forwarding call to proxied instance
-    private void ImplementForwardingMethod (MethodInfo methodInfo, CustomMethodEmitter methodEmitter)
+    private void ImplementForwardingMethod (MethodInfo methodInfo, IMethodEmitter methodEmitter)
     {
       methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
     }
 
-    public CustomMethodEmitter AddForwardingMethod (MethodInfo methodInfo)
+    public IMethodEmitter AddForwardingMethod (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
@@ -220,7 +220,7 @@ namespace Remotion.Scripting
     /// Note that this works for interface methods only, if the <see cref="MethodInfo"/> comes from the interface, not the 
     /// type implementing the interface.
     /// </remarks>
-    public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
+    public IMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
     {
       return AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (methodInfo, methodInfo.Attributes);
     }
@@ -233,11 +233,11 @@ namespace Remotion.Scripting
     /// Note that this works for interface methods only, if the <see cref="MethodInfo"/> comes from the interface, not the 
     /// type implementing the interface.
     /// </remarks>
-    public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo, MethodAttributes methodAttributes)
+    public IMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo, MethodAttributes methodAttributes)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
-      CustomMethodEmitter methodEmitter;
+      IMethodEmitter methodEmitter;
 
       if (methodInfo.DeclaringType.IsInterface)
       {
@@ -303,7 +303,7 @@ namespace Remotion.Scripting
           true);
     }
 
-    private CustomMethodEmitter AddForwardingMethod (MethodInfo methodInfo, string forwardingMethodName)
+    private IMethodEmitter AddForwardingMethod (MethodInfo methodInfo, string forwardingMethodName)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNullOrEmpty ("forwardingMethodName", forwardingMethodName);

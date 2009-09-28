@@ -16,7 +16,6 @@
 using System;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
 
@@ -28,10 +27,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ExpressionReference ()
     {
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       methodEmitter.SetReturnType (typeof (string));
       
-      ExpressionReference expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression(), methodEmitter);
+      var expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression(), methodEmitter);
       methodEmitter.ImplementByReturning (new ReferenceExpression (expressionReference));
 
       Assert.AreEqual ("bla", InvokeMethod());
@@ -41,22 +40,26 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Expressions cannot be assigned to.")]
     public void ExpressionReferenceCannotBeStored ()
     {
-      CustomMethodEmitter methodEmitter = GetUnsavedMethodEmitter (false);
-      ExpressionReference expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression (), methodEmitter);
+      var methodEmitter = GetUnsavedMethodEmitter (false);
+      var expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression (), methodEmitter);
       expressionReference.StoreReference (null);
     }
 
     [Test]
     public void LoadAddressOfExpressionReference ()
     {
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       methodEmitter.SetReturnType (typeof (string));
 
-      ExpressionReference expressionReference =
-          new ExpressionReference (typeof (StructWithMethod), new InitObjectExpression (methodEmitter, typeof (StructWithMethod)), methodEmitter);
-      ExpressionReference addressReference =
-          new ExpressionReference (typeof (StructWithMethod).MakeByRefType(), expressionReference.ToAddressOfExpression(), methodEmitter);
-      MethodInvocationExpression methodCall =
+      var expressionReference = new ExpressionReference (
+          typeof (StructWithMethod), 
+          new InitObjectExpression (methodEmitter, typeof (StructWithMethod)), 
+          methodEmitter);
+      var addressReference = new ExpressionReference (
+          typeof (StructWithMethod).MakeByRefType(), 
+          expressionReference.ToAddressOfExpression(), 
+          methodEmitter);
+      var methodCall =
           new MethodInvocationExpression (addressReference, typeof (StructWithMethod).GetMethod ("Method"));
 
       methodEmitter.ImplementByReturning (methodCall);

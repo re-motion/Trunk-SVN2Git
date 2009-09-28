@@ -38,7 +38,7 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     private readonly AbstractTypeEmitter _innerEmitter;
-    private readonly Cache<MethodInfo, CustomMethodEmitter> _publicMethodWrappers = new Cache<MethodInfo, CustomMethodEmitter>();
+    private readonly Cache<MethodInfo, IMethodEmitter> _publicMethodWrappers = new Cache<MethodInfo, IMethodEmitter> ();
     private bool _hasBeenBuilt = false;
     private readonly List<CustomEventEmitter> _eventEmitters = new List<CustomEventEmitter>();
 
@@ -163,7 +163,7 @@ namespace Remotion.Reflection.CodeGeneration
       return InnerEmitter.CreateStaticField (name, fieldType, attributes);
     }
 
-    public CustomMethodEmitter CreateMethod (string name, MethodAttributes attributes)
+    public IMethodEmitter CreateMethod (string name, MethodAttributes attributes)
     {
       ArgumentUtility.CheckNotNull ("name", name);
 
@@ -209,7 +209,7 @@ namespace Remotion.Reflection.CodeGeneration
       _eventEmitters.Add (emitter);
     }
 
-    public CustomMethodEmitter CreateMethodOverride (MethodInfo baseMethod)
+    public IMethodEmitter CreateMethodOverride (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
       MethodAttributes oldVisibility = baseMethod.Attributes & MethodAttributes.MemberAccessMask;
@@ -222,17 +222,17 @@ namespace Remotion.Reflection.CodeGeneration
     /// </summary>
     /// <param name="baseMethod">The base method to override.</param>
     /// <returns>
-    /// A <see cref="CustomMethodEmitter"/> for the full-named method override.
+    /// An <see cref="IMethodEmitter"/> for the full-named method override.
     /// </returns>
     /// <remarks>This method can be useful when overriding several (shadowed) methods of the same name inherited by different base types.</remarks>
-    public CustomMethodEmitter CreateFullNamedMethodOverride (MethodInfo baseMethod)
+    public IMethodEmitter CreateFullNamedMethodOverride (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
       MethodAttributes oldVisibility = baseMethod.Attributes & MethodAttributes.MemberAccessMask;
       return CreateMethodOverrideOrInterfaceImplementation (baseMethod, false, MethodAttributes.ReuseSlot | MethodAttributes.Final | oldVisibility);
     }
 
-    public CustomMethodEmitter CreateInterfaceMethodImplementation (MethodInfo interfaceMethod)
+    public IMethodEmitter CreateInterfaceMethodImplementation (MethodInfo interfaceMethod)
     {
       ArgumentUtility.CheckNotNull ("interfaceMethod", interfaceMethod);
       return CreateMethodOverrideOrInterfaceImplementation (
@@ -244,17 +244,17 @@ namespace Remotion.Reflection.CodeGeneration
     /// of the interface method (like a C# implicit interface implementation).
     /// </summary>
     /// <param name="interfaceMethod">The interface method to implement.</param>
-    /// <returns>A <see cref="CustomMethodEmitter"/> for the interface implementation.</returns>
+    /// <returns>An <see cref="IMethodEmitter"/> for the interface implementation.</returns>
     /// <remarks>The generated method has public visibility and the <see cref="MethodAttributes.NewSlot"/> flag set. This means that the method
     /// will shadow methods from the base type with the same name and signature, not override them. Use <see cref="CreateFullNamedMethodOverride"/> to
     /// explicitly create an override for such a method.</remarks>
-    public CustomMethodEmitter CreatePublicInterfaceMethodImplementation (MethodInfo interfaceMethod)
+    public IMethodEmitter CreatePublicInterfaceMethodImplementation (MethodInfo interfaceMethod)
     {
       ArgumentUtility.CheckNotNull ("interfaceMethod", interfaceMethod);
       return CreateMethodOverrideOrInterfaceImplementation (interfaceMethod, true, MethodAttributes.NewSlot | MethodAttributes.Public);
     }
 
-    public CustomMethodEmitter CreateMethodOverrideOrInterfaceImplementation (
+    public IMethodEmitter CreateMethodOverrideOrInterfaceImplementation (
         MethodInfo baseOrInterfaceMethod,
         bool keepName,
         MethodAttributes visibilityFlags)
@@ -265,13 +265,9 @@ namespace Remotion.Reflection.CodeGeneration
       if (baseOrInterfaceMethod.IsSpecialName)
         methodDefinitionAttributes |= MethodAttributes.SpecialName;
 
-      string methodName;
-      if (keepName)
-        methodName = baseOrInterfaceMethod.Name;
-      else
-        methodName = string.Format ("{0}.{1}", baseOrInterfaceMethod.DeclaringType.FullName, baseOrInterfaceMethod.Name);
+      string methodName = GetMemberOverrideName(baseOrInterfaceMethod, keepName);
 
-      CustomMethodEmitter methodDefinition = CreateMethod (methodName, methodDefinitionAttributes);
+      IMethodEmitter methodDefinition = CreateMethod (methodName, methodDefinitionAttributes);
       methodDefinition.CopyParametersAndReturnType (baseOrInterfaceMethod);
 
       TypeBuilder.DefineMethodOverride (methodDefinition.MethodBuilder, baseOrInterfaceMethod);
@@ -305,11 +301,7 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("baseOrInterfaceProperty", baseOrInterfaceProperty);
 
-      string propertyName;
-      if (keepName)
-        propertyName = baseOrInterfaceProperty.Name;
-      else
-        propertyName = string.Format ("{0}.{1}", baseOrInterfaceProperty.DeclaringType.FullName, baseOrInterfaceProperty.Name);
+      string propertyName = GetMemberOverrideName (baseOrInterfaceProperty, keepName);
       Type[] indexParameterTypes = Array.ConvertAll (baseOrInterfaceProperty.GetIndexParameters(), p => p.ParameterType);
 
       CustomPropertyEmitter newProperty = CreateProperty (
@@ -362,11 +354,7 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("baseOrInterfaceEvent", baseOrInterfaceEvent);
 
-      string eventName;
-      if (keepName)
-        eventName = baseOrInterfaceEvent.Name;
-      else
-        eventName = string.Format ("{0}.{1}", baseOrInterfaceEvent.DeclaringType.FullName, baseOrInterfaceEvent.Name);
+      string eventName = GetMemberOverrideName (baseOrInterfaceEvent, keepName);
       CustomEventEmitter newEvent = CreateEvent (eventName, EventKind.Instance, baseOrInterfaceEvent.EventHandlerType, EventAttributes.None);
       return newEvent;
     }
@@ -419,11 +407,11 @@ namespace Remotion.Reflection.CodeGeneration
       return _publicMethodWrappers.GetOrCreateValue (methodToBeWrapped, CreatePublicMethodWrapper).MethodBuilder;
     }
 
-    private CustomMethodEmitter CreatePublicMethodWrapper (MethodInfo methodToBeWrapped)
+    private IMethodEmitter CreatePublicMethodWrapper (MethodInfo methodToBeWrapped)
     {
       const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
-      
-      CustomMethodEmitter wrapper = CreateMethod ("__wrap__" + methodToBeWrapped.Name, attributes);
+
+      IMethodEmitter wrapper = CreateMethod ("__wrap__" + methodToBeWrapped.Name, attributes);
       wrapper.CopyParametersAndReturnType (methodToBeWrapped);
       wrapper.ImplementByDelegating (new TypeReferenceWrapper (SelfReference.Self, TypeBuilder), methodToBeWrapped);
       
@@ -443,6 +431,14 @@ namespace Remotion.Reflection.CodeGeneration
         eventEmitter.EnsureValid();
 
       return InnerEmitter.BuildType();
+    }
+
+    private string GetMemberOverrideName (MemberInfo baseOrInterfaceMember, bool keepSimpleName)
+    {
+      if (keepSimpleName)
+        return baseOrInterfaceMember.Name;
+      else
+        return string.Format ("{0}.{1}", baseOrInterfaceMember.DeclaringType.FullName, baseOrInterfaceMember.Name);
     }
   }
 }

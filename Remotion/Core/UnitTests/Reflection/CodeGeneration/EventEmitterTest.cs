@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -219,7 +220,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void AddMethodCannotBeSetTwice ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetTwice", EventKind.Static, typeof (EventHandler));
-      CustomMethodEmitter defaultAdd = eventEmitter.AddMethod;
+      Dev.Null = eventEmitter.AddMethod;
       eventEmitter.AddMethod = _classEmitter.CreateMethod ("invalid", MethodAttributes.Public | MethodAttributes.Static);
     }
 
@@ -228,7 +229,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void RemoveMethodCannotBeSetTwice ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetTwice", EventKind.Static, typeof (EventHandler));
-      CustomMethodEmitter defaultRemove = eventEmitter.RemoveMethod;
+      Dev.Null = eventEmitter.RemoveMethod;
       eventEmitter.RemoveMethod = _classEmitter.CreateMethod ("invalid", MethodAttributes.Public | MethodAttributes.Static);
     }
 

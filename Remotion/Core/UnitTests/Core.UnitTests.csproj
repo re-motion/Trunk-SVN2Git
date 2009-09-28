@@ -155,6 +155,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixinType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceGeneratorTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\TargetClassWithProtectedOverrider.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\MixinOverriddenByProtectedOverrider.cs" />

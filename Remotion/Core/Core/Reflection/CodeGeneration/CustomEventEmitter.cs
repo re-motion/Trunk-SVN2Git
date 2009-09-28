@@ -35,8 +35,8 @@ namespace Remotion.Reflection.CodeGeneration
     private readonly EventKind _eventKind;
     private readonly Type _eventType;
 
-    private CustomMethodEmitter _addMethod;
-    private CustomMethodEmitter _removeMethod;
+    private IMethodEmitter _addMethod;
+    private IMethodEmitter _removeMethod;
 
     public CustomEventEmitter (CustomClassEmitter declaringType, string name, EventKind eventKind, Type eventType, EventAttributes attributes)
     {
@@ -52,7 +52,7 @@ namespace Remotion.Reflection.CodeGeneration
       declaringType.RegisterEventEmitter (this);
     }
 
-    public CustomMethodEmitter AddMethod
+    public IMethodEmitter AddMethod
     {
       get
       {
@@ -74,7 +74,7 @@ namespace Remotion.Reflection.CodeGeneration
       }
     }
 
-    public CustomMethodEmitter RemoveMethod
+    public IMethodEmitter RemoveMethod
     {
       get
       {
@@ -128,7 +128,7 @@ namespace Remotion.Reflection.CodeGeneration
       MethodAttributes flags = MethodAttributes.Public | MethodAttributes.SpecialName;
       if (EventKind == EventKind.Static)
         flags |= MethodAttributes.Static;
-      CustomMethodEmitter method = _declaringType.CreateMethod ("add_" + Name, flags);
+      IMethodEmitter method = _declaringType.CreateMethod ("add_" + Name, flags);
       method.SetParameterTypes (new Type[] { EventType });
       AddMethod = method;
     }
@@ -140,7 +140,7 @@ namespace Remotion.Reflection.CodeGeneration
       MethodAttributes flags = MethodAttributes.Public | MethodAttributes.SpecialName;
       if (EventKind == EventKind.Static)
         flags |= MethodAttributes.Static;
-      CustomMethodEmitter method = _declaringType.CreateMethod ("remove_" + Name, flags);
+      IMethodEmitter method = _declaringType.CreateMethod ("remove_" + Name, flags);
       method.SetParameterTypes (new Type[] { EventType });
       RemoveMethod = method;
     }
@@ -152,10 +152,10 @@ namespace Remotion.Reflection.CodeGeneration
 
     internal void EnsureValid ()
     {
-      CustomMethodEmitter addMethod = AddMethod; // cause generation of default method if none has been assigned
+      IMethodEmitter addMethod = AddMethod; // cause generation of default method if none has been assigned
       Assertion.IsNotNull (addMethod);
 
-      CustomMethodEmitter removeMethod = RemoveMethod; // cause generation of default method if none has been assigned
+      IMethodEmitter removeMethod = RemoveMethod; // cause generation of default method if none has been assigned
       Assertion.IsNotNull (removeMethod);
     }
   }

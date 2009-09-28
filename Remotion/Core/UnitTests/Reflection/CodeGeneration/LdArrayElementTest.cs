@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void LoadArrayElementFromExpression ()
     {
-      CustomMethodEmitter method = GetMethodEmitter (false);
+      var method = GetMethodEmitter (false);
       method.SetParameterTypes (new Type[] { typeof (IArrayProvider), typeof (int) });
       method.SetReturnType (typeof (object));
       method.AddStatement (new ILStatement (delegate (IMemberEmitter member, ILGenerator ilgen)

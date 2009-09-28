@@ -89,7 +89,7 @@ namespace Remotion.Reflection.CodeGeneration
       return argumentExpressions;
     }
 
-    public CustomMethodEmitter SetParameterTypes (params Type[] parameters)
+    public IMethodEmitter SetParameterTypes (params Type[] parameters)
     {
       ArgumentUtility.CheckNotNull ("parameters", parameters);
       InnerEmitter.SetParameters (parameters);
@@ -97,7 +97,7 @@ namespace Remotion.Reflection.CodeGeneration
       return this;
     }
 
-    public CustomMethodEmitter SetReturnType (Type returnType)
+    public IMethodEmitter SetReturnType (Type returnType)
     {
       ArgumentUtility.CheckNotNull ("returnType", returnType);
       InnerEmitter.SetReturnType (returnType);
@@ -105,7 +105,7 @@ namespace Remotion.Reflection.CodeGeneration
       return this;
     }
 
-    public CustomMethodEmitter CopyParametersAndReturnType (MethodInfo method)
+    public IMethodEmitter CopyParametersAndReturnType (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
 
@@ -113,18 +113,18 @@ namespace Remotion.Reflection.CodeGeneration
       return this;
     }
 
-    public CustomMethodEmitter ImplementByReturning (Expression result)
+    public IMethodEmitter ImplementByReturning (Expression result)
     {
       ArgumentUtility.CheckNotNull ("result", result);
       return AddStatement (new ReturnStatement (result));
     }
 
-    public CustomMethodEmitter ImplementByReturningVoid ()
+    public IMethodEmitter ImplementByReturningVoid ()
     {
       return AddStatement (new ReturnStatement ());
     }
 
-    public CustomMethodEmitter ImplementByReturningDefault ()
+    public IMethodEmitter ImplementByReturningDefault ()
     {
       if (ReturnType == typeof (void))
         return ImplementByReturningVoid ();
@@ -134,13 +134,13 @@ namespace Remotion.Reflection.CodeGeneration
       }
     }
 
-    public CustomMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall)
+    public IMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall)
     {
       AddDelegatingCallStatements (methodToCall, implementer, true);
       return this;
     }
 
-    public CustomMethodEmitter ImplementByBaseCall (MethodInfo baseMethod)
+    public IMethodEmitter ImplementByBaseCall (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
 
@@ -165,7 +165,7 @@ namespace Remotion.Reflection.CodeGeneration
       AddStatement (new ReturnStatement (delegatingCall));
     }
 
-    public CustomMethodEmitter ImplementByThrowing (Type exceptionType, string message)
+    public IMethodEmitter ImplementByThrowing (Type exceptionType, string message)
     {
       ArgumentUtility.CheckNotNull ("exceptionType", exceptionType);
       ArgumentUtility.CheckNotNull ("message", message);
@@ -173,7 +173,7 @@ namespace Remotion.Reflection.CodeGeneration
       return this;
     }
 
-    public CustomMethodEmitter AddStatement (Statement statement)
+    public IMethodEmitter AddStatement (Statement statement)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
       InnerEmitter.CodeBuilder.AddStatement (statement);
@@ -190,6 +190,22 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("customAttribute", customAttribute);
       _innerEmitter.MethodBuilder.SetCustomAttribute (customAttribute);
+    }
+
+    void IMethodEmitter.AcceptStatement (Statement statement, ILGenerator gen)
+    {
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("gen", gen);
+
+      statement.Emit (InnerEmitter, gen);
+    }
+
+    void IMethodEmitter.AcceptExpression (Expression expression, ILGenerator gen)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("gen", gen);
+
+      expression.Emit (InnerEmitter, gen);
     }
   }
 }

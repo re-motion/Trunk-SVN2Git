@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
       
       var scope = new ModuleScope (true, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");
       var versionAccessorTypeBuilder = new CustomClassEmitter (scope, "VersionAccessor", typeof (object));
-      CustomMethodEmitter versionAccessorMethod = versionAccessorTypeBuilder.CreateMethod ("AccessVersion", MethodAttributes.Public | MethodAttributes.Static);
+      var versionAccessorMethod = versionAccessorTypeBuilder.CreateMethod ("AccessVersion", MethodAttributes.Public | MethodAttributes.Static);
       versionAccessorMethod.AddStatement (
           new ExpressionStatement (new MethodInvocationExpression (null, typeof (FrameworkVersion).GetProperty ("Value").GetGetMethod())));
       versionAccessorMethod.AddStatement (new PopStatement());

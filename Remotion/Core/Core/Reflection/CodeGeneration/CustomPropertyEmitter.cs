@@ -37,8 +37,8 @@ namespace Remotion.Reflection.CodeGeneration
     private readonly PropertyKind _propertyKind;
     private readonly Type[] _indexParameters;
 
-    private CustomMethodEmitter _getMethod;
-    private CustomMethodEmitter _setMethod;
+    private IMethodEmitter _getMethod;
+    private IMethodEmitter _setMethod;
 
     public CustomPropertyEmitter (CustomClassEmitter declaringType, string name, PropertyKind propertyKind, Type propertyType, Type[] indexParameters, PropertyAttributes attributes)
     {
@@ -71,7 +71,7 @@ namespace Remotion.Reflection.CodeGeneration
       get { return _indexParameters; }
     }
 
-    public CustomMethodEmitter GetMethod
+    public IMethodEmitter GetMethod
     {
       get { return _getMethod; }
       set
@@ -86,7 +86,7 @@ namespace Remotion.Reflection.CodeGeneration
       }
     }
 
-    public CustomMethodEmitter SetMethod
+    public IMethodEmitter SetMethod
     {
       get { return _setMethod; }
       set
@@ -154,7 +154,7 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     // TODO FS: Test for explicit interface implementation
-    public CustomMethodEmitter CreateGetMethod ()
+    public IMethodEmitter CreateGetMethod ()
     {
       if (GetMethod != null)
         throw new InvalidOperationException ("This property already has a getter method.");
@@ -164,7 +164,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName(Name,"get"), flags);
+        IMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name, "get"), flags);
 
         method.SetReturnType (PropertyType);
         method.SetParameterTypes (IndexParameters);
@@ -189,7 +189,7 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     // TODO FS: Test for explicit interface implementation
-    public CustomMethodEmitter CreateSetMethod ()
+    public IMethodEmitter CreateSetMethod ()
     {
       if (SetMethod != null)
         throw new InvalidOperationException ("This property already has a setter method.");
@@ -199,7 +199,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name,"set"), flags);
+        IMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name,"set"), flags);
 
         Type[] setterParameterTypes = new Type[IndexParameters.Length + 1];
         IndexParameters.CopyTo (setterParameterTypes, 0);

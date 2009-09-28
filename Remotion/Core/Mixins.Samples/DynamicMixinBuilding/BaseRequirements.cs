@@ -68,7 +68,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
 
     private static MethodInfo DefineEquivalentInterfaceMethod (CustomClassEmitter emitter, MethodInfo method)
     {
-      CustomMethodEmitter interfaceMethod = emitter.CreateMethod (method.Name, MethodAttributes.Public | MethodAttributes.Abstract | MethodAttributes.Virtual);
+      var interfaceMethod = emitter.CreateMethod (method.Name, MethodAttributes.Public | MethodAttributes.Abstract | MethodAttributes.Virtual);
       interfaceMethod.CopyParametersAndReturnType (method);
       return interfaceMethod.MethodBuilder;
     }

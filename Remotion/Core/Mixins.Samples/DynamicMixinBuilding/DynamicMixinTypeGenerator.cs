@@ -71,7 +71,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
 
     private void AddOverrider (MethodInfo method, Reference invocationHandler)
     {
-      CustomMethodEmitter overrider = _emitter.CreateMethod (method.Name, MethodAttributes.Public | MethodAttributes.Virtual);
+      var overrider = _emitter.CreateMethod (method.Name, MethodAttributes.Public | MethodAttributes.Virtual);
       overrider.CopyParametersAndReturnType (method);
       overrider.AddCustomAttribute (new CustomAttributeBuilder (s_attributeConstructor, new object[0]));
 
@@ -106,7 +106,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
 
     private MethodInfo CreateBaseCallStub (MethodInfo methodToBeStubbed)
     {
-      CustomMethodEmitter stubMethod = _emitter.CreateMethod (methodToBeStubbed.Name + "__stub", MethodAttributes.Private);
+      var stubMethod = _emitter.CreateMethod (methodToBeStubbed.Name + "__stub", MethodAttributes.Private);
       stubMethod.SetReturnType (typeof (object));
       stubMethod.SetParameterTypes (typeof (object[]));
 
@@ -140,7 +140,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
       return new PropertyReference (SelfReference.Self, baseProperty);
     }
 
-    private LocalReference CopyArgumentsToLocalVariable (CustomMethodEmitter overrider)
+    private LocalReference CopyArgumentsToLocalVariable (IMethodEmitter overrider)
     {
       LocalReference argsLocal = overrider.DeclareLocal (typeof (object[]));
 

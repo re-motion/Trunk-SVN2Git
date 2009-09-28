@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void SameConditionTrue ()
     {
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       methodEmitter.SetReturnType (typeof (string));
 
       methodEmitter.AddStatement (new TestStatement (
@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void SameConditionFalse ()
     {
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       methodEmitter.SetReturnType (typeof (string));
 
       methodEmitter.AddStatement (new TestStatement (

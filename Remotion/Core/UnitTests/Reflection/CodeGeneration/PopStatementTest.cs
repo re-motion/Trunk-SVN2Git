@@ -18,7 +18,6 @@ using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
@@ -29,7 +28,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void Pop ()
     {
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false);
       methodEmitter.AddStatement (new ILStatement (delegate (IMemberEmitter emitter, ILGenerator gen) { gen.Emit (OpCodes.Ldc_I4_0); }));
       methodEmitter.AddStatement (new PopStatement ());
       methodEmitter.AddStatement (new ReturnStatement ());

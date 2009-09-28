@@ -271,7 +271,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               "CreateGetMethodStatic", PropertyKind.Static, typeof (string), new Type[] {typeof (int)}, PropertyAttributes.None);
 
       Assert.IsNull (property.GetMethod);
-      CustomMethodEmitter method = property.CreateGetMethod ();
+      var method = property.CreateGetMethod ();
       Assert.IsTrue (method.MethodBuilder.IsStatic);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int) }));
       Assert.AreEqual (typeof (string), method.ReturnType);
@@ -285,7 +285,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               "CreateGetMethodStatic", PropertyKind.Instance, typeof (string), new Type[] { typeof (int) }, PropertyAttributes.None);
 
       Assert.IsNull (property.GetMethod);
-      CustomMethodEmitter method = property.CreateGetMethod ();
+      var method = property.CreateGetMethod ();
       Assert.IsFalse (method.MethodBuilder.IsStatic);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int) }));
       Assert.AreEqual (typeof (string), method.ReturnType);
@@ -310,7 +310,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               "CreateSetMethodStatic", PropertyKind.Static, typeof (string), new Type[] { typeof (int) }, PropertyAttributes.None);
 
       Assert.IsNull (property.SetMethod);
-      CustomMethodEmitter method = property.CreateSetMethod ();
+      var method = property.CreateSetMethod ();
       Assert.IsTrue (method.MethodBuilder.IsStatic);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int), typeof (string) }));
       Assert.AreEqual (typeof (void), method.ReturnType);
@@ -324,7 +324,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               "CreateSetMethodStatic", PropertyKind.Instance, typeof (string), new Type[] { typeof (int) }, PropertyAttributes.None);
 
       Assert.IsNull (property.SetMethod);
-      CustomMethodEmitter method = property.CreateSetMethod ();
+      var method = property.CreateSetMethod ();
       Assert.IsFalse (method.MethodBuilder.IsStatic);
       Assert.That (method.ParameterTypes, Is.EqualTo (new Type[] { typeof (int), typeof (string) }));
       Assert.AreEqual (typeof (void), method.ReturnType);

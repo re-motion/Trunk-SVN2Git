@@ -36,15 +36,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       FieldReference delegationTargetCalled = classEmitter.CreateField ("DelegationTargetCalled", typeof (bool));
 
-      CustomMethodEmitter delegationTarget = classEmitter.CreateMethod ("DelegationTarget", MethodAttributes.Public)
+      var delegationTarget = classEmitter.CreateMethod ("DelegationTarget", MethodAttributes.Public)
           .SetParameterTypes (typeof (SerializationInfo), typeof (StreamingContext));
 
       delegationTarget
           .AddStatement (new AssignStatement (delegationTargetCalled, new ConstReference (true).ToExpression()))
           .AddStatement (new ReturnStatement());
 
-      CustomMethodEmitter implementedMethod = SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
-          delegate (CustomMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
+      var implementedMethod = SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
+          delegate (IMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
           {
             Assert.IsNotNull (getObjectDataMethod);
             Assert.IsFalse (baseIsISerializeable);
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseSerializable", typeof (SerializableClass));
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
-          delegate (CustomMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
+          delegate (IMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
           {
             Assert.IsNotNull (getObjectDataMethod);
             Assert.IsTrue (baseIsISerializeable);

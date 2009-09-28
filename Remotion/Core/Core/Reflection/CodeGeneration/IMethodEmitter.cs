@@ -28,17 +28,21 @@ namespace Remotion.Reflection.CodeGeneration
     ArgumentReference[] ArgumentReferences { get; }
     Type ReturnType { get; }
     Type[] ParameterTypes { get; }
+    
     Expression[] GetArgumentExpressions ();
-    CustomMethodEmitter SetParameterTypes (params Type[] parameters);
-    CustomMethodEmitter SetReturnType (Type returnType);
-    CustomMethodEmitter CopyParametersAndReturnType (MethodInfo method);
-    CustomMethodEmitter ImplementByReturning (Expression result);
-    CustomMethodEmitter ImplementByReturningVoid ();
-    CustomMethodEmitter ImplementByReturningDefault ();
-    CustomMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall);
-    CustomMethodEmitter ImplementByBaseCall (MethodInfo baseMethod);
-    CustomMethodEmitter ImplementByThrowing (Type exceptionType, string message);
-    CustomMethodEmitter AddStatement (Statement statement);
+    IMethodEmitter SetParameterTypes (params Type[] parameters);
+    IMethodEmitter SetReturnType (Type returnType);
+    IMethodEmitter CopyParametersAndReturnType (MethodInfo method);
+    IMethodEmitter ImplementByReturning (Expression result);
+    IMethodEmitter ImplementByReturningVoid ();
+    IMethodEmitter ImplementByReturningDefault ();
+    IMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall);
+    IMethodEmitter ImplementByBaseCall (MethodInfo baseMethod);
+    IMethodEmitter ImplementByThrowing (Type exceptionType, string message);
+    IMethodEmitter AddStatement (Statement statement);
     LocalReference DeclareLocal (Type type);
+
+    void AcceptStatement (Statement statement, ILGenerator generator);
+    void AcceptExpression (Expression expression, ILGenerator generator);
   }
 }

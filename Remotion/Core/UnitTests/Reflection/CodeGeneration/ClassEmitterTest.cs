@@ -146,7 +146,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void CreateMethod ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "CreateMethod", typeof (object));
-      CustomMethodEmitter method = classEmitter.CreateMethod ("Check", MethodAttributes.Public);
+      var method = classEmitter.CreateMethod ("Check", MethodAttributes.Public);
       method.SetReturnType (typeof (string));
       method.AddStatement (new ReturnStatement (new ConstReference ("ret")));
       
@@ -158,7 +158,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void CreateStaticMethod ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "CreateStaticMethod", typeof (object));
-      CustomMethodEmitter method = classEmitter.CreateMethod ("Check", MethodAttributes.Public | MethodAttributes.Static);
+      var method = classEmitter.CreateMethod ("Check", MethodAttributes.Public | MethodAttributes.Static);
       method.SetReturnType (typeof (string));
       method.AddStatement (new ReturnStatement (new ConstReference ("stat")));
 
@@ -194,8 +194,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var classEmitter = new CustomClassEmitter (Scope, "CreateMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
-      
-      CustomMethodEmitter toStringMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("ToString"));
+
+      var toStringMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("ToString"));
       toStringMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
       Type builtType = classEmitter.BuildType ();
@@ -213,7 +213,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "CreateFullNamedMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter toStringMethod = classEmitter.CreateFullNamedMethodOverride (typeof (object).GetMethod ("ToString"));
+      var toStringMethod = classEmitter.CreateFullNamedMethodOverride (typeof (object).GetMethod ("ToString"));
       toStringMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
       Type builtType = classEmitter.BuildType ();
@@ -236,7 +236,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "CreateFullNamedMethodOverride_ProtectedMethod", typeof (ClassWithProtectedVirtualMethod), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter toStringMethod = classEmitter.CreateFullNamedMethodOverride (typeof (ClassWithProtectedVirtualMethod).GetMethod (
+      var toStringMethod = classEmitter.CreateFullNamedMethodOverride (typeof (ClassWithProtectedVirtualMethod).GetMethod (
           "GetSecret", BindingFlags.NonPublic | BindingFlags.Instance));
       toStringMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
@@ -261,13 +261,13 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityArePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter toStringMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("ToString", _declaredInstanceBindingFlags));
+      var toStringMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("ToString", _declaredInstanceBindingFlags));
       toStringMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
-      CustomMethodEmitter finalizeMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("Finalize", _declaredInstanceBindingFlags));
+      var finalizeMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("Finalize", _declaredInstanceBindingFlags));
       finalizeMethod.AddStatement (new ReturnStatement ());
 
-      CustomMethodEmitter getterMethod = classEmitter.CreateMethodOverride (typeof (ClassWithAllKindsOfMembers).GetMethod ("get_Property", _declaredInstanceBindingFlags));
+      var getterMethod = classEmitter.CreateMethodOverride (typeof (ClassWithAllKindsOfMembers).GetMethod ("get_Property", _declaredInstanceBindingFlags));
       getterMethod.AddStatement (new ReturnStatement ());
 
       Type builtType = classEmitter.BuildType ();
@@ -302,7 +302,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "CreateInterfaceMethodImplementation", typeof (object), new[] { typeof (ICloneable) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter cloneMethod = classEmitter.CreateInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone"));
+      var cloneMethod = classEmitter.CreateInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone"));
       cloneMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
       Type builtType = classEmitter.BuildType ();
@@ -316,7 +316,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityAreChangedOnInterfaceImplementation", typeof (object), new[] { typeof (ICloneable) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter method =
+      var method =
           classEmitter.CreateInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone", _declaredInstanceBindingFlags));
       method.AddStatement (new ReturnStatement ());
 
@@ -338,7 +338,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfaceMethodImplementation", typeof (object),
           new[] { typeof (ICloneable) }, TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter cloneMethod = classEmitter.CreatePublicInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone"));
+      var cloneMethod = classEmitter.CreatePublicInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone"));
       cloneMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
       Type builtType = classEmitter.BuildType ();
@@ -352,7 +352,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityAreUnchangedOnPublicInterfaceImplementation",
           typeof (object), new[] { typeof (ICloneable) }, TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter method =
+      var method =
           classEmitter.CreatePublicInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone", _declaredInstanceBindingFlags));
       method.AddStatement (new ReturnStatement ());
 

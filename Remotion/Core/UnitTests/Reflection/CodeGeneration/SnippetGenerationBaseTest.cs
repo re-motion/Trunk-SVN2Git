@@ -25,7 +25,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     private static int s_typeCount;
 
     private CustomClassEmitter _classEmitter;
-    private CustomMethodEmitter _methodEmitter;
+    private IMethodEmitter _methodEmitter;
     private Type _builtType;
     private object _builtInstance;
     private Type _unsavedBuiltType;
@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       get
       {
         if (_classEmitter == null)
-          _classEmitter = new CustomClassEmitter (Scope, this.GetType ().Name + s_typeCount++, typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
+          _classEmitter = new CustomClassEmitter (Scope, GetType ().Name + s_typeCount++, typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
         return _classEmitter;
       }
     }
@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         return _unsavedClassEmitter; }
     }
 
-    public CustomMethodEmitter GetMethodEmitter (bool isStatic)
+    public IMethodEmitter GetMethodEmitter (bool isStatic)
     {
       if (_methodEmitter == null)
       {
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       return _methodEmitter;
     }
 
-    public CustomMethodEmitter GetUnsavedMethodEmitter (bool isStatic)
+    public IMethodEmitter GetUnsavedMethodEmitter (bool isStatic)
     {
       MethodAttributes flags = MethodAttributes.Public;
       if (isStatic)

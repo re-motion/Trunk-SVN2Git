@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (ClassWithSimpleGenericMethod).GetMethod ("GenericMethod");
-      CustomMethodEmitter methodEmitter = classEmitter.CreateMethodOverride (baseMethod);
+      var methodEmitter = classEmitter.CreateMethodOverride (baseMethod);
       methodEmitter.ImplementByBaseCall (baseMethod);
 
       Type builtType = classEmitter.BuildType ();
@@ -92,7 +92,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (ClassWithConstrainedGenericMethod).GetMethod ("GenericMethod");
-      CustomMethodEmitter methodEmitter = classEmitter.CreateMethodOverride (baseMethod);
+      var methodEmitter = classEmitter.CreateMethodOverride (baseMethod);
       methodEmitter.ImplementByBaseCall (baseMethod);
 
       Type builtType = classEmitter.BuildType ();
@@ -117,7 +117,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       MethodInfo baseMethod = baseType.GetMethod ("GenericMethod");
 
-      CustomMethodEmitter methodEmitter = classEmitter.CreateMethodOverride (baseMethod);
+      var methodEmitter = classEmitter.CreateMethodOverride (baseMethod);
       methodEmitter.ImplementByBaseCall (baseMethod);
 
       Type builtType = classEmitter.BuildType ();
@@ -137,7 +137,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
-      CustomMethodEmitter overriddenMethod = classEmitter.CreateMethodOverride (baseMethod);
+      var overriddenMethod = classEmitter.CreateMethodOverride (baseMethod);
       overriddenMethod.ImplementByBaseCall (baseMethod);
 
       PropertyInfo baseProperty = typeof (GenericClassWithAllKindsOfMembers<int>).GetProperty ("Property");
@@ -168,7 +168,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (GenericClassWithAllKindsOfMembers<>).GetMethod ("Method");
-      CustomMethodEmitter overriddenMethod = classEmitter.CreateMethodOverride (baseMethod);
+      var overriddenMethod = classEmitter.CreateMethodOverride (baseMethod);
       overriddenMethod.ImplementByBaseCall (baseMethod);
 
       PropertyInfo baseProperty = typeof (GenericClassWithAllKindsOfMembers<>).GetProperty ("Property");
@@ -205,7 +205,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (GenericInterfaceWithAllKindsOfMembers<int>).GetMethod ("Method");
-      CustomMethodEmitter overriddenMethod = classEmitter.CreateInterfaceMethodImplementation (baseMethod);
+      var overriddenMethod = classEmitter.CreateInterfaceMethodImplementation (baseMethod);
       overriddenMethod.AddStatement (new ReturnStatement());
 
       PropertyInfo baseProperty = typeof (GenericInterfaceWithAllKindsOfMembers<int>).GetProperty ("Property");

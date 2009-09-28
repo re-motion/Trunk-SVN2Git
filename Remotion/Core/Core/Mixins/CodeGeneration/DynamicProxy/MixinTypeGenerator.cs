@@ -170,7 +170,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           if (method.Overrides[0].DeclaringClass != Configuration.TargetClass)
             throw new NotSupportedException ("The code generator only supports mixin methods to be overridden by the mixin's target class.");
 
-          CustomMethodEmitter methodOverride = _emitter.CreateMethodOverride (method.MethodInfo);
+          var methodOverride = _emitter.CreateMethodOverride (method.MethodInfo);
           MethodDefinition overrider = method.Overrides[0];
           MethodInfo methodToCall = GetOverriderMethodToCall (overrider);
           AddCallToOverrider (methodOverride, targetReference, methodToCall);

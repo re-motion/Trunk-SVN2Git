@@ -31,8 +31,9 @@ namespace Remotion.Reflection.CodeGeneration
       return method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly;
     }
 
-    public static CustomMethodEmitter ImplementGetObjectDataByDelegation (
-        IClassEmitter classEmitter, Func<CustomMethodEmitter, bool, MethodInvocationExpression> delegatingMethodInvocationGetter)
+    public static IMethodEmitter ImplementGetObjectDataByDelegation (
+        IClassEmitter classEmitter, 
+        Func<IMethodEmitter, bool, MethodInvocationExpression> delegatingMethodInvocationGetter)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
       ArgumentUtility.CheckNotNull ("delegatingMethodInvocationGetter", delegatingMethodInvocationGetter);
@@ -41,7 +42,7 @@ namespace Remotion.Reflection.CodeGeneration
 
       MethodInfo getObjectDataMethod =
           typeof (ISerializable).GetMethod ("GetObjectData", new[] {typeof (SerializationInfo), typeof (StreamingContext)});
-      CustomMethodEmitter newMethod = classEmitter.CreatePublicInterfaceMethodImplementation (getObjectDataMethod);
+      var newMethod = classEmitter.CreatePublicInterfaceMethodImplementation (getObjectDataMethod);
 
       if (baseIsISerializable)
         ImplementBaseGetObjectDataCall (classEmitter, newMethod);
@@ -107,7 +108,7 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
 
-      Type[] serializationConstructorSignature = new[] {typeof (SerializationInfo), typeof (StreamingContext)};
+      var serializationConstructorSignature = new[] {typeof (SerializationInfo), typeof (StreamingContext)};
       ConstructorInfo baseConstructor = classEmitter.BaseType.GetConstructor (
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
           null,

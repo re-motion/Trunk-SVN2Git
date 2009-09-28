@@ -17,45 +17,51 @@ using System;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration.DPExtensions
 {
   // Converts an expression to a reference by saving it as a temporary local variable at time of emitting
   public class ExpressionReference : TypeReference
   {
-    private readonly Expression _expression;
-    private readonly MethodEmitter _methodEmitter;
     private readonly Type _referenceType;
+    private readonly Expression _expression;
+    private readonly IMethodEmitter _methodEmitter;
 
-    public ExpressionReference (Type referenceType, Expression expression, MethodEmitter methodEmitter) : base (referenceType)
+    public ExpressionReference (Type referenceType, Expression expression, IMethodEmitter methodEmitter)
+        : base (ArgumentUtility.CheckNotNull ("referenceType", referenceType))
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("methodEmitter", methodEmitter);
+
       _referenceType = referenceType;
-      _expression = expression;
       _methodEmitter = methodEmitter;
-    }
-
-    public ExpressionReference (Type referenceType, Expression expression, CustomMethodEmitter methodEmitter)
-      : this (referenceType, expression, methodEmitter.InnerEmitter)
-    {
+      _expression = expression;
     }
 
     public override void LoadAddressOfReference (ILGenerator gen)
     {
+      ArgumentUtility.CheckNotNull ("gen", gen);
+
       LocalReference local = CreateLocal (gen);
       local.LoadAddressOfReference (gen);
     }
 
     public override void LoadReference (ILGenerator gen)
     {
+      ArgumentUtility.CheckNotNull ("gen", gen);
+
       LocalReference local = CreateLocal(gen);
       local.LoadReference (gen);
     }
 
     private LocalReference CreateLocal (ILGenerator gen)
     {
-      LocalReference local = _methodEmitter.CodeBuilder.DeclareLocal (_referenceType);
+      ArgumentUtility.CheckNotNull ("gen", gen);
+
+      LocalReference local = _methodEmitter.DeclareLocal (_referenceType);
       local.Generate (gen);
-      new AssignStatement (local, _expression).Emit (_methodEmitter, gen);
+      _methodEmitter.AcceptStatement (new AssignStatement (local, _expression), gen);
       return local;
     }
 

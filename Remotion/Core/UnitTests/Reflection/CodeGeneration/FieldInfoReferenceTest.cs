@@ -36,7 +36,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreStatic ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("StaticReferenceTypeField");
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
+      var methodEmitter = GetMethodEmitter (false)
         .SetReturnType (typeof (string));
 
       LocalReference local = methodEmitter.DeclareLocal (typeof (string));
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreInstance ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("ReferenceTypeField");
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
+      var methodEmitter = GetMethodEmitter (false)
           .SetParameterTypes (typeof (ClassWithPublicFields))
           .SetReturnType (typeof (string));
 
@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreAddressStatic ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("StaticReferenceTypeField");
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
+      var methodEmitter = GetMethodEmitter (false)
           .SetReturnType (typeof (string));
 
       LocalReference local = methodEmitter.DeclareLocal (typeof (string));
@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreAddressInstance ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("ReferenceTypeField");
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
+      var methodEmitter = GetMethodEmitter (false)
           .SetParameterTypes (typeof (ClassWithPublicFields))
           .SetReturnType (typeof (string));
 

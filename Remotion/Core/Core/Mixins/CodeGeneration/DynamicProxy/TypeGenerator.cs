@@ -260,13 +260,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       }
     }
 
-    private CustomMethodEmitter ImplementIntroducedMethod (
+    private IMethodEmitter ImplementIntroducedMethod (
         Expression implementerExpression,
         MethodDefinition implementingMember,
         MethodInfo interfaceMember,
         MemberVisibility visibility)
     {
-      CustomMethodEmitter methodEmitter = 
+      var methodEmitter = 
           visibility == MemberVisibility.Public 
           ? Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember) 
           : Emitter.CreateInterfaceMethodImplementation (interfaceMember);
@@ -364,7 +364,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsTrue (requiredMethod.ImplementingMethod.DeclaringClass == Configuration,
         "Duck typing is only supported with members from the base type");
 
-      CustomMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
+      IMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
       methodImplementation.ImplementByDelegating (new TypeReferenceWrapper (SelfReference.Self, TypeBuilder),
           requiredMethod.ImplementingMethod.MethodInfo);
     }
@@ -396,10 +396,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return ImplementEventOverride (eventDefinition);
     }
 
-    private CustomMethodEmitter ImplementMethodOverride (MethodDefinition method)
+    private IMethodEmitter ImplementMethodOverride (MethodDefinition method)
     {
       MethodInfo proxyMethod = _baseCallGenerator.GetProxyMethodForOverriddenMethod (method);
-      CustomMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
+      IMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
       var initializationStatement = _initializationCodeGenerator.GetInitializationStatement ();
       methodOverride.AddStatement (initializationStatement);
       methodOverride.ImplementByDelegating (new TypeReferenceWrapper (_firstField, _firstField.Reference.FieldType), proxyMethod);
