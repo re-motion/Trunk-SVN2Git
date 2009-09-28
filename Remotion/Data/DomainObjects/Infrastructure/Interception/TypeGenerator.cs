@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private static readonly MethodInfo s_getObjectDataForGeneratedTypesMethod =
         typeof (SerializationHelper).GetMethod ("GetObjectDataForGeneratedTypes", _staticInfrastructureBindingFlags);
 
-    private readonly CustomClassEmitter _classEmitter;
+    private readonly IClassEmitter _classEmitter;
 
     static TypeGenerator ()
     {
@@ -172,7 +172,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Assertion.IsFalse (accessor.IsAbstract);
       Assertion.IsTrue (InterceptedPropertyCollector.IsOverridable (accessor));
 
-      CustomMethodEmitter emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
+      var emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
       var baseCallExpression = new MethodInvocationExpression (SelfReference.Self, accessor, emitter.GetArgumentExpressions());
 
       ImplementWrappedAccessor (emitter, propertyIdentifier, baseCallExpression, accessor.ReturnType);
@@ -185,7 +185,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       Assertion.IsTrue (accessor.ReturnType != typeof (void));
 
-      CustomMethodEmitter emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
+      var emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
 
       ExpressionReference propertyAccessorReference = CreatePropertyAccessorReference (propertyIdentifier, emitter);
       var getValueMethodCall = 
@@ -202,7 +202,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       Assertion.IsTrue (accessor.ReturnType == typeof (void));
 
-      CustomMethodEmitter emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
+      var emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
 
       Assertion.IsTrue (emitter.ArgumentReferences.Length > 0);
       Reference valueArgumentReference = emitter.ArgumentReferences[emitter.ArgumentReferences.Length - 1];
@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       return;
     }
 
-    private ExpressionReference CreatePropertyAccessorReference (string propertyIdentifier, CustomMethodEmitter emitter)
+    private ExpressionReference CreatePropertyAccessorReference (string propertyIdentifier, IMethodEmitter emitter)
     {
       var propertiesReference = new ExpressionReference (
           typeof (PropertyIndexer),
@@ -232,7 +232,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     }
 
 
-    private void ImplementWrappedAccessor (CustomMethodEmitter emitter, string propertyIdentifier, Expression implementation, Type returnType)
+    private void ImplementWrappedAccessor (IMethodEmitter emitter, string propertyIdentifier, Expression implementation, Type returnType)
     {
       ArgumentUtility.CheckNotNull ("emitter", emitter);
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
