@@ -6,7 +6,7 @@
   overflow: hidden;
 }
 
-body
+html body
 {
   height: 100%;
   margin: 0;
@@ -81,7 +81,8 @@ td.stateCombinationsButtons button
   margin-bottom: 0.5em;
 }
 
-td.stateCombinationsButtons, td.stateCombinationsContainer
+td.stateCombinationsButtons, 
+td.stateCombinationsContainer
 {
   border-right: solid 1px #d4d0c8;
   width: 12em;
@@ -92,14 +93,16 @@ td.stateCombinationsButtons
   vertical-align: top;
 }
 
-td.accessControlEntriesButtons, td.accessControlEntriesContainer
+td.accessControlEntriesButtons, 
+td.accessControlEntriesContainer
 {
   border-left: solid 1px #d4d0c8;
   padding-left: 0.5em;
   padding-top: 0.5em;
 }
 
-td.stateCombinationsButtons, td.accessControlEntriesButtons
+td.stateCombinationsButtons, 
+td.accessControlEntriesButtons
 {
   padding-bottom: 0.5em;
 }
@@ -117,7 +120,8 @@ table.accessControlEntriesTable
   width: 100%;
 }
 
-table.accessControlEntriesTable th.titleCellHorizontal, table.accessControlEntriesTable th.titleCellVertical
+table.accessControlEntriesTable th.titleCellHorizontal, 
+table.accessControlEntriesTable th.titleCellVertical
 {
   border-bottom: solid 1px black;
 }

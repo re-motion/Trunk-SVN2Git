@@ -1,17 +1,43 @@
-﻿div#ErrorContainer
+﻿html
+{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+html body
+{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+form
+{
+  height: 100%;
+  width: 100%;
+}
+
+div#ErrorContainer
 {
   color: Red;
   font-size: 1.1em;
   font-weight: bold;
   height: 1.1em;
+  margin-top: 1em;
+  margin-bottom: 0;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
-td.singleViewTopControls div.content div#CurrentTenantControl
+div.singleViewTopControls div.content div#CurrentTenantControl
 {
   text-align: right;
 }
 
-h1.pageTitle
+div.singleViewTopControls div.content h1.pageTitle
 {
   margin: 0;
 }
@@ -19,7 +45,7 @@ h1.pageTitle
 h2.accessControlListTitle
 {
   margin-top: 0.25em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.25em;
 }
 
 div.singleViewBottomControls button
@@ -121,6 +147,7 @@ table.accessControlEntriesTable th.titleCellVertical div
   writing-mode: tb-rl; 
   filter: FlipV() FlipH();
   padding-top: 0.25em;
+  display: inline;
 }
 
 table.accessControlEntriesTable tr.odd
