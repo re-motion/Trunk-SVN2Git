@@ -42,8 +42,8 @@ div.tabbedMultiViewActiveView
   overflow: hidden;
   margin-top: 0;
   margin-bottom: 0;
-  margin-left: 1em;
-  margin-right: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 div.tabbedMultiViewActiveView div.contentBorder
@@ -57,7 +57,7 @@ div.tabbedMultiViewActiveView div.contentBorder
   border-left:  solid 1px #083779;
   border-right:  solid 1px #083779;
   border-bottom:  solid 1px #083779;
-  margin-top:-1px;
+  margin-top: -1px;
 }
 
 div.tabbedMultiViewActiveView *.top, 
@@ -118,8 +118,8 @@ div.tabbedMultiViewActiveView *.bottomRight
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewTopControls
 {
-  padding: 0;
   overflow: hidden;
+  background-color: White;
 }
 
 div.tabbedMultiViewTopControls.emtpy
@@ -132,14 +132,19 @@ div.tabbedMultiViewTopControls.emtpy
 div.tabbedMultiViewBottomControls
 {
   overflow: hidden;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  background-color: White;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 div.tabbedMultiViewBottomControls.emtpy
 {
+  background-color: White;
 }
 
+/*
 div.tabbedMultiViewBottomControls *.bottomLeft, 
 div.tabbedMultiViewBottomControls *.bottomRight
 {
@@ -164,7 +169,7 @@ div.tabbedMultiViewBottomControls *.bottomRight
   background-position: bottom right;
   bottom: 0px;
   right: 0px;
-}
+}*/
 
 /* Tab Strip */
 
@@ -177,8 +182,8 @@ div.tabbedMultiViewTabStrip
   background-color: White;
   margin-top: 0;
   margin-bottom: 0;
-  margin-left: 1em;
-  margin-right: 1em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane
@@ -195,7 +200,7 @@ div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 {
   padding-top: 0.3em;
-  position:relative;
+  position: relative;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator

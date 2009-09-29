@@ -5,6 +5,7 @@
   padding: 0;
   overflow: hidden;
 }
+
 body
 {
   height: 100%;
@@ -12,87 +13,47 @@ body
   padding: 0;
   overflow: hidden;
 }
+
 form
 {
   height: 100%;
   width: 100%;
 }
 
-
 div#ErrorContainer
 {
-  background-color: White;
   color: Red;
   font-size: 1.1em;
   font-weight: bold;
   height: 1.1em;
-  padding: 0.5em;
-  padding-bottom: 0;
-}
-/*
-div.singleView
-{
-  background-color:#083779;
-  padding: 0.3em;
-  padding-top: 0;
-}        
-
-td.singleViewView
-{
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
-div.singleViewView div.content
-{
-  padding-bottom: 0;
-  padding-bottom: 0.5em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-}
 
-td.singleViewTopControls
+div.singleViewTopControls div.content div#CurrentTenantControl
 {
-  background-color: White;
-  padding-bottom: 0.5em;
-}
-
-td.singleViewTopControls div.content
-{
-  background-color:#083779;
-}*/
-
-div.singleViewBottomControls
-{
-  padding: 0.5em;
-  padding-left: 1em;
-}
-
-/*
-td.singleViewTopControls div.content div#CurrentTenantControl
-{
-  background-color: White;
   text-align: right;
   padding: 0.5em;
 }
 
-td.singleViewTopControls div.content h1.pageTitle
+div.singleViewTopControls div.content h1.pageTitle
 {
-  width: 100%;
-  background-color: White;
-  padding: 0.5em;
-  padding-top: 0;
-}*/
+  margin: 0.25em;
+}
 
 h2.accessControlListTitle
 {
   margin-top: 0.25em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.25em;
 }
 
 div.singleViewBottomControls button
 {
-  margin-right:0.5em;
+  margin-right: 0.5em;
+  margin-top: 0.5em;
 }
 
 button.imageButton
@@ -116,12 +77,11 @@ table.accessControlList
 
 td.stateCombinationsButtons button
 {
-  width:100%;
+  width: 100%;
   margin-bottom: 0.5em;
 }
 
-td.stateCombinationsButtons,
-td.stateCombinationsContainer
+td.stateCombinationsButtons, td.stateCombinationsContainer
 {
   border-right: solid 1px #d4d0c8;
   width: 12em;
@@ -129,19 +89,17 @@ td.stateCombinationsContainer
 
 td.stateCombinationsButtons
 {
-  vertical-align: top;  
+  vertical-align: top;
 }
 
-td.accessControlEntriesButtons,
-td.accessControlEntriesContainer
+td.accessControlEntriesButtons, td.accessControlEntriesContainer
 {
   border-left: solid 1px #d4d0c8;
   padding-left: 0.5em;
   padding-top: 0.5em;
 }
 
-td.stateCombinationsButtons,
-td.accessControlEntriesButtons
+td.stateCombinationsButtons, td.accessControlEntriesButtons
 {
   padding-bottom: 0.5em;
 }
@@ -159,8 +117,7 @@ table.accessControlEntriesTable
   width: 100%;
 }
 
-table.accessControlEntriesTable th.titleCellHorizontal,
-table.accessControlEntriesTable th.titleCellVertical
+table.accessControlEntriesTable th.titleCellHorizontal, table.accessControlEntriesTable th.titleCellVertical
 {
   border-bottom: solid 1px black;
 }
@@ -180,14 +137,8 @@ table.accessControlEntriesTable th.titleCellVertical
 
 table.accessControlEntriesTable th.titleCellVertical div
 {
-  /*Preserves space of original box so it's not useable*/
-  /*-moz-transform: rotate(-90deg);
-  -moz-transform-origin:  left center;
-  -webkit-transform: rotate(-90deg);
-  -webkit-transform-origin: left center;
-  white-space: nowrap;*/
-  
-  writing-mode: tb-rl; 
+  /*Preserves space of original box so it's not useable*/ /*-moz-transform: rotate(-90deg);   -moz-transform-origin:  left center;   -webkit-transform: rotate(-90deg);   -webkit-transform-origin: left center;   white-space: nowrap;*/
+  writing-mode: tb-rl;
   filter: FlipV() FlipH();
   padding-top: 0.25em;
   display: inline;
@@ -195,12 +146,12 @@ table.accessControlEntriesTable th.titleCellVertical div
 
 table.accessControlEntriesTable tr.odd
 {
-	background-color: White;
+  background-color: White;
 }
 
 table.accessControlEntriesTable tr.even
 {
-	background-color: #F4F4F4;
+  background-color: #F4F4F4;
 }
 
 table.accessControlEntriesTable td.conditionCell
