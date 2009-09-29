@@ -7,3 +7,4 @@ Castle.*				Apache License 2.0	http://www.castleproject.org/				trunk latest ver
 log4net					Apache License 2.0	http://logging.apache.org/log4net/index.html
 nunit.*					zlib/libpng variant	http://nunit.org/
 Rhino.Mocks				BSD			http://ayende.com/projects/rhino-mocks.aspx		trunk latest version
+SharpZipLib				GPL, with exceptions	http://www.icsharpcode.net/OpenSource/SharpZipLib/
