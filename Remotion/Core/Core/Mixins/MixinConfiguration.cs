@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Context;
+using Remotion.Logging;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
@@ -85,6 +86,8 @@ namespace Remotion.Mixins
   /// <threadsafety static="true" instance="true" />
   public partial class MixinConfiguration
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (MixinConfiguration));
+
     private readonly ClassContextCollection _classContexts;
     private readonly Dictionary<Type, ClassContext> _registeredInterfaces = new Dictionary<Type,ClassContext> ();
 

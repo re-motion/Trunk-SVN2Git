@@ -15,11 +15,9 @@
 // 
 using System;
 using System.IO;
-using System.Linq;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Validation;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTool

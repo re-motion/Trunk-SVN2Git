@@ -19,8 +19,10 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities.Singleton;
+using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Mixins.Context;
+using Remotion.Logging;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -43,9 +45,9 @@ namespace Remotion.Mixins.CodeGeneration
   /// </remarks>
   public class ConcreteTypeBuilder : ThreadSafeSingletonBase<ConcreteTypeBuilder, DefaultInstanceCreator<ConcreteTypeBuilder>>, IConcreteTypeBuilder
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ConcreteTypeBuilder));
+
     private IModuleManager _scope;
-    // Use a pessimistic cache - a ModuleBuilder cannot be used by multiple threads at the same time anyway, so using a lazy cache could actually 
-    // cause errors (depending on how it was implemented)
     private readonly CodeGenerationCache _cache;
 
     private readonly object _scopeLockObject = new object ();
@@ -217,6 +219,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// </remarks>
     public string[] SaveAndResetDynamicScope ()
     {
+      s_log.Info ("Saving built types...");
       lock (_scopeLockObject)
       {
         string[] paths;
@@ -226,7 +229,7 @@ namespace Remotion.Mixins.CodeGeneration
           paths = new string[0];
 
         _scope = null;
-        return paths;
+        return paths.LogAndReturn (s_log, LogLevel.Info, result => "Saved files: " + SeparatedStringBuilder.Build (", ", result));
       }
     }
 
@@ -250,18 +253,25 @@ namespace Remotion.Mixins.CodeGeneration
     public void LoadAssemblyIntoCache (_Assembly assembly)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
+      s_log.InfoFormat ("Loading assembly {0} into cache...", assembly);
 
-      AssemblyName assemblyName = assembly.GetName ();
-      if (assemblyName.Name == Scope.SignedAssemblyName || assemblyName.Name == Scope.UnsignedAssemblyName)
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to load assembly into cache: {0}."))
       {
-        string message = string.Format (
-            "Cannot load assembly '{0}' into the cache because it has the same name as one of the dynamic assemblies used "
-            + "by the mixin engine. Having two assemblies with the same name loaded into one AppDomain can cause strange and sporadic "
-            + "TypeLoadExceptions.", assemblyName.Name);
-        throw new ArgumentException (message, "assembly");
-      }
+        AssemblyName assemblyName = assembly.GetName();
+        if (assemblyName.Name == Scope.SignedAssemblyName || assemblyName.Name == Scope.UnsignedAssemblyName)
+        {
+          string message = string.Format (
+              "Cannot load assembly '{0}' into the cache because it has the same name as one of the dynamic assemblies used "
+              + "by the mixin engine. Having two assemblies with the same name loaded into one AppDomain can cause strange and sporadic "
+              + "TypeLoadExceptions.",
+              assemblyName.Name);
+          throw new ArgumentException (message, "assembly");
+        }
 
-      Cache.ImportTypes (assembly.GetExportedTypes (), new AttributeBasedMetadataImporter ());
+        var types = assembly.GetExportedTypes();
+        s_log.InfoFormat ("Assembly {0} has {1} exported types.", types.Length);
+        Cache.ImportTypes (types, new AttributeBasedMetadataImporter());
+      }
     }
 
     /// <summary>

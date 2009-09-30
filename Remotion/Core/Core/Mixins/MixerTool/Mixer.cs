@@ -102,18 +102,21 @@ namespace Remotion.Mixins.MixerTool
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      _errors.Clear();
-      _processedContexts.Clear();
-      _finishedTypes.Clear();
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to mix and save all types: {0}."))
+      {
+        _errors.Clear();
+        _processedContexts.Clear();
+        _finishedTypes.Clear();
 
-      s_log.InfoFormat ("The base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
+        s_log.InfoFormat ("The base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
 
-      var builder = ConcreteTypeBuilderFactory.CreateTypeBuilder (AssemblyOutputDirectory);
+        var builder = ConcreteTypeBuilderFactory.CreateTypeBuilder (AssemblyOutputDirectory);
 
-      foreach (var classContext in ClassContextFinder.FindClassContexts (configuration))
-        Generate (classContext, builder);
+        foreach (var classContext in ClassContextFinder.FindClassContexts (configuration))
+          Generate (classContext, builder);
 
-      Save (builder);
+        Save (builder);
+      }
       LogStatistics();
     }
 
@@ -126,7 +129,6 @@ namespace Remotion.Mixins.MixerTool
         ClassContextBeingProcessed (this, new ClassContextEventArgs (classContext));
 
         Type concreteType = concreteTypeBuilder.GetConcreteType (classContext);
-        s_log.InfoFormat ("Created type: {0}.", concreteType.FullName);
         _finishedTypes.Add (classContext.Type, concreteType);
       }
       catch (ValidationException validationException)

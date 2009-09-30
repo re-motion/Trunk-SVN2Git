@@ -16,14 +16,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using Remotion.Logging;
 
 namespace Remotion.Mixins.CodeGeneration
 {
   public class CodeGenerationTimer : IDisposable
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ConcreteTypeBuilder));
-
     private static long s_codeGenerationTime = 0;
 
     public static TimeSpan CodeGenerationTime
@@ -42,8 +39,6 @@ namespace Remotion.Mixins.CodeGeneration
       _stopwatch.Stop();
       long elapsed = _stopwatch.ElapsedMilliseconds;
       Interlocked.Add (ref s_codeGenerationTime, elapsed);
-
-      s_log.InfoFormat ("Code generation: {0} ms.", elapsed);
     }
   }
 }

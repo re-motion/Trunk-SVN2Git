@@ -24,6 +24,7 @@ using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Linq;
+using Remotion.Logging;
 
 namespace Remotion.Mixins.Context
 {
@@ -35,6 +36,8 @@ namespace Remotion.Mixins.Context
   /// <threadsafety static="true" instance="false"/>
   public class DeclarativeConfigurationBuilder
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (DeclarativeConfigurationBuilder));
+
     /// <summary>
     /// Builds a new <see cref="MixinConfiguration"/> from the declarative configuration information in the given assemblies without inheriting
     /// from a parent configuration.
@@ -160,6 +163,7 @@ namespace Remotion.Mixins.Context
     public DeclarativeConfigurationBuilder AddAssembly (Assembly assembly)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
+      s_log.DebugFormat ("Adding assembly {0} to DeclarativeConfigurationBuilder.", assembly);
 
       foreach (Type t in assembly.GetTypes())
       {
@@ -206,18 +210,28 @@ namespace Remotion.Mixins.Context
     /// <see cref="ClassContext"/> and <see cref="MixinContext"/> objects based on the information added so far.</returns>
     public MixinConfiguration BuildConfiguration ()
     {
-      MixinConfigurationBuilder configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
-      ExtendsAnalyzer extendsAnalyzer = new ExtendsAnalyzer (configurationBuilder);
-      UsesAnalyzer usesAnalyzer = new UsesAnalyzer (configurationBuilder);
-      CompleteInterfaceAnalyzer completeInterfaceAnalyzer = new CompleteInterfaceAnalyzer (configurationBuilder);
-      MixAnalyzer mixAnalyzer = new MixAnalyzer (configurationBuilder);
-      IgnoresAnalyzer ignoresAnalyzer = new IgnoresAnalyzer (configurationBuilder);
-      
-      DeclarativeConfigurationAnalyzer configurationAnalyzer =
-          new DeclarativeConfigurationAnalyzer (extendsAnalyzer, usesAnalyzer, completeInterfaceAnalyzer, mixAnalyzer, ignoresAnalyzer);
-      configurationAnalyzer.Analyze(_allTypes);
-      
-      return configurationBuilder.BuildConfiguration();
+      s_log.InfoFormat ("Building mixin configuration from {0} types.", _allTypes.Count);
+
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {0}."))
+      {
+        var configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
+        var extendsAnalyzer = new ExtendsAnalyzer (configurationBuilder);
+        var usesAnalyzer = new UsesAnalyzer (configurationBuilder);
+        var completeInterfaceAnalyzer = new CompleteInterfaceAnalyzer (configurationBuilder);
+        var mixAnalyzer = new MixAnalyzer (configurationBuilder);
+        var ignoresAnalyzer = new IgnoresAnalyzer (configurationBuilder);
+
+        var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (
+            extendsAnalyzer, 
+            usesAnalyzer, 
+            completeInterfaceAnalyzer, 
+            mixAnalyzer, 
+            ignoresAnalyzer);
+
+        configurationAnalyzer.Analyze (_allTypes);
+
+        return configurationBuilder.BuildConfiguration();
+      }
     }
   }
 }

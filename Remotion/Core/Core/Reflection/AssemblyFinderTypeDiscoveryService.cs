@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Remotion.Logging;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -32,6 +33,8 @@ namespace Remotion.Reflection
   /// </summary>
   public class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
+
     private readonly AssemblyFinder _assemblyFinder;
 
     private _Assembly[] _assemblyCache;
@@ -67,11 +70,14 @@ namespace Remotion.Reflection
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
-      var types = new List<Type>();
-      foreach (_Assembly assembly in GetAssemblies (excludeGlobalTypes))
-        types.AddRange (GetTypes (assembly, baseType));
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to discover types: {0}."))
+      {
+        var types = new List<Type>();
+        foreach (_Assembly assembly in GetAssemblies (excludeGlobalTypes))
+          types.AddRange (GetTypes (assembly, baseType));
 
-      return types;
+        return types.LogAndReturn (s_log, LogLevel.Debug, typeList => string.Format ("Discovered {0} types.", typeList.Count));
+      }
     }
 
     private IEnumerable<Type> GetTypes (_Assembly assembly, Type baseType)

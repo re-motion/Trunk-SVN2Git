@@ -15,6 +15,8 @@
 // 
 using System;
 using Remotion.Mixins.Context;
+using Remotion.Utilities;
+using Remotion.Logging;
 
 namespace Remotion.Mixins
 {
@@ -35,7 +37,13 @@ namespace Remotion.Mixins
       lock (s_masterConfigurationLock)
       {
         if (s_masterConfiguration == null)
-          s_masterConfiguration = DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
+        {
+          s_log.Info ("Building mixin master configuration...");
+          using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin master configuration: {0}."))
+          {
+            s_masterConfiguration = DeclarativeConfigurationBuilder.BuildDefaultConfiguration();
+          }
+        }
         return s_masterConfiguration;
       }
     }

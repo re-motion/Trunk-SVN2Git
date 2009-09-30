@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders
@@ -24,6 +25,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
   /// </summary>
   public class MixinConfigurationBuilder
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (MixinConfigurationBuilder));
+
     private readonly MixinConfiguration _parentConfiguration;
     private readonly Dictionary<Type, ClassContextBuilder> _classContextBuilders = new Dictionary<Type, ClassContextBuilder>();
 
@@ -141,12 +144,21 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A new <see cref="MixinConfiguration"/> instance incorporating all the data acquired so far.</returns>
     public virtual MixinConfiguration BuildConfiguration ()
     {
-      var parentContexts = ParentConfiguration != null ? ParentConfiguration.ClassContexts : new ClassContextCollection();
-      var builder = new InheritanceResolvingClassContextBuilder (ClassContextBuilders, parentContexts, DefaultMixinInheritancePolicy.Instance);
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration from fluent builders: {0}."))
+      {
+        var parentContexts = ParentConfiguration != null ? ParentConfiguration.ClassContexts : new ClassContextCollection();
+        s_log.DebugFormat ("Building a mixin configuration with {0} parent class contexts from fluent builders...", parentContexts.Count);
 
-      var allContexts = builder.BuildAllAndCombineWithParentContexts();
-      var classContextCollection = new ClassContextCollection (allContexts);
-      return new MixinConfiguration (classContextCollection);
+        var builder = new InheritanceResolvingClassContextBuilder (ClassContextBuilders, parentContexts, DefaultMixinInheritancePolicy.Instance);
+
+        var allContexts = builder.BuildAllAndCombineWithParentContexts();
+        var classContextCollection = new ClassContextCollection (allContexts);
+        return new MixinConfiguration (classContextCollection)
+            .LogAndReturn (
+                s_log, 
+                LogLevel.Info, 
+                conf => string.Format ("Built mixin configuration from fluent builders with {0} class contexts.", conf.ClassContexts.Count));
+      }
     }
 
     /// <summary>

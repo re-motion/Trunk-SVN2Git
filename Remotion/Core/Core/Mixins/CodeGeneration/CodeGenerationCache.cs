@@ -60,7 +60,9 @@ namespace Remotion.Mixins.CodeGeneration
 
     private Type GenerateConcreteType (IModuleManager moduleManager, ClassContext classContext, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
-      s_log.InfoFormat ("Generating type for {0}.", classContext);
+      s_log.InfoFormat ("Generating concrete type for {0}.", classContext);
+
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete type: {0}."))
       using (new CodeGenerationTimer ())
       {
         var targetClassDefinition = TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
@@ -96,7 +98,11 @@ namespace Remotion.Mixins.CodeGeneration
         MixinDefinition mixinDefinition, 
         INameProvider mixinNameProvider)
     {
-      return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType ();
+      s_log.InfoFormat ("Generating concrete mixin type for {0}.", mixinDefinition.Type);
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {0}."))
+      {
+        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType();
+      }
     }
 
     public ConcreteMixinType GetConcreteMixinTypeFromCacheOnly (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
@@ -113,12 +119,17 @@ namespace Remotion.Mixins.CodeGeneration
     public void ImportTypes (IEnumerable<Type> types, IConcreteTypeMetadataImporter metadataImporter)
     {
       ArgumentUtility.CheckNotNull ("types", types);
+      s_log.InfoFormat ("Importing types...");
+
       lock (_lockObject)
       {
-        foreach (Type type in types)
+        using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to import types: {0}."))
         {
-          ImportConcreteMixedType(metadataImporter, type);
-          ImportConcreteMixinType(metadataImporter, type);
+          foreach (Type type in types)
+          {
+            ImportConcreteMixedType (metadataImporter, type);
+            ImportConcreteMixinType (metadataImporter, type);
+          }
         }
       }
     }
