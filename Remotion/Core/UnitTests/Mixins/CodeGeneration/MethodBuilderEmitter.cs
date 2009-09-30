@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("methodBuilder", methodBuilder);
       _methodBuilder = methodBuilder;
-      _codeBuilder = new MethodCodeBuilder (methodBuilder.DeclaringType.BaseType, methodBuilder, methodBuilder.GetILGenerator());
+      _codeBuilder = new MethodCodeBuilder (methodBuilder.GetILGenerator());
     }
 
     public MethodBuilder MethodBuilder
