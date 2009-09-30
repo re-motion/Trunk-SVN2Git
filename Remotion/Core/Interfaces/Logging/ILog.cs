@@ -494,5 +494,14 @@ namespace Remotion.Logging
     /// Checks if this logger is enabled for the <see cref="LogLevel.Fatal"/> level.
     /// </summary>
     bool IsFatalEnabled { get; }
+
+    /// <summary>
+    /// Checks if this logger is enabled for the given <see cref="LogLevel"/>.
+    /// </summary>
+    /// <param name="logLevel">The log level to check for.</param>
+    /// <returns>
+    ///   <see langword="true"/> if the specified log level is enabled; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool IsEnabled (LogLevel logLevel);
   }
 }

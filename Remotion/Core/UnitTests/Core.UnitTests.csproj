@@ -150,6 +150,8 @@
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
+    <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixinType.cs" />

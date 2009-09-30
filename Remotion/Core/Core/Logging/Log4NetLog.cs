@@ -407,6 +407,11 @@ namespace Remotion.Logging
       LogToLog4NetFormat (Level.Fatal, System.Convert.ToInt32 (messageEnum), EnumDescription.GetDescription (messageEnum), args, null);
     }
 
+    /// <inheritdoc />
+    public bool IsEnabled (LogLevel logLevel)
+    {
+      return base.Logger.IsEnabledFor (Convert (logLevel));
+    }
 
     private void LogToLog4NetFormat (Level level, int? eventID, string format, object[] args, Exception exceptionObject)
     {
