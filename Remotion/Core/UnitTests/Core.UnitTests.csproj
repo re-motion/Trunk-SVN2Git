@@ -914,6 +914,7 @@
     <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\GuessIsExplicitInterfaceProperty.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\SampleTypes.cs" />
+    <Compile Include="Utilities\StopwatchScopeTest.cs" />
     <Compile Include="Utilities\StubStringUtility.cs">
       <SubType>Code</SubType>
     </Compile>
