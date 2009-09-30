@@ -18,6 +18,7 @@ using System.Collections;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Utilities;
+using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -27,6 +28,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // static members and constants
 
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingConfiguration));
 
     private static MappingConfiguration s_mappingConfiguration;
 
@@ -94,18 +96,24 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("loader", loader);
 
-      _classDefinitions = loader.GetClassDefinitions();
-      if (_classDefinitions == null)
-        throw new InvalidOperationException (string.Format ("IMappingLoader.GetClassDefinitions() evaluated and returned null."));
+      s_log.Info ("Building mapping configuration...");
 
-      _relationDefinitions = loader.GetRelationDefinitions (_classDefinitions);
-      if (_relationDefinitions == null)
-        throw new InvalidOperationException (string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
-      
-      _resolveTypes = loader.ResolveTypes;
-      _nameResolver = loader.NameResolver;
-      
-      Validate();
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {0}."))
+      {
+        _classDefinitions = loader.GetClassDefinitions();
+        if (_classDefinitions == null)
+          throw new InvalidOperationException (string.Format ("IMappingLoader.GetClassDefinitions() evaluated and returned null."));
+
+        _relationDefinitions = loader.GetRelationDefinitions (_classDefinitions);
+        if (_relationDefinitions == null)
+          throw new InvalidOperationException (
+              string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
+
+        _resolveTypes = loader.ResolveTypes;
+        _nameResolver = loader.NameResolver;
+
+        Validate();
+      }
     }
 
     // methods and properties

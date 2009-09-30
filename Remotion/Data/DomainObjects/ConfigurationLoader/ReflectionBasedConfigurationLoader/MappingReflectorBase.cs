@@ -20,32 +20,45 @@ using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
   public abstract class MappingReflectorBase: IMappingLoader
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingReflectorBase));
+
     private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver();
 
     protected abstract IEnumerable<Type> GetDomainObjectTypes();
 
     public ClassDefinitionCollection GetClassDefinitions()
     {
-      var classDefinitions = new ClassDefinitionCollection();
-      foreach (ClassReflector classReflector in CreateClassReflectors())
-        classReflector.GetClassDefinition (classDefinitions);
+      s_log.Info ("Reflecting class definitions...");
 
-      return classDefinitions;
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {0}."))
+      {
+        var classDefinitions = new ClassDefinitionCollection();
+        foreach (ClassReflector classReflector in CreateClassReflectors())
+          classReflector.GetClassDefinition (classDefinitions);
+
+        return classDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} class definitions.", result.Count));
+      }
     }
 
     public RelationDefinitionCollection GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      var relationDefinitions = new RelationDefinitionCollection();
-      foreach (ClassReflector classReflector in CreateClassReflectorsForRelations (classDefinitions))
-        classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
+      s_log.InfoFormat ("Reflecting relation definitions of {0} class definitions...", classDefinitions.Count);
 
-      return relationDefinitions;
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect relation definitions: {0}."))
+      {
+        var relationDefinitions = new RelationDefinitionCollection();
+        foreach (ClassReflector classReflector in CreateClassReflectorsForRelations (classDefinitions))
+          classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
+
+        return relationDefinitions.LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Generated {0} relation definitions.", result.Count));
+      }
     }
 
     private IEnumerable<ClassReflector> CreateClassReflectors()

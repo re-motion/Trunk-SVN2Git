@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -27,6 +28,8 @@ public class ClassDefinitionCollection : CommonCollection
   // types
 
   // static members and constants
+
+  private static readonly ILog s_log = LogManager.GetLogger (typeof (ClassDefinitionCollection));
 
   // member fields
 
@@ -61,9 +64,14 @@ public class ClassDefinitionCollection : CommonCollection
 
   public void Validate ()
   {
-    foreach (ClassDefinition rootClass in GetInheritanceRootClasses ())
+    s_log.InfoFormat ("Validating {0} class definitions...", Count);
+
+    using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to validate mapping configuration: {0}."))
     {
-      ValidateRootClass (rootClass);
+      foreach (ClassDefinition rootClass in GetInheritanceRootClasses())
+      {
+        ValidateRootClass (rootClass);
+      }
     }
   }
 
