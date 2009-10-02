@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
+using Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Definitions
@@ -194,104 +194,29 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsNotNull (member.RemoveMethod);
     }
 
-    public class Base<T>
-    {
-      public virtual void Method(T t)
-      {
-      }
-
-      public virtual T Property
-      {
-        get { return default(T);}
-        set { Dev.Null = value; }
-      }
-
-      public virtual event Func<T> Event;
-    }
-
-    public class Derived : Base<int>
-    {
-      public virtual new void Method (int t)
-      {
-      }
-
-      public virtual new int Property
-      {
-        get { return default (int); }
-        set { Dev.Null = value; }
-      }
-
-      public virtual new event Func<int> Event;
-    }
-
-    public class DerivedDerived : Derived
-    {
-      public virtual new void Method (int t)
-      {
-      }
-
-      public virtual new int Property
-      {
-        get { return default (int); }
-        set { Dev.Null = value; }
-      }
-
-      public virtual new event Func<int> Event;
-    }
-
-    public class DerivedDerivedDerivedWithOverrides : DerivedDerived
-    {
-      public override void Method (int t)
-      {
-      }
-
-      public override int Property
-      {
-        get { return default (int); }
-        set { Dev.Null = value; }
-      }
-
-      public override event Func<int> Event;
-    }
-
-    public class DerivedDerivedDerivedDerived : DerivedDerivedDerivedWithOverrides
-    {
-      public new void Method (int t)
-      {
-      }
-
-      public new int Property
-      {
-        get { return default (int); }
-        set { Dev.Null = value; }
-      }
-
-      public new event Func<int> Event;
-    }
-
     [Test]
     public void ShadowedMembersExplicitlyRetrievedButOverriddenNot()
     {
-      TargetClassDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DerivedDerivedDerivedDerived));
+      TargetClassDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DerivedDerivedDerivedDerivedWithNewMembers));
       const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedDerived).GetMethod ("Method", bf)));
+      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedDerivedWithNewMembers).GetMethod ("Method", bf)));
       Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetMethod ("Method", bf)));
-      Assert.IsFalse (d.Methods.ContainsKey (typeof (DerivedDerived).GetMethod ("Method", bf)));
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (Derived).GetMethod ("Method", bf)));
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (Base<int>).GetMethod ("Method", bf)));
+      Assert.IsFalse (d.Methods.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetMethod ("Method", bf)));
+      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)));
+      Assert.IsTrue (d.Methods.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetMethod ("Method", bf)));
 
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedDerived).GetProperty ("Property", bf)));
+      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedDerivedWithNewMembers).GetProperty ("Property", bf)));
       Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetProperty ("Property", bf)));
-      Assert.IsFalse (d.Properties.ContainsKey (typeof (DerivedDerived).GetProperty ("Property", bf)));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (Derived).GetProperty ("Property", bf)));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (Base<int>).GetProperty ("Property", bf)));
+      Assert.IsFalse (d.Properties.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetProperty ("Property", bf)));
+      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)));
+      Assert.IsTrue (d.Properties.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetProperty ("Property", bf)));
 
-      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedDerived).GetEvent ("Event", bf)));
+      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedDerivedWithNewMembers).GetEvent ("Event", bf)));
       Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetEvent ("Event", bf)));
-      Assert.IsFalse (d.Events.ContainsKey (typeof (DerivedDerived).GetEvent ("Event", bf)));
-      Assert.IsTrue (d.Events.ContainsKey (typeof (Derived).GetEvent ("Event", bf)));
-      Assert.IsTrue (d.Events.ContainsKey (typeof (Base<int>).GetEvent ("Event", bf)));
+      Assert.IsFalse (d.Events.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetEvent ("Event", bf)));
+      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)));
+      Assert.IsTrue (d.Events.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetEvent ("Event", bf)));
 
       Assert.AreEqual (18, new List<MemberDefinitionBase> (d.GetAllMembers ()).Count);
     }
