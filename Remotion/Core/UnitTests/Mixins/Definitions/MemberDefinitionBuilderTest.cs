@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Mixins;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -195,41 +196,47 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
-    public void ShadowedMembersExplicitlyRetrievedButOverriddenNot()
+    public void ShadowedMembers_AreExplicitlyRetrieved()
     {
-      TargetClassDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DerivedDerivedDerivedDerivedWithNewMembers));
+      var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedWithNewVirtualMembers));
+      var builder = new MemberDefinitionBuilder (classDefinition, mi => true);
+
+      builder.Apply (typeof (DerivedWithNewVirtualMembers));
+
       const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedDerivedWithNewMembers).GetMethod ("Method", bf)));
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetMethod ("Method", bf)));
-      Assert.IsFalse (d.Methods.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetMethod ("Method", bf)));
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)));
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetMethod ("Method", bf)));
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetMethod ("Method", bf)), Is.True);
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.True);
 
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedDerivedWithNewMembers).GetProperty ("Property", bf)));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetProperty ("Property", bf)));
-      Assert.IsFalse (d.Properties.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetProperty ("Property", bf)));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetProperty ("Property", bf)));
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetProperty ("Property", bf)), Is.True);
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.True);
 
-      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedDerivedWithNewMembers).GetEvent ("Event", bf)));
-      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetEvent ("Event", bf)));
-      Assert.IsFalse (d.Events.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetEvent ("Event", bf)));
-      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)));
-      Assert.IsTrue (d.Events.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetEvent ("Event", bf)));
-
-      Assert.AreEqual (18, new List<MemberDefinitionBase> (d.GetAllMembers ()).Count);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetEvent ("Event", bf)), Is.True);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.True);
     }
 
     [Test]
-    public void ShadowedMixinMembersExplicitlyRetrieved()
+    [Ignore ("TODO 1620")]
+    public void Overrides_AreFiltered ()
     {
-      MixinDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin2)).Mixins[typeof (BT3Mixin2)];
+      var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedDerivedDerivedWithOverrides));
+      var builder = new MemberDefinitionBuilder (classDefinition, mi => true);
 
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (BT3Mixin2).GetProperty ("This")));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (Mixin<IBaseType32>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));
+      builder.Apply (typeof (DerivedDerivedDerivedWithOverrides));
 
-      Assert.AreEqual (11, new List<MemberDefinitionBase> (d.GetAllMembers ()).Count);
+      const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.True);
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.True);
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetMethod ("Method", bf)), Is.False);
+
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.True);
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.True);
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetProperty ("Property", bf)), Is.False);
+
+      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.True);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.True);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetEvent ("Event", bf)), Is.False);
     }
 
     [Test]
@@ -238,20 +245,6 @@ namespace Remotion.UnitTests.Mixins.Definitions
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInheritedMethod));
       Assert.IsTrue (targetClass.Methods.ContainsKey (typeof (BaseClassWithInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod",
           BindingFlags.Instance | BindingFlags.NonPublic)));
-    }
-
-    [Test]
-    public void IsAbstractTrue ()
-    {
-      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (AbstractBaseType));
-      Assert.IsTrue (bt1.Methods[typeof (AbstractBaseType).GetMethod ("VirtualMethod")].IsAbstract);
-    }
-
-    [Test]
-    public void IsAbstractFalse ()
-    {
-      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      Assert.IsFalse (bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)].IsAbstract);
     }
   }
 }
