@@ -18,7 +18,7 @@ using System;
 namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
   // ReSharper disable UnusedTypeParameter
-  internal class Base
+  public class BaseWithDerivedImplementingInterface
   {
     public void Foo ()
     {

@@ -17,7 +17,7 @@ using System;
 
 namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  internal interface InterfaceWithGenericOverloads
+  internal interface InterfaceWithGenericOverloadsImplementedByDerived
   {
     void GFoo ();
     void GFoo<T> ();

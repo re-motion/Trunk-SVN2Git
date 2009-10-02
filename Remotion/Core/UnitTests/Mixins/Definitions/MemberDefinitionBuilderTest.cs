@@ -224,7 +224,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public virtual new event Func<int> Event;
     }
 
-    public class ExtraDerived : Derived
+    public class DerivedDerived : Derived
     {
       public virtual new void Method (int t)
       {
@@ -239,7 +239,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public virtual new event Func<int> Event;
     }
 
-    public class DerivedWithOverrides : ExtraDerived
+    public class DerivedDerivedDerivedWithOverrides : DerivedDerived
     {
       public override void Method (int t)
       {
@@ -254,7 +254,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public override event Func<int> Event;
     }
 
-    public class ExtraExtraDerived : DerivedWithOverrides
+    public class DerivedDerivedDerivedDerived : DerivedDerivedDerivedWithOverrides
     {
       public new void Method (int t)
       {
@@ -272,24 +272,24 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ShadowedMembersExplicitlyRetrievedButOverriddenNot()
     {
-      TargetClassDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ExtraExtraDerived));
+      TargetClassDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DerivedDerivedDerivedDerived));
       const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (ExtraExtraDerived).GetMethod ("Method", bf)));
-      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedWithOverrides).GetMethod ("Method", bf)));
-      Assert.IsFalse (d.Methods.ContainsKey (typeof (ExtraDerived).GetMethod ("Method", bf)));
+      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedDerived).GetMethod ("Method", bf)));
+      Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetMethod ("Method", bf)));
+      Assert.IsFalse (d.Methods.ContainsKey (typeof (DerivedDerived).GetMethod ("Method", bf)));
       Assert.IsTrue (d.Methods.ContainsKey (typeof (Derived).GetMethod ("Method", bf)));
       Assert.IsTrue (d.Methods.ContainsKey (typeof (Base<int>).GetMethod ("Method", bf)));
 
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (ExtraExtraDerived).GetProperty ("Property", bf)));
-      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedWithOverrides).GetProperty ("Property", bf)));
-      Assert.IsFalse (d.Properties.ContainsKey (typeof (ExtraDerived).GetProperty ("Property", bf)));
+      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedDerived).GetProperty ("Property", bf)));
+      Assert.IsTrue (d.Properties.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetProperty ("Property", bf)));
+      Assert.IsFalse (d.Properties.ContainsKey (typeof (DerivedDerived).GetProperty ("Property", bf)));
       Assert.IsTrue (d.Properties.ContainsKey (typeof (Derived).GetProperty ("Property", bf)));
       Assert.IsTrue (d.Properties.ContainsKey (typeof (Base<int>).GetProperty ("Property", bf)));
 
-      Assert.IsTrue (d.Events.ContainsKey (typeof (ExtraExtraDerived).GetEvent ("Event", bf)));
-      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedWithOverrides).GetEvent ("Event", bf)));
-      Assert.IsFalse (d.Events.ContainsKey (typeof (ExtraDerived).GetEvent ("Event", bf)));
+      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedDerived).GetEvent ("Event", bf)));
+      Assert.IsTrue (d.Events.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetEvent ("Event", bf)));
+      Assert.IsFalse (d.Events.ContainsKey (typeof (DerivedDerived).GetEvent ("Event", bf)));
       Assert.IsTrue (d.Events.ContainsKey (typeof (Derived).GetEvent ("Event", bf)));
       Assert.IsTrue (d.Events.ContainsKey (typeof (Base<int>).GetEvent ("Event", bf)));
 

@@ -17,7 +17,7 @@ using System;
 
 namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  internal interface Interface
+  internal interface InterfaceImplementedByDerived
   {
     void Foo ();
     void Bar ();

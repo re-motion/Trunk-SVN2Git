@@ -77,7 +77,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GetAdjustedInterfaceMap_MethodDeclaredOnThisType ()
     {
       var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedImplementingInterface));
-      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (Interface));
+      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceImplementedByDerived));
       Assert.That (GetTargetMethod (mapping, "Void Bar()"), Is.EqualTo (typeof (DerivedImplementingInterface).GetMethod ("Bar")));
     }
 
@@ -85,15 +85,15 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GetAdjustedInterfaceMap_MethodDeclaredOnBaseType ()
     {
       var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedImplementingInterface));
-      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (Interface));
-      Assert.That (GetTargetMethod (mapping, "Void Foo()"), Is.EqualTo (typeof (Base).GetMethod ("Foo")));
+      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceImplementedByDerived));
+      Assert.That (GetTargetMethod (mapping, "Void Foo()"), Is.EqualTo (typeof (BaseWithDerivedImplementingInterface).GetMethod ("Foo")));
     }
 
     [Test]
     public void GetdjustedInterfaceMap_MethodDeclaredOnThisType_NonGenericOverload ()
     {
       var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedImplementingInterface));
-      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloads));
+      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloadsImplementedByDerived));
 
       var expected = typeof (DerivedImplementingInterface).GetMethods ().Where (m => m.ToString () == "Void GBar()").Single ();
       Assert.That (GetTargetMethod (mapping, "Void GBar()"), Is.EqualTo (expected));
@@ -103,7 +103,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GetAdjustedInterfaceMap_MethodDeclaredOnThisType_GenericOverload ()
     {
       var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedImplementingInterface));
-      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloads));
+      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloadsImplementedByDerived));
 
       var expected = typeof (DerivedImplementingInterface).GetMethods ().Where (m => m.ToString () == "Void GBar[T1]()").Single ();
       Assert.That (GetTargetMethod (mapping, "Void GBar[T]()"), Is.EqualTo (expected));
@@ -113,9 +113,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GetAdjustedInterfaceMap_MethodDeclaredOnBaseType_NonGenericOverload ()
     {
       var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedImplementingInterface));
-      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloads));
+      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloadsImplementedByDerived));
 
-      var expected = typeof (Base).GetMethods ().Where (m => m.ToString () == "Void GFoo()").Single ();
+      var expected = typeof (BaseWithDerivedImplementingInterface).GetMethods ().Where (m => m.ToString () == "Void GFoo()").Single ();
       Assert.That (GetTargetMethod (mapping, "Void GFoo()"), Is.EqualTo (expected));
     }
 
@@ -123,9 +123,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GetAdjustedInterfaceMap_MethodDeclaredOnBaseType_GenericOverload ()
     {
       var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedImplementingInterface));
-      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloads));
+      var mapping = classDefinition.GetAdjustedInterfaceMap (typeof (InterfaceWithGenericOverloadsImplementedByDerived));
 
-      var expected = typeof (Base).GetMethods ().Where (m => m.ToString () == "Void GFoo[T2]()").Single ();
+      var expected = typeof (BaseWithDerivedImplementingInterface).GetMethods ().Where (m => m.ToString () == "Void GFoo[T2]()").Single ();
       Assert.That (GetTargetMethod (mapping, "Void GFoo[T]()"), Is.EqualTo (expected));
     }
 
