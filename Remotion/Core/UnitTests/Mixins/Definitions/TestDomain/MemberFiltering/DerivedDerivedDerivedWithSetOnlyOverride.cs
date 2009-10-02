@@ -13,23 +13,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering
 {
-  public class DerivedDerivedDerivedDerivedWithNewMembers : DerivedDerivedDerivedWithOverrides
+  public class DerivedDerivedDerivedWithSetOnlyOverride : DerivedDerivedWithGetOnlyOverride
   {
-    public new void Method (int t)
+    public override int Property
     {
-    }
-
-    public new int Property
-    {
-      get { return default (int); }
       set { Dev.Null = value; }
     }
-
-    public new event Func<int> Event;
   }
 }

@@ -74,7 +74,7 @@ namespace Remotion.Mixins.Utilities
         return CheckMethodAttributeOnMember(eventInfo.GetAddMethod (), attribute)
             || CheckMethodAttributeOnMember(eventInfo.GetRemoveMethod (), attribute);
 
-      string message = string.Format (
+      string message = String.Format (
           "The given member {0}.{1} is neither property, method, nor event.",
           member.DeclaringType.FullName,
           member.Name);
@@ -128,6 +128,28 @@ namespace Remotion.Mixins.Utilities
       ArgumentUtility.CheckNotNull ("assemblyName", assemblyName);
       byte[] publicKeyOrToken = assemblyName.GetPublicKey () ?? assemblyName.GetPublicKeyToken ();
       return publicKeyOrToken != null && publicKeyOrToken.Length > 0;
+    }
+
+    public static MethodInfo[] GetAssociatedMethods (MemberInfo memberInfo)
+    {
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      switch (memberInfo.MemberType)
+      {
+        case MemberTypes.Method:
+          return new[] { (MethodInfo) memberInfo };
+
+        case MemberTypes.Property:
+          var propertyInfo = (PropertyInfo) memberInfo;
+          return propertyInfo.GetAccessors (true);
+
+        case MemberTypes.Event:
+          var eventInfo = (EventInfo) memberInfo;
+          return new[] { eventInfo.GetAddMethod (true), eventInfo.GetRemoveMethod (true) };
+
+        default:
+          throw new InvalidOperationException ("Associated methods can only be retrieved for methods, properties, and events.");
+      }
     }
   }
 }

@@ -205,38 +205,34 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-      Assert.That (classDefinition.Methods.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetMethod ("Method", bf)), Is.True);
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (BaseWithVirtualMembers).GetMethod ("Method", bf)), Is.True);
       Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.True);
 
-      Assert.That (classDefinition.Properties.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetProperty ("Property", bf)), Is.True);
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (BaseWithVirtualMembers).GetProperty ("Property", bf)), Is.True);
       Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.True);
 
-      Assert.That (classDefinition.Events.ContainsKey (typeof (BaseWithVirtualMembers<int>).GetEvent ("Event", bf)), Is.True);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (BaseWithVirtualMembers).GetEvent ("Event", bf)), Is.True);
       Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.True);
     }
 
     [Test]
-    [Ignore ("TODO 1620")]
-    public void Overrides_AreFiltered ()
+    public void OverriddenMethods_AreFiltered ()
     {
-      var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedDerivedDerivedWithOverrides));
+      var classDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (DerivedDerivedWithOverrides));
       var builder = new MemberDefinitionBuilder (classDefinition, mi => true);
 
-      builder.Apply (typeof (DerivedDerivedDerivedWithOverrides));
+      builder.Apply (typeof (DerivedDerivedWithOverrides));
 
       const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.True);
-      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.True);
-      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetMethod ("Method", bf)), Is.False);
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetMethod ("Method", bf)), Is.False);
+      Assert.That (classDefinition.Methods.ContainsKey (typeof (DerivedDerivedWithOverrides).GetMethod ("Method", bf)), Is.True);
 
-      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.True);
-      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.True);
-      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetProperty ("Property", bf)), Is.False);
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetProperty ("Property", bf)), Is.False);
+      Assert.That (classDefinition.Properties.ContainsKey (typeof (DerivedDerivedWithOverrides).GetProperty ("Property", bf)), Is.True);
 
-      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.True);
-      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedDerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.True);
-      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedDerivedDerivedWithOverrides).GetEvent ("Event", bf)), Is.False);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedWithNewVirtualMembers).GetEvent ("Event", bf)), Is.False);
+      Assert.That (classDefinition.Events.ContainsKey (typeof (DerivedDerivedWithOverrides).GetEvent ("Event", bf)), Is.True);
     }
 
     [Test]

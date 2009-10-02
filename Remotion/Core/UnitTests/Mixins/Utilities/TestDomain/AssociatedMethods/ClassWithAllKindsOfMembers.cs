@@ -14,22 +14,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Development.UnitTesting;
 
-namespace Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering
+namespace Remotion.UnitTests.Mixins.Utilities.TestDomain.AssociatedMethods
 {
-  public class DerivedDerivedWithNewVirtualMembers : DerivedWithNewVirtualMembers
+  public class ClassWithAllKindsOfMembers
   {
-    public new virtual void Method (int t)
+    public void Method ()
     {
     }
 
-    public new virtual int Property
-    {
-      get { return default (int); }
-      set { Dev.Null = value; }
-    }
+    public int Property { get; set; }
+    protected int ProtectedProperty { get; set; }
 
-    public new virtual event Func<int> Event;
+    public event EventHandler Event;
+    protected event EventHandler ProtectedEvent;
   }
 }

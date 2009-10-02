@@ -179,6 +179,7 @@
     <Compile Include="Mixins\Definitions\Building\DependencySorting\IDependentMixinGrouper.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\MixinDefinitionSorter.cs" />
     <Compile Include="Mixins\Definitions\Building\MemberOverridePair.cs" />
+    <Compile Include="Mixins\Definitions\Building\OverriddenMemberFilter.cs" />
     <Compile Include="Mixins\MixerTool\ConcreteTypeBuilderFactory.cs" />
     <Compile Include="Mixins\MixerTool\ErrorEventArgs.cs" />
     <Compile Include="Mixins\MixerTool\ClassContextFinder.cs" />

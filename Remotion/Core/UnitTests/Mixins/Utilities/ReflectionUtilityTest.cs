@@ -16,9 +16,12 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
+using Remotion.UnitTests.Mixins.Utilities.TestDomain.AssociatedMethods;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.Utilities
 {
@@ -154,6 +157,54 @@ namespace Remotion.UnitTests.Mixins.Utilities
 
       fullName = typeof (ReflectionUtilityTest).Assembly.FullName;
       Assert.IsFalse (ReflectionUtility.IsAssemblySigned (new AssemblyName (fullName)));
+    }
+
+    [Test]
+    public void GetAssociatedMethods_MethodInfo ()
+    {
+      var member = typeof (ClassWithAllKindsOfMembers).GetMethod ("Method");
+      var associatedMethods = ReflectionUtility.GetAssociatedMethods (member);
+      Assert.That (associatedMethods, Is.EqualTo (new[] { member }));
+    }
+
+    [Test]
+    public void GetAssociatedMethods_PropertyInfo ()
+    {
+      var member = typeof (ClassWithAllKindsOfMembers).GetProperty ("Property");
+      var associatedMethods = ReflectionUtility.GetAssociatedMethods (member);
+      Assert.That (associatedMethods, Is.EquivalentTo (new[] { member.GetGetMethod (), member.GetSetMethod () }));
+    }
+
+    [Test]
+    public void GetAssociatedMethods_PropertyInfo_Protected ()
+    {
+      var member = typeof (ClassWithAllKindsOfMembers).GetProperty ("ProtectedProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      var associatedMethods = ReflectionUtility.GetAssociatedMethods (member);
+      Assert.That (associatedMethods, Is.EquivalentTo (new[] { member.GetGetMethod (true), member.GetSetMethod (true) }));
+    }
+
+    [Test]
+    public void GetAssociatedMethods_EventInfo ()
+    {
+      var member = typeof (ClassWithAllKindsOfMembers).GetEvent ("Event");
+      var associatedMethods = ReflectionUtility.GetAssociatedMethods (member);
+      Assert.That (associatedMethods, Is.EquivalentTo (new[] { member.GetAddMethod(), member.GetRemoveMethod () }));
+    }
+
+    [Test]
+    public void GetAssociatedMethods_EventInfo_Protected ()
+    {
+      var member = typeof (ClassWithAllKindsOfMembers).GetEvent ("ProtectedEvent", BindingFlags.NonPublic | BindingFlags.Instance);
+      var associatedMethods = ReflectionUtility.GetAssociatedMethods (member);
+      Assert.That (associatedMethods, Is.EquivalentTo (new[] { member.GetAddMethod (true), member.GetRemoveMethod (true) }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Associated methods can only be retrieved for methods, properties, and events.")]
+    public void GetAssociatedMethods_InvalidMemberInfoKind ()
+    {
+      var member = typeof (ClassWithAllKindsOfMembers).GetConstructor (Type.EmptyTypes);
+      ReflectionUtility.GetAssociatedMethods (member);
     }
   }
 }

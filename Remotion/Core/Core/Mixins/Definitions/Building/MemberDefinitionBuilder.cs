@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
@@ -46,23 +45,15 @@ namespace Remotion.Mixins.Definitions.Building
       IEnumerable<PropertyInfo> properties = ReflectionUtility.RecursiveGetAllProperties (type, c_bindingFlags);
       IEnumerable<EventInfo> events = ReflectionUtility.RecursiveGetAllEvents (type, c_bindingFlags);
 
-      AnalyzeProperties (CleanupMembers(properties, new PropertyNameAndSignatureEqualityComparer()));
-      AnalyzeEvents (CleanupMembers(events, new EventNameAndSignatureEqualityComparer()));
-      AnalyzeMethods (CleanupMembers(methods, new MethodNameAndSignatureEqualityComparer()));
-    }
+      var overriddenMemberFilter = new OverriddenMemberFilter ();
 
-    private IEnumerable<T> CleanupMembers<T> (IEnumerable<T> members, IEqualityComparer<T> comparer) where T : MemberInfo
-    {
-      var memberSet = new MultiSet<T>(comparer);
-      memberSet.AddRange (members); // collect duplicates
-      var result = new Set<T>();
-      
-      foreach (T member in members)
-      {
-        var chain = new MemberChain<T> (memberSet[member]);
-        result.AddRange (chain.GetNonOverriddenMembers());
-      }
-      return result;
+      methods = overriddenMemberFilter.RemoveOverriddenMembers (methods);
+      properties = overriddenMemberFilter.RemoveOverriddenMembers (properties);
+      events = overriddenMemberFilter.RemoveOverriddenMembers (events);
+
+      AnalyzeProperties (properties);
+      AnalyzeEvents (events);
+      AnalyzeMethods (methods);
     }
 
     private void AnalyzeProperties (IEnumerable<PropertyInfo> properties)
