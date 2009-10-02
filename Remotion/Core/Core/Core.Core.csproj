@@ -350,7 +350,6 @@
     <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouper.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\MixinDependencyAnalyzer.cs" />
     <Compile Include="Mixins\Definitions\Building\InterfaceIntroductionDefinitionBuilder.cs" />
-    <Compile Include="Mixins\Definitions\Building\MemberChain.cs" />
     <Compile Include="Mixins\Definitions\Building\MemberDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\Building\MemberImplementationFinder.cs" />
     <Compile Include="Mixins\Definitions\Building\MixinDefinitionBuilder.cs" />
