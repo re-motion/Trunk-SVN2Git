@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Uncached()
     {
-      var concreteMixinType = new ConcreteMixinType (typeof (int));
+      var concreteMixinType = new ConcreteMixinType (typeof (int), typeof (IServiceProvider));
 
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock);
@@ -123,7 +123,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Cached()
     {
-      var concreteMixinType = new ConcreteMixinType (typeof (int));
+      var concreteMixinType = new ConcreteMixinType (typeof (int), typeof (IServiceProvider));
 
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinTypeFromCacheOnly_NonNull()
     {
-      var concreteMixinType = new ConcreteMixinType (typeof (int));
+      var concreteMixinType = new ConcreteMixinType (typeof (int), typeof (IServiceProvider));
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
       _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (concreteMixinType).Repeat.Once();

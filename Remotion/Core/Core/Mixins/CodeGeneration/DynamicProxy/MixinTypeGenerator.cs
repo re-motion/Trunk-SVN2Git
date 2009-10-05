@@ -89,18 +89,21 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     public ConcreteMixinType GetBuiltType ()
     {
-      Generate();
-      Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers().ToArray();
+      GenerateTypeFeatures ();
+      var overrideInterfaceGenerator = GenerateOverrides ();
+      
+      Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers ().ToArray ();
 
       Type generatedType = Emitter.BuildType();
-      var result = new ConcreteMixinType (generatedType);
+      Type generatedOverrideInterface = overrideInterfaceGenerator.GetBuiltType();
+      var result = new ConcreteMixinType (generatedType, generatedOverrideInterface);
       foreach (var methodWrapper in methodWrappers)
         result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
 
       return result;
     }
 
-    protected virtual void Generate ()
+    protected virtual void GenerateTypeFeatures ()
     {
       AddTypeInitializer ();
 
@@ -111,7 +114,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddMixinTypeAttribute();
       AddDebuggerAttributes();
       ReplicateAttributes (_configuration.CustomAttributes, _emitter);
-      ImplementOverrides();
     }
 
     private void AddTypeInitializer ()
@@ -155,7 +157,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Emitter.AddCustomAttribute (debuggerAttribute);
     }
 
-    private void ImplementOverrides ()
+    protected virtual OverrideInterfaceGenerator GenerateOverrides ()
     {
       var overrideInterfaceGenerator = OverrideInterfaceGenerator.CreateNestedGenerator (Emitter, "IOverriddenMethods");
 
@@ -177,6 +179,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           overrideInterfaceGenerator.AddOverriddenMethod (method.MethodInfo);
         }
       }
+
+      return overrideInterfaceGenerator;
     }
 
     private PropertyReference GetTargetReference()

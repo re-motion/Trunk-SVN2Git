@@ -112,6 +112,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public void GetBuiltType_Type ()
     {
       DisableGenerate();
+      _mixinTypeGenerator.Replay ();
 
       _classEmitterMock.Stub (mock => mock.BuildType()).Return (typeof (string));
       ConcreteMixinType mixinType = _mixinTypeGenerator.GetBuiltType();
@@ -122,6 +123,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public void GetBuiltType_ReturnsWrappersForAllProtectedOverriders ()
     {
       DisableGenerate ();
+      _mixinTypeGenerator.Replay ();
 
       var finalizeMethodInfo = typeof (object).GetMethod ("Finalize", BindingFlags.NonPublic | BindingFlags.Instance);
       var protectedOverrider = new MethodDefinition (finalizeMethodInfo, _simpleMixinDefinition);
@@ -139,9 +141,37 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       Assert.That (result.GetMethodWrapper (finalizeMethodInfo), Is.SameAs (fakeMethodWrapper));
     }
 
+    [Test]
+    public void GetBuiltType_OverrideInterface ()
+    {
+      StubGenerateTypeFeatures ();
+      StubGenerateOverrides (typeof (int));
+      _mixinTypeGenerator.Replay ();
+
+      _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
+
+      ConcreteMixinType mixinType = _mixinTypeGenerator.GetBuiltType ();
+      Assert.That (mixinType.GeneratedOverrideInterface, Is.SameAs (typeof (int)));
+    }
+
     private void DisableGenerate ()
     {
-      _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "Generate"));
+      StubGenerateTypeFeatures();
+      StubGenerateOverrides(typeof (string));
+    }
+
+    private void StubGenerateOverrides (Type overrideInterfaceType)
+    {
+      var fakeEmitter = MockRepository.GenerateStub<IClassEmitter> ();
+      fakeEmitter.Stub (stub => stub.BuildType ()).Return (overrideInterfaceType);
+      var fakeOverrideInterfaceGenerator = new OverrideInterfaceGenerator (fakeEmitter);
+
+      _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateOverrides")).Return (fakeOverrideInterfaceGenerator);
+    }
+
+    private void StubGenerateTypeFeatures ()
+    {
+      _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTypeFeatures"));
     }
   }
 }

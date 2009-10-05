@@ -30,19 +30,27 @@ namespace Remotion.Mixins.CodeGeneration
   public class ConcreteMixinType
   {
     private readonly Type _generatedType;
+    private readonly Type _generatedOverrideInterface;
     private readonly Dictionary<MethodInfo, MethodInfo> _methodWrappers;
 
-    public ConcreteMixinType (Type generatedType)
+    public ConcreteMixinType (Type generatedType, Type generatedOverrideInterface)
     {
       ArgumentUtility.CheckNotNull ("generatedType", generatedType);
+      ArgumentUtility.CheckNotNull ("generatedOverrideInterface", generatedOverrideInterface);
 
       _generatedType = generatedType;
+      _generatedOverrideInterface = generatedOverrideInterface;
       _methodWrappers = new Dictionary<MethodInfo, MethodInfo>();
     }
 
     public Type GeneratedType
     {
       get { return _generatedType; }
+    }
+
+    public Type GeneratedOverrideInterface
+    {
+      get { return _generatedOverrideInterface; }
     }
 
     public void AddMethodWrapper (MethodInfo protectedMethod, MethodInfo publicWrapper)

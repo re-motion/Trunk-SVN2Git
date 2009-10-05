@@ -149,7 +149,7 @@ namespace Remotion.Mixins.CodeGeneration
       if (concreteMixinTypeIdentifier != null)
       {
         var methodWrappers = metadataImporter.GetMethodWrappersForMixinType (type);
-        var concreteMixinType = new ConcreteMixinType (type);
+        var concreteMixinType = new ConcreteMixinType (type, typeof (object)); // TODO 1624!
         foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
           concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
 
