@@ -27,7 +27,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
 
-      var emitter = module.CreateClassEmitter (typeName, null, Type.EmptyTypes, TypeAttributes.Public | TypeAttributes.Interface, false);
+      var emitter = module.CreateClassEmitter (
+          typeName, 
+          null, 
+          Type.EmptyTypes, 
+          TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract, 
+          false);
       return new OverrideInterfaceGenerator (emitter);
     }
 
@@ -36,7 +41,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("outerType", outerType);
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
 
-      var emitter = outerType.CreateNestedClass (typeName, null, Type.EmptyTypes, TypeAttributes.NestedPublic | TypeAttributes.Interface);
+      var emitter = outerType.CreateNestedClass (
+          typeName, 
+          null, 
+          Type.EmptyTypes, 
+          TypeAttributes.NestedPublic | TypeAttributes.Interface | TypeAttributes.Abstract);
       return new OverrideInterfaceGenerator (emitter);
     }
 

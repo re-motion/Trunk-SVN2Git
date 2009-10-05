@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               "TestType",
               null,
               Type.EmptyTypes,
-              TypeAttributes.Public | TypeAttributes.Interface,
+              TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract,
               false))
           .Return (_classEmitterMock);
 
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               "TestType",
               null,
               Type.EmptyTypes,
-              TypeAttributes.NestedPublic | TypeAttributes.Interface))
+              TypeAttributes.NestedPublic | TypeAttributes.Interface | TypeAttributes.Abstract))
           .Return (_classEmitterMock);
 
       var generator = OverrideInterfaceGenerator.CreateNestedGenerator (outerTypeMock, "TestType");
