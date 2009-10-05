@@ -32,5 +32,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
           new object[0]
       })]
   public class LoadableConcreteMixinTypeForMixinWithAbstractMembers
-  { }
+  {
+    public interface IOverriddenMethods
+    {
+    }
+  }
 }

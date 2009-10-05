@@ -32,7 +32,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [SetUp]
     public void SetUp ()
     {
-      _concreteMixinType = new ConcreteMixinType (typeof (object), typeof (IServiceProvider));
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+      _concreteMixinType = new ConcreteMixinType (identifier, typeof (object), typeof (IServiceProvider));
       _method1 = typeof (object).GetMethod ("ToString");
       _method2 = typeof (object).GetMethod ("Equals", BindingFlags.Instance | BindingFlags.Public);
     }

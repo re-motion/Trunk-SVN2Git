@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -106,7 +105,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Uncached()
     {
-      var concreteMixinType = new ConcreteMixinType (typeof (int), typeof (IServiceProvider));
+      var concreteMixinType = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier(), typeof (int), typeof (IServiceProvider));
 
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock);
@@ -123,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Cached()
     {
-      var concreteMixinType = new ConcreteMixinType (typeof (int), typeof (IServiceProvider));
+      var concreteMixinType = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier(), typeof (int), typeof (IServiceProvider));
 
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
@@ -148,7 +147,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinTypeFromCacheOnly_NonNull()
     {
-      var concreteMixinType = new ConcreteMixinType (typeof (int), typeof (IServiceProvider));
+      var concreteMixinType = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier(), typeof (int), typeof (IServiceProvider));
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
       _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (concreteMixinType).Repeat.Once();
@@ -193,43 +192,20 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       var typesToImport = new[] { typeof (BT1Mixin1), typeof (BT1Mixin2) };
       var metadataImporterStub = MockRepository.GenerateStub<IConcreteTypeMetadataImporter> ();
+
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1))).Return (null);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin2))).Return (null);
-     
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (identifier1);
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin2))).Return (identifier2);
-      
-      metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (BT1Mixin1))).Return (new Tuple<MethodInfo, MethodInfo>[0]);
-      metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (BT1Mixin2))).Return (new Tuple<MethodInfo, MethodInfo>[0]);
 
+      var type1 = new ConcreteMixinType (identifier1, typeof (int), typeof (string));
+      var type2 = new ConcreteMixinType (identifier2, typeof (int), typeof (string));
+      
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (type1);
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin2))).Return (type2);
+      
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (identifier1).GeneratedType, Is.SameAs (typeof (BT1Mixin1)));
-      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (identifier2).GeneratedType, Is.SameAs (typeof (BT1Mixin2)));
-    }
-
-    [Test]
-    public void Import_AddsPublicMethodWrappers()
-    {
-      var method1 = typeof (DateTime).GetMethod ("get_Now");
-      var method2 = typeof (DateTime).GetMethod ("get_Day");
-      var wrapper1 = typeof (DateTime).GetMethod ("get_Month");
-      var wrapper2 = typeof (DateTime).GetMethod ("get_Year");
-
-      var identifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-
-      var metadataImporterStub = MockRepository.GenerateStub<IConcreteTypeMetadataImporter> ();
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1))).Return (null);
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (identifier);
-
-      metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (BT1Mixin1)))
-          .Return (new[] { Tuple.NewTuple (method1, wrapper1), Tuple.NewTuple (method2, wrapper2) });
-
-      _cache.ImportTypes (new[] {typeof (BT1Mixin1)}, metadataImporterStub);
-
-      ConcreteMixinType importedType = _cache.GetConcreteMixinTypeFromCacheOnly (identifier);
-      Assert.That (importedType.GetMethodWrapper (method1), Is.EqualTo (wrapper1));
-      Assert.That (importedType.GetMethodWrapper (method2), Is.EqualTo (wrapper2));
+      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (identifier1), Is.SameAs (type1));
+      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (identifier2), Is.SameAs (type2));
     }
   }
 }

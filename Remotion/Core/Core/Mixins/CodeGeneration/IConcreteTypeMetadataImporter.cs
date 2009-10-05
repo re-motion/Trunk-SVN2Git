@@ -28,7 +28,6 @@ namespace Remotion.Mixins.CodeGeneration
   public interface IConcreteTypeMetadataImporter
   {
     ClassContext GetMetadataForMixedType (Type concreteMixedType);
-    ConcreteMixinTypeIdentifier GetMetadataForMixinType (Type concreteMixinType);
-    IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType (Type concreteMixinType);
+    ConcreteMixinType GetMetadataForMixinType (Type concreteMixinType);
   }
 }

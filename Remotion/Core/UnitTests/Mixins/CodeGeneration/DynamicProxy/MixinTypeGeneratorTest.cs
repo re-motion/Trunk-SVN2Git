@@ -154,6 +154,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       Assert.That (mixinType.GeneratedOverrideInterface, Is.SameAs (typeof (int)));
     }
 
+    [Test]
+    public void GetBuiltType_Identifier ()
+    {
+      StubGenerateTypeFeatures ();
+      StubGenerateOverrides (typeof (int));
+      _mixinTypeGenerator.Replay ();
+
+      _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
+
+      ConcreteMixinType mixinType = _mixinTypeGenerator.GetBuiltType ();
+      Assert.That (mixinType.Identifier, Is.EqualTo (_simpleMixinDefinition.GetConcreteMixinTypeIdentifier()));
+    }
+
     private void DisableGenerate ()
     {
       StubGenerateTypeFeatures();

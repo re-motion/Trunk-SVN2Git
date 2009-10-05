@@ -43,7 +43,7 @@ namespace Remotion.Mixins.CodeGeneration
 
     // CLS-incompliant version for better testing
     [CLSCompliant (false)]
-    public virtual ConcreteMixinTypeIdentifier GetMetadataForMixinType (_Type concreteMixinType)
+    public virtual ConcreteMixinTypeIdentifier GetIdentifierForMixinType (_Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
@@ -90,17 +90,29 @@ namespace Remotion.Mixins.CodeGeneration
       return GetMetadataForMixedType ((_Type) concreteMixedType);
     }
 
-    public ConcreteMixinTypeIdentifier GetMetadataForMixinType (Type concreteMixinType)
+    public ConcreteMixinType GetMetadataForMixinType (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
-      return (GetMetadataForMixinType ((_Type) concreteMixinType));
-    }
+      var identifier = GetIdentifierForMixinType (concreteMixinType);
+      if (identifier == null)
+        return null;
 
-    public IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType(Type concreteMixinType)
-    {
-      ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
-      return GetMethodWrappersForMixinType ((_Type) concreteMixinType);
+      var generatedOverrideInterface = concreteMixinType.GetNestedType ("IOverriddenMethods");
+      if (generatedOverrideInterface == null)
+      {
+        var message = string.Format (
+            "The given type '{0}' has a concrete mixin type identifier, but no IOverriddenMethods interface.", 
+            concreteMixinType);
+        throw new Exception (message);
+      }
+
+      var result = new ConcreteMixinType (identifier, concreteMixinType, generatedOverrideInterface);
+      var methodWrappers = GetMethodWrappersForMixinType (concreteMixinType);
+      foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
+        result.AddMethodWrapper (wrapper.A, wrapper.B);
+
+      return result;
     }
   }
 }

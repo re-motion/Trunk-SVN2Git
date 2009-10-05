@@ -23,6 +23,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
   [IgnoreForMixinConfiguration]
   public class FakeConcreteMixinType : MixinWithAbstractMembers, ISerializable, IDeserializationCallback
   {
+    public interface IOverriddenMethods
+    {
+    }
+
     public bool OnDeserializingCalled = false;
     public bool OnDeserializedCalled = false;
     public bool OnDeserializationCalled = false;

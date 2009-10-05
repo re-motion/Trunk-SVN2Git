@@ -145,15 +145,10 @@ namespace Remotion.Mixins.CodeGeneration
 
     private void ImportConcreteMixinType (IConcreteTypeMetadataImporter metadataImporter, Type type)
     {
-      var concreteMixinTypeIdentifier = metadataImporter.GetMetadataForMixinType (type);
-      if (concreteMixinTypeIdentifier != null)
+      var concreteMixinType = metadataImporter.GetMetadataForMixinType (type);
+      if (concreteMixinType != null)
       {
-        var methodWrappers = metadataImporter.GetMethodWrappersForMixinType (type);
-        var concreteMixinType = new ConcreteMixinType (type, typeof (object)); // TODO 1624!
-        foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
-          concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
-
-        _mixinTypeCache.GetOrCreateValue (concreteMixinTypeIdentifier, delegate { return concreteMixinType; });
+        _mixinTypeCache.GetOrCreateValue (concreteMixinType.Identifier, delegate { return concreteMixinType; });
       }
     }
   }
