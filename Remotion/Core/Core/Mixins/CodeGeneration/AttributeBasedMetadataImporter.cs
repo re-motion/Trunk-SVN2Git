@@ -104,7 +104,7 @@ namespace Remotion.Mixins.CodeGeneration
         var message = string.Format (
             "The given type '{0}' has a concrete mixin type identifier, but no IOverriddenMethods interface.", 
             concreteMixinType);
-        throw new Exception (message);
+        throw new TypeImportException (message);
       }
 
       var result = new ConcreteMixinType (identifier, concreteMixinType, generatedOverrideInterface);

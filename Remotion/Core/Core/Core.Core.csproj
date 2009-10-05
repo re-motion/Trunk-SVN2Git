@@ -175,6 +175,7 @@
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\IConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\IConcreteMixinTypeIdentifierSerializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\TypeImportException.cs" />
     <Compile Include="Mixins\Context\IMixinInheritancePolicy.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\IDependentMixinGrouper.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\MixinDefinitionSorter.cs" />

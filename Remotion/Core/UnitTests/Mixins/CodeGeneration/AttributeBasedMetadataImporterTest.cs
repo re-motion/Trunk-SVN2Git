@@ -104,9 +104,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (Exception), ExpectedMessage = "The given type 'System.Object' has a concrete mixin type identifier, but no "
+    [ExpectedException (typeof (TypeImportException), ExpectedMessage = "The given type 'System.Object' has a concrete mixin type identifier, but no "
         + "IOverriddenMethods interface.")]
-    [Ignore ("TODO 1624: Exception type!")]
     public void GetMetadataForMixinType_NoOverrideInterface ()
     {
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
