@@ -176,5 +176,23 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (m1.GetType (), Is.Not.SameAs (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.M1 (), Is.EqualTo ("AbstractMixinWithoutAbstractMembers.M1"));
     }
+
+    [Test]
+    public void NestedInterfaceWithOverrides ()
+    {
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      var overrideInterface = generatedType.GetNestedType ("IOverriddenMethods");
+
+      Assert.That (overrideInterface, Is.Not.Null);
+      
+      var method = overrideInterface.GetMethod ("AbstractMethod");
+      Assert.That (method, Is.Not.Null);
+      Assert.That (method.ReturnType, Is.SameAs (typeof (string)));
+
+      var parameters = method.GetParameters();
+      Assert.That (parameters.Length, Is.EqualTo (1));
+      Assert.That (parameters[0].ParameterType, Is.SameAs (typeof (int)));
+      Assert.That (parameters[0].Name, Is.EqualTo ("i"));
+    }
   }
 }

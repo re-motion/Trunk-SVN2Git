@@ -157,8 +157,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementOverrides ()
     {
-      if (!_configuration.HasOverriddenMembers())
-        return;
+      var overrideInterfaceGenerator = OverrideInterfaceGenerator.CreateNestedGenerator (Emitter, "IOverriddenMethods");
 
       PropertyReference targetReference = GetTargetReference();
       foreach (MethodDefinition method in _configuration.GetAllMethods())
@@ -174,6 +173,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           MethodDefinition overrider = method.Overrides[0];
           MethodInfo methodToCall = GetOverriderMethodToCall (overrider);
           AddCallToOverrider (methodOverride, targetReference, methodToCall);
+
+          overrideInterfaceGenerator.AddOverriddenMethod (method.MethodInfo);
         }
       }
     }
