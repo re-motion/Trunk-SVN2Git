@@ -24,29 +24,56 @@ using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 {
   [TestFixture]
   public class OverrideInterfaceGeneratorTest
   {
-    private ICodeGenerationModule _moduleStub;
     private IClassEmitter _classEmitterMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _moduleStub = MockRepository.GenerateStub<ICodeGenerationModule> ();
       _classEmitterMock = MockRepository.GenerateMock<IClassEmitter> ();
+    }
 
-      _moduleStub
+    [Test]
+    public void CreateTopLevelGenerator ()
+    {
+      var moduleMock = MockRepository.GenerateMock<ICodeGenerationModule> ();
+      moduleMock
           .Stub (mock => mock.CreateClassEmitter (
               "TestType",
-              typeof (object),
+              null,
               Type.EmptyTypes,
               TypeAttributes.Public | TypeAttributes.Interface,
               false))
           .Return (_classEmitterMock);
+
+      var generator = OverrideInterfaceGenerator.CreateTopLevelGenerator (moduleMock, "TestType");
+      Assert.That (PrivateInvoke.GetNonPublicField (generator, "_emitter"), Is.SameAs (_classEmitterMock));
+
+      moduleMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CreateNestedGenerator ()
+    {
+      var outerTypeMock = MockRepository.GenerateMock<IClassEmitter> ();
+      outerTypeMock
+          .Stub (mock => mock.CreateNestedClass (
+              "TestType",
+              null,
+              Type.EmptyTypes,
+              TypeAttributes.NestedPublic | TypeAttributes.Interface))
+          .Return (_classEmitterMock);
+
+      var generator = OverrideInterfaceGenerator.CreateNestedGenerator (outerTypeMock, "TestType");
+      Assert.That (PrivateInvoke.GetNonPublicField (generator, "_emitter"), Is.SameAs (_classEmitterMock));
+
+      outerTypeMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -54,10 +81,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       _classEmitterMock.Expect (mock => mock.BuildType ()).Return (typeof (string));
 
-      var generator = new OverrideInterfaceGenerator (_moduleStub, "TestType");
+      var generator = new OverrideInterfaceGenerator (_classEmitterMock);
       var type = generator.GetBuiltType ();
 
       Assert.That (type, Is.SameAs (typeof (string)));
+      _classEmitterMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -73,10 +101,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       methodEmitterMock.Expect (mock => mock.CopyParametersAndReturnType (overriddenMethod)).Return (methodEmitterMock);
       methodEmitterMock.Expect (mock => mock.MethodBuilder).Return (fakeMethodBuilder);
 
-      var generator = new OverrideInterfaceGenerator (_moduleStub, "TestType");
+      var generator = new OverrideInterfaceGenerator (_classEmitterMock);
       var result = generator.AddOverriddenMethod (overriddenMethod);
 
       Assert.That (result, Is.SameAs (fakeMethodBuilder));
+      _classEmitterMock.VerifyAllExpectations ();
     }
   }
 }

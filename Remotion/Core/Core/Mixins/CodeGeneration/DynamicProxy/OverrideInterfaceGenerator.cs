@@ -22,14 +22,30 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public class OverrideInterfaceGenerator
   {
-    private readonly IClassEmitter _emitter;
-
-    public OverrideInterfaceGenerator (ICodeGenerationModule module, string typeName)
+    public static OverrideInterfaceGenerator CreateTopLevelGenerator (ICodeGenerationModule module, string typeName)
     {
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
 
-      _emitter = module.CreateClassEmitter (typeName, typeof (object), Type.EmptyTypes, TypeAttributes.Public | TypeAttributes.Interface, false);
+      var emitter = module.CreateClassEmitter (typeName, null, Type.EmptyTypes, TypeAttributes.Public | TypeAttributes.Interface, false);
+      return new OverrideInterfaceGenerator (emitter);
+    }
+
+    public static OverrideInterfaceGenerator CreateNestedGenerator (IClassEmitter outerType, string typeName)
+    {
+      ArgumentUtility.CheckNotNull ("outerType", outerType);
+      ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
+
+      var emitter = outerType.CreateNestedClass (typeName, null, Type.EmptyTypes, TypeAttributes.NestedPublic | TypeAttributes.Interface);
+      return new OverrideInterfaceGenerator (emitter);
+    }
+
+    private readonly IClassEmitter _emitter;
+
+    public OverrideInterfaceGenerator (IClassEmitter emitter)
+    {
+      ArgumentUtility.CheckNotNull ("emitter", emitter);
+      _emitter = emitter;
     }
 
     public MethodInfo AddOverriddenMethod (MethodInfo overriddenMethod)
