@@ -216,15 +216,7 @@ namespace Remotion.Reflection.CodeGeneration
       return CreateMethodOverrideOrInterfaceImplementation (baseMethod, true, MethodAttributes.ReuseSlot | oldVisibility);
     }
 
-    /// <summary>
-    /// Creates a full-named method override, i.e. a method override with the same visibility as whose name includes the name of the base method's
-    /// declaring type, similar to an explicit interface implementation.
-    /// </summary>
-    /// <param name="baseMethod">The base method to override.</param>
-    /// <returns>
-    /// An <see cref="IMethodEmitter"/> for the full-named method override.
-    /// </returns>
-    /// <remarks>This method can be useful when overriding several (shadowed) methods of the same name inherited by different base types.</remarks>
+    /// <inheritdoc />
     public IMethodEmitter CreateFullNamedMethodOverride (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
@@ -239,15 +231,7 @@ namespace Remotion.Reflection.CodeGeneration
           interfaceMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
     }
 
-    /// <summary>
-    /// Creates a public interface method implementation, i.e. an interface implementation with public visibility whose name equals the name
-    /// of the interface method (like a C# implicit interface implementation).
-    /// </summary>
-    /// <param name="interfaceMethod">The interface method to implement.</param>
-    /// <returns>An <see cref="IMethodEmitter"/> for the interface implementation.</returns>
-    /// <remarks>The generated method has public visibility and the <see cref="MethodAttributes.NewSlot"/> flag set. This means that the method
-    /// will shadow methods from the base type with the same name and signature, not override them. Use <see cref="CreateFullNamedMethodOverride"/> to
-    /// explicitly create an override for such a method.</remarks>
+    /// <inheritdoc />
     public IMethodEmitter CreatePublicInterfaceMethodImplementation (MethodInfo interfaceMethod)
     {
       ArgumentUtility.CheckNotNull ("interfaceMethod", interfaceMethod);
@@ -335,18 +319,16 @@ namespace Remotion.Reflection.CodeGeneration
       return CreateEventOverrideOrInterfaceImplementation (interfaceEvent, true);
     }
 
-    /// <summary>
-    /// Creates a nested class within the type emitted by this <see cref="IClassEmitter"/>.
-    /// </summary>
-    /// <param name="typeName">The name of the nested type.</param>
-    /// <param name="baseType">The base type of the nested type.</param>
-    /// <param name="interfaces">The interfaces to be implemented by the nested type.</param>
-    /// <returns>
-    /// A new <see cref="IClassEmitter"/> for the nested class.
-    /// </returns>
+    /// <inheritdoc />
     public IClassEmitter CreateNestedClass (string typeName, Type baseType, Type[] interfaces)
     {
-      return new CustomClassEmitter (new NestedClassEmitter (InnerEmitter, "BaseCallProxy", typeof (object), interfaces));
+      return new CustomClassEmitter (new NestedClassEmitter (InnerEmitter, typeName, baseType, interfaces));
+    }
+
+    /// <inheritdoc />
+    public IClassEmitter CreateNestedClass (string typeName, Type baseType, Type[] interfaces, TypeAttributes flags)
+    {
+      return new CustomClassEmitter (new NestedClassEmitter (InnerEmitter, typeName, flags, baseType, interfaces));
     }
 
     // does not create the event's methods

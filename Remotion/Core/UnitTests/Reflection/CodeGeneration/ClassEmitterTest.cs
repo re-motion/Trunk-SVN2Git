@@ -791,5 +791,47 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type t = classEmitter.BuildType ();
       Assert.IsTrue (StrongNameUtil.IsAssemblySigned (t.Assembly));
     }
+
+    [Test]
+    public void CreateNestedClass ()
+    {
+      // must be unsigned because the nested class uses unsigned interface and base type
+      var classEmitter = new CustomClassEmitter (Scope, "CreateNestedClass", typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
+      var innerClassEmitter = classEmitter.CreateNestedClass (
+          "InnerClass", 
+          typeof (ClassWithAllKindsOfMembers), 
+          new[] { typeof (IInterfaceWithMethod) });
+
+      var innerT = innerClassEmitter.BuildType ();
+      var outerT = classEmitter.BuildType ();
+
+      Assert.That (innerT.FullName, Is.EqualTo ("CreateNestedClass+InnerClass"));
+      Assert.That (innerT.Attributes, Is.EqualTo (TypeAttributes.NestedPublic | TypeAttributes.Sealed));
+      Assert.That (innerT.BaseType, Is.SameAs (typeof (ClassWithAllKindsOfMembers)));
+      Assert.That (innerT.GetInterfaces (), Is.EquivalentTo (new[] { typeof (IInterfaceWithMethod) }));
+      Assert.That (innerT.DeclaringType, Is.SameAs (outerT));
+      Assert.That (outerT.GetNestedType ("InnerClass"), Is.SameAs (innerT));
+    }
+
+    [Test]
+    public void CreateNestedClass_Flags ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "CreateNestedClass", typeof (object), Type.EmptyTypes, TypeAttributes.Public, false);
+      var innerClassEmitter = classEmitter.CreateNestedClass (
+          "IInnerInterface",
+          null,
+          new[] { typeof (IServiceProvider) },
+          TypeAttributes.Abstract | TypeAttributes.Interface | TypeAttributes.NestedAssembly);
+
+      var innerT = innerClassEmitter.BuildType ();
+      var outerT = classEmitter.BuildType ();
+
+      Assert.That (innerT.FullName, Is.EqualTo ("CreateNestedClass+IInnerInterface"));
+      Assert.That (innerT.Attributes, Is.EqualTo (TypeAttributes.NestedAssembly | TypeAttributes.Abstract | TypeAttributes.Interface));
+      Assert.That (innerT.BaseType, Is.Null);
+      Assert.That (innerT.GetInterfaces (), Is.EquivalentTo (new[] { typeof (IServiceProvider) }));
+      Assert.That (innerT.DeclaringType, Is.SameAs (outerT));
+      Assert.That (outerT.GetNestedType ("IInnerInterface", BindingFlags.NonPublic), Is.SameAs (innerT));
+    }
   }
 }

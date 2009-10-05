@@ -81,6 +81,15 @@ namespace Remotion.Reflection.CodeGeneration
     /// <param name="interfaces">The interfaces to be implemented by the nested type.</param>
     /// <returns>A new <see cref="IClassEmitter"/> for the nested class.</returns>
     IClassEmitter CreateNestedClass (string typeName, Type baseType, Type[] interfaces);
+    /// <summary>
+    /// Creates a nested type within the type emitted by this <see cref="IClassEmitter"/>.
+    /// </summary>
+    /// <param name="typeName">The name of the nested type.</param>
+    /// <param name="baseType">The base type of the nested type.</param>
+    /// <param name="interfaces">The interfaces to be implemented by the nested type.</param>
+    /// <param name="flags">The <see cref="TypeAttributes"/> to use for the nested type.</param>
+    /// <returns>A new <see cref="IClassEmitter"/> for the nested type.</returns>
+    IClassEmitter CreateNestedClass (string typeName, Type baseType, Type[] interfaces, TypeAttributes flags);
 
     void ReplicateBaseTypeConstructors (Action<ConstructorEmitter> preStatementsAdder, Action<ConstructorEmitter> postStatementsAdder);
     
