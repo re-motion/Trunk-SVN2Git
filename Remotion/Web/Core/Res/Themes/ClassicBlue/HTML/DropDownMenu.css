@@ -1,5 +1,6 @@
 span.DropDownMenuContainer 
 {
+  position: relative;
   display: block;
 	color: blue;
 	background-color: White;
@@ -62,7 +63,7 @@ span.DropDownMenuSelect span.DropDownMenuButton
   top: 1px;
   bottom: 0;
   right: 1px;
-  width: 16px;
+  width: 15px;
   background-color: #DFEEF5;
   margin-right: 0;
   background-position: center center;
