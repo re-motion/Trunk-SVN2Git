@@ -19,7 +19,6 @@ using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
-using System.Reflection;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -77,11 +76,9 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     public ConcreteMixinType GetOrCreateConcreteMixinType (
-        ITypeGenerator mixedTypeGenerator, 
         MixinDefinition mixinDefinition, 
         INameProvider mixinNameProvider)
     {
-      ArgumentUtility.CheckNotNull ("mixedTypeGenerator", mixedTypeGenerator);
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
@@ -89,19 +86,18 @@ namespace Remotion.Mixins.CodeGeneration
       {
         return _mixinTypeCache.GetOrCreateValue (
               mixinDefinition.GetConcreteMixinTypeIdentifier (),
-              key => GenerateConcreteMixinType (mixedTypeGenerator, mixinDefinition, mixinNameProvider));
+              key => GenerateConcreteMixinType (mixinDefinition, mixinNameProvider));
       }
     }
 
     private ConcreteMixinType GenerateConcreteMixinType (
-        ITypeGenerator mixedTypeGenerator, 
         MixinDefinition mixinDefinition, 
         INameProvider mixinNameProvider)
     {
       s_log.InfoFormat ("Generating concrete mixin type for {0}.", mixinDefinition.Type);
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {0}."))
       {
-        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType();
+        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixinDefinition, mixinNameProvider).GetBuiltType();
       }
     }
 

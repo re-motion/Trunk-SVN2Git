@@ -219,6 +219,7 @@
     <Compile Include="Mixins\Utilities\TestDomain\GenericClassWithNoConstraint.cs" />
     <Compile Include="Mixins\Utilities\TestDomain\GenericClassWithOneConstraint.cs" />
     <Compile Include="Reflection\CodeGeneration\BlockStatementTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\CastClassExpressionTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedVirtualMethod.cs" />
     <Compile Include="Reflection\DynamicParamListTest.cs" />
     <Compile Include="Reflection\ParamListImplementationTest.cs" />

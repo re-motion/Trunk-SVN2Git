@@ -42,12 +42,24 @@ namespace Remotion.UnitTests.Mixins
 
     public static Type GetGeneratedMixinType (ClassContext requestingClass, Type mixinType)
     {
+      ConcreteMixinType concreteMixinType = GetGeneratedMixinTypeAndMetadata(requestingClass, mixinType);
+      return concreteMixinType.GeneratedType;
+    }
+
+    public static ConcreteMixinType GetGeneratedMixinTypeAndMetadata (Type targetType, Type mixinType)
+    {
+      var requestingClass = new ClassContext (targetType, mixinType);
+      return GetGeneratedMixinTypeAndMetadata (requestingClass, mixinType);
+    }
+
+    public static ConcreteMixinType GetGeneratedMixinTypeAndMetadata (ClassContext requestingClass, Type mixinType)
+    {
       MixinDefinition mixinDefinition = TargetClassDefinitionFactory
           .CreateTargetClassDefinition (requestingClass)
           .GetMixinByConfiguredType (mixinType);
       Assert.That (mixinDefinition, Is.Not.Null);
 
-      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
+      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ());
     }
   }
 }

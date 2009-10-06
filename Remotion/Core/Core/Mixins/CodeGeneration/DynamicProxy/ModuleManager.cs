@@ -22,7 +22,6 @@ using System.Runtime.Serialization;
 using System.Threading;
 using Castle.DynamicProxy;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -89,13 +88,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return new TypeGenerator (cache, this, configuration, nameProvider, mixinNameProvider);
     }
 
-    public IMixinTypeGenerator CreateMixinTypeGenerator (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    public IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
     {
-      ArgumentUtility.CheckNotNull ("mixedTypeGenerator", mixedTypeGenerator);
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
-      return new MixinTypeGenerator (this, mixedTypeGenerator, mixinDefinition, mixinNameProvider);
+      return new MixinTypeGenerator (this, mixinDefinition, mixinNameProvider);
     }
 
     // should be called when a type was generated with the scope from this module
@@ -113,7 +111,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (module != Scope.StrongNamedModule && module != Scope.WeakNamedModule)
         throw new ArgumentException ("The module specified is not from this ModuleManager's Scope.");
 
-      AssemblyBuilder assemblyBuilder = (AssemblyBuilder) module.Assembly;
+      var assemblyBuilder = (AssemblyBuilder) module.Assembly;
       if (!assemblyBuilder.IsDefined (typeof (NonApplicationAssemblyAttribute), false))
       {
         assemblyBuilder.SetCustomAttribute (new CustomAttributeBuilder (typeof (NonApplicationAssemblyAttribute).GetConstructor(Type.EmptyTypes),
@@ -255,7 +253,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     public IClassEmitter CreateClassEmitter (string typeName, Type baseType, Type[] interfaces, TypeAttributes typeAttributes, bool forceUnsigned)
     {
-      ClassEmitter dynamicProxyEmitter = new ClassEmitter (Scope, typeName, baseType, interfaces, typeAttributes, forceUnsigned);
+      var dynamicProxyEmitter = new ClassEmitter (Scope, typeName, baseType, interfaces, typeAttributes, forceUnsigned);
       return new CustomClassEmitter (dynamicProxyEmitter);
     }
   }

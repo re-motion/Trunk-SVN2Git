@@ -156,6 +156,7 @@
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifier.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\ImplementedInterfaceFinder.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\MixinTargetCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\SerializationCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\TypeInitializerCodeGenerator.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Mixins\Utilities\DependencySort\IDependentObjectSorter.cs" />
     <Compile Include="Mixins\Utilities\MixinGenericArgumentFinder.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />

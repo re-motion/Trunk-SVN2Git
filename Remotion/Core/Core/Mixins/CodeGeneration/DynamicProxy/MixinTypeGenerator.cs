@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
 using Remotion.Mixins.Context;
@@ -40,23 +41,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly AttributeGenerator _attributeGenerator = new AttributeGenerator();
 
     private readonly ICodeGenerationModule _module;
-    private readonly ITypeGenerator _targetGenerator;
     private readonly MixinDefinition _configuration;
     private readonly IClassEmitter _emitter;
     private readonly FieldReference _requestingClassContextField;
     private readonly FieldReference _identifierField;
 
-    public MixinTypeGenerator (ICodeGenerationModule module, ITypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
+    public MixinTypeGenerator (ICodeGenerationModule module, MixinDefinition configuration, INameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
-      ArgumentUtility.CheckNotNull ("targetGenerator", targetGenerator);
       ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
 
       Assertion.IsFalse (configuration.Type.ContainsGenericParameters);
 
       _module = module;
-      _targetGenerator = targetGenerator;
       _configuration = configuration;
 
       string typeName = nameProvider.GetNewTypeName (configuration);
@@ -65,7 +63,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var interfaces = new[] { typeof (ISerializable), typeof (IGeneratedMixinType) };
       const TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
 
-      bool forceUnsigned = !targetGenerator.IsAssemblySigned;
+      bool forceUnsigned = !ReflectionUtility.IsReachableFromSignedAssembly (_configuration.Type);
       _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces, flags, forceUnsigned);
 
       _requestingClassContextField = _emitter.CreateStaticField ("__requestingClassContext", typeof (ClassContext));
@@ -172,11 +170,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
             throw new NotSupportedException ("The code generator only supports mixin methods to be overridden by the mixin's target class.");
 
           var methodOverride = _emitter.CreateMethodOverride (method.MethodInfo);
-          MethodDefinition overrider = method.Overrides[0];
-          MethodInfo methodToCall = GetOverriderMethodToCall (overrider);
+          var methodToCall = overrideInterfaceGenerator.AddOverriddenMethod (method.MethodInfo);
+          
           AddCallToOverrider (methodOverride, targetReference, methodToCall);
-
-          overrideInterfaceGenerator.AddOverriddenMethod (method.MethodInfo);
         }
       }
 
@@ -196,21 +192,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return new PropertyReference (SelfReference.Self, targetProperty);
     }
 
-    private MethodInfo GetOverriderMethodToCall (MethodDefinition overrider)
-    {
-      if (overrider.MethodInfo.IsPublic)
-        return overrider.MethodInfo.GetBaseDefinition();
-      else
-        return _targetGenerator.GetPublicMethodWrapper (overrider);
-    }
-
     private void AddCallToOverrider (IMethodEmitter methodOverride, Reference targetReference, MethodInfo targetMethod)
     {
       LocalReference castTargetLocal = methodOverride.DeclareLocal (targetMethod.DeclaringType);
       methodOverride.AddStatement (
           new AssignStatement (
               castTargetLocal,
-              new ConvertExpression (targetMethod.DeclaringType, targetReference.ToExpression())));
+              new CastClassExpression (targetMethod.DeclaringType, targetReference.ToExpression())));
 
       methodOverride.ImplementByDelegating (castTargetLocal, targetMethod);
     }

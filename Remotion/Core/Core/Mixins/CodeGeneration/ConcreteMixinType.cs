@@ -29,7 +29,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// </remarks>
   public class ConcreteMixinType
   {
-    private ConcreteMixinTypeIdentifier _identifier;
+    private readonly ConcreteMixinTypeIdentifier _identifier;
     private readonly Type _generatedType;
     private readonly Type _generatedOverrideInterface;
     private readonly Dictionary<MethodInfo, MethodInfo> _methodWrappers;

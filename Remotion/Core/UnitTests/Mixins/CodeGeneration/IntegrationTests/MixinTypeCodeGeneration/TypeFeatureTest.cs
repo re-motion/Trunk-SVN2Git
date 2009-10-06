@@ -193,6 +193,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (parameters.Length, Is.EqualTo (1));
       Assert.That (parameters[0].ParameterType, Is.SameAs (typeof (int)));
       Assert.That (parameters[0].Name, Is.EqualTo ("i"));
+
+      var propertyAccessor = overrideInterface.GetMethod ("get_AbstractProperty");
+      Assert.That (propertyAccessor, Is.Not.Null);
+
+      var eventAccessor = overrideInterface.GetMethod ("add_AbstractEvent");
+      Assert.That (eventAccessor, Is.Not.Null);
     }
   }
 }

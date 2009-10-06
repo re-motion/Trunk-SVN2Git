@@ -19,7 +19,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Mixins;
+using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
+using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.UnitTests.Mixins.Utilities.TestDomain.AssociatedMethods;
 using Rhino.Mocks;
 
@@ -205,6 +207,37 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       var member = typeof (ClassWithAllKindsOfMembers).GetConstructor (Type.EmptyTypes);
       ReflectionUtility.GetAssociatedMethods (member);
+    }
+
+    [Test]
+    public void IsReachableFromSignedAssembly_True ()
+    {
+      Assert.That (ReflectionUtility.IsReachableFromSignedAssembly (typeof (object)), Is.True);
+      Assert.That (ReflectionUtility.IsReachableFromSignedAssembly (typeof (EquatableMixin<>)), Is.True);
+    }
+
+    [Test]
+    public void IsReachableFromSignedAssembly_False ()
+    {
+      Assert.That (ReflectionUtility.IsReachableFromSignedAssembly (typeof (NullMixin)), Is.False);
+    }
+
+    [Test]
+    public void IsReachableFromSignedAssembly_False_GenericArgument ()
+    {
+      Assert.That (ReflectionUtility.IsReachableFromSignedAssembly (typeof (EquatableMixin<NullMixin>)), Is.False);
+    }
+
+    [Test]
+    public void IsRangeReachableFromSignedAssembly_True ()
+    {
+      Assert.That (ReflectionUtility.IsRangeReachableFromSignedAssembly (new[] { typeof (object), typeof (EquatableMixin<>) }), Is.True);
+    }
+
+    [Test]
+    public void IsRangeReachableFromSignedAssembly_False ()
+    {
+      Assert.That (ReflectionUtility.IsRangeReachableFromSignedAssembly (new[] { typeof (object), typeof (EquatableMixin<NullMixin>) }), Is.False);
     }
   }
 }

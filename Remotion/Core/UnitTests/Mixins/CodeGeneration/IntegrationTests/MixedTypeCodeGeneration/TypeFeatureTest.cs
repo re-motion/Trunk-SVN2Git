@@ -282,5 +282,37 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       var mixinTypes = MixinTypeUtility.GetMixinTypesExact (typeof (BaseType1));
       Assert.That (mixins[0], Is.InstanceOfType (mixinTypes[0]));
     }
+
+    [Test]
+    public void TypeImplementedOverrideInterfaces_OfMixinTypes ()
+    {
+      var concreteType = CreateMixedType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      var concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinTypeAndMetadata (
+          typeof (ClassOverridingMixinMembers), 
+          typeof (MixinWithAbstractMembers));
+
+      Assert.That (concreteType.GetInterfaces (), List.Contains (concreteMixinType.GeneratedOverrideInterface));
+    }
+
+    [Test]
+    public void TypeImplementedOverrideInterfaces_OfMixinTypes_ProtectedOverriders ()
+    {
+      var concreteType = CreateMixedType (typeof (ClassOverridingMixinMembersProtected), typeof (MixinWithAbstractMembers));
+      var concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinTypeAndMetadata (
+          typeof (ClassOverridingMixinMembersProtected),
+          typeof (MixinWithAbstractMembers));
+
+      Assert.That (concreteType.GetInterfaces (), List.Contains (concreteMixinType.GeneratedOverrideInterface));
+      
+      var explicitInterfaceMember = concreteType.GetMethod (
+          concreteMixinType.GeneratedOverrideInterface.FullName + ".AbstractMethod", 
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      Assert.That (explicitInterfaceMember, Is.Not.Null);
+
+      var explicitInterfacePropertyGetter = concreteType.GetMethod (
+          concreteMixinType.GeneratedOverrideInterface.FullName + ".get_AbstractProperty",
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      Assert.That (explicitInterfacePropertyGetter, Is.Not.Null);
+    }
   }
 }

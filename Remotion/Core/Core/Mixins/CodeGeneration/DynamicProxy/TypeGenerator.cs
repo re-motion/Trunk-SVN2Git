@@ -18,10 +18,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
@@ -55,7 +53,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly FieldReference _firstField;
     private readonly FieldReference _mixinArrayInitializerField;
     private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo> ();
-    private readonly ConcreteMixinType[] _concreteMixinTypes;
 
     public TypeGenerator (CodeGenerationCache codeGenerationCache, ICodeGenerationModule module, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
@@ -70,7 +67,16 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       string typeName = nameProvider.GetNewTypeName (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
-      List<Type> interfaces = GetInterfacesToImplement (true);
+      var concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider); // elements may be null
+      Assertion.IsTrue (concreteMixinTypes.Length == _configuration.Mixins.Count);
+
+      var implementedInterfaceFinder = new ImplementedInterfaceFinder (
+          _configuration.ImplementedInterfaces, 
+          _configuration.ReceivedInterfaces, 
+          _configuration.RequiredFaceTypes, 
+          concreteMixinTypes.Where (t => t != null));
+      
+      var interfacesToImplement = implementedInterfaceFinder.GetInterfacesToImplement ();
 
       TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
       if (_configuration.IsAbstract)
@@ -78,7 +84,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       bool forceUnsigned = StrongNameUtil.IsAnyTypeFromUnsignedAssembly (GetMixinTypes());
 
-      _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces.ToArray (), flags, forceUnsigned);
+      _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfacesToImplement, flags, forceUnsigned);
 
       _classContextField = _emitter.CreateStaticField ("__classContext", typeof (ClassContext), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_classContextField);
@@ -89,15 +95,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
 
-      _concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider);
-      _baseCallGenerator = new BaseCallProxyGenerator (this, _emitter, _concreteMixinTypes);
+      _baseCallGenerator = new BaseCallProxyGenerator (this, _emitter, concreteMixinTypes);
 
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
        _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_firstField);
 
       var expectedMixinTypes = new Type[Configuration.Mixins.Count];
       for (int i = 0; i < expectedMixinTypes.Length; i++)
-        expectedMixinTypes[i] = _concreteMixinTypes[i] != null ? _concreteMixinTypes[i].GeneratedType : Configuration.Mixins[i].Type;
+        expectedMixinTypes[i] = concreteMixinTypes[i] != null ? concreteMixinTypes[i].GeneratedType : Configuration.Mixins[i].Type;
 
       _initializationCodeGenerator = new InitializationCodeGenerator (
           expectedMixinTypes, 
@@ -124,6 +129,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddDebuggerAttributes();
 
       ImplementOverrides ();
+      ExplicitlyImplementOverriders (concreteMixinTypes);
     }
 
     private IEnumerable<Type> GetMixinTypes ()
@@ -139,31 +145,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       {
         MixinDefinition mixinDefinition = Configuration.Mixins[i];
         if (mixinDefinition.NeedsDerivedMixinType ())
-          concreteMixinTypes[i] = _codeGenerationCache.GetOrCreateConcreteMixinType (this, mixinDefinition, mixinNameProvider);
+          concreteMixinTypes[i] = _codeGenerationCache.GetOrCreateConcreteMixinType (mixinDefinition, mixinNameProvider);
       }
       return concreteMixinTypes;
-    }
-
-    private List<Type> GetInterfacesToImplement (bool isSerializable)
-    {
-      var interfaces = new List<Type> {typeof (IMixinTarget), typeof (IInitializableMixinTarget)};
-
-      foreach (InterfaceIntroductionDefinition introduction in _configuration.ReceivedInterfaces)
-        interfaces.Add (introduction.InterfaceType);
-
-      var alreadyImplementedInterfaces = new Set<Type> (interfaces);
-      alreadyImplementedInterfaces.AddRange (_configuration.ImplementedInterfaces);
-
-      foreach (RequiredFaceTypeDefinition requiredFaceType in _configuration.RequiredFaceTypes)
-      {
-        if (requiredFaceType.Type.IsInterface && !alreadyImplementedInterfaces.Contains (requiredFaceType.Type))
-          interfaces.Add (requiredFaceType.Type);
-      }
-
-      if (isSerializable)
-        interfaces.Add (typeof (ISerializable));
-
-      return interfaces;
     }
 
     public TypeBuilder TypeBuilder
@@ -424,6 +408,28 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (eventDefinition.RemoveMethod.Overrides.Count > 0)
         eventOverride.RemoveMethod = ImplementMethodOverride (eventDefinition.RemoveMethod);
       return eventOverride;
+    }
+
+    // It's necessary to explicitly implement some members defined by the concrete mixins' override interfaces: implicit implementation doesn't
+    // work if the overrider is non-public or generic. Because it's simpler, we just implement all the members explicitly.
+    private void ExplicitlyImplementOverriders (ConcreteMixinType[] concreteMixinTypes)
+    {
+      var overriders = Configuration.GetAllMethods ().Where (methodDefinition => methodDefinition.Base != null);
+      
+      foreach (var overrider in overriders)
+      {
+        var mixin = overrider.Base.DeclaringClass as MixinDefinition;
+        Assertion.IsNotNull (mixin, "We only support mixins as overriders of target class members.");
+// ReSharper disable PossibleNullReferenceException
+        var concreteMixinType = concreteMixinTypes[mixin.MixinIndex];
+// ReSharper restore PossibleNullReferenceException
+
+        var signature = overrider.Base.MethodInfo.ToString();
+        var methodInOverrideInterface = concreteMixinType.GeneratedOverrideInterface.GetMethods().Where (m => m.ToString() == signature).Single();
+
+        var selfReference = new TypeReferenceWrapper (SelfReference.Self, Configuration.Type);
+        Emitter.CreateInterfaceMethodImplementation (methodInOverrideInterface).ImplementByDelegating (selfReference, overrider.MethodInfo);
+      }
     }
 
     private void ImplementAttributes (IAttributeIntroductionTarget targetConfiguration, IAttributableEmitter targetEmitter)

@@ -16,12 +16,16 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Utilities
 {
   public static class ReflectionUtility
   {
+    private static InterlockedCache<Assembly, bool> s_isAssemblySignedCache = new InterlockedCache<Assembly, bool> ();
+
     public static bool IsEqualOrInstantiationOf (Type typeToCheck, Type expectedType)
     {
       ArgumentUtility.CheckNotNull ("typeToCheck", typeToCheck);
@@ -120,7 +124,7 @@ namespace Remotion.Mixins.Utilities
     public static bool IsAssemblySigned (Assembly assembly)
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
-      return IsAssemblySigned (assembly.GetName ());
+      return s_isAssemblySignedCache.GetOrCreateValue (assembly, asm => IsAssemblySigned (asm.GetName ()));
     }
 
     public static bool IsAssemblySigned (AssemblyName assemblyName)
@@ -128,6 +132,25 @@ namespace Remotion.Mixins.Utilities
       ArgumentUtility.CheckNotNull ("assemblyName", assemblyName);
       byte[] publicKeyOrToken = assemblyName.GetPublicKey () ?? assemblyName.GetPublicKeyToken ();
       return publicKeyOrToken != null && publicKeyOrToken.Length > 0;
+    }
+
+    public static bool IsReachableFromSignedAssembly (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      if (!IsAssemblySigned (type.Assembly))
+        return false;
+
+      if (type.IsGenericType)
+        return type.GetGenericArguments ().All (IsReachableFromSignedAssembly);
+      else
+        return true;
+    }
+
+    public static bool IsRangeReachableFromSignedAssembly (IEnumerable<Type> types)
+    {
+      ArgumentUtility.CheckNotNull ("types", types);
+      return types.All (IsReachableFromSignedAssembly);
     }
 
     public static MethodInfo[] GetAssociatedMethods (MemberInfo memberInfo)
