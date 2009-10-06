@@ -18,7 +18,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.CodeGeneration.Serialization
+namespace Remotion.Mixins.Utilities
 {
   /// <summary>
   /// Resolves a method from the given parameters.

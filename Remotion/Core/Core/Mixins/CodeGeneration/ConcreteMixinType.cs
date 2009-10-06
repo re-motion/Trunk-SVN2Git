@@ -33,17 +33,20 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly Type _generatedType;
     private readonly Type _generatedOverrideInterface;
     private readonly Dictionary<MethodInfo, MethodInfo> _methodWrappers;
+    private readonly Dictionary<MethodInfo, MethodInfo> _overrideInterfaceMethodsByMixinMethod;
 
-    public ConcreteMixinType (ConcreteMixinTypeIdentifier identifier, Type generatedType, Type generatedOverrideInterface)
+    public ConcreteMixinType (ConcreteMixinTypeIdentifier identifier, Type generatedType, Type generatedOverrideInterface, Dictionary<MethodInfo, MethodInfo> overrideInterfaceMethodsByMixinMethod)
     {
       ArgumentUtility.CheckNotNull ("identifier", identifier);
       ArgumentUtility.CheckNotNull ("generatedType", generatedType);
       ArgumentUtility.CheckNotNull ("generatedOverrideInterface", generatedOverrideInterface);
+      ArgumentUtility.CheckNotNull ("overrideInterfaceMethodsByMixinMethod", overrideInterfaceMethodsByMixinMethod);
 
       _identifier = identifier;
       _generatedType = generatedType;
       _generatedOverrideInterface = generatedOverrideInterface;
       _methodWrappers = new Dictionary<MethodInfo, MethodInfo>();
+      _overrideInterfaceMethodsByMixinMethod = overrideInterfaceMethodsByMixinMethod;
     }
 
     public ConcreteMixinTypeIdentifier Identifier
@@ -59,6 +62,12 @@ namespace Remotion.Mixins.CodeGeneration
     public Type GeneratedOverrideInterface
     {
       get { return _generatedOverrideInterface; }
+    }
+
+    public MethodInfo GetOverrideInterfaceMethod (MethodInfo mixinMethod)
+    {
+      ArgumentUtility.CheckNotNull ("mixinMethod", mixinMethod);
+      return _overrideInterfaceMethodsByMixinMethod[mixinMethod];
     }
 
     public void AddMethodWrapper (MethodInfo protectedMethod, MethodInfo publicWrapper)

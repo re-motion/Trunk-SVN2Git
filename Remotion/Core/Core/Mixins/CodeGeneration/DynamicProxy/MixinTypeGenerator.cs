@@ -20,7 +20,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
 using Remotion.Mixins.Context;
@@ -94,7 +93,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       Type generatedType = Emitter.BuildType();
       Type generatedOverrideInterface = overrideInterfaceGenerator.GetBuiltType();
-      var result = new ConcreteMixinType (Configuration.GetConcreteMixinTypeIdentifier(), generatedType, generatedOverrideInterface);
+      
+      Dictionary<MethodInfo, MethodInfo> interfaceMethodsForOverriddenMethods = TranslateMethodBuildersToActualMethods(
+          overrideInterfaceGenerator.GetInterfaceMethodsForOverriddenMethods (), 
+          generatedOverrideInterface);
+
+      var result = new ConcreteMixinType (
+          Configuration.GetConcreteMixinTypeIdentifier(), 
+          generatedType, 
+          generatedOverrideInterface,
+          interfaceMethodsForOverriddenMethods);
+
       foreach (var methodWrapper in methodWrappers)
         result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
 
@@ -227,6 +236,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
               _requestingClassContextField.ToExpression(),
               _identifierField.ToExpression (),
               new ReferenceExpression (new ConstReference (!baseIsISerializable))));
+    }
+
+    private Dictionary<MethodInfo, MethodInfo> TranslateMethodBuildersToActualMethods (
+        Dictionary<MethodInfo, MethodBuilder> methodBuilderDictionary, 
+        Type typeToGetMethodsFrom)
+    {
+      // since the overrideInterfaceGenerator only knows
+      var actualMethodsByToken = typeToGetMethodsFrom.GetMethods ().ToDictionary (m => m.MetadataToken);
+      return methodBuilderDictionary.ToDictionary (pair => pair.Key, pair => actualMethodsByToken[pair.Value.GetToken().Token]);
     }
   }
 }

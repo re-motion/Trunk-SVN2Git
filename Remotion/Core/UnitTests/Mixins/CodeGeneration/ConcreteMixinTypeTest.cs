@@ -33,9 +33,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void SetUp ()
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-      _concreteMixinType = new ConcreteMixinType (identifier, typeof (object), typeof (IServiceProvider));
       _method1 = typeof (object).GetMethod ("ToString");
       _method2 = typeof (object).GetMethod ("Equals", BindingFlags.Instance | BindingFlags.Public);
+      _concreteMixinType = new ConcreteMixinType (
+          identifier, 
+          typeof (object), 
+          typeof (IServiceProvider), 
+          new Dictionary<MethodInfo, MethodInfo> { { _method1, _method2 } });
     }
 
     [Test]
@@ -58,6 +62,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetMethodWrapper_NotFound ()
     {
       _concreteMixinType.GetMethodWrapper (_method1);
+    }
+
+    [Test]
+    public void GetOverrideInterfaceMethod ()
+    {
+      Assert.That (_concreteMixinType.GetOverrideInterfaceMethod (_method1), Is.SameAs (_method2));
     }
   }
 }

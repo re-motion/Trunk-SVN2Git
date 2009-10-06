@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 using Remotion.Collections;
 

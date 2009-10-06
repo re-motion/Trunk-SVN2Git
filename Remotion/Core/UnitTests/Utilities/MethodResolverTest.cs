@@ -17,10 +17,10 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins.CodeGeneration.Serialization;
+using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
+namespace Remotion.UnitTests.Utilities
 {
   [TestFixture]
   public class MethodResolverTest

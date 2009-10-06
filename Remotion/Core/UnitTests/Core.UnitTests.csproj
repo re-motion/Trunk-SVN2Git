@@ -158,6 +158,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceGeneratorTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceMappingAttributeTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\TargetClassWithProtectedOverrider.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\MixinOverriddenByProtectedOverrider.cs" />
@@ -180,7 +181,7 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
-    <Compile Include="Mixins\CodeGeneration\Serialization\MethodResolverTest.cs" />
+    <Compile Include="Utilities\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />

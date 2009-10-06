@@ -41,6 +41,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private MixinDefinition _mixinDefinition;
     private INameProvider _nameProvider1;
     private INameProvider _nameProvider2;
+    private ConcreteMixinType _concreteMixinTypeFake;
 
     [SetUp]
     public void SetUp()
@@ -58,6 +59,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _mixinDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
       _nameProvider1 = MockRepository.GenerateStub<INameProvider>();
       _nameProvider2 = MockRepository.GenerateStub<INameProvider>();
+
+      _concreteMixinTypeFake = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier (), typeof (int), typeof (IServiceProvider), new Dictionary<MethodInfo, MethodInfo> ());
     }
 
     [Test]
@@ -105,16 +108,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Uncached()
     {
-      var concreteMixinType = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier(), typeof (int), typeof (IServiceProvider));
-
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock);
-      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (concreteMixinType);
+      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (_concreteMixinTypeFake);
 
       _mockRepository.ReplayAll();
 
       var result = _cache.GetOrCreateConcreteMixinType (_mixinDefinition, _nameProvider1);
-      Assert.That (result, Is.SameAs (concreteMixinType));
+      Assert.That (result, Is.SameAs (_concreteMixinTypeFake));
 
       _mockRepository.VerifyAll();
     }
@@ -122,11 +123,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Cached()
     {
-      var concreteMixinType = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier(), typeof (int), typeof (IServiceProvider));
-
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
-      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (concreteMixinType).Repeat.Once();
+      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (_concreteMixinTypeFake).Repeat.Once();
 
       _mockRepository.ReplayAll();
 
@@ -147,10 +146,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinTypeFromCacheOnly_NonNull()
     {
-      var concreteMixinType = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier(), typeof (int), typeof (IServiceProvider));
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
-      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (concreteMixinType).Repeat.Once();
+      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (_concreteMixinTypeFake).Repeat.Once();
 
       _mockRepository.ReplayAll();
 
@@ -196,8 +194,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1))).Return (null);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin2))).Return (null);
 
-      var type1 = new ConcreteMixinType (identifier1, typeof (int), typeof (string));
-      var type2 = new ConcreteMixinType (identifier2, typeof (int), typeof (string));
+      var type1 = new ConcreteMixinType (identifier1, typeof (int), typeof (string), new Dictionary<MethodInfo, MethodInfo>());
+      var type2 = new ConcreteMixinType (identifier2, typeof (int), typeof (string), new Dictionary<MethodInfo, MethodInfo> ());
       
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (type1);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin2))).Return (type2);

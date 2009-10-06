@@ -99,6 +99,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           .Expect (mock => mock.CreateMethod ("AbstractMethod", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Abstract))
           .Return (methodEmitterMock);
       methodEmitterMock.Expect (mock => mock.CopyParametersAndReturnType (overriddenMethod)).Return (methodEmitterMock);
+      methodEmitterMock.Expect (mock => mock.AddCustomAttribute (Arg<CustomAttributeBuilder>.Matches (builder =>
+          ((ConstructorInfo) PrivateInvoke.GetNonPublicField (builder, "m_con")).DeclaringType == typeof (OverrideInterfaceMappingAttribute))));
       methodEmitterMock.Expect (mock => mock.MethodBuilder).Return (fakeMethodBuilder);
 
       var generator = new OverrideInterfaceGenerator (_classEmitterMock);
@@ -106,6 +108,26 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 
       Assert.That (result, Is.SameAs (fakeMethodBuilder));
       _classEmitterMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetInterfaceMethodsForOverriddenMethods ()
+    {
+      var overriddenMethod = typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.NonPublic | BindingFlags.Instance);
+      var methodEmitterMock = MockRepository.GenerateMock<IMethodEmitter> ();
+      var fakeMethodBuilder = (MethodBuilder) FormatterServices.GetSafeUninitializedObject (typeof (MethodBuilder));
+
+      _classEmitterMock
+          .Expect (mock => mock.CreateMethod ("AbstractMethod", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Abstract))
+          .Return (methodEmitterMock);
+      methodEmitterMock.Expect (mock => mock.CopyParametersAndReturnType (overriddenMethod)).Return (methodEmitterMock);
+      methodEmitterMock.Expect (mock => mock.MethodBuilder).Return (fakeMethodBuilder);
+
+      var generator = new OverrideInterfaceGenerator (_classEmitterMock);
+      var result = generator.AddOverriddenMethod (overriddenMethod);
+
+      var mapping = generator.GetInterfaceMethodsForOverriddenMethods ();
+      Assert.That (mapping[overriddenMethod], Is.SameAs (result));
     }
   }
 }

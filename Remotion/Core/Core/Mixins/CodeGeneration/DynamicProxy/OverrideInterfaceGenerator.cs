@@ -14,7 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
@@ -22,6 +24,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public class OverrideInterfaceGenerator
   {
+    private static readonly ConstructorInfo s_mappingAttributeCtor = 
+        typeof (OverrideInterfaceMappingAttribute).GetConstructor (new[] { typeof (Type), typeof (string), typeof (string) });
+
     public static OverrideInterfaceGenerator CreateTopLevelGenerator (ICodeGenerationModule module, string typeName)
     {
       ArgumentUtility.CheckNotNull ("module", module);
@@ -50,6 +55,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     }
 
     private readonly IClassEmitter _emitter;
+    private readonly Dictionary<MethodInfo, MethodBuilder> _interfaceMethods = new Dictionary<MethodInfo, MethodBuilder> ();
 
     public OverrideInterfaceGenerator (IClassEmitter emitter)
     {
@@ -57,18 +63,30 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _emitter = emitter;
     }
 
-    public MethodInfo AddOverriddenMethod (MethodInfo overriddenMethod)
+    public MethodBuilder AddOverriddenMethod (MethodInfo overriddenMethod)
     {
       ArgumentUtility.CheckNotNull ("overriddenMethod", overriddenMethod);
 
       var emitter = _emitter.CreateMethod (overriddenMethod.Name, MethodAttributes.Public | MethodAttributes.Abstract | MethodAttributes.Virtual);
       emitter.CopyParametersAndReturnType (overriddenMethod);
+      
+      var attributeBuilder = new CustomAttributeBuilder (
+          s_mappingAttributeCtor, 
+          new object[] { overriddenMethod.DeclaringType, overriddenMethod.Name, overriddenMethod.ToString() });
+      emitter.AddCustomAttribute (attributeBuilder);
+      
+      _interfaceMethods.Add (overriddenMethod, emitter.MethodBuilder);
       return emitter.MethodBuilder;
     }
 
     public Type GetBuiltType ()
     {
       return _emitter.BuildType ();
+    }
+
+    public Dictionary<MethodInfo, MethodBuilder> GetInterfaceMethodsForOverriddenMethods ()
+    {
+      return _interfaceMethods;
     }
   }
 }

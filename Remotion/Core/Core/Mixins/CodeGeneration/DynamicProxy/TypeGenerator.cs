@@ -129,7 +129,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddDebuggerAttributes();
 
       ImplementOverrides ();
-      ExplicitlyImplementOverriders (concreteMixinTypes);
+
+      var overrideInterfaceImplementer = new OverrideInterfaceImplementer (Configuration, concreteMixinTypes);
+      overrideInterfaceImplementer.ImplementOverridingMethods (Emitter);
     }
 
     private IEnumerable<Type> GetMixinTypes ()
@@ -408,28 +410,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (eventDefinition.RemoveMethod.Overrides.Count > 0)
         eventOverride.RemoveMethod = ImplementMethodOverride (eventDefinition.RemoveMethod);
       return eventOverride;
-    }
-
-    // It's necessary to explicitly implement some members defined by the concrete mixins' override interfaces: implicit implementation doesn't
-    // work if the overrider is non-public or generic. Because it's simpler, we just implement all the members explicitly.
-    private void ExplicitlyImplementOverriders (ConcreteMixinType[] concreteMixinTypes)
-    {
-      var overriders = Configuration.GetAllMethods ().Where (methodDefinition => methodDefinition.Base != null);
-      
-      foreach (var overrider in overriders)
-      {
-        var mixin = overrider.Base.DeclaringClass as MixinDefinition;
-        Assertion.IsNotNull (mixin, "We only support mixins as overriders of target class members.");
-// ReSharper disable PossibleNullReferenceException
-        var concreteMixinType = concreteMixinTypes[mixin.MixinIndex];
-// ReSharper restore PossibleNullReferenceException
-
-        var signature = overrider.Base.MethodInfo.ToString();
-        var methodInOverrideInterface = concreteMixinType.GeneratedOverrideInterface.GetMethods().Where (m => m.ToString() == signature).Single();
-
-        var selfReference = new TypeReferenceWrapper (SelfReference.Self, Configuration.Type);
-        Emitter.CreateInterfaceMethodImplementation (methodInOverrideInterface).ImplementByDelegating (selfReference, overrider.MethodInfo);
-      }
     }
 
     private void ImplementAttributes (IAttributeIntroductionTarget targetConfiguration, IAttributableEmitter targetEmitter)

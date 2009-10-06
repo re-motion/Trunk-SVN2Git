@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Collections;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 using System.Linq;
@@ -68,6 +69,22 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
+    // Searches the mixin methods corresponding to the methods of the override interface based on a signature comparison and returns a mapping from
+    // mixin method to interface method.
+    public virtual Dictionary<MethodInfo, MethodInfo> GetOverrideInterfaceMethodsByMixinMethod (
+        Type interfaceType, 
+        ConcreteMixinTypeIdentifier identifier)
+    {
+      var mixinMethodsWithInterfaceMethods =
+          from interfaceMethod in interfaceType.GetMethods()
+          let attribute = (OverrideInterfaceMappingAttribute) interfaceMethod.GetCustomAttributes (typeof (OverrideInterfaceMappingAttribute), false)
+              .Single()
+          let resolvedMethod = attribute.ResolveMethod()
+          select new { resolvedMethod, interfaceMethod };
+
+      return mixinMethodsWithInterfaceMethods.ToDictionary (pair => pair.resolvedMethod, pair => pair.interfaceMethod);
+    }
+
     private MethodInfo GetWrappedMethod (MethodInfo potentialWrapper)
     {
       var attribute = GetWrapperAttribute(potentialWrapper);
@@ -107,7 +124,9 @@ namespace Remotion.Mixins.CodeGeneration
         throw new TypeImportException (message);
       }
 
-      var result = new ConcreteMixinType (identifier, concreteMixinType, generatedOverrideInterface);
+      var overrideInterfaceMethods = GetOverrideInterfaceMethodsByMixinMethod (generatedOverrideInterface, identifier);
+
+      var result = new ConcreteMixinType (identifier, concreteMixinType, generatedOverrideInterface, overrideInterfaceMethods);
       var methodWrappers = GetMethodWrappersForMixinType (concreteMixinType);
       foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
         result.AddMethodWrapper (wrapper.A, wrapper.B);

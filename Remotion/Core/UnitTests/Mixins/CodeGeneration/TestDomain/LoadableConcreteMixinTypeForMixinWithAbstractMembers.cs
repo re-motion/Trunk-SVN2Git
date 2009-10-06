@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
@@ -35,6 +36,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
   {
     public interface IOverriddenMethods
     {
+      [OverrideInterfaceMapping (typeof (MixinWithAbstractMembers), "AbstractMethod", "System.String AbstractMethod(Int32)")]
+      string AbstractMethod (int i);
+      [OverrideInterfaceMapping (typeof (MixinWithAbstractMembers), "RaiseEvent", "System.String RaiseEvent()")]
+      string RaiseEvent ();
+      [OverrideInterfaceMapping (typeof (MixinWithAbstractMembers), "get_AbstractProperty", "System.String get_AbstractProperty()")]
+      string get_AbstractProperty ();
+      [OverrideInterfaceMapping (typeof (MixinWithAbstractMembers), "add_AbstractEvent", "Void add_AbstractEvent(System.Func`1[System.String])")]
+      void add_AbstractEvent (Func<String> handler);
+      [OverrideInterfaceMapping (typeof (MixinWithAbstractMembers), "remove_AbstractEvent", "Void remove_AbstractEvent(System.Func`1[System.String])")]
+      void remove_AbstractEvent (Func<String> handler);
     }
   }
 }
