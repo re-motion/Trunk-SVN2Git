@@ -181,7 +181,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     }
 
     [Test]
-    [Ignore ("TODO 1624, 1623")]
     public void Sharing_WithProtectedOverriders ()
     {
       SkipDeletion ();
@@ -192,7 +191,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       var dtc = ObjectFactory.Create<DerivedTargetClassWithProtectedOverrider> (ParamList.Empty);
       var mixin2 = Mixin.Get<MixinOverriddenByProtectedOverrider> (dtc);
-      Assert.That (mixin2.M1 (), Is.EqualTo ("DerivedTargetClassWithProtectedOverrider.M1()"));
+      Assert.That (mixin2.M1 (), Is.EqualTo ("TargetClassWithProtectedOverrider.M1()"));
 
       Assert.That (mixin1.GetType (), Is.SameAs (mixin2.GetType ()));
     }
