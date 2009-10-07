@@ -183,8 +183,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void Sharing_WithProtectedOverriders ()
     {
-      SkipDeletion ();
-
       var tc = ObjectFactory.Create<TargetClassWithProtectedOverrider> (ParamList.Empty);
       var mixin1 = Mixin.Get<MixinOverriddenByProtectedOverrider> (tc);
       Assert.That (mixin1.M1 (), Is.EqualTo ("TargetClassWithProtectedOverrider.M1()"));
