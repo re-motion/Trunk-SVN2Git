@@ -37,28 +37,26 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor = 
         typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
 
-    private readonly AttributeGenerator _attributeGenerator = new AttributeGenerator();
-
     private readonly ICodeGenerationModule _module;
     private readonly MixinDefinition _configuration;
-    private readonly MethodInfo[] _overriders;
+    private readonly ConcreteMixinTypeIdentifier _identifier;
 
     private readonly IClassEmitter _emitter;
     private readonly FieldReference _requestingClassContextField;
     private readonly FieldReference _identifierField;
 
-    public MixinTypeGenerator (ICodeGenerationModule module, MixinDefinition configuration, MethodInfo[] overriders, INameProvider nameProvider)
+    public MixinTypeGenerator (ICodeGenerationModule module, MixinDefinition configuration, ConcreteMixinTypeIdentifier identifier, INameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("configuration", configuration);
-      ArgumentUtility.CheckNotNull ("overriders", overriders);
+      ArgumentUtility.CheckNotNull ("identifier", identifier);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
 
-      Assertion.IsFalse (configuration.Type.ContainsGenericParameters);
+      Assertion.IsFalse (identifier.MixinType.ContainsGenericParameters);
 
       _module = module;
       _configuration = configuration;
-      _overriders = overriders;
+      _identifier = identifier;
 
       string typeName = nameProvider.GetNewTypeName (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
@@ -66,21 +64,21 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var interfaces = new[] { typeof (ISerializable), typeof (IGeneratedMixinType) };
       const TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
 
-      bool forceUnsigned = !ReflectionUtility.IsReachableFromSignedAssembly (_configuration.Type);
-      _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces, flags, forceUnsigned);
+      bool forceUnsigned = !ReflectionUtility.IsReachableFromSignedAssembly (identifier.MixinType);
+      _emitter = _module.CreateClassEmitter (typeName, identifier.MixinType, interfaces, flags, forceUnsigned);
 
       _requestingClassContextField = _emitter.CreateStaticField ("__requestingClassContext", typeof (ClassContext));
       _identifierField = _emitter.CreateStaticField ("__identifier", typeof (ConcreteMixinTypeIdentifier));
     }
 
+    public ConcreteMixinTypeIdentifier Identifier
+    {
+      get { return _identifier; }
+    }
+
     public IClassEmitter Emitter
     {
       get { return _emitter; }
-    }
-
-    public MixinDefinition Configuration
-    {
-      get { return _configuration; }
     }
 
     public bool IsAssemblySigned
@@ -102,7 +100,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           generatedOverrideInterface);
 
       var result = new ConcreteMixinType (
-          Configuration.GetConcreteMixinTypeIdentifier(), 
+          _identifier, 
           generatedType, 
           generatedOverrideInterface,
           interfaceMethodsForOverriddenMethods);
@@ -123,7 +121,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       AddMixinTypeAttribute();
       AddDebuggerAttributes();
-      ReplicateAttributes (_configuration.CustomAttributes, _emitter);
     }
 
     private void AddTypeInitializer ()
@@ -138,7 +135,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
               classContextSerializer.GetConstructorInvocationExpression ()));
 
       var identifierSerializer = new CodeGenerationConcreteMixinTypeIdentifierSerializer (typeInitializerEmitter.CodeBuilder);
-      _configuration.GetConcreteMixinTypeIdentifier().Serialize (identifierSerializer);
+      _identifier.Serialize (identifierSerializer);
       typeInitializerEmitter.CodeBuilder.AddStatement (
           new AssignStatement (
               _identifierField,
@@ -149,7 +146,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     protected virtual Tuple<MethodInfo, MethodInfo>[] GenerateMethodWrappers ()
     {
-      var wrappers = from m in _overriders
+      var wrappers = from m in _identifier.Overriders
                      where !m.IsPublic
                      select Tuple.NewTuple (m, Emitter.GetPublicMethodWrapper (m));
       return wrappers.ToArray ();
@@ -157,14 +154,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddMixinTypeAttribute ()
     {
-      CustomAttributeBuilder attributeBuilder = 
-          ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (Configuration.GetConcreteMixinTypeIdentifier());
+      CustomAttributeBuilder attributeBuilder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (_identifier);
       Emitter.AddCustomAttribute (attributeBuilder);
     }
 
     private void AddDebuggerAttributes ()
     {
-      string debuggerString = "Derived mixin: " + _configuration.Type.Name + " on class " + _configuration.TargetClass.Type.Name;
+      string debuggerString = "Derived mixin: " + _identifier;
       var debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] { debuggerString });
       Emitter.AddCustomAttribute (debuggerAttribute);
     }
@@ -174,20 +170,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var overrideInterfaceGenerator = OverrideInterfaceGenerator.CreateNestedGenerator (Emitter, "IOverriddenMethods");
 
       PropertyReference targetReference = GetTargetReference();
-      foreach (MethodDefinition method in _configuration.GetAllMethods())
+      foreach (MethodInfo method in _identifier.Overridden)
       {
-        if (method.Overrides.Count > 1)
-          throw new NotSupportedException ("The code generator does not support mixin methods with more than one override.");
-        else if (method.Overrides.Count == 1)
-        {
-          if (method.Overrides[0].DeclaringClass != Configuration.TargetClass)
-            throw new NotSupportedException ("The code generator only supports mixin methods to be overridden by the mixin's target class.");
-
-          var methodOverride = _emitter.CreateMethodOverride (method.MethodInfo);
-          var methodToCall = overrideInterfaceGenerator.AddOverriddenMethod (method.MethodInfo);
+        var methodOverride = _emitter.CreateMethodOverride (method);
+        var methodToCall = overrideInterfaceGenerator.AddOverriddenMethod (method);
           
-          AddCallToOverrider (methodOverride, targetReference, methodToCall);
-        }
+        AddCallToOverrider (methodOverride, targetReference, methodToCall);
       }
 
       return overrideInterfaceGenerator;
@@ -215,16 +203,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
               new CastClassExpression (targetMethod.DeclaringType, targetReference.ToExpression())));
 
       methodOverride.ImplementByDelegating (castTargetLocal, targetMethod);
-    }
-
-    private void ReplicateAttributes (IEnumerable<AttributeDefinition> attributes, IAttributableEmitter target)
-    {
-      foreach (AttributeDefinition attribute in attributes)
-      {
-        // only replicate those attributes from the base which are not inherited anyway
-        if (!attribute.IsCopyTemplate && !AttributeUtility.IsAttributeInherited (attribute.AttributeType))
-          _attributeGenerator.GenerateAttribute (target, attribute.Data);
-      }
     }
 
     private void ImplementGetObjectData ()

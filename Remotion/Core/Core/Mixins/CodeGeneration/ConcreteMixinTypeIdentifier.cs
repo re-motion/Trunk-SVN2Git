@@ -144,5 +144,10 @@ namespace Remotion.Mixins.CodeGeneration
       serializer.AddOverriders (_overriders);
       serializer.AddOverridden (_overridden);
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("Generated mixin type: {0}, {1} overriders, {2} overridden methods", MixinType, _overriders.Count, _overridden.Count);
+    }
   }
 }

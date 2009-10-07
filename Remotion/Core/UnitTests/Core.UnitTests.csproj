@@ -474,7 +474,6 @@
     <Compile Include="Mixins\CodeGeneration\TestDomain\ClassWithCopyCustomAttributes.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingGenericInterface.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithOverridableMember.cs" />
-    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithProtectedOverriderAndAttributes.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithThisAsBase.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\SampleCopyTemplateAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\VeryGenericMixin.cs" />

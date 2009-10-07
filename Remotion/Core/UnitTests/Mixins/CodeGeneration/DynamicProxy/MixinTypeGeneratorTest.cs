@@ -14,7 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -44,10 +44,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private MixinDefinition _simpleMixinDefinition;
     private MixinDefinition _signedMixinDefinition;
 
-    private MethodInfo _publicOverriddenMethod;
-    private MethodInfo _protectedOverriddenMethod;
-    private MethodInfo _protectedInternalOverriddenMethod;
+    private MethodInfo _publicOverrider;
+    private MethodInfo _protectedOverrider;
+    private MethodInfo _protectedInternalOverrider;
 
+    private ConcreteMixinTypeIdentifier _identifier;
     private MixinTypeGenerator _mixinTypeGenerator;
 
     [SetUp]
@@ -65,22 +66,26 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       _signedMixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (object), _simpleClassDefinition, false);
       PrivateInvoke.InvokeNonPublicMethod (_simpleClassDefinition.Mixins, "Add", _simpleMixinDefinition);
 
-      _publicOverriddenMethod = typeof (ClassWithDifferentMemberVisibilities).GetMethod ("PublicMethod");
-      _protectedOverriddenMethod = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
+      _publicOverrider = typeof (ClassWithDifferentMemberVisibilities).GetMethod ("PublicMethod");
+      _protectedOverrider = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
           "ProtectedMethod", 
           BindingFlags.NonPublic | BindingFlags.Instance);
-      _protectedInternalOverriddenMethod = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
+      _protectedInternalOverrider = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
           "ProtectedInternalMethod",
           BindingFlags.NonPublic | BindingFlags.Instance);
-      var overriddenMethods = new[] { _publicOverriddenMethod, _protectedOverriddenMethod, _protectedInternalOverriddenMethod };
 
-      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _simpleMixinDefinition, overriddenMethods, GuidNameProvider.Instance);
+      _identifier = new ConcreteMixinTypeIdentifier (
+          typeof (BT1Mixin1), 
+          new HashSet<MethodInfo> { _publicOverrider, _protectedOverrider, _protectedInternalOverrider },
+          new HashSet<MethodInfo> ());
+
+      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _simpleMixinDefinition, _identifier, GuidNameProvider.Instance);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_mixinTypeGenerator.Configuration, Is.SameAs (_simpleMixinDefinition));
+      Assert.That (_mixinTypeGenerator.Identifier, Is.SameAs (_identifier));
       Assert.That (_mixinTypeGenerator.Emitter, Is.Not.Null);
       Assert.That (_mixinTypeGenerator.Emitter, Is.SameAs (_classEmitterMock));
     }
@@ -88,7 +93,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void Initialization_ForceUnsignedFalse ()
     {
-      Assert.That (ReflectionUtility.IsAssemblySigned (_signedMixinDefinition.Type.Assembly), Is.True);
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+      Assert.That (ReflectionUtility.IsAssemblySigned (identifier.MixinType.Assembly), Is.True);
 
       var moduleMock = MockRepository.GenerateMock<IModuleManager> ();
       moduleMock.Expect (
@@ -97,7 +103,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (false)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, new MethodInfo[0], GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, identifier, GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -105,7 +111,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void Initialization_ForceUnsignedTrue_BecauseOfMixinType ()
     {
-      Assert.That (ReflectionUtility.IsAssemblySigned (_simpleMixinDefinition.Type.Assembly), Is.False);
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+      Assert.That (ReflectionUtility.IsAssemblySigned (identifier.MixinType.Assembly), Is.False);
 
       var moduleMock = MockRepository.GenerateMock<IModuleManager> ();
       moduleMock.Expect (
@@ -114,7 +121,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, _simpleMixinDefinition, new MethodInfo[0], GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, _simpleMixinDefinition, identifier, GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -125,6 +132,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       var mixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (EquatableMixin<BaseType1>), _simpleClassDefinition, false);
       Assert.That (ReflectionUtility.IsAssemblySigned (mixinDefinition.Type.Assembly), Is.True);
       Assert.That (ReflectionUtility.IsAssemblySigned (mixinDefinition.Type.GetGenericArguments()[0].Assembly), Is.False);
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (EquatableMixin<BaseType1>), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
 
       var moduleMock = MockRepository.GenerateMock<IModuleManager> ();
       moduleMock.Expect (
@@ -133,7 +141,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, mixinDefinition, new MethodInfo[0], GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, mixinDefinition, identifier, GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -158,16 +166,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 
       var fakeMethodWrapper1 = typeof (DateTime).GetMethod ("get_Now");
       var fakeMethodWrapper2 = typeof (DateTime).GetMethod ("get_Date");
-      _classEmitterMock.Expect (mock => mock.GetPublicMethodWrapper (_protectedOverriddenMethod)).Return (fakeMethodWrapper1);
-      _classEmitterMock.Expect (mock => mock.GetPublicMethodWrapper (_protectedInternalOverriddenMethod)).Return (fakeMethodWrapper2);
+      _classEmitterMock.Expect (mock => mock.GetPublicMethodWrapper (_protectedOverrider)).Return (fakeMethodWrapper1);
+      _classEmitterMock.Expect (mock => mock.GetPublicMethodWrapper (_protectedInternalOverrider)).Return (fakeMethodWrapper2);
       _classEmitterMock.Expect (mock => mock.BuildType ()).Return (typeof (string));
       _classEmitterMock.Replay ();
 
       var result = _mixinTypeGenerator.GetBuiltType ();
       _classEmitterMock.VerifyAllExpectations ();
 
-      Assert.That (result.GetMethodWrapper (_protectedOverriddenMethod), Is.SameAs (fakeMethodWrapper1));
-      Assert.That (result.GetMethodWrapper (_protectedInternalOverriddenMethod), Is.SameAs (fakeMethodWrapper2));
+      Assert.That (result.GetMethodWrapper (_protectedOverrider), Is.SameAs (fakeMethodWrapper1));
+      Assert.That (result.GetMethodWrapper (_protectedInternalOverrider), Is.SameAs (fakeMethodWrapper2));
     }
 
     [Test]
@@ -195,7 +203,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
 
       ConcreteMixinType mixinType = _mixinTypeGenerator.GetBuiltType ();
-      Assert.That (mixinType.Identifier, Is.EqualTo (_simpleMixinDefinition.GetConcreteMixinTypeIdentifier()));
+      Assert.That (mixinType.Identifier, Is.EqualTo (_identifier));
     }
 
     private void DisableGenerate ()

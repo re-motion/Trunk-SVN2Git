@@ -20,7 +20,6 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 
@@ -107,38 +106,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (generatedType.FullName, Is.EqualTo ("Bra/Oof"));
 
       repository.VerifyAll ();
-    }
-
-    [Test]
-    public void AttributesAreReplicatedIfNecessary ()
-    {
-      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithProtectedOverriderAndAttributes)).EnterScope())
-      {
-        var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
-        Assert.That (generatedType, Is.Not.SameAs (typeof (MixinWithProtectedOverriderAndAttributes)));
-
-        object[] inheritableAttributes = generatedType.GetCustomAttributes (typeof (InheritableAttribute), true);
-        object[] nonInheritableAttributes = generatedType.GetCustomAttributes (typeof (NonInheritableAttribute), true);
-
-        Assert.That (inheritableAttributes.Length, Is.EqualTo (1));
-        Assert.That (inheritableAttributes, Is.EquivalentTo (typeof (MixinWithProtectedOverriderAndAttributes).GetCustomAttributes (typeof (InheritableAttribute), true)));
-
-        Assert.That (nonInheritableAttributes.Length, Is.EqualTo (1));
-        Assert.That (nonInheritableAttributes, Is.EquivalentTo (typeof (MixinWithProtectedOverriderAndAttributes).GetCustomAttributes (typeof (NonInheritableAttribute), true)));
-      }
-    }
-
-    [Test]
-    public void CopyTemplatesAreNotReplicated ()
-    {
-      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithProtectedOverriderAndAttributes)).EnterScope())
-      {
-        var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
-        Assert.That (generatedType, Is.Not.SameAs (typeof (MixinWithProtectedOverriderAndAttributes)));
-
-        object[] copiedAttributes = generatedType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true);
-        Assert.That (copiedAttributes.Length, Is.EqualTo (0));
-      }
     }
 
     [Test]
