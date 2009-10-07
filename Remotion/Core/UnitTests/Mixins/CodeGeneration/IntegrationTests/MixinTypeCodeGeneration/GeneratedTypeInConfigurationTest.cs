@@ -28,7 +28,6 @@ using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGen
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {
   [TestFixture]
-  [Ignore ("TODO 1519: Re-enable tests")]
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
     [Test]

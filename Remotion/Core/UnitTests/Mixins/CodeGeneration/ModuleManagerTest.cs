@@ -23,6 +23,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
@@ -107,6 +108,21 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache, bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
       Assert.IsNotNull (generator);
       Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
+    }
+
+    [Test]
+    public void CreateMixinTypeGenerator ()
+    {
+      var mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (
+          new ClassContext(typeof (ClassOverridingMixinMembers), 
+          typeof (MixinWithAbstractMembers))).Mixins[0];
+      var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
+
+      var generator = SavedTypeBuilder.Scope.CreateMixinTypeGenerator (
+          identifier, 
+          GuidNameProvider.Instance);
+      Assert.IsNotNull (generator);
+      Assert.IsTrue (identifier.MixinType.IsAssignableFrom (generator.GetBuiltType ().GeneratedType));
     }
 
     [Test]

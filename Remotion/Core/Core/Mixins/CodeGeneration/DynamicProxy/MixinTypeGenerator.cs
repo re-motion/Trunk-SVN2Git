@@ -22,8 +22,6 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -38,28 +36,23 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
 
     private readonly ICodeGenerationModule _module;
-    private readonly MixinDefinition _configuration;
     private readonly ConcreteMixinTypeIdentifier _identifier;
 
     private readonly IClassEmitter _emitter;
-    private readonly FieldReference _requestingClassContextField;
     private readonly FieldReference _identifierField;
 
     public MixinTypeGenerator (
         ICodeGenerationModule module, 
-        MixinDefinition configuration, 
         ConcreteMixinTypeIdentifier identifier, 
         IConcreteMixinTypeNameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("identifier", identifier);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
 
       Assertion.IsFalse (identifier.MixinType.ContainsGenericParameters);
 
       _module = module;
-      _configuration = configuration;
       _identifier = identifier;
 
       string typeName = nameProvider.GetNameForConcreteMixinType (identifier);
@@ -71,7 +64,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       bool forceUnsigned = !ReflectionUtility.IsReachableFromSignedAssembly (identifier.MixinType);
       _emitter = _module.CreateClassEmitter (typeName, identifier.MixinType, interfaces, flags, forceUnsigned);
 
-      _requestingClassContextField = _emitter.CreateStaticField ("__requestingClassContext", typeof (ClassContext));
       _identifierField = _emitter.CreateStaticField ("__identifier", typeof (ConcreteMixinTypeIdentifier));
     }
 
@@ -130,13 +122,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private void AddTypeInitializer ()
     {
       var typeInitializerEmitter = _emitter.CreateTypeConstructor ();
-
-      var classContextSerializer = new CodeGenerationClassContextSerializer (typeInitializerEmitter.CodeBuilder);
-      _configuration.TargetClass.ConfigurationContext.Serialize (classContextSerializer);
-      typeInitializerEmitter.CodeBuilder.AddStatement (
-          new AssignStatement (
-              _requestingClassContextField, 
-              classContextSerializer.GetConstructorInvocationExpression ()));
 
       var identifierSerializer = new CodeGenerationConcreteMixinTypeIdentifierSerializer (typeInitializerEmitter.CodeBuilder);
       _identifier.Serialize (identifierSerializer);
@@ -220,7 +205,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
               newMethod.ArgumentReferences[0].ToExpression (),
               newMethod.ArgumentReferences[1].ToExpression (),
               SelfReference.Self.ToExpression (),
-              _requestingClassContextField.ToExpression(),
               _identifierField.ToExpression (),
               new ReferenceExpression (new ConstReference (!baseIsISerializable))));
     }

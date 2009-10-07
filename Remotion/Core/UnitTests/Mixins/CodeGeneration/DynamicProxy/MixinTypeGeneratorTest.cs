@@ -20,11 +20,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
@@ -39,10 +36,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
   {
     private IModuleManager _moduleMock;
     private IClassEmitter _classEmitterMock;
-
-    private TargetClassDefinition _simpleClassDefinition;
-    private MixinDefinition _simpleMixinDefinition;
-    private MixinDefinition _signedMixinDefinition;
 
     private MethodInfo _publicOverrider;
     private MethodInfo _protectedOverrider;
@@ -61,11 +54,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           mock.CreateClassEmitter (
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Anything)).Return (_classEmitterMock);
 
-      _simpleClassDefinition = new TargetClassDefinition (new ClassContext (typeof (BaseType1), typeof (BT1Mixin1)));
-      _simpleMixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (BT1Mixin1), _simpleClassDefinition, false);
-      _signedMixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (object), _simpleClassDefinition, false);
-      PrivateInvoke.InvokeNonPublicMethod (_simpleClassDefinition.Mixins, "Add", _simpleMixinDefinition);
-
       _publicOverrider = typeof (ClassWithDifferentMemberVisibilities).GetMethod ("PublicMethod");
       _protectedOverrider = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
           "ProtectedMethod", 
@@ -79,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           new HashSet<MethodInfo> { _publicOverrider, _protectedOverrider, _protectedInternalOverrider },
           new HashSet<MethodInfo> ());
 
-      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _simpleMixinDefinition, _identifier, GuidNameProvider.Instance);
+      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _identifier, GuidNameProvider.Instance);
     }
 
     [Test]
@@ -107,7 +95,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               .Return (_classEmitterMock);
       moduleMock.Replay ();
 
-      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, identifier, nameProviderMock);
+      new MixinTypeGenerator (moduleMock, identifier, nameProviderMock);
 
       nameProviderMock.VerifyAllExpectations ();
       moduleMock.VerifyAllExpectations ();
@@ -126,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (false)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, identifier, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, identifier, GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -144,7 +132,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, _simpleMixinDefinition, identifier, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, identifier, GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -152,10 +140,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void Initialization_ForceUnsignedTrue_BecauseOfGenericTypeArgument ()
     {
-      var mixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (EquatableMixin<BaseType1>), _simpleClassDefinition, false);
-      Assert.That (ReflectionUtility.IsAssemblySigned (mixinDefinition.Type.Assembly), Is.True);
-      Assert.That (ReflectionUtility.IsAssemblySigned (mixinDefinition.Type.GetGenericArguments()[0].Assembly), Is.False);
-      var identifier = new ConcreteMixinTypeIdentifier (typeof (EquatableMixin<BaseType1>), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+      var mixinType = typeof (EquatableMixin<BaseType1>);
+      Assert.That (ReflectionUtility.IsAssemblySigned (mixinType.Assembly), Is.True);
+      Assert.That (ReflectionUtility.IsAssemblySigned (mixinType.GetGenericArguments ()[0].Assembly), Is.False);
+      var identifier = new ConcreteMixinTypeIdentifier (mixinType, new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
 
       var moduleMock = MockRepository.GenerateMock<IModuleManager> ();
       moduleMock.Expect (
@@ -164,7 +152,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, mixinDefinition, identifier, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, identifier, GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }

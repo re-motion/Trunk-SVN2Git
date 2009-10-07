@@ -17,8 +17,6 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.Serialization;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Context.Serialization;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
@@ -33,19 +31,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         SerializationInfo info, 
         StreamingContext context, 
         object mixin, 
-        ClassContext requestingClassContext,
         ConcreteMixinTypeIdentifier identifier,
         bool serializeBaseMembers)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       ArgumentUtility.CheckNotNull ("mixin", mixin);
-      ArgumentUtility.CheckNotNull ("requestingClassContext", requestingClassContext);
       ArgumentUtility.CheckNotNull ("identifier", identifier);
 
       info.SetType (typeof (MixinSerializationHelper));
-
-      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__requestingClassContext");
-      requestingClassContext.Serialize (classContextSerializer);
 
       var identifierSerializer = new SerializationInfoConcreteMixinTypeIdentifierSerializer (info, "__identifier");
       identifier.Serialize (identifierSerializer);
@@ -78,13 +71,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _context = context;
 
-      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__requestingClassContext");
-      var requestingClassContext = ClassContext.Deserialize (classContextDeserializer);
-
       var identifierDeserializer = new SerializationInfoConcreteMixinTypeIdentifierDeserializer (info, "__identifier");
       var identifier = ConcreteMixinTypeIdentifier.Deserialize (identifierDeserializer);
       
-      Type untransformedConcreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClassContext, identifier).GeneratedType;
+      Type untransformedConcreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (identifier).GeneratedType;
       var concreteType = typeTransformer (untransformedConcreteType);
 
       if (!identifier.MixinType.IsAssignableFrom (concreteType))

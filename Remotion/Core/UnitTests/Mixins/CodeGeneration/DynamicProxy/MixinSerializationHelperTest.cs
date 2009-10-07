@@ -21,7 +21,6 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Context.Serialization;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
@@ -32,7 +31,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private SerializationInfo _serializationInfo;
     private StreamingContext _context;
     private FakeConcreteMixinType _concreteMixin;
-    private ClassContext _classContext;
     private ConcreteMixinTypeIdentifier _identifier;
 
     [SetUp]
@@ -41,32 +39,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       _serializationInfo = new SerializationInfo (typeof (object), new FormatterConverter ());
       _context = new StreamingContext ();
       _concreteMixin = new FakeConcreteMixinType ();
-      _classContext = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
-      _identifier = DefinitionObjectMother.GetTargetClassDefinition (_classContext).Mixins[0].GetConcreteMixinTypeIdentifier ();
+      var classContext = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      _identifier = DefinitionObjectMother.GetTargetClassDefinition (classContext).Mixins[0].GetConcreteMixinTypeIdentifier ();
     }
 
     [Test]
     public void GetObjectDataForGeneratedTypes_SetsType ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
 
       Assert.That (_serializationInfo.FullTypeName, Is.EqualTo (typeof (MixinSerializationHelper).FullName));
     }
 
     [Test]
-    public void GetObjectDataForGeneratedTypes_SerializesClassContext ()
-    {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
-      var classContextDeserializer = new SerializationInfoClassContextDeserializer (_serializationInfo, "__requestingClassContext");
-
-      var deserializedClassContext = ClassContext.Deserialize (classContextDeserializer);
-      Assert.That (deserializedClassContext, Is.EqualTo (_classContext));
-    }
-
-    [Test]
     public void GetObjectDataForGeneratedTypes_SerializesIdentifier ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
       var identifierDeserializer = new SerializationInfoConcreteMixinTypeIdentifierDeserializer (_serializationInfo, "__identifier");
 
       var deserializedIdentifier = ConcreteMixinTypeIdentifier.Deserialize (identifierDeserializer);
@@ -77,14 +65,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public void GetObjectDataForGeneratedTypes_SerializeBaseMembers_True ()
     {
       _concreteMixin.I = 7431;
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
       Assert.That (_serializationInfo.GetValue ("__baseMemberValues", typeof (object[])), List.Contains (7431));
     }
 
     [Test]
     public void GetObjectDataForGeneratedTypes_SerializeBaseMembers_False ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, false);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, false);
       Assert.That (_serializationInfo.GetValue ("__baseMemberValues", typeof (object[])), Is.Null);
     }
 
@@ -94,14 +82,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
         + "'Remotion.UnitTests.Mixins.SampleTypes.MixinWithAbstractMembers'.")]
     public void Initialization_WithTypeTransformer_InvalidTransformedType_NonAssignable ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
       new MixinSerializationHelper (_serializationInfo, _context, t => typeof (object));
     }
 
     [Test]
     public void Initialization_SignalsOnDeserializing ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
 
       var helper = new MixinSerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixinType));
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject (_context);
@@ -112,7 +100,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void Initialization_BaseMembersSerialized_CallsNoCtor ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
 
       var helper = new MixinSerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixinType));
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject (_context);
@@ -123,7 +111,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void Initialization_BaseMembersNotSerialized_CallsSerializationCtor ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, false);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, false);
 
       var helper = new MixinSerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixinType));
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject (_context);
@@ -135,25 +123,25 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void GetRealObject_ReturnsConcreteMixinTypeInstance ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
 
       var helper = new MixinSerializationHelper (_serializationInfo, _context);
 
       var realObject = helper.GetRealObject (_context);
-      Assert.That (realObject.GetType (), Is.SameAs (ConcreteTypeBuilder.Current.GetConcreteMixinType (_classContext, _identifier).GeneratedType));
+      Assert.That (realObject.GetType (), Is.SameAs (ConcreteTypeBuilder.Current.GetConcreteMixinType (_identifier).GeneratedType));
     }
 
     [Test]
     public void GetRealObject_WithTypeTransformer ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
 
       var helper = new MixinSerializationHelper (
           _serializationInfo,
           _context,
           delegate (Type t)
           {
-            Assert.That (t, Is.SameAs (ConcreteTypeBuilder.Current.GetConcreteMixinType (_classContext, _identifier).GeneratedType));
+            Assert.That (t, Is.SameAs (ConcreteTypeBuilder.Current.GetConcreteMixinType (_identifier).GeneratedType));
             return typeof (FakeConcreteMixinType);
           });
 
@@ -165,7 +153,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public void OnDeserialization_RestoresBaseMembers ()
     {
       _concreteMixin.I = 4711;
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
       var helper = new MixinSerializationHelper (_serializationInfo, _context);
 
       var deserializedObject = (MixinWithAbstractMembers) helper.GetRealObject (_context);
@@ -179,7 +167,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public void OnDeserialization_RestoresBaseMembers_NotWhenNoBaseMembers ()
     {
       _concreteMixin.I = 4711;
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, false);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, false);
       var helper = new MixinSerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixinType));
 
       var deserializedObject = (MixinWithAbstractMembers) helper.GetRealObject (_context);
@@ -192,7 +180,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void OnDeserialization_RaisesEvents ()
     {
-      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _classContext, _identifier, true);
+      MixinSerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteMixin, _identifier, true);
       var helper = new MixinSerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixinType));
 
       var deserializedObject = (FakeConcreteMixinType) helper.GetRealObject (_context);

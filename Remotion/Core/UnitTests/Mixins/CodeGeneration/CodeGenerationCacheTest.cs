@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private IMixinTypeGenerator _mixinTypeGeneratorMock;
 
     private ClassContext _targetClassContext;
-    private MixinDefinition _mixinDefinition;
+    private ConcreteMixinTypeIdentifier _concreteMixinTypeIdentifier;
     private IConcreteMixedTypeNameProvider _mixedTypeNameProvider;
     private IConcreteMixinTypeNameProvider _mixinTypeNameProvider;
     private ConcreteMixinType _concreteMixinTypeFake;
@@ -56,11 +56,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _cache = new CodeGenerationCache (_typeBuilder);
       _targetClassContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
-      _mixinDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
+
+      var mixinDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
+      _concreteMixinTypeIdentifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
+
       _mixedTypeNameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
       _mixinTypeNameProvider = MockRepository.GenerateStub<IConcreteMixinTypeNameProvider> ();
 
-      _concreteMixinTypeFake = new ConcreteMixinType (_mixinDefinition.GetConcreteMixinTypeIdentifier (), typeof (int), typeof (IServiceProvider), new Dictionary<MethodInfo, MethodInfo> ());
+      _concreteMixinTypeFake = new ConcreteMixinType (_concreteMixinTypeIdentifier, typeof (int), typeof (IServiceProvider), new Dictionary<MethodInfo, MethodInfo> ());
     }
 
     [Test]
@@ -108,13 +111,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Uncached()
     {
-      _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_mixinDefinition, _mixinTypeNameProvider)).Return (
+      _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_concreteMixinTypeIdentifier, _mixinTypeNameProvider)).Return (
           _mixinTypeGeneratorMock);
       _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (_concreteMixinTypeFake);
 
       _mockRepository.ReplayAll();
 
-      var result = _cache.GetOrCreateConcreteMixinType (_mixinDefinition, _mixinTypeNameProvider);
+      var result = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier, _mixinTypeNameProvider);
       Assert.That (result, Is.SameAs (_concreteMixinTypeFake));
 
       _mockRepository.VerifyAll();
@@ -123,39 +126,17 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Cached()
     {
-      _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_mixinDefinition, _mixinTypeNameProvider)).Return (
+      _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_concreteMixinTypeIdentifier, _mixinTypeNameProvider)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
       _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (_concreteMixinTypeFake).Repeat.Once();
 
       _mockRepository.ReplayAll();
 
-      var result1 = _cache.GetOrCreateConcreteMixinType (_mixinDefinition, _mixinTypeNameProvider);
-      var result2 = _cache.GetOrCreateConcreteMixinType (_mixinDefinition, _mixinTypeNameProvider);
+      var result1 = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      var result2 = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier, _mixinTypeNameProvider);
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void GetConcreteMixinTypeFromCacheOnly_Null()
-    {
-      var result = _cache.GetConcreteMixinTypeFromCacheOnly (_mixinDefinition.GetConcreteMixinTypeIdentifier());
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void GetConcreteMixinTypeFromCacheOnly_NonNull()
-    {
-      _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_mixinDefinition, _mixinTypeNameProvider)).Return (
-          _mixinTypeGeneratorMock).Repeat.Once();
-      _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (_concreteMixinTypeFake).Repeat.Once();
-
-      _mockRepository.ReplayAll();
-
-      var result1 = _cache.GetOrCreateConcreteMixinType (_mixinDefinition, _mixinTypeNameProvider);
-      var result2 = _cache.GetConcreteMixinTypeFromCacheOnly (_mixinDefinition.GetConcreteMixinTypeIdentifier ());
-      Assert.That (result2, Is.Not.Null);
-      Assert.That (result2, Is.SameAs (result1));
     }
 
     [Test]
@@ -202,8 +183,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (identifier1), Is.SameAs (type1));
-      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (identifier2), Is.SameAs (type2));
+      Assert.That (_cache.GetOrCreateConcreteMixinType (identifier1, _mixinTypeNameProvider), Is.SameAs (type1));
+      Assert.That (_cache.GetOrCreateConcreteMixinType (identifier2, _mixinTypeNameProvider), Is.SameAs (type2));
     }
   }
 }

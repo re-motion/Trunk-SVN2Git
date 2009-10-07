@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Mixins
           .GetMixinByConfiguredType (mixinType);
       Assert.That (mixinDefinition, Is.Not.Null);
 
-      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ());
+      return ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition.GetConcreteMixinTypeIdentifier ());
     }
   }
 }

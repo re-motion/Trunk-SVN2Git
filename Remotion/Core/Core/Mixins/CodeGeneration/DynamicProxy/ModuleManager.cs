@@ -92,12 +92,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return new TypeGenerator (cache, this, configuration, nameProvider, mixinNameProvider);
     }
 
-    public IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, IConcreteMixinTypeNameProvider mixinNameProvider)
+    public IMixinTypeGenerator CreateMixinTypeGenerator (
+        ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier, 
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
-      ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
-      return new MixinTypeGenerator (this, mixinDefinition, mixinDefinition.GetConcreteMixinTypeIdentifier(), mixinNameProvider);
+      return new MixinTypeGenerator (this, concreteMixinTypeIdentifier, mixinNameProvider);
     }
 
     // should be called when a type was generated with the scope from this module

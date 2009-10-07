@@ -27,7 +27,7 @@ namespace Remotion.Mixins.CodeGeneration
         TargetClassDefinition configuration, 
         IConcreteMixedTypeNameProvider nameProvider, 
         IConcreteMixinTypeNameProvider mixinNameProvider);
-    IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, IConcreteMixinTypeNameProvider mixinNameProvider);
+    IMixinTypeGenerator CreateMixinTypeGenerator (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier, IConcreteMixinTypeNameProvider mixinNameProvider);
 
     string SignedAssemblyName { get; set; }
     string UnsignedAssemblyName { get; set; }

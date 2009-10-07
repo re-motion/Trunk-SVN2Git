@@ -47,10 +47,11 @@ namespace Remotion.Mixins.CodeGeneration
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ConcreteTypeBuilder));
 
-    private IModuleManager _scope;
     private readonly CodeGenerationCache _cache;
 
     private readonly object _scopeLockObject = new object ();
+    private IModuleManager _scope;
+
     private IConcreteMixedTypeNameProvider _typeNameProvider = GuidNameProvider.Instance;
     private IConcreteMixinTypeNameProvider _mixinTypeNameProvider = GuidNameProvider.Instance;
 
@@ -170,31 +171,15 @@ namespace Remotion.Mixins.CodeGeneration
     /// <summary>
     /// Gets the concrete type for the given mixin class configuration either from the cache or by generating it.
     /// </summary>
-    /// <param name="requestingClass">The <see cref="ClassContext"/> in whose context the concrete mixin type is requested. If the mixin type
-    /// hasn't been generated yet, the concrete type for the <paramref name="requestingClass"/> will also be generated.</param>
     /// <param name="concreteMixinTypeIdentifier">The <see cref="ConcreteMixinTypeIdentifier"/> defining the mixin type to get.</param>
     /// <returns>A concrete type for the given <paramref name="concreteMixinTypeIdentifier"/>.</returns>
     /// <remarks>This is mostly for internal reasons, users will hardly ever need to use this method.</remarks>
-    public ConcreteMixinType GetConcreteMixinType (ClassContext requestingClass, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
+    public ConcreteMixinType GetConcreteMixinType (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
-      ArgumentUtility.CheckNotNull ("requestingClass", requestingClass);
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
-      
-      GetConcreteType (requestingClass); // ensure target's concrete type has been generated, this will also ensure generation of the mixin types
-      ConcreteMixinType concreteMixinType = 
-          Cache.GetConcreteMixinTypeFromCacheOnly (concreteMixinTypeIdentifier); // now we know the mixin type must be in the cache
-
-      if (concreteMixinType == null) // if it isn't, the requesting class does not require a concrete mixin type
-      {
-        string message = string.Format (
-            "No concrete mixin type is required for the given configuration (mixin {0} and target class {1}).",
-            concreteMixinTypeIdentifier.MixinType,
-            requestingClass.Type);
-        throw new ArgumentException (message, "requestingClass");
-      }
-      else
-        return concreteMixinType;
-
+     
+      ConcreteMixinType concreteMixinType = Cache.GetOrCreateConcreteMixinType (concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      return concreteMixinType;
     }
 
     /// <summary>

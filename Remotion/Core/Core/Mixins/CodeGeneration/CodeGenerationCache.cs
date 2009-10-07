@@ -84,39 +84,28 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     public ConcreteMixinType GetOrCreateConcreteMixinType (
-        MixinDefinition mixinDefinition,
+        ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier,
         IConcreteMixinTypeNameProvider mixinNameProvider)
     {
-      ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
       lock (_lockObject)
       {
         return _mixinTypeCache.GetOrCreateValue (
-              mixinDefinition.GetConcreteMixinTypeIdentifier (),
-              key => GenerateConcreteMixinType (mixinDefinition, mixinNameProvider));
+              concreteMixinTypeIdentifier,
+              key => GenerateConcreteMixinType (concreteMixinTypeIdentifier, mixinNameProvider));
       }
     }
 
     private ConcreteMixinType GenerateConcreteMixinType (
-        MixinDefinition mixinDefinition,
+        ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier,
         IConcreteMixinTypeNameProvider mixinNameProvider)
     {
-      s_log.InfoFormat ("Generating concrete mixin type for {0}.", mixinDefinition.Type);
+      s_log.InfoFormat ("Generating concrete mixin type for {0}.", concreteMixinTypeIdentifier.MixinType);
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {0}."))
       {
-        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixinDefinition, mixinNameProvider).GetBuiltType();
-      }
-    }
-
-    public ConcreteMixinType GetConcreteMixinTypeFromCacheOnly (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
-    {
-      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
-      lock (_lockObject)
-      {
-        ConcreteMixinType type;
-        _mixinTypeCache.TryGetValue (concreteMixinTypeIdentifier, out type);
-        return type;
+        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (concreteMixinTypeIdentifier, mixinNameProvider).GetBuiltType ();
       }
     }
 

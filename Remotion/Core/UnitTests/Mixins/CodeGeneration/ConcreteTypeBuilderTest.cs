@@ -94,8 +94,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var requestingClass = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       var concreteMixinTypeIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
-      var t1 = _builder.GetConcreteMixinType (requestingClass, concreteMixinTypeIdentifier);
-      var t2 = _builder.GetConcreteMixinType (requestingClass, concreteMixinTypeIdentifier);
+      var t1 = _builder.GetConcreteMixinType (concreteMixinTypeIdentifier);
+      var t2 = _builder.GetConcreteMixinType (concreteMixinTypeIdentifier);
 
       Assert.That (t1, Is.SameAs (t2));
     }
@@ -105,8 +105,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var requestingClass = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       var concreteMixinTypeIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
-      var t1 = _builder.GetConcreteMixinType (requestingClass, concreteMixinTypeIdentifier);
-      var t2 = _builder2.GetConcreteMixinType (requestingClass, concreteMixinTypeIdentifier);
+      var t1 = _builder.GetConcreteMixinType (concreteMixinTypeIdentifier);
+      var t2 = _builder2.GetConcreteMixinType (concreteMixinTypeIdentifier);
 
       Assert.That (t1, Is.Not.SameAs (t2));
     }
@@ -290,7 +290,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var requestingClass = GetClassContextForLoadedType (typeof (LoadableConcreteMixedTypeForClassOverridingMixinMembers));
       var concreteMixinIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
 
-      Type concreteType = _builderWithModuleManagerMock.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
+      Type concreteType = _builderWithModuleManagerMock.GetConcreteMixinType (concreteMixinIdentifier).GeneratedType;
       Assert.That (concreteType, Is.SameAs (loadedType));
 
       _moduleManagerMockForLoading.VerifyAllExpectations();
@@ -305,9 +305,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var requestingClass = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       var concreteMixinIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
 
-      Type concreteType1 = _builder.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
+      Type concreteType1 = _builder.GetConcreteMixinType (concreteMixinIdentifier).GeneratedType;
       _builder.LoadAssemblyIntoCache (assemblyMock);
-      Type concreteType2 = _builder.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
+      Type concreteType2 = _builder.GetConcreteMixinType (concreteMixinIdentifier).GeneratedType;
 
       Assert.That (concreteType2, Is.SameAs (concreteType1));
       Assert.That (concreteType2, Is.Not.SameAs (loadedType));
@@ -344,7 +344,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var requestingClass = new ClassContext (typeof (ClassOverridingSingleMixinMethod), typeof (MixinWithOverridableMember));
       var concreteMixinIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
 
-      Type t = _builder.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
+      Type t = _builder.GetConcreteMixinType (concreteMixinIdentifier).GeneratedType;
 
       Assert.That (t, Is.Not.Null);
       Assert.That (typeof (MixinWithOverridableMember).IsAssignableFrom (t), Is.True);
@@ -352,18 +352,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var concreteMixedType = _builder.GetConcreteType (requestingClass);
       var instance = Activator.CreateInstance (concreteMixedType);
       Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).GetType (), Is.SameAs (t));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "No concrete mixin type is required for the given configuration "
-        + "(mixin Remotion.UnitTests.Mixins.CodeGeneration.TestDomain.MixinWithOverridableMember and target class "
-        + "Remotion.UnitTests.Mixins.SampleTypes.NullTarget).",
-        MatchType = MessageMatch.Contains)]
-    public void GetConcreteMixinType_ThrowsIfNoMixinTypeGenerated()
-    {
-      var requestingClass = new ClassContext (typeof (NullTarget), typeof (MixinWithOverridableMember));
-      var concreteMixinIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
-      _builder.GetConcreteMixinType (requestingClass, concreteMixinIdentifier);
     }
 
     [Test]
