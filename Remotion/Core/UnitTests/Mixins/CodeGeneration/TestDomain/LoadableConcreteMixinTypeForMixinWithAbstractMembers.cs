@@ -23,14 +23,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
   [ConcreteMixinType (
       new object[] {
           typeof (MixinWithAbstractMembers),
+          new object[0],
           new object[] { 
-              new object[] { typeof (ClassOverridingMixinMembers), "AbstractMethod", "System.String AbstractMethod(Int32)" },
-              new object[] { typeof (ClassOverridingMixinMembers), "RaiseEvent", "System.String RaiseEvent()" },
-              new object[] { typeof (ClassOverridingMixinMembers), "get_AbstractProperty", "System.String get_AbstractProperty()" },
-              new object[] { typeof (ClassOverridingMixinMembers), "add_AbstractEvent", "Void add_AbstractEvent(System.Func`1[System.String])" },
-              new object[] { typeof (ClassOverridingMixinMembers), "remove_AbstractEvent", "Void remove_AbstractEvent(System.Func`1[System.String])" },
+              new object[] { typeof (MixinWithAbstractMembers), "AbstractMethod", "System.String AbstractMethod(Int32)" },
+              new object[] { typeof (MixinWithAbstractMembers), "RaiseEvent", "System.String RaiseEvent()" },
+              new object[] { typeof (MixinWithAbstractMembers), "get_AbstractProperty", "System.String get_AbstractProperty()" },
+              new object[] { typeof (MixinWithAbstractMembers), "add_AbstractEvent", "Void add_AbstractEvent(System.Func`1[System.String])" },
+              new object[] { typeof (MixinWithAbstractMembers), "remove_AbstractEvent", "Void remove_AbstractEvent(System.Func`1[System.String])" },
           },
-          new object[0]
       })]
   public class LoadableConcreteMixinTypeForMixinWithAbstractMembers
   {

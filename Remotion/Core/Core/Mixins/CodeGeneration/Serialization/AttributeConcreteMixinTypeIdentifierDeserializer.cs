@@ -41,26 +41,25 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       return (Type) _values[0];
     }
 
-    public HashSet<MethodInfo> GetExternalOverriders ()
+    public HashSet<MethodInfo> GetOverriders ()
     {
-      var externalOverriderArray = (object[]) _values[1];
-      return new HashSet<MethodInfo> (from object[] typeAndMethodData in externalOverriderArray
-                                      let declaringType = (Type) typeAndMethodData[0]
-                                      let name = (string) typeAndMethodData[1]
-                                      let signature = (string) typeAndMethodData[2]
-                                      select MethodResolver.ResolveMethod (declaringType, name, signature));
+      var overriderArray = (object[]) _values[1];
+      return DeserializeTriplets (overriderArray);
     }
 
-    public HashSet<MethodInfo> GetWrappedProtectedMembers ()
+    public HashSet<MethodInfo> GetOverridden ()
     {
-      var protectedMemberArray = (object[]) _values[2];
-      return new HashSet<MethodInfo> (from object[] typeAndMethodData in protectedMemberArray
-                                      let declaringType = (Type) typeAndMethodData[0]
-                                      let name = (string) typeAndMethodData[1]
-                                      let signature = (string) typeAndMethodData[2]
-                                      select MethodResolver.ResolveMethod (declaringType, name, signature));
+      var overriddenArray = (object[]) _values[2];
+      return DeserializeTriplets (overriddenArray);
     }
 
-    
+    private HashSet<MethodInfo> DeserializeTriplets (object[] overriderArray)
+    {
+      return new HashSet<MethodInfo> (from object[] triplet in overriderArray
+                                      let declaringType = (Type) triplet[0]
+                                      let name = (string) triplet[1]
+                                      let signature = (string) triplet[2]
+                                      select MethodResolver.ResolveMethod (declaringType, name, signature));
+    }
   }
 }

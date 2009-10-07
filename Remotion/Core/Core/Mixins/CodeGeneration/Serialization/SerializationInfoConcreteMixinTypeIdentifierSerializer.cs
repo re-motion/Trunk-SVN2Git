@@ -45,14 +45,14 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       _serializationInfo.AddValue (_key + ".MixinType", mixinType.AssemblyQualifiedName);
     }
 
-    public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
+    public void AddOverriders (HashSet<MethodInfo> overriders)
     {
-      SerializeMethods (_key + ".ExternalOverriders", externalOverriders);
+      SerializeMethods (_key + ".Overriders", overriders);
     }
 
-    public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
+    public void AddOverridden (HashSet<MethodInfo> overridden)
     {
-      SerializeMethods (_key + ".WrappedProtectedMembers", wrappedProtectedMembers);
+      SerializeMethods (_key + ".Overridden", overridden);
     }
 
     private void SerializeMethods (string collectionKey, ICollection<MethodInfo> collection)

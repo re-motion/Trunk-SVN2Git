@@ -30,22 +30,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
   [TestFixture]
   public class CodeGenerationConcreteMixinTypeIdentifierSerializerTest : CodeGenerationBaseTest
   {
-    private MethodInfo _simpleExternalMethod;
-    private MethodInfo _genericExternalMethod;
-    private MethodInfo _externalMethodOnGenericClosedWithReferenceType;
-    private MethodInfo _externalMethodOnGenericClosedWithValueType;
-    private MethodInfo _simpleMethodOnMixinType;
+    private MethodInfo _simpleMethod1;
+    private MethodInfo _simpleMethod2;
+    private MethodInfo _genericMethod;
+    private MethodInfo _methodOnGenericClosedWithReferenceType;
+    private MethodInfo _methodOnGenericClosedWithValueType;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _simpleExternalMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
-      _genericExternalMethod = typeof (BaseType7).GetMethod ("One");
-      _externalMethodOnGenericClosedWithReferenceType = typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method");
-      _externalMethodOnGenericClosedWithValueType = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
-      _simpleMethodOnMixinType = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
+      _simpleMethod1 = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
+      _simpleMethod2 = typeof (BT1Mixin2).GetMethod ("VirtualMethod");
+      _genericMethod = typeof (BaseType7).GetMethod ("One");
+      _methodOnGenericClosedWithReferenceType = typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method");
+      _methodOnGenericClosedWithValueType = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
     }
 
     [Test]
@@ -55,9 +55,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       MethodBuilderEmitter emitter = DefineMethod (type, typeof (ConcreteMixinTypeIdentifier));
 
       var referenceIdentifier = new ConcreteMixinTypeIdentifier (
-          typeof (BT1Mixin1), 
-          new HashSet<MethodInfo> { _simpleExternalMethod },
-          new HashSet<MethodInfo> { _simpleMethodOnMixinType });
+          typeof (BT1Mixin1),
+          new HashSet<MethodInfo> { _simpleMethod1 },
+          new HashSet<MethodInfo> { _simpleMethod2 });
 
       var serializer = new CodeGenerationConcreteMixinTypeIdentifierSerializer (emitter.CodeBuilder);
       referenceIdentifier.Serialize (serializer);
@@ -75,8 +75,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 
       var referenceIdentifier = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          new HashSet<MethodInfo> { _externalMethodOnGenericClosedWithReferenceType, _externalMethodOnGenericClosedWithValueType },
-          new HashSet<MethodInfo> { _externalMethodOnGenericClosedWithReferenceType, _externalMethodOnGenericClosedWithValueType });
+          new HashSet<MethodInfo> { _methodOnGenericClosedWithReferenceType, _methodOnGenericClosedWithValueType },
+          new HashSet<MethodInfo> { _methodOnGenericClosedWithReferenceType, _methodOnGenericClosedWithValueType });
 
       var serializer = new CodeGenerationConcreteMixinTypeIdentifierSerializer (emitter.CodeBuilder);
       referenceIdentifier.Serialize (serializer);
@@ -94,8 +94,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 
       var referenceIdentifier = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          new HashSet<MethodInfo> { _genericExternalMethod },
-          new HashSet<MethodInfo> { _genericExternalMethod });
+          new HashSet<MethodInfo> { _genericMethod },
+          new HashSet<MethodInfo> { _genericMethod });
 
       var serializer = new CodeGenerationConcreteMixinTypeIdentifierSerializer (emitter.CodeBuilder);
       referenceIdentifier.Serialize (serializer);

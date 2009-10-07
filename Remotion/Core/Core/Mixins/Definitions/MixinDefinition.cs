@@ -19,7 +19,6 @@ using System.Diagnostics;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Utilities;
 using System.Reflection;
-using System.Linq;
 
 namespace Remotion.Mixins.Definitions
 {
@@ -172,16 +171,22 @@ namespace Remotion.Mixins.Definitions
 
     private ConcreteMixinTypeIdentifier CalculateConcreteTypeIdentifier ()
     {
-      // for each overridden member, find its topmost definition - that way we can share concrete mixin types between target classes that
-      // overrider their base class' [OverrideMixin] methods
+      var overriders = new HashSet<MethodInfo> ();
+      var overridden = new HashSet<MethodInfo> ();
 
-      var topMostOverriders = new HashSet<MethodInfo> (
-          GetAllMethods ()
-              .SelectMany (md => md.Overrides)
-              .Select (ovr => ovr.MethodInfo.GetBaseDefinition()));
-      var protectedOverriders = new HashSet<MethodInfo> (GetProtectedOverriders ().Select (md => md.MethodInfo));
+      foreach (var methodDefinition in GetAllMethods())
+      {
+        if (methodDefinition.Base != null)
+        {
+          overriders.Add (methodDefinition.MethodInfo);
+        }
+        else if (methodDefinition.Overrides.Count != 0)
+        {
+          overridden.Add (methodDefinition.MethodInfo);
+        }
+      }
 
-      return new ConcreteMixinTypeIdentifier (Type, topMostOverriders, protectedOverriders);
+      return new ConcreteMixinTypeIdentifier (Type, overriders, overridden);
     }
   }
 }

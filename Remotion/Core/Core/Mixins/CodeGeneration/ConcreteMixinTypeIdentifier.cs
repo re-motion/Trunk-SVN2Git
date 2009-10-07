@@ -26,8 +26,8 @@ namespace Remotion.Mixins.CodeGeneration
   /// </summary>
   /// <remarks>
   /// <para>
-  /// Comparing <see cref="ConcreteMixinTypeIdentifier"/> instances requires a comparison of the sets of <see cref="ExternalOverriders"/> and
-  /// <see cref="WrappedProtectedMembers"/> and should therefore not be performed in tight loops. Getting the hash code is, however, quite fast, as it
+  /// Comparing <see cref="ConcreteMixinTypeIdentifier"/> instances requires a comparison of the sets of <see cref="Overriders"/> and
+  /// <see cref="Overridden"/> and should therefore not be performed in tight loops. Getting the hash code is, however, quite fast, as it
   /// is cached.
   /// </para>
   /// </remarks>
@@ -42,37 +42,36 @@ namespace Remotion.Mixins.CodeGeneration
       ArgumentUtility.CheckNotNull ("deserializer", deserializer);
 
       var mixinType = deserializer.GetMixinType ();
-      var externalOverriders = deserializer.GetExternalOverriders ();
-      var wrappedProtectedMembers = deserializer.GetWrappedProtectedMembers ();
+      var externalOverriders = deserializer.GetOverriders ();
+      var wrappedProtectedMembers = deserializer.GetOverridden ();
 
       return new ConcreteMixinTypeIdentifier (mixinType, externalOverriders, wrappedProtectedMembers);
     }
 
     private readonly Type _mixinType;
-    private readonly HashSet<MethodInfo> _externalOverriders;
-    private readonly HashSet<MethodInfo> _wrappedProtectedMembers;
+    private readonly HashSet<MethodInfo> _overriders;
+    private readonly HashSet<MethodInfo> _overridden;
     private readonly int _cachedHashCode;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcreteMixinTypeIdentifier"/> class.
     /// </summary>
     /// <param name="mixinType">The mixin type for which a concrete type was generated.</param>
-    /// <param name="externalOverriders">Target class members that override members of the mixin. These are called by the concrete mixin type.</param>
-    /// <param name="wrappedProtectedMembers">The protected members of the mixin for which public wrappers are required. These are called by
-    /// the mixin's target classes (when the mixin overrides a member of the target class).</param>
-    public ConcreteMixinTypeIdentifier (Type mixinType, HashSet<MethodInfo> externalOverriders, HashSet<MethodInfo> wrappedProtectedMembers)
+    /// <param name="overriders">Mixin methods that override methods of the target class.</param>
+    /// <param name="overridden">Mixin methods that are overridden by the target class.</param>
+    public ConcreteMixinTypeIdentifier (Type mixinType, HashSet<MethodInfo> overriders, HashSet<MethodInfo> overridden)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      ArgumentUtility.CheckNotNull ("externalOverriders", externalOverriders);
-      ArgumentUtility.CheckNotNull ("wrappedProtectedMembers", wrappedProtectedMembers);
+      ArgumentUtility.CheckNotNull ("overriders", overriders);
+      ArgumentUtility.CheckNotNull ("overridden", overridden);
 
       _mixinType = mixinType;
-      _externalOverriders = externalOverriders;
-      _wrappedProtectedMembers = wrappedProtectedMembers;
+      _overriders = overriders;
+      _overridden = overridden;
 
       _cachedHashCode = MixinType.GetHashCode ()
-          ^ EqualityUtility.GetXorHashCode (_externalOverriders)
-          ^ EqualityUtility.GetXorHashCode (_wrappedProtectedMembers);
+          ^ EqualityUtility.GetXorHashCode (_overriders)
+          ^ EqualityUtility.GetXorHashCode (_overridden);
     }
 
     /// <summary>
@@ -85,26 +84,28 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     /// <summary>
-    /// Gets the target class members that override members of the mixin. These are called by the concrete mixin type.
+    /// Gets mixin methods that override methods of the target class. These are called by the mixin's target classes and may require public wrappers
+    /// in the concrete mixin type.
     /// </summary>
-    /// <value>Target class members that override members of the mixin. These are called by the concrete mixin type.</value>
-    public IEnumerable<MethodInfo> ExternalOverriders
+    /// <value>Mixin methods that override methods of the target class.</value>
+    public IEnumerable<MethodInfo> Overriders
     {
-      get { return _externalOverriders; }
+      get { return _overriders; }
     }
 
     /// <summary>
-    /// Gets the protected members of the mixin for which public wrappers are required. These are called by the mixin's target classes.
+    /// Gets the mixin methods that are overridden by the target class. These are overridden in the concrete mixin type and call back to the target
+    /// classes.
     /// </summary>
-    /// <value>The protected members of the mixin for which public wrappers are required.</value>
-    public IEnumerable<MethodInfo> WrappedProtectedMembers
+    /// <value>Mixin methods that are overridden by the target class.</value>
+    public IEnumerable<MethodInfo> Overridden
     {
-      get { return _wrappedProtectedMembers; }
+      get { return _overridden; }
     }
 
     /// <summary>
     /// Determines whether the specified <see cref="T:System.Object"/> is equal to this <see cref="ConcreteMixinTypeIdentifier"/>. Checks all 
-    /// properties for equality, ignoring the order of the items in the <see cref="MemberInfo"/> sets.
+    /// properties for equality, ignoring the order of the items in the <see cref="MethodInfo"/> sets.
     /// </summary>
     /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="ConcreteMixinTypeIdentifier"/>.</param>
     /// <returns>
@@ -116,8 +117,8 @@ namespace Remotion.Mixins.CodeGeneration
       var other = obj as ConcreteMixinTypeIdentifier;
       return other != null 
           && other.MixinType == MixinType 
-          && other._externalOverriders.SetEquals (_externalOverriders) 
-          && other._wrappedProtectedMembers.SetEquals (_wrappedProtectedMembers);
+          && other._overriders.SetEquals (_overriders) 
+          && other._overridden.SetEquals (_overridden);
     }
 
     /// <summary>
@@ -140,8 +141,8 @@ namespace Remotion.Mixins.CodeGeneration
       ArgumentUtility.CheckNotNull ("serializer", serializer);
 
       serializer.AddMixinType (MixinType);
-      serializer.AddExternalOverriders (_externalOverriders);
-      serializer.AddWrappedProtectedMembers (_wrappedProtectedMembers);
+      serializer.AddOverriders (_overriders);
+      serializer.AddOverridden (_overridden);
     }
   }
 }

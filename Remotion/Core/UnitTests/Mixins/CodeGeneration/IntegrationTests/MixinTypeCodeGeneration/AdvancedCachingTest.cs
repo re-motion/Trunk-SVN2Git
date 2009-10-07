@@ -124,7 +124,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin2.GetType ()));
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin3.GetType ()));
       Assert.That (mixin2.GetType (), Is.Not.SameAs (mixin3.GetType ()));
-      Assert.That (mixin2b.GetType (), Is.Not.SameAs (mixin2.GetType ()));
+      Assert.That (mixin2b.GetType (), Is.SameAs (mixin2.GetType ()));
       Assert.That (mixin3.GetType (), Is.SameAs (mixin4.GetType ()));
       Assert.That (mixin3.GetType (), Is.SameAs (mixin4b.GetType ()));
     }
@@ -153,7 +153,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin2.GetType ()));
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin3.GetType ()));
       Assert.That (mixin2.GetType (), Is.Not.SameAs (mixin3.GetType ()));
-      Assert.That (mixin2b.GetType (), Is.Not.SameAs (mixin2.GetType ()));
+      Assert.That (mixin2b.GetType (), Is.SameAs (mixin2.GetType ()));
       Assert.That (mixin3.GetType (), Is.SameAs (mixin4.GetType ()));
       Assert.That (mixin3.GetType (), Is.SameAs (mixin4b.GetType ()));
     }

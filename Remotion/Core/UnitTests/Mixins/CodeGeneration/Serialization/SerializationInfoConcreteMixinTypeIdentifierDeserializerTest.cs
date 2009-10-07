@@ -30,12 +30,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
   [TestFixture]
   public class SerializationInfoConcreteMixinTypeIdentifierDeserializerTest
   {
-    private MethodInfo _simpleExternalMethod;
-    private MethodInfo _genericExternalMethod;
-    private MethodInfo _externalMethodOnGenericClosedWithReferenceType;
-    private MethodInfo _externalMethodOnGenericClosedWithValueType;
-    private MethodInfo _simpleMethodOnMixinType;
-    private MethodInfo _simpleMethodOnMixinBaseType;
+    private MethodInfo _simpleMethod;
+    private MethodInfo _genericMethod;
+    private MethodInfo _methodOnGenericClosedWithReferenceType;
+    private MethodInfo _methodOnGenericClosedWithValueType;
 
     private SerializationInfoConcreteMixinTypeIdentifierSerializer _serializer;
     private SerializationInfoConcreteMixinTypeIdentifierDeserializer _deserializer;
@@ -44,12 +42,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     [SetUp]
     public void SetUp ()
     {
-      _simpleExternalMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
-      _genericExternalMethod = typeof (BaseType7).GetMethod ("One");
-      _externalMethodOnGenericClosedWithReferenceType = typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method");
-      _externalMethodOnGenericClosedWithValueType = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
-      _simpleMethodOnMixinType = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
-      _simpleMethodOnMixinBaseType = typeof (object).GetMethod ("ToString");
+      _simpleMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
+      _genericMethod = typeof (BaseType7).GetMethod ("One");
+      _methodOnGenericClosedWithReferenceType = typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method");
+      _methodOnGenericClosedWithValueType = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
 
       _serializationInfo = new SerializationInfo (typeof (ConcreteMixinTypeIdentifier), new FormatterConverter ());
       _serializer = new SerializationInfoConcreteMixinTypeIdentifierSerializer (_serializationInfo, "identifier");
@@ -64,45 +60,38 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     }
 
     [Test]
-    public void GetExternalOverriders ()
+    public void GetOverriders ()
     {
-      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _simpleExternalMethod });
-      Assert.That (_deserializer.GetExternalOverriders ().ToArray(), Is.EquivalentTo (new[] { _simpleExternalMethod }));
+      _serializer.AddOverriders (new HashSet<MethodInfo> { _simpleMethod });
+      Assert.That (_deserializer.GetOverriders ().ToArray (), Is.EquivalentTo (new[] { _simpleMethod }));
     }
 
     [Test]
-    public void GetExternalOverriders_GenericMethod ()
+    public void GetOverriders_GenericMethod ()
     {
-      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _genericExternalMethod });
-      Assert.That (_deserializer.GetExternalOverriders ().ToArray (), Is.EquivalentTo (new[] { _genericExternalMethod }));
+      _serializer.AddOverriders (new HashSet<MethodInfo> { _genericMethod });
+      Assert.That (_deserializer.GetOverriders ().ToArray (), Is.EquivalentTo (new[] { _genericMethod }));
     }
 
     [Test]
-    public void GetExternalOverriders_MethodOnClosedGenericType_ReferenceType ()
+    public void GetOverriders_MethodOnClosedGenericType_ReferenceType ()
     {
-      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _externalMethodOnGenericClosedWithReferenceType });
-      Assert.That (_deserializer.GetExternalOverriders ().ToArray (), Is.EquivalentTo (new[] { _externalMethodOnGenericClosedWithReferenceType }));
+      _serializer.AddOverriders (new HashSet<MethodInfo> { _methodOnGenericClosedWithReferenceType });
+      Assert.That (_deserializer.GetOverriders ().ToArray (), Is.EquivalentTo (new[] { _methodOnGenericClosedWithReferenceType }));
     }
 
     [Test]
-    public void GetExternalOverriders_MethodOnClosedGenericType_ValueType ()
+    public void GetOverriders_MethodOnClosedGenericType_ValueType ()
     {
-      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _externalMethodOnGenericClosedWithValueType });
-      Assert.That (_deserializer.GetExternalOverriders ().ToArray (), Is.EquivalentTo (new[] { _externalMethodOnGenericClosedWithValueType }));
+      _serializer.AddOverriders (new HashSet<MethodInfo> { _methodOnGenericClosedWithValueType });
+      Assert.That (_deserializer.GetOverriders ().ToArray (), Is.EquivalentTo (new[] { _methodOnGenericClosedWithValueType }));
     }
 
     [Test]
-    public void GetWrappedProtectedMembers ()
+    public void GetOverridden ()
     {
-      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
-      Assert.That (_deserializer.GetWrappedProtectedMembers ().ToArray (), Is.EquivalentTo (new[] { _simpleMethodOnMixinType }));
-    }
-
-    [Test]
-    public void GetWrappedProtectedMembers_MethodOnBaseType ()
-    {
-      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinBaseType });
-      Assert.That (_deserializer.GetWrappedProtectedMembers ().ToArray (), Is.EquivalentTo (new[] { _simpleMethodOnMixinBaseType }));
+      _serializer.AddOverridden (new HashSet<MethodInfo> { _simpleMethod });
+      Assert.That (_deserializer.GetOverridden ().ToArray (), Is.EquivalentTo (new[] { _simpleMethod }));
     }
   }
 }

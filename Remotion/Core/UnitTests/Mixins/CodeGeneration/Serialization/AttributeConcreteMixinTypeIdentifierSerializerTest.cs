@@ -26,8 +26,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
   [TestFixture]
   public class AttributeConcreteMixinTypeIdentifierSerializerTest
   {
-    private MethodInfo _simpleExternalMethod;
-    private MethodInfo _simpleMethodOnMixinType;
+    private MethodInfo _simpleMethod;
     private MethodInfo _genericMethod;
 
     private AttributeConcreteMixinTypeIdentifierSerializer _serializer;
@@ -35,8 +34,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     [SetUp]
     public void SetUp ()
     {
-      _simpleExternalMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
-      _simpleMethodOnMixinType = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
+      _simpleMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
       _genericMethod = typeof (BaseType7).GetMethod ("One");
 
       _serializer = new AttributeConcreteMixinTypeIdentifierSerializer ();
@@ -50,9 +48,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     }
 
     [Test]
-    public void AddExternalOverriders ()
+    public void AddOverriders ()
     {
-      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _simpleExternalMethod });
+      _serializer.AddOverriders (new HashSet<MethodInfo> { _simpleMethod });
 
       Assert.That (_serializer.Values[1].GetType (), Is.EqualTo (typeof (object[])));
       Assert.That (((object[]) _serializer.Values[1]).Length, Is.EqualTo (1));
@@ -64,29 +62,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void AddExternalOverriders_ClosedGeneric ()
+    public void AddOverriders_ClosedGeneric ()
     {
-      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
+      _serializer.AddOverriders (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
     }
 
     [Test]
-    public void AddWrappedProtectedMembers ()
+    public void AddOverridden ()
     {
-      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
+      _serializer.AddOverridden (new HashSet<MethodInfo> { _simpleMethod });
 
       Assert.That (_serializer.Values[2].GetType (), Is.EqualTo (typeof (object[])));
       Assert.That (((object[]) _serializer.Values[2]).Length, Is.EqualTo (1));
       Assert.That (((object[]) ((object[]) _serializer.Values[2])[0]).Length, Is.EqualTo (3));
-      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[0], Is.SameAs (typeof (BT1Mixin1)));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[0], Is.SameAs (typeof (BaseType1)));
       Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[1], Is.EqualTo ("VirtualMethod"));
       Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[2], Is.EqualTo ("System.String VirtualMethod()"));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void AddWrappedProtectedMembers_ClosedGeneric ()
+    public void AddOverridden_ClosedGeneric ()
     {
-      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
+      _serializer.AddOverridden (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
     }
   }
 }

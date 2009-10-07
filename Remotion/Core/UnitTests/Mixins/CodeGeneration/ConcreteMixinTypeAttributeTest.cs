@@ -46,12 +46,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       var identifier = attribute.GetIdentifier ();
       Assert.That (identifier.MixinType, Is.SameAs (typeof (MixinWithAbstractMembers)));
-      Assert.That (identifier.ExternalOverriders.ToArray(), Is.EquivalentTo(new[] {
-          typeof (ClassOverridingMixinMembers).GetMethod ("AbstractMethod"),
-          typeof (ClassOverridingMixinMembers).GetMethod ("RaiseEvent"),
-          typeof (ClassOverridingMixinMembers).GetMethod ("get_AbstractProperty"),
-          typeof (ClassOverridingMixinMembers).GetMethod ("add_AbstractEvent"),
-          typeof (ClassOverridingMixinMembers).GetMethod ("remove_AbstractEvent")
+
+      const BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+      Assert.That (identifier.Overridden.ToArray(), Is.EquivalentTo(new[] {
+          typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", flags),
+          typeof (MixinWithAbstractMembers).GetMethod ("RaiseEvent", flags),
+          typeof (MixinWithAbstractMembers).GetMethod ("get_AbstractProperty", flags),
+          typeof (MixinWithAbstractMembers).GetMethod ("add_AbstractEvent", flags),
+          typeof (MixinWithAbstractMembers).GetMethod ("remove_AbstractEvent", flags)
 
       }));
     }

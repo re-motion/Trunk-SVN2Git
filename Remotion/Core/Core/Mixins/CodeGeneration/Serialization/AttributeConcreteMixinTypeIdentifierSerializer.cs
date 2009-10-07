@@ -37,16 +37,21 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       _values[0] = mixinType;
     }
 
-    public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
+    public void AddOverriders (HashSet<MethodInfo> overriders)
     {
-      _values[1] = (from ovr in externalOverriders 
-                    select (object) new object[] { CheckNotClosedGeneric (ovr).DeclaringType, ovr.Name, ovr.ToString() }).ToArray();
+      _values[1] = GetStorableMethodTriplets (overriders);
     }
 
-    public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
+    public void AddOverridden (HashSet<MethodInfo> overridden)
     {
-      _values[2] = (from member in wrappedProtectedMembers
-                    select (object) new object[] { CheckNotClosedGeneric (member).DeclaringType, member.Name, member.ToString () }).ToArray ();
+      _values[2] = GetStorableMethodTriplets (overridden);
+    }
+
+    private object[] GetStorableMethodTriplets (HashSet<MethodInfo> methodInfos)
+    {
+      var triples = from methodInfo in methodInfos
+                    select (object) new object[] { CheckNotClosedGeneric (methodInfo).DeclaringType, methodInfo.Name, methodInfo.ToString () };
+      return triples.ToArray ();
     }
 
     private MethodInfo CheckNotClosedGeneric (MethodInfo methodInfo)

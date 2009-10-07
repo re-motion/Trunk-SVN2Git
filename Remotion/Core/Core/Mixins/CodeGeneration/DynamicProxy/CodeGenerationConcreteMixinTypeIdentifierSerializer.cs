@@ -53,24 +53,24 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _constructorArguments[0] = new TypeTokenExpression (mixinType);
     }
 
-    public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
+    public void AddOverriders (HashSet<MethodInfo> overriders)
     {
-      var externalOverridersLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (
-          externalOverriders, 
+      var overridersLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (
+          overriders, 
           _codeBuilder, 
           GetResolveMethodExpression);
 
-      _constructorArguments[1] = new NewInstanceExpression (s_hashSetConstructor, externalOverridersLocal.ToExpression());
+      _constructorArguments[1] = new NewInstanceExpression (s_hashSetConstructor, overridersLocal.ToExpression ());
     }
 
-    public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
+    public void AddOverridden (HashSet<MethodInfo> overridden)
     {
-      var wrappedProtectedMembersLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (
-          wrappedProtectedMembers, 
+      var overriddenLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (
+          overridden, 
           _codeBuilder,
           GetResolveMethodExpression);
-      
-      _constructorArguments[2] = new NewInstanceExpression (s_hashSetConstructor, wrappedProtectedMembersLocal.ToExpression());
+
+      _constructorArguments[2] = new NewInstanceExpression (s_hashSetConstructor, overriddenLocal.ToExpression ());
     }
 
     private Expression GetResolveMethodExpression (MethodInfo methodInfo)

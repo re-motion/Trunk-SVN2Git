@@ -22,7 +22,7 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
   public interface IConcreteMixinTypeIdentifierDeserializer
   {
     Type GetMixinType ();
-    HashSet<MethodInfo> GetExternalOverriders ();
-    HashSet<MethodInfo> GetWrappedProtectedMembers ();
+    HashSet<MethodInfo> GetOverriders ();
+    HashSet<MethodInfo> GetOverridden ();
   }
 }

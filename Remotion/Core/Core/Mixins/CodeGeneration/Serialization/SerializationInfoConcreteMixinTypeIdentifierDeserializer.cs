@@ -45,14 +45,14 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       return Type.GetType (_serializationInfo.GetString (_key + ".MixinType"));
     }
 
-    public HashSet<MethodInfo> GetExternalOverriders ()
+    public HashSet<MethodInfo> GetOverriders ()
     {
-      return DeserializeMethods (_key + ".ExternalOverriders");
+      return DeserializeMethods (_key + ".Overriders");
     }
 
-    public HashSet<MethodInfo> GetWrappedProtectedMembers ()
+    public HashSet<MethodInfo> GetOverridden ()
     {
-      return DeserializeMethods (_key + ".WrappedProtectedMembers");
+      return DeserializeMethods (_key + ".Overridden");
     }
 
     private HashSet<MethodInfo> DeserializeMethods (string collectionKey)

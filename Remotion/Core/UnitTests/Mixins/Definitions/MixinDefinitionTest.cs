@@ -69,61 +69,48 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void GetConcreteMixinTypeIdentifier_NoOverrides ()
     {
-      var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), new HashSet<MethodInfo>(), new HashSet<MethodInfo> ());
+      var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (NullMixin), new HashSet<MethodInfo>(), new HashSet<MethodInfo> ());
 
-      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
+      var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (NullTarget), typeof (NullMixin)).Mixins[0];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
     [Test]
-    public void GetConcreteMixinTypeIdentifier_Overrides_TypeOverridesMethod ()
+    public void GetConcreteMixinTypeIdentifier_Overridden_TypeOverridesMethod ()
     {
-      var overrider = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
+      var overridden = typeof (MixinWithMethodsOverriddenByDifferentClasses).GetMethod ("M1");
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (
           typeof (MixinWithMethodsOverriddenByDifferentClasses), 
-          new HashSet<MethodInfo> { overrider }, 
-          new HashSet<MethodInfo> ());
+          new HashSet<MethodInfo> (),
+          new HashSet<MethodInfo> { overridden });
 
-      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (DerivedClassOverridingMixinMethod))
+      var definition = DefinitionObjectMother
+          .GetActiveTargetClassDefinition (typeof (DerivedClassOverridingMixinMethod))
           .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
     [Test]
-    public void GetConcreteMixinTypeIdentifier_Overrides_TypeOverridesMethod_AndBaseOverridesOtherMethod ()
+    public void GetConcreteMixinTypeIdentifier_Overriders()
     {
-      var overrider1 = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
-      var overrider2 = typeof (DerivedDerivedClassOverridingMixinMethod).GetMethod ("M2");
+      var overrider = typeof (MixinOverridingToString).GetMethod ("ToString");
+
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (
-          typeof (MixinWithMethodsOverriddenByDifferentClasses), 
-          new HashSet<MethodInfo> { overrider1, overrider2 },
+          typeof (MixinOverridingToString),
+          new HashSet<MethodInfo> { overrider },
           new HashSet<MethodInfo> ());
 
-      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (DerivedDerivedClassOverridingMixinMethod))
-          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      var definition = DefinitionObjectMother.
+          BuildUnvalidatedDefinition (typeof (object), typeof (MixinOverridingToString))
+          .Mixins[typeof (MixinOverridingToString)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
     [Test]
-    public void GetConcreteMixinTypeIdentifier_Overrides_BaseOverrides ()
-    {
-      var overrider1 = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
-      var overrider2 = typeof (DerivedDerivedClassOverridingMixinMethod).GetMethod ("M2");
-      var expectedIdentifier = new ConcreteMixinTypeIdentifier (
-          typeof (MixinWithMethodsOverriddenByDifferentClasses),
-          new HashSet<MethodInfo> { overrider1, overrider2 },
-          new HashSet<MethodInfo> ());
-
-      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (DerivedDerivedDerivedClassOverridingMixinMethod))
-          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
-    }
-
-    [Test]
-    public void GetConcreteMixinTypeIdentifier_ProtectedOverriders()
+    public void GetConcreteMixinTypeIdentifier_ProtectedOverriders ()
     {
       const BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
-      var protectedOverriders = new[] { 
+      var overriders = new[] { 
           typeof (MixinWithProtectedOverrider).GetMethod ("VirtualMethod", bf), 
           typeof (MixinWithProtectedOverrider).GetMethod ("get_VirtualProperty", bf),
           typeof (MixinWithProtectedOverrider).GetMethod ("add_VirtualEvent", bf),
@@ -132,8 +119,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (
           typeof (MixinWithProtectedOverrider),
-          new HashSet<MethodInfo> (),
-          new HashSet<MethodInfo> (protectedOverriders));
+          new HashSet<MethodInfo> (overriders),
+          new HashSet<MethodInfo> ());
 
       var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider))
           .Mixins[typeof (MixinWithProtectedOverrider)];
