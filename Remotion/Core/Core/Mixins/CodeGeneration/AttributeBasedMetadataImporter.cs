@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
@@ -58,15 +57,14 @@ namespace Remotion.Mixins.CodeGeneration
 
     // CLS-incompliant version for better testing
     [CLSCompliant (false)]
-    public virtual IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType (_Type concreteMixinType)
+    public virtual Dictionary<MethodInfo, MethodInfo> GetMethodWrappersForMixinType (_Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
-      foreach (MethodInfo potentialWrapper in concreteMixinType.GetMethods (BindingFlags.Instance | BindingFlags.Public))
-      {
-        MethodInfo wrappedMethod = GetWrappedMethod (potentialWrapper);
-        if (wrappedMethod != null)
-          yield return Tuple.NewTuple (wrappedMethod, potentialWrapper);
-      }
+      var wrappers = from potentialWrapper in concreteMixinType.GetMethods (BindingFlags.Instance | BindingFlags.Public)
+                     let wrappedMethod = GetWrappedMethod (potentialWrapper)
+                     where wrappedMethod != null
+                     select new { Method = wrappedMethod, Wrapper = potentialWrapper };
+      return wrappers.ToDictionary (pair => pair.Method, pair => pair.Wrapper);
     }
 
     // Searches the mixin methods corresponding to the methods of the override interface based on a signature comparison and returns a mapping from
@@ -125,13 +123,9 @@ namespace Remotion.Mixins.CodeGeneration
       }
 
       var overrideInterfaceMethods = GetOverrideInterfaceMethodsByMixinMethod (generatedOverrideInterface, identifier);
-
-      var result = new ConcreteMixinType (identifier, concreteMixinType, generatedOverrideInterface, overrideInterfaceMethods);
       var methodWrappers = GetMethodWrappersForMixinType (concreteMixinType);
-      foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
-        result.AddMethodWrapper (wrapper.A, wrapper.B);
 
-      return result;
+      return new ConcreteMixinType (identifier, concreteMixinType, generatedOverrideInterface, overrideInterfaceMethods, methodWrappers);
     }
   }
 }

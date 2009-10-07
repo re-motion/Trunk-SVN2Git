@@ -39,29 +39,21 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           identifier, 
           typeof (object), 
           typeof (IServiceProvider), 
+          new Dictionary<MethodInfo, MethodInfo> { { _method1, _method2 } },
           new Dictionary<MethodInfo, MethodInfo> { { _method1, _method2 } });
     }
 
     [Test]
-    public void AddMethodWrapper ()
+    public void GetMethodWrapper ()
     {
-      _concreteMixinType.AddMethodWrapper (_method1, _method2);
       Assert.That (_concreteMixinType.GetMethodWrapper (_method1), Is.SameAs (_method2));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A public wrapper for method 'System.Object.ToString' was already added.")]
-    public void AddMethodWrapper_Twice ()
-    {
-      _concreteMixinType.AddMethodWrapper (_method1, _method2);
-      _concreteMixinType.AddMethodWrapper (_method1, _method2);
-    }
-
-    [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No public wrapper was generated for method 'System.Object.ToString'.")]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No public wrapper was generated for method 'System.Object.Equals'.")]
     public void GetMethodWrapper_NotFound ()
     {
-      _concreteMixinType.GetMethodWrapper (_method1);
+      _concreteMixinType.GetMethodWrapper (_method2);
     }
 
     [Test]
@@ -69,5 +61,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       Assert.That (_concreteMixinType.GetOverrideInterfaceMethod (_method1), Is.SameAs (_method2));
     }
+
+    [Test]
+    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "No override interface method was generated for method 'System.Object.Equals'.")]
+    public void GetOverrideInterfaceMethod_NotFound ()
+    {
+      _concreteMixinType.GetOverrideInterfaceMethod (_method2);
+    }
+
   }
 }

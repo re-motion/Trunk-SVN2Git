@@ -63,7 +63,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _mixedTypeNameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
       _mixinTypeNameProvider = MockRepository.GenerateStub<IConcreteMixinTypeNameProvider> ();
 
-      _concreteMixinTypeFake = new ConcreteMixinType (_concreteMixinTypeIdentifier, typeof (int), typeof (IServiceProvider), new Dictionary<MethodInfo, MethodInfo> ());
+      _concreteMixinTypeFake = new ConcreteMixinType (
+          _concreteMixinTypeIdentifier, 
+          typeof (int), 
+          typeof (IServiceProvider), 
+          new Dictionary<MethodInfo, MethodInfo> (), 
+          new Dictionary<MethodInfo, MethodInfo>());
     }
 
     [Test]
@@ -175,8 +180,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1))).Return (null);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin2))).Return (null);
 
-      var type1 = new ConcreteMixinType (identifier1, typeof (int), typeof (string), new Dictionary<MethodInfo, MethodInfo>());
-      var type2 = new ConcreteMixinType (identifier2, typeof (int), typeof (string), new Dictionary<MethodInfo, MethodInfo> ());
+      var type1 = new ConcreteMixinType (
+          identifier1, 
+          typeof (int), 
+          typeof (string), 
+          new Dictionary<MethodInfo, MethodInfo> (), 
+          new Dictionary<MethodInfo, MethodInfo> ());
+      var type2 = new ConcreteMixinType (
+          identifier2, 
+          typeof (int), 
+          typeof (string), 
+          new Dictionary<MethodInfo, MethodInfo> (), 
+          new Dictionary<MethodInfo, MethodInfo> ());
       
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (type1);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin2))).Return (type2);

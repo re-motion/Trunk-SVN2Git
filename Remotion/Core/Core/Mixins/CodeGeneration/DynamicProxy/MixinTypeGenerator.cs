@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Remotion.Collections;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -86,7 +85,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       GenerateTypeFeatures ();
       var overrideInterfaceGenerator = GenerateOverrides ();
-      Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers ();
+      var methodWrappers = GenerateMethodWrappers ();
 
       Type generatedType = Emitter.BuildType();
       Type generatedOverrideInterface = overrideInterfaceGenerator.GetBuiltType();
@@ -95,16 +94,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           overrideInterfaceGenerator.GetInterfaceMethodsForOverriddenMethods (), 
           generatedOverrideInterface);
 
-      var result = new ConcreteMixinType (
+      return new ConcreteMixinType (
           _identifier, 
           generatedType, 
           generatedOverrideInterface,
-          interfaceMethodsForOverriddenMethods);
-
-      foreach (var methodWrapper in methodWrappers)
-        result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
-
-      return result;
+          interfaceMethodsForOverriddenMethods,
+          methodWrappers);
     }
 
     protected virtual void GenerateTypeFeatures ()
@@ -133,12 +128,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       typeInitializerEmitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }
 
-    protected virtual Tuple<MethodInfo, MethodInfo>[] GenerateMethodWrappers ()
+    protected virtual Dictionary<MethodInfo, MethodInfo> GenerateMethodWrappers ()
     {
       var wrappers = from m in _identifier.Overriders
                      where !m.IsPublic
-                     select Tuple.NewTuple (m, Emitter.GetPublicMethodWrapper (m));
-      return wrappers.ToArray ();
+                     select new { Method = m, Wrapper = Emitter.GetPublicMethodWrapper (m) };
+      return wrappers.ToDictionary (pair => pair.Method, pair => pair.Wrapper);
     }
 
     private void AddMixinTypeAttribute ()

@@ -35,17 +35,23 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly Dictionary<MethodInfo, MethodInfo> _methodWrappers;
     private readonly Dictionary<MethodInfo, MethodInfo> _overrideInterfaceMethodsByMixinMethod;
 
-    public ConcreteMixinType (ConcreteMixinTypeIdentifier identifier, Type generatedType, Type generatedOverrideInterface, Dictionary<MethodInfo, MethodInfo> overrideInterfaceMethodsByMixinMethod)
+    public ConcreteMixinType (
+        ConcreteMixinTypeIdentifier identifier, 
+        Type generatedType, 
+        Type generatedOverrideInterface,
+        Dictionary<MethodInfo, MethodInfo> overrideInterfaceMethodsByMixinMethod,
+        Dictionary<MethodInfo, MethodInfo> methodWrappers)
     {
       ArgumentUtility.CheckNotNull ("identifier", identifier);
       ArgumentUtility.CheckNotNull ("generatedType", generatedType);
       ArgumentUtility.CheckNotNull ("generatedOverrideInterface", generatedOverrideInterface);
       ArgumentUtility.CheckNotNull ("overrideInterfaceMethodsByMixinMethod", overrideInterfaceMethodsByMixinMethod);
+      ArgumentUtility.CheckNotNull ("methodWrappers", methodWrappers);
 
       _identifier = identifier;
       _generatedType = generatedType;
       _generatedOverrideInterface = generatedOverrideInterface;
-      _methodWrappers = new Dictionary<MethodInfo, MethodInfo>();
+      _methodWrappers = methodWrappers;
       _overrideInterfaceMethodsByMixinMethod = overrideInterfaceMethodsByMixinMethod;
     }
 
@@ -67,32 +73,35 @@ namespace Remotion.Mixins.CodeGeneration
     public MethodInfo GetOverrideInterfaceMethod (MethodInfo mixinMethod)
     {
       ArgumentUtility.CheckNotNull ("mixinMethod", mixinMethod);
-      return _overrideInterfaceMethodsByMixinMethod[mixinMethod];
-    }
 
-    public void AddMethodWrapper (MethodInfo protectedMethod, MethodInfo publicWrapper)
-    {
-      ArgumentUtility.CheckNotNull ("protectedMethod", protectedMethod);
-      ArgumentUtility.CheckNotNull ("publicWrapper", publicWrapper);
-
-      if (_methodWrappers.ContainsKey (protectedMethod))
+      MethodInfo interfaceMethod;
+      if (!_overrideInterfaceMethodsByMixinMethod.TryGetValue (mixinMethod, out interfaceMethod))
       {
-        string message = 
-            string.Format ("A public wrapper for method '{0}.{1}' was already added.", protectedMethod.DeclaringType.FullName, protectedMethod.Name);
-        throw new InvalidOperationException (message);
-      }
-      _methodWrappers.Add (protectedMethod, publicWrapper);
-    }
-
-    public MethodInfo GetMethodWrapper (MethodInfo protectedMethod)
-    {
-      if (!_methodWrappers.ContainsKey (protectedMethod))
-      {
-        string message = 
-            string.Format ("No public wrapper was generated for method '{0}.{1}'.", protectedMethod.DeclaringType.FullName, protectedMethod.Name);
+        string message =
+            string.Format ("No override interface method was generated for method '{0}.{1}'.", mixinMethod.DeclaringType.FullName, mixinMethod.Name);
         throw new KeyNotFoundException (message);
       }
-      return _methodWrappers[protectedMethod];
+      else
+      {
+        return interfaceMethod;
+      }
+    }
+
+    public MethodInfo GetMethodWrapper (MethodInfo wrappedMethod)
+    {
+      ArgumentUtility.CheckNotNull ("wrappedMethod", wrappedMethod);
+
+      MethodInfo wrapper;
+      if (!_methodWrappers.TryGetValue (wrappedMethod, out wrapper))
+      {
+        string message =
+            string.Format ("No public wrapper was generated for method '{0}.{1}'.", wrappedMethod.DeclaringType.FullName, wrappedMethod.Name);
+        throw new KeyNotFoundException (message);
+      }
+      else
+      {
+        return wrapper;
+      }
     }
   }
 }

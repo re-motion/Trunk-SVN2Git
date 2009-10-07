@@ -56,7 +56,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo>(), new HashSet<MethodInfo>());
 
-      SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo>(), new Tuple<MethodInfo, MethodInfo>[0]);
+      SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo>(), new Dictionary<MethodInfo, MethodInfo>());
       importerMock.Replay ();
       
       var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
       
-      SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo> (), new Tuple<MethodInfo, MethodInfo>[0]);
+      SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo> (), new Dictionary<MethodInfo, MethodInfo>());
       importerMock.Replay ();
 
       var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
 
-      SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo> (), new Tuple<MethodInfo, MethodInfo>[0]);
+      SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo> (), new Dictionary<MethodInfo, MethodInfo>());
       importerMock.Replay ();
 
       var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
@@ -127,7 +127,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           importerMock, 
           expectedIdentifier, 
           new Dictionary<MethodInfo, MethodInfo> (), 
-          new[] { Tuple.NewTuple (method1, wrapper1), Tuple.NewTuple (method2, wrapper2) });
+          new Dictionary<MethodInfo, MethodInfo> { { method1, wrapper1 }, { method2, wrapper2} });
       importerMock.Replay ();
 
       var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
@@ -152,7 +152,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           importerMock,
           expectedIdentifier,
           new Dictionary<MethodInfo, MethodInfo> { { mixinMethod1, ifcMethod1 }, { mixinMethod2, ifcMethod2 } },
-          new Tuple<MethodInfo, MethodInfo>[0]);
+          new Dictionary<MethodInfo, MethodInfo> ());
       importerMock.Replay ();
 
       var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
@@ -272,7 +272,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .Return (new[] { nonWrapperMethod1, nonWrapperMethod2, wrapperMethod1, wrapperMethod2 });
 
       var result = importerMock.GetMethodWrappersForMixinType (typeMock).ToArray();
-      Assert.That (result, Is.EqualTo (new[] { new Tuple<MethodInfo, MethodInfo> (wrappedMethod1, wrapperMethod1), new Tuple<MethodInfo, MethodInfo> (wrappedMethod2, wrapperMethod2) }));
+      Assert.That (result, Is.EqualTo (new Dictionary<MethodInfo, MethodInfo> { { wrappedMethod1, wrapperMethod1 }, { wrappedMethod2, wrapperMethod2 } }));
     }
 
     [Test]
@@ -331,7 +331,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         AttributeBasedMetadataImporter importerMock,
         ConcreteMixinTypeIdentifier expectedIdentifier,
         Dictionary<MethodInfo, MethodInfo> overrideInterfaceMethods,
-        Tuple<MethodInfo, MethodInfo>[] methodWrappers)
+        Dictionary<MethodInfo, MethodInfo> methodWrappers)
     {
       importerMock
           .Expect (mock => mock.GetIdentifierForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers)))

@@ -194,7 +194,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       StubGenerateTypeFeatures ();
       StubGenerateOverrides (typeof (int));
-      StubGenerateMethodWrappers (new Tuple<MethodInfo, MethodInfo>[0]);
+      StubGenerateMethodWrappers (new Dictionary<MethodInfo, MethodInfo>());
       _mixinTypeGenerator.Replay ();
 
       _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
@@ -208,7 +208,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       StubGenerateTypeFeatures ();
       StubGenerateOverrides (typeof (int));
-      StubGenerateMethodWrappers (new Tuple<MethodInfo, MethodInfo>[0]);
+      StubGenerateMethodWrappers (new Dictionary<MethodInfo, MethodInfo>());
       _mixinTypeGenerator.Replay ();
 
       _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
@@ -221,7 +221,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       StubGenerateTypeFeatures();
       StubGenerateOverrides (typeof (string));
-      StubGenerateMethodWrappers (new Tuple<MethodInfo, MethodInfo>[0]);
+      StubGenerateMethodWrappers (new Dictionary<MethodInfo, MethodInfo>());
     }
 
     private void StubGenerateOverrides (Type overrideInterfaceType)
@@ -238,7 +238,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTypeFeatures"));
     }
 
-    private void StubGenerateMethodWrappers (Tuple<MethodInfo, MethodInfo>[] wrappers)
+    private void StubGenerateMethodWrappers (Dictionary<MethodInfo, MethodInfo> wrappers)
     {
       _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateMethodWrappers")).Return (wrappers);
     }
