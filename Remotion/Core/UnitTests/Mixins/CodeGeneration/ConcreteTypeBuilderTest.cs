@@ -323,9 +323,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _builderWithModuleManagerMock.LoadAssemblyIntoCache (assemblyMock);
       _moduleManagerMockForLoading.BackToRecord();
-      _moduleManagerMockForLoading.Expect (mock => mock.CreateTypeGenerator (Arg<CodeGenerationCache>.Is.Anything,
-                                                                             Arg<TargetClassDefinition>.Is.Anything, Arg<INameProvider>.Is.Anything,
-                                                                             Arg<INameProvider>.Is.Anything)).Return (typeGeneratorMock);
+      _moduleManagerMockForLoading
+            .Expect (mock => mock.CreateTypeGenerator (
+                Arg<CodeGenerationCache>.Is.Anything,
+                Arg<TargetClassDefinition>.Is.Anything, 
+                Arg<IConcreteMixedTypeNameProvider>.Is.Anything,
+                Arg<IConcreteMixinTypeNameProvider>.Is.Anything))
+            .Return (typeGeneratorMock);
       _moduleManagerMockForLoading.Replay();
 
       var nonLoadedType = _builderWithModuleManagerMock.GetConcreteType (new ClassContext (typeof (BaseType1), typeof (BT1Mixin1)));
@@ -473,16 +477,20 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void NameProvider_IsUsedWhenTypeIsGenerated()
     {
-      var nameProviderFake1 = MockRepository.GenerateMock<INameProvider>();
-      var nameProviderFake2 = MockRepository.GenerateMock<INameProvider>();
+      var mixedTypeNameProvider = MockRepository.GenerateMock<IConcreteMixedTypeNameProvider> ();
+      var mixinTypeNameProvider = MockRepository.GenerateMock<IConcreteMixinTypeNameProvider> ();
       var moduleManagerMock = MockRepository.GenerateMock<IModuleManager>();
       var typeGeneratorMock = MockRepository.GenerateMock<ITypeGenerator>();
       var builder = new ConcreteTypeBuilder
-                      {TypeNameProvider = nameProviderFake1, MixinTypeNameProvider = nameProviderFake2, Scope = moduleManagerMock};
+                      {TypeNameProvider = mixedTypeNameProvider, MixinTypeNameProvider = mixinTypeNameProvider, Scope = moduleManagerMock};
 
-      moduleManagerMock.Expect (mock => mock.CreateTypeGenerator (Arg<CodeGenerationCache>.Is.Anything, Arg<TargetClassDefinition>.Is.Anything,
-                                                                  Arg<INameProvider>.Is.Same (nameProviderFake1),
-                                                                  Arg<INameProvider>.Is.Same (nameProviderFake2))).Return (typeGeneratorMock);
+      moduleManagerMock
+          .Expect (mock => mock.CreateTypeGenerator (
+              Arg<CodeGenerationCache>.Is.Anything, 
+              Arg<TargetClassDefinition>.Is.Anything,
+              Arg.Is (mixedTypeNameProvider),
+              Arg.Is (mixinTypeNameProvider)))
+          .Return (typeGeneratorMock);
       moduleManagerMock.Replay();
 
       typeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (typeof (string));

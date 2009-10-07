@@ -14,8 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
-using Remotion.Mixins;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -26,29 +28,28 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   public class NamespaceChangingNameProviderTest
   {
     [Test]
-    public void NormalNameGetsExtendedNamespace()
+    public void GetNameForConcreteMixedType_NormalNameGetsExtendedNamespace ()
     {
-      INameProvider nameProvider = NamespaceChangingNameProvider.Instance;
+      var nameProvider = NamespaceChangingNameProvider.Instance;
 
       TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      string newName = nameProvider.GetNewTypeName (definition);
+      string newName = nameProvider.GetNameForConcreteMixedType (definition);
 
-      Assert.AreEqual (typeof (BaseType1).Namespace + ".MixedTypes.BaseType1", newName);
+      Assert.That (newName, Is.EqualTo (typeof (BaseType1).Namespace + ".MixedTypes.BaseType1"));
     }
 
     [Test]
-    public void GenericNameGetsExtendedNamespacePlusCharacterReplacements()
+    public void GetNameForConcreteMixedType_GenericNameGetsExtendedNamespacePlusCharacterReplacements ()
     {
-      INameProvider nameProvider = NamespaceChangingNameProvider.Instance;
+      var nameProvider = NamespaceChangingNameProvider.Instance;
 
       TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (
           typeof (GenericTargetClass<int>));
-      string newName = nameProvider.GetNewTypeName (definition);
+      string newName = nameProvider.GetNameForConcreteMixedType (definition);
 
-      Assert.AreEqual (typeof (GenericTargetClass<int>).Namespace +
-          ".MixedTypes.GenericTargetClass`1{System_Int32/mscorlib/Version=2_0_0_0/Culture=neutral/PublicKeyToken=b77a5c561934e089}",
-          newName);
+      Assert.That (newName, 
+          Is.EqualTo (typeof (GenericTargetClass<int>).Namespace + 
+          ".MixedTypes.GenericTargetClass`1{System_Int32/mscorlib/Version=2_0_0_0/Culture=neutral/PublicKeyToken=b77a5c561934e089}"));
     }
-
   }
 }

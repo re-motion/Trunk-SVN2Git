@@ -54,7 +54,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly FieldReference _mixinArrayInitializerField;
     private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo> ();
 
-    public TypeGenerator (CodeGenerationCache codeGenerationCache, ICodeGenerationModule module, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public TypeGenerator (
+        CodeGenerationCache codeGenerationCache, 
+        ICodeGenerationModule module, 
+        TargetClassDefinition configuration, 
+        IConcreteMixedTypeNameProvider nameProvider, 
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("codeGenerationCache", codeGenerationCache);
       ArgumentUtility.CheckNotNull ("module", module);
@@ -64,7 +69,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _module = module;
       _configuration = configuration;
 
-      string typeName = nameProvider.GetNewTypeName (configuration);
+      string typeName = nameProvider.GetNameForConcreteMixedType (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
       var concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider); // elements may be null
@@ -140,7 +145,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         yield return mixin.Type;
     }
 
-    private ConcreteMixinType[] GetConcreteMixinTypes (INameProvider mixinNameProvider)
+    private ConcreteMixinType[] GetConcreteMixinTypes (IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       var concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
       for (int i = 0; i < concreteMixinTypes.Length; ++i)

@@ -83,8 +83,8 @@ namespace Remotion.Mixins.MixerTool
     {
       var mixer = Mixer.Create (
           _parameters.SignedAssemblyName, 
-          _parameters.UnsignedAssemblyName, 
-          _parameters.KeepTypeNames ? (INameProvider) NamespaceChangingNameProvider.Instance : GuidNameProvider.Instance, 
+          _parameters.UnsignedAssemblyName,
+          _parameters.KeepTypeNames ? (IConcreteMixedTypeNameProvider) NamespaceChangingNameProvider.Instance : GuidNameProvider.Instance, 
           _parameters.AssemblyOutputDirectory);
       
       mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;

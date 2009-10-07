@@ -25,13 +25,13 @@ namespace Remotion.UnitTests.Mixins.MixerTool
   [TestFixture]
   public class ConcreteTypeBuilderFactoryTest
   {
-    private INameProvider _typeNameProviderStub;
+    private IConcreteMixedTypeNameProvider _typeNameProviderStub;
     private ConcreteTypeBuilderFactory _factory;
 
     [SetUp]
     public void SetUp ()
     {
-      _typeNameProviderStub = MockRepository.GenerateStub<INameProvider> ();
+      _typeNameProviderStub = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
       _factory = new ConcreteTypeBuilderFactory (_typeNameProviderStub, "Signed", "Unsigned");
     }
 

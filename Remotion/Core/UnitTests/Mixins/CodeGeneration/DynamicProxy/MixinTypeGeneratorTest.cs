@@ -91,6 +91,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     }
 
     [Test]
+    public void Initialization_UsesNameProvider ()
+    {
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+
+      var nameProviderMock = MockRepository.GenerateMock<IConcreteMixinTypeNameProvider> ();
+      nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (identifier)).Return ("FakeName");
+      nameProviderMock.Replay ();
+
+      var moduleMock = MockRepository.GenerateMock<IModuleManager> ();
+      moduleMock.Expect (
+          mock =>
+          mock.CreateClassEmitter (
+              Arg.Is ("FakeName"), Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Anything))
+              .Return (_classEmitterMock);
+      moduleMock.Replay ();
+
+      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, identifier, nameProviderMock);
+
+      nameProviderMock.VerifyAllExpectations ();
+      moduleMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void Initialization_ForceUnsignedFalse ()
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());

@@ -22,8 +22,12 @@ namespace Remotion.Mixins.CodeGeneration
 {
   public interface IModuleManager : ICodeGenerationModule
   {
-    ITypeGenerator CreateTypeGenerator (CodeGenerationCache codeGenerationCache, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider);
-    IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, INameProvider mixinNameProvider);
+    ITypeGenerator CreateTypeGenerator (
+        CodeGenerationCache codeGenerationCache, 
+        TargetClassDefinition configuration, 
+        IConcreteMixedTypeNameProvider nameProvider, 
+        IConcreteMixinTypeNameProvider mixinNameProvider);
+    IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, IConcreteMixinTypeNameProvider mixinNameProvider);
 
     string SignedAssemblyName { get; set; }
     string UnsignedAssemblyName { get; set; }

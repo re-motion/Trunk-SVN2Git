@@ -15,10 +15,15 @@
 // 
 using System;
 using Remotion.Mixins.Definitions;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  public class GuidNameProvider : INameProvider
+  /// <summary>
+  /// Returns names for concrete mixed or mixin types by extending the type name of the target or mixin class with a <see cref="Guid"/>. That way,
+  /// unique names are generated.
+  /// </summary>
+  public class GuidNameProvider : IConcreteMixedTypeNameProvider, IConcreteMixinTypeNameProvider
   {
     public static readonly GuidNameProvider Instance = new GuidNameProvider ();
 
@@ -26,9 +31,16 @@ namespace Remotion.Mixins.CodeGeneration
     {
     }
     
-    public string GetNewTypeName (ClassDefinitionBase configuration)
+    public string GetNameForConcreteMixedType (TargetClassDefinition configuration)
     {
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
       return string.Format ("{0}_Mixed_{1}", configuration.FullName, Guid.NewGuid ().ToString ("N"));
+    }
+
+    public string GetNameForConcreteMixinType (ConcreteMixinTypeIdentifier identifier)
+    {
+      var mixinTypeName = identifier.MixinType.IsGenericType ? identifier.MixinType.GetGenericTypeDefinition().FullName : identifier.MixinType.FullName;
+      return string.Format ("{0}_GeneratedMixin_{1}", mixinTypeName, Guid.NewGuid ().ToString ("N"));
     }
   }
 }

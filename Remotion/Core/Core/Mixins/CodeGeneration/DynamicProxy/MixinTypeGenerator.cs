@@ -45,7 +45,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly FieldReference _requestingClassContextField;
     private readonly FieldReference _identifierField;
 
-    public MixinTypeGenerator (ICodeGenerationModule module, MixinDefinition configuration, ConcreteMixinTypeIdentifier identifier, INameProvider nameProvider)
+    public MixinTypeGenerator (
+        ICodeGenerationModule module, 
+        MixinDefinition configuration, 
+        ConcreteMixinTypeIdentifier identifier, 
+        IConcreteMixinTypeNameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("configuration", configuration);
@@ -58,7 +62,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _configuration = configuration;
       _identifier = identifier;
 
-      string typeName = nameProvider.GetNewTypeName (configuration);
+      string typeName = nameProvider.GetNameForConcreteMixinType (identifier);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
       var interfaces = new[] { typeof (ISerializable), typeof (IGeneratedMixinType) };

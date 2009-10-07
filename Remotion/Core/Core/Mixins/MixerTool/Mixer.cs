@@ -34,8 +34,8 @@ namespace Remotion.Mixins.MixerTool
 
     public static Mixer Create (
         string signedAssemblyName, 
-        string unsignedAssemblyName, 
-        INameProvider typeNameProvider, 
+        string unsignedAssemblyName,
+        IConcreteMixedTypeNameProvider typeNameProvider, 
         string assemblyOutputDirectory)
     {
       var builderFactory = new ConcreteTypeBuilderFactory (typeNameProvider, signedAssemblyName, unsignedAssemblyName);

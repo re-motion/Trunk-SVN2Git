@@ -79,7 +79,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return formatSring.Replace ("{counter}", _currentCount.ToString ());
     }
 
-    public ITypeGenerator CreateTypeGenerator (CodeGenerationCache cache, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public ITypeGenerator CreateTypeGenerator (
+        CodeGenerationCache cache, 
+        TargetClassDefinition configuration, 
+        IConcreteMixedTypeNameProvider nameProvider,
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
@@ -88,7 +92,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return new TypeGenerator (cache, this, configuration, nameProvider, mixinNameProvider);
     }
 
-    public IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    public IMixinTypeGenerator CreateMixinTypeGenerator (MixinDefinition mixinDefinition, IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);

@@ -18,7 +18,16 @@ using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  public class NamespaceChangingNameProvider : INameProvider
+  /// <summary>
+  /// Returns names for concrete mixed types by extending the type name of the target class with an additional namespace. This name provider
+  /// cannot be used to return names for concrete mixin types those types wouldn't be uniquely identifiable if only the namespace was changed. 
+  /// Use <see cref="GuidNameProvider"/> instead.
+  /// </summary>
+  /// <remarks>
+  /// This provider can lead to name conflicts if it is used to generate multiple concrete types for the same target type, for example because
+  /// the mixin configuration has changed. In such scenarios, a unique name provider, such as <see cref="GuidNameProvider"/>, should be preferred.
+  /// </remarks>
+  public class NamespaceChangingNameProvider : IConcreteMixedTypeNameProvider
   {
     public static readonly NamespaceChangingNameProvider Instance = new NamespaceChangingNameProvider ();
 
@@ -26,7 +35,7 @@ namespace Remotion.Mixins.CodeGeneration
     {
     }
 
-    public string GetNewTypeName (ClassDefinitionBase configuration)
+    public string GetNameForConcreteMixedType (TargetClassDefinition configuration)
     {
       string originalNamespace = configuration.Type.Namespace;
       int restStart = originalNamespace.Length > 0 ? originalNamespace.Length + 1 : 0;

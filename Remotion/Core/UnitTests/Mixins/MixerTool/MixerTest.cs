@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       _mixer = new Mixer (_classContextFinderStub, _concreteTypeBuilderFactoryStub, _assemblyOutputDirectoy);
     }
 
-    [SetUp]
+    [TearDown]
     public void TearDown ()
     {
       if (Directory.Exists (_assemblyOutputDirectoy))

@@ -42,7 +42,11 @@ namespace Remotion.Mixins.CodeGeneration
       _concreteTypeBuilder = concreteTypeBuilder;
     }
 
-    public Type GetOrCreateConcreteType (IModuleManager moduleManager, ClassContext classContext, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public Type GetOrCreateConcreteType (
+        IModuleManager moduleManager, 
+        ClassContext classContext,
+        IConcreteMixedTypeNameProvider nameProvider,
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("moduleManager", moduleManager);
       ArgumentUtility.CheckNotNull ("classContext", classContext);
@@ -57,7 +61,11 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    private Type GenerateConcreteType (IModuleManager moduleManager, ClassContext classContext, INameProvider nameProvider, INameProvider mixinNameProvider)
+    private Type GenerateConcreteType (
+        IModuleManager moduleManager, 
+        ClassContext classContext, 
+        IConcreteMixedTypeNameProvider nameProvider, 
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       s_log.InfoFormat ("Generating concrete type for {0}.", classContext);
 
@@ -76,8 +84,8 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     public ConcreteMixinType GetOrCreateConcreteMixinType (
-        MixinDefinition mixinDefinition, 
-        INameProvider mixinNameProvider)
+        MixinDefinition mixinDefinition,
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
@@ -91,8 +99,8 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     private ConcreteMixinType GenerateConcreteMixinType (
-        MixinDefinition mixinDefinition, 
-        INameProvider mixinNameProvider)
+        MixinDefinition mixinDefinition,
+        IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       s_log.InfoFormat ("Generating concrete mixin type for {0}.", mixinDefinition.Type);
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {0}."))

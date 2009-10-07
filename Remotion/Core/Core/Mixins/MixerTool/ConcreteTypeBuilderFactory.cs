@@ -21,12 +21,12 @@ namespace Remotion.Mixins.MixerTool
 {
   public class ConcreteTypeBuilderFactory : IConcreteTypeBuilderFactory
   {
-    private readonly INameProvider _typeNameProvider;
+    private readonly IConcreteMixedTypeNameProvider _typeNameProvider;
     private readonly string _signedAssemblyName;
     private readonly string _unsignedAssemblyName;
 
     public ConcreteTypeBuilderFactory (
-        INameProvider typeNameProvider, 
+        IConcreteMixedTypeNameProvider typeNameProvider, 
         string signedAssemblyName, 
         string unsignedAssemblyName)
     {
@@ -39,7 +39,7 @@ namespace Remotion.Mixins.MixerTool
       _unsignedAssemblyName = unsignedAssemblyName;
     }
 
-    public INameProvider TypeNameProvider
+    public IConcreteMixedTypeNameProvider TypeNameProvider
     {
       get { return _typeNameProvider; }
     }

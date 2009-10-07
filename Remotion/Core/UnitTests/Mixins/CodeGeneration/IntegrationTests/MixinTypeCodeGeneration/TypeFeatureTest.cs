@@ -67,13 +67,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
       var repository = new MockRepository ();
-      var nameProviderMock = repository.StrictMock<INameProvider> ();
+      var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
       builder.MixinTypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      nameProviderMock
-          .Expect (mock => mock.GetNewTypeName (Arg<ClassDefinitionBase>.Matches (def => def.Type == typeof (MixinWithAbstractMembers))))
-          .Return ("Bra");
+      nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra");
 
       repository.ReplayAll ();
 
@@ -94,11 +92,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
       var repository = new MockRepository ();
-      var nameProviderMock = repository.StrictMock<INameProvider> ();
+      var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
       builder.MixinTypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      Expect.Call (nameProviderMock.GetNewTypeName (Arg<MixinDefinition>.Is.Anything)).Return ("Bra+Oof");
+      Expect.Call (nameProviderMock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra+Oof");
 
       repository.ReplayAll ();
 

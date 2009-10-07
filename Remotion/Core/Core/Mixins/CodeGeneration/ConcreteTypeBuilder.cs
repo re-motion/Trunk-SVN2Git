@@ -51,8 +51,8 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly CodeGenerationCache _cache;
 
     private readonly object _scopeLockObject = new object ();
-    private INameProvider _typeNameProvider = GuidNameProvider.Instance;
-    private INameProvider _mixinTypeNameProvider = GuidNameProvider.Instance;
+    private IConcreteMixedTypeNameProvider _typeNameProvider = GuidNameProvider.Instance;
+    private IConcreteMixinTypeNameProvider _mixinTypeNameProvider = GuidNameProvider.Instance;
 
     public ConcreteTypeBuilder ()
     {
@@ -113,7 +113,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// Gets or sets the name provider used when generating a concrete mixed type.
     /// </summary>
     /// <value>The type name provider for mixed types.</value>
-    public INameProvider TypeNameProvider
+    public IConcreteMixedTypeNameProvider TypeNameProvider
     {
       get
       {
@@ -136,7 +136,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// Gets or sets the name provider used when generating a concrete mixin type.
     /// </summary>
     /// <value>The type name provider for mixin types.</value>
-    public INameProvider MixinTypeNameProvider
+    public IConcreteMixinTypeNameProvider MixinTypeNameProvider
     {
       get
       {
