@@ -14,9 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -26,6 +28,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.UnitTests.Mixins.Definitions.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 
@@ -40,6 +43,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private TargetClassDefinition _simpleClassDefinition;
     private MixinDefinition _simpleMixinDefinition;
     private MixinDefinition _signedMixinDefinition;
+
+    private MethodInfo _publicOverriddenMethod;
+    private MethodInfo _protectedOverriddenMethod;
+    private MethodInfo _protectedInternalOverriddenMethod;
+
     private MixinTypeGenerator _mixinTypeGenerator;
 
     [SetUp]
@@ -57,7 +65,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       _signedMixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (object), _simpleClassDefinition, false);
       PrivateInvoke.InvokeNonPublicMethod (_simpleClassDefinition.Mixins, "Add", _simpleMixinDefinition);
 
-      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _simpleMixinDefinition, GuidNameProvider.Instance);
+      _publicOverriddenMethod = typeof (ClassWithDifferentMemberVisibilities).GetMethod ("PublicMethod");
+      _protectedOverriddenMethod = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
+          "ProtectedMethod", 
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      _protectedInternalOverriddenMethod = typeof (ClassWithDifferentMemberVisibilities).GetMethod (
+          "ProtectedInternalMethod",
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      var overriddenMethods = new[] { _publicOverriddenMethod, _protectedOverriddenMethod, _protectedInternalOverriddenMethod };
+
+      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _simpleMixinDefinition, overriddenMethods, GuidNameProvider.Instance);
     }
 
     [Test]
@@ -80,7 +97,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (false)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, _signedMixinDefinition, new MethodInfo[0], GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -97,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, _simpleMixinDefinition, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, _simpleMixinDefinition, new MethodInfo[0], GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -116,7 +133,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, mixinDefinition, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, mixinDefinition, new MethodInfo[0], GuidNameProvider.Instance);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -135,23 +152,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void GetBuiltType_ReturnsWrappersForAllProtectedOverriders ()
     {
-      DisableGenerate ();
+      StubGenerateTypeFeatures ();
+      StubGenerateOverrides (typeof (string));
       _mixinTypeGenerator.Replay ();
 
-      var finalizeMethodInfo = typeof (object).GetMethod ("Finalize", BindingFlags.NonPublic | BindingFlags.Instance);
-      var protectedOverrider = new MethodDefinition (finalizeMethodInfo, _simpleMixinDefinition);
-      var overridden = new MethodDefinition (finalizeMethodInfo, _simpleClassDefinition);
-
-      PrivateInvoke.SetPublicProperty (protectedOverrider, "Base", overridden);
-      PrivateInvoke.InvokeNonPublicMethod (_simpleMixinDefinition.Methods, "Add", protectedOverrider);
-      PrivateInvoke.InvokeNonPublicMethod (_simpleClassDefinition.Methods, "Add", overridden);
-
-      var fakeMethodWrapper = typeof (DateTime).GetMethod ("get_Now");
-      _classEmitterMock.Stub (mock => mock.GetPublicMethodWrapper (finalizeMethodInfo)).Return (fakeMethodWrapper);
-      _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
+      var fakeMethodWrapper1 = typeof (DateTime).GetMethod ("get_Now");
+      var fakeMethodWrapper2 = typeof (DateTime).GetMethod ("get_Date");
+      _classEmitterMock.Expect (mock => mock.GetPublicMethodWrapper (_protectedOverriddenMethod)).Return (fakeMethodWrapper1);
+      _classEmitterMock.Expect (mock => mock.GetPublicMethodWrapper (_protectedInternalOverriddenMethod)).Return (fakeMethodWrapper2);
+      _classEmitterMock.Expect (mock => mock.BuildType ()).Return (typeof (string));
+      _classEmitterMock.Replay ();
 
       var result = _mixinTypeGenerator.GetBuiltType ();
-      Assert.That (result.GetMethodWrapper (finalizeMethodInfo), Is.SameAs (fakeMethodWrapper));
+      _classEmitterMock.VerifyAllExpectations ();
+
+      Assert.That (result.GetMethodWrapper (_protectedOverriddenMethod), Is.SameAs (fakeMethodWrapper1));
+      Assert.That (result.GetMethodWrapper (_protectedInternalOverriddenMethod), Is.SameAs (fakeMethodWrapper2));
     }
 
     [Test]
@@ -159,6 +175,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       StubGenerateTypeFeatures ();
       StubGenerateOverrides (typeof (int));
+      StubGenerateMethodWrappers (new Tuple<MethodInfo, MethodInfo>[0]);
       _mixinTypeGenerator.Replay ();
 
       _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
@@ -172,6 +189,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       StubGenerateTypeFeatures ();
       StubGenerateOverrides (typeof (int));
+      StubGenerateMethodWrappers (new Tuple<MethodInfo, MethodInfo>[0]);
       _mixinTypeGenerator.Replay ();
 
       _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
@@ -183,7 +201,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private void DisableGenerate ()
     {
       StubGenerateTypeFeatures();
-      StubGenerateOverrides(typeof (string));
+      StubGenerateOverrides (typeof (string));
+      StubGenerateMethodWrappers (new Tuple<MethodInfo, MethodInfo>[0]);
     }
 
     private void StubGenerateOverrides (Type overrideInterfaceType)
@@ -198,6 +217,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private void StubGenerateTypeFeatures ()
     {
       _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateTypeFeatures"));
+    }
+
+    private void StubGenerateMethodWrappers (Tuple<MethodInfo, MethodInfo>[] wrappers)
+    {
+      _mixinTypeGenerator.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GenerateMethodWrappers")).Return (wrappers);
     }
   }
 }

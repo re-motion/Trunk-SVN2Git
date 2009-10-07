@@ -41,20 +41,24 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private readonly ICodeGenerationModule _module;
     private readonly MixinDefinition _configuration;
+    private readonly MethodInfo[] _overriders;
+
     private readonly IClassEmitter _emitter;
     private readonly FieldReference _requestingClassContextField;
     private readonly FieldReference _identifierField;
 
-    public MixinTypeGenerator (ICodeGenerationModule module, MixinDefinition configuration, INameProvider nameProvider)
+    public MixinTypeGenerator (ICodeGenerationModule module, MixinDefinition configuration, MethodInfo[] overriders, INameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("configuration", configuration);
+      ArgumentUtility.CheckNotNull ("overriders", overriders);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
 
       Assertion.IsFalse (configuration.Type.ContainsGenericParameters);
 
       _module = module;
       _configuration = configuration;
+      _overriders = overriders;
 
       string typeName = nameProvider.GetNewTypeName (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
@@ -88,8 +92,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       GenerateTypeFeatures ();
       var overrideInterfaceGenerator = GenerateOverrides ();
-      
-      Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers ().ToArray ();
+      Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers ();
 
       Type generatedType = Emitter.BuildType();
       Type generatedOverrideInterface = overrideInterfaceGenerator.GetBuiltType();
@@ -144,10 +147,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       typeInitializerEmitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }
 
-    private IEnumerable<Tuple<MethodInfo, MethodInfo>> GenerateMethodWrappers ()
+    protected virtual Tuple<MethodInfo, MethodInfo>[] GenerateMethodWrappers ()
     {
-      return from m in Configuration.GetProtectedOverriders()
-             select Tuple.NewTuple (m.MethodInfo, Emitter.GetPublicMethodWrapper (m.MethodInfo));
+      var wrappers = from m in _overriders
+                     where !m.IsPublic
+                     select Tuple.NewTuple (m, Emitter.GetPublicMethodWrapper (m));
+      return wrappers.ToArray ();
     }
 
     private void AddMixinTypeAttribute ()

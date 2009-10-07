@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
@@ -93,7 +94,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
-      return new MixinTypeGenerator (this, mixinDefinition, mixinNameProvider);
+      return new MixinTypeGenerator (this, mixinDefinition, mixinDefinition.GetAllMethods ().Where (m => m.Base != null).Select (m => m.MethodInfo).ToArray(), mixinNameProvider);
     }
 
     // should be called when a type was generated with the scope from this module
