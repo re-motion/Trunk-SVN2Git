@@ -16,7 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping

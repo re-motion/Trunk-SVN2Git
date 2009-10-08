@@ -15,7 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 

@@ -19,7 +19,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport

@@ -16,7 +16,9 @@
 using System;
 using System.ComponentModel.Design;
 using Remotion.BridgeInterfaces;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.BridgeImplementations
 {

@@ -15,7 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization

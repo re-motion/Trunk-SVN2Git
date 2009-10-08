@@ -16,9 +16,9 @@
 using System;
 using System.Runtime.Serialization;
 using System.Reflection;
-using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Interception

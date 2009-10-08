@@ -60,8 +60,8 @@
 
     <copy todir="${build.test.outputdir}" overwrite="true">
       <fileset>
-        <include name="Reflection/TestAssemblies/**/*.cs" />
-        <include name="Reflection/TestAssemblies/**/*.snk" />
+        <include name="Reflection/TypeDiscovery/TestAssemblies/**/*.cs" />
+        <include name="Reflection/TypeDiscovery/TestAssemblies/**/*.snk" />
       </fileset>
     </copy>
 

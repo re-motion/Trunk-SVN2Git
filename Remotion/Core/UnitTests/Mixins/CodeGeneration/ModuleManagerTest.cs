@@ -26,7 +26,7 @@ using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Reflection.CodeGeneration;
 

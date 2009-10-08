@@ -31,7 +31,9 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.CodeGenerator

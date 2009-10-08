@@ -195,12 +195,12 @@
     <Compile Include="Mixins\Utilities\MixinGenericArgumentFinder.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
-    <Compile Include="Reflection\CompositeRootAssemblyFinder.cs" />
-    <Compile Include="Reflection\DirectoryRootAssemblyFinder.cs" />
-    <Compile Include="Reflection\IAssemblyFinder.cs" />
-    <Compile Include="Reflection\IAssemblyLoader.cs" />
-    <Compile Include="Reflection\SearchPathRootAssemblyFinder.cs" />
-    <Compile Include="Reflection\IRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\DirectoryRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\IAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\IAssemblyLoader.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\SearchPathRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\IRootAssemblyFinder.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
@@ -222,7 +222,7 @@
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextSerializer.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouperAlgorithm.cs" />
-    <Compile Include="Reflection\AssemblyLoaderException.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteTypeMetadataImporter.cs" />
@@ -234,7 +234,7 @@
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedAttributeIntroductionRules.cs" />
-    <Compile Include="Reflection\FilteringAssemblyLoader.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoader.cs" />
     <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\IMethodEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
@@ -517,17 +517,17 @@
     <Compile Include="Globalization\ResourceManagerWrapper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Reflection\AssemblyFinder.cs" />
-    <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
-    <Compile Include="Reflection\AttributeAssemblyLoaderFilter.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinderTypeDiscoveryService.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AttributeAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
-    <Compile Include="Reflection\IAssemblyLoaderFilter.cs" />
-    <Compile Include="Reflection\NonApplicationAssemblyAttribute.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\IAssemblyLoaderFilter.cs" />
+    <Compile Include="Reflection\TypeDiscovery\NonApplicationAssemblyAttribute.cs" />
     <Compile Include="Reflection\ActionInvoker.generated.cs" />
     <Compile Include="Reflection\ActionInvoker.template.cs" />
-    <Compile Include="Reflection\RegexAssemblyLoaderFilter.cs" />
-    <Compile Include="Reflection\ApplicationAssemblyLoaderFilter.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\RegexAssemblyLoaderFilter.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\DelegateSelector.cs">
       <SubType>Code</SubType>
     </Compile>

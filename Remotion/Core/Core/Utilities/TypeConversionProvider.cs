@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Utilities
 {

@@ -23,7 +23,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.MixerTool;
 using Remotion.Mixins.Utilities;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
 

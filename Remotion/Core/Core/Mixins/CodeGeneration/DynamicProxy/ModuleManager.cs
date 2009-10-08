@@ -22,9 +22,9 @@ using System.Runtime.Serialization;
 using System.Threading;
 using Castle.DynamicProxy;
 using Remotion.Mixins.Definitions;
-using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 using Castle.DynamicProxy.Generators.Emitters;
 

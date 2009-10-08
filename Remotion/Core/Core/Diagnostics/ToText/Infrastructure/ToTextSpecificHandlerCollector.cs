@@ -17,7 +17,7 @@ using System;
 using System.Collections;
 using System.ComponentModel.Design;
 using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText.Infrastructure

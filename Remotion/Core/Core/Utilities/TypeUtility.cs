@@ -18,7 +18,7 @@ using System.ComponentModel.Design;
 using System.Text;
 using System.Text.RegularExpressions;
 using Remotion.Collections;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Utilities
 {

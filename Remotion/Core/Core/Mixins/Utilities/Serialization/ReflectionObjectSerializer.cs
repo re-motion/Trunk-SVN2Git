@@ -16,7 +16,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities.Serialization

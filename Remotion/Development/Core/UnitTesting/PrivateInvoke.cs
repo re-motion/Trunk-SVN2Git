@@ -17,7 +17,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting

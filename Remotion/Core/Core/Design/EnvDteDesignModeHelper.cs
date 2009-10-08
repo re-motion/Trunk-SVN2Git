@@ -19,7 +19,7 @@ using System.ComponentModel.Design;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
-using Remotion.Reflection;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Design
