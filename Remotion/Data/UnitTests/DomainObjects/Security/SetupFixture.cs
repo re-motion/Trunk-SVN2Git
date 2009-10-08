@@ -46,8 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration,
           new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
-      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, GetType().Assembly));
+      var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (GetType().Assembly, true));
+      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
     }
 

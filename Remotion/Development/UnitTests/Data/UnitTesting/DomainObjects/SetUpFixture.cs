@@ -50,8 +50,11 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
                 storageConfiguration,
                 new QueryConfiguration()));
 
-        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (SimpleDomainObject).Assembly));
+        var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (SimpleDomainObject).Assembly, true));
+        var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
         MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
       }
       catch (Exception e)

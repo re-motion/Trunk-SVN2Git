@@ -30,6 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
@@ -37,7 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
   {
     public static AssemblyFinderTypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
     {
-      return new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, rootAssemblies));
+      var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray());
+      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
     }
 
     private readonly StorageConfiguration _storageConfiguration;

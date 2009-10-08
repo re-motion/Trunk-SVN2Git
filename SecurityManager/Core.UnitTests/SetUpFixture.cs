@@ -60,8 +60,11 @@ namespace Remotion.SecurityManager.UnitTests
                 storageConfiguration,
                 new QueryConfiguration (GetFullPath (@"SecurityManagerQueries.xml"))));
 
-        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
+        var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (BaseSecurityManagerObject).Assembly, true));
+        var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
         MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
 
         SqlConnection.ClearAllPools();

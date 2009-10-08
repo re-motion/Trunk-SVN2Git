@@ -80,8 +80,11 @@ namespace Remotion.SecurityManager.Metadata.Importer
     {
       try
       {
-        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
+        var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+        var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (BaseSecurityManagerObject).Assembly, true));
+        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+
+        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
         MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
 
         ClientTransaction transaction = ClientTransaction.CreateRootTransaction();

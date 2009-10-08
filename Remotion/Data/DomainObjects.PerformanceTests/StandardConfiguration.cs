@@ -42,8 +42,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration, new QueryConfiguration()));
 
 
-      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (StandardConfiguration).Assembly));
+      var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (StandardConfiguration).Assembly, true));
+      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
       MappingConfiguration.SetCurrent (mappingConfiguration);
     }

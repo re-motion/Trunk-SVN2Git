@@ -79,19 +79,22 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
     protected virtual void InitializeConfiguration (string assemblyDirectory)
     {
       ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
-      List<Assembly> assemblies = new List<Assembly>();
+      List<RootAssembly> assemblies = new List<RootAssembly> ();
       DirectoryInfo dir = new DirectoryInfo (assemblyDirectory);
       foreach (FileInfo file in dir.GetFiles ("*.dll"))
       {
         Assembly asm = Assembly.LoadFile (file.FullName);
         if (filter.ShouldConsiderAssembly (asm.GetName()) && filter.ShouldIncludeAssembly (asm))
-          assemblies.Add (asm);
+          assemblies.Add (new RootAssembly (asm, true));
       }
       DomainObjectsConfiguration.SetCurrent (
           new FakeDomainObjectsConfiguration (DomainObjectsConfiguration.Current.MappingLoader, GetPersistenceConfiguration (), new QueryConfiguration()));
 
-      ITypeDiscoveryService typeDiscoveryService =
-          new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, assemblies.ToArray()));
+      FixedRootAssemblyFinder rootAssemblyFinder = new FixedRootAssemblyFinder (assemblies.ToArray());
+      FilteringAssemblyLoader assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      AssemblyFinder assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
       MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
     }
 
