@@ -70,13 +70,10 @@ namespace Remotion.UnitTests.Reflection
     public void AutoInitDefaultService_Loader ()
     {
       var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService).AssemblyFinder;
-      var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
+      Assert.That (assemblyFinder.AssemblyLoader, Is.InstanceOfType (typeof (FilteringAssemblyLoader)));
 
-      Assert.That (assemblyFinder.ReferencedAssemblyLoader, Is.SameAs (searchPathRootAssemblyFinder.Loader));
-      Assert.That (assemblyFinder.ReferencedAssemblyLoader, Is.InstanceOfType (typeof (AssemblyLoader)));
-
-      var castLoader = (AssemblyLoader) assemblyFinder.ReferencedAssemblyLoader;
-      Assert.That (castLoader.Filter, Is.SameAs (ApplicationAssemblyFinderFilter.Instance));
+      var castLoader = (FilteringAssemblyLoader) assemblyFinder.AssemblyLoader;
+      Assert.That (castLoader.Filter, Is.SameAs (ApplicationAssemblyLoaderFilter.Instance));
     }
     
     [Test]

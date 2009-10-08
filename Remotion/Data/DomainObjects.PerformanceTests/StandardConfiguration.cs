@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (StandardConfiguration).Assembly));
+            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (StandardConfiguration).Assembly));
       MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
       MappingConfiguration.SetCurrent (mappingConfiguration);
     }

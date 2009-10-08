@@ -117,8 +117,8 @@ namespace Remotion.Mixins.Context
     /// In design mode, this will use the types returned by the designer, but in ordinary application scenarios, the following steps are performed:
     /// <list type="number">
     /// <item>Retrieve all types assemblies from the current <see cref="AppDomain">AppDomain's</see> bin directory.</item>
-    /// <item>Analyze each of them that is included by the <see cref="ApplicationAssemblyFinderFilter"/> for mixin configuration information.</item>
-    /// <item>Load the referenced assemblies of those assemblies if they aren't excluded by the <see cref="ApplicationAssemblyFinderFilter"/>.</item>
+    /// <item>Analyze each of them that is included by the <see cref="ApplicationAssemblyLoaderFilter"/> for mixin configuration information.</item>
+    /// <item>Load the referenced assemblies of those assemblies if they aren't excluded by the <see cref="ApplicationAssemblyLoaderFilter"/>.</item>
     /// <item>If the loaded assemblies haven't already been analyzed, treat them according to steps 2-4.</item>
     /// </list>
     /// </remarks>

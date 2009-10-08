@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
           new QueryConfiguration()));
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (Ceo).Assembly));
+            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (Ceo).Assembly));
       MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
     }
   }

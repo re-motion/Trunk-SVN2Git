@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
   {
     public static AssemblyFinderTypeDiscoveryService GetTypeDiscoveryService (params Assembly[] rootAssemblies)
     {
-      return new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, rootAssemblies));
+      return new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, rootAssemblies));
     }
 
     private readonly StorageConfiguration _storageConfiguration;

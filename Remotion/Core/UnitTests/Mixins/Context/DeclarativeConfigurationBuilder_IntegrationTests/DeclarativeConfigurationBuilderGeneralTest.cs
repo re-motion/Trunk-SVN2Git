@@ -135,7 +135,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-      var filter = ((AssemblyLoader)((AssemblyFinder) service.AssemblyFinder).ReferencedAssemblyLoader).Filter;
+      var filter = ((FilteringAssemblyLoader)((AssemblyFinder) service.AssemblyFinder).AssemblyLoader).Filter;
 
       Assert.That (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()), Is.False);
       Assert.That (filter.ShouldConsiderAssembly (typeof (Uri).Assembly.GetName ()), Is.False);
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-      var filter = ((AssemblyLoader) ((AssemblyFinder) service.AssemblyFinder).ReferencedAssemblyLoader).Filter;
+      var filter = ((FilteringAssemblyLoader) ((AssemblyFinder) service.AssemblyFinder).AssemblyLoader).Filter;
 
       Assembly signedAssembly = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration).Assembly;
       Assembly unsignedAssembly = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration).Assembly;
@@ -167,7 +167,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-      var filter = ((AssemblyLoader) ((AssemblyFinder) service.AssemblyFinder).ReferencedAssemblyLoader).Filter;
+      var filter = ((FilteringAssemblyLoader) ((AssemblyFinder) service.AssemblyFinder).AssemblyLoader).Filter;
 
       Assert.That (filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly.GetName ()), Is.True);
       Assert.That (filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilder).Assembly.GetName ()), Is.True);

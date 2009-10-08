@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests
                 new QueryConfiguration (GetFullPath (@"SecurityManagerQueries.xml"))));
 
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
+            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
         MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
 
         SqlConnection.ClearAllPools();

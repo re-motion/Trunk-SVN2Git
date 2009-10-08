@@ -49,7 +49,7 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
                 new QueryConfiguration()));
 
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (SimpleDomainObject).Assembly));
+            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, typeof (SimpleDomainObject).Assembly));
         MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
       }
       catch (Exception e)

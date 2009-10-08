@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
           new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, GetType().Assembly));
+            new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, GetType().Assembly));
       MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
     }
 

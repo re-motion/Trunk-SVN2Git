@@ -182,8 +182,10 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Reflection\ApplicationAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\CompositeRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\DirectoryRootAssemblyFinderTest.cs" />
+    <Compile Include="Reflection\RegexAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\SearchPathRootAssemblyFinderTest.cs" />
     <Compile Include="Utilities\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
@@ -327,7 +329,7 @@
     <Compile Include="Mixins\Validation\ValidationSampleTypes\OtherMixinIntroducingMembersWithDifferentVisibilities.cs" />
     <Compile Include="Mixins\Validation\ValidationSampleTypes\TargetClassWithSameNamesAsIntroducedMembers.cs" />
     <Compile Include="Reflection\AssemblyFinderTest.cs" />
-    <Compile Include="Reflection\AssemblyLoaderTest.cs" />
+    <Compile Include="Reflection\FilteringAssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttributeTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithReplicatableConstructors.cs" />
@@ -769,7 +771,7 @@
     <Compile Include="Collections\TupleAbcdTest.cs" />
     <Compile Include="Collections\TupleAbcTest.cs" />
     <Compile Include="Collections\TupleAbTest.cs" />
-    <Compile Include="Reflection\AssemblyFinderFilterTest.cs" />
+    <Compile Include="Reflection\AttributeAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\AssemblyFinderIntegrationTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\MarkedExeAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\UnmarkedAssembly\AssemblyInfo.cs" />

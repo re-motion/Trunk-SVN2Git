@@ -234,7 +234,7 @@
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedAttributeIntroductionRules.cs" />
-    <Compile Include="Reflection\AssemblyLoader.cs" />
+    <Compile Include="Reflection\FilteringAssemblyLoader.cs" />
     <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\IMethodEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
@@ -519,15 +519,15 @@
     </Compile>
     <Compile Include="Reflection\AssemblyFinder.cs" />
     <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
-    <Compile Include="Reflection\AttributeAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\AttributeAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
-    <Compile Include="Reflection\IAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\IAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\NonApplicationAssemblyAttribute.cs" />
     <Compile Include="Reflection\ActionInvoker.generated.cs" />
     <Compile Include="Reflection\ActionInvoker.template.cs" />
-    <Compile Include="Reflection\RegexAssemblyFinderFilter.cs" />
-    <Compile Include="Reflection\ApplicationAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\RegexAssemblyLoaderFilter.cs" />
+    <Compile Include="Reflection\ApplicationAssemblyLoaderFilter.cs" />
     <Compile Include="Reflection\DelegateSelector.cs">
       <SubType>Code</SubType>
     </Compile>

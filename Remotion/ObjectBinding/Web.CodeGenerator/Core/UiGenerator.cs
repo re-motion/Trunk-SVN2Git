@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
 
     protected virtual void InitializeConfiguration (string assemblyDirectory)
     {
-      ApplicationAssemblyFinderFilter filter = ApplicationAssemblyFinderFilter.Instance;
+      ApplicationAssemblyLoaderFilter filter = ApplicationAssemblyLoaderFilter.Instance;
       List<Assembly> assemblies = new List<Assembly>();
       DirectoryInfo dir = new DirectoryInfo (assemblyDirectory);
       foreach (FileInfo file in dir.GetFiles ("*.dll"))
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
           new FakeDomainObjectsConfiguration (DomainObjectsConfiguration.Current.MappingLoader, GetPersistenceConfiguration (), new QueryConfiguration()));
 
       ITypeDiscoveryService typeDiscoveryService =
-          new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, assemblies.ToArray()));
+          new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyLoaderFilter.Instance, assemblies.ToArray()));
       MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
     }
 
