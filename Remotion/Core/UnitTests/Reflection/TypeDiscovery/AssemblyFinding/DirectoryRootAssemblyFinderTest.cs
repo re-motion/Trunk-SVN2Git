@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = new DirectoryRootAssemblyFinder (_searchPath);
 
-      var expected1 = new RootAssembly (_assembly1);
+      var expected1 = new RootAssembly (_assembly1, true);
       Assert.That (finder.FindRootAssemblies (loaderMock), Is.EquivalentTo (new[] { expected1 }));
 
       loaderMock.VerifyAllExpectations ();
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = new DirectoryRootAssemblyFinder (_searchPath);
 
-      var expected1 = new RootAssembly (_assembly1);
+      var expected1 = new RootAssembly (_assembly1, true);
       Assert.That (finder.FindRootAssemblies (loaderMock), Is.EquivalentTo (new[] { expected1 }));
 
       loaderMock.VerifyAllExpectations ();
@@ -98,8 +98,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = new DirectoryRootAssemblyFinder (_searchPath);
 
-      var expected1 = new RootAssembly (_assembly1);
-      var expected2 = new RootAssembly (_assembly2);
+      var expected1 = new RootAssembly (_assembly1, true);
+      var expected2 = new RootAssembly (_assembly2, true);
       Assert.That (finder.FindRootAssemblies (loaderMock), Is.EquivalentTo (new[] { expected1, expected2 }));
 
       loaderMock.VerifyAllExpectations ();

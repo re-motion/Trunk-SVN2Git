@@ -100,17 +100,20 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
           RootAssembly currentRoot = referenceRoots.First(); // take any reference
           referenceRoots.Remove (currentRoot); // don't handle again
 
-          foreach (AssemblyName referencedAssemblyName in currentRoot.Assembly.GetReferencedAssemblies())
+          if (currentRoot.FollowReferences)
           {
-            if (!processedAssemblyNames.Contains (referencedAssemblyName.FullName)) // don't process an assembly name twice
+            foreach (AssemblyName referencedAssemblyName in currentRoot.Assembly.GetReferencedAssemblies())
             {
-              processedAssemblyNames.Add (referencedAssemblyName.FullName);
-
-              Assembly referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.Assembly.FullName);
-              if (referencedAssembly != null) // might return null if filtered by the loader
+              if (!processedAssemblyNames.Contains (referencedAssemblyName.FullName)) // don't process an assembly name twice
               {
-                referenceRoots.Add (new RootAssembly (referencedAssembly)); // store as a root in order to process references transitively
-                yield return referencedAssembly;
+                processedAssemblyNames.Add (referencedAssemblyName.FullName);
+
+                Assembly referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.Assembly.FullName);
+                if (referencedAssembly != null) // might return null if filtered by the loader
+                {
+                  referenceRoots.Add (new RootAssembly (referencedAssembly, true)); // store as a root in order to process references transitively
+                  yield return referencedAssembly;
+                }
               }
             }
           }

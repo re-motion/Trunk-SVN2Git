@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     public void FindRootAssemblies_UsesCombinedFinder ()
     {
       var innerFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-      var rootAssembly = new RootAssembly (typeof (object).Assembly);
+      var rootAssembly = new RootAssembly (typeof (object).Assembly, true);
       innerFinderStub.Stub (stub => stub.FindRootAssemblies (_loaderStub)).Return (new[] { rootAssembly });
       innerFinderStub.Replay ();
 

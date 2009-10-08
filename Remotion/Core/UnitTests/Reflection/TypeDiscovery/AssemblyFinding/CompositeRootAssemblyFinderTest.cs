@@ -33,9 +33,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [SetUp]
     public void SetUp ()
     {
-      _root1 = new RootAssembly (typeof (object).Assembly);
-      _root2 = new RootAssembly (typeof (CompositeRootAssemblyFinder).Assembly);
-      _root3 = new RootAssembly (typeof (CompositeRootAssemblyFinderTest).Assembly);
+      _root1 = new RootAssembly (typeof (object).Assembly, true);
+      _root2 = new RootAssembly (typeof (CompositeRootAssemblyFinder).Assembly, true);
+      _root3 = new RootAssembly (typeof (CompositeRootAssemblyFinderTest).Assembly, true);
       _loaderStub = MockRepository.GenerateStub<IAssemblyLoader> ();
     }
 

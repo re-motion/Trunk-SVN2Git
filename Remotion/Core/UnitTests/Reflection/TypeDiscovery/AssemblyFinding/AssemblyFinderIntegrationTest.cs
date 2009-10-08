@@ -201,7 +201,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
         var loader = CreateLoaderForMarkedAssemblies ();
         var rootAssemblyFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loader)).Return (new[] { new RootAssembly (markedAssembly) });
+        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loader)).Return (new[] { new RootAssembly (markedAssembly, true) });
         rootAssemblyFinderStub.Replay ();
 
         var assemblyFinder = new AssemblyFinder (rootAssemblyFinderStub, loader);

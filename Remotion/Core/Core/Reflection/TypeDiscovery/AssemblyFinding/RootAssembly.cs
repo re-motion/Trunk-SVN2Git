@@ -24,14 +24,16 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public struct RootAssembly
   {
-    public RootAssembly (Assembly assembly)
+    public RootAssembly (Assembly assembly, bool followReferences)
         : this()
     {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
 
       Assembly = assembly;
+      FollowReferences = followReferences;
     }
 
     public Assembly Assembly { get; private set; }
+    public bool FollowReferences { get; private set; }
   }
 }

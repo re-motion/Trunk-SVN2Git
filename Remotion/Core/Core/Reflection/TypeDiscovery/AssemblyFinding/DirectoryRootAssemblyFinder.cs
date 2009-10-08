@@ -52,7 +52,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
         allAssemblies.AddRange (loader.LoadAssemblies (dllFiles));
       if (exeFiles.Length > 0)
         allAssemblies.AddRange (loader.LoadAssemblies (exeFiles));
-      return allAssemblies.Select (asm => new RootAssembly (asm)).ToArray ();
+      return allAssemblies.Select (asm => new RootAssembly (asm, true)).ToArray ();
     }
   }
 }
