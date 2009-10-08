@@ -17,11 +17,10 @@ using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
-  public class BocDateTimeValuePreRenderer : PreRendererBase<IBocDateTimeValue>, IBocDateTimeValuePreRenderer
+  public class BocDateTimeValuePreRenderer : BocPreRendererBase<IBocDateTimeValue>, IBocDateTimeValuePreRenderer
   {
     public BocDateTimeValuePreRenderer (IHttpContext context, IBocDateTimeValue control)
         : base (context, control)

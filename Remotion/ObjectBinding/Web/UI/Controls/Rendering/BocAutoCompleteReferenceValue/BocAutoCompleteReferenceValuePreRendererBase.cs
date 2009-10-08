@@ -18,12 +18,11 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue
 {
-  public abstract class BocAutoCompleteReferenceValuePreRendererBase : PreRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValuePreRenderer
+  public abstract class BocAutoCompleteReferenceValuePreRendererBase : BocPreRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValuePreRenderer
   {
     protected BocAutoCompleteReferenceValuePreRendererBase (IHttpContext context, IBocAutoCompleteReferenceValue control)
         : base(context, control)

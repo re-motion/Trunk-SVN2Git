@@ -17,11 +17,10 @@ using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
-  public class BocBooleanValuePreRenderer : PreRendererBase<IBocBooleanValue>, IBocBooleanValuePreRenderer
+  public class BocBooleanValuePreRenderer : BocPreRendererBase<IBocBooleanValue>, IBocBooleanValuePreRenderer
   {
     private static readonly string s_scriptFileKey = typeof (IBocBooleanValue).FullName + "_Script";
     private static readonly string s_styleFileKey = typeof (IBocBooleanValue).FullName + "_Style";

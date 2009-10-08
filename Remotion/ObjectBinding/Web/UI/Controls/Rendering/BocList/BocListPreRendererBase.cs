@@ -15,11 +15,10 @@
 // 
 using System;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
-  public abstract class BocListPreRendererBase : PreRendererBase<IBocList>, IBocListPreRenderer
+  public abstract class BocListPreRendererBase : BocPreRendererBase<IBocList>, IBocListPreRenderer
   {
     private static readonly string s_startUpScriptKey = typeof (IBocList).FullName + "_Startup";
 

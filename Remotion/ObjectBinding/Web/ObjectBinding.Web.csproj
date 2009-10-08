@@ -391,6 +391,7 @@
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocPreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\BocReferenceValuePreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValuePreRenderer.cs" />

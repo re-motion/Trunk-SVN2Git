@@ -15,12 +15,10 @@
 // 
 using System;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
-  public abstract class BocReferenceValuePreRendererBase : PreRendererBase<IBocReferenceValue>, IBocReferenceValuePreRenderer
+  public abstract class BocReferenceValuePreRendererBase : BocPreRendererBase<IBocReferenceValue>, IBocReferenceValuePreRenderer
   {
     protected const string c_styleFileUrl = "BocReferenceValue.css";
 

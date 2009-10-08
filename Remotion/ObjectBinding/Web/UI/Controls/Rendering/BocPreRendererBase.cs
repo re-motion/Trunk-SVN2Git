@@ -14,30 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
-  public class BocDateTimeValuePreRenderer : BocPreRendererBase<IBocDateTimeValue>, IBocDateTimeValuePreRenderer
+  /// <summary>
+  /// The <see cref="BocPreRendererBase{TControl}"/> is a base class for all pre-renderers used by the business object controls.
+  /// </summary>
+  /// <typeparam name="TControl">The type of the control being rendered.</typeparam>
+  public abstract class BocPreRendererBase<TControl> : PreRendererBase<TControl>
+      where TControl: IBusinessObjectBoundWebControl
   {
-    public BocDateTimeValuePreRenderer (IHttpContext context, IBocDateTimeValue control)
+    protected BocPreRendererBase (IHttpContext context, TControl control)
         : base (context, control)
     {
-    }
-
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-      string styleKey = typeof (IBocDateTimeValue).FullName + "_Style";
-      string styleFile = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme, "BocDateTimeValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
-    }
-
-    public override void PreRender ()
-    {
-      
     }
   }
 }

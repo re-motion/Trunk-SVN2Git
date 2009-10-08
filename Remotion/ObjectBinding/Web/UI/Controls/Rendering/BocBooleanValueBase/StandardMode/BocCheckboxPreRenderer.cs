@@ -17,11 +17,10 @@ using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
 {
-  public class BocCheckboxPreRenderer : PreRendererBase<IBocCheckBox>, IBocCheckboxPreRenderer
+  public class BocCheckboxPreRenderer : BocPreRendererBase<IBocCheckBox>, IBocCheckboxPreRenderer
   {
     private static readonly string s_scriptFileKey = typeof (BocCheckBox).FullName + "_Script";
     private static readonly string s_styleFileKey = typeof (BocCheckBox).FullName + "_Style";
