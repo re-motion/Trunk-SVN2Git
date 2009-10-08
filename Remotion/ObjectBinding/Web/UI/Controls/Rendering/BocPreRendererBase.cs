@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
       if (!htmlHeadAppender.IsRegistered (s_browserCompatibilityScriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocPreRendererBase<>), ResourceType.Html, "BrowserCompatibility.js");
+            Control, Context, typeof (BocPreRendererBase<>), ResourceType.Html, ResourceTheme, "BocBrowserCompatibility.js");
         htmlHeadAppender.RegisterJavaScriptInclude (s_browserCompatibilityScriptFileKey, scriptUrl);
       }
     }

@@ -15,3 +15,31 @@
 // 
 //  BrowserCompatibility.js contains client side scripts used by the Objectbinding.Web library to fix browser compatibility issues.
 
+function BocBrowserCompatibility()
+{ }
+
+BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element)
+{
+  if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
+    return;
+  var content = element.children(':first').children('.content');
+  //alert(content.attr('class'));
+  var prevElement = content.prev();
+  var firstElement = content.children(':first');
+  var seccondElement = content.next();
+  var continerElement = content.parent();
+  var thisWidth = continerElement.outerWidth(true) - seccondElement.outerWidth(true) - prevElement.outerWidth(true);
+
+  firstElement.css('width', thisWidth);
+  //$('#' + element.attr('id') +' input').css('width', 'auto');
+
+}
+
+BocBrowserCompatibility.AdjustReferenceValueLayout = function(element)
+{
+}
+
+
+BocBrowserCompatibility.AdjustDateTimeValueLayout = function(element)
+{
+}

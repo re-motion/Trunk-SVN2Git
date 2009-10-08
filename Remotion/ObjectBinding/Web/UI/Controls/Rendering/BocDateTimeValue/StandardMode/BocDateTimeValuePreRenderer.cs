@@ -42,7 +42,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
 
     public override void PreRender ()
     {
-      
+      RegisterAdjustLayoutScript ();
+    }
+
+    private void RegisterAdjustLayoutScript ()
+    {
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocDateTimeValuePreRenderer),
+          Guid.NewGuid ().ToString (),
+          string.Format ("BocBrowserCompatibility.AdjustDateTimeValueLayout ($('#{0}'));", Control.ClientID));
     }
   }
 }

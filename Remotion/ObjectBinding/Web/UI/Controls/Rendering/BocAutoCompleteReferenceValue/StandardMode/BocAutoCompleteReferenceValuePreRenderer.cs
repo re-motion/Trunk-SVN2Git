@@ -29,6 +29,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     {
       RegisterBindScript();
       RegisterAdjustPositionScript();
+      RegisterAdjustLayoutScript ();
+    }
+
+    private void RegisterAdjustLayoutScript ()
+    {
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocAutoCompleteReferenceValuePreRenderer),
+          Guid.NewGuid ().ToString (),
+          string.Format ("BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
   }
 }

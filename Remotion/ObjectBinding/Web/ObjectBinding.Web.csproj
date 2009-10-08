@@ -482,12 +482,14 @@
     <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocMultilineTextValueRenderer.xml" />
     <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocTextValueRenderer.xml" />
     <Content Include="Doc\WhatsNew_Remotion.ObjectBinding.Web.txt" />
+    <Content Include="Res\Themes\ClassicBlue\HTML\BocBrowserCompatibility.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.jquery.css" />
     <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.jquery.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocBooleanValue.css" />
     <Content Include="Res\Themes\Legacy\HTML\BocBooleanValue.js" />
+    <Content Include="Res\Themes\Legacy\HTML\BocBrowserCompatibility.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocCheckBox.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocCheckBox.css" />
     <Content Include="Res\Themes\Legacy\HTML\BocDateTimeValue.css" />
@@ -562,7 +564,7 @@
     <Content Include="Res\Themes\ClassicBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\SortDescending.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\ValidationError.gif" />
-    <Content Include="Res\Themes\NovaBlue\Html\BrowserCompatibility.js" />
+    <Content Include="Res\Themes\NovaBlue\Html\BocBrowserCompatibility.js" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />

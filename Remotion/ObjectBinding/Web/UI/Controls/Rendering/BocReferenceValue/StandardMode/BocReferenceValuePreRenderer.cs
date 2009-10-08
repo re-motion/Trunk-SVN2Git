@@ -34,6 +34,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     public override void PreRender ()
     {
       base.PreRender();
+      RegisterAdjustPositionScript();
+      RegisterAdjustLayoutScript();
+    }
+
+    private void RegisterAdjustPositionScript ()
+    {
       string key = Control.ClientID + "_AdjustPositionScript";
       Control.Page.ClientScript.RegisterStartupScriptBlock (
           Control,
@@ -43,6 +49,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
               "BocReferenceValue_AdjustPosition(document.getElementById('{0}'), {1});",
               Control.ClientID,
               Control.EmbedInOptionsMenu ? "true" : "false"));
+    }
+
+    private void RegisterAdjustLayoutScript ()
+    {
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocReferenceValuePreRenderer),
+          Guid.NewGuid().ToString(),
+          string.Format ("BocBrowserCompatibility.AdjustReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
