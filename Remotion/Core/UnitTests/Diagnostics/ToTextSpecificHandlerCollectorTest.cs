@@ -146,11 +146,8 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void SimpleToTextSpecificTypeHandlerAttributeTest ()
     {
-      ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-          new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, false));
-
       const bool excludeGlobalTypes = true;
-      ICollection types = _typeDiscoveryService.GetTypes (typeof (IToTextSpecificTypeHandler), excludeGlobalTypes);
+      ICollection types = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService().GetTypes (typeof (IToTextSpecificTypeHandler), excludeGlobalTypes);
 
       foreach (Type type in types)
       {

@@ -47,21 +47,43 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void AutoIntoDefaultService ()
+    public void AutoInitDefaultService ()
     {
       ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
-      Assert.IsNotNull (defaultService);
-      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService);
-      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService);
-      Assert.IsInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), defaultService);
-      Assert.AreSame (ApplicationAssemblyFinderFilter.Instance, ((AssemblyFinderTypeDiscoveryService) defaultService).AssemblyFinder.Filter);
+      Assert.That (defaultService, Is.Not.Null);
+      Assert.That (ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService, Is.SameAs (defaultService));
+      Assert.That (ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService, Is.SameAs (defaultService));
+      Assert.That (defaultService, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
     }
 
+    [Test]
+    public void AutoInitDefaultService_RootAssemblyFinder ()
+    {
+      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService).AssemblyFinder;
+      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (SearchPathRootAssemblyFinder)));
+
+      var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
+      Assert.That (searchPathRootAssemblyFinder.BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+    }
+
+    [Test]
+    public void AutoInitDefaultService_Loader ()
+    {
+      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService).AssemblyFinder;
+      var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
+
+      Assert.That (assemblyFinder.ReferencedAssemblyLoader, Is.SameAs (searchPathRootAssemblyFinder.Loader));
+      Assert.That (assemblyFinder.ReferencedAssemblyLoader, Is.InstanceOfType (typeof (AssemblyLoader)));
+
+      var castLoader = (AssemblyLoader) assemblyFinder.ReferencedAssemblyLoader;
+      Assert.That (castLoader.Filter, Is.SameAs (ApplicationAssemblyFinderFilter.Instance));
+    }
+    
     [Test]
     public void SetDefaultCurrent ()
     {
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = _serviceMock;
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService);
+      Assert.That (ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService, Is.SameAs (_serviceMock));
     }
 
     [Test]
@@ -70,15 +92,15 @@ namespace Remotion.UnitTests.Reflection
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = _serviceMock;
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
       ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
-      Assert.IsNotNull (defaultService);
-      Assert.AreNotSame (_serviceMock, defaultService);
+      Assert.That (defaultService, Is.Not.Null);
+      Assert.That (defaultService, Is.Not.SameAs (_serviceMock));
     }
 
     [Test]
     public void GetTypeDiscoveryService_StandardContext ()
     {
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = _serviceMock;
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
+      Assert.That (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService (), Is.SameAs (_serviceMock));
     }
 
     [Test]
@@ -90,7 +112,7 @@ namespace Remotion.UnitTests.Reflection
       _mockRepository.ReplayAll();
 
       DesignerUtility.SetDesignMode (new StubDesignModeHelper (designerHostMock));
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
+      Assert.That (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService (), Is.SameAs (_serviceMock));
 
       _mockRepository.VerifyAll ();
     }

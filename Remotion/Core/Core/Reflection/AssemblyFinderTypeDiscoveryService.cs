@@ -35,7 +35,7 @@ namespace Remotion.Reflection
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
 
-    private readonly AssemblyFinder _assemblyFinder;
+    private readonly IAssemblyFinder _assemblyFinder;
 
     private _Assembly[] _assemblyCache;
 
@@ -44,7 +44,7 @@ namespace Remotion.Reflection
     /// instance.
     /// </summary>
     /// <param name="assemblyFinder">The assembly finder used by this service instance to retrieve types.</param>
-    public AssemblyFinderTypeDiscoveryService (AssemblyFinder assemblyFinder)
+    public AssemblyFinderTypeDiscoveryService (IAssemblyFinder assemblyFinder)
     {
       ArgumentUtility.CheckNotNull ("assemblyFinder", assemblyFinder);
       _assemblyFinder = assemblyFinder;
@@ -55,7 +55,7 @@ namespace Remotion.Reflection
     /// <see cref="Assembly.GetTypes"/> method for the assemblies found by this object.
     /// </summary>
     /// <value>The assembly finder used for type discovery.</value>
-    public AssemblyFinder AssemblyFinder
+    public IAssemblyFinder AssemblyFinder
     {
       get { return _assemblyFinder; }
     }
@@ -111,7 +111,7 @@ namespace Remotion.Reflection
     private IEnumerable<_Assembly> GetAssemblies (bool excludeGlobalTypes)
     {
       if (_assemblyCache == null)
-        _assemblyCache = _assemblyFinder.FindMockableAssemblies();
+        _assemblyCache = _assemblyFinder.FindAssemblies();
 
       foreach (_Assembly assembly in _assemblyCache)
       {

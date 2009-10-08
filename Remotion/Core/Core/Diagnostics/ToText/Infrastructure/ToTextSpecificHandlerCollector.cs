@@ -50,11 +50,8 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
     {
       var handlerMap = new ToTextSpecificHandlerMap<T> ();
       const bool excludeGlobalTypes = true;
-      // TODO: Use ContextAwareTypeDiscoveryUtility.GetInstance() instead to make use of assembly caching
-      ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-          new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
 
-      ICollection types = _typeDiscoveryService.GetTypes (typeof (T), excludeGlobalTypes);
+      ICollection types = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService().GetTypes (typeof (T), excludeGlobalTypes);
 
       foreach (Type type in types)
       {

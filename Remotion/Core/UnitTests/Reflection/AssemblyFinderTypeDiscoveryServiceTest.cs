@@ -21,7 +21,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Rhino.Mocks;
-using System.Runtime.InteropServices;
 
 namespace Remotion.UnitTests.Reflection
 {
@@ -29,7 +28,7 @@ namespace Remotion.UnitTests.Reflection
   public class AssemblyFinderTypeDiscoveryServiceTest
   {
     private MockRepository _mockRepository;
-    private AssemblyFinder _finderMock;
+    private IAssemblyFinder _finderMock;
 
     private readonly Assembly _testAssembly = typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly;
     private readonly Assembly _coreAssembly = typeof (AssemblyFinder).Assembly;
@@ -40,8 +39,7 @@ namespace Remotion.UnitTests.Reflection
     {
       _mockRepository = new MockRepository ();
 
-      _finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance, 
-          new[] { _testAssembly });
+      _finderMock = _mockRepository.StrictMock<IAssemblyFinder> ();
     }
 
     [Test]
@@ -49,7 +47,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
-      _finderMock.Expect (mock => mock.FindMockableAssemblies ()).Return (new Assembly[0]);
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new Assembly[0]);
 
       _mockRepository.ReplayAll();
       service.GetTypes (typeof (object), true);
@@ -61,7 +59,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
-      _finderMock.Expect (mock => mock.FindMockableAssemblies ()).Return (new[] { _testAssembly, _coreAssembly });
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly, _coreAssembly });
 
       var allTypes = new List<Type>();
       allTypes.AddRange (_testAssembly.GetTypes ());
@@ -78,7 +76,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
-      _finderMock.Expect (mock => mock.FindMockableAssemblies ()).Return (new[] { _testAssembly, _mscorlibAssembly });
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly, _mscorlibAssembly });
 
       var allTypes = new List<Type> ();
       allTypes.AddRange (_testAssembly.GetTypes ());
@@ -95,7 +93,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
-      _finderMock.Expect (mock => mock.FindMockableAssemblies ()).Return (new[] { _testAssembly, _mscorlibAssembly });
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly, _mscorlibAssembly });
 
       var allTypes = new List<Type> ();
       allTypes.AddRange (_testAssembly.GetTypes ());
@@ -111,7 +109,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
 
-      _finderMock.Expect (mock => mock.FindMockableAssemblies ()).Return (new[] { _testAssembly });
+      _finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly });
 
       var allTypes = new List<Type> ();
       allTypes.AddRange (_testAssembly.GetTypes ());
@@ -122,19 +120,13 @@ namespace Remotion.UnitTests.Reflection
       _mockRepository.VerifyAll ();
     }
 
-    public class Base { }
-    public class Derived1 : Base { }
-    public class Derived2 : Base { }
-
     [Test]
     public void GetTypes_WithSpecificBase ()
     {
-      var finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
-          new[] { _testAssembly });
+      var finderMock = _mockRepository.StrictMock<IAssemblyFinder> ();
 
       var service = new AssemblyFinderTypeDiscoveryService (finderMock);
-
-      finderMock.Expect (mock => mock.FindMockableAssemblies ()).Return (new[] { _testAssembly });
+      finderMock.Expect (mock => mock.FindAssemblies ()).Return (new[] { _testAssembly });
 
       var allTypes = new List<Type> ();
       allTypes.AddRange (_testAssembly.GetTypes ());
@@ -146,22 +138,8 @@ namespace Remotion.UnitTests.Reflection
       _mockRepository.VerifyAll ();
     }
 
-    [Test]
-    [ExpectedException (typeof (TypeLoadException), ExpectedMessage = "The types from assembly 'abc' could not be loaded.\r\nTest 1\r\nTest 2")]
-    public void GetTypes_AssemblyThrowsReflectionTypeLoadException ()
-    {
-      var ex1 = new Exception ("Test 1");
-      var ex2 = new Exception ("Test 2");
-      var assemblyMock = _mockRepository.DynamicMock<_Assembly>();
-      assemblyMock.Stub (mock => mock.GetName()).Return (new AssemblyName ("abc"));
-      assemblyMock.Expect (mock => mock.GetTypes ()).Throw (new ReflectionTypeLoadException (new[] { typeof (object), null, null }, new[] { ex1, ex2 }));
-      assemblyMock.Replay ();
-
-      _finderMock.Expect (mock => mock.FindMockableAssemblies()).Return (new[] { assemblyMock });
-      _finderMock.Replay ();
-
-      var service = new AssemblyFinderTypeDiscoveryService (_finderMock);
-      service.GetTypes (typeof (object), false);
-    }
+    public class Base { }
+    public class Derived1 : Base { }
+    public class Derived2 : Base { }
   }
 }

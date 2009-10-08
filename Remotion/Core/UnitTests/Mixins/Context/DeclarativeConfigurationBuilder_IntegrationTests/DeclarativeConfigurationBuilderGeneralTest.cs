@@ -134,8 +134,11 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       var service =
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
-      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()), Is.False);
-      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (Uri).Assembly.GetName ()), Is.False);
+
+      var filter = ((AssemblyLoader)((AssemblyFinder) service.AssemblyFinder).ReferencedAssemblyLoader).Filter;
+
+      Assert.That (filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()), Is.False);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (Uri).Assembly.GetName ()), Is.False);
     }
 
     [Test]
@@ -144,15 +147,17 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       var service =
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
-      
+
+      var filter = ((AssemblyLoader) ((AssemblyFinder) service.AssemblyFinder).ReferencedAssemblyLoader).Filter;
+
       Assembly signedAssembly = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration).Assembly;
       Assembly unsignedAssembly = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration).Assembly;
 
       Assert.That (ReflectionUtility.IsAssemblySigned (signedAssembly), Is.True);
       Assert.That (ReflectionUtility.IsAssemblySigned (unsignedAssembly), Is.False);
 
-      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (signedAssembly), Is.False);
-      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (unsignedAssembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (signedAssembly), Is.False);
+      Assert.That (filter.ShouldIncludeAssembly (unsignedAssembly), Is.False);
     }
 
     [Test]
@@ -162,12 +167,14 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
-      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly.GetName ()), Is.True);
-      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilder).Assembly.GetName ()), Is.True);
-      Assert.That (service.AssemblyFinder.Filter.ShouldConsiderAssembly (new AssemblyName ("whatever")), Is.True);
+      var filter = ((AssemblyLoader) ((AssemblyFinder) service.AssemblyFinder).ReferencedAssemblyLoader).Filter;
 
-      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly), Is.True);
-      Assert.That (service.AssemblyFinder.Filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilder).Assembly), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly.GetName ()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (typeof (DeclarativeConfigurationBuilder).Assembly.GetName ()), Is.True);
+      Assert.That (filter.ShouldConsiderAssembly (new AssemblyName ("whatever")), Is.True);
+
+      Assert.That (filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilderGeneralTest).Assembly), Is.True);
+      Assert.That (filter.ShouldIncludeAssembly (typeof (DeclarativeConfigurationBuilder).Assembly), Is.True);
     }
 
     [Test]

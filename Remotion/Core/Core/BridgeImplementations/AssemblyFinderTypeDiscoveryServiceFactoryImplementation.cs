@@ -29,7 +29,10 @@ namespace Remotion.BridgeImplementations
   {
     public ITypeDiscoveryService CreateTypeDiscoveryService ()
     {
-      return new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, false));
+      var assemblyLoader = new AssemblyLoader (ApplicationAssemblyFinderFilter.Instance);
+      var searchPathRootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (assemblyLoader, false);
+      var assemblyFinder = new AssemblyFinder (searchPathRootAssemblyFinder, assemblyLoader);
+      return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
     }
   }
 }

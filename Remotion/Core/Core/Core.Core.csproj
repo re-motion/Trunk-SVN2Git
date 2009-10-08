@@ -197,6 +197,7 @@
     <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
     <Compile Include="Reflection\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\DirectoryRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\IAssemblyFinder.cs" />
     <Compile Include="Reflection\IAssemblyLoader.cs" />
     <Compile Include="Reflection\SearchPathRootAssemblyFinder.cs" />
     <Compile Include="Reflection\IRootAssemblyFinder.cs" />
