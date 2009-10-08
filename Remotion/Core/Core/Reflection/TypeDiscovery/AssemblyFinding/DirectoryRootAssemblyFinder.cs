@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {
@@ -41,7 +42,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _searchPath; }
     }
 
-    public Assembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
     {
       var dllFiles = Directory.GetFiles (_searchPath, "*.dll", SearchOption.TopDirectoryOnly);
       var exeFiles = Directory.GetFiles (_searchPath, "*.exe", SearchOption.TopDirectoryOnly);
@@ -51,7 +52,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
         allAssemblies.AddRange (loader.LoadAssemblies (dllFiles));
       if (exeFiles.Length > 0)
         allAssemblies.AddRange (loader.LoadAssemblies (exeFiles));
-      return allAssemblies.ToArray ();
+      return allAssemblies.Select (asm => new RootAssembly (asm)).ToArray ();
     }
   }
 }

@@ -13,21 +13,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {
   /// <summary>
-  /// Defines an interface for classes finding the root assemblies for type discovery.
+  /// Identifies a root assembly found by an implementation of <see cref="IRootAssemblyFinder"/>. This includes the assembly itself as well as a flag
+  /// indicating whether to follow the assembly's references or not.
   /// </summary>
-  public interface IRootAssemblyFinder
+  public struct RootAssembly
   {
-    /// <summary>
-    /// Finds the root assemblies, using the given <see cref="IAssemblyLoader"/>.
-    /// </summary>
-    /// <param name="loader">The <see cref="IAssemblyLoader"/> to load the assemblies with.</param>
-    /// <returns></returns>
-    RootAssembly[] FindRootAssemblies (IAssemblyLoader loader);
+    public RootAssembly (Assembly assembly)
+        : this()
+    {
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
+      Assembly = assembly;
+    }
+
+    public Assembly Assembly { get; private set; }
   }
 }

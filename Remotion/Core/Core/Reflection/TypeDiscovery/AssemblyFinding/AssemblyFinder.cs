@@ -69,15 +69,15 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       s_log.Debug ("Finding assemblies...");
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {0}."))
       {
-        Assembly[] rootAssemblies = FindRootAssemblies();
-        var resultSet = new HashSet<Assembly> (rootAssemblies);
+        RootAssembly[] rootAssemblies = FindRootAssemblies ();
+        var resultSet = new HashSet<Assembly> (rootAssemblies.Select (root => root.Assembly));
 
         resultSet.UnionWith (FindReferencedAssemblies (rootAssemblies));
         return resultSet.ToArray ().LogAndReturn (s_log, LogLevel.Info, result => string.Format ("Found {0} assemblies.", result.Length));
       }
     }
 
-    private Assembly[] FindRootAssemblies ()
+    private RootAssembly[] FindRootAssemblies ()
     {
       s_log.Debug ("Finding root assemblies...");
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {0}."))
@@ -87,29 +87,29 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       }
     }
 
-    private IEnumerable<Assembly> FindReferencedAssemblies (Assembly[] rootAssemblies)
+    private IEnumerable<Assembly> FindReferencedAssemblies (RootAssembly[] rootAssemblies)
     {
       s_log.Debug ("Finding referenced assemblies...");
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {0}."))
       {
         var processedAssemblyNames = new HashSet<string>(); // used to avoid loading assemblies twice
-        var referenceRoots = new HashSet<Assembly> (rootAssemblies); // referenced assemblies added later in order to get their references as well
+        var referenceRoots = new HashSet<RootAssembly> (rootAssemblies); // referenced assemblies added later in order to get their references as well
 
         while (referenceRoots.Count > 0)
         {
-          Assembly currentRoot = referenceRoots.First(); // take any reference
+          RootAssembly currentRoot = referenceRoots.First(); // take any reference
           referenceRoots.Remove (currentRoot); // don't handle again
 
-          foreach (AssemblyName referencedAssemblyName in currentRoot.GetReferencedAssemblies())
+          foreach (AssemblyName referencedAssemblyName in currentRoot.Assembly.GetReferencedAssemblies())
           {
             if (!processedAssemblyNames.Contains (referencedAssemblyName.FullName)) // don't process an assembly name twice
             {
               processedAssemblyNames.Add (referencedAssemblyName.FullName);
 
-              Assembly referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.FullName);
+              Assembly referencedAssembly = _assemblyLoader.TryLoadAssembly (referencedAssemblyName, currentRoot.Assembly.FullName);
               if (referencedAssembly != null) // might return null if filtered by the loader
               {
-                referenceRoots.Add (referencedAssembly); // store as a root in order to process references transitively
+                referenceRoots.Add (new RootAssembly (referencedAssembly)); // store as a root in order to process references transitively
                 yield return referencedAssembly;
               }
             }

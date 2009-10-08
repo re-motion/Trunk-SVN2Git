@@ -81,7 +81,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _dynamicDirectory; }
     }
 
-    public Assembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
     {
       ArgumentUtility.CheckNotNull ("loader", loader);
       var combinedFinder = CreateCombinedFinder ();

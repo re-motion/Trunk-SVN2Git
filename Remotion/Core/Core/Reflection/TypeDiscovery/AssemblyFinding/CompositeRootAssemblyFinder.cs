@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using System.Linq;
@@ -40,9 +39,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _innerFinders; }
     }
 
-    public Assembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
     {
-      var combinedAssemblies = new HashSet<Assembly>();
+      var combinedAssemblies = new HashSet<RootAssembly> ();
       foreach (var finder in _innerFinders)
       {
         combinedAssemblies.UnionWith (finder.FindRootAssemblies (loader));

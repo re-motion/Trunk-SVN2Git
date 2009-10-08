@@ -198,6 +198,7 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\DirectoryRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\IAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RootAssembly.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\IAssemblyLoader.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\SearchPathRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\IRootAssemblyFinder.cs" />

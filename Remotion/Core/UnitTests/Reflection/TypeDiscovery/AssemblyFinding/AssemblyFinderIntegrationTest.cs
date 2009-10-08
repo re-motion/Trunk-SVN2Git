@@ -24,6 +24,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Rhino_Is = Rhino.Mocks.Constraints.Is;
+using System.Linq;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {
@@ -136,7 +137,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         Assert.That (rootAssemblies, List.Not.Contains (secondInMemoryAssembly));
 
         Assert.That (
-            rootAssemblies,
+            rootAssemblies.Select (root => root.Assembly).ToArray(),
             Is.EquivalentTo (
                 new[]
                 {
@@ -174,7 +175,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         Assert.That (rootAssemblies, List.Not.Contains (secondInMemoryAssembly));
 
         Assert.That (
-            rootAssemblies,
+            rootAssemblies.Select (root => root.Assembly).ToArray (),
             Is.EquivalentTo (
                 new[]
                 {
@@ -200,7 +201,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
         var loader = CreateLoaderForMarkedAssemblies ();
         var rootAssemblyFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loader)).Return (new[] { markedAssembly });
+        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loader)).Return (new[] { new RootAssembly (markedAssembly) });
         rootAssemblyFinderStub.Replay ();
 
         var assemblyFinder = new AssemblyFinder (rootAssemblyFinderStub, loader);

@@ -84,7 +84,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     public void FindRootAssemblies_UsesCombinedFinder ()
     {
       var innerFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-      innerFinderStub.Stub (stub => stub.FindRootAssemblies (_loaderStub)).Return (new[] { typeof (object).Assembly });
+      var rootAssembly = new RootAssembly (typeof (object).Assembly);
+      innerFinderStub.Stub (stub => stub.FindRootAssemblies (_loaderStub)).Return (new[] { rootAssembly });
       innerFinderStub.Replay ();
 
       var finderMock = new MockRepository ().PartialMock<SearchPathRootAssemblyFinder> (
@@ -96,7 +97,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       finderMock.Replay ();
 
       var result = finderMock.FindRootAssemblies (_loaderStub);
-      Assert.That (result, Is.EqualTo (new[] { typeof (object).Assembly }));
+      Assert.That (result, Is.EqualTo (new[] { rootAssembly }));
 
       finderMock.VerifyAllExpectations ();
     }
