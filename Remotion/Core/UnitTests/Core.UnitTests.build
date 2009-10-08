@@ -32,7 +32,7 @@
         <include name="**/*.cs" />
         <exclude name="bin/**" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
-        <exclude name="Reflection/TestAssemblies/**/*.cs" />
+        <exclude name="Reflection/TypeDiscovery/TestAssemblies/**/*.cs" />
       </sources>
       <references failonempty="true">
         <include name="${build.test.outputdir}/Castle.Core.dll" />
