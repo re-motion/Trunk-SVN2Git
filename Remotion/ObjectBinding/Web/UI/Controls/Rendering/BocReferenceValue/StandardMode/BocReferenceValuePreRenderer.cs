@@ -49,6 +49,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
+
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))

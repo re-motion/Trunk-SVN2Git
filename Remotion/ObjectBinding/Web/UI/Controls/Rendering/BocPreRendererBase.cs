@@ -14,7 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
@@ -26,9 +29,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
   public abstract class BocPreRendererBase<TControl> : PreRendererBase<TControl>
       where TControl: IBusinessObjectBoundWebControl
   {
+    private static readonly string s_browserCompatibilityScriptFileKey = typeof (BocPreRendererBase<>).FullName + "_BrowserCompatibilityScript";
+
     protected BocPreRendererBase (IHttpContext context, TControl control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+
+      if (!htmlHeadAppender.IsRegistered (s_browserCompatibilityScriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocPreRendererBase<>), ResourceType.Html, "BrowserCompatibility.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (s_browserCompatibilityScriptFileKey, scriptUrl);
+      }
     }
   }
 }

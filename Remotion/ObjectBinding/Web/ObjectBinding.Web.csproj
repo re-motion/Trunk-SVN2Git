@@ -562,6 +562,7 @@
     <Content Include="Res\Themes\ClassicBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\SortDescending.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\ValidationError.gif" />
+    <Content Include="Res\Themes\NovaBlue\Html\BrowserCompatibility.js" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />
