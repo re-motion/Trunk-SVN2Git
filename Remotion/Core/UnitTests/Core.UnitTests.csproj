@@ -182,6 +182,9 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Reflection\CompositeRootAssemblyFinderTest.cs" />
+    <Compile Include="Reflection\DirectoryRootAssemblyFinderTest.cs" />
+    <Compile Include="Reflection\SearchPathRootAssemblyFinderTest.cs" />
     <Compile Include="Utilities\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
@@ -333,7 +336,6 @@
     <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
     <Compile Include="Reflection\MethodLookupInfoTest.cs" />
     <Compile Include="Reflection\PropertyTest.cs" />
-    <Compile Include="Reflection\TestAssemblyFinder.cs" />
     <Compile Include="Reflection\TestDomain\Base.cs" />
     <Compile Include="Reflection\TestDomain\Derived.cs" />
     <Compile Include="Reflection\TestDomain\DerivedDerived.cs" />

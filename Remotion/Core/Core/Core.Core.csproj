@@ -195,6 +195,11 @@
     <Compile Include="Mixins\Utilities\MixinGenericArgumentFinder.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
+    <Compile Include="Reflection\CompositeRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\DirectoryRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\IAssemblyLoader.cs" />
+    <Compile Include="Reflection\SearchPathRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\IRootAssemblyFinder.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
