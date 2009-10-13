@@ -15,15 +15,12 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
   public class PropertyDefinition : MemberDefinitionBase
   {
-    private static readonly SignatureChecker s_signatureChecker = new SignatureChecker();
-
     public new readonly UniqueDefinitionCollection<Type, PropertyDefinition> Overrides =
         new UniqueDefinitionCollection<Type, PropertyDefinition> (m => m.DeclaringClass.Type);
 
