@@ -72,20 +72,6 @@ namespace Remotion.Mixins.Definitions
       return new CovariantDefinitionCollectionWrapper<Type, MethodDefinition, MemberDefinitionBase>(_overrides);
     }
 
-    protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-
-      var overriderMethod = overrider as MethodDefinition;
-      return overriderMethod != null && IsSignatureCompatibleWithMethod (overriderMethod);
-    }
-
-    private bool IsSignatureCompatibleWithMethod (MethodDefinition overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-      return s_signatureChecker.MethodSignaturesMatch (MethodInfo, overrider.MethodInfo);
-    }
-
     internal override void AddOverride (MemberDefinitionBase member)
     {
       ArgumentUtility.CheckNotNull ("member", member);

@@ -16,6 +16,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
@@ -27,7 +28,7 @@ namespace Remotion.Mixins.Definitions
 
     private IDefinitionCollection<Type, MemberDefinitionBase> _internalOverridesWrapper = null;
 
-    public MemberDefinitionBase (MemberInfo memberInfo, ClassDefinitionBase declaringClass)
+    protected MemberDefinitionBase (MemberInfo memberInfo, ClassDefinitionBase declaringClass)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("declaringClass", declaringClass);
@@ -114,15 +115,7 @@ namespace Remotion.Mixins.Definitions
 
     protected abstract IDefinitionCollection<Type, MemberDefinitionBase> GetInternalOverridesWrapper();
 
-    public virtual bool CanBeOverriddenBy (MemberDefinitionBase overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-      return MemberType == overrider.MemberType && IsSignatureCompatibleWith (overrider);
-    }
-
     internal abstract void AddOverride (MemberDefinitionBase member);
-
-    protected abstract bool IsSignatureCompatibleWith (MemberDefinitionBase overrider);
 
     public void Accept (IDefinitionVisitor visitor)
     {

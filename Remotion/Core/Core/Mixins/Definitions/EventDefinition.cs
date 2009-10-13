@@ -15,15 +15,12 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
   public class EventDefinition : MemberDefinitionBase
   {
-    private static readonly SignatureChecker s_signatureChecker = new SignatureChecker();
-
     public new readonly UniqueDefinitionCollection<Type, EventDefinition> Overrides =
         new UniqueDefinitionCollection<Type, EventDefinition> (m => m.DeclaringClass.Type);
 
@@ -79,23 +76,6 @@ namespace Remotion.Mixins.Definitions
     public MethodDefinition RemoveMethod
     {
       get { return _removeMethod; }
-    }
-
-    protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-
-      var overriderEvent = overrider as EventDefinition;
-      if (overriderEvent == null)
-        return false;
-      else
-        return IsSignatureCompatibleWithEvent (overriderEvent);
-    }
-
-    private bool IsSignatureCompatibleWithEvent (EventDefinition overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-      return s_signatureChecker.EventSignaturesMatch (EventInfo, overrider.EventInfo);
     }
 
     internal override void AddOverride (MemberDefinitionBase member)

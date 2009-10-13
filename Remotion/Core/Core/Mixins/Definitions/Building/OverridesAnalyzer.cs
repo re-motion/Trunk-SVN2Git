@@ -16,13 +16,18 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Reflection;
+using Remotion.Text;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building
 {
   public class OverridesAnalyzer<TMember>
       where TMember : MemberDefinitionBase
   {
+    private static readonly MemberSignatureEqualityComparer s_signatureComparer = new MemberSignatureEqualityComparer ();
+
     private readonly Type _attributeType;
     private readonly IEnumerable<TMember> _baseMembers;
 
@@ -46,14 +51,7 @@ namespace Remotion.Mixins.Definitions.Building
         var overrideAttribute = (IOverrideAttribute) AttributeUtility.GetCustomAttribute (member.MemberInfo, _attributeType, true);
         if (overrideAttribute != null)
         {
-          TMember baseMember;
-          if (BaseMembersByName.ContainsKey (member.Name))
-          {
-            IEnumerable<TMember> candidates = BaseMembersByName[member.Name];
-            baseMember = FindBaseMember (overrideAttribute, member, candidates);
-          }
-          else
-            baseMember = null;
+          TMember baseMember = FindOverriddenMember (overrideAttribute, member);
 
           if (baseMember == null)
           {
@@ -84,28 +82,44 @@ namespace Remotion.Mixins.Definitions.Building
       }
     }
 
-    private TMember FindBaseMember (IOverrideAttribute attribute, TMember overrider, IEnumerable<TMember> candidates)
+    private TMember FindOverriddenMember (IOverrideAttribute attribute, TMember overrider)
     {
-      TMember result = null;
-      foreach (TMember candidate in candidates)
+      var candidates = from candidate in BaseMembersByName[overrider.Name]
+                       let candidateType = candidate.DeclaringClass.Type
+                       where OverriddenMemberTypeMatches (candidateType, attribute.OverriddenType)
+                       where s_signatureComparer.Equals (candidate.MemberInfo, overrider.MemberInfo)
+                       select candidate;
+
+      try
       {
-        if (candidate.Name == overrider.Name && candidate.CanBeOverriddenBy (overrider)
-            && (attribute.OverriddenType == null || ReflectionUtility.CanAscribe (candidate.DeclaringClass.Type, attribute.OverriddenType)))
-        {
-          if (result != null)
-          {
-            string message = string.Format (
-                "Ambiguous override: Member {0} could override {1} and {2}.",
-                overrider.FullName,
-                result.FullName,
-                candidate.FullName);
-            throw new ConfigurationException (message);
-          }
-          else
-            result = candidate;
-        }
+        return candidates.SingleOrDefault ();
       }
-      return result;
+      catch (InvalidOperationException)
+      {
+        string message = string.Format (
+              "Ambiguous override: Member {0} could override {1}.",
+              overrider.FullName,
+              SeparatedStringBuilder.Build (", ", candidates, c => c.FullName));
+        throw new ConfigurationException (message);
+      }
+    }
+
+    private bool OverriddenMemberTypeMatches (Type overriddenMemberType, Type requiredType)
+    {
+      if (requiredType == null) // no type required
+        return true;
+
+      if (requiredType.IsAssignableFrom (overriddenMemberType)) // same type or base type required
+        return true;
+
+      if (requiredType.IsGenericTypeDefinition 
+          && overriddenMemberType.IsGenericType 
+          && overriddenMemberType.GetGenericTypeDefinition() == requiredType)
+      {
+        return true;
+      }
+
+      return false;
     }
   }
 }

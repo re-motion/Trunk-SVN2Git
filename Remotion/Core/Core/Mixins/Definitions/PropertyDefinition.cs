@@ -82,27 +82,6 @@ namespace Remotion.Mixins.Definitions
       protected internal set { BaseAsMember = value; }
     }
 
-    protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-
-      var overriderProperty = overrider as PropertyDefinition;
-      if (overriderProperty == null)
-      {
-        return false;
-      }
-      else
-      {
-        return IsSignatureCompatibleWithProperty (overriderProperty);
-      }
-    }
-
-    private bool IsSignatureCompatibleWithProperty (PropertyDefinition overrider)
-    {
-      ArgumentUtility.CheckNotNull ("overrider", overrider);
-      return s_signatureChecker.PropertySignaturesMatch (PropertyInfo, overrider.PropertyInfo);
-    }
-
     internal override void AddOverride (MemberDefinitionBase member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
