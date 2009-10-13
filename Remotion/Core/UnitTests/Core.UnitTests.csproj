@@ -182,8 +182,14 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
-    <Compile Include="Reflection\MethodSignatureStringBuilderTest.cs" />
-    <Compile Include="Reflection\TestDomain\ClassForMethodSignatureStringBuilding.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilderIntegrationTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelperTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilderTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\PropertySignatureStringBuilderTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\TestDomain\ClassForMethodSignatureStringBuilding.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\TestDomain\ClassForPropertySignatureStringBuilding.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\TestDomain\GenericClassWithNestedType.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\TestDomain\GenericClass.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\DerivedMarkerAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilterTest.cs" />
