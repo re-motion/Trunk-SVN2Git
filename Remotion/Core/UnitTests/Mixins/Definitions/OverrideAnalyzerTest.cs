@@ -24,7 +24,7 @@ using Remotion.UnitTests.Mixins.SampleTypes;
 namespace Remotion.UnitTests.Mixins.Definitions
 {
   [TestFixture]
-  public class OverrideDefinitionBuilderTest
+  public class OverrideAnalyzerTest
   {
     [Test]
     public void MethodOverrides ()
@@ -183,31 +183,37 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The member overridden by '.*BT5Mixin1.Method' could not be found.",
-        MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The member overridden by 'Void Method()' declared by type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BT5Mixin1' could not be found. Candidates: 'System.String Method()' (on "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType5').")]
     public void ThrowsWhenInexistingOverrideBaseMethod ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin1));
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The member overridden by '.*BT5Mixin4.Property' could not be found.",
-        MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The member overridden by 'System.String Property' declared by type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BT5Mixin4' could not be found. Candidates: 'Int32 Property' (on "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType5').")]
     public void ThrowsWhenInexistingOverrideBaseProperty ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin4));
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The member overridden by '.*BT5Mixin5.Event' could not be found.",
-        MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ConfigurationException), 
+        ExpectedMessage = "The member overridden by 'System.EventHandler Event' declared by type 'Remotion.UnitTests.Mixins.SampleTypes.BT5Mixin5' "
+        + "could not be found. Candidates: 'System.Action`1[System.String] Event' (on 'Remotion.UnitTests.Mixins.SampleTypes.BaseType5').")]
     public void ThrowsWhenInexistingOverrideBaseEvent ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin5));
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Ambiguous override", MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Ambiguous override: Member 'System.String AbstractMethod(Int32)' "
+        + "declared by type 'Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingMixinMembers' could override any of the following: "
+        + "'System.String AbstractMethod(Int32)' (on 'Remotion.UnitTests.Mixins.SampleTypes.MixinWithAbstractMembers'); "
+        + "'System.String AbstractMethod(Int32)' (on 'Remotion.UnitTests.Mixins.SampleTypes.MixinWithSingleAbstractMethod2').")]
     public void ThrowsOnTargetClassOverridingMultipleMixinMethods()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingMixinMembers> ().Clear().AddMixins (typeof (MixinWithAbstractMembers), typeof(MixinWithSingleAbstractMethod2)).EnterScope())
@@ -228,8 +234,10 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The member overridden by "
-                                                                           + "'Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSpecificMixinMember.VirtualMethod' could not be found.")]
+    [ExpectedException (typeof (ConfigurationException), 
+        ExpectedMessage = "The member overridden by 'System.String VirtualMethod()' declared by type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSpecificMixinMember' could not be found. "
+        + "Candidates: 'System.String VirtualMethod()' (on 'Remotion.UnitTests.Mixins.SampleTypes.MixinWithVirtualMethod2').")]
     public void TargetClassOverridingSpecificUnconfiguredMixinMethod ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingSpecificMixinMember> ().Clear().AddMixins (typeof (MixinWithVirtualMethod2)).EnterScope())

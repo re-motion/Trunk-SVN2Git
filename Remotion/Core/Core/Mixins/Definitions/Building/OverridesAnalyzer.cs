@@ -55,7 +55,11 @@ namespace Remotion.Mixins.Definitions.Building
 
           if (baseMember == null)
           {
-            string message = string.Format ("The member overridden by '{0}' could not be found.", member.FullName);
+            string message = string.Format (
+                "The member overridden by '{0}' declared by type '{1}' could not be found. Candidates: {2}.",
+                member.MemberInfo,
+                member.DeclaringClass.FullName,
+                BuildCandidateStringForExceptionMessage (BaseMembersByName[member.Name]));
             throw new ConfigurationException (message);
           }
           yield return new MemberOverridePair<TMember> (baseMember, member);
@@ -97,11 +101,21 @@ namespace Remotion.Mixins.Definitions.Building
       catch (InvalidOperationException)
       {
         string message = string.Format (
-              "Ambiguous override: Member {0} could override {1}.",
-              overrider.FullName,
-              SeparatedStringBuilder.Build (", ", candidates, c => c.FullName));
+              "Ambiguous override: Member '{0}' declared by type '{1}' could override any of the following: {2}.",
+              overrider.MemberInfo,
+              overrider.DeclaringClass.FullName,
+              BuildCandidateStringForExceptionMessage (candidates));
         throw new ConfigurationException (message);
       }
+    }
+
+    private string BuildCandidateStringForExceptionMessage (IEnumerable<TMember> candidates)
+    {
+      var candidatesByType = candidates.ToLookup (md => md.DeclaringClass);
+      return SeparatedStringBuilder.Build (
+          "; ", 
+          candidatesByType,
+          group => SeparatedStringBuilder.Build (", ", group, md => "'" + md.MemberInfo.ToString () + "'") + " (on '" + group.Key.FullName + "')");
     }
 
     private bool OverriddenMemberTypeMatches (Type overriddenMemberType, Type requiredType)

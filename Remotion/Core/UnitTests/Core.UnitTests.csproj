@@ -560,7 +560,7 @@
     <Compile Include="Mixins\Definitions\MixinDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\MixinDependencySortIntegrationTest.cs" />
     <Compile Include="Mixins\Definitions\OverrideAttributeHierarchyTest.cs" />
-    <Compile Include="Mixins\Definitions\OverrideDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\OverrideAnalyzerTest.cs" />
     <Compile Include="Mixins\Definitions\RequiredMethodDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinitionCacheTest.cs" />
