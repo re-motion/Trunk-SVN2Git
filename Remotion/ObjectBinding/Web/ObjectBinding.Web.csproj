@@ -489,6 +489,7 @@
     <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocBooleanValue.css" />
     <Content Include="Res\Themes\Legacy\HTML\BocBooleanValue.js" />
+    <Content Include="Res\Themes\Legacy\HTML\BocBrowserCompatibility.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocCheckBox.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocCheckBox.css" />
     <Content Include="Res\Themes\Legacy\HTML\BocDateTimeValue.css" />
