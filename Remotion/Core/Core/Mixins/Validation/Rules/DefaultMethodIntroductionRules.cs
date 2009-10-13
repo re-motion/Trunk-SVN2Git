@@ -14,11 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins.Validation.Rules
 {
@@ -28,7 +27,7 @@ namespace Remotion.Mixins.Validation.Rules
     private readonly ContextStoreMemberIntroductionLookupUtility<MethodIntroductionDefinition> _introductionLookupUtility =
         new ContextStoreMemberIntroductionLookupUtility<MethodIntroductionDefinition> ();
 
-    private readonly SignatureChecker _signatureChecker = new SignatureChecker ();
+    private readonly MemberSignatureEqualityComparer _signatureComparer = new MemberSignatureEqualityComparer ();
 
     public override void Install (ValidatingVisitor visitor)
     {
@@ -42,15 +41,20 @@ namespace Remotion.Mixins.Validation.Rules
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
         MethodInfo introducedMethod = args.Definition.InterfaceMember;
-        foreach (MethodDefinition method in _memberLookupUtility.GetCachedMembersByName (args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name))
+        
+        var targetMethodsWithSameNameAndSignature = from candidate in _memberLookupUtility.GetCachedMembersByName (
+                                                        args.Log.ContextStore, 
+                                                        args.Definition.DeclaringInterface.TargetClass, 
+                                                        introducedMethod.Name)
+                                                    where _signatureComparer.Equals (candidate.MethodInfo, introducedMethod)
+                                                    select candidate;
+        if (targetMethodsWithSameNameAndSignature.Any())
         {
-          if (_signatureChecker.MethodSignaturesMatch (method.MethodInfo, introducedMethod))
-          {
-            args.Log.Fail (args.Self);
-            return;
-          }
+          args.Log.Fail (args.Self);
+          return;
         }
       }
+
       args.Log.Succeed (args.Self);
     }
 
@@ -60,20 +64,22 @@ namespace Remotion.Mixins.Validation.Rules
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
         MethodInfo introducedMethod = args.Definition.InterfaceMember;
-        IEnumerable<MethodIntroductionDefinition> otherIntroductionsWithSameName =
-            _introductionLookupUtility.GetCachedPublicIntroductionsByName (
-            args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name);
+        var otherIntroductionsWithSameNameAndSignature = from candidate in _introductionLookupUtility.GetCachedPublicIntroductionsByName (
+                                                            args.Log.ContextStore,
+                                                            args.Definition.DeclaringInterface.TargetClass,
+                                                            introducedMethod.Name)
+                                                         where candidate != args.Definition
+                                                            && _signatureComparer.Equals (candidate.InterfaceMember, introducedMethod)
+                                                         select candidate;
 
-        foreach (MethodIntroductionDefinition method in otherIntroductionsWithSameName)
+        if (otherIntroductionsWithSameNameAndSignature.Any ())
         {
-            if (method != args.Definition && _signatureChecker.MethodSignaturesMatch (method.InterfaceMember, introducedMethod))
-            {
-              args.Log.Fail (args.Self);
-              return;
-            }
+          args.Log.Fail (args.Self);
+          return;
         }
-        args.Log.Succeed (args.Self);
       }
+
+      args.Log.Succeed (args.Self);
     }
   }
 }
