@@ -196,6 +196,7 @@
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\EventSignatureStringBuilder.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\IMemberSignatureStringBuilder.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelper.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilder.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\PropertySignatureStringBuilder.cs" />
