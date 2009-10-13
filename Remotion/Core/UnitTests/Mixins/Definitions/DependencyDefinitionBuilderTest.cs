@@ -76,8 +76,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "The dependency IBT3Mixin4 (mixins Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin7Face applied to class "
-                          + "Remotion.UnitTests.Mixins.SampleTypes.BaseType3) is not fulfilled - public or protected method Foo could not be found on the base class.")]
+        ExpectedMessage = "The dependency 'IBT3Mixin4' (required by mixin(s) 'Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin7Face' applied to class "
+                          + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType3') is not fulfilled - public or protected method 'System.String Foo()' "
+                          + "could not be found on the target class.")]
     public void ThrowsIfAggregateThisDependencyIsNotFullyImplemented ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Face));
@@ -85,8 +86,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "The dependency IBT3Mixin4 (mixins Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin7Base applied to class "
-                          + "Remotion.UnitTests.Mixins.SampleTypes.BaseType3) is not fulfilled - public or protected method Foo could not be found on the base class.")]
+        ExpectedMessage = "The dependency 'IBT3Mixin4' (required by mixin(s) 'Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin7Base' applied to class "
+                          + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType3') is not fulfilled - public or protected method 'System.String Foo()' "
+                          + "could not be found on the target class.")]
     public void ThrowsIfAggregateBaseDependencyIsNotFullyImplemented ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Base));
@@ -188,7 +190,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "is not fulfilled - public or protected method MethodImplementedOnBase could not be found", MatchType = MessageMatch.Regex)]
+        ExpectedMessage = "is not fulfilled - public or protected method 'System.String MethodImplementedOnBase()' could not be found", 
+        MatchType = MessageMatch.Contains)]
     public void ThrowsWhenUnfulfilledDuckFace()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (DuckFaceMixinWithoutOverrides)).EnterScope())
@@ -228,7 +231,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "is not fulfilled - public or protected method MethodImplementedOnBase could not be found", MatchType = MessageMatch.Regex)]
+        ExpectedMessage = "is not fulfilled - public or protected method 'System.String MethodImplementedOnBase()' could not be found", 
+        MatchType = MessageMatch.Contains)]
     public void ThrowsWhenUnfulfilledDuckBase ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (DuckBaseMixinWithoutOverrides)).EnterScope())

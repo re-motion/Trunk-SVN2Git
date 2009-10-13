@@ -165,6 +165,12 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\MixinOverriddenByProtectedOverrider.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\DerivedTargetClassWithProtectedOverrider.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\InheritanceResolvingClassContextBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\ClassFulfillingInternally.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\ClassFulfillingPrivately.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\ClassFulfillingProtectedly.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\MixinRequiringSingleEvent.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\MixinRequiringSingleMethod.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\MixinRequiringSingleProperty.cs" />
     <Compile Include="Mixins\Definitions\OverriddenMemberFilterTest.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\MemberFiltering\BaseWithVirtualMembers.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\MemberFiltering\DerivedDerivedDerivedDerivedWithGetSetOverride.cs" />

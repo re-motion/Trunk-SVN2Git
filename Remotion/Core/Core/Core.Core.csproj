@@ -167,6 +167,10 @@
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializer.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\DuckTypingRequiredMethodDefinitionCollector.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\ImplementedInterfaceRequiredMethodDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IntroducedInterfaceRequiredMethodDefinitionCollector.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IRequiredMethodDefinitionCollector.cs" />
     <Compile Include="Mixins\Utilities\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />
