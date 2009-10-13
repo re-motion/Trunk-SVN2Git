@@ -182,6 +182,8 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Reflection\MethodSignatureStringBuilderTest.cs" />
+    <Compile Include="Reflection\TestDomain\ClassForMethodSignatureStringBuilding.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\DerivedMarkerAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilterTest.cs" />
