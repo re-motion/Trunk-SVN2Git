@@ -38,7 +38,7 @@
   <tr>
     <td class="stateCombinationsButtons">      
     </td>
-    <td class="accessControlEntriesButtons" rowspan="2">
+    <td class="accessControlEntriesButtons">
       <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
    </td>
   </tr>

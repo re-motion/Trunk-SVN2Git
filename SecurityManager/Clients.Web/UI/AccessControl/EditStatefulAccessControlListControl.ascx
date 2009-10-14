@@ -25,7 +25,7 @@
 
 <table class="accessControlList">
   <tr>
-    <td class="stateCombinationsButtons">      
+    <td class="stateCombinationsButtons">
       <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
       <remotion:WebButton ID="NewStateCombinationButton" runat="server" OnClick="NewStateCombinationButton_Click" CausesValidation="false" />
     </td>
@@ -42,7 +42,7 @@
   <tr>
     <td class="stateCombinationsButtons">      
     </td>
-    <td class="accessControlEntriesButtons" rowspan="2">
+    <td class="accessControlEntriesButtons">
       <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
    </td>
   </tr>
