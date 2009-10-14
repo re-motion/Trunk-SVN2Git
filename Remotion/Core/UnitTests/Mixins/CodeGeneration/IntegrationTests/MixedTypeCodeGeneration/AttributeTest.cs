@@ -178,7 +178,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    [Ignore ("Due to a missing SRE feature, CustomPropertyEmitter doesn't work as intended currently. Waiting for a service pack...")]
     public void AttributesOnDerivedPropertiesBehaveLikeMethods()
     {
       object[] attributes =

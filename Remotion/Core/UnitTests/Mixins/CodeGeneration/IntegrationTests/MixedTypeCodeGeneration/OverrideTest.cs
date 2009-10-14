@@ -36,7 +36,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    [Ignore ("Due to a missing SRE feature, CustomPropertyEmitter doesn't work as intended currently. Waiting for a service pack...")]
     public void OverrideClassProperties ()
     {
       BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (BT1Mixin1));

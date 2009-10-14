@@ -103,16 +103,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    [Ignore ("This is currently not supported by DynamicProxy due to a CLR bug.")]
-    public void OverrideGenericMethodInClosedGenericClassIsNotSupported ()
+    [Ignore ("Currently not supported by DynamicProxy.")]
+    public void OverrideGenericMethod_WithConstraint_ModifiedByClosedGenericClass ()
     {
       Type baseType = typeof (GenericClassWithGenericMethod<IConvertible, List<string>, int, object, IConvertible, List<List<IConvertible[]>>>);
-      CustomClassEmitter classEmitter =
-          new CustomClassEmitter (
-              Scope,
-              "Foo",
-              baseType,
-              Type.EmptyTypes,
+      var classEmitter = new CustomClassEmitter (
+          Scope,
+          "OverrideGenericMethod_WithConstraint_ModifiedByClosedGenericClass",
+          baseType,
+          Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = baseType.GetMethod ("GenericMethod");
@@ -121,7 +120,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       methodEmitter.ImplementByBaseCall (baseMethod);
 
       Type builtType = classEmitter.BuildType ();
-      GenericClassWithGenericMethod<IConvertible, List<string>, int, object, IConvertible, List<List<IConvertible[]>>> instance =
+      var instance =
           (GenericClassWithGenericMethod<IConvertible, List<string>, int, object, IConvertible, List<List<IConvertible[]>>>)
           Activator.CreateInstance (builtType);
 

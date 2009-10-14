@@ -98,7 +98,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     }
 
     [Test]
-    [Ignore ("Not supported at the moment")]
+    [Ignore ("Not supported at the moment by Attribute.GetCustomAttribute - should we leave this or add a workaround?")]
     public void Test_FromProtectedOverrideWithAttribute ()
     {
       Assert.IsTrue (AttributeUtility.IsDefined (_derivedProtectedProperty, typeof (InheritedAttribute), true));
