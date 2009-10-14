@@ -25,32 +25,35 @@ namespace Remotion.Configuration.TypeDiscovery
   /// </summary>
   public sealed class TypeDiscoveryConfiguration : ConfigurationSection
   {
+    public enum RootAssemblyFinderKind
+    {
+      Automatic,
+      CustomRootAssemblyFinder,
+      SpecificRootAssemblies
+    }
+
     public TypeDiscoveryConfiguration ()
     {
       var xmlnsProperty = new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None);
       Properties.Add (xmlnsProperty);
     }
 
-    [ConfigurationProperty ("customRootAssemblyFinder")]
+    [ConfigurationProperty ("rootAssemblyFinder", DefaultValue = RootAssemblyFinderKind.Automatic, IsRequired = false)]
+    public RootAssemblyFinderKind RootAssemblyFinder
+    {
+      get { return (RootAssemblyFinderKind) this["rootAssemblyFinder"]; }
+    }
+
+    [ConfigurationProperty ("customRootAssemblyFinder", IsRequired = false)]
     public TypeElement<IRootAssemblyFinder> CustomRootAssemblyFinder
     {
       get { return (TypeElement<IRootAssemblyFinder>) this["customRootAssemblyFinder"]; }
     }
 
-    [ConfigurationProperty ("specificRootAssemblies")]
+    [ConfigurationProperty ("specificRootAssemblies", IsRequired = false)]
     public RootAssembliesElement SpecificRootAssemblies
     {
       get { return (RootAssembliesElement) this["specificRootAssemblies"]; }
-    }
-
-    protected override void PostDeserialize ()
-    {
-      base.PostDeserialize ();
-      if (CustomRootAssemblyFinder.Type != null && (SpecificRootAssemblies.ByFile.Count != 0 || SpecificRootAssemblies.ByName.Count != 0))
-      {
-        var message = "Custom root assembly finder and specific root assemblies cannot both be specified.";
-        throw new ConfigurationErrorsException (message);
-      }
     }
   }
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.re-motion.org/Core/TypeDiscovery/Configuration" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="typeDiscovery">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element name="specificRootAssemblies" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="byName" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="include" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                        <xs:attribute name="includeReferencedAssemblies" type="xs:boolean" default="false" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="byFile" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="include" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="file" type="xs:string" use="required"/>
+                        <xs:attribute name="includeReferencedAssemblies" type="xs:boolean" default="false" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="exclude" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="file" type="xs:string" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="customRootAssemblyFinder" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="type" use="required" type="xs:string"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+
+      <xs:attribute name="rootAssemblyFinder" default="Automatic" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Automatic"/>
+            <xs:enumeration value="CustomRootAssemblyFinder"/>
+            <xs:enumeration value="SpecificRootAssemblies"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
