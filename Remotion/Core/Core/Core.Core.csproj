@@ -110,6 +110,12 @@
     <Compile Include="Collections\ReadOnlyDictionary.cs" />
     <Compile Include="Collections\ReadOnlyDictionarySpecific.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
+    <Compile Include="Configuration\TypeDiscovery\ByFileIncludeRootAssemblyElement.cs" />
+    <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElement.cs" />
+    <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElement.cs" />
+    <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollection.cs" />
+    <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElementCollection.cs" />
+    <Compile Include="Configuration\TypeDiscovery\ByFileExcludeRootAssemblyElement.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
