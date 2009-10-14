@@ -146,6 +146,7 @@
     <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollectionTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElementCollectionTest.cs" />
+    <Compile Include="Configuration\TypeDiscovery\RootAssembliesElementTest.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Diagnostics\ByteValueTest.cs" />

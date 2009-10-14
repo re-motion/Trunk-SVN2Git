@@ -116,6 +116,7 @@
     <Compile Include="Configuration\TypeDiscovery\ByNameRootAssemblyElementCollection.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileRootAssemblyElementCollection.cs" />
     <Compile Include="Configuration\TypeDiscovery\ByFileExcludeRootAssemblyElement.cs" />
+    <Compile Include="Configuration\TypeDiscovery\RootAssembliesElement.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
