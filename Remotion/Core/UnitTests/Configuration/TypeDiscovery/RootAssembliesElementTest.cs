@@ -40,6 +40,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     {
       var element = DeserializeFromXmlFragment (_emptyXmlFragment);
       Assert.That (element.ByName.Count, Is.EqualTo (0));
+      Assert.That (element.ByFile.Count, Is.EqualTo (0));
     }
 
     [Test]
