@@ -59,6 +59,9 @@
         <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Castle.DynamicProxy2.dll"/>
       </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion">
+        <include name="Configuration/TypeDiscovery/TypeDiscoveryConfiguration.xsd" />
+      </resources>
     </csc>
         
   </target>

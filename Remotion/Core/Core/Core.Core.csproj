@@ -672,7 +672,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
+    <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
     <None Include="Mixins\Context\Context.cd" />
     <None Include="Mixins\Definitions\Definitions.cd" />
     <None Include="Mixins\Validation\Validation.cd" />
