@@ -165,6 +165,20 @@ table.accessControlEntriesTable th.titleCellVertical div
   filter: FlipV() FlipH();
   padding-top: 0.25em;
   display: inline;
+  display: -moz-inline-box;
+  -moz-transform:rotate(270deg);
+  -moz-transform-origin: 0.6em 50%;
+  max-width: 1.4em !important;
+  white-space: nowrap;
+}
+
+table.accessControlEntriesTable th.titleCellVertical 
+{
+  max-width:1.4em !important;
+}
+
+table.accessControlEntriesTable tr.header
+{
 }
 
 table.accessControlEntriesTable tr.odd
@@ -212,4 +226,3 @@ table.accessControlEntryExpanded td.formGridTitleCell
 {
   display: none;
 }
-
