@@ -11,7 +11,7 @@ span.DropDownMenuContainer
 
 span.DropDownMenuSelect 
 {
-  display: block;
+  display: inline-block;
   position: relative;
 	border: solid 1px #005588;
 	text-align: left;
@@ -19,7 +19,7 @@ span.DropDownMenuSelect
 	white-space: nowrap;
 	cursor: pointer;
 	line-height: 1.25em;
-	min-height: 1.4em;
+	height: 1.4em;
 }
 
 span.DropDownMenuSelect.disabled
@@ -75,11 +75,26 @@ span.DropDownMenuSelect > span.DropDownMenuButton
  top: 0;
  right: 0;
 }
+/* IE6 Only */
+* html span.DropDownMenuSelect span.DropDownMenuButton
+{
+ width: 14px !important;
+ left: 0;
+ top: 0;
+ height: 12pt;
+}
 
 span.DropDownMenuSelect span.DropDownMenuButton img
 {
  height: 12pt;
  width: 16px;
+}
+
+/* IE6 Only */
+* html span.DropDownMenuSelect span.DropDownMenuButton img
+{
+  width: 15px !important;
+  height: 13pt;
 }
 
 span.DropDownMenuSelect img 
