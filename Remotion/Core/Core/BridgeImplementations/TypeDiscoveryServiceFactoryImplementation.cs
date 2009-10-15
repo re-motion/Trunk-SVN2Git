@@ -23,11 +23,11 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 namespace Remotion.BridgeImplementations
 {
   /// <summary>
-  /// The <see cref="AssemblyFinderTypeDiscoveryServiceFactoryImplementation"/> is a factory class that creates instances of type 
+  /// The <see cref="TypeDiscoveryServiceFactoryImplementation"/> is a factory class that creates instances of type 
   /// <see cref="AssemblyFinderTypeDiscoveryService"/>.
   /// </summary>
   /// <seealso cref="ContextAwareTypeDiscoveryUtility"/>
-  public class AssemblyFinderTypeDiscoveryServiceFactoryImplementation : IAssemblyFinderTypeDiscoveryServiceFactoryImplementation
+  public class TypeDiscoveryServiceFactoryImplementation : ITypeDiscoveryServiceFactoryImplementation
   {
     public ITypeDiscoveryService CreateTypeDiscoveryService ()
     {

@@ -18,6 +18,7 @@ using System.ComponentModel.Design;
 using System.Configuration;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -32,10 +33,11 @@ namespace Remotion.Configuration.TypeDiscovery
       Properties.Add (xmlnsProperty);
     }
 
-    [ConfigurationProperty ("kind", DefaultValue = TypeDiscoveryKind.Automatic, IsRequired = false)]
-    public TypeDiscoveryKind Kind
+    [ConfigurationProperty ("mode", DefaultValue = TypeDiscoveryMode.Automatic, IsRequired = false)]
+    public TypeDiscoveryMode Mode
     {
-      get { return (TypeDiscoveryKind) this["kind"]; }
+      get { return (TypeDiscoveryMode) this["mode"]; }
+      set { this["mode"] = value; }
     }
 
     [ConfigurationProperty ("customRootAssemblyFinder", IsRequired = false)]
@@ -54,6 +56,79 @@ namespace Remotion.Configuration.TypeDiscovery
     public TypeElement<ITypeDiscoveryService> CustomTypeDiscoveryService
     {
       get { return (TypeElement<ITypeDiscoveryService>) this["customTypeDiscoveryService"]; }
+    }
+
+    public ITypeDiscoveryService CreateTypeDiscoveryService ()
+    {
+      switch (Mode)
+      {
+        case TypeDiscoveryMode.CustomRootAssemblyFinder:
+          return CreateServiceWithCustomRootAssemblyFinder ();
+        case TypeDiscoveryMode.CustomTypeDiscoveryService:
+          return CreateCustomService ();
+        default:
+          return CreateAutomaticService ();
+      }
+    }
+
+    private ITypeDiscoveryService CreateServiceWithCustomRootAssemblyFinder ()
+    {
+      if (CustomRootAssemblyFinder.Type == null)
+      {
+        string message = string.Format (
+            "In CustomRootAssemblyFinder mode, a custom root asembly finder must be specified in the type discovery configuration. {0}", 
+            GetConfigurationBodyErrorMessage (
+                "CustomRootAssemblyFinder", 
+                "<customRootAssemblyFinder type=\"ApplicationNamespace.CustomFinderType, ApplicationAssembly\"/>"));
+        throw new ConfigurationErrorsException (message);
+      }
+
+      var customRootAssemblyFinder = (IRootAssemblyFinder) Activator.CreateInstance (CustomRootAssemblyFinder.Type);
+      return CreateAssemblyFinderService (customRootAssemblyFinder);
+    }
+
+    private ITypeDiscoveryService CreateCustomService ()
+    {
+      if (CustomTypeDiscoveryService.Type == null)
+      {
+        string message = string.Format (
+            "In CustomTypeDiscoveryService mode, a custom type discovery service must be specified in the type discovery configuration. {0}",
+            GetConfigurationBodyErrorMessage (
+                "CustomTypeDiscoveryService",
+                "<customTypeDiscoveryService type=\"ApplicationNamespace.CustomServiceType, ApplicationAssembly\"/>"));
+        throw new ConfigurationErrorsException (message);
+      }
+
+      return (ITypeDiscoveryService) Activator.CreateInstance (CustomTypeDiscoveryService.Type);
+    }
+
+    private ITypeDiscoveryService CreateAutomaticService ()
+    {
+      var searchPathRootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
+      return CreateAssemblyFinderService (searchPathRootAssemblyFinder);
+    }
+
+    private ITypeDiscoveryService CreateAssemblyFinderService (IRootAssemblyFinder customRootAssemblyFinder)
+    {
+      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+      var assemblyFinder = new AssemblyFinder (customRootAssemblyFinder, assemblyLoader);
+      return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+    }
+    
+    private string GetConfigurationBodyErrorMessage (string modeValue, string modeSpecificBodyElement)
+    {
+      var message = Environment.NewLine + Environment.NewLine
+                    + "Example configuration: " + Environment.NewLine
+                    + "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + Environment.NewLine
+                    + "<configuration>" + Environment.NewLine
+                    + "  <configSections>" + Environment.NewLine
+                    + "    <section name=\"remotion.typeDiscovery\" type=\"Remotion.Configuration.TypeDiscovery.TypeDiscoveryConfiguration, Remotion\" />" + Environment.NewLine
+                    + "  </configSections>" + Environment.NewLine
+                    + "  <remotion.typeDiscovery xmlns=\"http://www.re-motion.org/typeDiscovery/configuration\" mode=\"" + modeValue + "\">" + Environment.NewLine
+                    + "    " + modeSpecificBodyElement + Environment.NewLine
+                    + "  </remotion.typeDiscovery>" + Environment.NewLine
+                    + "</configuration>";
+      return message;
     }
   }
 }

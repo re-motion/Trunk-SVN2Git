@@ -55,7 +55,7 @@
         </xs:element>
       </xs:choice>
 
-      <xs:attribute name="kind" default="Automatic" use="optional">
+      <xs:attribute name="mode" default="Automatic" use="optional">
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:enumeration value="Automatic"/>

@@ -5,7 +5,7 @@ namespace Remotion.Configuration.TypeDiscovery
   /// <summary>
   /// Defines how type discovery should work.
   /// </summary>
-  public enum TypeDiscoveryKind
+  public enum TypeDiscoveryMode
   {
     /// <summary>
     /// Chooses automatic type discovery, the application's bin directory is searched for assemblies. The types are discovered from those assemblies
