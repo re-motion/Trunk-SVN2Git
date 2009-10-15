@@ -15,13 +15,13 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 //
-jQuery(function()
+jQuery(document).ready(function()
 {
   if (!jQuery.browser.msie) 
   {
     var maximumLength = 0;
     var headerRow = '';
-    jQuery('tr.header').each(function(i) 
+    jQuery('.header').each(function(i) 
     {
       var headerRow = jQuery(this);
       headerRow.children('.titleCellVertical').each(function() 
@@ -36,7 +36,7 @@ jQuery(function()
     {
       var headerHeight = 1 + maximumLength * 0.5 + 'em';
       var styleElement = document.createElement('style');
-      var textStyle = 'tr.header {height: ' + headerHeight + ' !important;}';
+      var textStyle = 'th.header, th.titleCellVertical, tr.header, tr.titleCellVertical {height: ' + headerHeight + ' !important;}';
       styleElement.setAttribute("type", "text/css");
       var textElement = document.createTextNode(textStyle);
       styleElement.appendChild(textElement);
