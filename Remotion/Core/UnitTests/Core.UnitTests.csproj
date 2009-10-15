@@ -212,6 +212,8 @@
     <Compile Include="Reflection\SignatureStringBuilding\TestDomain\GenericClass.cs" />
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinderTest.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\NamedRootAssemblyFinderTest.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RootAssemblyTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\DerivedMarkerAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinderTest.cs" />

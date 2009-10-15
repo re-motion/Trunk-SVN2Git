@@ -41,12 +41,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
     public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
     {
-      var combinedAssemblies = new HashSet<RootAssembly> ();
-      foreach (var finder in _innerFinders)
-      {
-        combinedAssemblies.UnionWith (finder.FindRootAssemblies (loader));
-      }
-      return combinedAssemblies.ToArray ();
+      ArgumentUtility.CheckNotNull ("loader", loader);
+
+      return _innerFinders.SelectMany (finder => finder.FindRootAssemblies (loader)).Distinct().ToArray();
     }
   }
 }

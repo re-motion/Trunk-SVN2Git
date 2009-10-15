@@ -35,5 +35,15 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
     public Assembly Assembly { get; private set; }
     public bool FollowReferences { get; private set; }
+
+    public override bool Equals (object obj)
+    {
+      return obj is RootAssembly && Assembly.Equals (((RootAssembly) obj).Assembly);
+    }
+
+    public override int GetHashCode ()
+    {
+      return Assembly.GetHashCode ();
+    }
   }
 }

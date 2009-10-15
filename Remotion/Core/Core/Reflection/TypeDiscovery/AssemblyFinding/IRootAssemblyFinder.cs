@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
@@ -27,7 +28,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     /// Finds the root assemblies, using the given <see cref="IAssemblyLoader"/>.
     /// </summary>
     /// <param name="loader">The <see cref="IAssemblyLoader"/> to load the assemblies with.</param>
-    /// <returns></returns>
+    /// <returns>An array of <see cref="RootAssembly"/> instances holding distinct, non-<see langword="null" /> <see cref="Assembly"/> objects
+    /// as well as flags indicating whether to follow the references of the respective assembly or not.</returns>
     RootAssembly[] FindRootAssemblies (IAssemblyLoader loader);
   }
 }
