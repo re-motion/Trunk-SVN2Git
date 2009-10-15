@@ -20,6 +20,12 @@ form
   width: 100%;
 }
 
+/* IE7 only */
+*:first-child+html div.content 
+{
+  width: auto !important;
+}
+
 div#ErrorContainer
 {
   color: Red;
@@ -96,6 +102,17 @@ td.stateCombinationsButtons
   vertical-align: top;  
 }
 
+/* IE7 only */
+*:first-child+html td.stateCombinationsButtons button.webButton
+{
+  max-width: 94%;
+}
+/* IE6 only */
+* html td.stateCombinationsButtons button.webButton
+{
+  width: 96%;
+}
+
 td.accessControlEntriesButtons,
 td.accessControlEntriesContainer
 {
@@ -120,7 +137,7 @@ table.accessControlEntriesTable
 {
   border-collapse: collapse;
   border-style: none;
-  width: 100%;
+  width: auto;
 }
 
 table.accessControlEntriesTable th.titleCellHorizontal,
