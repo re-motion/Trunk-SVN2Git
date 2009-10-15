@@ -171,6 +171,11 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\MixinOverriddenByProtectedOverrider.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\DerivedTargetClassWithProtectedOverrider.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\InheritanceResolvingClassContextBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\DuckTypingRequiredMethodDefinitionCollectorTest.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\TestDomain\ClassImplementingInterfaceWithDuckTyping.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\TestDomain\ClassImplementingInterfaceWithDuckTypingWithOverloads.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\TestDomain\ClassImplementingInterfaceWithDuckTypingWithBaseWithSameMembers.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\TestDomain\IInterface.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\ClassFulfillingInternally.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\ClassFulfillingPrivately.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\RequiredMethodDefinitionBuilding\ClassFulfillingProtectedly.cs" />
