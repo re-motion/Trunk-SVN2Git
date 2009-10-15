@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
@@ -90,16 +89,22 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
     public virtual CompositeRootAssemblyFinder CreateCombinedFinder ()
     {
-      var finders = new List<IRootAssemblyFinder> { new DirectoryRootAssemblyFinder (_baseDirectory) };
+      var fileSearchService = new FileSystemSearchService ();
+      var specifications = new[] { 
+          new FilePatternRootAssemblyFinder.Specification ("*.exe", true), 
+          new FilePatternRootAssemblyFinder.Specification ("*.dll", true) 
+      };
+
+      var finders = new List<IRootAssemblyFinder> { new FilePatternRootAssemblyFinder (_baseDirectory, specifications, fileSearchService) };
 
       if (!string.IsNullOrEmpty (_relativeSearchPath))
       {
         foreach (string privateBinPath in _relativeSearchPath.Split (';'))
-          finders.Add (new DirectoryRootAssemblyFinder (privateBinPath));
+          finders.Add (new FilePatternRootAssemblyFinder (privateBinPath, specifications, fileSearchService));
       }
 
       if (_considerDynamicDirectory && !string.IsNullOrEmpty (_dynamicDirectory))
-        finders.Add (new DirectoryRootAssemblyFinder (_dynamicDirectory));
+        finders.Add (new FilePatternRootAssemblyFinder (_dynamicDirectory, specifications, fileSearchService));
 
       return new CompositeRootAssemblyFinder (finders);
     }

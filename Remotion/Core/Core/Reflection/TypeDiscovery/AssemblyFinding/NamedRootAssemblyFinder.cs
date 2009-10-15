@@ -27,8 +27,6 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class NamedRootAssemblyFinder : IRootAssemblyFinder
   {
-    private readonly IEnumerable<Specification> _assemblySpecifications;
-
     /// <summary>
     /// Holds an <see cref="System.Reflection.AssemblyName"/> and a flag indicating whether to include referenced assemblies.
     /// </summary>
@@ -51,6 +49,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
         return "Specification: " + AssemblyName;
       }
     }
+
+    private readonly IEnumerable<Specification> _assemblySpecifications;
 
     public NamedRootAssemblyFinder (IEnumerable<Specification> assemblySpecifications)
     {

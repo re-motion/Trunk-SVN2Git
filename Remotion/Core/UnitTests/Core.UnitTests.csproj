@@ -217,7 +217,7 @@
     <Compile Include="Reflection\TypeDiscovery\DerivedMarkerAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\ApplicationAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinderTest.cs" />
-    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\DirectoryRootAssemblyFinderTest.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RegexAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\SearchPathRootAssemblyFinderTest.cs" />
     <Compile Include="Utilities\MethodResolverTest.cs" />

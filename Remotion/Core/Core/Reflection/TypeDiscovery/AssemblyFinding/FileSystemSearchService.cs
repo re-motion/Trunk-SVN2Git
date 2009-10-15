@@ -1,0 +1,36 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Remotion.Utilities;
+
+namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
+{
+  /// <summary>
+  /// Implements the <see cref="IFileSearchService"/> using the <see cref="Directory"/> class.
+  /// </summary>
+  public class FileSystemSearchService : IFileSearchService
+  {
+    public IEnumerable<string> GetFiles (string searchPath, string searchPattern, SearchOption searchOption)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("searchPath", searchPath);
+      ArgumentUtility.CheckNotNullOrEmpty ("searchPattern", searchPattern);
+
+      return Directory.GetFiles (searchPath, searchPattern, searchOption);
+    }
+  }
+}
