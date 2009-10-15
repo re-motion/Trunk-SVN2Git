@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using Remotion.Utilities;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -64,6 +65,21 @@ namespace Remotion.Configuration.TypeDiscovery
       {
         yield return (ByFileRootAssemblyElementBase) item;
       }
+    }
+
+    public void Add (ByFileRootAssemblyElementBase element)
+    {
+      BaseAdd (element);
+    }
+
+    public void RemoveAt (int index)
+    {
+      BaseRemoveAt (index);
+    }
+
+    public void Clear ()
+    {
+      BaseClear ();
     }
   }
 }

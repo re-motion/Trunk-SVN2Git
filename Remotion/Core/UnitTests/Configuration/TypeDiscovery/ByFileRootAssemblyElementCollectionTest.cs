@@ -35,7 +35,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Deserialization ()
     {
-      ByFileRootAssemblyElementBase[] result = DeserializeFromXmlFragment();
+      ByFileRootAssemblyElementBase[] result = DeserializeFromXmlFragment (_xmlFragment);
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0].File, Is.EqualTo ("ActaNova.*.dll"));
       Assert.That (result[1].File, Is.EqualTo ("Remotion.*.dll"));
@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Deserialization_Types ()
     {
-      ByFileRootAssemblyElementBase[] result = DeserializeFromXmlFragment ();
+      ByFileRootAssemblyElementBase[] result = DeserializeFromXmlFragment (_xmlFragment);
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0], Is.InstanceOfType (typeof (ByFileIncludeRootAssemblyElement)));
       Assert.That (result[1], Is.InstanceOfType (typeof (ByFileIncludeRootAssemblyElement)));
@@ -55,8 +55,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void IncludeReferencedAssemblies_FalseByDefault ()
     {
-      var collection = new ByFileRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, _xmlFragment);
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
 
       ByFileRootAssemblyElementBase[] result = collection.ToArray ();
       Assert.That (((ByFileIncludeRootAssemblyElement) result[0]).IncludeReferencedAssemblies, Is.False);
@@ -65,8 +64,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void IncludeReferencedAssemblies_TrueIfSpecified ()
     {
-      var collection = new ByFileRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, _xmlFragment);
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
 
       ByFileRootAssemblyElementBase[] result = collection.ToArray ();
       Assert.That (((ByFileIncludeRootAssemblyElement) result[1]).IncludeReferencedAssemblies, Is.True);
@@ -83,14 +81,85 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
               <exclude file=""Remotion.*.Utilities.dll"" includeReferencedAssemblies=""true""/>
             </byFile>";
 
-      var collection = new ByFileRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, xmlFragment);
+      DeserializeFromXmlFragment (xmlFragment);
     }
 
-    private ByFileRootAssemblyElementBase[] DeserializeFromXmlFragment ()
+    [Test]
+    public void Add ()
+    {
+      var element1 = new ByFileIncludeRootAssemblyElement { File = "*.dll", IncludeReferencedAssemblies = true };
+      var element2 = new ByFileIncludeRootAssemblyElement { File = "*.exe" };
+      var element3 = new ByFileExcludeRootAssemblyElement { File = "Utilities.exe" };
+      
+      var collection = new ByFileRootAssemblyElementCollection ();
+      collection.Add (element1);
+      collection.Add (element2);
+      collection.Add (element3);
+
+      ByFileRootAssemblyElementBase[] result = collection.ToArray ();
+      Assert.That (result, Is.EqualTo (new ByFileRootAssemblyElementBase[] { element1, element2, element3 }));
+    }
+
+    [Test]
+    public void RemoveAt ()
+    {
+      var element1 = new ByFileIncludeRootAssemblyElement { File = "*.dll", IncludeReferencedAssemblies = true };
+      var element2 = new ByFileIncludeRootAssemblyElement { File = "*.exe" };
+      var element3 = new ByFileExcludeRootAssemblyElement { File = "Utilities.exe" };
+
+      var collection = new ByFileRootAssemblyElementCollection ();
+      collection.Add (element1);
+      collection.Add (element2);
+      collection.Add (element3);
+      collection.RemoveAt (1);
+
+      ByFileRootAssemblyElementBase[] result = collection.ToArray ();
+      Assert.That (result, Is.EquivalentTo (new ByFileRootAssemblyElementBase[] { element1, element3 }));
+    }
+
+    [Test]
+    public void Clear ()
+    {
+      var element1 = new ByFileIncludeRootAssemblyElement { File = "*.dll", IncludeReferencedAssemblies = true };
+      var element2 = new ByFileIncludeRootAssemblyElement { File = "*.exe" };
+      var element3 = new ByFileExcludeRootAssemblyElement { File = "Utilities.exe" };
+
+      var collection = new ByFileRootAssemblyElementCollection ();
+      collection.Add (element1);
+      collection.Add (element2);
+      collection.Add (element3);
+      collection.Clear ();
+
+      ByFileRootAssemblyElementBase[] result = collection.ToArray ();
+      Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    [Ignore ("TODO 1643")]
+    public void CreateRootAssemblyFinder ()
+    {
+      Assert.Fail ();
+
+      //var collection = DeserializeFromXmlFragment (_xmlFragment);
+      //var finder = (FilePatternRootAssemblyFinder) collection.CreateRootAssemblyFinder ();
+
+      //var specs = finder.Specifications.ToArray();
+
+      //Assert.That (specs[0].FilePattern, Is.EqualTo ("ActaNova.*.dll"));
+      //Assert.That (specs[0].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.SpecificationKind.IncludeNoFollow));
+
+      //Assert.That (specs[1].FilePattern, Is.EqualTo ("Remotion.*.dll"));
+      //Assert.That (specs[1].FollowReferences, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.SpecificationKind.IncludeFollowReferences));
+
+      //Assert.That (specs[2].FilePattern, Is.EqualTo ("Remotion.*.dll"));
+      //Assert.That (specs[2].FollowReferences, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.SpecificationKind.Exclude));
+    }
+
+
+    private ByFileRootAssemblyElementBase[] DeserializeFromXmlFragment (string xmlFragment)
     {
       var collection = new ByFileRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, _xmlFragment);
+      ConfigurationHelper.DeserializeElement (collection, xmlFragment);
 
       return collection.ToArray ();
     }
