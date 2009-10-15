@@ -91,8 +91,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     {
       var fileSearchService = new FileSystemSearchService ();
       var specifications = new[] { 
-          new FilePatternRootAssemblyFinder.Specification ("*.exe", true), 
-          new FilePatternRootAssemblyFinder.Specification ("*.dll", true) 
+          new FilePatternSpecification ("*.exe", FilePatternSpecificationKind.IncludeFollowReferences), 
+          new FilePatternSpecification ("*.dll", FilePatternSpecificationKind.IncludeFollowReferences) 
       };
 
       var finders = new List<IRootAssemblyFinder> { new FilePatternRootAssemblyFinder (_baseDirectory, specifications, fileSearchService) };

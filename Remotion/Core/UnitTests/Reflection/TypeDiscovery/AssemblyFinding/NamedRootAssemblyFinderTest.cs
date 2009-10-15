@@ -37,9 +37,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     private AssemblyName _name2;
     private AssemblyName _name3;
     
-    private NamedRootAssemblyFinder.Specification _specification1;
-    private NamedRootAssemblyFinder.Specification _specification2;
-    private NamedRootAssemblyFinder.Specification _specification3;
+    private AssemblyNameSpecification _specification1;
+    private AssemblyNameSpecification _specification2;
+    private AssemblyNameSpecification _specification3;
 
     [SetUp]
     public void SetUp ()
@@ -54,9 +54,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       _name2 = new AssemblyName ("n2");
       _name3 = new AssemblyName ("n3, Version=1.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
 
-      _specification1 = new NamedRootAssemblyFinder.Specification (_name1, true);
-      _specification2 = new NamedRootAssemblyFinder.Specification (_name2, false);
-      _specification3 = new NamedRootAssemblyFinder.Specification (_name3, true);
+      _specification1 = new AssemblyNameSpecification (_name1, true);
+      _specification2 = new AssemblyNameSpecification (_name2, false);
+      _specification3 = new AssemblyNameSpecification (_name3, true);
     }
 
     [Test]

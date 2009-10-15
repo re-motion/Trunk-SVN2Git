@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
-using System.Reflection;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -27,38 +26,15 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class NamedRootAssemblyFinder : IRootAssemblyFinder
   {
-    /// <summary>
-    /// Holds an <see cref="System.Reflection.AssemblyName"/> and a flag indicating whether to include referenced assemblies.
-    /// </summary>
-    public struct Specification
-    {
-      public Specification (AssemblyName assemblyName, bool followReferences)
-          : this()
-      {
-        ArgumentUtility.CheckNotNull ("assemblyName", assemblyName);
+    private readonly IEnumerable<AssemblyNameSpecification> _specifications;
 
-        AssemblyName = assemblyName;
-        FollowReferences = followReferences;
-      }
-
-      public AssemblyName AssemblyName { get; private set; }
-      public bool FollowReferences { get; private set; }
-
-      public override string ToString ()
-      {
-        return "Specification: " + AssemblyName;
-      }
-    }
-
-    private readonly IEnumerable<Specification> _specifications;
-
-    public NamedRootAssemblyFinder (IEnumerable<Specification> specifications)
+    public NamedRootAssemblyFinder (IEnumerable<AssemblyNameSpecification> specifications)
     {
       ArgumentUtility.CheckNotNull ("specifications", specifications);
       _specifications = specifications;
     }
 
-    public IEnumerable<Specification> Specifications
+    public IEnumerable<AssemblyNameSpecification> Specifications
     {
       get { return _specifications; }
     }

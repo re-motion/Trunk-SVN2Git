@@ -214,8 +214,11 @@
     <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelper.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilder.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\PropertySignatureStringBuilder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyNameSpecification.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinder.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternSpecification.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternSpecificationKind.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FileSystemSearchService.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\IAssemblyFinder.cs" />

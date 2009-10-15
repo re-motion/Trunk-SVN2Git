@@ -39,10 +39,10 @@ namespace Remotion.Configuration.TypeDiscovery
       set { this["includeReferencedAssemblies"] = value; }
     }
 
-    public NamedRootAssemblyFinder.Specification CreateSpecification ()
+    public AssemblyNameSpecification CreateSpecification ()
     {
       var assemblyName = new AssemblyName (Name);
-      return new NamedRootAssemblyFinder.Specification (assemblyName, IncludeReferencedAssemblies);
+      return new AssemblyNameSpecification (assemblyName, IncludeReferencedAssemblies);
     }
   }
 }

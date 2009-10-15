@@ -69,8 +69,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finderSpecs = GetSpecificationsForCombinedFinder(finder);
 
       Assert.That (finderSpecs, Is.EquivalentTo (new[] { 
-          new FilePatternRootAssemblyFinder.Specification ("*.exe", true), 
-          new FilePatternRootAssemblyFinder.Specification ("*.dll", true) }));
+          new FilePatternSpecification ("*.exe", FilePatternSpecificationKind.IncludeFollowReferences), 
+          new FilePatternSpecification ("*.dll", FilePatternSpecificationKind.IncludeFollowReferences) }));
     }
 
     [Test]
@@ -101,8 +101,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       Assert.That (finderDirectories, List.Contains ("dynamicDirectory"));
       Assert.That (finderSpecs, Is.EquivalentTo (new[] { 
-          new FilePatternRootAssemblyFinder.Specification ("*.exe", true), 
-          new FilePatternRootAssemblyFinder.Specification ("*.dll", true) }));
+          new FilePatternSpecification ("*.exe", FilePatternSpecificationKind.IncludeFollowReferences), 
+          new FilePatternSpecification ("*.dll", FilePatternSpecificationKind.IncludeFollowReferences) }));
       Assert.That (finderService, Is.InstanceOfType (typeof (FileSystemSearchService)));
     }
 
@@ -158,7 +158,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       return combinedFinder.InnerFinders.Cast<FilePatternRootAssemblyFinder> ().Select (f => f.SearchPath).ToArray ();
     }
 
-    private FilePatternRootAssemblyFinder.Specification[] GetSpecificationsForCombinedFinder (SearchPathRootAssemblyFinder finder)
+    private FilePatternSpecification[] GetSpecificationsForCombinedFinder (SearchPathRootAssemblyFinder finder)
     {
       return finder.CreateCombinedFinder ()
           .InnerFinders

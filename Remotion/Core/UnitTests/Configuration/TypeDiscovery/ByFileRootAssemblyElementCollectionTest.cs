@@ -150,13 +150,13 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       //var specs = finder.Specifications.ToArray();
 
       //Assert.That (specs[0].FilePattern, Is.EqualTo ("ActaNova.*.dll"));
-      //Assert.That (specs[0].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.SpecificationKind.IncludeNoFollow));
+      //Assert.That (specs[0].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.FilePatternSpecificationKind.IncludeNoFollow));
 
       //Assert.That (specs[1].FilePattern, Is.EqualTo ("Remotion.*.dll"));
-      //Assert.That (specs[1].FollowReferences, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.SpecificationKind.IncludeFollowReferences));
+      //Assert.That (specs[1].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.FilePatternSpecificationKind.IncludeFollowReferences));
 
       //Assert.That (specs[2].FilePattern, Is.EqualTo ("Remotion.*.dll"));
-      //Assert.That (specs[2].FollowReferences, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.SpecificationKind.Exclude));
+      //Assert.That (specs[2].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.FilePatternSpecificationKind.Exclude));
     }
 
 

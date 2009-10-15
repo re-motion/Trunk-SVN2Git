@@ -27,26 +27,39 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class FilePatternRootAssemblyFinder : IRootAssemblyFinder
   {
-    public struct Specification
+    /// <summary>
+    /// Holds a file path string as well as a flag indicating whether referenced assemblies should be followed or not. Equality comparisons of
+    /// instances only check the file name, not the flag - this simplifies the algorithm to exclude file names in 
+    /// <see cref="FilePatternRootAssemblyFinder.ConsolidateSpecifications"/>.
+    /// </summary>
+    private struct FileDescription
     {
-      public Specification (string filePattern, bool followReferences)
+      public FileDescription (string file, bool followReferences)
           : this()
       {
-        ArgumentUtility.CheckNotNullOrEmpty ("filePattern", filePattern);
-
-        FilePattern = filePattern;
+        FilePath = file;
         FollowReferences = followReferences;
       }
 
-      public string FilePattern { get; private set; }
+      public string FilePath { get; private set; }
       public bool FollowReferences { get; private set; }
+
+      public override bool Equals (object obj)
+      {
+        return obj is FileDescription && Equals (FilePath, ((FileDescription) obj).FilePath);
+      }
+
+      public override int GetHashCode ()
+      {
+        return FilePath.GetHashCode ();
+      }
     }
 
     private readonly string _searchPath;
-    private readonly IEnumerable<Specification> _specifications;
+    private readonly IEnumerable<FilePatternSpecification> _specifications;
     private readonly IFileSearchService _fileSearchService;
 
-    public FilePatternRootAssemblyFinder (string searchPath, IEnumerable<Specification> specifications, IFileSearchService fileSearchService)
+    public FilePatternRootAssemblyFinder (string searchPath, IEnumerable<FilePatternSpecification> specifications, IFileSearchService fileSearchService)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("searchPath", searchPath);
       ArgumentUtility.CheckNotNull ("specifications", specifications);
@@ -62,7 +75,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _searchPath; }
     }
 
-    public IEnumerable<Specification> Specifications
+    public IEnumerable<FilePatternSpecification> Specifications
     {
       get { return _specifications; }
     }
@@ -74,13 +87,39 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 
     public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
     {
-      var rootAssemblies = from specification in _specifications
-                           let files = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly)
-                           from file in files
-                           let assembly = loader.TryLoadAssembly (file)
+      var fileDescriptions = ConsolidateSpecifications ();
+
+      var rootAssemblies = from fileDescription in fileDescriptions
+                           let assembly = loader.TryLoadAssembly (fileDescription.FilePath)
                            where assembly != null
-                           select new RootAssembly (assembly, specification.FollowReferences);
+                           select new RootAssembly (assembly, fileDescription.FollowReferences);
       return rootAssemblies.Distinct ().ToArray ();
+    }
+
+    private IEnumerable<FileDescription> ConsolidateSpecifications ()
+    {
+      var fileDescriptions = new HashSet<FileDescription> ();
+
+      foreach (var specification in _specifications)
+      {
+        switch (specification.Kind)
+        {
+          case FilePatternSpecificationKind.IncludeNoFollow:
+            var filesNotToFollow = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
+            fileDescriptions.UnionWith (filesNotToFollow.Select (f => new FileDescription (f, false)));
+            break;
+          case FilePatternSpecificationKind.IncludeFollowReferences:
+            var filesToFollow = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
+            fileDescriptions.UnionWith (filesToFollow.Select (f => new FileDescription (f, true)));
+            break;
+          default:
+            var filesToExclude = _fileSearchService.GetFiles (_searchPath, specification.FilePattern, SearchOption.TopDirectoryOnly);
+            fileDescriptions.ExceptWith (filesToExclude.Select (f => new FileDescription (f, true))); // the "true" flag is ignored on comparisons
+            break;
+        }
+      }
+
+      return fileDescriptions;
     }
   }
 }
