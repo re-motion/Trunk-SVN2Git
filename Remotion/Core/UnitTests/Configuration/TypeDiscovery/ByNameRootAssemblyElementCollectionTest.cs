@@ -59,6 +59,56 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       Assert.That (result[1].IncludeReferencedAssemblies, Is.True);
     }
 
+    [Test]
+    public void Add ()
+    {
+      var element1 = new ByNameRootAssemblyElement { Name = "x", IncludeReferencedAssemblies = true };
+      var element2 = new ByNameRootAssemblyElement { Name = "y" };
+      var element3 = new ByNameRootAssemblyElement { Name = "z" };
+
+      var collection = new ByNameRootAssemblyElementCollection ();
+      collection.Add (element1);
+      collection.Add (element2);
+      collection.Add (element3);
+
+      ByNameRootAssemblyElement[] result = collection.ToArray ();
+      Assert.That (result, Is.EqualTo (new[] { element1, element2, element3 }));
+    }
+
+    [Test]
+    public void RemoveAt ()
+    {
+      var element1 = new ByNameRootAssemblyElement { Name = "x", IncludeReferencedAssemblies = true };
+      var element2 = new ByNameRootAssemblyElement { Name = "y" };
+      var element3 = new ByNameRootAssemblyElement { Name = "z" };
+
+      var collection = new ByNameRootAssemblyElementCollection ();
+      collection.Add (element1);
+      collection.Add (element2);
+      collection.Add (element3);
+      collection.RemoveAt (1);
+
+      ByNameRootAssemblyElement[] result = collection.ToArray ();
+      Assert.That (result, Is.EquivalentTo (new[] { element1, element3 }));
+    }
+
+    [Test]
+    public void Clear ()
+    {
+      var element1 = new ByNameRootAssemblyElement { Name = "x", IncludeReferencedAssemblies = true };
+      var element2 = new ByNameRootAssemblyElement { Name = "y" };
+      var element3 = new ByNameRootAssemblyElement { Name = "z" };
+
+      var collection = new ByNameRootAssemblyElementCollection ();
+      collection.Add (element1);
+      collection.Add (element2);
+      collection.Add (element3);
+      collection.Clear ();
+
+      ByNameRootAssemblyElement[] result = collection.ToArray ();
+      Assert.That (result, Is.Empty);
+    }
+
     private ByNameRootAssemblyElement[] DeserializeFromXmlFragment ()
     {
       var collection = new ByNameRootAssemblyElementCollection ();
