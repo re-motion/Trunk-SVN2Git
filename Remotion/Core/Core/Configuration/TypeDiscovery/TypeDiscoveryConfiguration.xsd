@@ -48,14 +48,20 @@
             <xs:attribute name="type" use="required" type="c:DotNetType"/>
           </xs:complexType>
         </xs:element>
+        <xs:element name="customTypeDiscoveryService" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="type" use="required" type="c:DotNetType"/>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
 
-      <xs:attribute name="rootAssemblyFinder" default="Automatic" use="optional">
+      <xs:attribute name="kind" default="Automatic" use="optional">
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:enumeration value="Automatic"/>
             <xs:enumeration value="CustomRootAssemblyFinder"/>
             <xs:enumeration value="SpecificRootAssemblies"/>
+            <xs:enumeration value="CustomTypeDiscoveryService"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

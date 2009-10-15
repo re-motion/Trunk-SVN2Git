@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel.Design;
 using System.Configuration;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
@@ -25,23 +26,16 @@ namespace Remotion.Configuration.TypeDiscovery
   /// </summary>
   public sealed class TypeDiscoveryConfiguration : ConfigurationSection
   {
-    public enum RootAssemblyFinderKind
-    {
-      Automatic,
-      CustomRootAssemblyFinder,
-      SpecificRootAssemblies
-    }
-
     public TypeDiscoveryConfiguration ()
     {
       var xmlnsProperty = new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None);
       Properties.Add (xmlnsProperty);
     }
 
-    [ConfigurationProperty ("rootAssemblyFinder", DefaultValue = RootAssemblyFinderKind.Automatic, IsRequired = false)]
-    public RootAssemblyFinderKind RootAssemblyFinder
+    [ConfigurationProperty ("kind", DefaultValue = TypeDiscoveryKind.Automatic, IsRequired = false)]
+    public TypeDiscoveryKind Kind
     {
-      get { return (RootAssemblyFinderKind) this["rootAssemblyFinder"]; }
+      get { return (TypeDiscoveryKind) this["kind"]; }
     }
 
     [ConfigurationProperty ("customRootAssemblyFinder", IsRequired = false)]
@@ -54,6 +48,12 @@ namespace Remotion.Configuration.TypeDiscovery
     public RootAssembliesElement SpecificRootAssemblies
     {
       get { return (RootAssembliesElement) this["specificRootAssemblies"]; }
+    }
+
+    [ConfigurationProperty ("customTypeDiscoveryService", IsRequired = false)]
+    public TypeElement<ITypeDiscoveryService> CustomTypeDiscoveryService
+    {
+      get { return (TypeElement<ITypeDiscoveryService>) this["customTypeDiscoveryService"]; }
     }
   }
 }

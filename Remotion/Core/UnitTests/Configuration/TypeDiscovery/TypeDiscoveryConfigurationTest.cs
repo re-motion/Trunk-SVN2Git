@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -28,41 +27,44 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
   {
     private const string _xmlFragmentDefault = @"<typeDiscovery xmlns=""..."">
       </typeDiscovery>";
-    private const string _xmlFragmentWithAutoRootAssemblyFinder = @"<typeDiscovery rootAssemblyFinder=""Automatic"" xmlns=""..."">
+    private const string _xmlFragmentWithAutoRootAssemblyFinder = @"<typeDiscovery kind=""Automatic"" xmlns=""..."">
       </typeDiscovery>";
-    private const string _xmlFragmentWithSpecificRootAssemblyFinder = @"<typeDiscovery rootAssemblyFinder=""CustomRootAssemblyFinder"" xmlns=""..."">
+    private const string _xmlFragmentWithCustomRootAssemblyFinder = @"<typeDiscovery kind=""CustomRootAssemblyFinder"" xmlns=""..."">
         <customRootAssemblyFinder type=""Remotion.UnitTests::Configuration.TypeDiscovery.FakeRootAssemblyFinder""/>
       </typeDiscovery>";
-    private const string _xmlFragmentWithSpecificRootAssemblies = @"<typeDiscovery rootAssemblyFinder=""SpecificRootAssemblies"" xmlns=""..."">
+    private const string _xmlFragmentWithSpecificRootAssemblies = @"<typeDiscovery kind=""SpecificRootAssemblies"" xmlns=""..."">
         <specificRootAssemblies>
           <byName>
             <include name=""mscorlib""/>
           </byName>
         </specificRootAssemblies>
       </typeDiscovery>";
-    private const string _xmlFragmentWithSpecificEmptyRootAssemblies = @"<typeDiscovery rootAssemblyFinder=""SpecificRootAssemblies"" xmlns=""..."">
+    private const string _xmlFragmentWithSpecificEmptyRootAssemblies = @"<typeDiscovery kind=""SpecificRootAssemblies"" xmlns=""..."">
         <specificRootAssemblies />
+      </typeDiscovery>";
+    private const string _xmlFragmentWithCustomTypeDiscoveryService = @"<typeDiscovery kind=""CustomTypeDiscoveryService"" xmlns=""..."">
+        <customTypeDiscoveryService type=""Remotion.UnitTests::Configuration.TypeDiscovery.FakeTypeDiscoveryService""/>
       </typeDiscovery>";
 
     [Test]
     public void Deserialization_Default ()
     {
       var section = Deserialize (_xmlFragmentDefault);
-      Assert.That (section.RootAssemblyFinder, Is.EqualTo (TypeDiscoveryConfiguration.RootAssemblyFinderKind.Automatic));
+      Assert.That (section.Kind, Is.EqualTo (TypeDiscoveryKind.Automatic));
     }
 
     [Test]
     public void Deserialization_Auto ()
     {
       var section = Deserialize (_xmlFragmentWithAutoRootAssemblyFinder);
-      Assert.That (section.RootAssemblyFinder, Is.EqualTo (TypeDiscoveryConfiguration.RootAssemblyFinderKind.Automatic));
+      Assert.That (section.Kind, Is.EqualTo (TypeDiscoveryKind.Automatic));
     }
 
     [Test]
     public void DeserializationCustomSpecificRootAssemblyFinder ()
     {
-      var section = Deserialize (_xmlFragmentWithSpecificRootAssemblyFinder);
-      Assert.That (section.RootAssemblyFinder, Is.EqualTo (TypeDiscoveryConfiguration.RootAssemblyFinderKind.CustomRootAssemblyFinder));
+      var section = Deserialize (_xmlFragmentWithCustomRootAssemblyFinder);
+      Assert.That (section.Kind, Is.EqualTo (TypeDiscoveryKind.CustomRootAssemblyFinder));
       Assert.That (section.CustomRootAssemblyFinder.Type, Is.SameAs (typeof (FakeRootAssemblyFinder)));
     }
 
@@ -70,7 +72,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     public void Deserialization_SpecificRootAssemblies ()
     {
       var section = Deserialize (_xmlFragmentWithSpecificRootAssemblies);
-      Assert.That (section.RootAssemblyFinder, Is.EqualTo (TypeDiscoveryConfiguration.RootAssemblyFinderKind.SpecificRootAssemblies));
+      Assert.That (section.Kind, Is.EqualTo (TypeDiscoveryKind.SpecificRootAssemblies));
       Assert.That (section.SpecificRootAssemblies.ByName.Single().Name, Is.EqualTo ("mscorlib"));
     }
 
@@ -78,9 +80,17 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     public void Deserialization_SpecificEmptyRootAssemblies ()
     {
       var section = Deserialize (_xmlFragmentWithSpecificEmptyRootAssemblies);
-      Assert.That (section.RootAssemblyFinder, Is.EqualTo (TypeDiscoveryConfiguration.RootAssemblyFinderKind.SpecificRootAssemblies));
+      Assert.That (section.Kind, Is.EqualTo (TypeDiscoveryKind.SpecificRootAssemblies));
       Assert.That (section.SpecificRootAssemblies.ByName.Count, Is.EqualTo (0));
       Assert.That (section.SpecificRootAssemblies.ByFile.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void Deserialization_CustomTypeDiscoveryService ()
+    {
+      var section = Deserialize (_xmlFragmentWithCustomTypeDiscoveryService);
+      Assert.That (section.Kind, Is.EqualTo (TypeDiscoveryKind.CustomTypeDiscoveryService));
+      Assert.That (section.CustomTypeDiscoveryService.Type, Is.EqualTo (typeof (FakeTypeDiscoveryService)));
     }
 
     private TypeDiscoveryConfiguration Deserialize (string xmlFragment)
