@@ -33,7 +33,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Deserialization ()
     {
-      ByNameRootAssemblyElement[] result = DeserializeFromXmlFragment();
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
+
+      ByNameRootAssemblyElement[] result = collection.ToArray();
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (result[0].Name, Is.EqualTo ("mscorlib"));
       Assert.That (result[1].Name, Is.EqualTo ("System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"));
@@ -42,8 +44,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void IncludeReferencedAssemblies_FalseByDefault ()
     {
-      var collection = new ByNameRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, _xmlFragment);
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
 
       ByNameRootAssemblyElement[] result = collection.ToArray ();
       Assert.That (result[0].IncludeReferencedAssemblies, Is.False);
@@ -52,8 +53,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void IncludeReferencedAssemblies_TrueIfSpecified ()
     {
-      var collection = new ByNameRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, _xmlFragment);
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
 
       ByNameRootAssemblyElement[] result = collection.ToArray ();
       Assert.That (result[1].IncludeReferencedAssemblies, Is.True);
@@ -109,12 +109,27 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       Assert.That (result, Is.Empty);
     }
 
-    private ByNameRootAssemblyElement[] DeserializeFromXmlFragment ()
+    [Test]
+    public void CreateRootAssemblyFinder ()
+    {
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
+
+      var finder = collection.CreateRootAssemblyFinder ();
+
+      var specs = finder.Specifications.ToArray();
+      Assert.That (specs[0].AssemblyName.ToString (), Is.EqualTo ("mscorlib"));
+      Assert.That (specs[0].FollowReferences, Is.False);
+
+      Assert.That (specs[1].AssemblyName.ToString (), Is.EqualTo ("System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"));
+      Assert.That (specs[1].FollowReferences, Is.True);
+    }
+
+    private ByNameRootAssemblyElementCollection DeserializeFromXmlFragment (string xmlFragment)
     {
       var collection = new ByNameRootAssemblyElementCollection ();
-      ConfigurationHelper.DeserializeElement (collection, _xmlFragment);
+      ConfigurationHelper.DeserializeElement (collection, xmlFragment);
 
-      return collection.ToArray ();
+      return collection;
     }
   }
 }

@@ -35,7 +35,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Deserialization ()
     {
-      ByFileRootAssemblyElementBase[] result = DeserializeFromXmlFragment (_xmlFragment);
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
+      ByFileRootAssemblyElementBase[] result = collection.ToArray();
+
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0].File, Is.EqualTo ("ActaNova.*.dll"));
       Assert.That (result[1].File, Is.EqualTo ("Remotion.*.dll"));
@@ -45,7 +47,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Deserialization_Types ()
     {
-      ByFileRootAssemblyElementBase[] result = DeserializeFromXmlFragment (_xmlFragment);
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
+      ByFileRootAssemblyElementBase[] result = collection.ToArray ();
+
       Assert.That (result.Length, Is.EqualTo (3));
       Assert.That (result[0], Is.InstanceOfType (typeof (ByFileIncludeRootAssemblyElement)));
       Assert.That (result[1], Is.InstanceOfType (typeof (ByFileIncludeRootAssemblyElement)));
@@ -156,12 +160,12 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     }
 
 
-    private ByFileRootAssemblyElementBase[] DeserializeFromXmlFragment (string xmlFragment)
+    private ByFileRootAssemblyElementCollection DeserializeFromXmlFragment (string xmlFragment)
     {
       var collection = new ByFileRootAssemblyElementCollection ();
       ConfigurationHelper.DeserializeElement (collection, xmlFragment);
 
-      return collection.ToArray ();
+      return collection;
     }
   }
 }

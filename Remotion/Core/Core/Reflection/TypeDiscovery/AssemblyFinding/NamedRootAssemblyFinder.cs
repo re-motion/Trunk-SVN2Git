@@ -50,19 +50,24 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       }
     }
 
-    private readonly IEnumerable<Specification> _assemblySpecifications;
+    private readonly IEnumerable<Specification> _specifications;
 
-    public NamedRootAssemblyFinder (IEnumerable<Specification> assemblySpecifications)
+    public NamedRootAssemblyFinder (IEnumerable<Specification> specifications)
     {
-      ArgumentUtility.CheckNotNull ("assemblySpecifications", assemblySpecifications);
-      _assemblySpecifications = assemblySpecifications;
+      ArgumentUtility.CheckNotNull ("specifications", specifications);
+      _specifications = specifications;
+    }
+
+    public IEnumerable<Specification> Specifications
+    {
+      get { return _specifications; }
     }
 
     public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
     {
       ArgumentUtility.CheckNotNull ("loader", loader);
 
-      var rootAssemblies = from specification in _assemblySpecifications
+      var rootAssemblies = from specification in _specifications
                            let assembly = loader.TryLoadAssembly (specification.AssemblyName, specification.ToString())
                            where assembly != null
                            select new RootAssembly(assembly, specification.FollowReferences);

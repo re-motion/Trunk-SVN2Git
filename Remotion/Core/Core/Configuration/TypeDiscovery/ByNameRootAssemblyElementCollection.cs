@@ -17,7 +17,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -79,6 +81,11 @@ namespace Remotion.Configuration.TypeDiscovery
     public void Clear ()
     {
       BaseClear ();
+    }
+
+    public NamedRootAssemblyFinder CreateRootAssemblyFinder ()
+    {
+      return new NamedRootAssemblyFinder (this.Select (element => element.CreateSpecification()));
     }
   }
 }
