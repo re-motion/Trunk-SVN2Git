@@ -34,13 +34,13 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     /// </summary>
     public struct Specification
     {
-      public Specification (AssemblyName assemblyName, bool includeReferencedAssemblies)
+      public Specification (AssemblyName assemblyName, bool followReferences)
           : this()
       {
         ArgumentUtility.CheckNotNull ("assemblyName", assemblyName);
 
         AssemblyName = assemblyName;
-        FollowReferences = includeReferencedAssemblies;
+        FollowReferences = followReferences;
       }
 
       public AssemblyName AssemblyName { get; private set; }
