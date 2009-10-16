@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Configuration;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -22,13 +23,14 @@ namespace Remotion.Configuration.TypeDiscovery
   /// </summary>
   public abstract class ByFileRootAssemblyElementBase : ConfigurationElement
   {
-    [ConfigurationProperty ("file", IsRequired = true, IsKey = true)]
-    public string File
+    [ConfigurationProperty ("filePattern", IsRequired = true, IsKey = true)]
+    public string FilePattern
     {
-      get { return (string) this["file"]; }
-      set { this["file"] = value; }
+      get { return (string) this["filePattern"]; }
+      set { this["filePattern"] = value; }
     }
 
     public abstract string GetKey ();
+    public abstract FilePatternSpecification CreateSpecification ();
   }
 }

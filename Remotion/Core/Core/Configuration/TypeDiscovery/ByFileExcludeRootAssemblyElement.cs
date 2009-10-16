@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -24,7 +25,12 @@ namespace Remotion.Configuration.TypeDiscovery
   {
     public override string GetKey ()
     {
-      return "exclude-" + File;
+      return "exclude-" + FilePattern;
+    }
+
+    public override FilePatternSpecification CreateSpecification ()
+    {
+      return new FilePatternSpecification (FilePattern, FilePatternSpecificationKind.Exclude);
     }
   }
 }

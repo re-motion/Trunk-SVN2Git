@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
               <include name=""mscorlib"" />
             </byName>
             <byFile>
-              <include file=""ActaNova.*.dll"" />
+              <include filePattern=""ActaNova.*.dll"" />
             </byFile>
           </rootAssemblies>";
 
@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       Assert.That (element.ByName.Count, Is.EqualTo (1));
       Assert.That (element.ByName.First().Name, Is.EqualTo ("mscorlib"));
       Assert.That (element.ByFile.Count, Is.EqualTo (1));
-      Assert.That (element.ByFile.First().File, Is.EqualTo ("ActaNova.*.dll"));
+      Assert.That (element.ByFile.First().FilePattern, Is.EqualTo ("ActaNova.*.dll"));
     }
 
     private RootAssembliesElement DeserializeFromXmlFragment (string xmlFragment)

@@ -28,13 +28,13 @@
                   <xs:sequence>
                     <xs:element name="include" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:attribute name="file" type="xs:string" use="required"/>
+                        <xs:attribute name="filePattern" type="xs:string" use="required"/>
                         <xs:attribute name="includeReferencedAssemblies" type="c:DotNetBoolean" default="false" use="optional"/>
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="exclude" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:attribute name="file" type="xs:string" use="required"/>
+                        <xs:attribute name="filePattern" type="xs:string" use="required"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>

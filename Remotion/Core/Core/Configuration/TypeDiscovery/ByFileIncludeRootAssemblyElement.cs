@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Configuration;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -32,7 +33,14 @@ namespace Remotion.Configuration.TypeDiscovery
 
     public override string GetKey ()
     {
-      return "include-" + File;
+      return "include-" + FilePattern;
+    }
+
+    public override FilePatternSpecification CreateSpecification ()
+    {
+      return new FilePatternSpecification (
+          FilePattern, 
+          IncludeReferencedAssemblies ? FilePatternSpecificationKind.IncludeFollowReferences : FilePatternSpecificationKind.IncludeNoFollow);
     }
   }
 }

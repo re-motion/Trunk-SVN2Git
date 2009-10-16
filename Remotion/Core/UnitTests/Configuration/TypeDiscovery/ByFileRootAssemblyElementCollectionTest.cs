@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
 using System.Linq;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 
 namespace Remotion.UnitTests.Configuration.TypeDiscovery
 {
@@ -27,9 +28,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
   public class ByFileRootAssemblyElementCollectionTest
   {
     private const string _xmlFragment = @"<byFile>
-              <include file=""ActaNova.*.dll"" />
-              <include file=""Remotion.*.dll"" includeReferencedAssemblies=""true"" />
-              <exclude file=""Remotion.*.Utilities.dll"" />
+              <include filePattern=""ActaNova.*.dll"" />
+              <include filePattern=""Remotion.*.dll"" includeReferencedAssemblies=""true"" />
+              <exclude filePattern=""Remotion.*.Utilities.dll"" />
             </byFile>";
 
     [Test]
@@ -39,9 +40,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       ByFileRootAssemblyElementBase[] result = collection.ToArray();
 
       Assert.That (result.Length, Is.EqualTo (3));
-      Assert.That (result[0].File, Is.EqualTo ("ActaNova.*.dll"));
-      Assert.That (result[1].File, Is.EqualTo ("Remotion.*.dll"));
-      Assert.That (result[2].File, Is.EqualTo ("Remotion.*.Utilities.dll"));
+      Assert.That (result[0].FilePattern, Is.EqualTo ("ActaNova.*.dll"));
+      Assert.That (result[1].FilePattern, Is.EqualTo ("Remotion.*.dll"));
+      Assert.That (result[2].FilePattern, Is.EqualTo ("Remotion.*.Utilities.dll"));
     }
 
     [Test]
@@ -82,7 +83,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     public void IncludeReferencedAssemblies_NotValidWithExclude ()
     {
       const string xmlFragment = @"<byFile>
-              <exclude file=""Remotion.*.Utilities.dll"" includeReferencedAssemblies=""true""/>
+              <exclude filePattern=""Remotion.*.Utilities.dll"" includeReferencedAssemblies=""true""/>
             </byFile>";
 
       DeserializeFromXmlFragment (xmlFragment);
@@ -91,9 +92,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Add ()
     {
-      var element1 = new ByFileIncludeRootAssemblyElement { File = "*.dll", IncludeReferencedAssemblies = true };
-      var element2 = new ByFileIncludeRootAssemblyElement { File = "*.exe" };
-      var element3 = new ByFileExcludeRootAssemblyElement { File = "Utilities.exe" };
+      var element1 = new ByFileIncludeRootAssemblyElement { FilePattern = "*.dll", IncludeReferencedAssemblies = true };
+      var element2 = new ByFileIncludeRootAssemblyElement { FilePattern = "*.exe" };
+      var element3 = new ByFileExcludeRootAssemblyElement { FilePattern = "Utilities.exe" };
       
       var collection = new ByFileRootAssemblyElementCollection ();
       collection.Add (element1);
@@ -107,9 +108,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void RemoveAt ()
     {
-      var element1 = new ByFileIncludeRootAssemblyElement { File = "*.dll", IncludeReferencedAssemblies = true };
-      var element2 = new ByFileIncludeRootAssemblyElement { File = "*.exe" };
-      var element3 = new ByFileExcludeRootAssemblyElement { File = "Utilities.exe" };
+      var element1 = new ByFileIncludeRootAssemblyElement { FilePattern = "*.dll", IncludeReferencedAssemblies = true };
+      var element2 = new ByFileIncludeRootAssemblyElement { FilePattern = "*.exe" };
+      var element3 = new ByFileExcludeRootAssemblyElement { FilePattern = "Utilities.exe" };
 
       var collection = new ByFileRootAssemblyElementCollection ();
       collection.Add (element1);
@@ -124,9 +125,9 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Clear ()
     {
-      var element1 = new ByFileIncludeRootAssemblyElement { File = "*.dll", IncludeReferencedAssemblies = true };
-      var element2 = new ByFileIncludeRootAssemblyElement { File = "*.exe" };
-      var element3 = new ByFileExcludeRootAssemblyElement { File = "Utilities.exe" };
+      var element1 = new ByFileIncludeRootAssemblyElement { FilePattern = "*.dll", IncludeReferencedAssemblies = true };
+      var element2 = new ByFileIncludeRootAssemblyElement { FilePattern = "*.exe" };
+      var element3 = new ByFileExcludeRootAssemblyElement { FilePattern = "Utilities.exe" };
 
       var collection = new ByFileRootAssemblyElementCollection ();
       collection.Add (element1);
@@ -139,24 +140,24 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     }
 
     [Test]
-    [Ignore ("TODO 1643")]
     public void CreateRootAssemblyFinder ()
     {
-      Assert.Fail ();
+      var collection = DeserializeFromXmlFragment (_xmlFragment);
+      var finder = collection.CreateRootAssemblyFinder ();
 
-      //var collection = DeserializeFromXmlFragment (_xmlFragment);
-      //var finder = (FilePatternRootAssemblyFinder) collection.CreateRootAssemblyFinder ();
+      Assert.That (finder.SearchPath, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+      Assert.That (finder.FileSearchService, Is.InstanceOfType (typeof (FileSystemSearchService)));
 
-      //var specs = finder.Specifications.ToArray();
+      var specs = finder.Specifications.ToArray();
 
-      //Assert.That (specs[0].FilePattern, Is.EqualTo ("ActaNova.*.dll"));
-      //Assert.That (specs[0].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.FilePatternSpecificationKind.IncludeNoFollow));
+      Assert.That (specs[0].FilePattern, Is.EqualTo ("ActaNova.*.dll"));
+      Assert.That (specs[0].Kind, Is.EqualTo (FilePatternSpecificationKind.IncludeNoFollow));
 
-      //Assert.That (specs[1].FilePattern, Is.EqualTo ("Remotion.*.dll"));
-      //Assert.That (specs[1].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.FilePatternSpecificationKind.IncludeFollowReferences));
+      Assert.That (specs[1].FilePattern, Is.EqualTo ("Remotion.*.dll"));
+      Assert.That (specs[1].Kind, Is.EqualTo (FilePatternSpecificationKind.IncludeFollowReferences));
 
-      //Assert.That (specs[2].FilePattern, Is.EqualTo ("Remotion.*.dll"));
-      //Assert.That (specs[2].Kind, Is.EqualTo (FilePatternRootAssemblyFinder.Specification.FilePatternSpecificationKind.Exclude));
+      Assert.That (specs[2].FilePattern, Is.EqualTo ("Remotion.*.Utilities.dll"));
+      Assert.That (specs[2].Kind, Is.EqualTo (FilePatternSpecificationKind.Exclude));
     }
 
 

@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -23,7 +22,6 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
 using System.Linq;
 using NUnit.Framework.SyntaxHelpers;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 {
