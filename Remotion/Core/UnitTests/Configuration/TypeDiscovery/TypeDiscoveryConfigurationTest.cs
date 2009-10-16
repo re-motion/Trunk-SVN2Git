@@ -18,6 +18,7 @@ using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Configuration;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
 using Remotion.Reflection.TypeDiscovery;

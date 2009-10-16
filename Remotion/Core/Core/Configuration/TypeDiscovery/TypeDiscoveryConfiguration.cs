@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Configuration;
 using Remotion.Reflection.TypeDiscovery;
@@ -28,6 +27,25 @@ namespace Remotion.Configuration.TypeDiscovery
   /// </summary>
   public sealed class TypeDiscoveryConfiguration : ConfigurationSection
   {
+    private static readonly DoubleCheckedLockingContainer<TypeDiscoveryConfiguration> s_current = 
+        new DoubleCheckedLockingContainer<TypeDiscoveryConfiguration> (GetTypeDiscoveryConfiguration);
+
+    public static TypeDiscoveryConfiguration Current
+    {
+      get { return s_current.Value; }
+    }
+
+    public static void SetCurrent (TypeDiscoveryConfiguration configuration)
+    {
+      s_current.Value = configuration;
+    }
+
+    private static TypeDiscoveryConfiguration GetTypeDiscoveryConfiguration ()
+    {
+      return (TypeDiscoveryConfiguration) 
+          ConfigurationWrapper.Current.GetSection ("remotion.typeDiscovery", false) ?? new TypeDiscoveryConfiguration();
+    }
+
     public TypeDiscoveryConfiguration ()
     {
       var xmlnsProperty = new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None);

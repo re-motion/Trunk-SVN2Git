@@ -32,6 +32,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     private MockRepository _mockRepository;
     private ITypeDiscoveryService _serviceMock;
 
+    private TypeDiscoveryMode _oldTypeDiscoveryMode;
+    private Type _oldTypeDiscoveryServiceType;
+
     [SetUp]
     public void SetUp ()
     {
@@ -39,6 +42,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
       _serviceMock = _mockRepository.StrictMock<ITypeDiscoveryService>();
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
       DesignerUtility.ClearDesignMode ();
+
+      _oldTypeDiscoveryMode = TypeDiscoveryConfiguration.Current.Mode;
+      _oldTypeDiscoveryServiceType = TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService.Type;
     }
 
     [TearDown]
@@ -47,27 +53,25 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
       DesignerUtility.ClearDesignMode ();
 
-      //TypeDiscoveryConfiguration.Current.Mode = _oldTypeDiscoveryMode;
-      //TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService = _oldCustomTypeDiscoveryService;
+      TypeDiscoveryConfiguration.Current.Mode = _oldTypeDiscoveryMode;
+      TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService.Type = _oldTypeDiscoveryServiceType;
     }
 
     [Test]
-    [Ignore ("TODO 1643")]
     public void DefaultService_ComesFromConfiguration ()
     {
-      //TypeDiscoveryConfiguration.Current.Mode = TypeDiscoveryMode.CustomTypeDiscoveryService;
-      //TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService = typeof (FakeTypeDiscoveryService);
+      TypeDiscoveryConfiguration.Current.Mode = TypeDiscoveryMode.CustomTypeDiscoveryService;
+      TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService.Type = typeof (FakeTypeDiscoveryService);
 
       ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
       Assert.That (defaultService, Is.InstanceOfType (typeof (FakeTypeDiscoveryService)));
     }
 
     [Test]
-    [Ignore ("TODO 1643")]
     public void DefaultService_Cached ()
     {
-      //TypeDiscoveryConfiguration.Current.Mode = TypeDiscoveryMode.CustomTypeDiscoveryService;
-      //TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService = typeof (FakeTypeDiscoveryService);
+      TypeDiscoveryConfiguration.Current.Mode = TypeDiscoveryMode.CustomTypeDiscoveryService;
+      TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService.Type = typeof (FakeTypeDiscoveryService);
 
       ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
       ITypeDiscoveryService defaultService2 = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;

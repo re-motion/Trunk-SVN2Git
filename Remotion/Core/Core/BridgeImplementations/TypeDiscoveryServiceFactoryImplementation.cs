@@ -16,9 +16,8 @@
 using System;
 using System.ComponentModel.Design;
 using Remotion.BridgeInterfaces;
+using Remotion.Configuration.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.BridgeImplementations
 {
@@ -31,10 +30,7 @@ namespace Remotion.BridgeImplementations
   {
     public ITypeDiscoveryService CreateTypeDiscoveryService ()
     {
-      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var searchPathRootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
-      var assemblyFinder = new AssemblyFinder (searchPathRootAssemblyFinder, assemblyLoader);
-      return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+      return TypeDiscoveryConfiguration.Current.CreateTypeDiscoveryService ();
     }
   }
 }
