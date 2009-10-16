@@ -13,7 +13,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using System.Configuration;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -47,6 +50,14 @@ namespace Remotion.Configuration.TypeDiscovery
     public ByFileRootAssemblyElementCollection ByFile
     {
       get { return (ByFileRootAssemblyElementCollection) this["byFile"]; }
+    }
+
+    public CompositeRootAssemblyFinder CreateRootAssemblyFinder ()
+    {
+      var namedFinder = ByName.CreateRootAssemblyFinder ();
+      var filePatternFinder = ByFile.CreateRootAssemblyFinder ();
+
+      return new CompositeRootAssemblyFinder (new IRootAssemblyFinder[] { namedFinder, filePatternFinder });
     }
   }
 }

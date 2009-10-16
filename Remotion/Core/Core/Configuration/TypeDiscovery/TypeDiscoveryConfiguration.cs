@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Configuration;
 using Remotion.Reflection.TypeDiscovery;
@@ -64,10 +65,12 @@ namespace Remotion.Configuration.TypeDiscovery
       {
         case TypeDiscoveryMode.CustomRootAssemblyFinder:
           return CreateServiceWithCustomRootAssemblyFinder ();
+        case TypeDiscoveryMode.SpecificRootAssemblies:
+          return CreateServiceWithSpecificRootAssemblies ();
         case TypeDiscoveryMode.CustomTypeDiscoveryService:
           return CreateCustomService ();
         default:
-          return CreateAutomaticService ();
+          return CreateServiceWithAutomaticDiscovery ();
       }
     }
 
@@ -84,7 +87,13 @@ namespace Remotion.Configuration.TypeDiscovery
       }
 
       var customRootAssemblyFinder = (IRootAssemblyFinder) Activator.CreateInstance (CustomRootAssemblyFinder.Type);
-      return CreateAssemblyFinderService (customRootAssemblyFinder);
+      return CreateServiceWithAssemblyFinder (customRootAssemblyFinder);
+    }
+
+    private ITypeDiscoveryService CreateServiceWithSpecificRootAssemblies ()
+    {
+      var rootAssemblyFinder = SpecificRootAssemblies.CreateRootAssemblyFinder ();
+      return CreateServiceWithAssemblyFinder (rootAssemblyFinder);
     }
 
     private ITypeDiscoveryService CreateCustomService ()
@@ -102,13 +111,13 @@ namespace Remotion.Configuration.TypeDiscovery
       return (ITypeDiscoveryService) Activator.CreateInstance (CustomTypeDiscoveryService.Type);
     }
 
-    private ITypeDiscoveryService CreateAutomaticService ()
+    private ITypeDiscoveryService CreateServiceWithAutomaticDiscovery ()
     {
       var searchPathRootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
-      return CreateAssemblyFinderService (searchPathRootAssemblyFinder);
+      return CreateServiceWithAssemblyFinder (searchPathRootAssemblyFinder);
     }
 
-    private ITypeDiscoveryService CreateAssemblyFinderService (IRootAssemblyFinder customRootAssemblyFinder)
+    private ITypeDiscoveryService CreateServiceWithAssemblyFinder (IRootAssemblyFinder customRootAssemblyFinder)
     {
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
       var assemblyFinder = new AssemblyFinder (customRootAssemblyFinder, assemblyLoader);

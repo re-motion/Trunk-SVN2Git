@@ -141,47 +141,25 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     }
 
     [Test]
-    [Ignore ("TODO 1643")]
     public void CreateTypeDiscoveryService_SpecificRootAssemblies ()
     {
-      Assert.Fail ();
+      var section = Deserialize (_xmlFragmentWithSpecificRootAssemblies);
 
-      //var section = Deserialize (_xmlFragmentWithSpecificRootAssemblies);
+      var service = section.CreateTypeDiscoveryService ();
 
-      //var service = section.CreateTypeDiscoveryService ();
+      Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
+      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (CompositeRootAssemblyFinder)));
 
-      //Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
-      //var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
-      //Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (CompositeRootAssemblyFinder)));
+      var rootAssemblyFinder = (CompositeRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
+      Assert.That (rootAssemblyFinder.InnerFinders.Length, Is.EqualTo (2));
+      Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
 
-      //var rootAssemblyFinder = (CompositeRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
-      //Assert.That (rootAssemblyFinder.InnerFinders.Length, Is.EqualTo (1));
-      //Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
-      
-      //var namedFinder = ((NamedRootAssemblyFinder) rootAssemblyFinder.InnerFinders[0]);
-      //Assert.That (namedFinder.AssemblyNames, Is.EqualTo (new[] { "mscorlib" }));
-    }
+      var namedFinder = ((NamedRootAssemblyFinder) rootAssemblyFinder.InnerFinders[0]);
+      Assert.That (namedFinder.Specifications.First().AssemblyName.ToString(), Is.EqualTo ("mscorlib"));
 
-    [Test]
-    [Ignore ("TODO 1643")]
-    public void CreateTypeDiscoveryService_SpecificRootAssemblies_Empty ()
-    {
-      Assert.Fail ();
-
-      //var section = Deserialize (_xmlFragmentWithEmptySpecificRootAssemblies);
-
-      //var service = section.CreateTypeDiscoveryService ();
-
-      //Assert.That (service, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
-      //var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
-      //Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (CompositeRootAssemblyFinder)));
-
-      //var rootAssemblyFinder = (CompositeRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
-      //Assert.That (rootAssemblyFinder.InnerFinders.Length, Is.EqualTo (1));
-      //Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
-
-      //var namedFinder = ((NamedRootAssemblyFinder) rootAssemblyFinder.InnerFinders[0]);
-      //Assert.That (namedFinder.AssemblyNames, Is.EqualTo (new[] { "mscorlib" }));
+      var filePatternFinder = ((FilePatternRootAssemblyFinder) rootAssemblyFinder.InnerFinders[1]);
+      Assert.That (filePatternFinder.Specifications.ToArray(), Is.Empty);
     }
 
     [Test]

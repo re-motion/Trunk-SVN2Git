@@ -19,6 +19,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Configuration.TypeDiscovery
 {
@@ -46,11 +49,46 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     [Test]
     public void Deserialization_WithNonEmptyFragment ()
     {
-      RootAssembliesElement element = DeserializeFromXmlFragment(_xmlFragmentWithFilesAndNames);
+      var element = DeserializeFromXmlFragment(_xmlFragmentWithFilesAndNames);
       Assert.That (element.ByName.Count, Is.EqualTo (1));
       Assert.That (element.ByName.First().Name, Is.EqualTo ("mscorlib"));
       Assert.That (element.ByFile.Count, Is.EqualTo (1));
       Assert.That (element.ByFile.First().FilePattern, Is.EqualTo ("ActaNova.*.dll"));
+    }
+
+    [Test]
+    public void CreateRootAssemblyFinder_Empty ()
+    {
+      var element = DeserializeFromXmlFragment (_emptyXmlFragment);
+
+      var finder = element.CreateRootAssemblyFinder ();
+      Assert.That (finder.InnerFinders.Length, Is.EqualTo (2));
+
+      Assert.That (finder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
+      var namedFinder = (NamedRootAssemblyFinder) finder.InnerFinders[0];
+      Assert.That (namedFinder.Specifications.ToArray(), Is.Empty);
+
+      var filePatternFinder = (FilePatternRootAssemblyFinder) finder.InnerFinders[1];
+      Assert.That (filePatternFinder.Specifications.ToArray (), Is.Empty);
+
+      var loaderStub = MockRepository.GenerateStub<IAssemblyLoader> ();
+      Assert.That (finder.FindRootAssemblies (loaderStub), Is.Empty);
+    }
+
+    [Test]
+    public void CreateRootAssemblyFinder_NonEmpty ()
+    {
+      var element = DeserializeFromXmlFragment (_xmlFragmentWithFilesAndNames);
+
+      var finder = element.CreateRootAssemblyFinder ();
+      Assert.That (finder.InnerFinders.Length, Is.EqualTo (2));
+
+      Assert.That (finder.InnerFinders[0], Is.InstanceOfType (typeof (NamedRootAssemblyFinder)));
+      var namedFinder = (NamedRootAssemblyFinder) finder.InnerFinders[0];
+      Assert.That (namedFinder.Specifications.Single ().AssemblyName.ToString (), Is.EqualTo ("mscorlib"));
+
+      var filePatternFinder = (FilePatternRootAssemblyFinder) finder.InnerFinders[1];
+      Assert.That (filePatternFinder.Specifications.Single ().FilePattern, Is.EqualTo ("ActaNova.*.dll"));
     }
 
     private RootAssembliesElement DeserializeFromXmlFragment (string xmlFragment)

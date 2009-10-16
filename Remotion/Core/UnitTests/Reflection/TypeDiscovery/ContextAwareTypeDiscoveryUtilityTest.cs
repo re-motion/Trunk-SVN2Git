@@ -17,9 +17,9 @@ using System;
 using System.ComponentModel.Design;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Configuration.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Remotion.UnitTests.Configuration.TypeDiscovery;
 using Remotion.UnitTests.Design;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -46,38 +46,35 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery
     {
       ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
       DesignerUtility.ClearDesignMode ();
+
+      //TypeDiscoveryConfiguration.Current.Mode = _oldTypeDiscoveryMode;
+      //TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService = _oldCustomTypeDiscoveryService;
     }
 
     [Test]
-    public void AutoInitDefaultService ()
+    [Ignore ("TODO 1643")]
+    public void DefaultService_ComesFromConfiguration ()
     {
+      //TypeDiscoveryConfiguration.Current.Mode = TypeDiscoveryMode.CustomTypeDiscoveryService;
+      //TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService = typeof (FakeTypeDiscoveryService);
+
       ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
-      Assert.That (defaultService, Is.Not.Null);
-      Assert.That (ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService, Is.SameAs (defaultService));
-      Assert.That (ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService, Is.SameAs (defaultService));
-      Assert.That (defaultService, Is.InstanceOfType (typeof (AssemblyFinderTypeDiscoveryService)));
+      Assert.That (defaultService, Is.InstanceOfType (typeof (FakeTypeDiscoveryService)));
     }
 
     [Test]
-    public void AutoInitDefaultService_RootAssemblyFinder ()
+    [Ignore ("TODO 1643")]
+    public void DefaultService_Cached ()
     {
-      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService).AssemblyFinder;
-      Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOfType (typeof (SearchPathRootAssemblyFinder)));
+      //TypeDiscoveryConfiguration.Current.Mode = TypeDiscoveryMode.CustomTypeDiscoveryService;
+      //TypeDiscoveryConfiguration.Current.CustomTypeDiscoveryService = typeof (FakeTypeDiscoveryService);
 
-      var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
-      Assert.That (searchPathRootAssemblyFinder.BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
+      ITypeDiscoveryService defaultService2 = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
+
+      Assert.That (defaultService, Is.SameAs (defaultService2));
     }
 
-    [Test]
-    public void AutoInitDefaultService_Loader ()
-    {
-      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService).AssemblyFinder;
-      Assert.That (assemblyFinder.AssemblyLoader, Is.InstanceOfType (typeof (FilteringAssemblyLoader)));
-
-      var castLoader = (FilteringAssemblyLoader) assemblyFinder.AssemblyLoader;
-      Assert.That (castLoader.Filter, Is.SameAs (ApplicationAssemblyLoaderFilter.Instance));
-    }
-    
     [Test]
     public void SetDefaultCurrent ()
     {
