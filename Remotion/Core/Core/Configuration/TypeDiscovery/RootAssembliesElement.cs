@@ -14,44 +14,42 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Configuration;
+using System.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
   /// <summary>
-  /// Configures the root assemblies to be used to discover types.
+  /// Configures the root assemblies to be used for type discovery.
   /// </summary>
   public sealed class RootAssembliesElement : ConfigurationElement
   {
-    public RootAssembliesElement ()
-    {
-      var byNameProperty = new ConfigurationProperty (
-          "byName", 
-          typeof (ByNameRootAssemblyElementCollection), 
-          new ByNameRootAssemblyElementCollection (), 
-          ConfigurationPropertyOptions.None);
-      Properties.Add (byNameProperty);
-
-      var byFileProperty = new ConfigurationProperty (
-          "byFile", 
-          typeof (ByFileRootAssemblyElementCollection), 
-          new ByFileRootAssemblyElementCollection (), 
-          ConfigurationPropertyOptions.None);
-      Properties.Add (byFileProperty);
-    }
-
+    /// <summary>
+    /// Gets a <see cref="ByNameRootAssemblyElementCollection"/> allowing to specify assemblies by <see cref="AssemblyName"/>.
+    /// </summary>
+    /// <value>A <see cref="ByNameRootAssemblyElementCollection"/> allowing to specify assemblies by <see cref="AssemblyName"/>.</value>
+    [ConfigurationProperty ("byName")]
     public ByNameRootAssemblyElementCollection ByName
     {
       get { return (ByNameRootAssemblyElementCollection) this["byName"]; }
     }
-    
+
+    /// <summary>
+    /// Gets a <see cref="ByFileRootAssemblyElementCollection"/> allowing to specify assemblies by file name patterns.
+    /// </summary>
+    /// <value>A <see cref="ByFileRootAssemblyElementCollection"/> allowing to specify assemblies by file name patterns.</value>
+    [ConfigurationProperty ("byFile")]
     public ByFileRootAssemblyElementCollection ByFile
     {
       get { return (ByFileRootAssemblyElementCollection) this["byFile"]; }
     }
 
+    /// <summary>
+    /// Creates a <see cref="CompositeRootAssemblyFinder"/> representing the assembly specifications given by <see cref="ByName"/> and
+    /// <see cref="ByFile"/>.
+    /// </summary>
+    /// <returns>A <see cref="CompositeRootAssemblyFinder"/> for the assembly specifications.</returns>
     public CompositeRootAssemblyFinder CreateRootAssemblyFinder ()
     {
       var namedFinder = ByName.CreateRootAssemblyFinder ();

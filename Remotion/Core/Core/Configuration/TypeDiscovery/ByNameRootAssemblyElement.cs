@@ -21,7 +21,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 namespace Remotion.Configuration.TypeDiscovery
 {
   /// <summary>
-  /// Configures a root assembly by name.
+  /// Configures a root assembly by its <see cref="AssemblyName"/>.
   /// </summary>
   public class ByNameRootAssemblyElement : ConfigurationElement
   {

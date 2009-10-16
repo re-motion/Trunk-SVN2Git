@@ -19,22 +19,34 @@ using System.Configuration;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Remotion.Utilities;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
   /// <summary>
-  /// Configures the type discovery performed by <see cref="ContextAwareTypeDiscoveryUtility"/>.
+  /// Configures the type discovery performed by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>.
   /// </summary>
   public sealed class TypeDiscoveryConfiguration : ConfigurationSection
   {
     private static readonly DoubleCheckedLockingContainer<TypeDiscoveryConfiguration> s_current = 
         new DoubleCheckedLockingContainer<TypeDiscoveryConfiguration> (GetTypeDiscoveryConfiguration);
 
+    /// <summary>
+    /// Gets the current <see cref="TypeDiscoveryConfiguration"/> instance. This is used by 
+    /// <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/> to retrieve a <see cref="ITypeDiscoveryService"/> instance if
+    /// <see cref="DesignerUtility.IsDesignMode"/> is not set to <see langword="true" /> and no specific 
+    /// <see cref="ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService"/> instance has been set.
+    /// </summary>
+    /// <value>The current <see cref="TypeDiscoveryConfiguration"/>.</value>
     public static TypeDiscoveryConfiguration Current
     {
       get { return s_current.Value; }
     }
 
+    /// <summary>
+    /// Sets the <see cref="Current"/> <see cref="TypeDiscoveryConfiguration"/> instance.
+    /// </summary>
+    /// <param name="configuration">The new configuration to set as the <see cref="Current"/> configuration.</param>
     public static void SetCurrent (TypeDiscoveryConfiguration configuration)
     {
       s_current.Value = configuration;
@@ -43,15 +55,23 @@ namespace Remotion.Configuration.TypeDiscovery
     private static TypeDiscoveryConfiguration GetTypeDiscoveryConfiguration ()
     {
       return (TypeDiscoveryConfiguration) 
-          ConfigurationWrapper.Current.GetSection ("remotion.typeDiscovery", false) ?? new TypeDiscoveryConfiguration();
+             ConfigurationWrapper.Current.GetSection ("remotion.typeDiscovery", false) ?? new TypeDiscoveryConfiguration();
     }
 
+    /// <summary>
+    /// Initializes a new default instance of the <see cref="TypeDiscoveryConfiguration"/> class. To load the configuration from a config file,
+    /// use <see cref="ConfigurationWrapper.GetSection(string)"/> instead.
+    /// </summary>
     public TypeDiscoveryConfiguration ()
     {
       var xmlnsProperty = new ConfigurationProperty ("xmlns", typeof (string), null, ConfigurationPropertyOptions.None);
       Properties.Add (xmlnsProperty);
     }
 
+    /// <summary>
+    /// Gets or sets the <see cref="TypeDiscoveryMode"/> to be used for type discovery.
+    /// </summary>
+    /// <value>The <see cref="TypeDiscoveryMode"/> to be used for type discovery.</value>
     [ConfigurationProperty ("mode", DefaultValue = TypeDiscoveryMode.Automatic, IsRequired = false)]
     public TypeDiscoveryMode Mode
     {
@@ -59,24 +79,50 @@ namespace Remotion.Configuration.TypeDiscovery
       set { this["mode"] = value; }
     }
 
+    /// <summary>
+    /// Gets a <see cref="TypeElement{TBase}"/> describing the custom <see cref="IRootAssemblyFinder"/> to be used. This is only relevant
+    /// if <see cref="Mode"/> is set to <see cref="TypeDiscoveryMode.CustomRootAssemblyFinder"/>. In this mode, an 
+    /// <see cref="AssemblyFinderTypeDiscoveryService"/> is created, and an instance of the specified <see cref="CustomRootAssemblyFinder"/> type is
+    /// employed for finding the root assemblies used for type discovery. The given type must have a default constructor.
+    /// </summary>
+    /// <value>A <see cref="TypeElement{TBase}"/> describing the custom <see cref="IRootAssemblyFinder"/> type to be used.</value>
     [ConfigurationProperty ("customRootAssemblyFinder", IsRequired = false)]
     public TypeElement<IRootAssemblyFinder> CustomRootAssemblyFinder
     {
       get { return (TypeElement<IRootAssemblyFinder>) this["customRootAssemblyFinder"]; }
     }
 
+    /// <summary>
+    /// Gets a <see cref="RootAssembliesElement"/> describing specific root assemblies to be used. This is only relevant
+    /// if <see cref="Mode"/> is set to <see cref="TypeDiscoveryMode.SpecificRootAssemblies"/>. In this mode, an 
+    /// <see cref="AssemblyFinderTypeDiscoveryService"/> is created, and the given root assemblies are employed for type discovery.
+    /// Note that even if an assembly is specified as a root assembly, the default filtering rules (<see cref="ApplicationAssemblyLoaderFilter"/>)
+    /// still apply even for that assembly.
+    /// </summary>
+    /// <value>A <see cref="RootAssembliesElement"/> describing specific root assemblies to be used.</value>
     [ConfigurationProperty ("specificRootAssemblies", IsRequired = false)]
     public RootAssembliesElement SpecificRootAssemblies
     {
       get { return (RootAssembliesElement) this["specificRootAssemblies"]; }
     }
 
+    /// <summary>
+    /// Gets a <see cref="TypeElement{TBase}"/> describing the custom <see cref="ITypeDiscoveryService"/> to be used. This is only relevant
+    /// if <see cref="Mode"/> is set to <see cref="TypeDiscoveryMode.CustomTypeDiscoveryService"/>. In this mode, an 
+    /// instance of the specified <see cref="CustomTypeDiscoveryService"/> type is
+    /// employed for type discovery. The given type must have a default constructor.
+    /// </summary>
+    /// <value>A <see cref="TypeElement{TBase}"/> describing the custom <see cref="ITypeDiscoveryService"/> type to be used.</value>
     [ConfigurationProperty ("customTypeDiscoveryService", IsRequired = false)]
     public TypeElement<ITypeDiscoveryService> CustomTypeDiscoveryService
     {
       get { return (TypeElement<ITypeDiscoveryService>) this["customTypeDiscoveryService"]; }
     }
 
+    /// <summary>
+    /// Creates an <see cref="ITypeDiscoveryService"/> instance as indicated by <see cref="Mode"/>.
+    /// </summary>
+    /// <returns>A new <see cref="ITypeDiscoveryService"/> that discovers types as indicated by <see cref="Mode"/>.</returns>
     public ITypeDiscoveryService CreateTypeDiscoveryService ()
     {
       switch (Mode)
