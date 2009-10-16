@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
@@ -42,13 +41,5 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
     /// <returns>The loaded assembly, or <see langword="null"/> if the assembly can't be loaded.</returns>
     /// <exception cref="AssemblyLoaderException">Thrown when the assembly cannot be found or an unexpected exception occurs while loading it.</exception>
     Assembly TryLoadAssembly (AssemblyName assemblyName, string context);
-
-    /// <summary>
-    /// Tries to load all assemblies from the given <paramref name="filePaths"/> as if <see cref="TryLoadAssembly(string)"/> was called for each of them,
-    /// returning only those assemblies that were successfully loaded.
-    /// </summary>
-    /// <param name="filePaths">The file paths to load assemblies from.</param>
-    /// <returns>An enumeration of the assemblies successfully loaded from the <paramref name="filePaths"/>. The enumeration might be lazy.</returns>
-    IEnumerable<Assembly> LoadAssemblies (params string[] filePaths);
   }
 }

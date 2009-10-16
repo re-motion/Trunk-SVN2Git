@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -289,25 +288,6 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
                                              + "Unexpected exception message: xy"));
         Assert.That (ex.InnerException, Is.SameAs (unexpected));
       }
-    }
-
-    [Test]
-    public void LoadAssemblies ()
-    {
-      Assembly referenceAssembly1 = typeof (FilteringAssemblyLoaderTest).Assembly;
-      Assembly referenceAssembly2 = typeof (FilteringAssemblyLoader).Assembly;
-
-      var loaderPartialMock = _mockRepository.PartialMock<FilteringAssemblyLoader> (_filterMock);
-      Expect.Call (loaderPartialMock.TryLoadAssembly ("abc")).Return (null);
-      Expect.Call (loaderPartialMock.TryLoadAssembly ("def")).Return (referenceAssembly1);
-      Expect.Call (loaderPartialMock.TryLoadAssembly ("ghi")).Return (null);
-      Expect.Call (loaderPartialMock.TryLoadAssembly ("jkl")).Return (referenceAssembly2);
-
-      _mockRepository.ReplayAll();
-
-      IEnumerable<Assembly> assemblies = loaderPartialMock.LoadAssemblies ("abc", "def", "ghi", "jkl");
-      Assert.That (EnumerableUtility.ToArray (assemblies), Is.EqualTo (new object[] { referenceAssembly1, referenceAssembly2 }));
-      _mockRepository.VerifyAll();
     }
 
     private void SetupFilterTrue ()

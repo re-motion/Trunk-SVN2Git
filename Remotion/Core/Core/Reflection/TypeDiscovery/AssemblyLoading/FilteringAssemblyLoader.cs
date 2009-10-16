@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Remotion.Logging;
@@ -122,17 +121,6 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
         string message = string.Format ("Assembly {0} triggered an unexpected exception of type {1}.\r\nUnexpected exception message: {2}", 
                                         assemblyDescriptionText, ex.GetType().FullName, ex.Message);
         throw new AssemblyLoaderException (message, ex);
-      }
-    }
-
-    public virtual IEnumerable<Assembly> LoadAssemblies (params string[] filePaths)
-    {
-      ArgumentUtility.CheckNotNull ("filePaths", filePaths);
-      foreach (string filePath in filePaths)
-      {
-        Assembly assembly = TryLoadAssembly (filePath);
-        if (assembly != null)
-          yield return assembly;
       }
     }
   }
