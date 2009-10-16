@@ -178,6 +178,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
+    [Ignore ("TODO: Install .NET 3.5 SP1 on the build server.")]
     public void AttributesOnDerivedPropertiesBehaveLikeMethods()
     {
       object[] attributes =

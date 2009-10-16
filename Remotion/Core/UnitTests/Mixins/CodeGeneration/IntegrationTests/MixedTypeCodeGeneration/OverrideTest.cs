@@ -36,6 +36,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
+    [Ignore ("TODO: Install .NET 3.5 SP1 on the build server.")]
     public void OverrideClassProperties ()
     {
       BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (BT1Mixin1));
