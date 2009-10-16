@@ -338,14 +338,21 @@
   <!--======================= Zip Targets =======================-->
   <target name="checkzip" depends="zipfilename">
     <property name="ToDir" value="${publishing.base}\Framework\build\"/>
-    <fail message="ZipFile existiert bereits" 
+    <property name="ToDirWeb" value="${publishing.web}\"/> <!-- ${publishing.web} can be left empty -->
+    <fail message="Zip file already exists" 
           if="${   file::exists(ToDir + zipfile.filename) 
                 or file::exists(ToDir + sourcezipfile.filename)}" />
+    <fail message="Zip file already exists on the Web"
+          if="${    ToDirWeb != '\'
+                and (   file::exists(ToDirWeb + zipfile.filename) 
+                     or file::exists(ToDirWeb + sourcezipfile.filename))}" />
   </target>
 
   <target name="addzip" depends="checkzip">
     <copy file="${zipfile.name}" todir="${ToDir}" />
     <copy file="${sourcezipfile.name}" todir="${ToDir}" />
+    <copy file="${zipfile.name}" todir="${ToDirWeb}" if="${ToDirWeb != '\'}"/>
+    <copy file="${sourcezipfile.name}" todir="${ToDirWeb}" if="${ToDirWeb != '\'}" />
   </target>
 
   <target name="zipfilename" depends="init-build-version">
