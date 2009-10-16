@@ -23,7 +23,9 @@ using Remotion.Utilities;
 namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
 {
   /// <summary>
-  /// Loads assemblies from a file path by first getting their corresponding <see cref="AssemblyName"/> and then loading the assembly with that name.
+  /// Loads assemblies and applies <see cref="IAssemblyLoaderFilter">filters</see> before returning them.
+  /// Assemblies are loaded from a file path by first getting their corresponding <see cref="AssemblyName"/> and then loading the assembly with that 
+  /// name.
   /// This means that only assemblies from the assembly search path (application directory, dynamic directory, GAC) can be loaded, and that GAC 
   /// assemblies are preferred. The advantage of this load mode is that assemblies are loaded exactly the same way as if loaded directly by .NET:
   /// they are always loaded into the correct context and references are resolved correctly.

@@ -19,8 +19,8 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 namespace Remotion.Reflection.TypeDiscovery
 {
   /// <summary>
-  /// Causes an assembly to be ignored by <see cref="ApplicationAssemblyLoaderFilter"/> (which is used by the configuration loaders
-  /// in Remotion.Data.DomainObjects and Remotion.Mixins).
+  /// Causes an assembly to be ignored by <see cref="ApplicationAssemblyLoaderFilter"/> (which is used by default by all re-motion components
+  /// performing type discovery, such as re-store and Mixins).
   /// </summary>
   [AttributeUsage (AttributeTargets.Assembly)]
   public class NonApplicationAssemblyAttribute : Attribute

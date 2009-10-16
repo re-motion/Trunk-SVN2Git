@@ -25,7 +25,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   public interface IRootAssemblyFinder
   {
     /// <summary>
-    /// Finds the root assemblies, using the given <see cref="IAssemblyLoader"/>.
+    /// Finds root assemblies using the given <see cref="IAssemblyLoader"/>.
     /// </summary>
     /// <param name="loader">The <see cref="IAssemblyLoader"/> to load the assemblies with.</param>
     /// <returns>An array of <see cref="RootAssembly"/> instances holding distinct, non-<see langword="null" /> <see cref="Assembly"/> objects

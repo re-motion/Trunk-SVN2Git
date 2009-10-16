@@ -22,7 +22,7 @@ using System.Linq;
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {
   /// <summary>
-  /// Composes several <see cref="IRootAssemblyFinder"/> instances into one, combining all results into one, eliminating duplicates in the process.
+  /// Composes several <see cref="IRootAssemblyFinder"/> instances into one, combining all results and eliminating duplicates in the process.
   /// </summary>
   public class CompositeRootAssemblyFinder : IRootAssemblyFinder
   {

@@ -20,24 +20,40 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
 {
+  /// <summary>
+  /// Filters the assemblies loaded during type discovery by name, excluding those whose names match a given regular expression. Whether to
+  /// match the simple name or the full name can be specified.
+  /// </summary>
   [Serializable]
   public class RegexAssemblyLoaderFilter : IAssemblyLoaderFilter
   {
     public enum MatchTargetKind { FullName, SimpleName };
 
     private readonly Regex _matchExpression;
-    private readonly string _matchExpressionString;
     private readonly MatchTargetKind _matchTarget;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RegexAssemblyLoaderFilter"/> class.
+    /// </summary>
+    /// <param name="matchExpression">The expression to match against the assembly name.</param>
+    /// <param name="matchTarget">Specifies whether to match the full names or the simple names of assemblies against the 
+    /// <paramref name="matchExpression"/>.</param>
     public RegexAssemblyLoaderFilter (Regex matchExpression, MatchTargetKind matchTarget)
     {
       ArgumentUtility.CheckNotNull ("matchExpression", matchExpression);
       ArgumentUtility.CheckValidEnumValue ("matchTarget", matchTarget);
+
       _matchExpression = matchExpression;
-      _matchExpressionString = matchExpression.ToString ();
       _matchTarget = matchTarget;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RegexAssemblyLoaderFilter"/> class.
+    /// </summary>
+    /// <param name="matchExpression">The expression to match against the assembly name. This is converted into a compiled, culture-invariant
+    /// regular expression.</param>
+    /// <param name="matchTarget">Specifies whether to match the full names or the simple names of assemblies against the 
+    /// <paramref name="matchExpression"/>.</param>
     public RegexAssemblyLoaderFilter (string matchExpression, MatchTargetKind matchTarget)
         : this (new Regex (
                     ArgumentUtility.CheckNotNull ("matchExpression", matchExpression),
@@ -45,11 +61,23 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
     {
     }
 
+    /// <summary>
+    /// Gets a string representation of the regular expression the assemblies are matched against.
+    /// </summary>
+    /// <value>The match expression string.</value>
     public string MatchExpressionString
     {
-      get { return _matchExpressionString; }
+      get { return _matchExpression.ToString(); }
     }
 
+    /// <summary>
+    /// Determines whether the assembly of the given name should be considered for inclusion by the <see cref="FilteringAssemblyLoader"/>.
+    /// Assemblies are considered only if the assembly name does not match the <see cref="MatchExpressionString"/>.
+    /// </summary>
+    /// <param name="assemblyName">The name of the assembly to be checked.</param>
+    /// <returns>
+    /// <see langword="true" /> unless the <paramref name="assemblyName"/> matches <see cref="MatchExpressionString"/>.
+    /// </returns>
     public bool ShouldConsiderAssembly (AssemblyName assemblyName)
     {
       switch (_matchTarget)
@@ -61,6 +89,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       }
     }
 
+    /// <summary>
+    /// Always returns <see langword="true" />; all filtering is performed by <see cref="ShouldConsiderAssembly"/>.
+    /// </summary>
     public bool ShouldIncludeAssembly (Assembly assembly)
     {
       return true;

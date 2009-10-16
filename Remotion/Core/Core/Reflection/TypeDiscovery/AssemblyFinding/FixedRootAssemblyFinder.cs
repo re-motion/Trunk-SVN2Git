@@ -19,7 +19,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {
   /// <summary>
-  /// Implements <see cref="IRootAssemblyFinder"/> by implementing a fixed set of root assemblies.
+  /// Implements <see cref="IRootAssemblyFinder"/> by returning a fixed set of root assemblies.
   /// </summary>
   public class FixedRootAssemblyFinder : IRootAssemblyFinder
   {

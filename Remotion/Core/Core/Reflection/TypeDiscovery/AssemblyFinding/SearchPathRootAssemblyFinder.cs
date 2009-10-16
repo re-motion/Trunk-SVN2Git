@@ -27,7 +27,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPathRootAssemblyFinder"/> type to look for assemblies within the current
-    /// <see cref="AppDomain"/>'s <see cref="AppDomain.BaseDirectory"/>.
+    /// <see cref="AppDomain"/>'s <see cref="AppDomain.BaseDirectory"/> as well as its <see cref="AppDomain.RelativeSearchPath"/>.
     /// </summary>
     /// <param name="considerDynamicDirectory">Specifies whether to search the <see cref="AppDomain.DynamicDirectory"/> as well as the base
     /// directory.</param>

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Remotion.Configuration.TypeDiscovery;
 using Remotion.Logging;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Text;
@@ -28,8 +29,8 @@ namespace Remotion.Reflection.TypeDiscovery
 {
   /// <summary>
   /// Provides an implementation of the <see cref="ITypeDiscoveryService"/> interface that uses an <see cref="AssemblyFinder"/> to
-  /// retrieve types. This class can be used to build components that can retrieve types via <see cref="IDesignerHost"/> and
-  /// <see cref="AssemblyFinder"/> using the same code for both. For example, it is used by <see cref="ContextAwareTypeDiscoveryUtility"/>
+  /// retrieve types. This class is created by <see cref="TypeDiscoveryConfiguration.CreateCustomService"/> in the default configuration and
+  /// is therefore the default <see cref="ITypeDiscoveryService"/> provided by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
   /// in the standard context.
   /// </summary>
   public class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
