@@ -22,7 +22,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class MixinDefinitionBuilderTest
@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GenericMixinsAreAllowed()
     {
       Assert.IsTrue (DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
-          .HasMixinWithConfiguredType(typeof(BT3Mixin3<,>)));
+                         .HasMixinWithConfiguredType(typeof(BT3Mixin3<,>)));
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void GenericInterfaceArgumentIsBaseTypeWhenPossible()
     {
       TargetClassDefinition def = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1),
-          typeof (MixinIntroducingGenericInterfaceWithTargetAsThisType<>));
+                                                                                     typeof (MixinIntroducingGenericInterfaceWithTargetAsThisType<>));
       Assert.IsTrue (def.ReceivedInterfaces.ContainsKey (typeof (IEquatable<BaseType1>)));
     }
 
@@ -205,7 +205,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           typeof (MixinWithProtectedOverrider).GetMethod ("get_VirtualProperty", bf),
           typeof (MixinWithProtectedOverrider).GetMethod ("add_VirtualEvent", bf),
           typeof (MixinWithProtectedOverrider).GetMethod ("remove_VirtualEvent", bf),
-          }));
+      }));
     }
 
     [Test]

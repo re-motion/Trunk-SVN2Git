@@ -21,7 +21,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class DependencyDefinitionBuilderTest
@@ -178,13 +178,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.AreEqual (0, mixin.ThisDependencies[typeof (IDuckFaceRequirements)].AggregatedDependencies.Count);
 
         Assert.AreSame (targetClass.RequiredFaceTypes[typeof (IDuckFaceRequirements)],
-            mixin.ThisDependencies[typeof (IDuckFaceRequirements)].RequiredType);
+                        mixin.ThisDependencies[typeof (IDuckFaceRequirements)].RequiredType);
 
         Assert.AreEqual (2, targetClass.RequiredFaceTypes[typeof (IDuckFaceRequirements)].Methods.Count);
         Assert.AreSame (typeof (IDuckFaceRequirements).GetMethod ("MethodImplementedOnBase"),
-            targetClass.RequiredFaceTypes[typeof (IDuckFaceRequirements)].Methods[0].InterfaceMethod);
+                        targetClass.RequiredFaceTypes[typeof (IDuckFaceRequirements)].Methods[0].InterfaceMethod);
         Assert.AreSame (targetClass.Methods[typeof (BaseTypeWithDuckFaceMixin).GetMethod ("MethodImplementedOnBase")],
-            targetClass.RequiredFaceTypes[typeof (IDuckFaceRequirements)].Methods[0].ImplementingMethod);
+                        targetClass.RequiredFaceTypes[typeof (IDuckFaceRequirements)].Methods[0].ImplementingMethod);
       }
     }
 
@@ -219,13 +219,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.AreEqual (0, mixin.BaseDependencies[typeof (IDuckBaseRequirements)].AggregatedDependencies.Count);
 
         Assert.AreSame (targetClass.RequiredBaseCallTypes[typeof (IDuckBaseRequirements)],
-            mixin.BaseDependencies[typeof (IDuckBaseRequirements)].RequiredType);
+                        mixin.BaseDependencies[typeof (IDuckBaseRequirements)].RequiredType);
 
         Assert.AreEqual (2, targetClass.RequiredBaseCallTypes[typeof (IDuckBaseRequirements)].Methods.Count);
         Assert.AreSame (typeof (IDuckBaseRequirements).GetMethod ("MethodImplementedOnBase"),
-            targetClass.RequiredBaseCallTypes[typeof (IDuckBaseRequirements)].Methods[0].InterfaceMethod);
+                        targetClass.RequiredBaseCallTypes[typeof (IDuckBaseRequirements)].Methods[0].InterfaceMethod);
         Assert.AreSame (targetClass.Methods[typeof (BaseTypeWithDuckBaseMixin).GetMethod ("MethodImplementedOnBase")],
-            targetClass.RequiredBaseCallTypes[typeof (IDuckBaseRequirements)].Methods[0].ImplementingMethod);
+                        targetClass.RequiredBaseCallTypes[typeof (IDuckBaseRequirements)].Methods[0].ImplementingMethod);
       }
     }
 
@@ -343,9 +343,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (d1.IsAggregate);
       Assert.IsTrue (d1.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate);
       Assert.IsFalse (d1.AggregatedDependencies[typeof (ICBaseType3)]
-          .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
+                          .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
       Assert.AreSame (bt3, d1.AggregatedDependencies[typeof (ICBaseType3)]
-          .AggregatedDependencies[typeof (IBaseType31)].GetImplementer ());
+                               .AggregatedDependencies[typeof (IBaseType31)].GetImplementer ());
 
       Assert.IsFalse (d1.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate);
       Assert.AreSame (m4, d1.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer ());
@@ -379,9 +379,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.AreSame (d2, d2.AggregatedDependencies[typeof (ICBaseType3)].Parent);
 
       Assert.IsFalse (d2.AggregatedDependencies[typeof (ICBaseType3)]
-          .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
+                          .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
       Assert.AreSame (bt3, d2.AggregatedDependencies[typeof (ICBaseType3)]
-          .AggregatedDependencies[typeof (IBaseType31)].GetImplementer ());
+                               .AggregatedDependencies[typeof (IBaseType31)].GetImplementer ());
 
       Assert.IsFalse (d2.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate);
       Assert.AreSame (m4, d2.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer ());
@@ -505,7 +505,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)];
       Assert.IsTrue (mixin.MixinDependencies.ContainsKey (typeof (IMixinWithAdditionalClassDependency)));
       Assert.AreSame (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)],
-          mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].GetImplementer ());
+                      mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].GetImplementer ());
       
       Assert.AreSame (mixin, mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].Depender);
       Assert.AreSame (mixin, mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)].Parent);

@@ -23,7 +23,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class AttributeIntroductionDefinitionBuilderTest
@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       TargetClassDefinition bt1 =
           DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseTypeWithAllowMultiple),
-              typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
+                                                             typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
       MethodDefinition member = bt1.Methods[typeof (BaseTypeWithAllowMultiple).GetMethod ("Foo")];
 
       Assert.AreEqual (1, member.CustomAttributes.Count);
@@ -238,7 +238,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
             EnumerableUtility.ToArray (definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions[typeof (BT1Attribute)]);
         Assert.That (suppressedAttributes.Length, Is.EqualTo (1));
         Assert.That (suppressedAttributes[0].Attribute,
-            Is.SameAs (definition.Mixins[typeof (MixinAddingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (BT1Attribute))));
+                     Is.SameAs (definition.Mixins[typeof (MixinAddingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (BT1Attribute))));
         Assert.That (suppressedAttributes[0].AttributeType, Is.EqualTo (typeof (BT1Attribute)));
         Assert.That (suppressedAttributes[0].FullName, Is.EqualTo (typeof (BT1Attribute).FullName));
         Assert.That (suppressedAttributes[0].Parent, Is.SameAs (definition));
@@ -270,12 +270,12 @@ namespace Remotion.UnitTests.Mixins.Definitions
             EnumerableUtility.ToArray (definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions[typeof (BT1Attribute)]);
         Assert.That (suppressedAttributes.Length, Is.EqualTo (1));
         Assert.That (suppressedAttributes[0].Attribute,
-            Is.SameAs (definition.Mixins[typeof (MixinAddingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (BT1Attribute))));
+                     Is.SameAs (definition.Mixins[typeof (MixinAddingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (BT1Attribute))));
         Assert.That (suppressedAttributes[0].AttributeType, Is.EqualTo (typeof (BT1Attribute)));
         Assert.That (suppressedAttributes[0].FullName, Is.EqualTo (typeof (BT1Attribute).FullName));
         Assert.That (suppressedAttributes[0].Parent, Is.SameAs (definition));
         Assert.That (suppressedAttributes[0].Suppressor,
-            Is.SameAs (definition.Mixins[typeof (MixinSuppressingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (SuppressAttributesAttribute))));
+                     Is.SameAs (definition.Mixins[typeof (MixinSuppressingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (SuppressAttributesAttribute))));
         Assert.That (suppressedAttributes[0].Target, Is.SameAs (definition));
       }
     }

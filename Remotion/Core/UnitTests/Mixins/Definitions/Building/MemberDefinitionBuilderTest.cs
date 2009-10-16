@@ -23,7 +23,7 @@ using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class MemberDefinitionBuilderTest
@@ -240,7 +240,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInheritedMethod));
       Assert.IsTrue (targetClass.Methods.ContainsKey (typeof (BaseClassWithInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod",
-          BindingFlags.Instance | BindingFlags.NonPublic)));
+                                                                                                       BindingFlags.Instance | BindingFlags.NonPublic)));
     }
   }
 }

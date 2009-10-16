@@ -21,7 +21,7 @@ using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class RequirementsAnalyzerTest

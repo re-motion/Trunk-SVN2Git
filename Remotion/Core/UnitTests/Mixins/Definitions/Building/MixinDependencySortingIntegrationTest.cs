@@ -26,10 +26,10 @@ using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
-  public class MixinDependencySortIntegrationTest
+  public class MixinDependencySortingIntegrationTest
   {
     [Test]
     public void MixinDefinitionsAreSortedCorrectlySmall()
@@ -180,23 +180,23 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (DependencyKind.None));
 
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
-                      DependencyKind.FirstOnSecond));
+                                                                                                                            DependencyKind.FirstOnSecond));
 
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (
-                      DependencyKind.SecondOnFirst));
+                                                                                                                            DependencyKind.SecondOnFirst));
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (
-                      DependencyKind.FirstOnSecond));
+                                                                                                                            DependencyKind.FirstOnSecond));
 
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (
-                      DependencyKind.FirstOnSecond));
+                                                                                                                            DependencyKind.FirstOnSecond));
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
-                      DependencyKind.SecondOnFirst));
+                                                                                                                            DependencyKind.SecondOnFirst));
 
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
-                      DependencyKind.SecondOnFirst));
+                                                                                                                            DependencyKind.SecondOnFirst));
 
         Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin7)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
-                      DependencyKind.FirstOnSecond));
+                                                                                                                            DependencyKind.FirstOnSecond));
       }
     }
     

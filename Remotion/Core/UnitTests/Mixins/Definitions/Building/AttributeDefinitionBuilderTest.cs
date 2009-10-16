@@ -24,7 +24,7 @@ using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins.Context;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class AttributeDefinitionBuilderTest
@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void Attributes ()
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassWithManyAttributes),
-          typeof (ClassWithManyAttributes));
+                                                                                             typeof (ClassWithManyAttributes));
       MixinDefinition mixin = targetClass.Mixins[typeof (ClassWithManyAttributes)];
 
       CheckAttributes (targetClass);
@@ -103,7 +103,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
         Assert.That (attributes[0].AttributeType, Is.EqualTo (typeof (AttributeWithParameters)));
         Assert.That (
-                      attributes[0].Data.Constructor, Is.EqualTo (typeof (AttributeWithParameters).GetConstructor (new[] { typeof (int), typeof (string) })));
+            attributes[0].Data.Constructor, Is.EqualTo (typeof (AttributeWithParameters).GetConstructor (new[] { typeof (int), typeof (string) })));
         Assert.That (attributes[0].DeclaringDefinition, Is.EqualTo (definition));
 
         Assert.That (attributes[0].Data.ConstructorArguments.Count, Is.EqualTo (2));
@@ -223,9 +223,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
-        + ".*MixinWithAmbiguousSource.ToString specifies an ambiguous attribute "
-        + "source: The source member string Source matches several members on type "
-        + ".*MixinWithAmbiguousSource.", MatchType = MessageMatch.Regex)]
+                                                                           + ".*MixinWithAmbiguousSource.ToString specifies an ambiguous attribute "
+                                                                           + "source: The source member string Source matches several members on type "
+                                                                           + ".*MixinWithAmbiguousSource.", MatchType = MessageMatch.Regex)]
     public void CopyAttributes_Ambiguous ()
     {
       var builder = new AttributeDefinitionBuilder (DefinitionObjectMother.CreateMixinDefinition (typeof (MixinWithAmbiguousSource)));
@@ -235,8 +235,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
-        + ".*MixinWithUnknownSource.ToString specifies an unknown attribute "
-        + "source .*MixinWithUnknownSource.Source.", MatchType = MessageMatch.Regex)]
+                                                                           + ".*MixinWithUnknownSource.ToString specifies an unknown attribute "
+                                                                           + "source .*MixinWithUnknownSource.Source.", MatchType = MessageMatch.Regex)]
     public void CopyAttributes_Unknown ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithUnknownSource)).EnterScope())
@@ -247,8 +247,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
-        + ".*MixinWithInvalidSourceType.ToString specifies an attribute source "
-        + ".*MixinWithInvalidSourceType of a different member kind.", MatchType = MessageMatch.Regex)]
+                                                                           + ".*MixinWithInvalidSourceType.ToString specifies an attribute source "
+                                                                           + ".*MixinWithInvalidSourceType of a different member kind.", MatchType = MessageMatch.Regex)]
     public void CopyAttributes_Invalid ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithInvalidSourceType)).EnterScope())
@@ -300,8 +300,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.That (attribute2.Parent, Is.SameAs (attributableDefinition));
     }
   
-// ReSharper disable UnusedMember.Local
-// ReSharper disable UnusedParameter.Local
+    // ReSharper disable UnusedMember.Local
+    // ReSharper disable UnusedParameter.Local
 
     [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class TagAttribute : Attribute
@@ -369,7 +369,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         return "";
       }
     }
-// ReSharper restore UnusedMember.Local
-// ReSharper restore UnusedParameter.Local
+    // ReSharper restore UnusedMember.Local
+    // ReSharper restore UnusedParameter.Local
   }
 }

@@ -20,10 +20,10 @@ using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
-  public class OverrideAttributeHierarchyTest
+  public class OverrideAttributeHierarchyIntegrationTest
   {
     [Test]
     public void BaseWithOverrideAttributes ()
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       EventInfo eve = typeof (TargetForOverridesAndShadowing).GetEvent ("Event");
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
-          typeof (DerivedWithoutOverrideAttributes));
+                                                                                      typeof (DerivedWithoutOverrideAttributes));
       MixinDefinition mix1 = def1.Mixins[typeof (DerivedWithoutOverrideAttributes)];
       Assert.IsNotNull (mix1);
 
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void DerivedWithNewAdditionalOverrides ()
     {
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
-          typeof (DerivedNewWithAdditionalOverrideAttributes));
+                                                                                      typeof (DerivedNewWithAdditionalOverrideAttributes));
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       EventInfo eve = typeof (TargetForOverridesAndShadowing).GetEvent ("Event");
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
-          typeof (BaseWithoutOverrideAttributes));
+                                                                                      typeof (BaseWithoutOverrideAttributes));
       MixinDefinition mix1 = def1.Mixins[typeof (BaseWithoutOverrideAttributes)];
       Assert.IsNotNull (mix1);
 
@@ -102,7 +102,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       EventInfo eve = typeof (TargetForOverridesAndShadowing).GetEvent ("Event");
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
-          typeof (DerivedNewWithOverrideAttributes));
+                                                                                      typeof (DerivedNewWithOverrideAttributes));
       MixinDefinition mix1 = def1.Mixins[typeof (DerivedNewWithOverrideAttributes)];
       Assert.IsNotNull (mix1);
 
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       EventInfo eve = typeof (TargetForOverridesAndShadowing).GetEvent ("Event");
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
-          typeof (DerivedNewWithoutOverrideAttributes));
+                                                                                      typeof (DerivedNewWithoutOverrideAttributes));
       MixinDefinition mix1 = def1.Mixins[typeof (DerivedNewWithoutOverrideAttributes)];
       Assert.IsNotNull (mix1);
 

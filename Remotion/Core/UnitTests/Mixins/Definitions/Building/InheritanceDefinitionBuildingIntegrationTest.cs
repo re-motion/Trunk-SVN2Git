@@ -18,10 +18,10 @@ using NUnit.Framework;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
-  public class InheritanceDefinitionBuilderTest
+  public class InheritanceDefinitionBuildingIntegrationTest
   {
     [Test]
     public void InheritedIntroducedInterfaces ()
@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       TargetClassDefinition bt1 =
           DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinFaceDependingOnInheritedInterface),
-              typeof (MixinIntroducingInheritedInterface));
+                                                             typeof (MixinIntroducingInheritedInterface));
       Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII1)));
       Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII2)));
       Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII3)));

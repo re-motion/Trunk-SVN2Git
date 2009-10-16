@@ -23,7 +23,7 @@ using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class TargetClassDefinitionBuilderTest
@@ -94,11 +94,11 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var targetClassDefinition = _builder.Build (classContext);
       Assert.That (targetClassDefinition.Methods.Where (m => m.Name == typeof (IInterfaceWithAllKindsOfMembers).FullName + ".Method").ToArray (), 
-          Is.Not.Empty);
+                   Is.Not.Empty);
       Assert.That (targetClassDefinition.Properties.Where (p => p.Name == typeof (IInterfaceWithAllKindsOfMembers).FullName + ".Property").ToArray (), 
-          Is.Not.Empty);
+                   Is.Not.Empty);
       Assert.That (targetClassDefinition.Events.Where (e => e.Name == typeof (IInterfaceWithAllKindsOfMembers).FullName + ".Event").ToArray (),
-          Is.Not.Empty);
+                   Is.Not.Empty);
     }
 
     [Test]
@@ -158,7 +158,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (targetClassDefinition.Mixins.Select (m => m.Type).ToArray (), Is.EqualTo (new[] {
           typeof (BT7Mixin0), 
           typeof (BT7Mixin2), 
@@ -185,7 +185,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (targetClassDefinition.Mixins.Select (m => m.MixinIndex).ToArray (), Is.EqualTo (new[] { 0, 1, 2, 3, 4, 5, 6 }));
     }
 
@@ -197,7 +197,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       var targetClassDefinition = _builder.Build (classContext);
 
       Assert.That (targetClassDefinition.RequiredFaceTypes[typeof (IBaseType31)].Methods.Select (r => r.InterfaceMethod).ToArray (),
-          List.Contains (typeof (IBaseType31).GetMethod ("IfcMethod")));
+                   List.Contains (typeof (IBaseType31).GetMethod ("IfcMethod")));
     }
 
     [Test]
@@ -208,7 +208,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       var targetClassDefinition = _builder.Build (classContext);
 
       Assert.That (targetClassDefinition.RequiredBaseCallTypes[typeof (IBaseType31)].Methods.Select (r => r.InterfaceMethod).ToArray (),
-          List.Contains (typeof (IBaseType31).GetMethod ("IfcMethod")));
+                   List.Contains (typeof (IBaseType31).GetMethod ("IfcMethod")));
     }
 
     [Test]
@@ -291,7 +291,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var methodInfo = typeof (GenericTargetClass<string>).GetMethod ("VirtualMethod");
       Assert.That (targetClassDefinition.Methods[methodInfo].ReceivedAttributes.Select (a => a.AttributeType).ToArray (), 
-          List.Contains (typeof (BT1Attribute)));
+                   List.Contains (typeof (BT1Attribute)));
     }
   }
 }

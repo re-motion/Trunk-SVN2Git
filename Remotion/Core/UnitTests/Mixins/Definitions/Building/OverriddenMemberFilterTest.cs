@@ -21,7 +21,7 @@ using Remotion.Mixins.Definitions.Building;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain.MemberFiltering;
 using System.Linq;
 
-namespace Remotion.UnitTests.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.Definitions.Building
 {
   [TestFixture]
   public class OverriddenMemberFilterTest
