@@ -1,3 +1,9 @@
+1.13.31
+=======
+- Clients.Web now supports theming. The default is ClassicBlue.
+  If you wish to use the Legacy theme, you need to change the SecurityManagerMasterPage to use HTML Quirksmode 
+  and the registration of the renderer-factories to register the Legacy-renderers.
+
 1.13.14
 =======
 - SecurityTokenMatcher
