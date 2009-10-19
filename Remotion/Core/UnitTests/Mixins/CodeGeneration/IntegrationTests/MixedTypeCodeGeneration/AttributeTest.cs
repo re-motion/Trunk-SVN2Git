@@ -178,8 +178,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    [Ignore ("TODO: Install .NET 3.5 SP1 on the build server.")]
-    public void AttributesOnDerivedPropertiesBehaveLikeMethods()
+    [Ignore ("TODO: This does not work on the build server, check why.")]
+    public void AttributesOnDerivedPropertiesBehaveLikeMethods ()
     {
       object[] attributes =
           GetRelevantAttributes (CreateMixedType (typeof (TargetWithoutAttributes), typeof (MixinWithAttributes)).GetProperty ("Property"));
