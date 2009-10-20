@@ -94,7 +94,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual MixinConfigurationBuilder AddMixinToClass (MixinKind mixinKind, Type targetType, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> explicitDependencies, IEnumerable<Type> suppressedMixins)
     {
       MixinContextBuilder mixinContextBuilder = AddMixinToClass (targetType, mixinType);
-      CheckForSelfSuppressor (targetType, mixinType, suppressedMixins);
 
       mixinContextBuilder
           .OfKind (mixinKind)
@@ -103,19 +102,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
           .ReplaceMixins (suppressedMixins.ToArray());
 
       return this;
-    }
-
-    private void CheckForSelfSuppressor (Type targetType, Type mixinType, IEnumerable<Type> suppressedMixins)
-    {
-      foreach (Type suppressedMixinType in suppressedMixins)
-      {
-        if (ReflectionUtility.CanAscribe (mixinType, suppressedMixinType))
-        {
-          string message = string.Format ("Mixin type {0} applied to target class {1} suppresses itself.", mixinType.FullName,
-              targetType.FullName);
-          throw new InvalidOperationException (message);
-        }
-      }
     }
 
     private MixinContextBuilder AddMixinToClass (Type targetType, Type mixinType)

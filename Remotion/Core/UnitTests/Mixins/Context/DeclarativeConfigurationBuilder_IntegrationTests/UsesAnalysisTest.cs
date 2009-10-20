@@ -319,38 +319,5 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     {
       new DeclarativeConfigurationBuilder (null).AddType (typeof (DuplicateWithGenerics3)).BuildConfiguration ();
     }
-
-    [Uses (typeof (NullMixin), SuppressedMixins = new[] { typeof (SuppressedExtender) })]
-    [IgnoreForMixinConfiguration]
-    public class SuppressingUser { }
-
-    [Extends (typeof (SuppressingUser))]
-    public class SuppressedExtender
-    {
-    }
-
-    [Test]
-    public void SuppressedMixins ()
-    {
-      MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null)
-          .AddType (typeof (SuppressingUser))
-          .AddType (typeof (SuppressedExtender))
-          .BuildConfiguration ();
-      ClassContext classContext = configuration.GetContext (typeof (SuppressingUser));
-      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (NullMixin)));
-      Assert.IsFalse (classContext.Mixins.ContainsKey (typeof (SuppressedExtender)));
-    }
-
-    [Uses (typeof (NullMixin), SuppressedMixins = new[] { typeof (NullMixin) })]
-    [IgnoreForMixinConfiguration]
-    public class SelfSuppressingUser { }
-
-    [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Mixin type Remotion.UnitTests.Mixins.SampleTypes.NullMixin applied to "
-        + "target class .*SelfSuppressingUser suppresses itself.", MatchType = MessageMatch.Regex)]
-    public void SelfSuppresser ()
-    {
-      new DeclarativeConfigurationBuilder (null).AddType (typeof (SelfSuppressingUser)).BuildConfiguration ();
-    }
   }
 }

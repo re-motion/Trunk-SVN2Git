@@ -199,6 +199,12 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       ArgumentUtility.CheckNotNull ("replacedMixinType", replacedMixinType);
 
+      if (replacedMixinType == MixinType || (MixinType.IsGenericType && replacedMixinType == MixinType.GetGenericTypeDefinition()))
+      {
+        string message = string.Format ("Mixin type '{0}' applied to target class '{1}' suppresses itself.", _mixinType, _parent.TargetType);
+        throw new InvalidOperationException (message);
+      }
+
       _parent.SuppressMixin (new MixinTreeReplacementSuppressionRule (MixinType, replacedMixinType));
       return this;
     }

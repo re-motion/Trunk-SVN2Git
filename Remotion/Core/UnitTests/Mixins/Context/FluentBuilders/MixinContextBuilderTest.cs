@@ -148,82 +148,92 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     [Test]
     public void ReplaceMixin_Generic ()
     {
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock.Replay ();
+      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
 
-      var result = _mixinBuilder.ReplaceMixin<int> ();
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Replay ();
 
-      Assert.That (result, Is.SameAs (_mixinBuilder));
-      _parentBuilderMock.VerifyAllExpectations ();
+      var result = mixinContextBuilderPartialMock.ReplaceMixin<int> ();
+
+      Assert.That (result, Is.SameAs (mixinContextBuilderPartialMock));
+      mixinContextBuilderPartialMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void ReplaceMixins_NonGeneric ()
     {
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (double))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock.Replay ();
+      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
 
-      var result = _mixinBuilder.ReplaceMixins (typeof (int), typeof (double));
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (double))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Replay ();
 
-      Assert.That (result, Is.SameAs (_mixinBuilder));
-      _parentBuilderMock.VerifyAllExpectations ();
+      var result = mixinContextBuilderPartialMock.ReplaceMixins (typeof (int), typeof (double));
+
+      Assert.That (result, Is.SameAs (mixinContextBuilderPartialMock));
+      mixinContextBuilderPartialMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void ReplaceMixins_Generic2 ()
     {
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (double))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock.Replay ();
+      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
 
-      var result = _mixinBuilder.ReplaceMixins<int, double> ();
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (double))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Replay ();
 
-      Assert.That (result, Is.SameAs (_mixinBuilder));
-      _parentBuilderMock.VerifyAllExpectations ();
+      var result = mixinContextBuilderPartialMock.ReplaceMixins<int, double>();
+
+      Assert.That (result, Is.SameAs (mixinContextBuilderPartialMock));
+      mixinContextBuilderPartialMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void ReplaceMixins_Generic3 ()
     {
+      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
+
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (double))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (string))).Return (mixinContextBuilderPartialMock);
+      mixinContextBuilderPartialMock.Replay ();
+
+      var result = mixinContextBuilderPartialMock.ReplaceMixins<int, double, string> ();
+
+      Assert.That (result, Is.SameAs (mixinContextBuilderPartialMock));
+      mixinContextBuilderPartialMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type 'Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1' applied "
+        + "to target class 'System.Object' suppresses itself.")]
+    public void ReplaceMixin_SelfSuppressor ()
+    {
+      _mixinBuilder.ReplaceMixin (_mixinBuilder.MixinType);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixin`1[System.Object]' applied "
+        + "to target class 'System.Object' suppresses itself.")]
+    public void ReplaceMixin_SelfSuppressor_GenericDefinition ()
+    {
+      var mixinBuilder = new MixinContextBuilder (_parentBuilderMock, typeof (GenericMixin<object>));
+      mixinBuilder.ReplaceMixin (typeof (GenericMixin<>));
+    }
+
+    [Test]
+    public void ReplaceMixin_BaseSuppressor ()
+    {
       _parentBuilderMock
           .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
               rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (double))))
-          .Return (_parentBuilderMock);
-      _parentBuilderMock
-          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
-              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
-                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (string))))
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == _mixinBuilder.MixinType.BaseType)))
           .Return (_parentBuilderMock);
       _parentBuilderMock.Replay ();
 
-      var result = _mixinBuilder.ReplaceMixins<int, double, string> ();
+      var result = _mixinBuilder.ReplaceMixin (_mixinBuilder.MixinType.BaseType);
 
       Assert.That (result, Is.SameAs (_mixinBuilder));
       _parentBuilderMock.VerifyAllExpectations ();

@@ -391,12 +391,19 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type System.Int32 applied to target class System.Object "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Mixin type 'System.Int32' applied to target class 'System.Object' "
         + "suppresses itself.")]
     public void AddMixinToClass_WithSelfSuppressor ()
     {
       var builder = new MixinConfigurationBuilder (null);
       builder.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (int), MemberVisibility.Private, new Type[0], new[] {typeof (int)});
+    }
+
+    [Test]
+    public void AddMixinToClass_WithBaseSuppressor ()
+    {
+      var builder = new MixinConfigurationBuilder (null);
+      builder.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (DerivedNullMixin), MemberVisibility.Private, new Type[0], new[] { typeof (NullMixin) });
     }
   }
 }
