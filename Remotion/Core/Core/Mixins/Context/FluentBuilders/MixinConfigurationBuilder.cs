@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Logging;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context.FluentBuilders
 {
@@ -82,7 +83,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <summary>
     /// Adds the given mixin to the given target type with a number of explicit dependencies and suppressed mixins. This is a shortcut
     /// method for calling <see cref="ForClass"/>, <see cref="ClassContextBuilder.AddMixin"/>, <see cref="MixinContextBuilder.WithDependencies"/>,
-    /// and <see cref="MixinContextBuilder.SuppressMixins"/> in a row.
+    /// and <see cref="MixinContextBuilder.ReplaceMixins"/> in a row.
     /// </summary>
     /// <param name="mixinKind">The kind of relationship the mixin has with its target class.</param>
     /// <param name="targetType">The target type to add a mixin for.</param>
@@ -97,9 +98,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
       mixinContextBuilder
           .OfKind (mixinKind)
-          .WithDependencies (EnumerableUtility.ToArray (explicitDependencies))
+          .WithDependencies (explicitDependencies.ToArray())
           .WithIntroducedMemberVisibility (introducedMemberVisibility)
-          .SuppressMixins (EnumerableUtility.ToArray (suppressedMixins));
+          .ReplaceMixins (suppressedMixins.ToArray());
 
       return this;
     }

@@ -195,7 +195,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// </summary>
     /// <param name="replacedMixinType">The mixin type, base type, or generic type definition denoting mixin types to be replaced.</param>
     /// <returns>This object for further configuration of the mixin.</returns>
-    public MixinContextBuilder ReplaceMixin (Type replacedMixinType)
+    public virtual MixinContextBuilder ReplaceMixin (Type replacedMixinType)
     {
       ArgumentUtility.CheckNotNull ("replacedMixinType", replacedMixinType);
 
@@ -220,7 +220,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// </summary>
     /// <param name="replacedMixinTypes">The mixin types, base types, or generic type definitions denoting mixin types to be replaced.</param>
     /// <returns>This object for further configuration of the mixin.</returns>
-    public MixinContextBuilder ReplaceMixins (params Type[] replacedMixinTypes)
+    public virtual MixinContextBuilder ReplaceMixins (params Type[] replacedMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("replacedMixinTypes", replacedMixinTypes);
       foreach (var replacedMixinType in replacedMixinTypes)

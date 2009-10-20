@@ -319,7 +319,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
         Expect.Call (classBuilderMock.AddMixin (mixinType)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.OfKind (MixinKind.Extending)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.SuppressMixins (suppressedMixins)).Return (classBuilderMock);
+        Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
 
       mockRepository.ReplayAll ();
@@ -350,7 +350,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
         Expect.Call (classBuilderMock.AddMixin (mixinType)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.SuppressMixins (suppressedMixins)).Return (classBuilderMock);
+        Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
 
       mockRepository.ReplayAll ();
@@ -381,7 +381,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
         Expect.Call (classBuilderMock.AddMixin (mixinType)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.SuppressMixins (suppressedMixins)).Return (classBuilderMock);
+        Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
 
       mockRepository.ReplayAll ();
