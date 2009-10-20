@@ -15,10 +15,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.Context.FluentBuilders
 {
@@ -36,8 +34,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private readonly MixinConfigurationBuilder _parent;
     private readonly Type _targetType;
     private readonly Dictionary<Type, MixinContextBuilder> _mixinContextBuilders = new Dictionary<Type, MixinContextBuilder> ();
-    private readonly Set<Type> _completeInterfaces = new Set<Type> ();
-    private readonly Set<Type> _suppressedMixins = new Set<Type> ();
+    private readonly HashSet<Type> _completeInterfaces = new HashSet<Type> ();
+    private readonly List<IMixinSuppressionRule> _suppressedMixins = new List<IMixinSuppressionRule> ();
     private bool _suppressInheritance = false;
 
     public ClassContextBuilder (Type targetType) : this (new MixinConfigurationBuilder (null), targetType)
@@ -93,7 +91,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// Gets the suppressed mixins collected so far.
     /// </summary>
     /// <value>The suppressed mixins collected so far by this object.</value>
-    public IEnumerable<Type> SuppressedMixins
+    public IEnumerable<IMixinSuppressionRule> SuppressedMixins
     {
       get { return _suppressedMixins; }
     }
@@ -395,14 +393,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual ClassContextBuilder SuppressMixin (Type mixinType)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      if (_suppressedMixins.Contains (mixinType))
-      {
-        string message =
-            string.Format ("The mixin type {0} has already been suppressed for target type {1}.", mixinType.FullName, TargetType.FullName);
-        throw new ArgumentException (message, "mixinType");
-      }
-
-      _suppressedMixins.Add (mixinType);
+      _suppressedMixins.Add (new MixinTreeSuppressionRule (mixinType));
       return this;
     }
 
@@ -469,7 +460,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       var classContext = new ClassContext (_targetType, GetMixins(), CompleteInterfaces);
       classContext = ApplyInheritance(classContext, inheritedContexts);
-      classContext = classContext.SuppressMixins (SuppressedMixins.Select (t => (IMixinSuppressionRule) new MixinTreeSuppressionRule (t)));
+      classContext = classContext.SuppressMixins (SuppressedMixins);
       return classContext;
     }
 

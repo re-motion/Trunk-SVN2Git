@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -63,7 +64,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.AreSame (typeof (BaseType2), classBuilder.TargetType);
       Assert.IsNotNull (classBuilder.Parent);
       Assert.That (_classBuilder.MixinContextBuilders, Is.Empty);
-      Assert.That (_classBuilder.CompleteInterfaces, Is.Empty);
+      Assert.That (_classBuilder.CompleteInterfaces.ToArray (), Is.Empty);
 
       ClassContext classContext = _classBuilder.BuildClassContext (new ClassContext[0]);
       Assert.AreEqual (0, classContext.Mixins.Count);
@@ -76,7 +77,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.AreSame (typeof (BaseType2), _classBuilder.TargetType);
       Assert.AreSame (_parentBuilderMock, _classBuilder.Parent);
       Assert.That (_classBuilder.MixinContextBuilders, Is.Empty);
-      Assert.That (_classBuilder.CompleteInterfaces, Is.Empty);
+      Assert.That (_classBuilder.CompleteInterfaces.ToArray (), Is.Empty);
       
       ClassContext classContext = _classBuilder.BuildClassContext(new ClassContext[0]);
       Assert.AreEqual (0, classContext.Mixins.Count);
@@ -96,7 +97,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
 
       Assert.AreSame (classBuilder, classBuilder.Clear());
       Assert.That (classBuilder.MixinContextBuilders, Is.Empty);
-      Assert.That (classBuilder.CompleteInterfaces, Is.Empty);
+      Assert.That (classBuilder.CompleteInterfaces.ToArray (), Is.Empty);
       Assert.That (classBuilder.SuppressInheritance, Is.True);
     }
 
@@ -318,7 +319,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddCompleteInterface_NonGeneric ()
     {
       Assert.AreSame (_classBuilder, _classBuilder.AddCompleteInterface (typeof (IBT6Mixin1)));
-      Assert.That (_classBuilder.CompleteInterfaces, Is.EquivalentTo (new object[] { typeof (IBT6Mixin1) }));
+      Assert.That (_classBuilder.CompleteInterfaces.ToArray(), Is.EquivalentTo (new object[] { typeof (IBT6Mixin1) }));
     }
 
     [Test]
@@ -384,16 +385,9 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.That (_classBuilder.SuppressedMixins, Is.Empty);
       _classBuilder.SuppressMixin (typeof (BT1Mixin1));
       _classBuilder.SuppressMixin (typeof (BT2Mixin1));
-      Assert.That (_classBuilder.SuppressedMixins, Is.EquivalentTo (new object[] { typeof (BT2Mixin1), typeof (BT1Mixin1) }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The mixin type Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1 has already "
-        + "been suppressed for target type Remotion.UnitTests.Mixins.SampleTypes.BaseType2.", MatchType = MessageMatch.Contains)]
-    public void SuppressMixin_Twice ()
-    {
-      _classBuilder.SuppressMixin (typeof (BT2Mixin1));
-      _classBuilder.SuppressMixin (typeof (BT2Mixin1));
+      Assert.That (
+          _classBuilder.SuppressedMixins.Cast<MixinTreeSuppressionRule>().Select (r => r.BaseTypeToSuppress).ToArray(),
+          Is.EquivalentTo (new object[] { typeof (BT2Mixin1), typeof (BT1Mixin1) }));
     }
 
     [Test]
