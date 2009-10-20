@@ -23,14 +23,18 @@ namespace Remotion.Mixins.Context.Suppression
   /// <summary>
   /// Suppresses all mixins that can be ascribed to a given base class.
   /// </summary>
-  public class MixinTreeSuppressionRule : IMixinSuppressionRule
+  public class MixinTreeReplacementSuppressionRule : IMixinSuppressionRule
   {
-    public MixinTreeSuppressionRule (Type mixinBaseTypeToSuppress)
+    public MixinTreeReplacementSuppressionRule (Type replacingMixinType, Type mixinBaseTypeToSuppress)
     {
+      ArgumentUtility.CheckNotNull ("replacingMixinType", replacingMixinType);
       ArgumentUtility.CheckNotNull ("mixinBaseTypeToSuppress", mixinBaseTypeToSuppress);
+
+      ReplacingMixinType = replacingMixinType;
       MixinBaseTypeToSuppress = mixinBaseTypeToSuppress;
     }
 
+    public Type ReplacingMixinType { get; private set; }
     public Type MixinBaseTypeToSuppress { get; private set; }
 
     public void RemoveAffectedMixins (Dictionary<Type, MixinContext> configuredMixinTypes)
@@ -39,7 +43,8 @@ namespace Remotion.Mixins.Context.Suppression
 
       foreach (var configuredMixinType in configuredMixinTypes.Keys.ToList()) // need to clone collection, otherwise we can't remove
       {
-        if (ReflectionUtility.CanAscribe (configuredMixinType, MixinBaseTypeToSuppress))
+        if (ReflectionUtility.CanAscribe (configuredMixinType, MixinBaseTypeToSuppress)
+            && !ReflectionUtility.CanAscribe (configuredMixinType, ReplacingMixinType))
           configuredMixinTypes.Remove (configuredMixinType);
       }
     }

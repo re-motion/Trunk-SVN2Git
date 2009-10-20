@@ -171,6 +171,7 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\MixinOverriddenByProtectedOverrider.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\DerivedTargetClassWithProtectedOverrider.cs" />
     <Compile Include="Mixins\Context\FluentBuilders\InheritanceResolvingClassContextBuilderTest.cs" />
+    <Compile Include="Mixins\Context\Suppression\MixinTreeReplacementSuppressionRuleTest.cs" />
     <Compile Include="Mixins\Context\Suppression\MixinTreeSuppressionRuleTest.cs" />
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\DuckTypingRequiredMethodDefinitionCollectorTest.cs" />
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\TestDomain\ClassImplementingInterfaceWithDuckTyping.cs" />

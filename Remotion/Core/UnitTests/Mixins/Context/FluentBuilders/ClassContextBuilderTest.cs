@@ -386,7 +386,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _classBuilder.SuppressMixin (typeof (BT1Mixin1));
       _classBuilder.SuppressMixin (typeof (BT2Mixin1));
       Assert.That (
-          _classBuilder.SuppressedMixins.Cast<MixinTreeSuppressionRule>().Select (r => r.BaseTypeToSuppress).ToArray(),
+          _classBuilder.SuppressedMixins.Cast<MixinTreeSuppressionRule>().Select (r => r.MixinBaseTypeToSuppress).ToArray(),
           Is.EquivalentTo (new object[] { typeof (BT2Mixin1), typeof (BT1Mixin1) }));
     }
 
