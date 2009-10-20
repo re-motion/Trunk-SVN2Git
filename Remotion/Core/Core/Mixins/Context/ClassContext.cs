@@ -18,7 +18,9 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using Remotion.Mixins.Context.Serialization;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context
 {
@@ -284,25 +286,19 @@ namespace Remotion.Mixins.Context
     }
 
     /// <summary>
-    /// Returns a new <see cref="ClassContext"/> equivalent to this object but with all mixins ascribable from the given
-    /// <paramref name="mixinTypesToSuppress"/> removed.
+    /// Returns a new <see cref="ClassContext"/> equivalent to this object but with all mixins affected by the given 
+    /// <paramref name="suppressionRules"/> removed.
     /// </summary>
-    /// <param name="mixinTypesToSuppress">The mixin types to suppress.</param>
-    /// <returns>A copy of this <see cref="ClassContext"/> without any mixins that can be ascribed to the given mixin types.</returns>
-    public ClassContext SuppressMixins (IEnumerable<Type> mixinTypesToSuppress)
+    /// <param name="suppressionRules">The rules describing the mixin types to suppress.</param>
+    /// <returns>
+    /// A copy of this <see cref="ClassContext"/> without any mixins that are affected by the given <parmref name="suppressionRules"/>.
+    /// </returns>
+    public ClassContext SuppressMixins (IEnumerable<IMixinSuppressionRule> suppressionRules)
     {
-      var mixinsAfterSuppression = new Dictionary<Type, MixinContext> ();
-      foreach (MixinContext mixinContext in _mixins)
-        mixinsAfterSuppression.Add (mixinContext.MixinType, mixinContext);
+      var mixinsAfterSuppression = _mixins.ToDictionary (mc => mc.MixinType);
+      foreach (var rule in suppressionRules)
+        rule.RemoveAffectedMixins (mixinsAfterSuppression);
 
-      foreach (Type suppressedType in mixinTypesToSuppress)
-      {
-        foreach (MixinContext mixin in Mixins)
-        {
-          if (ReflectionUtility.CanAscribe (mixin.MixinType, suppressedType))
-            mixinsAfterSuppression.Remove (mixin.MixinType);
-        }
-      }
       return new ClassContext (Type, mixinsAfterSuppression.Values, CompleteInterfaces);
     }
 

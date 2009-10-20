@@ -18,13 +18,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Context.Serialization;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.Context
 {
@@ -325,6 +326,26 @@ namespace Remotion.UnitTests.Mixins.Context
       var properties = typeof (ClassContext).GetProperties (BindingFlags.Public | BindingFlags.Instance);
       Assert.That (typeof (IClassContextSerializer).GetMethods ().Length, Is.EqualTo (properties.Length));
       Assert.That (typeof (IClassContextDeserializer).GetMethods ().Length, Is.EqualTo (properties.Length));
+    }
+
+    [Test]
+    public void SuppressMixins ()
+    {
+      var ruleStub1 = MockRepository.GenerateStub<IMixinSuppressionRule> ();
+      ruleStub1
+          .Stub (stub => stub.RemoveAffectedMixins (Arg<Dictionary<Type, MixinContext>>.Is.Anything))
+          .WhenCalled (mi => ((Dictionary<Type, MixinContext>) mi.Arguments[0]).Remove (typeof (int)));
+      
+      var ruleStub2 = MockRepository.GenerateStub<IMixinSuppressionRule> ();
+      ruleStub2
+          .Stub (stub => stub.RemoveAffectedMixins (Arg<Dictionary<Type, MixinContext>>.Is.Anything))
+          .WhenCalled (mi => ((Dictionary<Type, MixinContext>) mi.Arguments[0]).Remove (typeof (double)));
+
+      var original = new ClassContext (typeof (NullTarget), typeof (int), typeof (double), typeof (string));
+      
+      var result = original.SuppressMixins (new[] { ruleStub1, ruleStub2 });
+
+      Assert.That (result.Mixins.Select (mc => mc.MixinType).ToArray (), Is.EquivalentTo (new[] { typeof (string) }));
     }
   }
 }

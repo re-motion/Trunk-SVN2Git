@@ -16,7 +16,9 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context.FluentBuilders
 {
@@ -467,7 +469,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       var classContext = new ClassContext (_targetType, GetMixins(), CompleteInterfaces);
       classContext = ApplyInheritance(classContext, inheritedContexts);
-      classContext = classContext.SuppressMixins (SuppressedMixins);
+      classContext = classContext.SuppressMixins (SuppressedMixins.Select (t => (IMixinSuppressionRule) new MixinTreeSuppressionRule (t)));
       return classContext;
     }
 
