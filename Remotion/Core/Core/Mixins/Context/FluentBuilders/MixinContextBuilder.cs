@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders
@@ -186,6 +187,72 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       _introducedMemberVisiblity = memberVisibility;
       return this;
+    }
+
+    /// <summary>
+    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// replaced by this mixin type.
+    /// </summary>
+    /// <param name="replacedMixinType">The mixin type, base type, or generic type definition denoting mixin types to be replaced.</param>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public MixinContextBuilder ReplaceMixin (Type replacedMixinType)
+    {
+      ArgumentUtility.CheckNotNull ("replacedMixinType", replacedMixinType);
+
+      _parent.SuppressMixin (new MixinTreeReplacementSuppressionRule (MixinType, replacedMixinType));
+      return this;
+    }
+
+    /// <summary>
+    /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// replaced by this mixin type.
+    /// </summary>
+    /// <typeparam name="TReplacedMixinType">The mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public MixinContextBuilder ReplaceMixin<TReplacedMixinType> ()
+    {
+      return ReplaceMixin (typeof (TReplacedMixinType));
+    }
+
+    /// <summary>
+    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// replaced by this mixin type.
+    /// </summary>
+    /// <param name="replacedMixinTypes">The mixin types, base types, or generic type definitions denoting mixin types to be replaced.</param>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public MixinContextBuilder ReplaceMixins (params Type[] replacedMixinTypes)
+    {
+      ArgumentUtility.CheckNotNull ("replacedMixinTypes", replacedMixinTypes);
+      foreach (var replacedMixinType in replacedMixinTypes)
+      {
+        ReplaceMixin (replacedMixinType);
+      }
+      return this;
+    }
+
+    /// <summary>
+    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// replaced by this mixin type.
+    /// </summary>
+    /// <typeparam name="TReplacedMixinType1">The first mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
+    /// <typeparam name="TReplacedMixinType2">The second mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public MixinContextBuilder ReplaceMixins<TReplacedMixinType1, TReplacedMixinType2>  ()
+    {
+      return ReplaceMixins (typeof (TReplacedMixinType1), typeof (TReplacedMixinType2));
+    }
+
+    /// <summary>
+    /// Denotes that specific mixin types, and all mixin types that can be ascribed to them (see <see cref="ReflectionUtility.CanAscribe"/>), should be
+    /// replaced by this mixin type.
+    /// </summary>
+    /// <typeparam name="TReplacedMixinType1">The first mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
+    /// <typeparam name="TReplacedMixinType2">The second mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
+    /// <typeparam name="TReplacedMixinType3">The third mixin type, base type, or generic type definition denoting mixin types to be replaced.</typeparam>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public MixinContextBuilder ReplaceMixins<TReplacedMixinType1, TReplacedMixinType2, TReplacedMixinType3> ()
+    {
+      return ReplaceMixins (typeof (TReplacedMixinType1), typeof (TReplacedMixinType2), typeof (TReplacedMixinType3));
     }
 
     /// <summary>
@@ -419,6 +486,17 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual ClassContextBuilder AddCompleteInterfaces<TInterface1, TInterface2, TInterface3> ()
     {
       return _parent.AddCompleteInterfaces<TInterface1, TInterface2, TInterface3> ();
+    }
+
+    /// <summary>
+    /// Denotes that specific mixin types should be ignored in the context of this class. Suppression is helpful when a target class should take 
+    /// over most of its mixins from the parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.
+    /// </summary>
+    /// <param name="rule">A <see cref="IMixinSuppressionRule"/> denoting mixin types to be suppressed.</param>
+    /// <returns>This object's <see cref="ClassContextBuilder"/> for further configuration of the <see cref="ClassContextBuilder.TargetType"/>.</returns>
+    public virtual ClassContextBuilder SuppressMixin (IMixinSuppressionRule rule)
+    {
+      return _parent.SuppressMixin (rule);
     }
 
     /// <summary>

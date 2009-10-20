@@ -380,6 +380,16 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
+    public void SuppressMixin_Rule ()
+    {
+      var ruleStub = MockRepository.GenerateStub<IMixinSuppressionRule> ();
+
+      Assert.That (_classBuilder.SuppressedMixins, Is.Empty);
+      _classBuilder.SuppressMixin (ruleStub);
+      Assert.That (_classBuilder.SuppressedMixins, Is.EquivalentTo (new[] { ruleStub }));
+    }
+    
+    [Test]
     public void SuppressMixin_NonGeneric ()
     {
       Assert.That (_classBuilder.SuppressedMixins, Is.Empty);

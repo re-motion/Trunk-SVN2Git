@@ -384,6 +384,19 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
+    /// Denotes that specific mixin types should be ignored in the context of this class. Suppression is helpful when a target class should take 
+    /// over most of its mixins from the parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.
+    /// </summary>
+    /// <param name="rule">A <see cref="IMixinSuppressionRule"/> denoting mixin types to be suppressed.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder SuppressMixin (IMixinSuppressionRule rule)
+    {
+      ArgumentUtility.CheckNotNull ("rule", rule);
+      _suppressedMixins.Add (rule);
+      return this;
+    }
+
+    /// <summary>
     /// Denotes that a specific mixin type, and all mixin types that can be ascribed to it (see <see cref="ReflectionUtility.CanAscribe"/>), should be
     /// ignored in the context of this class. Suppression is helpful when a target class should take over most of its mixins from the
     /// parent context or inherit mixins from another type, but a specific mixin should be ignored in that process.

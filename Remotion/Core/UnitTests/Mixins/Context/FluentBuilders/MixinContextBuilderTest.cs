@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Mixins.Context.Suppression;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 
@@ -129,6 +130,106 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
+    public void ReplaceMixin_NonGeneric ()
+    {
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType 
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock.Replay ();
+
+      var result = _mixinBuilder.ReplaceMixin (typeof (int));
+
+      Assert.That (result, Is.SameAs (_mixinBuilder));
+      _parentBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ReplaceMixin_Generic ()
+    {
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock.Replay ();
+
+      var result = _mixinBuilder.ReplaceMixin<int> ();
+
+      Assert.That (result, Is.SameAs (_mixinBuilder));
+      _parentBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ReplaceMixins_NonGeneric ()
+    {
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (double))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock.Replay ();
+
+      var result = _mixinBuilder.ReplaceMixins (typeof (int), typeof (double));
+
+      Assert.That (result, Is.SameAs (_mixinBuilder));
+      _parentBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ReplaceMixins_Generic2 ()
+    {
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (double))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock.Replay ();
+
+      var result = _mixinBuilder.ReplaceMixins<int, double> ();
+
+      Assert.That (result, Is.SameAs (_mixinBuilder));
+      _parentBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void ReplaceMixins_Generic3 ()
+    {
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (int))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (double))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock
+          .Expect (mock => mock.SuppressMixin (Arg<IMixinSuppressionRule>.Matches (
+              rule => ((MixinTreeReplacementSuppressionRule) rule).ReplacingMixinType == _mixinBuilder.MixinType
+                  && ((MixinTreeReplacementSuppressionRule) rule).MixinBaseTypeToSuppress == typeof (string))))
+          .Return (_parentBuilderMock);
+      _parentBuilderMock.Replay ();
+
+      var result = _mixinBuilder.ReplaceMixins<int, double, string> ();
+
+      Assert.That (result, Is.SameAs (_mixinBuilder));
+      _parentBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void BuildContext_NoDependencies ()
     {
       MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
@@ -171,7 +272,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     {
       _mixinBuilder.WithDependency<IBT3Mixin4>();
       MixinContext context = _mixinBuilder.BuildMixinContext ();
-      Assert.That (context.ExplicitDependencies, Is.EqualTo (new Type[] {typeof (IBT3Mixin4)}));
+      Assert.That (context.ExplicitDependencies, Is.EqualTo (new[] {typeof (IBT3Mixin4)}));
     }
 
     [Test]
@@ -179,11 +280,12 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     {
       _mockRepository.BackToRecordAll ();
 
-      ClassContextBuilder r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object));
-      MixinConfiguration r2 = new MixinConfiguration ();
-      IDisposable r3 = _mockRepository.StrictMock<IDisposable> ();
-      MixinContextBuilder r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1));
-      ClassContext r5 = new ClassContext (typeof (object));
+      var suppressionRuleStub = MockRepository.GenerateStub<IMixinSuppressionRule> ();
+      var r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object));
+      var r2 = new MixinConfiguration ();
+      var r3 = _mockRepository.StrictMock<IDisposable> ();
+      var r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1));
+      var r5 = new ClassContext (typeof (object));
 
       IEnumerable<ClassContext> inheritedContexts = new ClassContext[0];
 
@@ -209,6 +311,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
         Expect.Call (_parentBuilderMock.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2> ()).Return (r1);
         Expect.Call (_parentBuilderMock.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2, IBT6Mixin3> ()).Return (r1);
         Expect.Call (_parentBuilderMock.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2, IBT6Mixin3> ()).Return (r1);
+        Expect.Call (_parentBuilderMock.SuppressMixin (suppressionRuleStub)).Return (r1);
         Expect.Call (_parentBuilderMock.SuppressMixin (typeof (object))).Return (r1);
         Expect.Call (_parentBuilderMock.SuppressMixin<string> ()).Return (r1);
         Expect.Call (_parentBuilderMock.SuppressMixins (typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
@@ -245,6 +348,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.AreSame (r1, _mixinBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2> ());
       Assert.AreSame (r1, _mixinBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2, IBT6Mixin3> ());
       Assert.AreSame (r1, _mixinBuilder.AddCompleteInterfaces<IBT6Mixin1, IBT6Mixin2, IBT6Mixin3> ());
+      Assert.AreSame (r1, _mixinBuilder.SuppressMixin (suppressionRuleStub));
       Assert.AreSame (r1, _mixinBuilder.SuppressMixin (typeof (object)));
       Assert.AreSame (r1, _mixinBuilder.SuppressMixin<string> ());
       Assert.AreSame (r1, _mixinBuilder.SuppressMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)));

@@ -21,7 +21,8 @@ using System.Linq;
 namespace Remotion.Mixins.Context.Suppression
 {
   /// <summary>
-  /// Suppresses all mixins that can be ascribed to a given base class.
+  /// Replaces all mixins that can be ascribed to a given base class with a new mixin. If the replacing mixin or one of its subclasses can be ascribed
+  /// to the replaced class, it is not suppressed.
   /// </summary>
   public class MixinTreeReplacementSuppressionRule : IMixinSuppressionRule
   {
