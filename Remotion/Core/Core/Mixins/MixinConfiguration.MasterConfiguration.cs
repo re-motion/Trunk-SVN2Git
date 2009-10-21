@@ -39,7 +39,7 @@ namespace Remotion.Mixins
         if (s_masterConfiguration == null)
         {
           s_log.Info ("Building mixin master configuration...");
-          using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin master configuration: {0}."))
+          using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin master configuration: {elapsed}."))
           {
             s_masterConfiguration = DeclarativeConfigurationBuilder.BuildDefaultConfiguration();
           }

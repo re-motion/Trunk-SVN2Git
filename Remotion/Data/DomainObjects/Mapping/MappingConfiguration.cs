@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       s_log.Info ("Building mapping configuration...");
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build and validate mapping configuration: {elapsed}."))
       {
         _classDefinitions = loader.GetClassDefinitions();
         if (_classDefinitions == null)

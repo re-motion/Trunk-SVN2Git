@@ -240,7 +240,7 @@ namespace Remotion.Mixins.CodeGeneration
       ArgumentUtility.CheckNotNull ("assembly", assembly);
       s_log.InfoFormat ("Loading assembly {0} into cache...", assembly);
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to load assembly into cache: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to load assembly into cache: {elapsed}."))
       {
         AssemblyName assemblyName = assembly.GetName();
         if (assemblyName.Name == Scope.SignedAssemblyName || assemblyName.Name == Scope.UnsignedAssemblyName)

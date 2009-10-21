@@ -213,7 +213,7 @@ namespace Remotion.Mixins.Context
     {
       s_log.InfoFormat ("Building mixin configuration from {0} types.", _allTypes.Count);
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {elapsed}."))
       {
         var configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
         var extendsAnalyzer = new ExtendsAnalyzer (configurationBuilder);

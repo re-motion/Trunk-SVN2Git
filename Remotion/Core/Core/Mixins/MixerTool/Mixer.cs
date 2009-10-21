@@ -102,7 +102,7 @@ namespace Remotion.Mixins.MixerTool
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to mix and save all types: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to mix and save all types: {elapsed}."))
       {
         _errors.Clear();
         _processedContexts.Clear();

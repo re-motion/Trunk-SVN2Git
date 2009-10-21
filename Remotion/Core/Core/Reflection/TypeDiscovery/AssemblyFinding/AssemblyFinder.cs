@@ -67,7 +67,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     public virtual Assembly[] FindAssemblies ()
     {
       s_log.Debug ("Finding assemblies...");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time spent for finding and loading assemblies: {elapsed}."))
       {
         RootAssembly[] rootAssemblies = FindRootAssemblies ();
         var resultSet = new HashSet<Assembly> (rootAssemblies.Select (root => root.Assembly));
@@ -80,7 +80,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     private RootAssembly[] FindRootAssemblies ()
     {
       s_log.Debug ("Finding root assemblies...");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
       {
         return _rootAssemblyFinder.FindRootAssemblies (_assemblyLoader)
             .LogAndReturn (s_log, LogLevel.Debug, result => string.Format ("Found {0} root assemblies.", result.Length));
@@ -90,7 +90,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     private IEnumerable<Assembly> FindReferencedAssemblies (RootAssembly[] rootAssemblies)
     {
       s_log.Debug ("Finding referenced assemblies...");
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading referenced assemblies: {elapsed}."))
       {
         var processedAssemblyNames = new HashSet<string>(); // used to avoid loading assemblies twice
         var referenceRoots = new HashSet<RootAssembly> (rootAssemblies); // referenced assemblies added later in order to get their references as well

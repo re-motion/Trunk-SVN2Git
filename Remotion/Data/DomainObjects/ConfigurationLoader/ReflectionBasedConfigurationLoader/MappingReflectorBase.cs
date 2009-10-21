@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       s_log.Info ("Reflecting class definitions...");
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect class definitions: {elapsed}."))
       {
         var classDefinitions = new ClassDefinitionCollection();
         foreach (ClassReflector classReflector in CreateClassReflectors())
@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
       s_log.InfoFormat ("Reflecting relation definitions of {0} class definitions...", classDefinitions.Count);
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect relation definitions: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to reflect relation definitions: {elapsed}."))
       {
         var relationDefinitions = new RelationDefinitionCollection();
         foreach (ClassReflector classReflector in CreateClassReflectorsForRelations (classDefinitions))

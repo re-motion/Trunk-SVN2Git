@@ -69,7 +69,7 @@ namespace Remotion.Mixins.CodeGeneration
     {
       s_log.InfoFormat ("Generating concrete type for {0}.", classContext);
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete type: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete type: {elapsed}."))
       using (new CodeGenerationTimer ())
       {
         var targetClassDefinition = TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
@@ -103,7 +103,7 @@ namespace Remotion.Mixins.CodeGeneration
         IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       s_log.InfoFormat ("Generating concrete mixin type for {0}.", concreteMixinTypeIdentifier.MixinType);
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {elapsed}."))
       {
         return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (concreteMixinTypeIdentifier, mixinNameProvider).GetBuiltType ();
       }
@@ -116,7 +116,7 @@ namespace Remotion.Mixins.CodeGeneration
 
       lock (_lockObject)
       {
-        using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to import types: {0}."))
+        using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to import types: {elapsed}."))
         {
           foreach (Type type in types)
           {

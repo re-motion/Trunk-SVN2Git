@@ -21,113 +21,253 @@ using Remotion.Logging;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// Provides a simple way of timing a piece of code wrapped into a <c>using</c> block. At the end of the block, an action is performed or a log 
-  /// message written.
+  /// Provides a simple way of timing a piece of code wrapped into a <c>using</c> block. At the end of the block or at a checkpoint, an action is 
+  /// performed or a log message written.
   /// </summary>
   public struct StopwatchScope : IDisposable
   {
     /// <summary>
-    /// Creates a <see cref="StopwatchScope"/> that measures the time, executing the given
-    /// <paramref name="action"/> when the scope is disposed.
+    /// Defines an action to be called whenever a checkpoint is reached or the <see cref="StopwatchScope"/> is disposed.
     /// </summary>
-    /// <param name="action">The <see cref="Action{T}"/> to receive the result.</param>
+    /// <param name="context">The context in which the action is invoked. This corresponds to the parameter given to 
+    /// <see cref="StopwatchScope.Checkpoint"/>.</param>
+    /// <param name="scope">The <see cref="StopwatchScope"/> triggering the action. Use <see cref="StopwatchScope.ElapsedTotal"/> and
+    /// <see cref="StopwatchScope.ElapsedSinceLastCheckpoint"/> to retrieve the elapsed time.</param>
+    public delegate void MeasurementAction (string context, StopwatchScope scope);
+
+    /// <summary>
+    /// Creates a <see cref="StopwatchScope"/> that measures the time, executing the given
+    /// <paramref name="action"/> when the scope is disposed or when a <see cref="Checkpoint"/> is reached.
+    /// </summary>
+    /// <param name="action">The <see cref="MeasurementAction"/> to receive the result. Takes the following arguments: 
+    /// <c>string context, StopwatchScope scope</c>. Use <see cref="StopwatchScope.ElapsedTotal"/> and
+    /// <see cref="StopwatchScope.ElapsedSinceLastCheckpoint"/> to retrieve the elapsed time. When the scope is disposed, the context parameter
+    /// is set to the string "end".
+    /// </param>
     /// <returns>
     /// A <see cref="StopwatchScope"/> that measures the time.
     /// </returns>
-    public static StopwatchScope CreateScope (Action<TimeSpan> action)
+    public static StopwatchScope CreateScope (MeasurementAction action)
     {
-      return new StopwatchScope (action);
+      return new StopwatchScope (action, "end");
     }
 
     /// <summary>
     /// Creates a <see cref="StopwatchScope"/> that measures the time, writing the result to the given 
-    /// <paramref name="writer"/> when the scope is disposed.
+    /// <paramref name="writer"/> when the scope is disposed or a <see cref="Checkpoint"/> is reached.
     /// </summary>
     /// <param name="writer">The writer to receive the result.</param>
-    /// <param name="formatString">A string to format the result with. The string must contain a '{0}' placeholder, which is automatically replaced 
-    /// by the elapsed time in the default format used by <see cref="TimeSpan.ToString"/>.</param>
-    /// <returns>A <see cref="StopwatchScope"/> that measures the time in milliseconds.</returns>
+    /// <param name="formatString">A string to format the result with. The string can contain the following placeholders:
+    /// <list type="bullet">
+    /// <item>
+    ///   <c>{context}</c> Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this is the string "end".
+    /// </item>
+    /// <item>
+    ///   <c>{elapsed}</c> Replaced with the standard string representation of <see cref="ElapsedTotal"/>.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsed:ms}</c> Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsedCP}</c> Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsedCP:ms}</c> Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.
+    /// </item>
+    /// </list>
+    /// </param>
+    /// <returns>A <see cref="StopwatchScope"/> that measures the time and writes it to a <see cref="TextWriter"/>.</returns>
     public static StopwatchScope CreateScope (TextWriter writer, string formatString)
     {
-      return new StopwatchScope (ts => writer.WriteLine (formatString, ts.ToString ()));
-    }
-
-    /// <summary>
-    /// Creates a <see cref="StopwatchScope"/> that measures the time in milliseconds, writing the result to the given <paramref name="writer"/>
-    /// when the scope is disposed.
-    /// </summary>
-    /// <param name="writer">The writer to receive the result.</param>
-    /// <param name="formatString">A string to format the result with. The string must contain a '{0}' placeholder, which is automatically replaced 
-    /// by the elapsed milliseconds.</param>
-    /// <returns>A <see cref="StopwatchScope"/> that measures the time in milliseconds.</returns>
-    public static StopwatchScope CreateScopeForMilliseconds (TextWriter writer, string formatString)
-    {
-      return new StopwatchScope (ts => writer.WriteLine (formatString, ts.TotalMilliseconds));
+      var actualFormatString = ReplacePlaceholders (formatString);
+      return new StopwatchScope ((context, scope) => writer.WriteLine (
+          actualFormatString,
+          context,
+          scope.ElapsedTotal.ToString (),
+          scope.ElapsedTotal.TotalMilliseconds.ToString (),
+          scope.ElapsedSinceLastCheckpoint.ToString (),
+          scope.ElapsedSinceLastCheckpoint.TotalMilliseconds.ToString ()), "end");
     }
 
     /// <summary>
     /// Creates a <see cref="StopwatchScope"/> that measures the time, writing the result to the given
-    /// <paramref name="log"/> when the scope is disposed.
+    /// <paramref name="log"/> when the scope is disposed or a <see cref="Checkpoint"/> is reached.
     /// </summary>
     /// <param name="log">The <see cref="ILog"/> to receive the result.</param>
     /// <param name="logLevel">The log level to log the result with.</param>
-    /// <param name="formatString">A string to format the result with. The string must contain a '{0}' placeholder, which is automatically replaced
-    /// by the elapsed time in the default format used by <see cref="TimeSpan.ToString"/>.</param>
+    /// <param name="formatString">A string to format the result with. The string can contain the following placeholders:
+    /// <list type="bullet">
+    /// <item>
+    ///   <c>{context}</c> Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this contains the string "end".
+    /// </item>
+    /// <item>
+    ///   <c>{elapsed}</c> Replaced with the standard string representation of <see cref="ElapsedTotal"/>.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsed:ms}</c> Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsedCP}</c> Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsedCP:ms}</c> Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.
+    /// </item>
+    /// </list>
+    /// </param>
     /// <returns>
     /// A <see cref="StopwatchScope"/> that measures the time in milliseconds.
     /// </returns>
     public static StopwatchScope CreateScope (ILog log, LogLevel logLevel, string formatString)
     {
-      return new StopwatchScope (ts => log.LogFormat (logLevel, formatString, ts.ToString ()));
+      var actualFormatString = ReplacePlaceholders (formatString);
+      return new StopwatchScope ((context, scope) => log.LogFormat (
+          logLevel,
+          actualFormatString,
+          context,
+          scope.ElapsedTotal.ToString (),
+          scope.ElapsedTotal.TotalMilliseconds.ToString (),
+          scope.ElapsedSinceLastCheckpoint.ToString (),
+          scope.ElapsedSinceLastCheckpoint.TotalMilliseconds.ToString ()), "end");
     }
 
     /// <summary>
-    /// Creates a <see cref="StopwatchScope"/> that measures the time in milliseconds, writing the result to the given <paramref name="log"/>
-    /// when the scope is disposed.
+    /// Creates a <see cref="StopwatchScope"/> that measures the time, writing the result to the <see cref="Console"/> when the scope is disposed or 
+    /// a <see cref="Checkpoint"/> is reached.
     /// </summary>
-    /// <param name="log">The <see cref="ILog"/> to receive the result.</param>
-    /// <param name="logLevel">The log level to log the result with.</param>
-    /// <param name="formatString">A string to format the result with. The string must contain a '{0}' placeholder, which is automatically replaced 
-    /// by the elapsed milliseconds.</param>
-    /// <returns>A <see cref="StopwatchScope"/> that measures the time in milliseconds.</returns>
-    public static StopwatchScope CreateScopeForMilliseconds (ILog log, LogLevel logLevel, string formatString)
+    /// <param name="formatString">A string to format the result with. The string can contain the following placeholders:
+    /// <list type="bullet">
+    /// <item>
+    ///   <c>{context}</c> Replaced with the context string passed to <see cref="Checkpoint"/>. At the end of the scope, this contains the string "end".
+    /// </item>
+    /// <item>
+    ///   <c>{elapsed}</c> Replaced with the standard string representation of <see cref="ElapsedTotal"/>.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsed:ms}</c> Replaced with <see cref="ElapsedTotal"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsedCP}</c> Replaced with the standard string representation of <see cref="ElapsedSinceLastCheckpoint"/>.
+    /// </item>
+    /// <item>
+    ///   <c>{elapsedCP:ms}</c> Replaced with <see cref="ElapsedSinceLastCheckpoint"/>, using <see cref="TimeSpan.TotalMilliseconds"/> to obtain the 
+    ///   number of milliseconds elapsed since the last checkpoint.
+    /// </item>
+    /// </list>
+    /// </param>
+    /// <returns>
+    /// A <see cref="StopwatchScope"/> that measures the time in milliseconds.
+    /// </returns>
+    public static StopwatchScope CreateScope (string formatString)
     {
-      return new StopwatchScope (ts => log.LogFormat (logLevel, formatString, ts.TotalMilliseconds));
+      var actualFormatString = ReplacePlaceholders (formatString);
+      return new StopwatchScope ((context, scope) => Console.WriteLine (
+          actualFormatString,
+          context,
+          scope.ElapsedTotal.ToString (),
+          scope.ElapsedTotal.TotalMilliseconds.ToString (),
+          scope.ElapsedSinceLastCheckpoint.ToString (),
+          scope.ElapsedSinceLastCheckpoint.TotalMilliseconds.ToString ()), "end");
+    }
+
+    private static string ReplacePlaceholders (string formatString)
+    {
+      return formatString
+          .Replace ("{context}", "{0}")
+          .Replace ("{elapsed}", "{1}")
+          .Replace ("{elapsed:ms}", "{2}")
+          .Replace ("{elapsedCP}", "{3}")
+          .Replace ("{elapsedCP:ms}", "{4}");
     }
 
     private readonly Stopwatch _stopwatch;
-    private readonly Action<TimeSpan> _action;
+    private readonly MeasurementAction _action;
+    private readonly string _scopeEndString;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StopwatchScope"/> structure. When the instance is disposed, <paramref name="action"/> is called
-    /// with the time elapsed between initialization and disposal.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    private StopwatchScope (Action<TimeSpan> action)
+    private TimeSpan _lastCheckpointElapsed;
+    private bool _disposed;
+
+    private StopwatchScope (MeasurementAction action, string scopeEndString)
     {
       ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      _scopeEndString = scopeEndString;
+      _lastCheckpointElapsed = TimeSpan.Zero;
       _stopwatch = Stopwatch.StartNew ();
+      _disposed = false;
     }
 
     /// <summary>
-    /// Stops measuring the time and invokes the action defined to be called at the end of the measuring scope.
+    /// Stops measuring the time and invokes the time measurement action defined when creating the scope.
     /// </summary>
     public void Dispose ()
     {
-      _stopwatch.Stop ();
-      _action (Elapsed);
+      if (!_disposed)
+      {
+        _stopwatch.Stop ();
+        Checkpoint (_scopeEndString);
+        _disposed = true;
+      }
     }
 
     /// <summary>
     /// Gets the time elapsed since the construction of this <see cref="StopwatchScope"/> until now or the point of time where <see cref="Dispose"/> 
     /// was called, whichever occurs first.
     /// </summary>
-    /// <value>The elapsed time.</value>
-    public TimeSpan Elapsed
+    /// <value>The total elapsed time.</value>
+    public TimeSpan ElapsedTotal
     {
       get { return _stopwatch.Elapsed; }
+    }
+
+    /// <summary>
+    /// Gets the time elapsed since the last call to <see cref="Checkpoint"/> (or the construction of this <see cref="StopwatchScope"/> if no 
+    /// checkpoint has been created) until now. If the scope has been disposed, this is <see cref="TimeSpan.Zero"/>.
+    /// </summary>
+    /// <value>The elapsed time since the last checkpoint.</value>
+    public TimeSpan ElapsedSinceLastCheckpoint
+    {
+      get { return ElapsedTotal - _lastCheckpointElapsed; }
+    }
+
+    /// <summary>
+    /// Triggers a checkpoint, invoking the action the time measurement action defined when creating the scope with the given <paramref name="context"/>.
+    /// </summary>
+    /// <param name="context">The context information to pass to the action.</param>
+    public void Checkpoint (string context)
+    {
+      if (_disposed)
+        throw new ObjectDisposedException ("StopwatchScope");
+
+      _action (context, this);
+      _lastCheckpointElapsed = ElapsedTotal;
+    }
+
+    /// <summary>
+    /// Pauses the time measurement. Resume it with <see cref="Resume"/>. If the measurement is already paused, this method does nothing.
+    /// </summary>
+    public void Pause ()
+    {
+      if (_disposed)
+        throw new ObjectDisposedException ("StopwatchScope");
+
+      _stopwatch.Stop ();
+    }
+
+    /// <summary>
+    /// Resumes the time measurement after it has been paused with <see cref="Pause"/>. If the measurement is not paused, this method does nothing.
+    /// </summary>
+    public void Resume ()
+    {
+      if (_disposed)
+        throw new ObjectDisposedException ("StopwatchScope");
+
+      _stopwatch.Start ();
     }
   }
 }

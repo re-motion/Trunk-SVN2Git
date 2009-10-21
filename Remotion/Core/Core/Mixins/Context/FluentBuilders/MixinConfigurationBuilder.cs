@@ -131,7 +131,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A new <see cref="MixinConfiguration"/> instance incorporating all the data acquired so far.</returns>
     public virtual MixinConfiguration BuildConfiguration ()
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration from fluent builders: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration from fluent builders: {elapsed}."))
       {
         var parentContexts = ParentConfiguration != null ? ParentConfiguration.ClassContexts : new ClassContextCollection();
         s_log.DebugFormat ("Building a mixin configuration with {0} parent class contexts from fluent builders...", parentContexts.Count);

@@ -38,7 +38,7 @@ namespace Remotion.Mixins.Definitions
     {
       s_log.DebugFormat ("Creating a class definition for: {0}.", context);
 
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to create and validate class definition: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to create and validate class definition: {elapsed}."))
       {
         TargetClassDefinition definition = s_definitionBuilder.Build (context);
         Validate (definition);

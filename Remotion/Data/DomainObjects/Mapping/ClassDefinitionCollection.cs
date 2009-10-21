@@ -66,7 +66,7 @@ public class ClassDefinitionCollection : CommonCollection
   {
     s_log.InfoFormat ("Validating {0} class definitions...", Count);
 
-    using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to validate mapping configuration: {0}."))
+    using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to validate mapping configuration: {elapsed}."))
     {
       foreach (ClassDefinition rootClass in GetInheritanceRootClasses())
       {

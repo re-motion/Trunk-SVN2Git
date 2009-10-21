@@ -72,7 +72,7 @@ namespace Remotion.Reflection.TypeDiscovery
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to discover types: {0}."))
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to discover types: {elapsed}."))
       {
         var types = new List<Type>();
         foreach (_Assembly assembly in GetAssemblies (excludeGlobalTypes))
