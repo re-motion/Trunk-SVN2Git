@@ -19,6 +19,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the insertion of an element into a <see cref="CollectionEndPoint"/>.
+  /// </summary>
   public class CollectionEndPointInsertModification : RelationEndPointModification
   {
     private readonly int _index;

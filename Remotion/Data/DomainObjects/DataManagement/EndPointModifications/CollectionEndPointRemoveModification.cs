@@ -19,6 +19,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the removal of an element from a <see cref="CollectionEndPoint"/>.
+  /// </summary>
   public class CollectionEndPointRemoveModification : RelationEndPointModification
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;

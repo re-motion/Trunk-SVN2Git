@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        ObjectList<DomainObject> parentObjects = ParentTransaction.GetObjects<DomainObject> (new List<ObjectID> (objectIDs).ToArray(), throwOnNotFound);
+        IEnumerable<DomainObject> parentObjects = ParentTransaction.GetObjects<DomainObject> (new List<ObjectID> (objectIDs).ToArray(), throwOnNotFound);
         var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
@@ -348,14 +348,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         RelationEndPoint parentEndPoint = ParentTransaction.DataManager.RelationEndPointMap[endPoint.ID];
         if (parentEndPoint == null)
+        {
           Assertion.IsTrue (
               DataManager.DataContainerMap[endPoint.ObjectID].State == StateType.Deleted
               && ParentTransaction.DataManager.IsDiscarded (endPoint.ObjectID),
               "Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of ParentTransaction and this now "
               + "contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known "
               + "to the child transaction is when the object was of state New in the ParentTransaction and its DataContainer was just discarded.");
+        }
         else
+        {
           parentEndPoint.TakeOverCommittedData (endPoint);
+        }
       }
     }
 

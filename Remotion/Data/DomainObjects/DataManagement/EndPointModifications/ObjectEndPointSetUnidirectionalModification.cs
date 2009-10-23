@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> that is part of a unidirectional relation.
+  /// </summary>
   public class ObjectEndPointSetUnidirectionalModification : ObjectEndPointSetModificationBase
   {
     public ObjectEndPointSetUnidirectionalModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)

@@ -128,27 +128,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var cloneOppositeDomainObjects = DomainObjectCollection.Create (_oppositeDomainObjects.GetType(), _oppositeDomainObjects.RequiredItemType);
       var clone = new CollectionEndPoint (clientTransaction, ID, cloneOppositeDomainObjects, clientTransaction.DataManager.RelationEndPointMap);
-      clone.AssumeSameState (this);
+
+      clone._oppositeDomainObjects.AssumeSameState (_oppositeDomainObjects);
+      clone._originalOppositeDomainObjects.AssumeSameState (_originalOppositeDomainObjects);
+      clone._hasBeenTouched = _hasBeenTouched;
       return clone;
-    }
-
-    protected internal override void AssumeSameState (RelationEndPoint source)
-    {
-      Assertion.IsTrue (Definition == source.Definition);
-
-      CollectionEndPoint sourceCollectionEndPoint = (CollectionEndPoint) source;
-
-      _oppositeDomainObjects.AssumeSameState (sourceCollectionEndPoint._oppositeDomainObjects);
-      _originalOppositeDomainObjects.AssumeSameState (sourceCollectionEndPoint._originalOppositeDomainObjects);
-      _hasBeenTouched = sourceCollectionEndPoint._hasBeenTouched;
     }
 
     protected internal override void TakeOverCommittedData (RelationEndPoint source)
     {
-      Assertion.IsTrue (Definition == source.Definition);
-
-      CollectionEndPoint sourceCollectionEndPoint = (CollectionEndPoint) source;
-
+      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
+      Assertion.IsTrue (Definition == sourceCollectionEndPoint.Definition);
+      
       _oppositeDomainObjects.TakeOverCommittedData (sourceCollectionEndPoint._oppositeDomainObjects);
       _hasBeenTouched |= sourceCollectionEndPoint._hasBeenTouched || HasChanged;
     }

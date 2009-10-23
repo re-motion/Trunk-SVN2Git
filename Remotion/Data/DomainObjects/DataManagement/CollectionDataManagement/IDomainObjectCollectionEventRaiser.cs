@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
+  /// <summary>
+  /// Provides an interface to clients requiring to raise <see cref="DomainObjectCollection"/> events from the outside.
+  /// </summary>
   public interface IDomainObjectCollectionEventRaiser
   {
     void BeginAdd (int index, DomainObject domainObject);

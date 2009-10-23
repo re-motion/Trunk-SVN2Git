@@ -1,6 +1,18 @@
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,22 +33,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public DomainObjectCollectionData ()
     {
-      _unsafeData = new UnsafeDomainObjectCollectionData ();
+      _unsafeData = new UnsafeDomainObjectCollectionData();
       _data = new ArgumentCheckingCollectionDataDecorator (_unsafeData);
     }
 
-    public DomainObjectCollectionData (IEnumerable<DomainObject> domainObjects) : this()
+    public DomainObjectCollectionData (IEnumerable<DomainObject> domainObjects)
+        : this()
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
       foreach (var domainObject in domainObjects)
-      {
         Insert (Count, domainObject);
-      }
     }
 
-    public long Version 
-    { 
+    public long Version
+    {
       get { return _unsafeData.Version; }
     }
 
@@ -47,7 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
-      return GetEnumerator ();
+      return GetEnumerator();
     }
 
     public int Count
@@ -62,22 +73,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public bool ContainsObjectID (ObjectID objectID)
     {
-      return _data.ContainsObjectID(objectID);
+      return _data.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _data.GetObject(index);
+      return _data.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
-      return _data.GetObject(objectID);
+      return _data.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
-      return _data.IndexOf(objectID);
+      return _data.IndexOf (objectID);
     }
 
     public void Clear ()
@@ -87,17 +98,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void Insert (int index, DomainObject domainObject)
     {
-      _data.Insert(index, domainObject);
+      _data.Insert (index, domainObject);
     }
 
     public void Remove (ObjectID objectID)
     {
-      _data.Remove(objectID);
+      _data.Remove (objectID);
     }
 
     public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
     {
-      _data.Replace(oldDomainObjectID, newDomainObject);
+      _data.Replace (oldDomainObjectID, newDomainObject);
     }
   }
 }

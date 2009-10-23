@@ -99,16 +99,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     }
 
     // TODO: Refactor in COMMONS-1034
-    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
+    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 
-      RelationEndPointCollection allAffectedRelationEndPoints = _relationEndPointMap.GetAllRelationEndPointsWithLazyLoad (domainObject);
-      RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (domainObject);
+      RelationEndPointCollection allAffectedRelationEndPoints = _relationEndPointMap.GetAllRelationEndPointsWithLazyLoad (deletedObject);
+      RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (deletedObject);
 
       var modifications = new NotifyingBidirectionalRelationModification ();
       foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
-        modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (domainObject));
+        modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (deletedObject));
 
       return modifications;
     }

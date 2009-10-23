@@ -121,10 +121,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
+    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      return _modifier.GetOppositeEndPointModificationsForDelete (domainObject);
+      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
+      return _modifier.GetOppositeEndPointModificationsForDelete (deletedObject);
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)

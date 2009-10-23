@@ -18,7 +18,8 @@ using System.Collections.Generic;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// Provides an interface for an encapsulation of the data stored inside a <see cref="DomainObjectCollection"/>.
+  /// Provides an interface for an encapsulation of the data stored inside a <see cref="DomainObjectCollection"/>. A number of decorators
+  /// implements this interface in order to wrap the data store with additional functionality.
   /// </summary>
   public interface IDomainObjectCollectionData : IEnumerable<DomainObject>
   {

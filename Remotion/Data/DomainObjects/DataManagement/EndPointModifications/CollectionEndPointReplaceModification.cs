@@ -19,6 +19,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/>.
+  /// </summary>
   public class CollectionEndPointReplaceModification : RelationEndPointModification
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;

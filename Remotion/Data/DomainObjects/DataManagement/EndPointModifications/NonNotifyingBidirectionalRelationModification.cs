@@ -19,6 +19,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// Represents a bidirectional relation modification that only calls <see cref="RelationEndPointModification.Perform"/> on its 
   /// steps. Specifically, it does not notify the client transaction when its steps are executed, and it does not
   /// call <see cref="RelationEndPointModification.Begin"/> or <see cref="RelationEndPointModification.End"/>.
+  /// This is used when <see cref="RelationEndPointModification.CreateBidirectionalModification"/> is called on a 
+  /// <see cref="RelationEndPointModification"/> such as <see cref="ObjectEndPointSetSameModification"/> or 
+  /// <see cref="CollectionEndPointSelfReplaceModification"/> that should not raise events but still perform the operation (in order to touch the 
+  /// data stored by the end point, for example).
   /// </summary>
   public class NonNotifyingBidirectionalRelationModification : BidirectionalRelationModificationBase
   {

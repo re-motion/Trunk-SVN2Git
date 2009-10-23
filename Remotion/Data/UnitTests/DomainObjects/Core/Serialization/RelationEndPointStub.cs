@@ -39,11 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    protected override void AssumeSameState (RelationEndPoint source)
-    {
-      throw new NotImplementedException();
-    }
-
     protected override void TakeOverCommittedData (RelationEndPoint source)
     {
       throw new NotImplementedException();

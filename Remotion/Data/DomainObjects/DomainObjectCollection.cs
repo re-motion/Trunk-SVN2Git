@@ -805,14 +805,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a value indicating if the collection has a fixed size. Always returns false.
-    /// </summary>
-    public bool IsFixedSize
-    {
-      get { return false; }
-    }
-
-    /// <summary>
     /// Copies the elements of the collection to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
     /// </summary>
     /// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from the collection. The 
@@ -949,6 +941,15 @@ namespace Remotion.Data.DomainObjects
     {
       get { return false; }
     }
+
+    /// <summary>
+    /// Gets a value indicating if the collection has a fixed size. Always returns false.
+    /// </summary>
+    bool IList.IsFixedSize
+    {
+      get { return false; }
+    }
+
 
     #endregion
 

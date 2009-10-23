@@ -84,26 +84,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override RelationEndPoint Clone (ClientTransaction clientTransaction)
     {
       var clone = new ObjectEndPoint (clientTransaction, ID, null);
-      clone.AssumeSameState (this);
+      clone._oppositeObjectID = _oppositeObjectID;
+      clone._originalOppositeObjectID = _originalOppositeObjectID;
+      clone._hasBeenTouched = _hasBeenTouched;
       return clone;
-    }
-
-    protected internal override void AssumeSameState (RelationEndPoint source)
-    {
-      Assertion.IsTrue (Definition == source.Definition);
-
-      ObjectEndPoint sourceObjectEndPoint = (ObjectEndPoint) source;
-
-      _oppositeObjectID = sourceObjectEndPoint._oppositeObjectID;
-      _originalOppositeObjectID = sourceObjectEndPoint._originalOppositeObjectID;
-      _hasBeenTouched = sourceObjectEndPoint._hasBeenTouched;
     }
 
     protected internal override void TakeOverCommittedData (RelationEndPoint source)
     {
-      Assertion.IsTrue (Definition == source.Definition);
-
-      ObjectEndPoint sourceObjectEndPoint = (ObjectEndPoint) source;
+      var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
+      Assertion.IsTrue (Definition == sourceObjectEndPoint.Definition);
 
       _oppositeObjectID = sourceObjectEndPoint._oppositeObjectID;
       _hasBeenTouched |= sourceObjectEndPoint._hasBeenTouched || HasChanged; // true if: we have been touched/source has been touched/we have changed

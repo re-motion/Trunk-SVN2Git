@@ -19,6 +19,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="CreateBidirectionalModification"/>
+  /// results in a <see cref="NonNotifyingBidirectionalRelationModification"/> that does not raise any events.
+  /// </summary>
   public class CollectionEndPointSelfReplaceModification : RelationEndPointModification
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;

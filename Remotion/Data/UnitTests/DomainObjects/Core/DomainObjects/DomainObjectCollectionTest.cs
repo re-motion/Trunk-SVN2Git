@@ -702,10 +702,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void IsFixedSize ()
+    public void IList_IsFixedSize ()
     {
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      Assert.IsFalse (collection.IsFixedSize);
+      var collection = new DomainObjectCollection ();
+      Assert.IsFalse (((IList) collection).IsFixedSize);
     }
 
     [Test]

@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Implementations of this class represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/>.
+  /// </summary>
   public abstract class ObjectEndPointSetModificationBase : RelationEndPointModification
   {
     private readonly ObjectEndPoint _modifiedEndPoint;

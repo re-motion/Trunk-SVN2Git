@@ -20,6 +20,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
+  /// <summary>
+  /// Implements the <see cref="IDomainObjectCollectionData"/>, forwarding all requests to an implementation of 
+  /// <see cref="ICollectionChangeDelegate"/> (<see cref="CollectionEndPoint"/>).
+  /// </summary>
   public class ChangeDelegateCollectionData : IDomainObjectCollectionData
   {
     private readonly DomainObjectCollectionData _data = new DomainObjectCollectionData ();

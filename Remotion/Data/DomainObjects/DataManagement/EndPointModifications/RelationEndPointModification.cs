@@ -14,11 +14,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents a modification performed on a <see cref="RelationEndPoint"/>. Provides default behavior for triggering the required
+  /// events and notifying the <see cref="ClientTransaction"/> about the modification. The actual modification has to be specified by subclasses
+  /// by implementing <see cref="Perform"/>. In addition, <see cref="CreateBidirectionalModification"/> has to be overridden to return a 
+  /// composite object containing all modifications needed to be performed when this modification starts a bidirectional relation change. If
+  /// the modification is performed on a unidirectional relation, the composite returned by <see cref="CreateBidirectionalModification"/> needs only 
+  /// contain this <see cref="RelationEndPointModification"/>.
+  /// </summary>
   public abstract class RelationEndPointModification
   {
     private readonly RelationEndPoint _modifiedEndPoint;
@@ -86,6 +93,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// Creates all modification steps needed to perform a bidirectional operation. One of the steps is this modification, the other 
     /// steps are the opposite modifications on the new/old related objects.
     /// </summary>
+    /// <remarks>
+    /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
+    /// <see cref="CreateBidirectionalModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
+    /// </remarks>
     public abstract BidirectionalRelationModificationBase CreateBidirectionalModification ();
   }
 }

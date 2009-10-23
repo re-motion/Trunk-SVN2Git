@@ -18,6 +18,9 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> that is part of a one-to-many relation.
+  /// </summary>
   public class ObjectEndPointSetOneManyModification : ObjectEndPointSetModificationBase
   {
     public ObjectEndPointSetOneManyModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)

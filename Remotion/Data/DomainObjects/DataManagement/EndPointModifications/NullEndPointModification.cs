@@ -17,7 +17,7 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  // TODO: check for usages 
+  // TODO 1782: check for usages 
   public class NullEndPointModification : RelationEndPointModification
   {
     public NullEndPointModification (RelationEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)

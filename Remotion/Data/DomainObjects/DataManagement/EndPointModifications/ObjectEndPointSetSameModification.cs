@@ -15,6 +15,11 @@
 // 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  /// <summary>
+  /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> to the same value as before. Calling 
+  /// <see cref="CreateBidirectionalModification"/> results in a <see cref="NonNotifyingBidirectionalRelationModification"/> that does not raise
+  /// any events.
+  /// </summary>
   public class ObjectEndPointSetSameModification : ObjectEndPointSetModificationBase
   {
     public ObjectEndPointSetSameModification (ObjectEndPoint modifiedEndPoint)
