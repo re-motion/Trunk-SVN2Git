@@ -156,6 +156,14 @@
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumValueDiscoveryServiceTest.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumValuesTest.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\Color.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\ColorValues.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\WrongColorValues.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\MetallicColor.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\MetallicColorValues.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />

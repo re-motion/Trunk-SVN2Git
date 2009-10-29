@@ -163,6 +163,9 @@
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnum.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumValueDiscoveryService.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumValues.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifier.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceMappingAttribute.cs" />
