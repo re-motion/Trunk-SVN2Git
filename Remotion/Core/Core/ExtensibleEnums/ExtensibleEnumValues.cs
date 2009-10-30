@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Reflection.TypeDiscovery;
 
@@ -29,12 +30,36 @@ namespace Remotion.ExtensibleEnums
   public class ExtensibleEnumValues<T>
     where T : ExtensibleEnum
   {
-    public T[] GetValues ()
+    private readonly DoubleCheckedLockingContainer<T[]> _valueCache;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExtensibleEnumValues{T}"/> class.
+    /// </summary>
+    public ExtensibleEnumValues ()
+    {
+      _valueCache = new DoubleCheckedLockingContainer<T[]> (RetrieveValues);
+    }
+
+    /// <summary>
+    /// Gets the values defined by the extensible enum type <typeparamref name="T"/>.
+    /// </summary>
+    /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the values for <typeparamref name="T"/>.</returns>
+    /// <remarks>
+    /// The values are retrieved by scanning all types found by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
+    /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryService"/>.
+    /// </remarks>
+    public ReadOnlyCollection<T> GetValues ()
+    {
+      return new ReadOnlyCollection<T> (_valueCache.Value);
+    }
+
+    private T[] RetrieveValues ()
     {
       var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
       var types = typeDiscoveryService.GetTypes (null, false).Cast<Type>();
 
-      throw new NotImplementedException ("TODO");
+      var valueDiscoveryService = new ExtensibleEnumValueDiscoveryService();
+      return valueDiscoveryService.GetValues (this, types).ToArray();
     }
   }
 }
