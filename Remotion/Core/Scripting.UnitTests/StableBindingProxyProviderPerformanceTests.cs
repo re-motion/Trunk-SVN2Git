@@ -54,12 +54,17 @@ def PropertyPathAccess(cascade) :
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-      var nrLoopsArray = new[] { 1, 1, 10000 };
+      //var nrLoopsArray = new[] { 1, 1, 10000 };
+      var nrLoopsArray = new[] { 1, 1, 100000 };
+
       // Warm up
       ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding)).Last ();
       
       double timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding)).Last ();
       double timingWithoutStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeWithoutStableBinding)).Last ();
+
+      //To.ConsoleLine.e (() => timingStableBinding).e (() => timingWithoutStableBinding);
+      //To.ConsoleLine.e ("timingStableBinding / timingWithoutStableBinding = ", timingStableBinding / timingWithoutStableBinding);
 
       Assert.That (timingStableBinding / timingWithoutStableBinding, Is.LessThan (7.0));
     }

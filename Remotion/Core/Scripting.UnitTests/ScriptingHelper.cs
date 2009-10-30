@@ -142,7 +142,14 @@ namespace Remotion.Scripting.UnitTests
       return timings.Single();
     }
 
+
     public static long[] ExecuteAndTime (int[] nrLoopsArray, Func<Object> func)
+    {
+      return ExecuteAndTimeStable (nrLoopsArray, 10, func);
+    }
+
+
+    public static long[] ExecuteAndTimeFast (int[] nrLoopsArray, Func<Object> func)
     {
       var timings = new System.Collections.Generic.List<long> ();
 
@@ -165,6 +172,44 @@ namespace Remotion.Scripting.UnitTests
 
       return timings.ToArray();
     }
+
+
+    /// <summary>
+    /// Timing method which takes the fastest timing from <paramref name="nrRuns"/> timing runs, 
+    /// thereby making the timing results more stable.
+    /// </summary>
+    public static long[] ExecuteAndTimeStable (int[] nrLoopsArray, int nrRuns ,Func<Object> func)
+    {
+      var nrLoopsArrayLength = nrLoopsArray.Length;
+      var timings = new long[nrLoopsArrayLength];
+      for (int iLoop = 0; iLoop < nrLoopsArrayLength; iLoop++)
+      {
+        timings[iLoop] = long.MaxValue;
+      }
+
+      for (int iRun = 0; iRun < nrRuns; iRun++)
+      {
+        for (int iLoop = 0; iLoop < nrLoopsArrayLength; iLoop++)
+        {
+          System.GC.Collect (2);
+          System.GC.WaitForPendingFinalizers();
+
+          Stopwatch stopwatch = new Stopwatch ();
+          stopwatch.Start ();
+
+          for (int i = 0; i < nrLoopsArray[iLoop]; i++)
+          {
+            func();
+          }
+
+          stopwatch.Stop();
+          timings[iLoop] = Math.Min (timings[iLoop], stopwatch.ElapsedMilliseconds);
+        }
+      }
+
+      return timings.ToArray ();
+    }
+
 
     public static void ExecuteAndTime (string testName, int[] nrLoopsArray, Func<Object> func)
     {
