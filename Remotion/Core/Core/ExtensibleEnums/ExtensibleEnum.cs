@@ -20,11 +20,11 @@ namespace Remotion.ExtensibleEnums
 {
   /// <summary>
   /// Base class for extensible enums. Create extensible enums by deriving a class representing the enumeration
-  /// from <see cref="ExtensibleEnum"/> and define extension methods on <see cref="ExtensibleEnumValues{T}"/>
+  /// from <see cref="ExtensibleEnum{T}"/> and define extension methods on <see cref="ExtensibleEnumValues{T}"/>
   /// to define the values of the enumeration. Each value is uniquely identified by the <see cref="ID"/> string
-  /// passed to the <see cref="ExtensibleEnum"/> constructor. Value comparisons act solely based on this identifier.
+  /// passed to the <see cref="ExtensibleEnum{T}"/> constructor. Value comparisons act solely based on this identifier.
   /// </summary>
-  public abstract class ExtensibleEnum
+  public abstract class ExtensibleEnum<T>
   {
     /// <summary>
     /// Initializes a new enumeration value.
@@ -54,13 +54,19 @@ namespace Remotion.ExtensibleEnums
     /// </returns>
     public override bool Equals (object obj)
     {
-      return obj != null && obj.GetType() == GetType() &&  ((ExtensibleEnum) obj).ID == ID;
+      return obj != null && obj.GetType() == GetType() &&  ((ExtensibleEnum<T>) obj).ID == ID;
     }
 
     /// <inheritdoc />
     public override int GetHashCode ()
     {
       return ID.GetHashCode();
+    }
+
+    /// <inheritdoc />
+    public override string ToString ()
+    {
+      return typeof (T).Name + ": " + ID;
     }
   }
 }

@@ -18,7 +18,7 @@ using Remotion.ExtensibleEnums;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  public class Color : ExtensibleEnum
+  public class Color : ExtensibleEnum<Color>
   {
     public static readonly ExtensibleEnumValues<Color> Values = new ExtensibleEnumValues<Color>();
 

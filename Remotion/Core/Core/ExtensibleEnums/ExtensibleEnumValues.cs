@@ -25,13 +25,13 @@ namespace Remotion.ExtensibleEnums
 {
   /// <summary>
   /// Provides discovery services for extensible enum values. Extensible enum implementations should
-  /// hold an instance of this class in a static propery of the <see cref="ExtensibleEnum"/> subclass representing
+  /// hold an instance of this class in a static propery of the <see cref="ExtensibleEnum{T}"/> subclass representing
   /// the enumeration. The values of the enumeration should be defined as extension methods for <see cref="ExtensibleEnumValues{T}"/>,
-  /// where <typeparamref name="T"/> is the <see cref="ExtensibleEnum"/> subclass.
+  /// where <typeparamref name="T"/> is the <see cref="ExtensibleEnum{T}"/> subclass.
   /// </summary>
-  /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum"/> that represents the enumeration.</typeparam>
+  /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum{T}"/> that represents the enumeration.</typeparam>
   public class ExtensibleEnumValues<T>
-    where T : ExtensibleEnum
+    where T : ExtensibleEnum<T>
   {
     private class CacheItem
     {

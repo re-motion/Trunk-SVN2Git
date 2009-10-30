@@ -122,12 +122,6 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    public void GetValueExtensionMethods_Parameter_MustNotBeDerivedEnumValues ()
-    {
-      CheckFilteredMethods ("DerivedFromDerivedValuesClass");
-    }
-
-    [Test]
     public void GetValueExtensionMethods_MustBeExtensionMethod ()
     {
       CheckFilteredMethods ("NonExtensionMethod");

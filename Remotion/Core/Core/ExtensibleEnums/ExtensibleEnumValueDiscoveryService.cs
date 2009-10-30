@@ -28,7 +28,7 @@ namespace Remotion.ExtensibleEnums
   public class ExtensibleEnumValueDiscoveryService
   {
     public IEnumerable<T> GetValues<T> (ExtensibleEnumValues<T> values, IEnumerable<Type> typeCandidates) 
-        where T: ExtensibleEnum
+        where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("values", values);
       ArgumentUtility.CheckNotNull ("typeCandidates", typeCandidates);
@@ -39,7 +39,7 @@ namespace Remotion.ExtensibleEnums
     }
 
     public IEnumerable<T> GetValuesForType<T> (ExtensibleEnumValues<T> values, Type typeDeclaringMethods) 
-        where T: ExtensibleEnum
+        where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("values", values);
       ArgumentUtility.CheckNotNull ("typeDeclaringMethods", typeDeclaringMethods);

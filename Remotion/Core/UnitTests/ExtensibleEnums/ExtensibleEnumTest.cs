@@ -66,5 +66,21 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
       Assert.That (value1.GetHashCode(), Is.EqualTo (value2.GetHashCode()));
     }
+
+    [Test]
+    public new void ToString ()
+    {
+      var value = new Color ("Red");
+
+      Assert.That (value.ToString(), Is.EqualTo ("Color: Red"));
+    }
+
+    [Test]
+    public void ToString_DerivedEnum ()
+    {
+      var value = new MetallicColor ("RedMetallic");
+
+      Assert.That (value.ToString (), Is.EqualTo ("Color: RedMetallic"));
+    }
   }
 }

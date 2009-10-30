@@ -54,13 +54,8 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
       throw new NotImplementedException ();
     }
 
-    public static Color DerivedFromDerivedValuesClass (this ExtensibleEnumValues<MetallicColor> values)
-    {
-      throw new NotImplementedException ();
-    }
-
 // ReSharper disable UnusedTypeParameter
-    public static Color Generic<T> (this ExtensibleEnumValues<MetallicColor> values)
+    public static Color Generic<T> (this ExtensibleEnumValues<Color> values)
 // ReSharper restore UnusedTypeParameter
     {
       throw new NotImplementedException ();
