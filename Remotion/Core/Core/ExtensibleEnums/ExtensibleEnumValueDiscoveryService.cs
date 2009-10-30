@@ -27,14 +27,18 @@ namespace Remotion.ExtensibleEnums
   /// </summary>
   public class ExtensibleEnumValueDiscoveryService
   {
-    public IEnumerable<Type> GetStaticClasses (IEnumerable<Type> types)
+    public IEnumerable<T> GetValues<T> (ExtensibleEnumValues<T> values, IEnumerable<Type> typeCandidates) 
+        where T: ExtensibleEnum
     {
-      ArgumentUtility.CheckNotNull ("types", types);
+      ArgumentUtility.CheckNotNull ("values", values);
+      ArgumentUtility.CheckNotNull ("typeCandidates", typeCandidates);
 
-      return types.Where (t => t.IsAbstract && t.IsSealed && !t.IsGenericTypeDefinition);
+      return from type in GetStaticTypes (typeCandidates) // optimization: only static types can have extension methods
+             from value in GetValuesForType (values, type)
+             select value;
     }
 
-    public IEnumerable<T> GetValues<T> (ExtensibleEnumValues<T> values, Type typeDeclaringMethods) 
+    public IEnumerable<T> GetValuesForType<T> (ExtensibleEnumValues<T> values, Type typeDeclaringMethods) 
         where T: ExtensibleEnum
     {
       ArgumentUtility.CheckNotNull ("values", values);
@@ -43,6 +47,13 @@ namespace Remotion.ExtensibleEnums
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
       return extensionMethods.Select (mi => (T) mi.Invoke (null, new object[] { values }));
+    }
+
+    public IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)
+    {
+      ArgumentUtility.CheckNotNull ("types", types);
+
+      return types.Where (t => t.IsAbstract && t.IsSealed && !t.IsGenericTypeDefinition);
     }
 
     public IEnumerable<MethodInfo> GetValueExtensionMethods (Type extensibleEnumType, IEnumerable<MethodInfo> methodCandidates)

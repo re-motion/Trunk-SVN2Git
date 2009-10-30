@@ -36,7 +36,17 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    public void GetStaticClasses ()
+    public void GetValues ()
+    {
+      var types = new[] { typeof (ColorExtensions), typeof (MetallicColorExtensions), typeof (object) };
+
+      var result = _service.GetValues (new ExtensibleEnumValues<Color> (), types).ToArray();
+
+      Assert.That (result, Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
+    }
+
+    [Test]
+    public void GetStaticTypes ()
     {
       var types = new[] { 
           typeof (object), 
@@ -47,15 +57,15 @@ namespace Remotion.UnitTests.ExtensibleEnums
           typeof (WrongColorValuesGeneric<>)
       };
 
-      var result = _service.GetStaticClasses (types).ToArray();
+      var result = _service.GetStaticTypes (types).ToArray();
 
       Assert.That (result, Is.EqualTo (new[] { typeof (ColorExtensions) }));
     }
 
     [Test]
-    public void GetValues ()
+    public void GetValuesForType ()
     {
-      var result = _service.GetValues (new ExtensibleEnumValues<Color>(), typeof (ColorExtensions)).ToArray();
+      var result = _service.GetValuesForType (new ExtensibleEnumValues<Color>(), typeof (ColorExtensions)).ToArray();
 
       var expectedValues = new[] {
         ColorExtensions.Red (null),
@@ -66,10 +76,10 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    public void GetValues_PassesEnumValuesToMethod ()
+    public void GetValuesForType_PassesEnumValuesToMethod ()
     {
       var values = new ExtensibleEnumValues<Color>();
-      _service.GetValues (values, typeof (ColorExtensions)).ToArray ();
+      _service.GetValuesForType (values, typeof (ColorExtensions)).ToArray ();
 
       Assert.That (ColorExtensions.LastValues, Is.EqualTo (values));
     }
