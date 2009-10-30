@@ -30,8 +30,8 @@ namespace Remotion.ExtensibleEnums
   /// where <typeparamref name="T"/> is the <see cref="ExtensibleEnum{T}"/> subclass.
   /// </summary>
   /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum{T}"/> that represents the enumeration.</typeparam>
-  public class ExtensibleEnumValues<T>
-    where T : ExtensibleEnum<T>
+  public class ExtensibleEnumValues<T> : IExtensibleEnumValues
+      where T : ExtensibleEnum<T>
   {
     private class CacheItem
     {
@@ -114,6 +114,24 @@ namespace Remotion.ExtensibleEnums
       var valueDiscoveryService = new ExtensibleEnumValueDiscoveryService ();
       var valueArray = valueDiscoveryService.GetValues (this, types).ToArray ();
       return new CacheItem (valueArray);
+    }
+
+    IExtensibleEnum IExtensibleEnumValues.GetValueByID (string id)
+    {
+      return GetValueByID (id);
+    }
+
+    bool IExtensibleEnumValues.TryGetValueByID (string id, out IExtensibleEnum value)
+    {
+      T typedValue;
+      var success = TryGetValueByID (id, out typedValue);
+      value = typedValue;
+      return success;
+    }
+
+    ReadOnlyCollection<IExtensibleEnum> IExtensibleEnumValues.GetValues ()
+    {
+      return new ReadOnlyCollection<IExtensibleEnum> (GetValues().ToArray());
     }
   }
 }

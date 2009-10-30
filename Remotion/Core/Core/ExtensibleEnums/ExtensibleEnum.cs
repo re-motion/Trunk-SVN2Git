@@ -24,7 +24,7 @@ namespace Remotion.ExtensibleEnums
   /// to define the values of the enumeration. Each value is uniquely identified by the <see cref="ID"/> string
   /// passed to the <see cref="ExtensibleEnum{T}"/> constructor. Value comparisons act solely based on this identifier.
   /// </summary>
-  public abstract class ExtensibleEnum<T>
+  public abstract class ExtensibleEnum<T> : IExtensibleEnum
       where T: ExtensibleEnum<T>
   {
     /// <summary>

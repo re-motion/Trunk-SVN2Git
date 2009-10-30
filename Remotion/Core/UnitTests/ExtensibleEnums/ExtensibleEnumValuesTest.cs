@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
@@ -97,6 +98,33 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
       Assert.That (success, Is.False);
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetValues_NonGeneric ()
+    {
+      ReadOnlyCollection<IExtensibleEnum> value = ((IExtensibleEnumValues) _extensibleEnumValues).GetValues ();
+      Assert.That (value, Is.EqualTo (_extensibleEnumValues.GetValues ()));
+    }
+
+    [Test]
+    public void GetValueByID_NonGeneric ()
+    {
+      IExtensibleEnum value = ((IExtensibleEnumValues) _extensibleEnumValues).GetValueByID ("Red");
+      Assert.That (value, Is.SameAs (_extensibleEnumValues.GetValueByID ("Red")));
+    }
+
+    [Test]
+    public void TryGetValueByID_NonGeneric ()
+    {
+      IExtensibleEnum value;
+      bool success = ((IExtensibleEnumValues) _extensibleEnumValues).TryGetValueByID ("Red", out value);
+
+      Color expectedValue;
+      bool expectedSuccess = _extensibleEnumValues.TryGetValueByID ("Red", out expectedValue);
+
+      Assert.That (success, Is.EqualTo (expectedSuccess));
+      Assert.That (value, Is.SameAs (expectedValue));
     }
   }
 }

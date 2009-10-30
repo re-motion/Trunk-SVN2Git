@@ -158,6 +158,7 @@
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumValueDiscoveryServiceTest.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumValuesCacheTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumValuesTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\Color.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ColorExtensions.cs" />
