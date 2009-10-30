@@ -14,9 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
 {
@@ -30,14 +33,26 @@ namespace Remotion.ExtensibleEnums
   public class ExtensibleEnumValues<T>
     where T : ExtensibleEnum
   {
-    private readonly DoubleCheckedLockingContainer<T[]> _valueCache;
+    private class CacheItem
+    {
+      public CacheItem (T[] valueArray)
+      {
+        Collection = new ReadOnlyCollection<T> (valueArray);
+        Dictionary = new ReadOnlyDictionary<string, T> (valueArray.ToDictionary (v => v.ID));
+      }
+
+      public ReadOnlyCollection<T> Collection { get; private set; }
+      public ReadOnlyDictionary<string, T> Dictionary { get; private set; }
+    }
+
+    private readonly DoubleCheckedLockingContainer<CacheItem> _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExtensibleEnumValues{T}"/> class.
     /// </summary>
     public ExtensibleEnumValues ()
     {
-      _valueCache = new DoubleCheckedLockingContainer<T[]> (RetrieveValues);
+      _cache = new DoubleCheckedLockingContainer<CacheItem> (RetrieveValues);
     }
 
     /// <summary>
@@ -50,16 +65,55 @@ namespace Remotion.ExtensibleEnums
     /// </remarks>
     public ReadOnlyCollection<T> GetValues ()
     {
-      return new ReadOnlyCollection<T> (_valueCache.Value);
+      return _cache.Value.Collection;
     }
 
-    private T[] RetrieveValues ()
+    /// <summary>
+    /// Gets the enum value identified by <paramref name="id"/>, throwing an exception if the value cannot be found.
+    /// </summary>
+    /// <param name="id">The identifier of the enum value to return.</param>
+    /// <returns>The enum value identified by <paramref name="id"/>.</returns>
+    /// <exception cref="KeyNotFoundException">No enum value with the given <paramref name="id"/> exists.</exception>
+    public T GetValueByID (string id)
     {
-      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
-      var types = typeDiscoveryService.GetTypes (null, false).Cast<Type>();
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
-      var valueDiscoveryService = new ExtensibleEnumValueDiscoveryService();
-      return valueDiscoveryService.GetValues (this, types).ToArray();
+      T value;
+      if (TryGetValueByID (id, out value))
+      {
+        return value;
+      }
+      else
+      {
+        var message = string.Format ("The extensible enum type '{0}' does not define a value called '{1}'.", typeof (T), id);
+        throw new KeyNotFoundException (message);
+      }
+    }
+
+    /// <summary>
+    /// Gets the enum value identified by <paramref name="id"/>, returning a boolean value indicating whether 
+    /// such a value could be found.
+    /// </summary>
+    /// <param name="id">The identifier of the enum value to return.</param>
+    /// <param name="value">The enum value identified by <paramref name="id"/>, or <see langword="null" /> if no such value exists.</param>
+    /// <returns>
+    /// <see langword="true" /> if a value with the given <paramref name="id"/> could be found; <see langword="false" /> otherwise.
+    /// </returns>
+    public bool TryGetValueByID (string id, out T value)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+
+      return _cache.Value.Dictionary.TryGetValue (id, out value);
+    }
+
+    private CacheItem RetrieveValues ()
+    {
+      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
+      var types = typeDiscoveryService.GetTypes (null, false).Cast<Type> ();
+
+      var valueDiscoveryService = new ExtensibleEnumValueDiscoveryService ();
+      var valueArray = valueDiscoveryService.GetValues (this, types).ToArray ();
+      return new CacheItem (valueArray);
     }
   }
 }
