@@ -34,13 +34,15 @@ namespace Remotion.ExtensibleEnums
       return types.Where (t => t.IsAbstract && t.IsSealed && !t.IsGenericTypeDefinition);
     }
 
-    public IEnumerable<T> GetValues<T> (Type typeDeclaringMethods)
+    public IEnumerable<T> GetValues<T> (ExtensibleEnumValues<T> values, Type typeDeclaringMethods) 
+        where T: ExtensibleEnum
     {
+      ArgumentUtility.CheckNotNull ("values", values);
       ArgumentUtility.CheckNotNull ("typeDeclaringMethods", typeDeclaringMethods);
 
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
-      return extensionMethods.Select (mi => (T) mi.Invoke (null, new object[] { null }));
+      return extensionMethods.Select (mi => (T) mi.Invoke (null, new object[] { values }));
     }
 
     public IEnumerable<MethodInfo> GetValueExtensionMethods (Type extensibleEnumType, IEnumerable<MethodInfo> methodCandidates)

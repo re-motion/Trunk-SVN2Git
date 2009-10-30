@@ -53,10 +53,9 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    [Ignore ("TODO: Implement value equality")]
     public void GetValues ()
     {
-      var result = _service.GetValues<Color> (typeof (ColorExtensions)).ToArray();
+      var result = _service.GetValues (new ExtensibleEnumValues<Color>(), typeof (ColorExtensions)).ToArray();
 
       var expectedValues = new[] {
         ColorExtensions.Red (null),
@@ -64,6 +63,15 @@ namespace Remotion.UnitTests.ExtensibleEnums
       };
       
       Assert.That (result, Is.EquivalentTo (expectedValues));
+    }
+
+    [Test]
+    public void GetValues_PassesEnumValuesToMethod ()
+    {
+      var values = new ExtensibleEnumValues<Color>();
+      _service.GetValues (values, typeof (ColorExtensions)).ToArray ();
+
+      Assert.That (ColorExtensions.LastValues, Is.EqualTo (values));
     }
 
     [Test]
