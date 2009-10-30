@@ -20,9 +20,10 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
 {
   [TestFixture]
   public class ExtensibleEnumValueDiscoveryServiceTest
@@ -40,7 +41,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var types = new[] { typeof (ColorExtensions), typeof (MetallicColorExtensions), typeof (object) };
 
-      var result = _service.GetValues (new ExtensibleEnumValues<Color> (), types).ToArray();
+      var result = _service.GetValues (new ExtensibleEnumDefinition<Color> (), types).ToArray();
 
       Assert.That (result, Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
     }
@@ -65,11 +66,11 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetValuesForType ()
     {
-      var result = _service.GetValuesForType (new ExtensibleEnumValues<Color>(), typeof (ColorExtensions)).ToArray();
+      var result = _service.GetValuesForType (new ExtensibleEnumDefinition<Color>(), typeof (ColorExtensions)).ToArray();
 
       var expectedValues = new[] {
-        ColorExtensions.Red (null),
-        ColorExtensions.Green (null)
+          ColorExtensions.Red (null),
+          ColorExtensions.Green (null)
       };
       
       Assert.That (result, Is.EquivalentTo (expectedValues));
@@ -78,10 +79,10 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetValuesForType_PassesEnumValuesToMethod ()
     {
-      var values = new ExtensibleEnumValues<Color>();
+      var values = new ExtensibleEnumDefinition<Color>();
       _service.GetValuesForType (values, typeof (ColorExtensions)).ToArray ();
 
-      Assert.That (ColorExtensions.LastValues, Is.EqualTo (values));
+      Assert.That (ColorExtensions.LastCallArgument, Is.EqualTo (values));
     }
 
     [Test]
@@ -97,7 +98,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       var result = _service.GetValueExtensionMethods (typeof (Color), methods).ToArray ();
 
       var expectedMethods = new[] {
-        typeof (MetallicColorExtensions).GetMethod ("RedMetallic")
+          typeof (MetallicColorExtensions).GetMethod ("RedMetallic")
       };
       
       Assert.That (result, Is.EqualTo (expectedMethods));

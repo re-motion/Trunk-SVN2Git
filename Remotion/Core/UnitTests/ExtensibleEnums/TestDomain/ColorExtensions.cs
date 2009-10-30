@@ -20,15 +20,15 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
   public static class ColorExtensions
   {
-    public static ExtensibleEnumValues<Color> LastValues;
+    public static ExtensibleEnumDefinition<Color> LastCallArgument;
 
-    public static Color Red (this ExtensibleEnumValues<Color> values)
+    public static Color Red (this ExtensibleEnumDefinition<Color> definition)
     {
-      LastValues = values;
+      LastCallArgument = definition;
       return new Color ("Red");
     }
 
-    public static Color Green (this ExtensibleEnumValues<Color> values)
+    public static Color Green (this ExtensibleEnumDefinition<Color> definition)
     {
       return new Color ("Green");
     }

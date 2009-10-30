@@ -20,31 +20,31 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
   public static class WrongColorValues
   {
-    public static int WrongReturnType (this ExtensibleEnumValues<Color> values)
+    public static int WrongReturnType (this ExtensibleEnumDefinition<Color> definition)
     {
       throw new NotImplementedException ();
     }
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedParameter.Local
-    private static Color WrongVisibility1 (this ExtensibleEnumValues<Color> values)
+    private static Color WrongVisibility1 (this ExtensibleEnumDefinition<Color> definition)
 // ReSharper restore UnusedParameter.Local
 // ReSharper restore UnusedMember.Local
     {
       throw new NotImplementedException ();
     }
 
-    internal static Color WrongVisibility2 (this ExtensibleEnumValues<Color> values)
+    internal static Color WrongVisibility2 (this ExtensibleEnumDefinition<Color> definition)
     {
       throw new NotImplementedException ();
     }
 
-    public static Color NonExtensionMethod (ExtensibleEnumValues<Color> values)
+    public static Color NonExtensionMethod (ExtensibleEnumDefinition<Color> definition)
     {
       throw new NotImplementedException ();
     }
 
-    public static Color WrongParameterCount (this ExtensibleEnumValues<Color> values, int index)
+    public static Color WrongParameterCount (this ExtensibleEnumDefinition<Color> definition, int index)
     {
       throw new NotImplementedException ();
     }
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
     }
 
 // ReSharper disable UnusedTypeParameter
-    public static Color Generic<T> (this ExtensibleEnumValues<Color> values)
+    public static Color Generic<T> (this ExtensibleEnumDefinition<Color> definition)
 // ReSharper restore UnusedTypeParameter
     {
       throw new NotImplementedException ();

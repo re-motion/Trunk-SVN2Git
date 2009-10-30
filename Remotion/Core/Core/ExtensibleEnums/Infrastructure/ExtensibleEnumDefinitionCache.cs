@@ -17,41 +17,41 @@ using System;
 using Remotion.Collections;
 using Remotion.Utilities;
 
-namespace Remotion.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.Infrastructure
 {
   /// <summary>
-  /// Caches <see cref="ExtensibleEnumValues{T}"/> instances for non-generic access.
+  /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic access.
   /// </summary>
-  public class ExtensibleEnumValuesCache
+  public class ExtensibleEnumDefinitionCache
   {
-    public static readonly ExtensibleEnumValuesCache Instance = new ExtensibleEnumValuesCache();
+    public static readonly ExtensibleEnumDefinitionCache Instance = new ExtensibleEnumDefinitionCache();
 
-    private readonly InterlockedCache<Type, IExtensibleEnumValues> _cache = new InterlockedCache<Type, IExtensibleEnumValues>();
+    private readonly InterlockedCache<Type, IExtensibleEnumDefinition> _cache = new InterlockedCache<Type, IExtensibleEnumDefinition>();
 
-    private ExtensibleEnumValuesCache ()
+    private ExtensibleEnumDefinitionCache ()
     {
     }
 
-    public IExtensibleEnumValues GetValues (Type extensibleEnumType)
+    public IExtensibleEnumDefinition GetDefinition (Type extensibleEnumType)
     {
       ArgumentUtility.CheckNotNull ("extensibleEnumType", extensibleEnumType);
 
-      return _cache.GetOrCreateValue (extensibleEnumType, CreateInstance);
+      return _cache.GetOrCreateValue (extensibleEnumType, CreateDefinition);
     }
 
-    private IExtensibleEnumValues CreateInstance (Type extensibleEnumType)
+    private IExtensibleEnumDefinition CreateDefinition (Type extensibleEnumType)
     {
-      Type valuesType;
+      Type definitionType;
       try
       {
-        valuesType = typeof (ExtensibleEnumValues<>).MakeGenericType (extensibleEnumType);
+        definitionType = typeof (ExtensibleEnumDefinition<>).MakeGenericType (extensibleEnumType);
       }
       catch (ArgumentException ex) // constraint violation
       {
         var message = string.Format ("Type '{0}' is not an extensible enum type directly derived from ExtensibleEnum<T>.", extensibleEnumType);
         throw new ArgumentException (message, "extensibleEnumType", ex);
       }
-      return (IExtensibleEnumValues) Activator.CreateInstance (valuesType);
+      return (IExtensibleEnumDefinition) Activator.CreateInstance (definitionType);
     }
   }
 }

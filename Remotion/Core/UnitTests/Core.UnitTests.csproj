@@ -157,9 +157,9 @@
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumTest.cs" />
-    <Compile Include="ExtensibleEnums\ExtensibleEnumValueDiscoveryServiceTest.cs" />
-    <Compile Include="ExtensibleEnums\ExtensibleEnumValuesCacheTest.cs" />
-    <Compile Include="ExtensibleEnums\ExtensibleEnumValuesTest.cs" />
+    <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryServiceTest.cs" />
+    <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumDefinitionCacheTest.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumDefinitionTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\Color.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValues.cs" />

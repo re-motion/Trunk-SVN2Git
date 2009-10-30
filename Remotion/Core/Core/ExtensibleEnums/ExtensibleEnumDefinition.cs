@@ -16,8 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Design;
 using System.Linq;
 using Remotion.Collections;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
@@ -26,12 +28,13 @@ namespace Remotion.ExtensibleEnums
   /// <summary>
   /// Provides discovery services for extensible enum values. Extensible enum implementations should
   /// hold an instance of this class in a static propery of the <see cref="ExtensibleEnum{T}"/> subclass representing
-  /// the enumeration. The values of the enumeration should be defined as extension methods for <see cref="ExtensibleEnumValues{T}"/>,
+  /// the enumeration. The values of the enumeration should be defined as extension methods for <see cref="ExtensibleEnumDefinition{T}"/>,
   /// where <typeparamref name="T"/> is the <see cref="ExtensibleEnum{T}"/> subclass.
   /// </summary>
   /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum{T}"/> that represents the enumeration.</typeparam>
-  public class ExtensibleEnumValues<T> : IExtensibleEnumValues
-      where T : ExtensibleEnum<T> // this constraint forces the user to always write 'ExtensibleEnumValues<MyEnum>', never 'ExtensibleEnumValues<MyDerivedEnum>'
+  public class ExtensibleEnumDefinition<T> : IExtensibleEnumDefinition
+      // this constraint forces the user to always write 'ExtensibleEnumDefinition<MyEnum>', never 'ExtensibleEnumDefinition<MyDerivedEnum>'
+      where T : ExtensibleEnum<T>
   {
     private class CacheItem
     {
@@ -45,13 +48,19 @@ namespace Remotion.ExtensibleEnums
       public ReadOnlyDictionary<string, T> Dictionary { get; private set; }
     }
 
+    private readonly ITypeDiscoveryService _typeDiscoveryService;
+    private readonly ExtensibleEnumValueDiscoveryService _valueDiscoveryService;
+
     private readonly DoubleCheckedLockingContainer<CacheItem> _cache;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExtensibleEnumValues{T}"/> class.
+    /// Initializes a new instance of the <see cref="ExtensibleEnumDefinition{T}"/> class.
     /// </summary>
-    public ExtensibleEnumValues ()
+    public ExtensibleEnumDefinition ()
     {
+      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
+      _valueDiscoveryService = new ExtensibleEnumValueDiscoveryService();
+
       _cache = new DoubleCheckedLockingContainer<CacheItem> (RetrieveValues);
     }
 
@@ -108,20 +117,17 @@ namespace Remotion.ExtensibleEnums
 
     private CacheItem RetrieveValues ()
     {
-      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
-      var types = typeDiscoveryService.GetTypes (null, false).Cast<Type> ();
-
-      var valueDiscoveryService = new ExtensibleEnumValueDiscoveryService ();
-      var valueArray = valueDiscoveryService.GetValues (this, types).ToArray ();
+      var types = _typeDiscoveryService.GetTypes (null, false).Cast<Type>();
+      var valueArray = _valueDiscoveryService.GetValues (this, types).ToArray();
       return new CacheItem (valueArray);
     }
 
-    IExtensibleEnum IExtensibleEnumValues.GetValueByID (string id)
+    IExtensibleEnum IExtensibleEnumDefinition.GetValueByID (string id)
     {
       return GetValueByID (id);
     }
 
-    bool IExtensibleEnumValues.TryGetValueByID (string id, out IExtensibleEnum value)
+    bool IExtensibleEnumDefinition.TryGetValueByID (string id, out IExtensibleEnum value)
     {
       T typedValue;
       var success = TryGetValueByID (id, out typedValue);
@@ -129,7 +135,7 @@ namespace Remotion.ExtensibleEnums
       return success;
     }
 
-    ReadOnlyCollection<IExtensibleEnum> IExtensibleEnumValues.GetValues ()
+    ReadOnlyCollection<IExtensibleEnum> IExtensibleEnumDefinition.GetValues ()
     {
       return new ReadOnlyCollection<IExtensibleEnum> (GetValues().ToArray());
     }

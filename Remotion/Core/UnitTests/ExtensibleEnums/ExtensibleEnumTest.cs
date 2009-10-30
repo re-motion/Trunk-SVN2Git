@@ -16,7 +16,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.ExtensibleEnums
@@ -93,7 +93,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void Values_FromCache ()
     {
-      Assert.That (Color.Values, Is.SameAs (ExtensibleEnumValuesCache.Instance.GetValues (typeof (Color))));
+      Assert.That (Color.Values, Is.SameAs (ExtensibleEnumDefinitionCache.Instance.GetDefinition (typeof (Color))));
     }
   }
 }

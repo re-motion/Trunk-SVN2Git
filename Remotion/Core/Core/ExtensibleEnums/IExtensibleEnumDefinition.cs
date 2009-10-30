@@ -1,10 +1,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.ExtensibleEnums
 {
-  public interface IExtensibleEnumValues
+  /// <summary>
+  /// Provides a non-generic interface for the <see cref="ExtensibleEnumDefinition{T}"/> class.
+  /// </summary>
+  /// <remarks>
+  /// Do not implement this interface yourself, use it only when working with extensible enums in a reflective context, e.g. via the 
+  /// <see cref="ExtensibleEnumDefinitionCache"/> class.
+  /// </remarks>
+  public interface IExtensibleEnumDefinition
   {
     /// <summary>
     /// Gets the values defined by the extensible enum type.

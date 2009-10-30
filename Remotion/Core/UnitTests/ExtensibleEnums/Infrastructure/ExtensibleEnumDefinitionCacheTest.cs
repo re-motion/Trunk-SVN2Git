@@ -17,52 +17,55 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
-namespace Remotion.UnitTests.ExtensibleEnums
+namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
 {
   [TestFixture]
-  public class ExtensibleEnumValuesCacheTest
+  public class ExtensibleEnumDefinitionCacheTest
   {
-    private ExtensibleEnumValuesCache _cache;
+    private ExtensibleEnumDefinitionCache _cache;
 
     [SetUp]
     public void SetUp ()
     {
-      _cache = ExtensibleEnumValuesCache.Instance;
+      _cache = ExtensibleEnumDefinitionCache.Instance;
     }
 
     [Test]
     public void GetInstance ()
     {
-      IExtensibleEnumValues instance = _cache.GetValues (typeof (Color));
+      IExtensibleEnumDefinition instance = _cache.GetDefinition (typeof (Color));
 
-      Assert.That (instance, Is.InstanceOfType (typeof (ExtensibleEnumValues<Color>)));
+      Assert.That (instance, Is.InstanceOfType (typeof (ExtensibleEnumDefinition<Color>)));
     }
 
     [Test]
     public void GetValues_Cached ()
     {
-      IExtensibleEnumValues instance1 = _cache.GetValues (typeof (Color));
-      IExtensibleEnumValues instance2 = _cache.GetValues (typeof (Color));
+      IExtensibleEnumDefinition instance1 = _cache.GetDefinition (typeof (Color));
+      IExtensibleEnumDefinition instance2 = _cache.GetDefinition (typeof (Color));
 
       Assert.That (instance1, Is.SameAs (instance2));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'System.Object' is not an extensible enum type "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Type 'System.Object' is not an extensible enum type "
         + "directly derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
     public void GetValues_ThrowsOnInvalidType ()
     {
-      _cache.GetValues (typeof (object));
+      _cache.GetDefinition (typeof (object));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.MetallicColor' is not an extensible enum type "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.MetallicColor' is not an extensible enum type "
         + "directly derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
     public void GetValues_ThrowsOnDerivedEnum ()
     {
-      _cache.GetValues (typeof (MetallicColor));
+      _cache.GetDefinition (typeof (MetallicColor));
     }
   }
 }

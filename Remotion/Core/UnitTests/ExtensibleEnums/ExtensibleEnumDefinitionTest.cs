@@ -24,37 +24,29 @@ using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 namespace Remotion.UnitTests.ExtensibleEnums
 {
   [TestFixture]
-  public class ExtensibleEnumValuesTest
+  public class ExtensibleEnumDefinitionTest
   {
-    private ExtensibleEnumValues<Color> _extensibleEnumValues;
+    private ExtensibleEnumDefinition<Color> _extensibleEnumDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _extensibleEnumValues = new ExtensibleEnumValues<Color> ();
+      _extensibleEnumDefinition = new ExtensibleEnumDefinition<Color> ();
     }
 
     [Test]
     public void GetValues ()
     {
-      var valueInstances = _extensibleEnumValues.GetValues();
+      var valueInstances = _extensibleEnumDefinition.GetValues();
 
       Assert.That (valueInstances, Is.EquivalentTo (new[] { Color.Values.Red(), Color.Values.Green(), Color.Values.RedMetallic() }));
     }
 
     [Test]
-    public void GetValues_PassesValuesInstanceToService ()
-    {
-      _extensibleEnumValues.GetValues();
-      
-      Assert.That (ColorExtensions.LastValues, Is.SameAs (_extensibleEnumValues));
-    }
-
-    [Test]
     public void GetValues_CachesValues ()
     {
-      var values1 = _extensibleEnumValues.GetValues ();
-      var values2 = _extensibleEnumValues.GetValues ();
+      var values1 = _extensibleEnumDefinition.GetValues ();
+      var values2 = _extensibleEnumDefinition.GetValues ();
 
       Assert.That (values1.Count, Is.EqualTo (3));
       Assert.That (values1[0], Is.SameAs (values2[0]));
@@ -63,9 +55,18 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void GetValues_PassesExtensibleEnumValuesInstance_ToExtensibleEnumValueDiscoveryService ()
+    {
+      ColorExtensions.LastCallArgument = null;
+      _extensibleEnumDefinition.GetValues ();
+
+      Assert.That (ColorExtensions.LastCallArgument, Is.SameAs (_extensibleEnumDefinition));
+    }
+
+    [Test]
     public void GetValueByID ()
     {
-      var value = _extensibleEnumValues.GetValueByID ("Red");
+      var value = _extensibleEnumDefinition.GetValueByID ("Red");
 
       var expected = Color.Values.Red();
       Assert.That (value, Is.EqualTo (expected));
@@ -76,14 +77,14 @@ namespace Remotion.UnitTests.ExtensibleEnums
         ExpectedMessage = "The extensible enum type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define a value called '?'.")]
     public void GetValueByID_WrongIDThrows ()
     {
-      _extensibleEnumValues.GetValueByID ("?");
+      _extensibleEnumDefinition.GetValueByID ("?");
     }
 
     [Test]
     public void TryGetValueByID ()
     {
       Color result;
-      var success = _extensibleEnumValues.TryGetValueByID ("Red", out result);
+      var success = _extensibleEnumDefinition.TryGetValueByID ("Red", out result);
 
       var expected = Color.Values.Red ();
       Assert.That (success, Is.True);
@@ -94,7 +95,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     public void TryGetValueByID_WrongIDThrows ()
     {
       Color result;
-      var success = _extensibleEnumValues.TryGetValueByID ("?", out result);
+      var success = _extensibleEnumDefinition.TryGetValueByID ("?", out result);
 
       Assert.That (success, Is.False);
       Assert.That (result, Is.Null);
@@ -103,25 +104,25 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetValues_NonGeneric ()
     {
-      ReadOnlyCollection<IExtensibleEnum> value = ((IExtensibleEnumValues) _extensibleEnumValues).GetValues ();
-      Assert.That (value, Is.EqualTo (_extensibleEnumValues.GetValues ()));
+      ReadOnlyCollection<IExtensibleEnum> value = ((IExtensibleEnumDefinition) _extensibleEnumDefinition).GetValues ();
+      Assert.That (value, Is.EqualTo (_extensibleEnumDefinition.GetValues ()));
     }
 
     [Test]
     public void GetValueByID_NonGeneric ()
     {
-      IExtensibleEnum value = ((IExtensibleEnumValues) _extensibleEnumValues).GetValueByID ("Red");
-      Assert.That (value, Is.SameAs (_extensibleEnumValues.GetValueByID ("Red")));
+      IExtensibleEnum value = ((IExtensibleEnumDefinition) _extensibleEnumDefinition).GetValueByID ("Red");
+      Assert.That (value, Is.SameAs (_extensibleEnumDefinition.GetValueByID ("Red")));
     }
 
     [Test]
     public void TryGetValueByID_NonGeneric ()
     {
       IExtensibleEnum value;
-      bool success = ((IExtensibleEnumValues) _extensibleEnumValues).TryGetValueByID ("Red", out value);
+      bool success = ((IExtensibleEnumDefinition) _extensibleEnumDefinition).TryGetValueByID ("Red", out value);
 
       Color expectedValue;
-      bool expectedSuccess = _extensibleEnumValues.TryGetValueByID ("Red", out expectedValue);
+      bool expectedSuccess = _extensibleEnumDefinition.TryGetValueByID ("Red", out expectedValue);
 
       Assert.That (success, Is.EqualTo (expectedSuccess));
       Assert.That (value, Is.SameAs (expectedValue));

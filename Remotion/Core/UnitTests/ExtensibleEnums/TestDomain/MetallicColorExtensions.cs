@@ -20,7 +20,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
   public static class MetallicColorExtensions
   {
-    public static MetallicColor RedMetallic (this ExtensibleEnumValues<Color> values)
+    public static MetallicColor RedMetallic (this ExtensibleEnumDefinition<Color> definition)
     {
       return new MetallicColor ("RedMetallic");
     }

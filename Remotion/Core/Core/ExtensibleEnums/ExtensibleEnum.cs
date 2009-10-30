@@ -14,13 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
   /// Base class for extensible enums. Create extensible enums by deriving a class representing the enumeration
-  /// from <see cref="ExtensibleEnum{T}"/> and define extension methods on <see cref="ExtensibleEnumValues{T}"/>
+  /// from <see cref="ExtensibleEnum{T}"/> and define extension methods on <see cref="ExtensibleEnumDefinition{T}"/>
   /// to define the values of the enumeration. Each value is uniquely identified by the <see cref="ID"/> string
   /// passed to the <see cref="ExtensibleEnum{T}"/> constructor. Value comparisons act solely based on this identifier.
   /// </summary>
@@ -31,8 +32,8 @@ namespace Remotion.ExtensibleEnums
     /// Provides access to all values of this extensible enum type.
     /// </summary>
     /// <remarks>Values of the extensible enum type are defined by declaring extension methods against 
-    /// <see cref="ExtensibleEnumValues{T}"/> and can be accessed via this field.</remarks>
-    public static readonly ExtensibleEnumValues<T> Values = (ExtensibleEnumValues<T>) ExtensibleEnumValuesCache.Instance.GetValues (typeof (T));
+    /// <see cref="ExtensibleEnumDefinition{T}"/> and can be accessed via this field.</remarks>
+    public static readonly ExtensibleEnumDefinition<T> Values = (ExtensibleEnumDefinition<T>) ExtensibleEnumDefinitionCache.Instance.GetDefinition (typeof (T));
 
     /// <summary>
     /// Initializes a new enumeration value.
