@@ -31,7 +31,7 @@ namespace Remotion.ExtensibleEnums
   /// </summary>
   /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum{T}"/> that represents the enumeration.</typeparam>
   public class ExtensibleEnumValues<T> : IExtensibleEnumValues
-      where T : ExtensibleEnum<T>
+      where T : ExtensibleEnum<T> // this constraint forces the user to always write 'ExtensibleEnumValues<MyEnum>', never 'ExtensibleEnumValues<MyDerivedEnum>'
   {
     private class CacheItem
     {

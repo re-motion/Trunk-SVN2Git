@@ -32,7 +32,7 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <remarks>Values of the extensible enum type are defined by declaring extension methods against 
     /// <see cref="ExtensibleEnumValues{T}"/> and can be accessed via this field.</remarks>
-    public static readonly ExtensibleEnumValues<T> Values = new ExtensibleEnumValues<T> ();
+    public static readonly ExtensibleEnumValues<T> Values = (ExtensibleEnumValues<T>) ExtensibleEnumValuesCache.Instance.GetValues (typeof (T));
 
     /// <summary>
     /// Initializes a new enumeration value.

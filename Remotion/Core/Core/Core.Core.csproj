@@ -166,6 +166,7 @@
     <Compile Include="ExtensibleEnums\ExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumValues.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumValuesCache.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnumValues.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifier.cs" />

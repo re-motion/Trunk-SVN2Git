@@ -15,6 +15,8 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.ExtensibleEnums;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.ExtensibleEnums
@@ -22,15 +24,45 @@ namespace Remotion.UnitTests.ExtensibleEnums
   [TestFixture]
   public class ExtensibleEnumValuesCacheTest
   {
+    private ExtensibleEnumValuesCache _cache;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _cache = ExtensibleEnumValuesCache.Instance;
+    }
+
     [Test]
-    [Ignore ("TODO 1804")]
     public void GetInstance ()
     {
-      Assert.Fail ("TODO 1804");
-      //var cache = new ExtensibleEnumValuesCache();
-      //var instance = cache.GetInstance (typeof (Color));
+      IExtensibleEnumValues instance = _cache.GetValues (typeof (Color));
 
-      //Assert.That (instance, )
+      Assert.That (instance, Is.InstanceOfType (typeof (ExtensibleEnumValues<Color>)));
+    }
+
+    [Test]
+    public void GetValues_Cached ()
+    {
+      IExtensibleEnumValues instance1 = _cache.GetValues (typeof (Color));
+      IExtensibleEnumValues instance2 = _cache.GetValues (typeof (Color));
+
+      Assert.That (instance1, Is.SameAs (instance2));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'System.Object' is not an extensible enum type "
+        + "directly derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
+    public void GetValues_ThrowsOnInvalidType ()
+    {
+      _cache.GetValues (typeof (object));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.MetallicColor' is not an extensible enum type "
+        + "directly derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
+    public void GetValues_ThrowsOnDerivedEnum ()
+    {
+      _cache.GetValues (typeof (MetallicColor));
     }
   }
 }
