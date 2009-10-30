@@ -42,5 +42,25 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The ID of this value.</value>
     public string ID { get; private set; }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="System.Object"/> is equal to this instance. Equality is
+    /// determined by comparing the <see cref="ID"/> and type of the values for equality.
+    /// </summary>
+    /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+    /// <returns>
+    /// 	<see langword="true" /> if the specified <see cref="System.Object"/> is an extensible enum of the same
+    /// 	type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
+    /// </returns>
+    public override bool Equals (object obj)
+    {
+      return obj != null && obj.GetType() == GetType() &&  ((ExtensibleEnum) obj).ID == ID;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode ()
+    {
+      return ID.GetHashCode();
+    }
   }
 }
