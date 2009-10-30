@@ -48,14 +48,15 @@ namespace Remotion.ExtensibleEnums
       ArgumentUtility.CheckNotNull ("extensibleEnumType", extensibleEnumType);
       ArgumentUtility.CheckNotNull ("methodCandidates", methodCandidates);
 
+      var extensibleEnumValuesType = typeof (ExtensibleEnumValues<>).MakeGenericType (extensibleEnumType);
       return from m in methodCandidates
-             where extensibleEnumType.IsAssignableFrom (m.ReturnType)
+             where m.IsPublic
                 && !m.IsGenericMethod
-                && m.IsPublic
+                && extensibleEnumType.IsAssignableFrom (m.ReturnType)
                 && m.IsDefined (typeof (ExtensionAttribute), false)
              let parameters = m.GetParameters ()
              where parameters.Length == 1
-                && parameters[0].ParameterType == typeof (ExtensibleEnumValues<>).MakeGenericType (extensibleEnumType)
+                && parameters[0].ParameterType == extensibleEnumValuesType
              select m;
     }
   }

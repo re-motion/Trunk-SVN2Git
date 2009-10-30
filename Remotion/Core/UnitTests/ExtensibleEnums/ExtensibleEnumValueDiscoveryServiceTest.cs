@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       var types = new[] { 
           typeof (object), 
           typeof (Color), 
-          typeof (ColorValues), 
+          typeof (ColorExtensions), 
           typeof (DateTime), 
           typeof (CollectionBase),
           typeof (WrongColorValuesGeneric<>)
@@ -49,17 +49,17 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
       var result = _service.GetStaticClasses (types).ToArray();
 
-      Assert.That (result, Is.EqualTo (new[] { typeof (ColorValues) }));
+      Assert.That (result, Is.EqualTo (new[] { typeof (ColorExtensions) }));
     }
 
     [Test]
     public void GetValueExtensionMethods ()
     {
-      var result = _service.GetValueExtensionMethods (typeof (Color), typeof (ColorValues)).ToArray();
+      var result = _service.GetValueExtensionMethods (typeof (Color), typeof (ColorExtensions)).ToArray();
 
       var expectedMethods = new[] {
-        typeof (ColorValues).GetMethod ("Red"),
-        typeof (ColorValues).GetMethod ("Green")
+        typeof (ColorExtensions).GetMethod ("Red"),
+        typeof (ColorExtensions).GetMethod ("Green")
       };
       
       Assert.That (result, Is.EquivalentTo (expectedMethods));
@@ -74,11 +74,11 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetValueExtensionMethods_ReturnType_CanBeAssignable ()
     {
-      var methods = new[] { typeof (MetallicColorValues).GetMethod ("RedMetallic") };
+      var methods = new[] { typeof (MetallicColorExtensions).GetMethod ("RedMetallic") };
       var result = _service.GetValueExtensionMethods (typeof (Color), methods).ToArray ();
 
       var expectedMethods = new[] {
-        typeof (MetallicColorValues).GetMethod ("RedMetallic")
+        typeof (MetallicColorExtensions).GetMethod ("RedMetallic")
       };
       
       Assert.That (result, Is.EqualTo (expectedMethods));

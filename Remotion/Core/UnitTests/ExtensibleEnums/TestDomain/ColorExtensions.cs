@@ -18,11 +18,16 @@ using Remotion.ExtensibleEnums;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  public static class MetallicColorValues
+  public static class ColorExtensions
   {
-    public static MetallicColor RedMetallic (this ExtensibleEnumValues<Color> values)
+    public static Color Red (this ExtensibleEnumValues<Color> values)
     {
-      return new MetallicColor ("RedMetallic");
+      return new Color ("Red");
+    }
+
+    public static Color Green (this ExtensibleEnumValues<Color> values)
+    {
+      return new Color ("Green");
     }
   }
 }
