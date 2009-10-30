@@ -20,8 +20,6 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
   public class Color : ExtensibleEnum<Color>
   {
-    public static readonly ExtensibleEnumValues<Color> Values = new ExtensibleEnumValues<Color>();
-
     public Color (string id)
       : base (id)
     {

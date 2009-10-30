@@ -82,5 +82,11 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
       Assert.That (value.ToString (), Is.EqualTo ("Color: RedMetallic"));
     }
+
+    [Test]
+    public void ValuesProperty ()
+    {
+      Assert.That (Color.Values, Is.Not.Null);
+    }
   }
 }

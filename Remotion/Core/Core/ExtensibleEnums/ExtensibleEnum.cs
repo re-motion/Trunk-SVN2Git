@@ -25,7 +25,15 @@ namespace Remotion.ExtensibleEnums
   /// passed to the <see cref="ExtensibleEnum{T}"/> constructor. Value comparisons act solely based on this identifier.
   /// </summary>
   public abstract class ExtensibleEnum<T>
+      where T: ExtensibleEnum<T>
   {
+    /// <summary>
+    /// Provides access to all values of this extensible enum type.
+    /// </summary>
+    /// <remarks>Values of the extensible enum type are defined by declaring extension methods against 
+    /// <see cref="ExtensibleEnumValues{T}"/> and can be accessed via this field.</remarks>
+    public static readonly ExtensibleEnumValues<T> Values = new ExtensibleEnumValues<T> ();
+
     /// <summary>
     /// Initializes a new enumeration value.
     /// </summary>
