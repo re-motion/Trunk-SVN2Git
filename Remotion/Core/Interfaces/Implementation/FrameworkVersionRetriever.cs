@@ -86,7 +86,7 @@ namespace Remotion.Implementation
         var assemblyOnDisk = Assembly.Load (new AssemblyName (_referenceAssemblyName));
         return assemblyOnDisk.GetName ().Version;
       }
-      catch (FileNotFoundException ex)
+      catch (FileNotFoundException)
       {
         return null;
       }
