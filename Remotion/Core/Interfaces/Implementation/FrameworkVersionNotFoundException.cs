@@ -14,20 +14,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 
 namespace Remotion.Implementation
 {
-  public class VersionDependentImplementationException : Exception
+  /// <summary>
+  /// Thrown by <see cref="FrameworkVersionRetriever"/> when the framework version cannot be determined automatically. Use 
+  /// <see cref="FrameworkVersion"/> to manually set the version or add a reference to the framework implementation assembly.
+  /// </summary>
+  [Serializable]
+  public class FrameworkVersionNotFoundException : Exception
   {
-    public static VersionDependentImplementationException Wrap (Type versionDependentType, Exception innerException)
+    public FrameworkVersionNotFoundException (string message)
+        : base(message)
     {
-      ArgumentUtility.CheckNotNull ("versionDependentType", versionDependentType);
-      ArgumentUtility.CheckNotNull ("innerException", innerException);
-
-      return new VersionDependentImplementationException (innerException.Message, innerException);
     }
 
-    private VersionDependentImplementationException(string message, Exception innerException) : base(message, innerException)
+    public FrameworkVersionNotFoundException (string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
+
+    protected FrameworkVersionNotFoundException (SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
   }

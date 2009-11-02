@@ -58,16 +58,18 @@ namespace Remotion.Implementation
 
     private static Version RetrieveFrameworkVersion ()
     {
-      var retriever = new FrameworkVersionRetriever (AppDomain.CurrentDomain.GetAssemblies());
+      var retriever = new FrameworkVersionRetriever ("Remotion", AppDomain.CurrentDomain.GetAssemblies());
       try
       {
         return retriever.RetrieveVersion ();
       }
-      catch (Exception ex)
+      catch (FrameworkVersionNotFoundException ex)
       {
-        string message = string.Format ("The framework version could not be determined automatically. Manually set {0}.Value to specify which "
-            + "version should be used. The automatic discovery error was: {1}", typeof (FrameworkVersion).FullName, ex.Message);
-        throw new InvalidOperationException (message, ex);
+        string message = string.Format (
+          "{0} Add a reference to the framework implementation assemblies or manually set {1}.Value to specify what version should be used.", 
+          ex.Message, 
+          typeof (FrameworkVersion).FullName);
+        throw new FrameworkVersionNotFoundException (message, ex);
       }
     }
 

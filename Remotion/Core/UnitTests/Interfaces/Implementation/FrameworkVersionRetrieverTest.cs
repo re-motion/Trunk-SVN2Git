@@ -17,7 +17,9 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Implementation;
+using Remotion.Logging;
 using Remotion.Mixins.BridgeImplementations;
 using Rhino.Mocks;
 
@@ -26,76 +28,90 @@ namespace Remotion.UnitTests.Interfaces.Implementation
   [TestFixture]
   public class FrameworkVersionRetrieverTest
   {
+    [SetUp]
+    public void SetUp ()
+    {
+      LogManager.InitializeConsole ();
+    }
+
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),ExpectedMessage = "There is no version of Remotion currently loaded or referenced.")]
+    [ExpectedException (typeof (FrameworkVersionNotFoundException), 
+        ExpectedMessage = "NonExistent is neither loaded nor referenced, and trying to load it by name ('NonExistent') didn't work either.")]
     public void Retrieve_NotPossible ()
     {
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[0]);
-      retriever.RetrieveVersion ();
+      var retriever = new FrameworkVersionRetriever ("NonExistent", new Assembly[0]);
+      retriever.RetrieveVersion();
     }
 
     [Test]
     public void Retrieve_FromRootAssembly ()
     {
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[] {typeof (ObjectFactoryImplementation).Assembly});
-      Assert.AreEqual (typeof (INullObject).Assembly.GetName().Version, retriever.RetrieveVersion());
+      var retriever = new FrameworkVersionRetriever ("Remotion", new[] { typeof (ObjectFactoryImplementation).Assembly });
+      Assert.That (retriever.RetrieveVersion (), Is.EqualTo (typeof (INullObject).Assembly.GetName ().Version));
     }
 
     [Test]
     public void Retrieve_FromAssemblyReference ()
     {
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[] { typeof (FrameworkVersionRetrieverTest).Assembly });
-      Assert.AreEqual (typeof (INullObject).Assembly.GetName ().Version, retriever.RetrieveVersion ());
+      var retriever = new FrameworkVersionRetriever ("Remotion", new[] { typeof (FrameworkVersionRetrieverTest).Assembly });
+      Assert.That (retriever.RetrieveVersion (), Is.EqualTo (typeof (INullObject).Assembly.GetName ().Version));
     }
 
     [Test]
     public void Retrieve_WithMultipleCandidates_WithSameVersions ()
     {
-      MockRepository mockRepository = new MockRepository();
-      _Assembly assemblyStub1 = mockRepository.Stub<_Assembly> ();
-      _Assembly assemblyStub2 = mockRepository.Stub<_Assembly> ();
+      var mockRepository = new MockRepository();
+      var assemblyStub1 = mockRepository.Stub<_Assembly>();
+      var assemblyStub2 = mockRepository.Stub<_Assembly>();
 
-      AssemblyName assemblyName1 = new AssemblyName("Remotion");
+      var assemblyName1 = new AssemblyName ("Remotion");
       assemblyName1.Version = new Version (1, 2, 3, 4);
-      AssemblyName assemblyName2 = new AssemblyName ("Remotion");
+      var assemblyName2 = new AssemblyName ("Remotion");
       assemblyName2.Version = new Version (1, 2, 3, 4);
 
-      SetupResult.For (assemblyStub1.GetName ()).Return (assemblyName1);
-      SetupResult.For (assemblyStub2.GetName ()).Return (assemblyName2);
+      SetupResult.For (assemblyStub1.GetName()).Return (assemblyName1);
+      SetupResult.For (assemblyStub2.GetName()).Return (assemblyName2);
 
-      SetupResult.For (assemblyStub1.GetReferencedAssemblies ()).Return (new AssemblyName[0]);
-      SetupResult.For (assemblyStub2.GetReferencedAssemblies ()).Return (new AssemblyName[0]);
+      SetupResult.For (assemblyStub1.GetReferencedAssemblies()).Return (new AssemblyName[0]);
+      SetupResult.For (assemblyStub2.GetReferencedAssemblies()).Return (new AssemblyName[0]);
 
       mockRepository.ReplayAll();
 
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new _Assembly[] { assemblyStub1, assemblyStub2 });
-      Assert.AreEqual (new Version (1, 2, 3, 4), retriever.RetrieveVersion ());
+      var retriever = new FrameworkVersionRetriever ("Remotion", new[] { assemblyStub1, assemblyStub2 });
+      Assert.That (retriever.RetrieveVersion (), Is.EqualTo (new Version (1, 2, 3, 4)));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
+    [ExpectedException (typeof (FrameworkVersionNotFoundException),
         ExpectedMessage = "More than one version of Remotion is currently loaded or referenced: 1.2.3.4, 2.3.4.5.")]
     public void Retrieve_WithMultipleCandidates_WithDifferentVersions ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      _Assembly assemblyStub1 = mockRepository.Stub<_Assembly> ();
-      _Assembly assemblyStub2 = mockRepository.Stub<_Assembly> ();
+      var mockRepository = new MockRepository();
+      var assemblyStub1 = mockRepository.Stub<_Assembly>();
+      var assemblyStub2 = mockRepository.Stub<_Assembly>();
 
-      AssemblyName assemblyName1 = new AssemblyName ("Remotion");
+      var assemblyName1 = new AssemblyName ("Remotion");
       assemblyName1.Version = new Version (1, 2, 3, 4);
-      AssemblyName assemblyName2 = new AssemblyName ("Remotion");
+      var assemblyName2 = new AssemblyName ("Remotion");
       assemblyName2.Version = new Version (2, 3, 4, 5);
 
-      SetupResult.For (assemblyStub1.GetName ()).Return (assemblyName1);
-      SetupResult.For (assemblyStub2.GetName ()).Return (assemblyName2);
+      SetupResult.For (assemblyStub1.GetName()).Return (assemblyName1);
+      SetupResult.For (assemblyStub2.GetName()).Return (assemblyName2);
 
-      SetupResult.For (assemblyStub1.GetReferencedAssemblies ()).Return (new AssemblyName[0]);
-      SetupResult.For (assemblyStub2.GetReferencedAssemblies ()).Return (new AssemblyName[0]);
+      SetupResult.For (assemblyStub1.GetReferencedAssemblies()).Return (new AssemblyName[0]);
+      SetupResult.For (assemblyStub2.GetReferencedAssemblies()).Return (new AssemblyName[0]);
 
-      mockRepository.ReplayAll ();
+      mockRepository.ReplayAll();
 
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new _Assembly[] { assemblyStub1, assemblyStub2 });
-      retriever.RetrieveVersion ();
+      var retriever = new FrameworkVersionRetriever ("Remotion", new[] { assemblyStub1, assemblyStub2 });
+      retriever.RetrieveVersion();
+    }
+
+    [Test]
+    public void Retrieve_FromDisk ()
+    {
+      var retriever = new FrameworkVersionRetriever ("Remotion", new Assembly[0]);
+      Assert.That (retriever.RetrieveVersion (), Is.EqualTo (typeof (ObjectFactoryImplementation).Assembly.GetName ().Version));
     }
   }
 }

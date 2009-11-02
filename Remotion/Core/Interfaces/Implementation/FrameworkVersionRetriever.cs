@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,49 +24,83 @@ namespace Remotion.Implementation
 {
   public class FrameworkVersionRetriever
   {
-    private const string c_referenceAssemblyName = "Remotion";
+    private readonly string _referenceAssemblyName;
     private readonly IEnumerable<_Assembly> _loadedAssemblies;
 
-    public FrameworkVersionRetriever (IEnumerable<_Assembly> loadedAssemblies)
+    public FrameworkVersionRetriever (string referenceAssemblyName, IEnumerable<_Assembly> loadedAssemblies)
     {
-      _loadedAssemblies = ArgumentUtility.CheckNotNull ("loadedAssemblies", loadedAssemblies);
+      ArgumentUtility.CheckNotNullOrEmpty ("referenceAssemblyName", referenceAssemblyName);
+      ArgumentUtility.CheckNotNull ("loadedAssemblies", loadedAssemblies);
+
+      _referenceAssemblyName = referenceAssemblyName;
+      _loadedAssemblies = loadedAssemblies;
     }
 
     public Version RetrieveVersion()
     {
-      List<Version> candidates = new List<Version> ();
+      var loadedReferencedCandidate = TryGetCandidateFromLoadedAndReferencedAssemblies();
+      if (loadedReferencedCandidate != null)
+        return loadedReferencedCandidate;
+
+      var diskCandidate = TryLoadCandidateFromDisk ();
+      if (diskCandidate != null)
+        return diskCandidate;
+
+      string message = string.Format (
+          "{0} is neither loaded nor referenced, and trying to load it by name ('{0}') didn't work either.", 
+          _referenceAssemblyName);
+      throw new FrameworkVersionNotFoundException (message);
+    }
+
+    private Version TryGetCandidateFromLoadedAndReferencedAssemblies ()
+    {
+      var candidates = new List<Version> ();
       foreach (_Assembly assembly in _loadedAssemblies)
       {
-        AnalyzeAssemblyName (assembly.GetName(), candidates);
+        AnalyzeAssemblyName (assembly.GetName (), candidates);
 
         foreach (AssemblyName referencedAssembly in assembly.GetReferencedAssemblies ())
           AnalyzeAssemblyName (referencedAssembly, candidates);
       }
 
-      if (candidates.Count == 0)
+      if (candidates.Count > 1)
       {
-        string message = string.Format ("There is no version of {0} currently loaded or referenced.", c_referenceAssemblyName);
-        throw new InvalidOperationException (message);
-      }
-      else if (candidates.Count > 1)
-      {
-        string message = string.Format ("More than one version of {0} is currently loaded or referenced: {1}.", c_referenceAssemblyName, 
+        string message = string.Format ("More than one version of {0} is currently loaded or referenced: {1}.", _referenceAssemblyName,
             GetCandidateString (candidates));
-        throw new InvalidOperationException (message);
+        throw new FrameworkVersionNotFoundException (message);
+      }
+      else if (candidates.Count == 1)
+      {
+        return candidates[0];
       }
       else
-        return candidates[0];
+      {
+        return null;
+      }
+    }
+
+    private Version TryLoadCandidateFromDisk ()
+    {
+      try
+      {
+        var assemblyOnDisk = Assembly.Load (new AssemblyName (_referenceAssemblyName));
+        return assemblyOnDisk.GetName ().Version;
+      }
+      catch (FileNotFoundException ex)
+      {
+        return null;
+      }
     }
 
     private void AnalyzeAssemblyName (AssemblyName assemblyName, ICollection<Version> candidates)
     {
-      if (assemblyName.Name == c_referenceAssemblyName && !candidates.Contains (assemblyName.Version))
+      if (assemblyName.Name == _referenceAssemblyName && !candidates.Contains (assemblyName.Version))
         candidates.Add (assemblyName.Version);
     }
 
     private string GetCandidateString (IEnumerable<Version> candidates)
     {
-      StringBuilder candidateStringBuilder = new StringBuilder();
+      var candidateStringBuilder = new StringBuilder();
       bool first = true;
       foreach (Version candidate in candidates)
       {

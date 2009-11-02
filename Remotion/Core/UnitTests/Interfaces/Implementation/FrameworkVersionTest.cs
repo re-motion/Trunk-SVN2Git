@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
@@ -79,12 +80,11 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The framework version could not be determined automatically. "
-        + "Manually set Remotion.Implementation.FrameworkVersion.Value to specify which version should be used. The automatic discovery error was: " 
-        + "There is no version of Remotion currently loaded or referenced.")]
+    [ExpectedException (typeof (FrameworkVersionNotFoundException), ExpectedMessage = "Remotion is neither loaded nor referenced, and trying to load "
+        + "it by name ('Remotion') didn't work either. Add a reference to the framework implementation assemblies or manually set "
+        + "Remotion.Implementation.FrameworkVersion.Value to specify what version should be used.")]
     public void FailedAutomaticDiscovery ()
     {
-      
       var scope = new ModuleScope (true, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");
       var versionAccessorTypeBuilder = new CustomClassEmitter (scope, "VersionAccessor", typeof (object));
       var versionAccessorMethod = versionAccessorTypeBuilder.CreateMethod ("AccessVersion", MethodAttributes.Public | MethodAttributes.Static);
@@ -93,19 +93,35 @@ namespace Remotion.UnitTests.Interfaces.Implementation
       versionAccessorMethod.AddStatement (new PopStatement());
       versionAccessorMethod.ImplementByReturningVoid();
 
-      Type versionAccessorType = versionAccessorTypeBuilder.BuildType();
-      AppDomain newDomain = AppDomain.CreateDomain ("Test", null, AppDomain.CurrentDomain.SetupInformation);
-      scope.SaveAssembly (true);
+      var tempPath = Path.Combine (Path.GetTempPath (), Guid.NewGuid().ToString());
+      Directory.CreateDirectory (tempPath);
 
       try
       {
-        var action = (CrossAppDomainDelegate) Delegate.CreateDelegate (typeof (CrossAppDomainDelegate), versionAccessorType, "AccessVersion");
-        newDomain.DoCallBack (action);
+        var appDomainSetup = AppDomain.CurrentDomain.SetupInformation;
+        appDomainSetup.ApplicationBase = tempPath;
+        AppDomain newDomain = AppDomain.CreateDomain ("Test", null, appDomainSetup);
+
+        Type versionAccessorType = versionAccessorTypeBuilder.BuildType ();
+        var assemblyPath = scope.SaveAssembly (true);
+        File.Move (assemblyPath, Path.Combine (tempPath, Path.GetFileName (assemblyPath)));
+
+        var interfaceAssemblyPath = typeof (FrameworkVersion).Assembly.Location;
+        File.Copy (interfaceAssemblyPath, Path.Combine (tempPath, Path.GetFileName (interfaceAssemblyPath)));
+
+        try
+        {
+          var action = (CrossAppDomainDelegate) Delegate.CreateDelegate (typeof (CrossAppDomainDelegate), versionAccessorType, "AccessVersion");
+          newDomain.DoCallBack (action);
+        }
+        finally
+        {
+          AppDomain.Unload (newDomain);
+        }
       }
       finally
       {
-        AppDomain.Unload (newDomain);
-        FileUtility.DeleteAndWaitForCompletion (scope.StrongNamedModule.FullyQualifiedName);
+        Directory.Delete (tempPath, true);
       }
     }
 
