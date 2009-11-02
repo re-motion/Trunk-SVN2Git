@@ -75,7 +75,9 @@ namespace Remotion.ExtensibleEnums
     /// <inheritdoc />
     public override string ToString ()
     {
-      return typeof (T).Name + ": " + ID;
+      var type = GetType ();
+      string suffix = type == typeof (T) ? "" : " (" + type.Name + ")";
+      return typeof (T).Name + ": " + ID + suffix;
     }
   }
 }

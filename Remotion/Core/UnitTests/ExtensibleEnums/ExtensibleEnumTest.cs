@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var value = new MetallicColor ("RedMetallic");
 
-      Assert.That (value.ToString (), Is.EqualTo ("Color: RedMetallic"));
+      Assert.That (value.ToString (), Is.EqualTo ("Color: RedMetallic (MetallicColor)"));
     }
 
     [Test]
