@@ -51,6 +51,7 @@ namespace Remotion.Data.DomainObjects.Configuration.StorageProviders
       return _supportedTypes.ContainsKey (type);
     }
 
+    // TODO 1819: Remove and document removal
     protected Dictionary<Type, object> SupportedTypes
     {
       get { return _supportedTypes; }
