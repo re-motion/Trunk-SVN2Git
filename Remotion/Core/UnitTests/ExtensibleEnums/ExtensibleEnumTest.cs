@@ -43,34 +43,36 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void Initialization_ShortIDAndNullPrefix ()
     {
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndNullPrefix ().ShortID, Is.EqualTo ("ShortID"));
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndNullPrefix ().IDPrefix, Is.Null);
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndNullPrefix ().ID, Is.EqualTo ("ShortID"));
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndNullPrefix().ShortID, Is.EqualTo ("ShortID"));
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndNullPrefix().IDPrefix, Is.Null);
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndNullPrefix().ID, Is.EqualTo ("ShortID"));
     }
 
     [Test]
     public void Initialization_ShortIDAndEmptyPrefix ()
     {
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndEmptyPrefix ().ShortID, Is.EqualTo ("ShortID"));
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndEmptyPrefix ().IDPrefix, Is.Empty);
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndEmptyPrefix ().ID, Is.EqualTo ("ShortID"));
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndEmptyPrefix().ShortID, Is.EqualTo ("ShortID"));
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndEmptyPrefix().IDPrefix, Is.Empty);
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndEmptyPrefix().ID, Is.EqualTo ("ShortID"));
     }
 
     [Test]
     public void Initialization_ShortIDAndType ()
     {
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndType ().ShortID, Is.EqualTo ("ShortID"));
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndType ().IDPrefix, Is.EqualTo (typeof (EnumWithDifferentCtorsExtensions).FullName));
-      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndType ().ID,
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndType().ShortID, Is.EqualTo ("ShortID"));
+      Assert.That (EnumWithDifferentCtors.Values.ShortIDAndType().IDPrefix, Is.EqualTo (typeof (EnumWithDifferentCtorsExtensions).FullName));
+      Assert.That (
+          EnumWithDifferentCtors.Values.ShortIDAndType().ID,
           Is.EqualTo ("Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDifferentCtorsExtensions.ShortID"));
     }
 
     [Test]
     public void Initialization_MethodAsID ()
     {
-      Assert.That (EnumWithDifferentCtors.Values.MethodAsID ().ShortID, Is.EqualTo ("MethodAsID"));
-      Assert.That (EnumWithDifferentCtors.Values.MethodAsID ().IDPrefix, Is.EqualTo (typeof (EnumWithDifferentCtorsExtensions).FullName));
-      Assert.That (EnumWithDifferentCtors.Values.MethodAsID ().ID,
+      Assert.That (EnumWithDifferentCtors.Values.MethodAsID().ShortID, Is.EqualTo ("MethodAsID"));
+      Assert.That (EnumWithDifferentCtors.Values.MethodAsID().IDPrefix, Is.EqualTo (typeof (EnumWithDifferentCtorsExtensions).FullName));
+      Assert.That (
+          EnumWithDifferentCtors.Values.MethodAsID().ID,
           Is.EqualTo ("Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDifferentCtorsExtensions.MethodAsID"));
     }
 
@@ -119,19 +121,11 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    public new void ToString ()
+    public void ToString_ReturnsFullID ()
     {
-      var value = new Color ("Red");
+      var value = new EnumWithDifferentCtors ("Prefix", "ShortID");
 
-      Assert.That (value.ToString(), Is.EqualTo ("Red"));
-    }
-
-    [Test]
-    public void ToString_DerivedEnum ()
-    {
-      var value = new MetallicColor ("RedMetallic");
-
-      Assert.That (value.ToString(), Is.EqualTo ("RedMetallic"));
+      Assert.That (value.ToString(), Is.EqualTo ("Prefix.ShortID"));
     }
 
     [Test]
