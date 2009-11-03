@@ -112,7 +112,15 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The short ID of this value.</value>
     public string ShortID { get; private set; }
-    
+
+    /// <summary>
+    /// Gets the type of the extensible enum this value belongs to.
+    /// </summary>
+    public Type GetEnumType ()
+    {
+      return typeof (T);
+    }
+
     /// <summary>
     /// Determines whether the specified <see cref="System.Object"/> is equal to this instance. Equality is
     /// determined by comparing the <see cref="ID"/> and type of the values for equality.

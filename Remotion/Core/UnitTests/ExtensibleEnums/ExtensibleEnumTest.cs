@@ -139,5 +139,19 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       Assert.That (Color.Values, Is.SameAs (ExtensibleEnumDefinitionCache.Instance.GetDefinition (typeof (Color))));
     }
+
+    [Test]
+    public void GetEnumType ()
+    {
+      var value = new Color ("Red");
+      Assert.That (value.GetEnumType(), Is.SameAs (typeof (Color)));
+    }
+
+    [Test]
+    public void GetEnumType_DerivedType ()
+    {
+      var value = new MetallicColor ("RedMetallic");
+      Assert.That (value.GetEnumType(), Is.SameAs (typeof (Color)));
+    }
   }
 }

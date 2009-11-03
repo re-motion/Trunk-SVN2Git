@@ -29,5 +29,10 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The short ID of this value.</value>
     string ShortID { get; }
+
+    /// <summary>
+    /// Gets the type of the extensible enum this value belongs to.
+    /// </summary>
+    Type GetEnumType ();
   }
 }
