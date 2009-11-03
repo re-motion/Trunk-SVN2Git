@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -121,6 +120,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "PropertyName", "ColumnName", typeof (EnumNotDefiningZero), null, null, StorageClass.Persistent);
       Assert.AreEqual (EnumNotDefiningZero.First, actual.DefaultValue);
+    }
+
+    [Test]
+    public void InitializeWithExtensibleEnum ()
+    {
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "PropertyName", "ColumnName", typeof (Color), true, null, StorageClass.Persistent);
+      Assert.IsNull (actual.DefaultValue);
+      Assert.IsTrue (actual.IsNullable);
+    }
+
+    [Test]
+    public void InitializeWithExtensibleEnum_NotNullable ()
+    {
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "PropertyName", "ColumnName", typeof (Color), false, null, StorageClass.Persistent);
+      Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
+      Assert.IsFalse (actual.IsNullable);
     }
 
     [Test]

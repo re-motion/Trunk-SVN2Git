@@ -53,7 +53,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// </summary>
     /// <param name="definition">The <see cref="PropertyDefinition"/> to use for initializing the <b>PropertyValue</b>. Must not be <see langword="null"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="definition"/> is <see langword="null"/>.</exception>
-    /// <exception cref="InvalidEnumDefinitionException"><paramref name="definition"/> is a reference to an invalid enum.</exception>
     public PropertyValue (PropertyDefinition definition) : this (definition, definition.DefaultValue)
     {
     }

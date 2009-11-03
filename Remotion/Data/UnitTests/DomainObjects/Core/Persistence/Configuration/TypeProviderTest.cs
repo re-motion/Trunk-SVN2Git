@@ -18,6 +18,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.ExtensibleEnums;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 {
@@ -36,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       Assert.That (typeProvider.IsTypeSupported (typeof (decimal)), Is.True);
       Assert.That (typeProvider.IsTypeSupported (typeof (double)), Is.True);
       Assert.That (typeProvider.IsTypeSupported (typeof (TestEnum)), Is.True);
+      Assert.That (typeProvider.IsTypeSupported (typeof (Color)), Is.True);
       Assert.That (typeProvider.IsTypeSupported (typeof (Guid)), Is.True);
       Assert.That (typeProvider.IsTypeSupported (typeof (short)), Is.True);
       Assert.That (typeProvider.IsTypeSupported (typeof (int)), Is.True);
@@ -46,6 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       Assert.That (typeProvider.IsTypeSupported (typeof (byte[])), Is.True);
 
       Assert.That (typeProvider.IsTypeSupported (typeof (Enum)), Is.True);
+      Assert.That (typeProvider.IsTypeSupported (typeof (IExtensibleEnum)), Is.True);
 
       Assert.That (typeProvider.IsTypeSupported (typeof (object)), Is.False);
       Assert.That (typeProvider.IsTypeSupported (typeof (char)), Is.False);

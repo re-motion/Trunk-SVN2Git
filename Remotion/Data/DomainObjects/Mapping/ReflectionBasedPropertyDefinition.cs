@@ -16,6 +16,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -95,6 +97,9 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         if (_propertyType.IsEnum)
           return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
+
+        if (typeof (IExtensibleEnum).IsAssignableFrom (_propertyType))
+          return ExtensibleEnumDefinitionCache.Instance.GetDefinition (_propertyType).GetValues().First();
 
         return Activator.CreateInstance (_propertyType, new object[0]);
       }

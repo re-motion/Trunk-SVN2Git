@@ -422,9 +422,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IClientTransactionExtension.cs" />
-    <Compile Include="InvalidEnumDefinitionException.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="InvalidTypeException.cs">
       <SubType>Code</SubType>
     </Compile>

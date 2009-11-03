@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
@@ -31,6 +32,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       _supportedTypes.Add (typeof (decimal), null);
       _supportedTypes.Add (typeof (double), null);
       _supportedTypes.Add (typeof (Enum), null);
+      _supportedTypes.Add (typeof (IExtensibleEnum), null);
       _supportedTypes.Add (typeof (Guid), null);
       _supportedTypes.Add (typeof (short), null);
       _supportedTypes.Add (typeof (int), null);
@@ -48,10 +50,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       if (type.IsEnum)
         type = typeof (Enum);
 
+      if (typeof (IExtensibleEnum).IsAssignableFrom (type))
+        type = typeof (IExtensibleEnum);
+
       return _supportedTypes.ContainsKey (type);
     }
 
-    // TODO 1819: Remove and document removal
+    // TODO: Remove
     protected Dictionary<Type, object> SupportedTypes
     {
       get { return _supportedTypes; }
