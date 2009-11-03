@@ -38,10 +38,28 @@ namespace Remotion.ExtensibleEnums
   {
     private class CacheItem
     {
+      private static Dictionary<string, T> CreateValueDictionary (T[] valueArray)
+      {
+        var dictionary = new Dictionary<string, T> ();
+        foreach (var value in valueArray)
+        {
+          try
+          {
+            dictionary.Add (value.ID, value);
+          }
+          catch (ArgumentException ex)
+          {
+            string message = string.Format ("Extensible enum '{0}' defines two values with ID '{1}'.", typeof (T), value.ID);
+            throw new DuplicateEnumValueException (message, ex);
+          }
+        }
+        return dictionary;
+      }
+
       public CacheItem (T[] valueArray)
       {
         Collection = new ReadOnlyCollection<T> (valueArray);
-        Dictionary = new ReadOnlyDictionary<string, T> (valueArray.ToDictionary (v => v.ID));
+        Dictionary = new ReadOnlyDictionary<string, T> (CreateValueDictionary(valueArray));
       }
 
       public ReadOnlyCollection<T> Collection { get; private set; }

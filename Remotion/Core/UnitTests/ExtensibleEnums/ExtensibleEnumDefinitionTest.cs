@@ -64,6 +64,15 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    [ExpectedException (typeof (DuplicateEnumValueException), ExpectedMessage = 
+        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDuplicateIDs' defines two values with ID 'ID'.")]
+    public void GetValues_DuplicateIDs ()
+    {
+      var definition = new ExtensibleEnumDefinition<EnumWithDuplicateIDs> ();
+      definition.GetValues ();
+    }
+
+    [Test]
     public void GetValueByID ()
     {
       var value = _extensibleEnumDefinition.GetValueByID ("Red");
