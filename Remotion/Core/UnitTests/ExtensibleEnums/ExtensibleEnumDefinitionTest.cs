@@ -90,11 +90,20 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    [ExpectedException (typeof (DuplicateEnumValueException), ExpectedMessage = 
+    [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage = 
         "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValues_DuplicateIDs ()
     {
       var definition = CreateDefinition (_red, _red);
+      definition.GetValues ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage =
+        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define any values.")]
+    public void GetValues_NoValues ()
+    {
+      var definition = CreateDefinition ();
       definition.GetValues ();
     }
 
@@ -117,7 +126,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    [ExpectedException (typeof (DuplicateEnumValueException), ExpectedMessage =
+    [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage =
         "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValueByID_DuplicateIDs ()
     {

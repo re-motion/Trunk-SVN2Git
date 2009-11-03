@@ -19,17 +19,22 @@ using System.Runtime.Serialization;
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Thrown when an <see cref="ExtensibleEnum{T}"/> defines two values with duplicate <see cref="ExtensibleEnum{T}.ID"/>s.
+  /// Thrown when an <see cref="ExtensibleEnum{T}"/> is not defined correctly.
   /// </summary>
   [Serializable]
-  public class DuplicateEnumValueException : Exception
+  public class InvalidExtensibleEnumDefinitionException : Exception
   {
-    public DuplicateEnumValueException (string message, Exception innerException)
+    public InvalidExtensibleEnumDefinitionException (string message)
+        : base(message)
+    {
+    }
+
+    public InvalidExtensibleEnumDefinitionException (string message, Exception innerException)
         : base (message, innerException)
     {
     }
 
-    protected DuplicateEnumValueException (SerializationInfo info, StreamingContext context)
+    protected InvalidExtensibleEnumDefinitionException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
     }

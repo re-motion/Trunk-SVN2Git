@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.ExtensibleEnums.Infrastructure;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -49,7 +48,7 @@ namespace Remotion.ExtensibleEnums
           catch (ArgumentException ex)
           {
             string message = string.Format ("Extensible enum '{0}' defines two values with ID '{1}'.", typeof (T), value.ID);
-            throw new DuplicateEnumValueException (message, ex);
+            throw new InvalidExtensibleEnumDefinitionException (message, ex);
           }
         }
         return dictionary;
@@ -132,6 +131,11 @@ namespace Remotion.ExtensibleEnums
     private CacheItem RetrieveValues ()
     {
       var valueArray = _valueDiscoveryService.GetValues (this).ToArray();
+      if (valueArray.Length == 0)
+      {
+        string message = string.Format ("Extensible enum '{0}' does not define any values.", typeof (T));
+        throw new InvalidExtensibleEnumDefinitionException (message);
+      }
       return new CacheItem (valueArray);
     }
 
