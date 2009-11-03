@@ -13,135 +13,42 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections;
-using System.Linq;
-using System.Reflection;
+using System.ComponentModel.Design;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
 {
-  [TestFixture]
   public class ExtensibleEnumValueDiscoveryServiceTest
   {
-    private ExtensibleEnumValueDiscoveryService _service;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _service = new ExtensibleEnumValueDiscoveryService ();
-    }
-
     [Test]
     public void GetValues ()
     {
-      var types = new[] { typeof (ColorExtensions), typeof (MetallicColorExtensions), typeof (object) };
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
+      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (null, false)).Return (new[] { typeof (ColorExtensions) });
 
-      var result = _service.GetValues (new ExtensibleEnumDefinition<Color> (), types).ToArray();
-
-      Assert.That (result, Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
+      var service = new ExtensibleEnumValueDiscoveryService (typeDiscoveryServiceStub);
+      var values = service.GetValues (new ExtensibleEnumDefinition<Color> (service));
+      Assert.That (values, 
+          Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
     }
 
     [Test]
-    public void GetStaticTypes ()
+    public void GetValues_PassesDefinition_ToExtensionMethod ()
     {
-      var types = new[] { 
-          typeof (object), 
-          typeof (Color), 
-          typeof (ColorExtensions), 
-          typeof (DateTime), 
-          typeof (CollectionBase),
-          typeof (WrongColorValuesGeneric<>)
-      };
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (null, false)).Return (new[] { typeof (ColorExtensions) });
 
-      var result = _service.GetStaticTypes (types).ToArray();
+      var service = new ExtensibleEnumValueDiscoveryService (typeDiscoveryServiceStub);
+      var definition = new ExtensibleEnumDefinition<Color> (service);
 
-      Assert.That (result, Is.EqualTo (new[] { typeof (ColorExtensions) }));
+      service.GetValues (definition);
+
+      Assert.That (ColorExtensions.LastCallArgument, Is.SameAs (definition));
     }
-
-    [Test]
-    public void GetValuesForType ()
-    {
-      var result = _service.GetValuesForType (new ExtensibleEnumDefinition<Color>(), typeof (ColorExtensions)).ToArray();
-
-      var expectedValues = new[] {
-          ColorExtensions.Red (null),
-          ColorExtensions.Green (null)
-      };
-      
-      Assert.That (result, Is.EquivalentTo (expectedValues));
-    }
-
-    [Test]
-    public void GetValuesForType_PassesEnumValuesToMethod ()
-    {
-      var values = new ExtensibleEnumDefinition<Color>();
-      _service.GetValuesForType (values, typeof (ColorExtensions)).ToArray ();
-
-      Assert.That (ColorExtensions.LastCallArgument, Is.EqualTo (values));
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_ReturnType_MustBeExtensibleEnum ()
-    {
-      CheckFilteredMethods ("WrongReturnType");
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_ReturnType_CanBeAssignable ()
-    {
-      var methods = new[] { typeof (MetallicColorExtensions).GetMethod ("RedMetallic") };
-      var result = _service.GetValueExtensionMethods (typeof (Color), methods).ToArray ();
-
-      var expectedMethods = new[] {
-          typeof (MetallicColorExtensions).GetMethod ("RedMetallic")
-      };
-      
-      Assert.That (result, Is.EqualTo (expectedMethods));
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_Visibility_MustBePublic ()
-    {
-      CheckFilteredMethods ("WrongVisibility1", "WrongVisibility2");
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_ParameterCount_MustBeOne ()
-    {
-      CheckFilteredMethods ("WrongParameterCount");
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_Parameter_MustBeEnumValues ()
-    {
-      CheckFilteredMethods ("NotDerivedFromValuesClass");
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_MustBeExtensionMethod ()
-    {
-      CheckFilteredMethods ("NonExtensionMethod");
-    }
-
-    [Test]
-    public void GetValueExtensionMethods_MustNotBeGeneric ()
-    {
-      CheckFilteredMethods ("Generic");
-    }
-
-    private void CheckFilteredMethods (params string[] methodNames)
-    {
-      const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
-      var methods = methodNames.Select (n => typeof (WrongColorValues).GetMethod (n, bindingFlags));
-      var result = _service.GetValueExtensionMethods (typeof (Color), methods).ToArray ();
-
-      Assert.That (result, Is.Empty);
-    }
-
   }
 }

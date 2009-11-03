@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Design;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.ExtensibleEnums.Infrastructure;
@@ -66,19 +65,20 @@ namespace Remotion.ExtensibleEnums
       public ReadOnlyDictionary<string, T> Dictionary { get; private set; }
     }
 
-    private readonly ITypeDiscoveryService _typeDiscoveryService;
-    private readonly ExtensibleEnumValueDiscoveryService _valueDiscoveryService;
+    private readonly IExtensibleEnumValueDiscoveryService _valueDiscoveryService;
 
     private readonly DoubleCheckedLockingContainer<CacheItem> _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExtensibleEnumDefinition{T}"/> class.
     /// </summary>
-    public ExtensibleEnumDefinition ()
+    /// <param name="valueDiscoveryService">An implementation of <see cref="IExtensibleEnumValueDiscoveryService"/> used to discover the values
+    /// for this <see cref="ExtensibleEnumDefinition{T}"/>.</param>
+    public ExtensibleEnumDefinition (IExtensibleEnumValueDiscoveryService valueDiscoveryService)
     {
-      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
-      _valueDiscoveryService = new ExtensibleEnumValueDiscoveryService();
+      ArgumentUtility.CheckNotNull ("valueDiscoveryService", valueDiscoveryService);
 
+      _valueDiscoveryService = valueDiscoveryService;
       _cache = new DoubleCheckedLockingContainer<CacheItem> (RetrieveValues);
     }
 
@@ -88,7 +88,7 @@ namespace Remotion.ExtensibleEnums
     /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the values for <typeparamref name="T"/>.</returns>
     /// <remarks>
     /// The values are retrieved by scanning all types found by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
-    /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryService"/>.
+    /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryServiceImplementation"/>.
     /// </remarks>
     public ReadOnlyCollection<T> GetValues ()
     {
@@ -135,8 +135,7 @@ namespace Remotion.ExtensibleEnums
 
     private CacheItem RetrieveValues ()
     {
-      var types = _typeDiscoveryService.GetTypes (null, false).Cast<Type>();
-      var valueArray = _valueDiscoveryService.GetValues (this, types).ToArray();
+      var valueArray = _valueDiscoveryService.GetValues (this).ToArray();
       return new CacheItem (valueArray);
     }
 

@@ -141,6 +141,12 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void Values_IntegrationTest ()
+    {
+      Assert.That (Color.Values.GetValues(), Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
+    }
+
+    [Test]
     public void GetEnumType ()
     {
       var value = new Color ("Red");

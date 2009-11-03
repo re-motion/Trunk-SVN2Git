@@ -166,10 +166,12 @@
     <Compile Include="ExtensibleEnums\DuplicateEnumValueException.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryService.cs" />
+    <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryServiceImplementation.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumDefinitionCache.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
+    <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifier.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceMappingAttribute.cs" />

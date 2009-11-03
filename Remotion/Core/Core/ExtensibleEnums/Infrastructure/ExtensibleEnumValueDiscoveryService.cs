@@ -15,62 +15,34 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Remotion.Utilities;
+using System.ComponentModel.Design;
 using System.Linq;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
 {
   /// <summary>
-  /// Provides services used for the discovery of extensible enum values. This class is used by <see cref="ExtensibleEnumDefinition{T}"/>.
+  /// Implements <see cref="IExtensibleEnumValueDiscoveryService"/> by discovering and invoking extension methods defining extensible enum values
+  /// via reflection and <see cref="ITypeDiscoveryService"/>.
   /// </summary>
-  public class ExtensibleEnumValueDiscoveryService
+  public class ExtensibleEnumValueDiscoveryService : IExtensibleEnumValueDiscoveryService
   {
-    public IEnumerable<T> GetValues<T> (ExtensibleEnumDefinition<T> definition, IEnumerable<Type> typeCandidates) 
-        where T: ExtensibleEnum<T>
-    {
-      ArgumentUtility.CheckNotNull ("definition", definition);
-      ArgumentUtility.CheckNotNull ("typeCandidates", typeCandidates);
+    private readonly ITypeDiscoveryService _typeDiscoveryService;
+    private readonly ExtensibleEnumValueDiscoveryServiceImplementation _implementation = new ExtensibleEnumValueDiscoveryServiceImplementation ();
 
-      return from type in GetStaticTypes (typeCandidates) // optimization: only static types can have extension methods
-             from value in GetValuesForType (definition, type)
-             select value;
+    public ExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService)
+    {
+      _typeDiscoveryService = typeDiscoveryService;
     }
 
-    public IEnumerable<T> GetValuesForType<T> (ExtensibleEnumDefinition<T> definition, Type typeDeclaringMethods) 
-        where T: ExtensibleEnum<T>
+    public ITypeDiscoveryService TypeDiscoveryService
     {
-      ArgumentUtility.CheckNotNull ("definition", definition);
-      ArgumentUtility.CheckNotNull ("typeDeclaringMethods", typeDeclaringMethods);
-
-      var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
-      var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
-      return extensionMethods.Select (mi => (T) mi.Invoke (null, new object[] { definition }));
+      get { return _typeDiscoveryService; }
     }
 
-    public IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)
+    public IEnumerable<T> GetValues<T> (ExtensibleEnumDefinition<T> definition) where T: ExtensibleEnum<T>
     {
-      ArgumentUtility.CheckNotNull ("types", types);
-
-      return types.Where (t => t.IsAbstract && t.IsSealed && !t.IsGenericTypeDefinition);
-    }
-
-    public IEnumerable<MethodInfo> GetValueExtensionMethods (Type extensibleEnumType, IEnumerable<MethodInfo> methodCandidates)
-    {
-      ArgumentUtility.CheckNotNull ("extensibleEnumType", extensibleEnumType);
-      ArgumentUtility.CheckNotNull ("methodCandidates", methodCandidates);
-
-      var extensibleEnumValuesType = typeof (ExtensibleEnumDefinition<>).MakeGenericType (extensibleEnumType);
-      return from m in methodCandidates
-             where m.IsPublic
-                   && !m.IsGenericMethod
-                   && extensibleEnumType.IsAssignableFrom (m.ReturnType)
-                   && m.IsDefined (typeof (ExtensionAttribute), false)
-             let parameters = m.GetParameters ()
-             where parameters.Length == 1
-                   && parameters[0].ParameterType == extensibleEnumValuesType
-             select m;
+      var types = _typeDiscoveryService.GetTypes (null, false).Cast<Type>();
+      return _implementation.GetValues (definition, types);
     }
   }
 }

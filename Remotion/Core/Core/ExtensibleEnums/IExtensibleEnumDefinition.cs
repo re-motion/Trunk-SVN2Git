@@ -20,7 +20,7 @@ namespace Remotion.ExtensibleEnums
     /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the values for the extensible enum type.</returns>
     /// <remarks>
     /// The values are retrieved by scanning all types found by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
-    /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryService"/>.
+    /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryServiceImplementation"/>.
     /// </remarks>
     ReadOnlyCollection<IExtensibleEnum> GetValues ();
 

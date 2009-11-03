@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Collections;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
@@ -27,9 +28,16 @@ namespace Remotion.ExtensibleEnums.Infrastructure
     public static readonly ExtensibleEnumDefinitionCache Instance = new ExtensibleEnumDefinitionCache();
 
     private readonly InterlockedCache<Type, IExtensibleEnumDefinition> _cache = new InterlockedCache<Type, IExtensibleEnumDefinition>();
+    private readonly IExtensibleEnumValueDiscoveryService _valueDiscoveryService;
 
     private ExtensibleEnumDefinitionCache ()
     {
+      _valueDiscoveryService = new ExtensibleEnumValueDiscoveryService (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
+    }
+
+    public IExtensibleEnumValueDiscoveryService ValueDiscoveryService
+    {
+      get { return _valueDiscoveryService; }
     }
 
     public IExtensibleEnumDefinition GetDefinition (Type extensibleEnumType)
@@ -51,7 +59,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
         var message = string.Format ("Type '{0}' is not an extensible enum type directly derived from ExtensibleEnum<T>.", extensibleEnumType);
         throw new ArgumentException (message, "extensibleEnumType", ex);
       }
-      return (IExtensibleEnumDefinition) Activator.CreateInstance (definitionType);
+      return (IExtensibleEnumDefinition) Activator.CreateInstance (definitionType, new[] { ValueDiscoveryService });
     }
   }
 }

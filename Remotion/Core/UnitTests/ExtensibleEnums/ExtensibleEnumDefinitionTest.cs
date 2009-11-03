@@ -19,66 +19,93 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ExtensibleEnums
 {
   [TestFixture]
   public class ExtensibleEnumDefinitionTest
   {
-    private ExtensibleEnumDefinition<Color> _extensibleEnumDefinition;
+    private Color _red;
+    private Color _green;
+    private Color _blue;
 
     [SetUp]
     public void SetUp ()
     {
-      _extensibleEnumDefinition = new ExtensibleEnumDefinition<Color> ();
+      _red = new Color ("Red");
+      _green = new Color ("Green");
+      _blue = new Color ("Blue");
     }
 
     [Test]
     public void GetValues ()
     {
-      var valueInstances = _extensibleEnumDefinition.GetValues();
-
-      Assert.That (valueInstances, Is.EquivalentTo (new[] { Color.Values.Red(), Color.Values.Green(), Color.Values.RedMetallic() }));
+      var definition = CreateDefinition (_red, _green, _blue);
+      var valueInstances = definition.GetValues();
+      
+      Assert.That (valueInstances, Is.EquivalentTo (new[] { _red, _green, _blue }));
     }
 
     [Test]
     public void GetValues_CachesValues ()
     {
-      var values1 = _extensibleEnumDefinition.GetValues ();
-      var values2 = _extensibleEnumDefinition.GetValues ();
+      var valueDiscoveryServiceMock = MockRepository.GenerateMock<IExtensibleEnumValueDiscoveryService> ();
+      valueDiscoveryServiceMock
+          .Expect (mock => mock.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything))
+          .Return (new[] { _red })
+          .Repeat.Once ();
+      valueDiscoveryServiceMock.Replay ();
 
-      Assert.That (values1.Count, Is.EqualTo (3));
-      Assert.That (values1[0], Is.SameAs (values2[0]));
-      Assert.That (values1[1], Is.SameAs (values2[1]));
-      Assert.That (values1[2], Is.SameAs (values2[2]));
+      var extensibleEnumDefinition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceMock);
+      var values1 = extensibleEnumDefinition.GetValues ();
+      var values2 = extensibleEnumDefinition.GetValues ();
+
+      valueDiscoveryServiceMock.VerifyAllExpectations ();
+      Assert.That (values1, Is.SameAs (values2));
     }
 
     [Test]
     public void GetValues_PassesExtensibleEnumValuesInstance_ToExtensibleEnumValueDiscoveryService ()
     {
-      ColorExtensions.LastCallArgument = null;
-      _extensibleEnumDefinition.GetValues ();
+      var valueDiscoveryServiceMock = MockRepository.GenerateMock<IExtensibleEnumValueDiscoveryService> ();
+      valueDiscoveryServiceMock.Stub (mock => mock.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (new Color[0]);
 
-      Assert.That (ColorExtensions.LastCallArgument, Is.SameAs (_extensibleEnumDefinition));
+      var extensibleEnumDefinition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceMock);
+      extensibleEnumDefinition.GetValues ();
+
+      valueDiscoveryServiceMock.AssertWasCalled (mock => mock.GetValues (extensibleEnumDefinition));
+    }
+
+    [Test]
+    [Ignore ("TODO 1808")]
+    public void GetValues_DefaultOrder_IsAlphabetic ()
+    {
+      var definition = CreateDefinition (_red, _blue, _green);
+
+      var values = definition.GetValues ();
+
+      Assert.That (values, Is.EqualTo (new[] { _blue, _green, _red }));
     }
 
     [Test]
     [ExpectedException (typeof (DuplicateEnumValueException), ExpectedMessage = 
-        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDuplicateIDs' defines two values with ID 'ID'.")]
+        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValues_DuplicateIDs ()
     {
-      var definition = new ExtensibleEnumDefinition<EnumWithDuplicateIDs> ();
+      var definition = CreateDefinition (_red, _red);
       definition.GetValues ();
     }
 
     [Test]
     public void GetValueByID ()
     {
-      var value = _extensibleEnumDefinition.GetValueByID ("Red");
+      var definition = CreateDefinition (_red, _green);
+      var value = definition.GetValueByID ("Red");
 
-      var expected = Color.Values.Red();
-      Assert.That (value, Is.EqualTo (expected));
+      Assert.That (value, Is.EqualTo (_red));
     }
 
     [Test]
@@ -86,23 +113,26 @@ namespace Remotion.UnitTests.ExtensibleEnums
         ExpectedMessage = "The extensible enum type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define a value called '?'.")]
     public void GetValueByID_WrongIDThrows ()
     {
-      _extensibleEnumDefinition.GetValueByID ("?");
+      var definition = CreateDefinition (_red, _green);
+      definition.GetValueByID ("?");
     }
 
     [Test]
     [ExpectedException (typeof (DuplicateEnumValueException), ExpectedMessage =
-        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.EnumWithDuplicateIDs' defines two values with ID 'ID'.")]
+        "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValueByID_DuplicateIDs ()
     {
-      var definition = new ExtensibleEnumDefinition<EnumWithDuplicateIDs> ();
+      var definition = CreateDefinition (_red, _red);
       definition.GetValueByID ("ID");
     }
 
     [Test]
     public void TryGetValueByID ()
     {
+      var definition = CreateDefinition (_red, _green);
+
       Color result;
-      var success = _extensibleEnumDefinition.TryGetValueByID ("Red", out result);
+      var success = definition.TryGetValueByID ("Red", out result);
 
       var expected = Color.Values.Red ();
       Assert.That (success, Is.True);
@@ -110,10 +140,12 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    public void TryGetValueByID_WrongIDThrows ()
+    public void TryGetValueByID_WrongID ()
     {
+      var definition = CreateDefinition (_red, _green);
+
       Color result;
-      var success = _extensibleEnumDefinition.TryGetValueByID ("?", out result);
+      var success = definition.TryGetValueByID ("?", out result);
 
       Assert.That (success, Is.False);
       Assert.That (result, Is.Null);
@@ -122,28 +154,43 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetValues_NonGeneric ()
     {
-      ReadOnlyCollection<IExtensibleEnum> value = ((IExtensibleEnumDefinition) _extensibleEnumDefinition).GetValues ();
-      Assert.That (value, Is.EqualTo (_extensibleEnumDefinition.GetValues ()));
+      var definition = CreateDefinition (_red, _green);
+
+      ReadOnlyCollection<IExtensibleEnum> value = ((IExtensibleEnumDefinition) definition).GetValues ();
+      Assert.That (value, Is.EqualTo (definition.GetValues ()));
     }
 
     [Test]
     public void GetValueByID_NonGeneric ()
     {
-      IExtensibleEnum value = ((IExtensibleEnumDefinition) _extensibleEnumDefinition).GetValueByID ("Red");
-      Assert.That (value, Is.SameAs (_extensibleEnumDefinition.GetValueByID ("Red")));
+      var definition = CreateDefinition (_red, _green);
+
+      IExtensibleEnum value = ((IExtensibleEnumDefinition) definition).GetValueByID ("Red");
+      Assert.That (value, Is.SameAs (definition.GetValueByID ("Red")));
     }
 
     [Test]
     public void TryGetValueByID_NonGeneric ()
     {
+      var definition = CreateDefinition (_red, _green);
+
       IExtensibleEnum value;
-      bool success = ((IExtensibleEnumDefinition) _extensibleEnumDefinition).TryGetValueByID ("Red", out value);
+      bool success = ((IExtensibleEnumDefinition) definition).TryGetValueByID ("Red", out value);
 
       Color expectedValue;
-      bool expectedSuccess = _extensibleEnumDefinition.TryGetValueByID ("Red", out expectedValue);
+      bool expectedSuccess = definition.TryGetValueByID ("Red", out expectedValue);
 
       Assert.That (success, Is.EqualTo (expectedSuccess));
       Assert.That (value, Is.SameAs (expectedValue));
+    }
+
+    private ExtensibleEnumDefinition<Color> CreateDefinition (params Color[] colors)
+    {
+      var valueDiscoveryServiceStub = MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ();
+      var definition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceStub);
+
+      valueDiscoveryServiceStub.Stub (stub => stub.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (colors);
+      return definition;
     }
   }
 }
