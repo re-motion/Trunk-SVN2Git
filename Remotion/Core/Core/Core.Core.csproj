@@ -166,7 +166,6 @@
     <Compile Include="ExtensibleEnums\DuplicateEnumValueException.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryService.cs" />
-    <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryServiceImplementation.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumDefinitionCache.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnum.cs" />

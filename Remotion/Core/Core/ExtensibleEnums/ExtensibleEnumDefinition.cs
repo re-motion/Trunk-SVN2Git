@@ -86,10 +86,6 @@ namespace Remotion.ExtensibleEnums
     /// Gets the values defined by the extensible enum type <typeparamref name="T"/>.
     /// </summary>
     /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the values for <typeparamref name="T"/>.</returns>
-    /// <remarks>
-    /// The values are retrieved by scanning all types found by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
-    /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryServiceImplementation"/>.
-    /// </remarks>
     public ReadOnlyCollection<T> GetValues ()
     {
       return _cache.Value.Collection;
