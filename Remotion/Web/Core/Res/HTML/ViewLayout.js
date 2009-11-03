@@ -129,11 +129,36 @@ ViewLayout.FixIE6 = function(view, bottom)
   // fix absolute positioning issues
   $('span.bocReferenceValue span.content').each(function()
   {
-    $(this).css('width', $(this).parent().parent().width() - parseInt($(this).css('left')) - parseInt($(this).css('right')));
+    // fix NaN error for values of "auto"
+    var myWidth = $(this).parent().parent().width();
+    if (isNaN(myWidth)) myWidth = 0;
+    
+    var myLeft = $(this).css('left');
+    if (isNaN(myLeft)) myLeft = 0;
+    
+    var myRight = $(this).css('right');
+    if (isNaN(myRight)) myRight = 0;
+    
+    var newWidth = parentWidth - myLeft - myRight;
+
+    $(this).css('width', newWidth);
   });
+
   $('span.bocAutoCompleteReferenceValue span.content').each(function()
   {
-    var newWidth = $(this).parent().width() - parseInt($(this).css('left')) - parseInt($(this).css('right'));
+  
+    // fix NaN error for values of "auto"
+    var myWidth = $(this).parent().width();
+    if (isNaN(myWidth)) myWidth = 0;
+    
+    var myLeft = $(this).css('left');
+    if (isNaN(myLeft)) myLeft = 0;
+    
+    var myRight = $(this).css('right');
+    if (isNaN(myRight)) myRight = 0;
+    
+    var newWidth = parentWidth - myLeft - myRight;
+
     $(this).css('width', newWidth);
   });
 
