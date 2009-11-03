@@ -85,7 +85,7 @@ span.DropDownMenuSelect > span.DropDownMenuButton
 {
   display: inline-block;
   top: 0;
-  left: 0;
+  right: -1px;
   height: 14pt;
 }
 
