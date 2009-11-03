@@ -138,8 +138,8 @@ ViewLayout.FixIE6 = function(view, bottom)
     
     var myRight = $(this).css('right');
     if (isNaN(myRight)) myRight = 0;
-    
-    var newWidth = parentWidth - myLeft - myRight;
+
+    var newWidth = myWidth - myLeft - myRight;
 
     $(this).css('width', newWidth);
   });
@@ -156,8 +156,8 @@ ViewLayout.FixIE6 = function(view, bottom)
     
     var myRight = $(this).css('right');
     if (isNaN(myRight)) myRight = 0;
-    
-    var newWidth = parentWidth - myLeft - myRight;
+
+    var newWidth = myWidth - myLeft - myRight;
 
     $(this).css('width', newWidth);
   });
