@@ -17,11 +17,11 @@ using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Configuration.StorageProviders
+namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
   public class TypeProvider
   {
-    private Dictionary<Type, object> _supportedTypes = new Dictionary<Type, object>();
+    private readonly Dictionary<Type, object> _supportedTypes = new Dictionary<Type, object>();
 
     public TypeProvider()
     {      

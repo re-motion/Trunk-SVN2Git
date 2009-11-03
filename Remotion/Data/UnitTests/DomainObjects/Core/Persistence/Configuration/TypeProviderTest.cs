@@ -17,9 +17,9 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration.StorageProviders;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProviders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 {
   [TestFixture]
   public class TypeProviderTest: StandardMappingTest

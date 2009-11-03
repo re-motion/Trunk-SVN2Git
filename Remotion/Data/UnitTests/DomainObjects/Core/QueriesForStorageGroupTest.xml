@@ -25,7 +25,7 @@
   </query>
 
   <query id="QueryFromUndefinedStorageGroup" type="scalar">
-    <storageGroupType> Remotion.Data.UnitTests::DomainObjects.Core.Configuration.StorageProviders.StubStorageGroup1Attribute</storageGroupType>
+    <storageGroupType> Remotion.Data.UnitTests::DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute</storageGroupType>
     <statement>select 42</statement>
   </query>
 

@@ -125,6 +125,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBColumn ("Enum")]
     public abstract EnumType EnumProperty { get; set; }
 
+    //[DBColumn ("ExtensibleEnum")]
+    //public abstract Color ExtensibleEnumProperty { get; set; }
+
     [DBColumn ("Flags")]
     public abstract FlagsType FlagsProperty { get; set; }
 

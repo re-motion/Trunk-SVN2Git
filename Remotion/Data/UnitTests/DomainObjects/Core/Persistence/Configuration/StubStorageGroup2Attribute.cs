@@ -16,11 +16,11 @@
 using System;
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProviders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 {
-  public class StubStorageGroup1Attribute: StorageGroupAttribute
+  public class StubStorageGroup2Attribute: StorageGroupAttribute
   {
-    public StubStorageGroup1Attribute()
+    public StubStorageGroup2Attribute()
     {
     }
   }

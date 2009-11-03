@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Configuration;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProviders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 {
   [TestFixture]
   public class StorageConfigurationTest
@@ -144,9 +144,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
       string xmlFragment =
           @"<storage defaultProviderDefinition=""Rdbms"">
             <groups>
-              <add type=""Remotion.Data.UnitTests::DomainObjects.Core.Configuration.StorageProviders.StubStorageGroup1Attribute"" 
+              <add type=""Remotion.Data.UnitTests::DomainObjects.Core.Persistence.Configuration.StubStorageGroup1Attribute"" 
                   provider=""Rdbms""/>
-              <add type=""Remotion.Data.UnitTests::DomainObjects.Core.Configuration.StorageProviders.StubStorageGroup2Attribute"" 
+              <add type=""Remotion.Data.UnitTests::DomainObjects.Core.Persistence.Configuration.StubStorageGroup2Attribute"" 
                   provider=""Rdbms""/>
             </groups>
             <providerDefinitions>

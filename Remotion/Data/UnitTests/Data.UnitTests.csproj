@@ -287,8 +287,8 @@
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Queries\QueryFileElementTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\RdbmsProviderDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\TypeProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\TypeProviderTest.cs" />
     <TestDomain Include="DomainObjects\Core\Design\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
@@ -404,9 +404,9 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Simple\AssemblyInfo.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSide.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Empty\AssemblyInfo.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\StubStorageGroup2Attribute.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\StorageConfigurationTest.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\StubStorageGroup1Attribute.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup2Attribute.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageConfigurationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup1Attribute.cs" />
     <Compile Include="DomainObjects\Core\Design\DomainObjectsDesignModeHelperTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ConstructionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\MixedDomainTest.cs" />
@@ -529,6 +529,8 @@
     <Compile Include="DomainObjects\Core\Interception\InterceptedPropertyIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomainFactory.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
+    <Compile Include="DomainObjects\TestDomain\Color.cs" />
+    <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="Linq\Backend\DetailParserUtilityTest.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />

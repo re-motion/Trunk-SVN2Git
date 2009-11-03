@@ -20,8 +20,8 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration.StorageProviders;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.SqlGeneration;
@@ -29,10 +29,10 @@ using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Mixins;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProviders
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
 {
   [TestFixture]
-  public class RdbmsProviderDefinitionTest
+  public class StorageProviderDefinitionTest
   {
     [Test]
     public void Initialize()
