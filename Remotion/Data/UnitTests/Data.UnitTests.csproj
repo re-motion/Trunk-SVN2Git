@@ -185,6 +185,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PersistentMixinFinderMock.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyReflectorTests\ExtensibleEnumProperty.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />
@@ -532,6 +533,7 @@
     <Compile Include="DomainObjects\TestDomain\Color.cs" />
     <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithExtensibleEnumProperties.cs" />
     <Compile Include="Linq\Backend\DetailParserUtilityTest.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\ExpressionTreeVisitors\AccessorFindingExpressionTreeVisitorTest.cs" />
