@@ -57,7 +57,7 @@ namespace Remotion.ExtensibleEnums
 
       public CacheItem (T[] valueArray)
       {
-        Collection = new ReadOnlyCollection<T> (valueArray);
+        Collection = new ReadOnlyCollection<T> (valueArray.OrderBy (value => value.ID).ToArray());
         Dictionary = new ReadOnlyDictionary<string, T> (CreateValueDictionary(valueArray));
       }
 

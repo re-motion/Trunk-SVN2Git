@@ -80,7 +80,6 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
-    [Ignore ("TODO 1808")]
     public void GetValues_DefaultOrder_IsAlphabetic ()
     {
       var definition = CreateDefinition (_red, _blue, _green);
