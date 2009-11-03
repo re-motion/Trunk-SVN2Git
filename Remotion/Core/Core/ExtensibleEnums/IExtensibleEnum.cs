@@ -13,9 +13,21 @@ namespace Remotion.ExtensibleEnums
   public interface IExtensibleEnum
   {
     /// <summary>
-    /// Gets the identifier representing this extensible enum value.
+    /// Gets the identifier representing this extensible enum value. This is the combination of <see cref="IDPrefix"/> and <see cref="ShortID"/>.
     /// </summary>
     /// <value>The ID of this value.</value>
     string ID { get; }
+
+    /// <summary>
+    /// Gets the ID prefix. This is used to form the <see cref="ID"/> representing this extensible enum value.
+    /// </summary>
+    /// <value>The ID prefix of this value.</value>
+    string IDPrefix { get; }
+
+    /// <summary>
+    /// Gets the short ID. This is used to form the <see cref="ID"/> representing this extensible enum value.
+    /// </summary>
+    /// <value>The short ID of this value.</value>
+    string ShortID { get; }
   }
 }

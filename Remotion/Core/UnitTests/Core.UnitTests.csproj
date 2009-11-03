@@ -162,6 +162,8 @@
     <Compile Include="ExtensibleEnums\ExtensibleEnumDefinitionTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\Color.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ColorExtensions.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\EnumWithDifferentCtors.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\EnumWithDifferentCtorsExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValues.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColor.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
