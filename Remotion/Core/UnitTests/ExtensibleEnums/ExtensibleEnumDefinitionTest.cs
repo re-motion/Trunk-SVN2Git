@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     public void GetValues_PassesExtensibleEnumValuesInstance_ToExtensibleEnumValueDiscoveryService ()
     {
       var valueDiscoveryServiceMock = MockRepository.GenerateMock<IExtensibleEnumValueDiscoveryService> ();
-      valueDiscoveryServiceMock.Stub (mock => mock.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (new Color[0]);
+      valueDiscoveryServiceMock.Stub (mock => mock.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (new[] { _red });
 
       var extensibleEnumDefinition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceMock);
       extensibleEnumDefinition.GetValues ();
