@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
@@ -159,6 +160,15 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var value = new MetallicColor ("RedMetallic");
       Assert.That (value.GetEnumType(), Is.SameAs (typeof (Color)));
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var value = new EnumWithDifferentCtors ("Prefix", "Name");
+      var deserializedValue = Serializer.SerializeAndDeserialize (value);
+
+      Assert.That (deserializedValue, Is.EqualTo (value));
     }
   }
 }

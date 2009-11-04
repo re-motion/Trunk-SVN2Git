@@ -20,6 +20,7 @@ using Remotion.ExtensibleEnums;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
+  [Serializable]
   public class EnumWithDifferentCtors : ExtensibleEnum<EnumWithDifferentCtors>
   {
     public EnumWithDifferentCtors (string id)
