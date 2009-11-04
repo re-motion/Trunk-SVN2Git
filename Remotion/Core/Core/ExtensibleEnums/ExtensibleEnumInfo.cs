@@ -22,9 +22,10 @@ using Remotion.Utilities;
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Holds information about an extensible enum value that is held in the <see cref="ExtensibleEnumDefinition{T}"/>.
+  /// Holds information about an extensible enum value, including the <see cref="Value"/> itself and meta-info such as the 
+  /// <see cref="DeclaringMethod"/> and the associated <see cref="ResourceManager"/>.
   /// </summary>
-  /// <typeparam name="T">The type defining the extensible enum.</typeparam>
+  /// <typeparam name="T">The extensible enum type.</typeparam>
   public class ExtensibleEnumInfo<T> : IExtensibleEnumInfo
       where T : ExtensibleEnum<T>
   {
