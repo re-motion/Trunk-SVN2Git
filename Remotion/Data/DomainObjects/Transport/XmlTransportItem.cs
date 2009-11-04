@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects.Transport
       else if (typeof (IExtensibleEnum).IsAssignableFrom (valueType))
       {
         string idString = reader.ReadContentAsString ();
-        value = ExtensibleEnumDefinitionCache.Instance.GetDefinition (valueType).GetValueByID (idString);
+        value = ExtensibleEnumDefinitionCache.Instance.GetDefinition (valueType).GetValueInfoByID (idString).Value;
       }
       else if (valueType == typeof (ObjectID))
       {

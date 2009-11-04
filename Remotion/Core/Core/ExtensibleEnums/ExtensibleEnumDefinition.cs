@@ -37,32 +37,32 @@ namespace Remotion.ExtensibleEnums
   {
     private class CacheItem
     {
-      private static Dictionary<string, T> CreateValueDictionary (T[] valueArray)
+      private static Dictionary<string, ExtensibleEnumInfo<T>> CreateValueDictionary (ExtensibleEnumInfo<T>[] valueInfoArray)
       {
-        var dictionary = new Dictionary<string, T> ();
-        foreach (var value in valueArray)
+        var dictionary = new Dictionary<string, ExtensibleEnumInfo<T>> ();
+        foreach (var valueInfo in valueInfoArray)
         {
           try
           {
-            dictionary.Add (value.ID, value);
+            dictionary.Add (valueInfo.Value.ID, valueInfo);
           }
           catch (ArgumentException ex)
           {
-            string message = string.Format ("Extensible enum '{0}' defines two values with ID '{1}'.", typeof (T), value.ID);
+            string message = string.Format ("Extensible enum '{0}' defines two values with ID '{1}'.", typeof (T), valueInfo.Value.ID);
             throw new InvalidExtensibleEnumDefinitionException (message, ex);
           }
         }
         return dictionary;
       }
 
-      public CacheItem (T[] valueArray)
+      public CacheItem (ExtensibleEnumInfo<T>[] valueInfoArray)
       {
-        Collection = new ReadOnlyCollection<T> (valueArray.OrderBy (value => value.ID).ToArray());
-        Dictionary = new ReadOnlyDictionary<string, T> (CreateValueDictionary(valueArray));
+        Collection = new ReadOnlyCollection<ExtensibleEnumInfo<T>> (valueInfoArray.OrderBy (info => info.Value.ID).ToArray ());
+        Dictionary = new ReadOnlyDictionary<string, ExtensibleEnumInfo<T>> (CreateValueDictionary (valueInfoArray));
       }
 
-      public ReadOnlyCollection<T> Collection { get; private set; }
-      public ReadOnlyDictionary<string, T> Dictionary { get; private set; }
+      public ReadOnlyCollection<ExtensibleEnumInfo<T>> Collection { get; private set; }
+      public ReadOnlyDictionary<string, ExtensibleEnumInfo<T>> Dictionary { get; private set; }
     }
 
     private readonly IExtensibleEnumValueDiscoveryService _valueDiscoveryService;
@@ -83,26 +83,28 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Gets the values defined by the extensible enum type <typeparamref name="T"/>.
+    /// Gets <see cref="ExtensibleEnumInfo{T}"/> objects describing the values defined by the extensible enum type.
     /// </summary>
-    /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the values for <typeparamref name="T"/>.</returns>
-    public ReadOnlyCollection<T> GetValues ()
+    /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the <see cref="ExtensibleEnumInfo{T}"/> objects describing the values for the 
+    /// extensible enum type.</returns>
+    public ReadOnlyCollection<ExtensibleEnumInfo<T>> GetValueInfos ()
     {
       return _cache.Value.Collection;
     }
 
     /// <summary>
-    /// Gets the enum value identified by <paramref name="id"/>, throwing an exception if the value cannot be found.
+    /// Gets an <see cref="ExtensibleEnumInfo{T}"/> object describing the enum value identified by <paramref name="id"/>, throwing an exception if the 
+    /// value cannot be found.
     /// </summary>
     /// <param name="id">The identifier of the enum value to return.</param>
-    /// <returns>The enum value identified by <paramref name="id"/>.</returns>
+    /// <returns>An <see cref="ExtensibleEnumInfo{T}"/> describing the enum value identified by <paramref name="id"/>.</returns>
     /// <exception cref="KeyNotFoundException">No enum value with the given <paramref name="id"/> exists.</exception>
-    public T GetValueByID (string id)
+    public ExtensibleEnumInfo<T> GetValueInfoByID (string id)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
-      T value;
-      if (TryGetValueByID (id, out value))
+      ExtensibleEnumInfo<T> value;
+      if (TryGetValueInfoByID (id, out value))
       {
         return value;
       }
@@ -114,15 +116,16 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Gets the enum value identified by <paramref name="id"/>, returning a boolean value indicating whether 
-    /// such a value could be found.
+    /// Gets an <see cref="ExtensibleEnumInfo{T}"/> object describing the enum value identified by <paramref name="id"/>, returning a boolean value 
+    /// indicating whether such a value could be found.
     /// </summary>
     /// <param name="id">The identifier of the enum value to return.</param>
-    /// <param name="value">The enum value identified by <paramref name="id"/>, or <see langword="null" /> if no such value exists.</param>
+    /// <param name="value">The <see cref="ExtensibleEnumInfo{T}"/> describing the enum value identified by <paramref name="id"/>, or 
+    /// <see langword="null" /> if no such value exists.</param>
     /// <returns>
     /// <see langword="true" /> if a value with the given <paramref name="id"/> could be found; <see langword="false" /> otherwise.
     /// </returns>
-    public bool TryGetValueByID (string id, out T value)
+    public bool TryGetValueInfoByID (string id, out ExtensibleEnumInfo<T> value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
@@ -131,7 +134,7 @@ namespace Remotion.ExtensibleEnums
 
     private CacheItem RetrieveValues ()
     {
-      var valueArray = _valueDiscoveryService.GetValues (this).ToArray();
+      var valueArray = _valueDiscoveryService.GetValues (this).Select(v => new ExtensibleEnumInfo<T>(v)).ToArray();
       if (valueArray.Length == 0)
       {
         string message = string.Format ("Extensible enum '{0}' does not define any values.", typeof (T));
@@ -140,22 +143,22 @@ namespace Remotion.ExtensibleEnums
       return new CacheItem (valueArray);
     }
 
-    IExtensibleEnum IExtensibleEnumDefinition.GetValueByID (string id)
+    IExtensibleEnumInfo IExtensibleEnumDefinition.GetValueInfoByID (string id)
     {
-      return GetValueByID (id);
+      return GetValueInfoByID (id);
     }
 
-    bool IExtensibleEnumDefinition.TryGetValueByID (string id, out IExtensibleEnum value)
+    bool IExtensibleEnumDefinition.TryGetValueInfoByID (string id, out IExtensibleEnumInfo valueInfo)
     {
-      T typedValue;
-      var success = TryGetValueByID (id, out typedValue);
-      value = typedValue;
+      ExtensibleEnumInfo<T> typedValue;
+      var success = TryGetValueInfoByID (id, out typedValue);
+      valueInfo = typedValue;
       return success;
     }
 
-    ReadOnlyCollection<IExtensibleEnum> IExtensibleEnumDefinition.GetValues ()
+    ReadOnlyCollection<IExtensibleEnumInfo> IExtensibleEnumDefinition.GetValueInfos ()
     {
-      return new ReadOnlyCollection<IExtensibleEnum> (GetValues().ToArray());
+      return new ReadOnlyCollection<IExtensibleEnumInfo> (GetValueInfos().ToArray());
     }
   }
 }

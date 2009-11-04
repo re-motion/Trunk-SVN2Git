@@ -49,7 +49,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
 
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
-      return Enumerable.Select (extensionMethods, mi => (T) mi.Invoke (null, new object[] { definition }));
+      return extensionMethods.Select (mi => (T) mi.Invoke (null, new object[] { definition }));
     }
 
     public static IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)

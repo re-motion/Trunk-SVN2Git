@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
+using System.Linq;
 
 namespace Remotion.UnitTests.ExtensibleEnums
 {
@@ -145,7 +146,9 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void Values_IntegrationTest ()
     {
-      Assert.That (Color.Values.GetValues(), Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
+      var valueInfos = Color.Values.GetValueInfos();
+      Assert.That (valueInfos.Select (info => info.Value).ToArray(),
+          Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
     }
 
     [Test]

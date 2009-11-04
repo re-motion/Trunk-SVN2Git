@@ -164,6 +164,8 @@
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumConverter.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumInfo.cs" />
+    <Compile Include="ExtensibleEnums\IExtensibleEnumInfo.cs" />
     <Compile Include="ExtensibleEnums\InvalidExtensibleEnumDefinitionException.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryService.cs" />

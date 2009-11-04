@@ -117,7 +117,7 @@ namespace Remotion.ExtensibleEnums
       if (stringValue == string.Empty)
         return null;
 
-      return _definition.GetValueByID (stringValue);
+      return _definition.GetValueInfoByID (stringValue).Value;
     }
 
     /// <summary>
