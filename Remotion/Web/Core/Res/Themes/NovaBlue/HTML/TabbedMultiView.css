@@ -304,3 +304,25 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   height: 1.2em;
 }
+
+/* IE6 only */
+* html .tabbedMultiViewTabStrip li
+{
+  float: left;
+  width: 1%;
+  margin-bottom: -1px;
+}
+
+* html .tabbedMultiViewTabStrip li
+{
+  margin-left: 0.5em;
+}
+
+* html .tabbedMultiViewTabStrip .tabStripTabsPane
+{
+  margin-bottom: 1px;
+}
+* html .tabStripTabsPane .bottom
+{
+  visibility: hidden;
+}
