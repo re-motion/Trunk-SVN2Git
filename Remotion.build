@@ -299,7 +299,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.DocumentEventMonitor" depends="Dms.DesktopConnector">
+  <target name="Dms.DocumentEventMonitor" depends="Dms.DesktopConnector, Dms.Clients.Windows.Tray">
     <property name="project.name" value="Dms.DocumentEventMonitor" />
     <property name="project.dir" value="Dms/DocumentEventMonitor" />
     <property name="project.output" value="DocumentEventMonitor" />
