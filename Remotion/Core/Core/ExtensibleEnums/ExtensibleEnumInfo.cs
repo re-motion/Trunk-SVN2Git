@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -32,12 +33,16 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="declaringMethod">The declaring method of the value.</param>
-    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod)
+    /// <param name="resourceManager">The resource manager for the value.</param>
+    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod, IResourceManager resourceManager)
     {
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("declaringMethod", declaringMethod);
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+
       Value = value;
       DeclaringMethod = declaringMethod;
+      ResourceManager = resourceManager;
     }
     
     /// <summary>
@@ -57,5 +62,11 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The declaring method of the <see cref="Value"/>.</value>
     public MethodInfo DeclaringMethod { get; private set; }
+
+    /// <summary>
+    /// Gets the resource manager associated with the <see cref="DeclaringMethod"/> of the <see cref="Value"/> described by this instance.
+    /// </summary>
+    /// <value>The resource manager of this <see cref="Value"/>.</value>
+    public IResourceManager ResourceManager { get; private set; }
   }
 }

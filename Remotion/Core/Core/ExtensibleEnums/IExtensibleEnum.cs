@@ -50,5 +50,12 @@ namespace Remotion.ExtensibleEnums
     /// Gets the type of the extensible enum this value belongs to.
     /// </summary>
     Type GetEnumType ();
+
+    /// <summary>
+    /// Gets the localized name of the value represented by this instance by using the <see cref="IExtensibleEnumInfo.ResourceManager"/> associated
+    /// with the declaring type of the extension method which defines the value.
+    /// </summary>
+    /// <returns>The localized name of this value.</returns>
+    string GetLocalizedName ();
   }
 }

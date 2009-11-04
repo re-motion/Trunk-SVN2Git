@@ -20,6 +20,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Remotion.Globalization;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums.Infrastructure
@@ -49,7 +50,14 @@ namespace Remotion.ExtensibleEnums.Infrastructure
 
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
-      return extensionMethods.Select (mi => new ExtensibleEnumInfo<T>((T) mi.Invoke (null, new object[] { definition }), mi));
+
+      var resourceManager = MultiLingualResources.ExistsResource (typeDeclaringMethods) 
+          ? MultiLingualResources.GetResourceManager (typeDeclaringMethods) 
+          : NullResourceManager.Instance;
+
+      return from mi in extensionMethods
+             let value = (T) mi.Invoke (null, new object[] { definition })
+             select new ExtensibleEnumInfo<T> (value, mi, resourceManager);
     }
 
     public static IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)

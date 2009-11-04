@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.Globalization;
 
 namespace Remotion.ExtensibleEnums
 {
@@ -40,5 +41,11 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The declaring method of the <see cref="Value"/>.</value>
     MethodInfo DeclaringMethod { get; }
+
+    /// <summary>
+    /// Gets the resource manager associated with the <see cref="DeclaringMethod"/> of the <see cref="Value"/> described by this instance.
+    /// </summary>
+    /// <value>The resource manager of this <see cref="Value"/>.</value>
+    IResourceManager ResourceManager { get; }
   }
 }

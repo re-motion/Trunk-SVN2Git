@@ -148,7 +148,12 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var valueInfos = Color.Values.GetValueInfos();
       Assert.That (valueInfos.Select (info => info.Value).ToArray(),
-          Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
+          Is.EquivalentTo (new[] { 
+              Color.Values.Red (), 
+              Color.Values.Green (), 
+              Color.Values.RedMetallic (), 
+              Color.Values.LightRed(), 
+              Color.Values.LightBlue() }));
     }
 
     [Test]
@@ -163,6 +168,23 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var value = new MetallicColor ("RedMetallic");
       Assert.That (value.GetEnumType(), Is.SameAs (typeof (Color)));
+    }
+
+    [Test]
+    public void GetLocalizedName ()
+    {
+      var value = new Color ("Red");
+      Assert.That (value.GetLocalizedName(), Is.EqualTo ("Rot"));
+    }
+
+    [Test]
+    public void GetLocalizedName_IntegrationTest ()
+    {
+      Assert.That (Color.Values.Red ().GetLocalizedName (), Is.EqualTo ("Rot"));
+      Assert.That (Color.Values.Green ().GetLocalizedName (), Is.EqualTo ("Grün"));
+      Assert.That (Color.Values.RedMetallic ().GetLocalizedName (), Is.EqualTo ("RedMetallic"));
+      Assert.That (Color.Values.LightRed ().GetLocalizedName (), Is.EqualTo ("Hellrot"));
+      Assert.That (Color.Values.LightBlue ().GetLocalizedName (), Is.EqualTo ("LightBlue"));
     }
 
     [Test]

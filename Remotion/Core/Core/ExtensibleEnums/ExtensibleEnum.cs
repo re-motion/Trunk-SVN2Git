@@ -116,6 +116,16 @@ namespace Remotion.ExtensibleEnums
     public string ShortID { get; private set; }
 
     /// <summary>
+    /// Gets the localized name of the value represented by this instance by using the <see cref="ExtensibleEnumInfo{T}.ResourceManager"/> associated
+    /// with the declaring type of the extension method which defines the value.
+    /// </summary>
+    /// <returns>The localized name of this value.</returns>
+    public string GetLocalizedName ()
+    {
+      return Values.GetValueInfoByID (ID).ResourceManager.GetString (ID);
+    }
+
+    /// <summary>
     /// Gets the type of the extensible enum this value belongs to.
     /// </summary>
     public Type GetEnumType ()

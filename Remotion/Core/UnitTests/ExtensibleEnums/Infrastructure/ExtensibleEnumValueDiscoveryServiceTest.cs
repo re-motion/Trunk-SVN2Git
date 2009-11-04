@@ -23,6 +23,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.Globalization;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Rhino.Mocks;
 
@@ -85,6 +86,30 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
           new { Value = Color.Values.Green (), DeclaringMethod = _greenMethod }, };
 
       Assert.That (result.Select (info => new { info.Value, info.DeclaringMethod }).ToArray (), Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void GetValueInfosForType_ResourceManager ()
+    {
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeDefinition, typeof (ColorExtensions)).ToArray ();
+
+      var expectedResourceManager = MultiLingualResources.GetResourceManager (typeof (ColorExtensions));
+      var expected = new[] { 
+          new { Value = Color.Values.Red (), ResourceManager = expectedResourceManager }, 
+          new { Value = Color.Values.Green (), ResourceManager = expectedResourceManager }, };
+
+      Assert.That (result.Select (info => new { info.Value, info.ResourceManager }).ToArray (), Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void GetValueInfosForType_NullResourceManager ()
+    {
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeDefinition, typeof (MetallicColorExtensions)).ToArray ();
+
+      var expected = new[] { 
+          new { Value = (Color) Color.Values.RedMetallic (), ResourceManager = (IResourceManager) NullResourceManager.Instance}, };
+
+      Assert.That (result.Select (info => new { info.Value, info.ResourceManager }).ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]

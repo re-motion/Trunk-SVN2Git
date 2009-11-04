@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
 using Remotion.ExtensibleEnums.Infrastructure;
+using Remotion.Globalization;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Rhino.Mocks;
 
@@ -198,7 +199,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
 
     private IEnumerable<ExtensibleEnumInfo<Color>> GetInfos (params Color[] values)
     {
-      return values.Select (value => new ExtensibleEnumInfo<Color> (value, typeof (ColorExtensions).GetMethod ("Red")));
+      return values.Select (value => new ExtensibleEnumInfo<Color> (value, typeof (ColorExtensions).GetMethod ("Red"), NullResourceManager.Instance));
     }
 
     private ExtensibleEnumDefinition<Color> CreateDefinition (params Color[] colors)

@@ -14,26 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.ExtensibleEnums;
 using Remotion.Globalization;
 
 namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
-  [MultiLingualResources ("Remotion.UnitTests.Resources.ColorExtensions")]
-  public static class ColorExtensions
+  [MultiLingualResources ("Remotion.UnitTests.Resources.LightColorExtensions")]
+  public static class LightColorExtensions
   {
-    public static ExtensibleEnumDefinition<Color> LastCallArgument;
-
-    public static Color Red (this ExtensibleEnumDefinition<Color> definition)
+    public static Color LightRed (this ExtensibleEnumDefinition<Color> definition)
     {
-      LastCallArgument = definition;
-      return new Color ("Red");
+      return new Color ("LightRed");
     }
 
-    public static Color Green (this ExtensibleEnumDefinition<Color> definition)
+    public static Color LightBlue (this ExtensibleEnumDefinition<Color> definition)
     {
-      return new Color ("Green");
+      return new Color ("LightBlue");
     }
   }
 }

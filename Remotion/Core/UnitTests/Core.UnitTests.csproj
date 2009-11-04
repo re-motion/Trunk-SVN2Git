@@ -165,6 +165,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\ColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\EnumWithDifferentCtors.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\EnumWithDifferentCtorsExtensions.cs" />
+    <Compile Include="ExtensibleEnums\TestDomain\LightColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValues.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColor.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
@@ -252,6 +253,16 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RegexAssemblyLoaderFilterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\SearchPathRootAssemblyFinderTest.cs" />
+    <Compile Include="Resources\ColorExtensions.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ColorExtensions.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\LightColorExtensions.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LightColorExtensions.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
@@ -626,6 +637,14 @@
     <Content Include="Mixins\MixerTool\SampleAssembly\SampleTypes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\ColorExtensions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ColorExtensions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\LightColorExtensions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LightColorExtensions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\TestData\WriteEmbeddedStringResourceToFileTestData.txt" />
     <Compile Include="Mixins\MixinBaseClassTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationBuildTest.cs" />
