@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.ExtensibleEnums.Infrastructure;
 
 namespace Remotion.ExtensibleEnums
@@ -33,5 +34,11 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The value.</value>
     IExtensibleEnum Value { get; }
+
+    /// <summary>
+    /// Gets the method declaring the <see cref="Value"/> described by this instance.
+    /// </summary>
+    /// <value>The declaring method of the <see cref="Value"/>.</value>
+    MethodInfo DeclaringMethod { get; }
   }
 }

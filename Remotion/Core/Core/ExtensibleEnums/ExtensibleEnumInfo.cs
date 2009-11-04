@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -27,13 +28,16 @@ namespace Remotion.ExtensibleEnums
       where T : ExtensibleEnum<T>
   {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExtensibleEnumInfo&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="ExtensibleEnumInfo{T}"/> class.
     /// </summary>
     /// <param name="value">The value.</param>
-    public ExtensibleEnumInfo (T value)
+    /// <param name="declaringMethod">The declaring method of the value.</param>
+    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod)
     {
       ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("declaringMethod", declaringMethod);
       Value = value;
+      DeclaringMethod = declaringMethod;
     }
     
     /// <summary>
@@ -47,5 +51,11 @@ namespace Remotion.ExtensibleEnums
     {
       get { return Value; }
     }
+
+    /// <summary>
+    /// Gets the method declaring the <see cref="Value"/> described by this instance.
+    /// </summary>
+    /// <value>The declaring method of the <see cref="Value"/>.</value>
+    public MethodInfo DeclaringMethod { get; private set; }
   }
 }

@@ -30,18 +30,18 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// </summary>
   public class ExtensibleEnumValueDiscoveryService : IExtensibleEnumValueDiscoveryService
   {
-    public static IEnumerable<T> GetValuesForTypes<T> (ExtensibleEnumDefinition<T> definition, IEnumerable<Type> typeCandidates) 
+    public static IEnumerable<ExtensibleEnumInfo<T>> GetValueInfosForTypes<T> (ExtensibleEnumDefinition<T> definition, IEnumerable<Type> typeCandidates) 
         where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
       ArgumentUtility.CheckNotNull ("typeCandidates", typeCandidates);
 
       return from type in GetStaticTypes (typeCandidates) // optimization: only static types can have extension methods
-             from value in GetValuesForType (definition, type)
-             select value;
+             from valueInfo in GetValueInfosForType (definition, type)
+             select valueInfo;
     }
 
-    public static IEnumerable<T> GetValuesForType<T> (ExtensibleEnumDefinition<T> definition, Type typeDeclaringMethods) 
+    public static IEnumerable<ExtensibleEnumInfo<T>> GetValueInfosForType<T> (ExtensibleEnumDefinition<T> definition, Type typeDeclaringMethods) 
         where T: ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
@@ -49,7 +49,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
 
       var methods = typeDeclaringMethods.GetMethods (BindingFlags.Static | BindingFlags.Public);
       var extensionMethods = GetValueExtensionMethods (typeof (T), methods);
-      return extensionMethods.Select (mi => (T) mi.Invoke (null, new object[] { definition }));
+      return extensionMethods.Select (mi => new ExtensibleEnumInfo<T>((T) mi.Invoke (null, new object[] { definition }), mi));
     }
 
     public static IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)
@@ -95,7 +95,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       ArgumentUtility.CheckNotNull ("definition", definition);
 
       var types = _typeDiscoveryService.GetTypes (null, false).Cast<Type>();
-      return GetValuesForTypes (definition, types).Select (value => new ExtensibleEnumInfo<T> (value));
+      return GetValueInfosForTypes (definition, types);
     }
   }
 }
