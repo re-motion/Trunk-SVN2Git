@@ -17,7 +17,9 @@
 using System;
 using System.ComponentModel;
 using NUnit.Framework;
+using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
+using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.Utilities
 {
@@ -227,6 +229,18 @@ public class TypeConversionProviderTest
   public void CanConvertFromDBNullToInt32 ()
   {
     Assert.IsFalse (_provider.CanConvert (typeof (DBNull), _int32));
+  }
+
+  [Test]
+  public void CanConvert_FromExtensibleEnum_ToString ()
+  {
+    Assert.IsTrue (_provider.CanConvert (typeof (Color), _string));
+  }
+
+  [Test]
+  public void CanConvert_FromString_ToExtensibleEnum ()
+  {
+    Assert.IsTrue (_provider.CanConvert (_string, typeof (Color)));
   }
 
   [Test]
@@ -519,6 +533,18 @@ public class TypeConversionProviderTest
   }
 
   [Test]
+  public void Convert_FromExtensibleEnum_ToString ()
+  {
+    Assert.AreEqual ("Red", _provider.Convert (typeof (Color), typeof (string), Color.Values.Red()));
+  }
+
+  [Test]
+  public void Convert_FromString_ToExtensibleEnum ()
+  {
+    Assert.AreEqual (Color.Values.Red (), _provider.Convert (typeof (string), typeof (Color), "Red"));
+  }
+
+  [Test]
   public void GetTypeConverterFromInt32ToInt32 ()
   {
     TypeConverterResult converterResult = _provider.GetTypeConverter (_int32, _int32);
@@ -586,6 +612,24 @@ public class TypeConversionProviderTest
     Assert.AreNotEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is empty.");
     Assert.AreEqual (TypeConverterType.SourceTypeConverter, converterResult.TypeConverterType);
     Assert.AreEqual (typeof (BidirectionalStringConverter), converterResult.TypeConverter.GetType ());
+  }
+
+  [Test]
+  public void GetTypeConverter_FromExtensibleEnum_ToString ()
+  {
+    TypeConverterResult converterResult = _provider.GetTypeConverter (typeof (Color), _string);
+    Assert.AreEqual (TypeConverterType.SourceTypeConverter, converterResult.TypeConverterType);
+    Assert.IsInstanceOfType (typeof (ExtensibleEnumConverter), converterResult.TypeConverter);
+    Assert.AreSame (typeof (Color), ((ExtensibleEnumConverter)converterResult.TypeConverter).ExtensibleEnumType);
+  }
+
+  [Test]
+  public void GetTypeConverter_FromString_ToExtensibleEnum ()
+  {
+    TypeConverterResult converterResult = _provider.GetTypeConverter (_string, typeof (Color));
+    Assert.AreEqual (TypeConverterType.DestinationTypeConverter, converterResult.TypeConverterType);
+    Assert.IsInstanceOfType (typeof (ExtensibleEnumConverter), converterResult.TypeConverter);
+    Assert.AreSame (typeof (Color), ((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType);
   }
 
 
@@ -766,6 +810,18 @@ public class TypeConversionProviderTest
     Assert.IsNotNull (converterSecondRun, "TypeConverter from second run is null.");
     Assert.AreSame (converterFirstRun, converterSecondRun);
     Assert.AreEqual (typeof (AdvancedEnumConverter), converterFirstRun.GetType());
+  }
+
+  [Test]
+  public void GetBasicTypeConverter_ForExtensibleEnum ()
+  {
+    TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (typeof (Color));
+    TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (typeof (Color));
+    Assert.IsNotNull (converterFirstRun, "TypeConverter from first run is null.");
+    Assert.IsNotNull (converterSecondRun, "TypeConverter from second run is null.");
+    Assert.AreSame (converterFirstRun, converterSecondRun);
+    Assert.IsInstanceOfType (typeof (ExtensibleEnumConverter), converterFirstRun);
+    Assert.AreSame (typeof (Color), ((ExtensibleEnumConverter) converterFirstRun).ExtensibleEnumType);
   }
 
   [Test]

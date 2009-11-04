@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using Remotion.ExtensibleEnums;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Utilities
@@ -331,11 +332,16 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("type", type);
 
       TypeConverter converter = GetTypeConverterFromCache (type);
-      if (converter == null && ! HasTypeInCache (type))
+      if (converter == null && !HasTypeInCache (type))
       {
         converter = GetTypeConverterByAttribute (type);
+
         if (converter == null && (Nullable.GetUnderlyingType (type) ?? type).IsEnum)
           converter = new AdvancedEnumConverter (type);
+
+        if (converter == null && typeof (IExtensibleEnum).IsAssignableFrom (type))
+          converter = new ExtensibleEnumConverter (type);
+
         AddTypeConverterToCache (type, converter);
       }
       return converter;
