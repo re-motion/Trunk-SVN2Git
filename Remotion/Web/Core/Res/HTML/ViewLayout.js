@@ -74,8 +74,8 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement)
   ViewLayout.AdjustBottom(bottom, view);
 
   ViewLayout.AdjustViewContentBorder(viewContentBorder);
-
   ViewLayout.FixIE6(view, bottom);
+  ViewLayout.FixIE6WrapperContent();
   ViewLayout.FixIE7(view);
 };
 
@@ -171,3 +171,19 @@ ViewLayout.FixIE6 = function(view, bottom)
   $('span.bocDateTimeValue').css('display', $('span.bocDateTimeValue').css('display'));
   $('a.DatePickerButton').css('display', $('a.DatePickerButton').css('display'));
 }
+
+ViewLayout.FixIE6WrapperContent = function() {
+  if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
+    return;
+
+  $('.wrapper').children().each(function(i) {
+    var leftMargin = parseInt($(this).css('marginLeft'));
+    if (isNaN(leftMargin)) leftMargin = 0;
+
+    var rightMargin = parseInt($(this).css('marginRight'));
+    if (isNaN(rightMargin)) rightMargin = 0;
+
+    var newWidth = $(this).width() - leftMargin - rightMargin;
+    $(this).width(newWidth);
+  });
+};
