@@ -17,847 +17,848 @@
 using System;
 using System.ComponentModel;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 
 namespace Remotion.UnitTests.Utilities
 {
-
-[TestFixture]
-public class TypeConversionProviderTest
-{
-  public enum Int32Enum : int
-  {
-    ValueA = 0,
-    ValueB = 1
-  }
-
-  private StubTypeConversionProvider _provider;
-  private readonly Type _int32 = typeof (int);
-  private readonly Type _nullableInt32 = typeof (int?);
-  private readonly Type _string = typeof (string);
-  private readonly Type _stringArray = typeof (string[]);
-  private readonly Type _object = typeof (object);
-  private readonly Type _guid = typeof (Guid);
-  private readonly Type _int32Enum = typeof (Int32Enum);
-  private readonly Type _nullableInt32Enum = typeof (Int32Enum?);
-
-  [SetUp]
-  public void SetUp()
-  {
-    _provider = new StubTypeConversionProvider();
-
-    StubTypeConversionProvider.ClearCache();
-  }
-
-  [Test]
-  public void Create()
-  { 
-    Assert.IsNotNull (TypeConversionProvider.Create());
-  }
-
-  [Test]
-  public void TestCurrent()
-  { 
-    Assert.IsNotNull (TypeConversionProvider.Current);
-    TypeConversionProvider provider = TypeConversionProvider.Create();
-    TypeConversionProvider.SetCurrent (provider);
-    Assert.IsNotNull (TypeConversionProvider.Current);
-    Assert.AreSame (provider, TypeConversionProvider.Current);
-  }
-
-  [Test]
-  public void CanConvertFromInt32ToInt32()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32, _int32));
-  }
-
-  [Test]
-  public void CanConvertFromNullableInt32ToNullableInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32, _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromInt32ToNullableInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32, _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromNullableInt32ToInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32, _int32));
-  }
-
-  [Test]
-  public void CanConvertFromInt32ToString()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, _int32));
-  }
-
-  [Test]
-  public void CanConvertFromStringToInt32()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32, _string));
-  }
-
-  [Test]
-  public void CanConvertFromNullableInt32ToString ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromStringToNullableInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32, _string));
-  }
-
-  [Test]
-  public void CanConvertFromObjectToNullableInt32()
-  {
-    Assert.IsFalse (_provider.CanConvert (_object, _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromGuidToString()
-  {
-    Assert.IsTrue (_provider.CanConvert (_guid, _string));
-  }
-
-  [Test]
-  public void CanConvertFromStringToGuid()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, _guid));
-  }
-
-  [Test]
-  public void CanConvertFromStringArrayToString ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_stringArray, _string));
-  }
-
-  [Test]
-  public void CanConvertFromStringToStringArray ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, _stringArray));
-  }
-
-
-  [Test]
-  public void CanConvertFromInt32EnumToInt32Enum()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32Enum, _int32Enum));
-  }
-
-  [Test]
-  public void CanConvertFromInt32EnumToInt32()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32Enum, _int32));
-  }
-
-  [Test]
-  public void CanConvertFromInt32ToInt32Enum()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32, _int32Enum));
-  }
-
-  [Test]
-  public void CanConvertFromInt32EnumToString()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32Enum, _string));
-  }
-
-  [Test]
-  public void CanConvertFromStringToInt32Enum()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, _int32Enum));
-  }
-
-
-  [Test]
-  public void CanConvertFromNullableInt32EnumToNullableInt32Enum ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32Enum, _nullableInt32Enum));
-  }
-
-  [Test]
-  public void CanConvertFromNullableInt32EnumToNullableInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32Enum, _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromNullableInt32ToNullableInt32Enum ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32, _nullableInt32Enum));
-  }
-
-  [Test]
-  public void CanConvertFromInt32EnumToNullableInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32Enum, _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromInt32ToNullableInt32Enum ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_int32, _nullableInt32Enum));
-  }
-
-  [Test]
-  public void CanConvertFromNullableInt32EnumToString ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_nullableInt32Enum, _string));
-  }
-
-  [Test]
-  public void CanConvertFromStringToNullableInt32Enum ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, _nullableInt32Enum));
-  }
-
-  [Test]
-  public void CanConvertFromDBNullToNullableInt32 ()
-  {
-    Assert.IsTrue (_provider.CanConvert (typeof (DBNull), _nullableInt32));
-  }
-
-  [Test]
-  public void CanConvertFromDBNullToInt32 ()
-  {
-    Assert.IsFalse (_provider.CanConvert (typeof (DBNull), _int32));
-  }
-
-  [Test]
-  public void CanConvert_FromExtensibleEnum_ToString ()
-  {
-    Assert.IsTrue (_provider.CanConvert (typeof (Color), _string));
-  }
-
-  [Test]
-  public void CanConvert_FromString_ToExtensibleEnum ()
-  {
-    Assert.IsTrue (_provider.CanConvert (_string, typeof (Color)));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToInt32()
-  {
-    Assert.AreEqual (1, _provider.Convert (_int32, _int32, 1));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32ToNullableInt32 ()
-  {
-    Assert.AreEqual (new int? (1), _provider.Convert (_nullableInt32, _nullableInt32, new int? (1)));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32ToInt32 ()
-  {
-    Assert.AreEqual (1, _provider.Convert (_nullableInt32, _int32, 1));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToNullableInt32 ()
-  {
-    Assert.AreEqual (1, _provider.Convert (_int32, _nullableInt32, 1));
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException))]
-  public void ConvertFromObjectToNullableInt32 ()
-  {
-    _provider.Convert (_object, _nullableInt32, new object ());
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException))]
-  public void ConvertFromNullableInt32ToObject ()
-  {
-    _provider.Convert (_nullableInt32, _object, 1);
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException))]
-  public void ConvertFromInt32ToObject()
-  {
-    _provider.Convert (_int32, _object, 1);
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException))]
-  public void ConvertFromObjectToInt32()
-  {
-    _provider.Convert (_object, _int32, new object());
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException))]
-  public void ConvertFromInt64ToInt32 ()
-  {
-    _provider.Convert (_object, _int32, 1L);
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32ToString ()
-  {
-    Assert.AreEqual ("1", _provider.Convert (_nullableInt32, _string, 1));
-  }
-
-  [Test]
-  public void ConvertFromStringToNullableInt32 ()
-  {
-    Assert.AreEqual (1, _provider.Convert (_string, _nullableInt32, "1"));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32ToString_WithNull ()
-  {
-    Assert.AreEqual ("", _provider.Convert (_nullableInt32, _string, null));
-  }
-
-  [Test]
-  public void ConvertFromStringToNullableInt32_WithEmpty ()
-  {
-    Assert.AreEqual (null, _provider.Convert (_string, _nullableInt32, ""));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToNullableInt32WithNull ()
-  {
-    Assert.AreEqual (null, _provider.Convert (_int32, _nullableInt32, null));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToNullableInt32WithDBNull ()
-  {
-    Assert.AreEqual (null, _provider.Convert (_int32, _nullableInt32, DBNull.Value));
-  }
-
-  [Test]
-  [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument value has type System.DBNull when type System.Int32 was expected." 
-      + "\r\nParameter name: value")]
-  public void ConvertFromInt32ToInt32WithDBNull ()
-  {
-    _provider.Convert (_int32, _int32, DBNull.Value);
-  }
-
-  [Test]
-  [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument value has type System.String when type System.Int32 was expected." 
-      + "\r\nParameter name: value")]
-  public void Convert_WithInvalidValue ()
-  {
-    _provider.Convert (_int32, _nullableInt32, "pwned!");
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot convert value 'null' to non-nullable type 'System.Int32'.")]
-  public void Convert_WithInvalidNullValue ()
-  {
-    _provider.Convert (_int32, _int32, null);
-  }
-
-  [Test]
-  public void Convert_WithValidNullValue ()
-  {
-    _provider.Convert (_int32, _nullableInt32, null);
-  }
-
-  [Test]
-  public void ConvertFromInt32ToString()
-  {
-    Assert.AreEqual ("1", _provider.Convert (_int32, _string, 1));
-  }
-
-  [Test]
-  public void ConvertFromStringToInt32()
-  {
-    Assert.AreEqual (1, _provider.Convert (_string, _int32, "1"));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToStringWithNull()
-  {
-    Assert.AreEqual (string.Empty, _provider.Convert (_int32, _string, null));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToStringWithDBNull()
-  {
-    Assert.AreEqual (string.Empty, _provider.Convert (_int32, _string, DBNull.Value));
-  }
-
-  [Test]
-  [ExpectedException (typeof (ParseException))]
-  public void ConvertFromStringToInt32WithEmpty()
-  {
-    _provider.Convert (_string, _int32, string.Empty);
-  }
-
-
-  [Test]
-  public void ConvertFromInt32EnumToInt32Enum()
-  {
-    Assert.AreEqual (Int32Enum.ValueA, _provider.Convert (_int32Enum, _int32Enum, Int32Enum.ValueA));
-  }
-
-  [Test]
-  public void ConvertFromInt32EnumToInt32()
-  {
-    Assert.AreEqual (0, _provider.Convert (_int32Enum, _int32, Int32Enum.ValueA));
-    Assert.AreEqual (1, _provider.Convert (_int32Enum, _int32, Int32Enum.ValueB));
-  }
-
-  [Test]
-  public void ConvertFromInt32ToInt32Enum()
-  {
-    Assert.AreEqual (Int32Enum.ValueA, _provider.Convert (_int32, _int32Enum, 0));
-    Assert.AreEqual (Int32Enum.ValueB, _provider.Convert (_int32, _int32Enum, 1));
+  [TestFixture]
+  public class TypeConversionProviderTest
+  {
+    // ReSharper disable EnumUnderlyingTypeIsInt
+    public enum Int32Enum : int
+    {
+      ValueA = 0,
+      ValueB = 1
+    }
+    // ReSharper restore EnumUnderlyingTypeIsInt
+
+    private StubTypeConversionProvider _provider;
+    private readonly Type _int32 = typeof (int);
+    private readonly Type _nullableInt32 = typeof (int?);
+    private readonly Type _string = typeof (string);
+    private readonly Type _stringArray = typeof (string[]);
+    private readonly Type _object = typeof (object);
+    private readonly Type _guid = typeof (Guid);
+    private readonly Type _int32Enum = typeof (Int32Enum);
+    private readonly Type _nullableInt32Enum = typeof (Int32Enum?);
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _provider = new StubTypeConversionProvider();
+
+      StubTypeConversionProvider.ClearCache();
+    }
+
+    [Test]
+    public void Create ()
+    {
+      Assert.That (TypeConversionProvider.Create(), Is.Not.Null);
+    }
+
+    [Test]
+    public void TestCurrent ()
+    {
+      Assert.That (TypeConversionProvider.Current, Is.Not.Null);
+      TypeConversionProvider provider = TypeConversionProvider.Create();
+      TypeConversionProvider.SetCurrent (provider);
+      Assert.That (TypeConversionProvider.Current, Is.Not.Null);
+      Assert.That (TypeConversionProvider.Current, Is.SameAs (provider));
+    }
+
+    [Test]
+    public void CanConvert_FromInt32_ToInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_int32, _int32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromNullableInt32_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32, _nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_int32, _nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromNullableInt32_ToInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32, _int32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32_ToString ()
+    {
+      Assert.That (_provider.CanConvert (_string, _int32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_int32, _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromNullableInt32_ToString ()
+    {
+      Assert.That (_provider.CanConvert (_string, _nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32, _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromObject_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_object, _nullableInt32), Is.False);
+    }
+
+    [Test]
+    public void CanConvert_FromGuid_ToString ()
+    {
+      Assert.That (_provider.CanConvert (_guid, _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToGuid ()
+    {
+      Assert.That (_provider.CanConvert (_string, _guid), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromStringArray_ToString ()
+    {
+      Assert.That (_provider.CanConvert (_stringArray, _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToStringArray ()
+    {
+      Assert.That (_provider.CanConvert (_string, _stringArray), Is.True);
+    }
+
+
+    [Test]
+    public void CanConvert_FromInt32Enum_ToInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_int32Enum, _int32Enum), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32Enum_ToInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_int32Enum, _int32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32_ToInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_int32, _int32Enum), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32Enum_ToString ()
+    {
+      Assert.That (_provider.CanConvert (_int32Enum, _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_string, _int32Enum), Is.True);
+    }
+
+
+    [Test]
+    public void CanConvert_FromNullableInt32Enum_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32Enum, _nullableInt32Enum), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromNullableInt32Enum_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32Enum, _nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromNullableInt32_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32, _nullableInt32Enum), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32Enum_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (_int32Enum, _nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromInt32_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_int32, _nullableInt32Enum), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromNullableInt32Enum_ToString ()
+    {
+      Assert.That (_provider.CanConvert (_nullableInt32Enum, _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.CanConvert (_string, _nullableInt32Enum), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromDBNull_ToNullableInt32 ()
+    {
+      Assert.That (_provider.CanConvert (typeof (DBNull), _nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromDBNull_ToInt32 ()
+    {
+      Assert.That (_provider.CanConvert (typeof (DBNull), _int32), Is.False);
+    }
+
+    [Test]
+    public void CanConvert_FromExtensibleEnum_ToString ()
+    {
+      Assert.That (_provider.CanConvert (typeof (Color), _string), Is.True);
+    }
+
+    [Test]
+    public void CanConvert_FromString_ToExtensibleEnum ()
+    {
+      Assert.That (_provider.CanConvert (_string, typeof (Color)), Is.True);
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToInt32 ()
+    {
+      Assert.That (_provider.Convert (_int32, _int32, 1), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32_ToNullableInt32 ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32, _nullableInt32, (int?) 1), Is.EqualTo ((int?) 1));
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32_ToInt32 ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32, _int32, 1), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToNullableInt32 ()
+    {
+      Assert.That (_provider.Convert (_int32, _nullableInt32, 1), Is.EqualTo (1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Convert_FromObject_ToNullableInt32 ()
+    {
+      _provider.Convert (_object, _nullableInt32, new object());
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Convert_FromNullableInt32_ToObject ()
+    {
+      _provider.Convert (_nullableInt32, _object, 1);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Convert_FromInt32_ToObject ()
+    {
+      _provider.Convert (_int32, _object, 1);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Convert_FromObject_ToInt32 ()
+    {
+      _provider.Convert (_object, _int32, new object());
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Convert_FromInt64_ToInt32 ()
+    {
+      _provider.Convert (_object, _int32, 1L);
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32_ToString ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32, _string, 1), Is.EqualTo ("1"));
+    }
+
+    [Test]
+    public void Convert_FromString_ToNullableInt32 ()
+    {
+      Assert.That (_provider.Convert (_string, _nullableInt32, "1"), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32_ToString_WithNull ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32, _string, null), Is.EqualTo (""));
+    }
+
+    [Test]
+    public void Convert_FromString_ToNullableInt32_WithEmpty ()
+    {
+      Assert.That (_provider.Convert (_string, _nullableInt32, ""), Is.EqualTo (null));
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToNullableInt32_WithNull ()
+    {
+      Assert.That (_provider.Convert (_int32, _nullableInt32, null), Is.EqualTo (null));
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToNullableInt32_WithDBNull ()
+    {
+      Assert.That (_provider.Convert (_int32, _nullableInt32, DBNull.Value), Is.EqualTo (null));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument value has type System.DBNull when type System.Int32 was expected."
+                                                                          + "\r\nParameter name: value")]
+    public void Convert_FromInt32_ToInt32_WithDBNull ()
+    {
+      _provider.Convert (_int32, _int32, DBNull.Value);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Argument value has type System.String when type System.Int32 was expected."
+                                                                          + "\r\nParameter name: value")]
+    public void Convert_WithInvalidValue ()
+    {
+      _provider.Convert (_int32, _nullableInt32, "pwned!");
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot convert value 'null' to non-nullable type 'System.Int32'.")]
+    public void Convert_WithInvalidNullValue ()
+    {
+      _provider.Convert (_int32, _int32, null);
+    }
+
+    [Test]
+    public void Convert_WithValidNullValue ()
+    {
+      _provider.Convert (_int32, _nullableInt32, null);
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToString ()
+    {
+      Assert.That (_provider.Convert (_int32, _string, 1), Is.EqualTo ("1"));
+    }
+
+    [Test]
+    public void Convert_FromString_ToInt32 ()
+    {
+      Assert.That (_provider.Convert (_string, _int32, "1"), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToString_WithNull ()
+    {
+      Assert.That (_provider.Convert (_int32, _string, null), Is.EqualTo (string.Empty));
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToString_WithDBNull ()
+    {
+      Assert.That (_provider.Convert (_int32, _string, DBNull.Value), Is.EqualTo (string.Empty));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ParseException))]
+    public void Convert_FromString_ToInt32_WithEmpty ()
+    {
+      _provider.Convert (_string, _int32, string.Empty);
+    }
+
+
+    [Test]
+    public void Convert_FromInt32Enum_ToInt32Enum ()
+    {
+      Assert.That (_provider.Convert (_int32Enum, _int32Enum, Int32Enum.ValueA), Is.EqualTo (Int32Enum.ValueA));
+    }
+
+    [Test]
+    public void Convert_FromInt32Enum_ToInt32 ()
+    {
+      Assert.That (_provider.Convert (_int32Enum, _int32, Int32Enum.ValueA), Is.EqualTo (0));
+      Assert.That (_provider.Convert (_int32Enum, _int32, Int32Enum.ValueB), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Convert_FromInt32_ToInt32Enum ()
+    {
+      Assert.That (_provider.Convert (_int32, _int32Enum, 0), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_provider.Convert (_int32, _int32Enum, 1), Is.EqualTo (Int32Enum.ValueB));
+    }
+
+    [Test]
+    public void Convert_FromInt32Enum_ToString ()
+    {
+      Assert.That (_provider.Convert (_int32Enum, _string, Int32Enum.ValueA), Is.EqualTo ("ValueA"));
+      Assert.That (_provider.Convert (_int32Enum, _string, Int32Enum.ValueB), Is.EqualTo ("ValueB"));
+    }
+
+    [Test]
+    public void Convert_FromString_ToInt32Enum ()
+    {
+      Assert.That (_provider.Convert (_string, _int32Enum, "ValueA"), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_provider.Convert (_string, _int32Enum, "ValueB"), Is.EqualTo (Int32Enum.ValueB));
+    }
+
+    [Test]
+    public void Convert_FromInt32Enum_ToString_WithNull ()
+    {
+      Assert.That (_provider.Convert (_int32Enum, _string, null), Is.EqualTo (string.Empty));
+    }
+
+    [Test]
+    public void Convert_FromInt32Enum_ToString_WithDBNull ()
+    {
+      Assert.That (_provider.Convert (_int32Enum, _string, DBNull.Value), Is.EqualTo (string.Empty));
+    }
+
+    [Test]
+    [ExpectedException (typeof (FormatException), ExpectedMessage = " is not a valid value for Int32Enum.")]
+    public void Convert_FromString_ToInt32Enum_WithEmpty ()
+    {
+      _provider.Convert (_string, _int32Enum, string.Empty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Convert_FromInt32_ToInt32Enum_WithNull ()
+    {
+      _provider.Convert (_int32, _int32Enum, null);
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32Enum_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32Enum, _nullableInt32Enum, Int32Enum.ValueA), Is.EqualTo (Int32Enum.ValueA));
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32Enum_ToNullableInt32 ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32Enum, _nullableInt32, Int32Enum.ValueA), Is.EqualTo (0));
+      Assert.That (_provider.Convert (_nullableInt32Enum, _nullableInt32, Int32Enum.ValueB), Is.EqualTo (1));
+      Assert.That (_provider.Convert (_nullableInt32Enum, _nullableInt32, null), Is.Null);
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32, _nullableInt32Enum, 0), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_provider.Convert (_nullableInt32, _nullableInt32Enum, 1), Is.EqualTo (Int32Enum.ValueB));
+      Assert.That (_provider.Convert (_nullableInt32, _nullableInt32Enum, null), Is.Null);
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32Enum_ToString ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32Enum, _string, Int32Enum.ValueA), Is.EqualTo ("ValueA"));
+      Assert.That (_provider.Convert (_nullableInt32Enum, _string, Int32Enum.ValueB), Is.EqualTo ("ValueB"));
+      Assert.That (_provider.Convert (_nullableInt32Enum, _string, null), Is.EqualTo (string.Empty));
+    }
+
+    [Test]
+    public void Convert_FromString_ToNullableInt32Enum ()
+    {
+      Assert.That (_provider.Convert (_string, _nullableInt32Enum, "ValueA"), Is.EqualTo (Int32Enum.ValueA));
+      Assert.That (_provider.Convert (_string, _nullableInt32Enum, "ValueB"), Is.EqualTo (Int32Enum.ValueB));
+      Assert.That (_provider.Convert (_string, _nullableInt32Enum, null), Is.Null);
+      Assert.That (_provider.Convert (_string, _nullableInt32Enum, string.Empty), Is.Null);
+    }
+
+    [Test]
+    public void Convert_FromNullableInt32Enum_ToString_WithDBNull ()
+    {
+      Assert.That (_provider.Convert (_nullableInt32Enum, _string, DBNull.Value), Is.EqualTo (string.Empty));
+    }
+
+
+    [Test]
+    public void Convert_FromString_ToString ()
+    {
+      string value = "Hello World!";
+      Assert.That (_provider.Convert (_string, _string, value), Is.EqualTo (value));
+    }
+
+    [Test]
+    public void Convert_FromStringArray_ToString ()
+    {
+      var value = new[] { "Hello", "World", "!" };
+      Assert.That (_provider.Convert (_stringArray, _string, value), Is.EqualTo ("Hello,World,!"));
+    }
+
+    [Test]
+    public void Convert_FromString_ToStringArray ()
+    {
+      string value = "Hello,World,!";
+      Assert.AreEqual (new[] { "Hello", "World", "!" }, _provider.Convert (_string, _stringArray, value));
+    }
+
+    [Test]
+    public void Convert_FromString_ToString_WithNull ()
+    {
+      Assert.That (_provider.Convert (_string, _string, null), Is.EqualTo (string.Empty));
+    }
+
+    [Test]
+    public void Convert_FromExtensibleEnum_ToString ()
+    {
+      Assert.That (_provider.Convert (typeof (Color), typeof (string), Color.Values.Red()), Is.EqualTo ("Red"));
+    }
+
+    [Test]
+    public void Convert_FromString_ToExtensibleEnum ()
+    {
+      Assert.That (_provider.Convert (typeof (string), typeof (Color), "Red"), Is.EqualTo (Color.Values.Red()));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromInt32_ToInt32 ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_int32, _int32);
+      Assert.That (converterResult, Is.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+    }
+
+
+    [Test]
+    public void GetTypeConverter_FromInt32_ToNullableInt32 ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_int32, _nullableInt32);
+      Assert.That (converterResult, Is.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+    }
+
+    [Test]
+    public void GetTypeConverter_FromNullableInt32_ToInt32 ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_nullableInt32, _int32);
+      Assert.That (converterResult, Is.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+    }
+
+    [Test]
+    public void GetTypeConverter_FromNullableInt32_ToString ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_nullableInt32, _string);
+      Assert.That (converterResult, Is.Not.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+      Assert.That (converterResult.TypeConverter.GetType(), Is.EqualTo (typeof (BidirectionalStringConverter)));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromString_ToNullableInt32 ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_string, _nullableInt32);
+      Assert.That (converterResult, Is.Not.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+      Assert.That (converterResult.TypeConverter.GetType(), Is.EqualTo (typeof (BidirectionalStringConverter)));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromObject_ToString ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_object, _string);
+      Assert.That (converterResult, Is.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+    }
+
+    [Test]
+    public void GetTypeConverter_FromString_ToObject ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_string, _object);
+      Assert.That (converterResult, Is.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is not empty.");
+    }
+
+    [Test]
+    public void GetTypeConverter_FromStringArray_ToString ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_stringArray, _string);
+      Assert.That (converterResult, Is.Not.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is empty.");
+      Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.DestinationTypeConverter));
+      Assert.That (converterResult.TypeConverter.GetType(), Is.EqualTo (typeof (BidirectionalStringConverter)));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromString_ToArray ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_string, _stringArray);
+      Assert.That (converterResult, Is.Not.EqualTo (TypeConverterResult.Empty), "TypeConverterResult is empty.");
+      Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.SourceTypeConverter));
+      Assert.That (converterResult.TypeConverter.GetType(), Is.EqualTo (typeof (BidirectionalStringConverter)));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromExtensibleEnum_ToString ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (typeof (Color), _string);
+      Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.SourceTypeConverter));
+      Assert.That (converterResult.TypeConverter, Is.InstanceOfType (typeof (ExtensibleEnumConverter)));
+      Assert.That (((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType, Is.SameAs (typeof (Color)));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromString_ToExtensibleEnum ()
+    {
+      TypeConverterResult converterResult = _provider.GetTypeConverter (_string, typeof (Color));
+      Assert.That (converterResult.TypeConverterType, Is.EqualTo (TypeConverterType.DestinationTypeConverter));
+      Assert.That (converterResult.TypeConverter, Is.InstanceOfType (typeof (ExtensibleEnumConverter)));
+      Assert.That (((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType, Is.SameAs (typeof (Color)));
+    }
+
+
+    [Test]
+    public void GetTypeConverter_ForNaByte ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (byte?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForByte ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (byte));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaInt16 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (short?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForInt16 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (short));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForInt32 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (_int32);
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNullableInt32 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (_nullableInt32);
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaInt64 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (long?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForInt64 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (long));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaSingle ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (float?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForSingle ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (float));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaDouble ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (double?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForDouble ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (double));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaDateTime ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (DateTime?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForDateTime ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (DateTime));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNullableBoolean ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (bool?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForBoolean ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (bool));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaGuid ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (Guid?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForNaDecimal ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (decimal?));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForDecimal ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (decimal));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverter_ForGuid ()
+    {
+      TypeConverter converter = _provider.GetTypeConverter (typeof (Guid));
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverterByAttribute_ForInt32 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverterByAttribute (_int32);
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetTypeConverterByAttribute_ForNullableInt32 ()
+    {
+      TypeConverter converter = _provider.GetTypeConverterByAttribute (_nullableInt32);
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetBasicTypeConverter_ForInt32 ()
+    {
+      TypeConverter converter = _provider.GetBasicTypeConverter (_int32);
+      Assert.That (converter, Is.Null, "TypeConverter is not null.");
+    }
+
+    [Test]
+    public void GetBasicTypeConverter_ForNullableInt32 ()
+    {
+      TypeConverter converter = _provider.GetBasicTypeConverter (_nullableInt32);
+      Assert.That (converter, Is.Null);
+    }
+
+    [Test]
+    public void GetBasicTypeConverter_ForInt32Enum ()
+    {
+      TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (_int32Enum);
+      TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (_int32Enum);
+      Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
+      Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
+      Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
+      Assert.That (converterFirstRun.GetType(), Is.EqualTo (typeof (AdvancedEnumConverter)));
+    }
+
+    [Test]
+    public void GetBasicTypeConverter_ForExtensibleEnum ()
+    {
+      TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (typeof (Color));
+      TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (typeof (Color));
+      Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
+      Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
+      Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
+      Assert.That (converterFirstRun, Is.InstanceOfType (typeof (ExtensibleEnumConverter)));
+      Assert.That (((ExtensibleEnumConverter) converterFirstRun).ExtensibleEnumType, Is.SameAs (typeof (Color)));
+    }
+
+    [Test]
+    public void GetTypeConverter_FromCache ()
+    {
+      var converter = new NullableConverter (typeof (int?));
+      _provider.AddTypeConverterToCache (_nullableInt32, converter);
+      Assert.That (_provider.GetTypeConverterFromCache (_nullableInt32), Is.SameAs (converter));
+    }
+
+    [Test]
+    public void HasTypeInCache ()
+    {
+      var converter = new NullableConverter (typeof (int?));
+      _provider.AddTypeConverterToCache (_nullableInt32, converter);
+      Assert.That (_provider.HasTypeInCache (_nullableInt32), Is.True);
+    }
+
+    [Test]
+    public void AddTypeConverter ()
+    {
+      var converter = new NullableConverter (typeof (Guid?));
+      Assert.That (_provider.GetTypeConverter (_guid), Is.Null);
+      _provider.AddTypeConverter (_guid, converter);
+      Assert.That (_provider.GetTypeConverter (_guid), Is.SameAs (converter));
+    }
+
+    [Test]
+    public void RemoveTypeConverter ()
+    {
+      var converter = new NullableConverter (typeof (Guid?));
+      _provider.AddTypeConverter (_guid, converter);
+      Assert.That (_provider.GetTypeConverter (_guid), Is.SameAs (converter));
+      _provider.RemoveTypeConverter (_guid);
+      Assert.That (_provider.GetTypeConverter (_guid), Is.Null);
+    }
   }
-
-  [Test]
-  public void ConvertFromInt32EnumToString()
-  {
-    Assert.AreEqual ("ValueA", _provider.Convert (_int32Enum, _string, Int32Enum.ValueA));
-    Assert.AreEqual ("ValueB", _provider.Convert (_int32Enum, _string, Int32Enum.ValueB));
-  }
-
-  [Test]
-  public void ConvertFromStringToInt32Enum()
-  {
-    Assert.AreEqual (Int32Enum.ValueA, _provider.Convert (_string, _int32Enum, "ValueA"));
-    Assert.AreEqual (Int32Enum.ValueB, _provider.Convert (_string, _int32Enum, "ValueB"));
-  }
-
-  [Test]
-  public void ConvertFromInt32EnumToStringWithNull()
-  {
-    Assert.AreEqual (string.Empty, _provider.Convert (_int32Enum, _string, null));
-  }
-
-  [Test]
-  public void ConvertFromInt32EnumToStringWithDBNull()
-  {
-    Assert.AreEqual(string.Empty, _provider.Convert (_int32Enum, _string, DBNull.Value));
-  }
-
-  [Test]
-  [ExpectedException (typeof (FormatException), ExpectedMessage = " is not a valid value for Int32Enum.")]
-  public void ConvertFromStringToInt32EnumWithEmpty ()
-  {
-    _provider.Convert (_string, _int32Enum, string.Empty);
-  }
-
-  [Test]
-  [ExpectedException (typeof (NotSupportedException))]
-  public void ConvertFromInt32ToInt32EnumWithNull()
-  {
-    _provider.Convert (_int32, _int32Enum, null);
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32EnumToNullableInt32Enum ()
-  {
-    Assert.AreEqual (Int32Enum.ValueA, _provider.Convert (_nullableInt32Enum, _nullableInt32Enum, Int32Enum.ValueA));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32EnumToNullableInt32 ()
-  {
-    Assert.AreEqual (0, _provider.Convert (_nullableInt32Enum, _nullableInt32, Int32Enum.ValueA));
-    Assert.AreEqual (1, _provider.Convert (_nullableInt32Enum, _nullableInt32, Int32Enum.ValueB));
-    Assert.IsNull (_provider.Convert (_nullableInt32Enum, _nullableInt32, null));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32ToNullableInt32Enum ()
-  {
-    Assert.AreEqual (Int32Enum.ValueA, _provider.Convert (_nullableInt32, _nullableInt32Enum, 0));
-    Assert.AreEqual (Int32Enum.ValueB, _provider.Convert (_nullableInt32, _nullableInt32Enum, 1));
-    Assert.IsNull (_provider.Convert (_nullableInt32, _nullableInt32Enum, null));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32EnumToString ()
-  {
-    Assert.AreEqual ("ValueA", _provider.Convert (_nullableInt32Enum, _string, Int32Enum.ValueA));
-    Assert.AreEqual ("ValueB", _provider.Convert (_nullableInt32Enum, _string, Int32Enum.ValueB));
-    Assert.AreEqual (string.Empty, _provider.Convert (_nullableInt32Enum, _string, null));
-  }
-
-  [Test]
-  public void ConvertFromStringToNullableInt32Enum ()
-  {
-    Assert.AreEqual (Int32Enum.ValueA, _provider.Convert (_string, _nullableInt32Enum, "ValueA"));
-    Assert.AreEqual (Int32Enum.ValueB, _provider.Convert (_string, _nullableInt32Enum, "ValueB"));
-    Assert.IsNull (_provider.Convert (_string, _nullableInt32Enum, null));
-    Assert.IsNull (_provider.Convert (_string, _nullableInt32Enum, string.Empty));
-  }
-
-  [Test]
-  public void ConvertFromNullableInt32EnumToStringWithDBNull ()
-  {
-    Assert.AreEqual (string.Empty, _provider.Convert (_nullableInt32Enum, _string, DBNull.Value));
-  }
-
-
-  [Test]
-  public void ConvertFromStringToString()
-  {
-    string value = "Hello World!";
-    Assert.AreEqual (value, _provider.Convert (_string, _string, value));
-  }
-
-  [Test]
-  public void ConvertFromStringArrayToString ()
-  {
-    string[] value = new string[] { "Hello", "World", "!" };
-    Assert.AreEqual ("Hello,World,!", _provider.Convert (_stringArray, _string, value));
-  }
-
-  [Test]
-  public void ConvertFromStringToStringArray ()
-  {
-    string value = "Hello,World,!";
-    Assert.AreEqual (new string[] { "Hello", "World", "!"}, _provider.Convert (_string, _stringArray, value));
-  }
-
-  [Test]
-  public void ConvertFromStringToStringWithNull()
-  {
-    Assert.AreEqual (string.Empty, _provider.Convert (_string, _string, null));
-  }
-
-  [Test]
-  public void Convert_FromExtensibleEnum_ToString ()
-  {
-    Assert.AreEqual ("Red", _provider.Convert (typeof (Color), typeof (string), Color.Values.Red()));
-  }
-
-  [Test]
-  public void Convert_FromString_ToExtensibleEnum ()
-  {
-    Assert.AreEqual (Color.Values.Red (), _provider.Convert (typeof (string), typeof (Color), "Red"));
-  }
-
-  [Test]
-  public void GetTypeConverterFromInt32ToInt32 ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_int32, _int32);
-    Assert.AreEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-  }
-
-
-  [Test]
-  public void GetTypeConverterFromInt32ToNullableInt32 ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_int32, _nullableInt32);
-    Assert.AreEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-  }
-
-  [Test]
-  public void GetTypeConverterFromNullableInt32ToInt32 ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_nullableInt32, _int32);
-    Assert.AreEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-  }
-
-  [Test]
-  public void GetTypeConverterFromNullableInt32ToString ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_nullableInt32, _string);
-    Assert.AreNotEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-    Assert.AreEqual (typeof (BidirectionalStringConverter), converterResult.TypeConverter.GetType());
-  }
-
-  [Test]
-  public void GetTypeConverterFromStringToNullableInt32 ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_string, _nullableInt32);
-    Assert.AreNotEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-    Assert.AreEqual (typeof (BidirectionalStringConverter), converterResult.TypeConverter.GetType ());
-  }
-
-  [Test]
-  public void GetTypeConverterFromObjectToString ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_object, _string);
-    Assert.AreEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-  }
-
-  [Test]
-  public void GetTypeConverterFromStringToObject ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_string, _object);
-    Assert.AreEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is not empty.");
-  }
-
-  [Test]
-  public void GetTypeConverterFromStringArrayToString ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_stringArray, _string);
-    Assert.AreNotEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is empty.");
-    Assert.AreEqual (TypeConverterType.DestinationTypeConverter, converterResult.TypeConverterType);
-    Assert.AreEqual (typeof (BidirectionalStringConverter), converterResult.TypeConverter.GetType ());
-  }
-
-  [Test]
-  public void GetTypeConverterFromStringToArray ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_string, _stringArray);
-    Assert.AreNotEqual (TypeConverterResult.Empty, converterResult, "TypeConverterResult is empty.");
-    Assert.AreEqual (TypeConverterType.SourceTypeConverter, converterResult.TypeConverterType);
-    Assert.AreEqual (typeof (BidirectionalStringConverter), converterResult.TypeConverter.GetType ());
-  }
-
-  [Test]
-  public void GetTypeConverter_FromExtensibleEnum_ToString ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (typeof (Color), _string);
-    Assert.AreEqual (TypeConverterType.SourceTypeConverter, converterResult.TypeConverterType);
-    Assert.IsInstanceOfType (typeof (ExtensibleEnumConverter), converterResult.TypeConverter);
-    Assert.AreSame (typeof (Color), ((ExtensibleEnumConverter)converterResult.TypeConverter).ExtensibleEnumType);
-  }
-
-  [Test]
-  public void GetTypeConverter_FromString_ToExtensibleEnum ()
-  {
-    TypeConverterResult converterResult = _provider.GetTypeConverter (_string, typeof (Color));
-    Assert.AreEqual (TypeConverterType.DestinationTypeConverter, converterResult.TypeConverterType);
-    Assert.IsInstanceOfType (typeof (ExtensibleEnumConverter), converterResult.TypeConverter);
-    Assert.AreSame (typeof (Color), ((ExtensibleEnumConverter) converterResult.TypeConverter).ExtensibleEnumType);
-  }
-
-
-  [Test]
-  public void GetTypeConverterForNaByte ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (byte?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForByte ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (byte));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaInt16 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (short?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForInt16 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (short));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForInt32 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (_int32);
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNullableInt32 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (_nullableInt32);
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaInt64 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (long?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForInt64 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (long));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaSingle ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (float?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForSingle ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (float));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaDouble ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (double?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForDouble ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (double));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaDateTime ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (DateTime?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForDateTime ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (DateTime));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNullableBoolean ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (bool?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForBoolean ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (bool));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaGuid ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (Guid?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForNaDecimal ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (decimal?));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForDecimal ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (decimal));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterForGuid ()
-  {
-    TypeConverter converter = _provider.GetTypeConverter (typeof (Guid));
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterByAttributeForInt32()
-  {
-    TypeConverter converter = _provider.GetTypeConverterByAttribute (_int32);
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetTypeConverterByAttributeForNullableInt32 ()
-  {
-    TypeConverter converter = _provider.GetTypeConverterByAttribute (_nullableInt32);
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetBasicTypeConverterForInt32()
-  {
-    TypeConverter converter = _provider.GetBasicTypeConverter (_int32);
-    Assert.IsNull (converter, "TypeConverter is not null.");
-  }
-
-  [Test]
-  public void GetBasicTypeConverterForNullableInt32 ()
-  {
-    TypeConverter converter = _provider.GetBasicTypeConverter (_nullableInt32);
-    Assert.IsNull (converter);
-  }
-
-  [Test]
-  public void GetBasicTypeConverterForInt32Enum()
-  {
-    TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (_int32Enum);
-    TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (_int32Enum);
-    Assert.IsNotNull (converterFirstRun, "TypeConverter from first run is null.");
-    Assert.IsNotNull (converterSecondRun, "TypeConverter from second run is null.");
-    Assert.AreSame (converterFirstRun, converterSecondRun);
-    Assert.AreEqual (typeof (AdvancedEnumConverter), converterFirstRun.GetType());
-  }
-
-  [Test]
-  public void GetBasicTypeConverter_ForExtensibleEnum ()
-  {
-    TypeConverter converterFirstRun = _provider.GetBasicTypeConverter (typeof (Color));
-    TypeConverter converterSecondRun = _provider.GetBasicTypeConverter (typeof (Color));
-    Assert.IsNotNull (converterFirstRun, "TypeConverter from first run is null.");
-    Assert.IsNotNull (converterSecondRun, "TypeConverter from second run is null.");
-    Assert.AreSame (converterFirstRun, converterSecondRun);
-    Assert.IsInstanceOfType (typeof (ExtensibleEnumConverter), converterFirstRun);
-    Assert.AreSame (typeof (Color), ((ExtensibleEnumConverter) converterFirstRun).ExtensibleEnumType);
-  }
-
-  [Test]
-  public void GetTypeConverterFromCache()
-  {
-    NullableConverter converter = new NullableConverter(typeof (int?));
-    _provider.AddTypeConverterToCache (_nullableInt32, converter);
-    Assert.AreSame (converter, _provider.GetTypeConverterFromCache (_nullableInt32));
-  }
-
-  [Test]
-  public void HasTypeInCache()
-  {
-    NullableConverter converter = new NullableConverter (typeof (int?));
-    _provider.AddTypeConverterToCache (_nullableInt32, converter);
-    Assert.IsTrue (_provider.HasTypeInCache (_nullableInt32));
-  }
-
-  [Test]
-  public void AddTypeConverter()
-  {
-    NullableConverter converter = new NullableConverter(typeof (Guid?));
-    Assert.IsNull (_provider.GetTypeConverter (_guid));
-    _provider.AddTypeConverter (_guid, converter);
-    Assert.AreSame (converter, _provider.GetTypeConverter (_guid));
-  }
-
-  [Test]
-  public void RemoveTypeConverter()
-  {
-    NullableConverter converter = new NullableConverter (typeof (Guid?));
-    _provider.AddTypeConverter (_guid, converter);
-    Assert.AreSame (converter, _provider.GetTypeConverter (_guid));
-    _provider.RemoveTypeConverter (_guid);
-    Assert.IsNull (_provider.GetTypeConverter (_guid));
-  }
-}
-
 }
