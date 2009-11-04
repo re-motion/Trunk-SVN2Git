@@ -25,14 +25,12 @@ namespace Remotion.Utilities
   {
     private readonly Type _underlyingEnumType;
     private readonly bool _isNullable;
-    private readonly bool _isFlagsEnum;
 
     public AdvancedEnumConverter (Type enumType)
         : base (Nullable.GetUnderlyingType (ArgumentUtility.CheckNotNull ("enumType", enumType)) ?? enumType)
     {
       _underlyingEnumType = Enum.GetUnderlyingType (EnumType);
       _isNullable = EnumType != enumType;
-      _isFlagsEnum = EnumUtility.IsFlagsEnumType (EnumType);
     }
 
     /// <summary> Test: Can convert from <paramref name="sourceType"/> to <see cref="String"/>? </summary>
