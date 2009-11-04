@@ -90,12 +90,12 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       get { return _typeDiscoveryService; }
     }
 
-    public IEnumerable<T> GetValues<T> (ExtensibleEnumDefinition<T> definition) where T: ExtensibleEnum<T>
+    public IEnumerable<ExtensibleEnumInfo<T>> GetValueInfos<T> (ExtensibleEnumDefinition<T> definition) where T : ExtensibleEnum<T>
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
       var types = _typeDiscoveryService.GetTypes (null, false).Cast<Type>();
-      return GetValuesForTypes (definition, types);
+      return GetValuesForTypes (definition, types).Select (value => new ExtensibleEnumInfo<T> (value));
     }
   }
 }

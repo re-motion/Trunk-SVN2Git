@@ -134,7 +134,7 @@ namespace Remotion.ExtensibleEnums
 
     private CacheItem RetrieveValues ()
     {
-      var valueArray = _valueDiscoveryService.GetValues (this).Select(v => new ExtensibleEnumInfo<T>(v)).ToArray();
+      var valueArray = _valueDiscoveryService.GetValueInfos (this).ToArray();
       if (valueArray.Length == 0)
       {
         string message = string.Format ("Extensible enum '{0}' does not define any values.", typeof (T));

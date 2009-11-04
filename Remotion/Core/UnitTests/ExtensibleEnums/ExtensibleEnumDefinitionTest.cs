@@ -45,10 +45,11 @@ namespace Remotion.UnitTests.ExtensibleEnums
     [Test]
     public void GetValueInfos ()
     {
-      var definition = CreateDefinition (_red, _green, _blue);
-      var valueInstances = definition.GetValueInfos().Select(info => info.Value).ToArray();
+      var infos = GetInfos (_red, _green, _blue).ToArray();
+      var definition = CreateDefinition (infos);
+      var valueInstances = definition.GetValueInfos().ToArray();
       
-      Assert.That (valueInstances, Is.EquivalentTo (new[] { _red, _green, _blue }));
+      Assert.That (valueInstances, Is.EquivalentTo (infos));
     }
 
     [Test]
@@ -56,8 +57,8 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var valueDiscoveryServiceMock = MockRepository.GenerateMock<IExtensibleEnumValueDiscoveryService> ();
       valueDiscoveryServiceMock
-          .Expect (mock => mock.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything))
-          .Return (new[] { _red })
+          .Expect (mock => mock.GetValueInfos (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything))
+          .Return (GetInfos (_red))
           .Repeat.Once ();
       valueDiscoveryServiceMock.Replay ();
 
@@ -73,12 +74,13 @@ namespace Remotion.UnitTests.ExtensibleEnums
     public void GetValueInfos_PassesExtensibleEnumDefinitionInstance_ToExtensibleEnumValueDiscoveryService ()
     {
       var valueDiscoveryServiceMock = MockRepository.GenerateMock<IExtensibleEnumValueDiscoveryService> ();
-      valueDiscoveryServiceMock.Stub (mock => mock.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (new[] { _red });
+      var infos = GetInfos(_red);
+      valueDiscoveryServiceMock.Stub (mock => mock.GetValueInfos (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (infos);
 
       var extensibleEnumDefinition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceMock);
       extensibleEnumDefinition.GetValueInfos ();
 
-      valueDiscoveryServiceMock.AssertWasCalled (mock => mock.GetValues (extensibleEnumDefinition));
+      valueDiscoveryServiceMock.AssertWasCalled (mock => mock.GetValueInfos (extensibleEnumDefinition));
     }
 
     [Test]
@@ -194,12 +196,23 @@ namespace Remotion.UnitTests.ExtensibleEnums
       Assert.That (valueInfo, Is.SameAs (expectedValueInfo));
     }
 
+    private IEnumerable<ExtensibleEnumInfo<Color>> GetInfos (params Color[] values)
+    {
+      return values.Select (value => new ExtensibleEnumInfo<Color> (value));
+    }
+
     private ExtensibleEnumDefinition<Color> CreateDefinition (params Color[] colors)
+    {
+      var infos = GetInfos (colors);
+      return CreateDefinition (infos);
+    }
+
+    private ExtensibleEnumDefinition<Color> CreateDefinition (IEnumerable<ExtensibleEnumInfo<Color>> infos)
     {
       var valueDiscoveryServiceStub = MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ();
       var definition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceStub);
 
-      valueDiscoveryServiceStub.Stub (stub => stub.GetValues (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (colors);
+      valueDiscoveryServiceStub.Stub (stub => stub.GetValueInfos (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (infos);
       return definition;
     }
   }

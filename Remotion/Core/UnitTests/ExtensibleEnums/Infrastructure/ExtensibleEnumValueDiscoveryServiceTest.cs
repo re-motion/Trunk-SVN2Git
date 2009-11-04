@@ -28,14 +28,15 @@ using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
 {
+  [TestFixture]
   public class ExtensibleEnumValueDiscoveryServiceTest
   {
-    private ExtensibleEnumDefinition<Color> _definition;
+    private ExtensibleEnumDefinition<Color> _fakeDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _definition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
+      _fakeDefinition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
     }
 
     [Test]
@@ -43,7 +44,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       var types = new[] { typeof (ColorExtensions), typeof (MetallicColorExtensions), typeof (object) };
 
-      var result = ExtensibleEnumValueDiscoveryService.GetValuesForTypes (_definition, types).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValuesForTypes (_fakeDefinition, types).ToArray ();
 
       Assert.That (result, Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
     }
@@ -68,7 +69,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void GetValuesForType ()
     {
-      var result = ExtensibleEnumValueDiscoveryService.GetValuesForType (_definition, typeof (ColorExtensions)).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValuesForType (_fakeDefinition, typeof (ColorExtensions)).ToArray ();
 
       var expectedValues = new[] {
           ColorExtensions.Red (null),
@@ -81,9 +82,9 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void GetValuesForType_PassesEnumValuesToMethod ()
     {
-      ExtensibleEnumValueDiscoveryService.GetValuesForType (_definition, typeof (ColorExtensions)).ToArray ();
+      ExtensibleEnumValueDiscoveryService.GetValuesForType (_fakeDefinition, typeof (ColorExtensions)).ToArray ();
 
-      Assert.That (ColorExtensions.LastCallArgument, Is.EqualTo (_definition));
+      Assert.That (ColorExtensions.LastCallArgument, Is.EqualTo (_fakeDefinition));
     }
 
     [Test]
@@ -136,19 +137,19 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     }
 
     [Test]
-    public void GetValues ()
+    public void GetValueInfos ()
     {
       var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService>();
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (null, false)).Return (new[] { typeof (ColorExtensions) });
 
       var service = new ExtensibleEnumValueDiscoveryService (typeDiscoveryServiceStub);
-      var values = service.GetValues (new ExtensibleEnumDefinition<Color> (service));
-      Assert.That (values, 
-          Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green (), Color.Values.RedMetallic () }));
+      var valueInfos = service.GetValueInfos (new ExtensibleEnumDefinition<Color> (service));
+      Assert.That (valueInfos.Select(info=>info.Value).ToArray(), 
+          Is.EquivalentTo (new[] { Color.Values.Red (), Color.Values.Green () }));
     }
 
     [Test]
-    public void GetValues_PassesDefinition_ToExtensionMethod ()
+    public void GetValueInfos_PassesDefinition_ToExtensionMethod ()
     {
       var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
       typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (null, false)).Return (new[] { typeof (ColorExtensions) });
@@ -156,7 +157,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
       var service = new ExtensibleEnumValueDiscoveryService (typeDiscoveryServiceStub);
       var definition = new ExtensibleEnumDefinition<Color> (service);
 
-      service.GetValues (definition);
+      service.GetValueInfos (definition).ToArray();
 
       Assert.That (ColorExtensions.LastCallArgument, Is.SameAs (definition));
     }
