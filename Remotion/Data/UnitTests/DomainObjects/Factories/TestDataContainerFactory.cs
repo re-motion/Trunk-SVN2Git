@@ -80,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"], (decimal) 123456.789);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"], 987654.321);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"], ClassWithAllDataTypes.EnumType.Value1);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"], Color.Values.Red());
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.FlagsProperty"], ClassWithAllDataTypes.FlagsType.Flag2);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"], new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"));
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"], (short) 32767);
@@ -104,6 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"], 3147483647L);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"], 12.456F);
 
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"], null);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanWithNullValueProperty"], null);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteWithNullValueProperty"], null);
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateWithNullValueProperty"], null);

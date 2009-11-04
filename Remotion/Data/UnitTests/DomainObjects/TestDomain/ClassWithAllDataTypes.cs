@@ -126,11 +126,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBColumn ("Enum")]
     public abstract EnumType EnumProperty { get; set; }
 
-    //[DBColumn ("ExtensibleEnum")]
-    //public abstract Color ExtensibleEnumProperty { get; set; }
-
     [DBColumn ("Flags")]
     public abstract FlagsType FlagsProperty { get; set; }
+
+    [ExtensibleEnumProperty (IsNullable = false)]
+    [DBColumn ("ExtensibleEnum")]
+    public virtual Color ExtensibleEnumProperty { get; set; }
 
     [DBColumn ("Guid")]
     public abstract Guid GuidProperty { get; set; }
@@ -201,6 +202,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [StringProperty (MaximumLength = 100)]
     [DBColumn ("StringWithNullValue")]
     public abstract string StringWithNullValueProperty { get; set; }
+
+    [DBColumn ("ExtensibleEnumWithNullValue")]
+    public virtual Color ExtensibleEnumWithNullValueProperty { get; set; }
 
     [DBColumn ("NaBooleanWithNullValue")]
     public abstract bool? NaBooleanWithNullValueProperty { get; set; }

@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [ExpectedException (typeof (ConverterException), ExpectedMessage = 
         "Invalid null value for not-nullable property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type' encountered. "
         + "Class: 'Customer'.")]
-    public void GetNullValueForEnum()
+    public void GetValue_NullForEnum()
     {
       ClassDefinition customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer");
       PropertyDefinition enumProperty = customerDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     }
 
     [Test]
-    public void GetNullValueForNaDateTime()
+    public void GetValue_NullForNaDateTime()
     {
       ClassDefinition customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer");
       PropertyDefinition dateTimeProperty = customerDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.CustomerSince"];
@@ -254,6 +254,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       PropertyDefinition enumProperty = classWithAllDataTypesDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"];
 
       _stubValueConverterBase.GetValue (classWithAllDataTypesDefinition, enumProperty, -1);
+    }
+
+    [Test]
+    public void GetValue_ForExtensibleEnum ()
+    {
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      PropertyDefinition propertyDefinition = classDefinition[typeof (ClassWithAllDataTypes).FullName + ".ExtensibleEnumProperty"];
+
+      Assert.That (_stubValueConverterBase.GetValue (classDefinition, propertyDefinition, Color.Values.Red ().ID), Is.EqualTo (Color.Values.Red ()));
+    }
+
+    [Test]
+    public void GetValue_ForExtensibleEnum_Null_Nullable ()
+    {
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      PropertyDefinition propertyDefinition = classDefinition[typeof (ClassWithAllDataTypes).FullName + ".ExtensibleEnumWithNullValueProperty"];
+
+      Assert.That (_stubValueConverterBase.GetValue (classDefinition, propertyDefinition, null), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConverterException), ExpectedMessage =
+        "Invalid null value for not-nullable property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty' "
+        + "encountered. Class: 'ClassWithAllDataTypes'.")]
+    public void GetValue_ForExtensibleEnum_Null_NonNullable ()
+    {
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      PropertyDefinition propertyDefinition = classDefinition[typeof (ClassWithAllDataTypes).FullName + ".ExtensibleEnumProperty"];
+
+      _stubValueConverterBase.GetValue (classDefinition, propertyDefinition, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConverterException), ExpectedMessage =
+        "Error converting the value for property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty' of " 
+        + "class 'ClassWithAllDataTypes' from persistence medium:\r\nThe extensible enum type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Color' "
+        + "does not define a value called '?'.")]
+    public void GetValue_ForExtensibleEnum_InvalidValue ()
+    {
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (ClassWithAllDataTypes));
+      PropertyDefinition propertyDefinition = classDefinition[typeof (ClassWithAllDataTypes).FullName + ".ExtensibleEnumProperty"];
+
+      _stubValueConverterBase.GetValue (classDefinition, propertyDefinition, "?");
     }
 
     [Test]

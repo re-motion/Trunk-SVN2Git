@@ -68,6 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       query.Parameters.Add ("@doubleLowerBound", 987654D);
       query.Parameters.Add ("@doubleUpperBound", 987655D);
       query.Parameters.Add ("@enum", ClassWithAllDataTypes.EnumType.Value1);
+      query.Parameters.Add ("@extensibleEnum", Color.Values.Red());
       query.Parameters.Add ("@flags", ClassWithAllDataTypes.FlagsType.Flag1|ClassWithAllDataTypes.FlagsType.Flag2);
       query.Parameters.Add ("@guid", new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"));
       query.Parameters.Add ("@int16", (short) 32767);
@@ -93,6 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       query.Parameters.Add ("@naSingleLowerBound", 12F);
       query.Parameters.Add ("@naSingleUpperBound", 13F);
 
+      query.Parameters.Add ("@extensibleEnumWithNullValue", null);
       query.Parameters.Add ("@naBooleanWithNullValue", null);
       query.Parameters.Add ("@naByteWithNullValue", null);
       query.Parameters.Add ("@naDateWithNullValue", null);

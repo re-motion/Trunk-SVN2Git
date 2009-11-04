@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyReflectorTests
 {
@@ -37,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NoAttribute",
           actual.PropertyName);
-      Assert.AreSame (typeof (Color), actual.PropertyType);
+      Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
@@ -53,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NullableFromAttribute",
           actual.PropertyName);
-      Assert.AreSame (typeof (Color), actual.PropertyType);
+      Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
       Assert.IsTrue (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
       Assert.AreEqual (null, actual.DefaultValue);
@@ -69,10 +68,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample.ClassWithExtensibleEnumProperties.NotNullable",
           actual.PropertyName);
-      Assert.AreSame (typeof (Color), actual.PropertyType);
+      Assert.AreSame (typeof (TestExtensibleEnum), actual.PropertyType);
       Assert.IsFalse (actual.IsNullable);
       Assert.IsNull (actual.MaxLength);
-      Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
+      Assert.AreEqual (TestExtensibleEnum.Values.Value1(), actual.DefaultValue);
     }
 
     [Test]
@@ -87,10 +86,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       propertyReflector.GetMetadata ();
     }
 
+    // ReSharper disable UnusedMember.Local
     [ExtensibleEnumProperty]
     private int Int32Property
     {
       get { throw new NotImplementedException (); }
     }
+    // ReSharper restore UnusedMember.Local
   }
 }

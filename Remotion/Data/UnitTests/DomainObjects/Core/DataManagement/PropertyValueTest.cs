@@ -74,6 +74,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyValue = new PropertyValue (propertyDefinition, null);
       Assert.That (propertyValue.PropertyType, Is.EqualTo (typeof (Type)));
     }
+
+    [Test]
+    public void PropertyValue_WithExtensibleEnum_Allowed ()
+    {
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (Color), true);
+      var propertyValue = new PropertyValue (propertyDefinition, null);
+      Assert.That (propertyValue.PropertyType, Is.EqualTo (typeof (Color)));
+    }
     
     [Test]
     public void TestEquals ()
@@ -337,6 +345,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "test", "test", typeof (byte[]), false);
       PropertyValue propertyValue = new PropertyValue (definition, ResourceManager.GetImage1 ());
+      propertyValue.Value = null;
+    }
+
+    [Test]
+    public void SetNullableExtensibleEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition, 
+          "test", 
+          "test", 
+          typeof (Color), 
+          true);
+
+      var propertyValue = new PropertyValue (definition, null);
+      Assert.IsNull (propertyValue.Value);
+    }
+
+    [Test]
+    public void SetNotNullableExtensibleEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition, 
+          "test", 
+          "test", 
+          typeof (Color), 
+          false);
+
+      var propertyValue = new PropertyValue (definition, Color.Values.Red());
+      Assert.AreEqual (Color.Values.Red (), propertyValue.Value);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidTypeException))]
+    public void SetExtensibleEnumWithInvalidType ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition, 
+          "test", 
+          "test", 
+          typeof (Color), 
+          false);
+      new PropertyValue (definition, 12);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
+    public void SetNotNullableExtensibleEnumToNullViaConstructor ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition, 
+          "test", 
+          "test", 
+          typeof (Color), 
+          false);
+      new PropertyValue (definition, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
+    public void SetNotNullableExtensibleEnumToNullViaProperty ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition, 
+          "test", 
+          "test", 
+          typeof (Color), 
+          false);
+      var propertyValue = new PropertyValue (definition, Color.Values.Red());
       propertyValue.Value = null;
     }
 

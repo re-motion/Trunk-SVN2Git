@@ -108,6 +108,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     }
 
     [Test]
+    public void XmlSerialize_WithCustomExtensibleEnumProperty ()
+    {
+      TransportItem item = new TransportItem (DomainObjectIDs.Computer1);
+      item.Properties.Add ("CustomExtensibleEnum", Color.Values.Red());
+      byte[] serializedArray = Serializer.XmlSerialize (new XmlTransportItem (item));
+      string serializedString = Encoding.UTF8.GetString (serializedArray);
+
+      Assert.AreEqual (XmlSerializationStrings.XmlForCustomExtensibleEnumProperty, serializedString);
+    }
+
+    [Test]
     public void XmlDeserialize ()
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForComputer1);
@@ -145,6 +156,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomNullProperty);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
       Assert.AreEqual (null, item.TransportItem.Properties["CustomNull"]);
+    }
+
+    [Test]
+    public void XmlDeserialize_WithCustomExtensibleEnumProperty ()
+    {
+      byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForCustomExtensibleEnumProperty);
+      XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
+      Assert.AreEqual (Color.Values.Red (), item.TransportItem.Properties["CustomExtensibleEnum"]);
     }
 
     [Test]

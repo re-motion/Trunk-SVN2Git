@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -79,7 +80,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
           && definition.PropertyType != typeof (string)
           && definition.PropertyType != typeof (byte[]) 
           && definition.PropertyType != typeof (Type)
-          && definition.PropertyType != typeof (ObjectID))
+          && definition.PropertyType != typeof (ObjectID)
+          && !typeof (IExtensibleEnum).IsAssignableFrom (definition.PropertyType))
       {
         var message = string.Format ("The property '{0}' (declared on class '{1}') is invalid because its values cannot be copied. Only value types, "
             + "strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is '{2}'.",

@@ -14,17 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 using Remotion.ExtensibleEnums;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample
 {
-  [Serializable]
-  public class Color : ExtensibleEnum<Color>
+  public class TestExtensibleEnum : ExtensibleEnum<TestExtensibleEnum>
   {
-    public Color (MethodBase currentMethod)
-        : base (currentMethod)
+    public TestExtensibleEnum (MethodBase currentMethod)
+        : base(currentMethod)
     {
     }
   }

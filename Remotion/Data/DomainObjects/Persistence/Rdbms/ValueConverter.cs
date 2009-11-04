@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -41,6 +42,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Type type = value.GetType();
       if (type.IsEnum)
         return Convert.ChangeType (value, Enum.GetUnderlyingType (type), CultureInfo.InvariantCulture);
+
+      var valueAsExtensibleEnum = value as IExtensibleEnum;
+      if (valueAsExtensibleEnum != null)
+        return valueAsExtensibleEnum.ID;
 
       return value;
     }

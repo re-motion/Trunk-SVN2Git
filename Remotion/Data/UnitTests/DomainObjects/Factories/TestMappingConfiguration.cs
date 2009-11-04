@@ -358,6 +358,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       classWithAllDataTypes.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty", "Enum", typeof (ClassWithAllDataTypes.EnumType)));
       classWithAllDataTypes.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty", "ExtensibleEnum", typeof (Color), false));
+      classWithAllDataTypes.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.FlagsProperty", "Flags", typeof (ClassWithAllDataTypes.FlagsType)));
       classWithAllDataTypes.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty", "Guid", typeof (Guid)));
@@ -404,6 +406,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty", "NaSingle", typeof (float?)));
       classWithAllDataTypes.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty", "StringWithNullValue", typeof (string), true, 100));
+      classWithAllDataTypes.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty", "ExtensibleEnumWithNullValue", typeof (Color), true));
       classWithAllDataTypes.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanWithNullValueProperty", "NaBooleanWithNullValue", typeof (bool?)));
       classWithAllDataTypes.MyPropertyDefinitions.Add (

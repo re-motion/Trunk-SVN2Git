@@ -28,12 +28,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
     {
     }
 
-    public abstract Color NoAttribute { get; set; }
+    public abstract TestExtensibleEnum NoAttribute { get; set; }
 
     [ExtensibleEnumProperty (IsNullable = true)]
-    public abstract Color NullableFromAttribute { get; set; }
+    public abstract TestExtensibleEnum NullableFromAttribute { get; set; }
 
     [ExtensibleEnumProperty (IsNullable = false)]
-    public abstract Color NotNullable { get; set; }
+    public abstract TestExtensibleEnum NotNullable { get; set; }
   }
 }

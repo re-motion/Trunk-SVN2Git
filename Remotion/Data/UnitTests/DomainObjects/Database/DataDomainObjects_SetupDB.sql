@@ -571,6 +571,7 @@ CREATE TABLE [TableWithAllDataTypes] (
   [Double] float (53) NOT NULL,
   [Enum] int NOT NULL,
   [Flags] int NOT NULL,
+  [ExtensibleEnum] varchar (100) NOT NULL,
   [Guid] uniqueidentifier NOT NULL,
   [Int16] smallint NOT NULL,
   [Int32] int NOT NULL,
@@ -595,6 +596,7 @@ CREATE TABLE [TableWithAllDataTypes] (
   [NaSingle] real NULL,
   
   [StringWithNullValue] nvarchar (100) NULL,
+  [ExtensibleEnumWithNullValue] varchar (100) NULL,
   [NaBooleanWithNullValue] bit NULL,
   [NaByteWithNullValue] tinyint NULL,
   [NaDateWithNullValue] dateTime NULL,

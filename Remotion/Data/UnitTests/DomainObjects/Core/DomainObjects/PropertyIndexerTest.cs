@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (3, orderItem.Properties.GetPropertyCount());
 
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.NewObject ();
-      Assert.AreEqual (44, cwadt.Properties.GetPropertyCount());
+      Assert.AreEqual (46, cwadt.Properties.GetPropertyCount());
     }
 
     [Test]

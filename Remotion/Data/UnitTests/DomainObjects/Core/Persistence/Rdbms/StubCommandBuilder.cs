@@ -15,17 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.ExtensibleEnums;
+using System.Data;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
-  [Serializable]
-  public class Color : ExtensibleEnum<Color>
+  public class StubCommandBuilder : CommandBuilder
   {
-    public Color (MethodBase currentMethod)
-        : base (currentMethod)
+    public StubCommandBuilder (RdbmsProvider provider)
+        : base(provider)
     {
+    }
+
+    public override IDbCommand Create ()
+    {
+      throw new NotImplementedException();
     }
   }
 }

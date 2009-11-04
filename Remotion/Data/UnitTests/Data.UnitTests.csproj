@@ -282,6 +282,8 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\SubQueryIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\WhereIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetcherTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetchQueryCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
@@ -534,6 +536,8 @@
     <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithExtensibleEnumProperties.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnum.cs" />
+    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnumExtensions.cs" />
     <Compile Include="Linq\Backend\DetailParserUtilityTest.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\ExpressionTreeVisitors\AccessorFindingExpressionTreeVisitorTest.cs" />

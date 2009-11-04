@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 {
@@ -118,6 +118,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     </Property>
   </Properties>
 </XmlTransportItem>";
+      }
+    }
+
+    public static string XmlForCustomExtensibleEnumProperty
+    {
+      get
+      {
+        return
+            @"<?xml version=""1.0""?>
+<XmlTransportItem ID=""Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid"">
+  <Properties>
+    <Property Name=""CustomExtensibleEnum"" Type=""@assemblyQualifiedName"">Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red</Property>
+  </Properties>
+</XmlTransportItem>".Replace ("@assemblyQualifiedName", typeof (Color).AssemblyQualifiedName);
       }
     }
 

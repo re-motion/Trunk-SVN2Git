@@ -17,11 +17,13 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Utilities;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -232,6 +234,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           Assert.IsNull (id);
         }
       }
+    }
+
+    [Test]
+    public void GetDBValue_ForExtensibleEnum ()
+    {
+      var value = _converter.GetDBValue (Color.Values.Red ());
+      Assert.That (value, Is.EqualTo (Color.Values.Red ().ID));
     }
 
     private IDbCommand CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassCommand (Guid id)

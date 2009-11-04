@@ -20,6 +20,8 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
@@ -135,6 +137,10 @@ namespace Remotion.Data.DomainObjects.Transport
       {
         writer.WriteString (value.ToString());
       }
+      else if (typeof (IExtensibleEnum).IsAssignableFrom (valueType))
+      {
+        writer.WriteString (((IExtensibleEnum) value).ID);
+      }
       else
       {
         var valueSerializer = new XmlSerializer (valueType);
@@ -153,6 +159,11 @@ namespace Remotion.Data.DomainObjects.Transport
       {
         reader.ReadStartElement ("null"); // no end element for null
         value = null;
+      }
+      else if (typeof (IExtensibleEnum).IsAssignableFrom (valueType))
+      {
+        string idString = reader.ReadContentAsString ();
+        value = ExtensibleEnumDefinitionCache.Instance.GetDefinition (valueType).GetValueByID (idString);
       }
       else if (valueType == typeof (ObjectID))
       {
