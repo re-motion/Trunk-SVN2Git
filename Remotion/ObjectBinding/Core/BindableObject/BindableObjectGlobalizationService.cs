@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Collections;
+using Remotion.ExtensibleEnums;
 using Remotion.Globalization;
 using Remotion.Mixins.Globalization;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -44,6 +45,12 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("value", value);
       return EnumDescription.GetDescription (value) ?? value.ToString();
+    }
+
+    public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+      return value.GetLocalizedName ();
     }
 
     public string GetBooleanValueDisplayName (bool value)

@@ -82,6 +82,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void GetExtensibleEnumerationValueDisplayName ()
+    {
+      Assert.That (_globalizationService.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value1()), Is.EqualTo ("Wert1"));
+      Assert.That (_globalizationService.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.Value2()), Is.EqualTo ("Wert2"));
+      Assert.That (_globalizationService.GetExtensibleEnumerationValueDisplayName (ExtensibleEnumWithResources.Values.ValueWithoutResource ()), Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.ExtensibleEnumWithResourcesExtensions.ValueWithoutResource"));
+    }
+
+    [Test]
     public void GetPropertyDisplayName ()
     {
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithResources), "Value1");
