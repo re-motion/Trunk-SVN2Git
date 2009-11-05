@@ -188,6 +188,13 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void GetValueInfo ()
+    {
+      var value = new Color ("Red");
+      Assert.That (value.GetValueInfo (), Is.SameAs (Color.Values.GetValueInfoByID ("Red")));
+    }
+
+    [Test]
     public void Serialization ()
     {
       var value = new EnumWithDifferentCtors ("Prefix", "Name");

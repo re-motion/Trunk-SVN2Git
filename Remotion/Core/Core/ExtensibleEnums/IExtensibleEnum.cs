@@ -57,5 +57,11 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <returns>The localized name of this value.</returns>
     string GetLocalizedName ();
+
+    /// <summary>
+    /// Gets the <see cref="IExtensibleEnumInfo"/> object describing the value represented by this instance.
+    /// </summary>
+    /// <returns>The <see cref="IExtensibleEnumInfo"/> for this value.</returns>
+    IExtensibleEnumInfo GetValueInfo ();
   }
 }

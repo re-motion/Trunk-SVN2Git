@@ -122,7 +122,16 @@ namespace Remotion.ExtensibleEnums
     /// <returns>The localized name of this value.</returns>
     public string GetLocalizedName ()
     {
-      return Values.GetValueInfoByID (ID).ResourceManager.GetString (ID);
+      return GetValueInfo().ResourceManager.GetString (ID);
+    }
+
+    /// <summary>
+    /// Gets the <see cref="ExtensibleEnumInfo{T}"/> object describing the value represented by this instance.
+    /// </summary>
+    /// <returns>The <see cref="ExtensibleEnumInfo{T}"/> for this value.</returns>
+    public ExtensibleEnumInfo<T> GetValueInfo ()
+    {
+      return Values.GetValueInfoByID (ID);
     }
 
     /// <summary>
@@ -157,6 +166,11 @@ namespace Remotion.ExtensibleEnums
     public override string ToString ()
     {
       return ID;
+    }
+
+    IExtensibleEnumInfo IExtensibleEnum.GetValueInfo ()
+    {
+      return GetValueInfo ();
     }
   }
 }

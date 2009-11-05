@@ -68,6 +68,7 @@
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\DisabledIdentifiersEnumerationFilterTest.cs" />
     <Compile Include="Core\BindableObject\DisableExtensibleEnumValuesAttributeTest.cs" />
+    <Compile Include="Core\BindableObject\ExtensibleEnumerationPropertyTest.cs" />
     <Compile Include="Core\BindableObject\PropertyInfoAdapterTestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="Core\BindableObject\PropertyInfoAdapterTestDomain\ClassWithOverridingProperty.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />

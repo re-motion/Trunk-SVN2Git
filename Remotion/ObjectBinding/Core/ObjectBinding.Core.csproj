@@ -136,6 +136,7 @@
     <Compile Include="BindableObject\DisabledIdentifiersEnumerationFilter.cs" />
     <Compile Include="BindableObject\DisableExtensibleEnumValuesAttribute.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
+    <Compile Include="BindableObject\Properties\ExtensibleEnumerationProperty.cs" />
     <Compile Include="BusinessObjectExtensions.cs" />
     <Compile Include="DefaultSearchArguments.cs" />
     <Compile Include="IBusinessObjectProviderWithIdentity.cs" />
