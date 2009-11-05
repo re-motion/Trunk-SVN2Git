@@ -18,6 +18,7 @@ using System;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
@@ -51,6 +52,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
 
       if (propertyDefinition.PropertyType == typeof (Byte[]))
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
+
+      if (typeof (IExtensibleEnum).IsAssignableFrom (propertyDefinition.PropertyType))
+        return string.Format ("varchar ({0})", 100);
 
       return base.GetSqlDataType (propertyDefinition);
     }

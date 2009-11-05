@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 
     public static ClassWithAllDataTypes NewObject()
     {
-      return DomainObject.NewObject<ClassWithAllDataTypes> ();
+      return NewObject<ClassWithAllDataTypes> ();
     }
 
     [DBColumn ("Boolean")]
@@ -55,6 +55,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 
     [DBColumn ("Enum")]
     public abstract EnumType EnumProperty { get; set; }
+
+    [ExtensibleEnumProperty (IsNullable = false)]
+    [DBColumn ("ExtensibleEnum")]
+    public virtual Color ExtensibleEnumProperty { get; set; }
 
     [DBColumn ("Guid")]
     public abstract Guid GuidProperty { get; set; }
@@ -126,6 +130,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
     [StringProperty (MaximumLength = 100)]
     [DBColumn ("StringWithNullValue")]
     public abstract string StringWithNullValueProperty { get; set; }
+
+    [DBColumn ("ExtensibleEnumWithNullValue")]
+    public virtual Color ExtensibleEnumWithNullValueProperty { get; set; }
 
     [DBColumn ("NaBooleanWithNullValue")]
     public abstract bool? NaBooleanWithNullValueProperty { get; set; }

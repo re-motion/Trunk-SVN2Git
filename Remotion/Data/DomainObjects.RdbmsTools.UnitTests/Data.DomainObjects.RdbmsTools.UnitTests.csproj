@@ -74,6 +74,8 @@
     <Compile Include="TestDomain\Address.cs" />
     <Compile Include="TestDomain\ClassWithoutProperties.cs" />
     <Compile Include="TestDomain\ClassWithRelations.cs" />
+    <Compile Include="TestDomain\Color.cs" />
+    <Compile Include="TestDomain\ColorExtensions.cs" />
     <Compile Include="TestDomain\ConcreteClass.cs" />
     <Compile Include="TestDomain\AbstractWithoutConcreteClass.cs" />
     <Compile Include="TestDomain\InternalStorageGroupAttribute.cs" />
