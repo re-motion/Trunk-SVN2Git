@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       base.SetUp();
 
-      _businessObjectProvider = new BindableObjectProvider();
+      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
     }
 
     [Test]

@@ -15,16 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationPropertyTests
 {
@@ -36,12 +32,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     private MockRepository _mockRepository;
     private IBusinessObject _mockBusinessObject;
 
-
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _businessObjectProvider = new BindableObjectProvider ();
+      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
 
       _mockRepository = new MockRepository ();
       _mockBusinessObject = _mockRepository.StrictMock<IBusinessObject> ();

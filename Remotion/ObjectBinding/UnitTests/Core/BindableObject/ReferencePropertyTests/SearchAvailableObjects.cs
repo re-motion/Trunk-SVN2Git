@@ -35,11 +35,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _mockRepository = new MockRepository ();
-      _bindableObjectProvider = new BindableObjectProvider ();
-      _bindableObjectWithIdentityProvider = new BindableObjectProvider ();
+      _mockRepository = new MockRepository();
+      _bindableObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
+      _bindableObjectWithIdentityProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
 
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
       BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectWithIdentityProvider);

@@ -37,8 +37,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _bindableObjectProvider = new BindableObjectProvider ();
-      _bindableObjectWithIdentityProvider = new BindableObjectProvider ();
+      _bindableObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      _bindableObjectWithIdentityProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
 
       BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
       BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectWithIdentityProvider);

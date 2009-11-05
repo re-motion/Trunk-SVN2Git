@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
@@ -37,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     {
       base.SetUp();
 
-      _businessObjectProvider = new BindableObjectProvider();
+      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
 
       _mockRepository = new MockRepository();
       _mockRepository.StrictMock<IBusinessObject>();

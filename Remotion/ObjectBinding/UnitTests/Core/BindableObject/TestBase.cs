@@ -21,6 +21,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Security;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -75,6 +76,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyReflector reflector = PropertyReflector.Create (property, provider);
       return (PropertyBase.Parameters) PrivateInvoke.InvokeNonPublicMethod (
                                            reflector, typeof (PropertyReflector), "CreateParameters", GetUnderlyingType (reflector));
+    }
+
+    protected BindableObjectProvider CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ()
+    {
+      return new BindableObjectProvider(BindableObjectMetadataFactory.Create(),MockRepository.GenerateStub<IBusinessObjectServiceFactory>());
     }
   }
 }

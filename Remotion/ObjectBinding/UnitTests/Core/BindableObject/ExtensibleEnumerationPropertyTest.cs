@@ -29,14 +29,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   {
     private BindableObjectProvider _businessObjectProvider;
     private ExtensibleEnumerationProperty _propertyWithResources;
-    private IBusinessObjectServiceFactory _serviceFactoryStub;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _serviceFactoryStub = MockRepository.GenerateStub<IBusinessObjectServiceFactory> ();
-      _businessObjectProvider = new BindableObjectProvider (BindableObjectMetadataFactory.Create(), _serviceFactoryStub);
+      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
       _propertyWithResources = CreateProperty (typeof (ExtensibleEnumWithResources));
     }
 

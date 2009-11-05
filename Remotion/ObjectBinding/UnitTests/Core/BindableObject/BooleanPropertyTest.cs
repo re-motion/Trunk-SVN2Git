@@ -37,8 +37,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       base.SetUp();
 
-      _businessObjectProvider = new BindableObjectProvider();
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithValueType<bool>), _businessObjectProvider, BindableObjectMetadataFactory.Create());
+      _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithValueType<bool>), _businessObjectProvider, BindableObjectMetadataFactory.Create ());
       _businessObjectClass = classReflector.GetMetadata();
 
       _mockRepository = new MockRepository();
