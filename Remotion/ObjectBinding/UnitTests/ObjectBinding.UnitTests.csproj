@@ -66,6 +66,8 @@
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityBaseIntegrationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityBaseTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityBaseImplementationTest.cs" />
+    <Compile Include="Core\BindableObject\DisabledIdentifiersEnumerationFilterTest.cs" />
+    <Compile Include="Core\BindableObject\DisableExtensibleEnumValuesAttributeTest.cs" />
     <Compile Include="Core\BindableObject\PropertyInfoAdapterTestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="Core\BindableObject\PropertyInfoAdapterTestDomain\ClassWithOverridingProperty.cs" />
     <Compile Include="Core\BindableObject\PropertyReflectorTests\Extensibility.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestType.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeHidingProperties.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeWithInterfaces.cs" />
+    <Compile Include="Core\BindableObject\StubEnumerationValueFilter.cs" />
     <Compile Include="Core\BusinessObjectExtensionMethodsTest.cs" />
     <Compile Include="Core\Globalization\ExtensibleEnumWithResources.Designer.cs">
       <AutoGen>True</AutoGen>

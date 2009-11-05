@@ -18,15 +18,23 @@ using System;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.ObjectBinding
 {
-  //TODO: doc
+  /// <summary>
+  /// Allows to disable specific enum values in the context of business object properties. This attribute can be applied
+  /// either to the enum or to a business object property with an enum type.
+  /// </summary>
   [AttributeUsage (AttributeTargets.Enum | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public sealed class DisableEnumValuesAttribute : Attribute
   {
-    private IEnumerationValueFilter _filter;
+    private readonly IEnumerationValueFilter _filter;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a custom filter type.
+    /// </summary>
+    /// <param name="filterType">The type of the filter to use, must implement <see cref="IEnumerationValueFilter"/>.</param>
     public DisableEnumValuesAttribute (Type filterType)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("filterType", filterType, typeof (IEnumerationValueFilter));
@@ -34,63 +42,112 @@ namespace Remotion.ObjectBinding
       _filter = (IEnumerationValueFilter) TypesafeActivator.CreateInstance (filterType).With();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a number of enum values to disable.
+    /// </summary>
+    /// <param name="disabledEnumValues">The disabled enum values.</param>
     public DisableEnumValuesAttribute (params object[] disabledEnumValues)
     {
       ArgumentUtility.CheckNotNull ("disabledEnumValues", disabledEnumValues);
       ArgumentUtility.CheckItemsType ("disabledEnumValues", disabledEnumValues, typeof (Enum));
 
-      Initialize ((Enum[]) ArrayUtility.Convert (disabledEnumValues, typeof (Enum)));
+      _filter = new ConstantEnumerationValueFilter (disabledEnumValues.Cast<Enum>().ToArray());
     }
 
-    public DisableEnumValuesAttribute (object disabledEnumValue1)
+    // The following constructors are added due to CLS compliance (CS3016).
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a number of enum values to disable.
+    /// </summary>
+    /// <param name="disabledEnumValue1">The disabled enum values.</param>
+    public DisableEnumValuesAttribute (object disabledEnumValue1) 
+        : this (new[] { 
+            ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue1) })
     {
-      Initialize (
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue1", disabledEnumValue1));
     }
 
-    public DisableEnumValuesAttribute (object disabledEnumValue1, object disabledEnumValue2)
-    {
-      Initialize (
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue1", disabledEnumValue1),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue2", disabledEnumValue2));
-    }
-
-    public DisableEnumValuesAttribute (object disabledEnumValue1, object disabledEnumValue2, object disabledEnumValue3)
-    {
-      Initialize (
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue1", disabledEnumValue1),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue2", disabledEnumValue2),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue3", disabledEnumValue3));
-    }
-
-    public DisableEnumValuesAttribute (object disabledEnumValue1, object disabledEnumValue2, object disabledEnumValue3, object disabledEnumValue4)
-    {
-      Initialize (
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue1", disabledEnumValue1),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue2", disabledEnumValue2),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue3", disabledEnumValue3),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue4", disabledEnumValue4));
-    }
-
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a number of enum values to disable.
+    /// </summary>
+    /// <param name="disabledEnumValue1">A disabled enum value.</param>
+    /// <param name="disabledEnumValue2">A disabled enum value.</param>
     public DisableEnumValuesAttribute (
-        object disabledEnumValue1, object disabledEnumValue2, object disabledEnumValue3, object disabledEnumValue4, object disabledEnumValue5)
+        object disabledEnumValue1,
+        object disabledEnumValue2)
+      : this (new[] { 
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue1),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue2),
+      })
     {
-      Initialize (
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue1", disabledEnumValue1),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue2", disabledEnumValue2),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue3", disabledEnumValue3),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue4", disabledEnumValue4),
-          ArgumentUtility.CheckNotNullAndType<Enum> ("disabledEnumValue5", disabledEnumValue5));
     }
 
-    private void Initialize (params Enum[] disabledEnumValues)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a number of enum values to disable.
+    /// </summary>
+    /// <param name="disabledEnumValue1">A disabled enum value.</param>
+    /// <param name="disabledEnumValue2">A disabled enum value.</param>
+    /// <param name="disabledEnumValue3">A disabled enum value.</param>
+    public DisableEnumValuesAttribute (
+        object disabledEnumValue1,
+        object disabledEnumValue2,
+        object disabledEnumValue3)
+      : this (new[] { 
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue1),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue2),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue3),
+      })
     {
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("disabledEnumValues", disabledEnumValues);
-      ArgumentUtility.CheckItemsType ("disabledEnumValues", disabledEnumValues, disabledEnumValues[0].GetType());
-
-      _filter = new ConstantEnumerationValueFilter (disabledEnumValues);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a number of enum values to disable.
+    /// </summary>
+    /// <param name="disabledEnumValue1">A disabled enum value.</param>
+    /// <param name="disabledEnumValue2">A disabled enum value.</param>
+    /// <param name="disabledEnumValue3">A disabled enum value.</param>
+    /// <param name="disabledEnumValue4">A disabled enum value.</param>
+    public DisableEnumValuesAttribute (
+        object disabledEnumValue1,
+        object disabledEnumValue2,
+        object disabledEnumValue3,
+        object disabledEnumValue4)
+      : this (new[] { 
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue1),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue2),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue3),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue4),
+      })
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DisableEnumValuesAttribute"/> class with a number of enum values to disable.
+    /// </summary>
+    /// <param name="disabledEnumValue1">A disabled enum value.</param>
+    /// <param name="disabledEnumValue2">A disabled enum value.</param>
+    /// <param name="disabledEnumValue3">A disabled enum value.</param>
+    /// <param name="disabledEnumValue4">A disabled enum value.</param>
+    /// <param name="disabledEnumValue5">A disabled enum value.</param>
+    public DisableEnumValuesAttribute (
+        object disabledEnumValue1, 
+        object disabledEnumValue2, 
+        object disabledEnumValue3, 
+        object disabledEnumValue4, 
+        object disabledEnumValue5)
+      : this (new[] { 
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue1),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue2),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue3),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue4),
+          ArgumentUtility.CheckNotNull ("disabledEnumValue1", disabledEnumValue5),
+      })
+    {
+    }
+
+    /// <summary>
+    /// Gets the enumeration value filter defined by this <see cref="DisableExtensibleEnumValuesAttribute"/> instance.
+    /// </summary>
+    /// <returns>An instance of the filter defined by this instance.</returns>
     public IEnumerationValueFilter GetEnumerationValueFilter ()
     {
       return _filter;
