@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.ExtensibleEnums;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
@@ -54,9 +56,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
       if (typeof (IExtensibleEnum).IsAssignableFrom (propertyDefinition.PropertyType))
-        return string.Format ("varchar ({0})", 100);
+        return string.Format ("varchar ({0})", GetColumnWidthForExtensibleEnum (propertyDefinition.PropertyType));
 
       return base.GetSqlDataType (propertyDefinition);
+    }
+
+    private int GetColumnWidthForExtensibleEnum (Type extensibleEnumType)
+    {
+      return ExtensibleEnumDefinitionCache.Instance.GetDefinition (extensibleEnumType).GetValueInfos ().Max (info => info.Value.ID.Length);
     }
 
     private static string GetSqlDataType (Type type)
