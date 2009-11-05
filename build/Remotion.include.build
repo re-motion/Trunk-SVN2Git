@@ -398,9 +398,10 @@
     <delete file="${sourcezipfile.name}" />
     <zip zipfile="${sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
-        <include name="Remotion/**" />
         <include name="build/*.xml" />
         <include name="prereq/**" />
+        <include name="Remotion/**" />
+        
         <exclude name="Remotion/**/obj/**" />
         <exclude name="Remotion/**/bin/**" />
         <exclude name="Remotion/**/*.zip" />
@@ -434,7 +435,6 @@
 
   <target name="securityManager-zip" depends="securityManager-zipfilename">
     <delete file="${securityManager-zipfile.name}" />
-    <echo message="${build.basedir}"/>
     <zip zipfile="${securityManager-zipfile.name}">
       <fileset basedir="${build.basedir}">
         <include name="**/*" />
@@ -462,14 +462,138 @@
     <delete file="${securityManager-sourcezipfile.name}"/>
     <zip zipfile="${securityManager-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
-        <include name="SecurityManager/**" />
         <include name="prereq/**" />
+        <include name="SecurityManager/**" />
+      
         <exclude name="SecurityManager/**/obj/**" />
         <exclude name="SecurityManager/**/bin/**" />
         <exclude name="SecurityManager/**/*.zip" />
         <exclude name="SecurityManager/**/*.dll" />
         <exclude name="SecurityManager/**/*.exe" />
         <exclude name="SecurityManager/**/*.pdb" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="dms-checkzip" depends="dms-zipfilename">
+    <property name="dms-ToDir" value="${publishing.base}\Dms\build\"/>
+    <fail message="ZipFile existiert bereits"
+          if="${   file::exists(dms-ToDir + dms-zipfile.filename) 
+                or file::exists(dms-ToDir + dms-sourcezipfile.filename)}" />
+  </target>
+
+  <target name="dms-addzip" depends="dms-checkzip">
+    <copy file="${dms-zipfile.name}" todir="${dms-ToDir}" />
+    <copy file="${dms-sourcezipfile.name}" todir="${dms-ToDir}" />
+  </target>
+
+  <target name="dms-zipfilename" depends="init-build-version">
+    <property name="dms-zipfile.filename" value="RemotionDms_${build.version.noconfig}.zip" />
+    <property name="dms-zipfile.name" value="${build.basedir}/${dms-zipfile.filename}" />
+    <property name="dms-sourcezipfile.filename" value="RemotionDms_SourceCode_${build.version.noconfig}.zip" />
+    <property name="dms-sourcezipfile.name" value="${build.basedir}/${dms-sourcezipfile.filename}" />
+    <echo message="Zipfile is ${dms-zipfile.name}"/>
+    <echo message="SourceZipfile is ${dms-sourcezipfile.name}"/>
+  </target>
+
+  <target name="dms-zip" depends="dms-zipfilename">
+    <delete file="${dms-zipfile.name}" />
+    <zip zipfile="${dms-zipfile.name}">
+      <fileset basedir="${build.basedir}">
+        <include name="**/*" />
+        <exclude name="*.zip" />
+        <exclude name="*/bin/documentation/**" />
+        <exclude name="${build.temp.basedir}" />
+
+        <!-- Exclude SecurityManager and AclExpander -->
+
+        <!-- Assemblies and resources -->
+        <exclude name="**/Remotion.SecurityManager*/**" />
+        <exclude name="**/AclExpander*/**" />
+
+        <!-- Executables, DB scripts, and config files -->
+        <exclude name="*/bin/**/SecurityManager*.*" />
+        <exclude name="*/bin/**/AclExpander*.*" />
+      </fileset>
+
+      <fileset basedir="${solution.basedir}\Dms">
+        <include name="license/**/*"/>
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="dms-sourcezip" depends="dms-zipfilename">
+    <delete file="${dms-sourcezipfile.name}"/>
+    <zip zipfile="${dms-sourcezipfile.name}">
+      <fileset basedir="${solution.basedir}">
+        <include name="prereq/**" />
+        <include name="Dms/**" />
+        
+        <exclude name="Dms/**/obj/**" />
+        <exclude name="Dms/**/bin/**" />
+        <exclude name="Dms/**/*.zip" />
+        <exclude name="Dms/**/*.dll" />
+        <exclude name="Dms/**/*.exe" />
+        <exclude name="Dms/**/*.pdb" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="relinq-checkzip" depends="relinq-zipfilename">
+    <property name="relinq-ToDir" value="${publishing.base}\Relinq\build\"/>
+    <fail message="ZipFile existiert bereits"
+          if="${   file::exists(relinq-ToDir + relinq-zipfile.filename) 
+                or file::exists(relinq-ToDir + relinq-sourcezipfile.filename)}" />
+  </target>
+
+  <target name="relinq-addzip" depends="relinq-checkzip">
+    <copy file="${relinq-zipfile.name}" todir="${relinq-ToDir}" />
+    <copy file="${relinq-sourcezipfile.name}" todir="${relinq-ToDir}" />
+  </target>
+
+  <target name="relinq-zipfilename" depends="init-build-version">
+    <property name="relinq-zipfile.filename" value="RemotionRelinq_${build.version.noconfig}.zip" />
+    <property name="relinq-zipfile.name" value="${build.basedir}/${relinq-zipfile.filename}" />
+    <property name="relinq-sourcezipfile.filename" value="RemotionRelinq_SourceCode_${build.version.noconfig}.zip" />
+    <property name="relinq-sourcezipfile.name" value="${build.basedir}/${relinq-sourcezipfile.filename}" />
+    <echo message="Zipfile is ${relinq-zipfile.name}"/>
+    <echo message="SourceZipfile is ${relinq-sourcezipfile.name}"/>
+  </target>
+
+  <target name="relinq-zip" depends="relinq-zipfilename">
+    <delete file="${relinq-zipfile.name}" />
+    <zip zipfile="${relinq-zipfile.name}">
+      <fileset basedir="${build.basedir}">
+        <include name="**/Castle.*" />
+        <include name="**/log4net.*" />
+        <include name="**/Remotion.dll" />
+        <include name="**/Remotion.pdb" />
+        <include name="**/Remotion.xml" />
+        <include name="**/Remotion.Interfaces.*" />
+        <include name="**/Remotion.Data.Linq.*" />
+      </fileset>
+
+      <fileset basedir="${solution.basedir}\Remotion">
+        <include name="license/**/*"/>
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="relinq-sourcezip" depends="relinq-zipfilename">
+    <delete file="${relinq-sourcezipfile.name}"/>
+    <zip zipfile="${relinq-sourcezipfile.name}">
+      <fileset basedir="${solution.basedir}">
+        <include name="prereq/Assemblies/**" />
+        <include name="Remotion/Core/Core/**" />
+        <include name="Remotion/Core/Interfaces/**" />
+        <include name="Remotion/Data/Linq/**" />
+
+        <exclude name="Remotion/**/obj/**" />
+        <exclude name="Remotion/**/bin/**" />
+        <exclude name="Remotion/**/*.zip" />
+        <exclude name="Remotion/**/*.dll" />
+        <exclude name="Remotion/**/*.exe" />
+        <exclude name="Remotion/**/*.pdb" />
       </fileset>
     </zip>
   </target>

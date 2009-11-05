@@ -155,6 +155,10 @@
     <call target="sourcezip" cascade="false" />
     <call target="securityManager-zip" cascade="false" />
     <call target="securityManager-sourcezip" cascade="false" />
+    <call target="dms-zip" cascade="false" />
+    <call target="dms-sourcezip" cascade="false" />
+    <call target="relinq-zip" cascade="false" />
+    <call target="relinq-sourcezip" cascade="false" />
     <call target="getcurrent" cascade="false" />
   </target>
 
