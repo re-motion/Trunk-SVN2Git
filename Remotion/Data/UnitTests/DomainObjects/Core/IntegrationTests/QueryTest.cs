@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -120,6 +121,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
       Assert.That (((CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id2]).OppositeDomainObjects,
           Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
+    }
+
+    [Test]
+    public void QueryWithExtensibleEnums ()
+    {
+      IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageProviderID,
+          "SELECT [TableWithAllDataTypes].* FROM [TableWithAllDataTypes] WHERE ([TableWithAllDataTypes].[ExtensibleEnum] = @1)",
+          new QueryParameterCollection (), typeof (DomainObjectCollection));
+
+      query.Parameters.Add ("@1", Color.Values.Blue());
+
+      var result = queryManager.GetCollection (query);
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) }));
+    }
+
+    [Test]
+    public void QueryWithExtensibleEnums_Linq ()
+    {
+      var query = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
+                  where cwadt.ExtensibleEnumProperty == Color.Values.Red()
+                  select cwadt;
+
+      var result = query.ToArray();
+      Assert.That (result, Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1) }));
     }
   }
 }

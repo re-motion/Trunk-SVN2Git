@@ -68,6 +68,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'Distributo
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EmployeeView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[EmployeeView]
+  
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClassWithAllDataTypesView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ClassWithAllDataTypesView]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'FileSystemItemView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[FileSystemItemView]
@@ -1200,6 +1203,26 @@ CREATE VIEW [dbo].[EmployeeView] ([ID], [ClassID], [Timestamp], [Name], [Supervi
   SELECT [ID], [ClassID], [Timestamp], [Name], [SupervisorID]
     FROM [dbo].[Employee]
     WHERE [ClassID] IN ('Employee')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ClassWithAllDataTypesView] ([ID], [ClassID],
+      [Timestamp], [Boolean], [Byte], [Date], [DateTime], [Decimal], [Double], [Enum],
+      [Flags], [ExtensibleEnum], [Guid], [Int16], [Int32], [Int64], [Single], [String],
+      [StringWithoutMaxLength], [Binary], [NaBoolean], [NaByte], [NaDate], [NaDateTime], [NaDecimal], [NaDouble],
+      [NaEnum], [NaFlags], [NaGuid], [NaInt16], [NaInt32], [NaInt64], [NaSingle], [StringWithNullValue],
+      [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue],
+      [NaFlagsWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID],
+      [Timestamp], [Boolean], [Byte], [Date], [DateTime], [Decimal], [Double], [Enum],
+      [Flags], [ExtensibleEnum], [Guid], [Int16], [Int32], [Int64], [Single], [String],
+      [StringWithoutMaxLength], [Binary], [NaBoolean], [NaByte], [NaDate], [NaDateTime], [NaDecimal], [NaDouble],
+      [NaEnum], [NaFlags], [NaGuid], [NaInt16], [NaInt32], [NaInt64], [NaSingle], [StringWithNullValue],
+      [ExtensibleEnumWithNullValue], [NaBooleanWithNullValue], [NaByteWithNullValue], [NaDateWithNullValue], [NaDateTimeWithNullValue], [NaDecimalWithNullValue], [NaDoubleWithNullValue], [NaEnumWithNullValue],
+      [NaFlagsWithNullValue], [NaGuidWithNullValue], [NaInt16WithNullValue], [NaInt32WithNullValue], [NaInt64WithNullValue], [NaSingleWithNullValue], [NullableBinary]
+  FROM [dbo].[TableWithAllDataTypes]
+  WHERE [ClassID] IN ('ClassWithAllDataTypes')
   WITH CHECK OPTION
 GO
 
