@@ -21,8 +21,13 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// Provides access to localized strings used by the ObjectBinding layer.
+  /// Defines methods for localizing the information exposed by the <see cref="IBusinessObject"/> interfaces.
   /// </summary>
+  /// <remarks>
+  /// Implementations of the <see cref="IBindableObjectGlobalizationService"/> can be directly registered with <see cref="BusinessObjectProvider"/> 
+  /// using the <see cref="BusinessObjectProvider.AddService"/> method or indirectly by providing a custom implementation of the 
+  /// <see cref="IBusinessObjectServiceFactory"/>.
+  /// </remarks>
   public interface IBindableObjectGlobalizationService : IBusinessObjectService
   {
     /// <summary>

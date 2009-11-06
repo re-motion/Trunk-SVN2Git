@@ -22,6 +22,10 @@ namespace Remotion.ObjectBinding
   /// Use the <see cref="IBusinessObjectServiceFactory"/> to create default instances for <see cref="IBusinessObjectService"/> types 
   /// requested via the <see cref="BusinessObjectProvider.GetService"/> method.
   /// </summary>
+  /// <remarks>
+  /// Implementations of the <see cref="IBusinessObjectServiceFactory"/> interface can be injected into the <see cref="BusinessObjectProvider"/>'s 
+  /// constructor.
+  /// </remarks>
   public interface IBusinessObjectServiceFactory
   {
     IBusinessObjectService CreateService (IBusinessObjectProviderWithIdentity provider, Type serviceType);
