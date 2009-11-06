@@ -6,6 +6,11 @@ body
 {
   overflow: auto;
 }
+/* IE7 only */
+*body {
+  overflow: hidden;
+}
+
 
 body, input, select, textarea
 {
