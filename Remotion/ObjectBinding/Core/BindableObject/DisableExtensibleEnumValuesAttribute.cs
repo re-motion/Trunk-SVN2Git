@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// either to the class defining the extensible enum values via extension methods or to a business object property with an extensible enum type.
   /// </summary>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public class DisableExtensibleEnumValuesAttribute : Attribute
+  public class DisableExtensibleEnumValuesAttribute : Attribute, IDisableEnumValuesAttribute
   {
     private readonly IEnumerationValueFilter _filter;
 

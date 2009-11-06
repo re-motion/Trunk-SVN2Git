@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding
   /// either to the enum or to a business object property with an enum type.
   /// </summary>
   [AttributeUsage (AttributeTargets.Enum | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-  public sealed class DisableEnumValuesAttribute : Attribute
+  public sealed class DisableEnumValuesAttribute : Attribute, IDisableEnumValuesAttribute
   {
     private readonly IEnumerationValueFilter _filter;
 

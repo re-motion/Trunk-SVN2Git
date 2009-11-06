@@ -43,7 +43,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 PropertyInfo.DeclaringType));
       }
       _undefinedValue = GetUndefinedValue();
-      _enumerationValueFilter = GetEnumerationValueFilter();
+      
+      var filterProvider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
+          PropertyInfo, 
+          t => AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (t, true));
+      _enumerationValueFilter = filterProvider.GetEnumerationValueFilter ();
     }
 
     /// <summary> Returns a list of all the enumeration's values. </summary>
@@ -181,19 +185,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
 
       return undefinedEnumValueAttribute.Value;
-    }
-
-    private IEnumerationValueFilter GetEnumerationValueFilter ()
-    {
-      var disableEnumValuesAttribute = PropertyInfo.GetCustomAttribute<DisableEnumValuesAttribute> (true);
-
-      if (disableEnumValuesAttribute == null)
-        disableEnumValuesAttribute = AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (PropertyInfo.PropertyType, true);
-
-      if (disableEnumValuesAttribute == null)
-        return null;
-
-      return disableEnumValuesAttribute.GetEnumerationValueFilter();
     }
   }
 }

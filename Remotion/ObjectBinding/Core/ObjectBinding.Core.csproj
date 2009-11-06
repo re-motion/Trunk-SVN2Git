@@ -137,6 +137,7 @@
     <Compile Include="BindableObject\DisabledIdentifiersEnumerationFilter.cs" />
     <Compile Include="BindableObject\DisableExtensibleEnumValuesAttribute.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
+    <Compile Include="BindableObject\Properties\EnumValueFilterProvider.cs" />
     <Compile Include="BindableObject\Properties\ExtensibleEnumerationProperty.cs" />
     <Compile Include="BusinessObjectExtensions.cs" />
     <Compile Include="DefaultSearchArguments.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="IBusinessObjectBoundEditableControl.cs" />
     <Compile Include="IBusinessObjectDataSource.cs" />
     <Compile Include="IBusinessObjectReferenceDataSource.cs" />
+    <Compile Include="IDisableEnumValuesAttribute.cs" />
     <Compile Include="ListUtility.cs" />
     <Compile Include="ObjectBindingAttribute.cs" />
     <Compile Include="ItemTypeAttribute.cs" />
