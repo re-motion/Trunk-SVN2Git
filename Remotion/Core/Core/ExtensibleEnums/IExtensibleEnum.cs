@@ -19,7 +19,7 @@ using System;
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Defines a non-generic interface for the <see cref="ExtensibleEnum{T}"/> class.
+  /// Provides a non-generic interface for the <see cref="ExtensibleEnum{T}"/> class.
   /// </summary>
   /// <remarks>
   /// Do not implement this interface yourself, use it only when working with extensible enums in a reflective context, e.g. via the 
