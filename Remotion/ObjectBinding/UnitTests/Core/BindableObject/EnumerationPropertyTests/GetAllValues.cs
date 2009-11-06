@@ -86,35 +86,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
       CheckEnumerationValueInfos (expected, property.GetAllValues (null));
     }
 
-    [Test]
-    public void GetDisplayNameFromGlobalizationSerivce ()
-    {
-      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
-      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
-      _businessObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
-
-      EnumerationValueInfo[] expected = new[]
-          {
-              new EnumerationValueInfo (TestEnum.Value1, "Value1", "MockValue1", true),
-              new EnumerationValueInfo (TestEnum.Value2, "Value2", "MockValue2", true),
-              new EnumerationValueInfo (TestEnum.Value3, "Value3", "MockValue3", true),
-              new EnumerationValueInfo (TestEnum.Value4, "Value4", "MockValue4", true),
-              new EnumerationValueInfo (TestEnum.Value5, "Value5", "MockValue5", false)
-         };
-
-      Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value1)).Return ("MockValue1");
-      Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value2)).Return ("MockValue2");
-      Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value3)).Return ("MockValue3");
-      Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value4)).Return ("MockValue4");
-      Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value5)).Return ("MockValue5");
-      _mockRepository.ReplayAll ();
-
-      IEnumerationValueInfo[] actual = property.GetAllValues (null);
-
-      _mockRepository.VerifyAll();
-      CheckEnumerationValueInfos (expected, actual);
-    }
-
     private EnumerationProperty CreateProperty (Type type, string propertyName)
     {
       return new EnumerationProperty (
