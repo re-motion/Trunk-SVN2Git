@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       var disableEnumValuesAttribute = PropertyInformation.GetCustomAttribute<T> (true) ?? _typeAttributeProvider (PropertyInformation.PropertyType);
 
-      return disableEnumValuesAttribute != null ? disableEnumValuesAttribute.GetEnumerationValueFilter() : null;
+      return disableEnumValuesAttribute != null ? disableEnumValuesAttribute.GetEnumerationValueFilter() : new NullEnumerationValueFilter();
     }
   }
 }

@@ -147,10 +147,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (!Enum.IsDefined (UnderlyingType, value))
         return false;
 
-      if (_enumerationValueFilter != null)
-        return _enumerationValueFilter.IsEnabled (new EnumerationValueInfo (value, GetIdenfier (value), null, true), businessObject, this);
-
-      return true;
+      return _enumerationValueFilter.IsEnabled (new EnumerationValueInfo (value, GetIdenfier (value), null, true), businessObject, this);
     }
 
     private bool IsUndefinedValue (Enum value)
