@@ -339,7 +339,7 @@ namespace Remotion.Utilities
         if (converter == null && (Nullable.GetUnderlyingType (type) ?? type).IsEnum)
           converter = new AdvancedEnumConverter (type);
 
-        if (converter == null && typeof (IExtensibleEnum).IsAssignableFrom (type))
+        if (converter == null && ExtensibleEnumUtility.IsExtensibleEnumType (type))
           converter = new ExtensibleEnumConverter (type);
 
         AddTypeConverterToCache (type, converter);

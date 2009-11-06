@@ -44,6 +44,52 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void GetEnumType ()
+    {
+      var definition = CreateDefinition (_red, _green);
+      Assert.That (definition.GetEnumType (), Is.SameAs (typeof (Color)));
+    }
+
+    [Test]
+    public void IsDefined_String_True ()
+    {
+      var definition = CreateDefinition (_red, _green);
+      Assert.That (definition.IsDefined (_red.ID), Is.True);
+    }
+
+    [Test]
+    public void IsDefined_String_False ()
+    {
+      var definition = CreateDefinition (_green);
+      Assert.That (definition.IsDefined (_red.ID), Is.False);
+    }
+
+    [Test]
+    public void IsDefined_Value_True ()
+    {
+      var definition = CreateDefinition (_red, _green);
+      Assert.That (definition.IsDefined (_red), Is.True);
+    }
+
+    [Test]
+    public void IsDefined_Value_False_ID ()
+    {
+      var definition = CreateDefinition (_green);
+      Assert.That (definition.IsDefined (_red), Is.False);
+    }
+
+    [Test]
+    public void IsDefined_Value_False_Type ()
+    {
+      var definition = CreateDefinition (_red);
+      
+      var valueWithWrongType = new EnumWithDifferentCtors (_red.ID);
+      Assert.That (valueWithWrongType.ID, Is.EqualTo (_red.ID));
+      
+      Assert.That (definition.IsDefined (valueWithWrongType), Is.False);
+    }
+
+    [Test]
     public void GetValueInfos ()
     {
       var infos = GetInfos (_red, _green, _blue).ToArray();

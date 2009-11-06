@@ -83,6 +83,26 @@ namespace Remotion.ExtensibleEnums
       _cache = new DoubleCheckedLockingContainer<CacheItem> (RetrieveValues);
     }
 
+    /// <inheritdoc />
+    public Type GetEnumType ()
+    {
+      return typeof (T);
+    }
+
+    /// <inheritdoc />
+    public bool IsDefined (string id)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      return _cache.Value.Dictionary.ContainsKey (id);
+    }
+
+    /// <inheritdoc />
+    public bool IsDefined (IExtensibleEnum value)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+      return value.GetEnumType () == GetEnumType () && IsDefined (value.ID);
+    }
+
     /// <summary>
     /// Gets <see cref="ExtensibleEnumInfo{T}"/> objects describing the values defined by the extensible enum type.
     /// </summary>

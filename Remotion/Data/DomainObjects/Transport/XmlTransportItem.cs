@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.Transport
       {
         writer.WriteString (value.ToString());
       }
-      else if (typeof (IExtensibleEnum).IsAssignableFrom (valueType))
+      else if (ExtensibleEnumUtility.IsExtensibleEnumType (valueType))
       {
         writer.WriteString (((IExtensibleEnum) value).ID);
       }
@@ -159,10 +159,10 @@ namespace Remotion.Data.DomainObjects.Transport
         reader.ReadStartElement ("null"); // no end element for null
         value = null;
       }
-      else if (typeof (IExtensibleEnum).IsAssignableFrom (valueType))
+      else if (ExtensibleEnumUtility.IsExtensibleEnumType (valueType))
       {
         string idString = reader.ReadContentAsString ();
-        value = ExtensibleEnumDefinitionCache.Instance.GetDefinition (valueType).GetValueInfoByID (idString).Value;
+        value = ExtensibleEnumUtility.GetDefinition (valueType).GetValueInfoByID (idString).Value;
       }
       else if (valueType == typeof (ObjectID))
       {

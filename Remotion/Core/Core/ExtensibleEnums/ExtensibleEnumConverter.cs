@@ -39,7 +39,7 @@ namespace Remotion.ExtensibleEnums
       ArgumentUtility.CheckNotNull ("extensibleEnumType", extensibleEnumType);
 
       _extensibleEnumType = extensibleEnumType;
-      _definition = ExtensibleEnumDefinitionCache.Instance.GetDefinition (ExtensibleEnumType);
+      _definition = ExtensibleEnumUtility.GetDefinition (ExtensibleEnumType);
     }
 
     /// <summary>

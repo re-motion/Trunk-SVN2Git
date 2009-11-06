@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           && definition.PropertyType != typeof (byte[]) 
           && definition.PropertyType != typeof (Type)
           && definition.PropertyType != typeof (ObjectID)
-          && !typeof (IExtensibleEnum).IsAssignableFrom (definition.PropertyType))
+          && !ExtensibleEnumUtility.IsExtensibleEnumType (definition.PropertyType))
       {
         var message = string.Format ("The property '{0}' (declared on class '{1}') is invalid because its values cannot be copied. Only value types, "
             + "strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is '{2}'.",

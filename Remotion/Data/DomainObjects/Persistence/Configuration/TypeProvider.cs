@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       if (type.IsEnum)
         type = typeof (Enum);
 
-      if (typeof (IExtensibleEnum).IsAssignableFrom (type))
+      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
         type = typeof (IExtensibleEnum);
 
       return _supportedTypes.ContainsKey (type);

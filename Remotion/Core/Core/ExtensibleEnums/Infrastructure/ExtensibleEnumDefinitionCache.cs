@@ -16,11 +16,10 @@
 // 
 using System;
 using Remotion.Collections;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
-namespace Remotion.ExtensibleEnums
+namespace Remotion.ExtensibleEnums.Infrastructure
 {
   /// <summary>
   /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic, reflective access.

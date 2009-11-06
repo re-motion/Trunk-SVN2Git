@@ -25,7 +25,7 @@
       "finished", every application component can add new values.
     </para>
     <para>
-      An extensible enum type is defined by deriving a class from <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}" />. The generic parameter
+      An extensible enum type is defined by deriving a class from <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum`1" />. The generic parameter
       <c>T</c> is thereby substituted with the extensible enum type:
       <code>
         public class Color : ExtensibleEnum&lt;Color&gt;
@@ -38,17 +38,17 @@
       </code>
     </para>
     <para>
-      Each enum value is uniquely identified by an <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}.ID" /> string formed from a
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}.DeclarationSpace" /> and a
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}.ValueName" /> string.
-      The <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}" /> base class provides a number of different constructors to define those strings.
+      Each enum value is uniquely identified by an <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.ID" /> string formed from a
+      <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.DeclarationSpace" /> and a
+      <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.ValueName" /> string.
+      The <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum`1" /> base class provides a number of different constructors to define those strings.
       Each extensible enum type should choose one way to form the identifier and expose only one constructor conforming to that way.
     </para>
     <para>
       The values of an extensible enum type are added by defining extension methods against the 
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition{T}"/> class. Each extension method defines exactly one enum value, and clients
+      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition`1"/> class. Each extension method defines exactly one enum value, and clients
       of the extensible enum should use those methods to retrieve the values. For this purpose, the 
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}" /> provides a <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}.Values" /> property
+      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum`1" /> provides a <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.Values" /> property
       that allows easy access to the extension methods:
       <code>
         public static class ColorExtensions
@@ -69,7 +69,7 @@
         var redValue = Color.Values.Red(); // invokes ColorExtensions.Red()
       </code>
       In this example, the Color type's IDs are formed by specifying a declaration space and value name. The most convenient way to produce
-      unique identifiers, however, is to make use of the <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}" /> constructor taking the extension
+      unique identifiers, however, is to make use of the <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum`1" /> constructor taking the extension
       method as its parameter:
       <code>
         public class Color : ExtensibleEnum&lt;Color&gt;
@@ -103,15 +103,15 @@
     </para>
     <para>
       Apart from serving as the declaration target of the extension methods defining extensible enum values, the 
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition{T}"/> class also provides a way to reflectively look up all values of a given
-      extensible enum type and to retrieve a single value by its <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}.ID" />. Instances
-      of <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition{T}"/> can be retrieved via the 
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnum{T}.Values" /> (strongly types) or
-      <see cref="Remotion.ExtensibleEnums.ExtensibleEnumDefinitionCache" /> (in reflective scenarios).
+      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition`1"/> class also provides a way to reflectively look up all values of a given
+      extensible enum type and to retrieve a single value by its <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.ID" />. Instances
+      of <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition`1"/> can be retrieved via the 
+      <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.Values" /> (strongly types) or
+      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinitionUtility" /> (in reflective scenarios).
     </para>
     <para>
       It is possible to derive classes from an extensible enum type and override methods in those subclasses. Values for the enum type must still
-      be defined via extension methods for <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition{T}"/>, where T is the base enum type,
+      be defined via extension methods for <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition`1"/>, where T is the base enum type,
       not the derived one, but the extension methods can return instances of the derived classes.
     </para>
     <para>

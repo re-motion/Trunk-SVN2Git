@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public ExtensibleEnumerationProperty (Parameters parameters)
         : base(parameters)
     {
-      _definition = ExtensibleEnumDefinitionCache.Instance.GetDefinition (PropertyType);
+      _definition = ExtensibleEnumUtility.GetDefinition (PropertyType);
     }
 
     public IEnumerationValueInfo[] GetAllValues (IBusinessObject businessObject)

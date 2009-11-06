@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
       if (propertyDefinition.PropertyType == typeof (Byte[]))
         return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
-      if (typeof (IExtensibleEnum).IsAssignableFrom (propertyDefinition.PropertyType))
+      if (ExtensibleEnumUtility.IsExtensibleEnumType (propertyDefinition.PropertyType))
         return string.Format ("varchar ({0})", GetColumnWidthForExtensibleEnum (propertyDefinition.PropertyType));
 
       return base.GetSqlDataType (propertyDefinition);
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
 
     private int GetColumnWidthForExtensibleEnum (Type extensibleEnumType)
     {
-      return ExtensibleEnumDefinitionCache.Instance.GetDefinition (extensibleEnumType).GetValueInfos ().Max (info => info.Value.ID.Length);
+      return ExtensibleEnumUtility.GetDefinition (extensibleEnumType).GetValueInfos ().Max (info => info.Value.ID.Length);
     }
 
     private static string GetSqlDataType (Type type)

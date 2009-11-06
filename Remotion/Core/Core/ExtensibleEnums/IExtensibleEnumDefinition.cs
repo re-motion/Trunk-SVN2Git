@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.ExtensibleEnums.Infrastructure;
@@ -30,6 +31,30 @@ namespace Remotion.ExtensibleEnums
   /// </remarks>
   public interface IExtensibleEnumDefinition
   {
+    /// <summary>
+    /// Gets the extensible enum type described by this <see cref="IExtensibleEnumDefinition"/>.
+    /// </summary>
+    Type GetEnumType ();
+
+    /// <summary>
+    /// Determines whether the extensible enum type defines a value with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <param name="id">The id to be retrieved.</param>
+    /// <returns>
+    /// 	<see langword="true" /> if a value with the specified ID is defined; otherwise, <see langword="false" />.
+    /// </returns>
+    bool IsDefined (string id);
+
+    /// <summary>
+    /// Determines whether the given value is a valid instance of the extensible enum type described by this <see cref="IExtensibleEnumDefinition"/>.
+    /// This includes checking whether the value's <see cref="IExtensibleEnum.ID"/> is defined.
+    /// </summary>
+    /// <param name="value">The value to be checked.</param>
+    /// <returns>
+    /// 	<see langword="true"/> if the value is defined; otherwise, <see langword="false"/>.
+    /// </returns>
+    bool IsDefined (IExtensibleEnum value);
+
     /// <summary>
     /// Gets <see cref="IExtensibleEnumInfo"/> objects describing the values defined by the extensible enum type.
     /// </summary>

@@ -98,8 +98,8 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (_propertyType.IsEnum)
           return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
 
-        if (typeof (IExtensibleEnum).IsAssignableFrom (_propertyType))
-          return ExtensibleEnumDefinitionCache.Instance.GetDefinition (_propertyType).GetValueInfos().First().Value;
+        if (ExtensibleEnumUtility.IsExtensibleEnumType (_propertyType))
+          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos ().First ().Value;
 
         return Activator.CreateInstance (_propertyType, new object[0]);
       }

@@ -165,12 +165,13 @@
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumConverter.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumInfo.cs" />
+    <Compile Include="ExtensibleEnums\ExtensibleEnumUtility.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnumInfo.cs" />
     <Compile Include="ExtensibleEnums\InvalidExtensibleEnumDefinitionException.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="ExtensibleEnums\ExtensibleEnumDefinition.cs" />
-    <Compile Include="ExtensibleEnums\ExtensibleEnumDefinitionCache.cs" />
+    <Compile Include="ExtensibleEnums\Infrastructure\ExtensibleEnumDefinitionCache.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnum.cs" />
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />

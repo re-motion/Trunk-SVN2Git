@@ -35,7 +35,7 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <remarks>Values of the extensible enum type are defined by declaring extension methods against 
     /// <see cref="ExtensibleEnumDefinition{T}"/> and can be accessed via this field.</remarks>
-    public static readonly ExtensibleEnumDefinition<T> Values = (ExtensibleEnumDefinition<T>) ExtensibleEnumDefinitionCache.Instance.GetDefinition (typeof (T));
+    public static readonly ExtensibleEnumDefinition<T> Values = (ExtensibleEnumDefinition<T>) ExtensibleEnumUtility.GetDefinition (typeof (T));
 
     /// <summary>
     /// Initializes a new enumeration value with a declaration space and a value name. The actual <see cref="ID"/> is formed by combining declaration
