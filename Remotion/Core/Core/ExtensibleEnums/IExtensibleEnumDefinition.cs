@@ -86,5 +86,19 @@ namespace Remotion.ExtensibleEnums
     /// <see langword="true" /> if a value with the given <paramref name="id"/> could be found; <see langword="false" /> otherwise.
     /// </returns>
     bool TryGetValueInfoByID (string id, out IExtensibleEnumInfo value);
+
+    /// <summary>
+    /// Gets the custom attributes defined by the types declaring the extension methods defining the enum values.
+    /// </summary>
+    /// <param name="attributeType">The attribute type to look for. Attributes inheriting from this type are also returned.</param>
+    /// <returns>The custom attributes defined by the types declaring the extension methods defining the enum values.</returns>
+    object[] GetCustomAttributes (Type attributeType);
+
+    /// <summary>
+    /// Gets the custom attributes defined by the types declaring the extension methods defining the enum values.
+    /// </summary>
+    /// <typeparam name="TAttribute">The attribute type to look for. Attributes inheriting from this type are also returned.</typeparam>
+    /// <returns>The custom attributes defined by the types declaring the extension methods defining the enum values.</returns>
+    TAttribute[] GetCustomAttributes<TAttribute> () where TAttribute : class;
   }
 }

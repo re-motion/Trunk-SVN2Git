@@ -211,6 +211,52 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void GetCustomAttributes_NonGeneric ()
+    {
+      var customAttributes = Color.Values.GetCustomAttributes (typeof (MultiLingualResourcesAttribute));
+
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+          .ToArray();
+      Assert.That (customAttributes, Is.EquivalentTo (expected));
+      Assert.That (customAttributes, Is.TypeOf (typeof (MultiLingualResourcesAttribute[])));
+    }
+
+    [Test]
+    public void GetCustomAttributes_NonGeneric_Interface ()
+    {
+      var customAttributes = Color.Values.GetCustomAttributes (typeof (IResourcesAttribute));
+
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+          .ToArray ();
+      Assert.That (customAttributes, Is.EquivalentTo (expected));
+      Assert.That (customAttributes, Is.TypeOf (typeof (IResourcesAttribute[])));
+    }
+
+    [Test]
+    public void GetCustomAttributes_Generic ()
+    {
+      var customAttributes = Color.Values.GetCustomAttributes<MultiLingualResourcesAttribute>();
+
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+          .ToArray ();
+      Assert.That (customAttributes, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void GetCustomAttributes_Generic_Interface ()
+    {
+      var customAttributes = Color.Values.GetCustomAttributes<IResourcesAttribute> ();
+
+      var expected = typeof (ColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false)
+          .Concat (typeof (LightColorExtensions).GetCustomAttributes (typeof (MultiLingualResourcesAttribute), false))
+          .ToArray ();
+      Assert.That (customAttributes, Is.EquivalentTo (expected));
+    }
+
+    [Test]
     public void GetValueInfos_NonGeneric ()
     {
       var definition = CreateDefinition (_red, _green);

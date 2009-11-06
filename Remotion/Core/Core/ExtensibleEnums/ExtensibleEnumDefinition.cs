@@ -153,6 +153,28 @@ namespace Remotion.ExtensibleEnums
       return _cache.Value.Dictionary.TryGetValue (id, out value);
     }
 
+    /// <inheritdoc />
+    public object[] GetCustomAttributes (Type attributeType)
+    {
+      ArgumentUtility.CheckNotNull ("attributeType", attributeType);
+
+      var attributes = from info in GetValueInfos()
+                       let extensionType = info.DefiningMethod.DeclaringType
+                       from attribute in AttributeUtility.GetCustomAttributes (extensionType, attributeType, false)
+                       select attribute;
+      var list = attributes.ToList ();
+      
+      var array = (object[]) Array.CreateInstance (attributeType, list.Count);
+      list.CopyTo (array);
+      return array;
+    }
+
+    /// <inheritdoc />
+    public TAttribute[] GetCustomAttributes<TAttribute> () where TAttribute : class
+    {
+      return (TAttribute[]) GetCustomAttributes (typeof(TAttribute));
+    }
+
     private CacheItem RetrieveValues ()
     {
       var valueArray = _valueDiscoveryService.GetValueInfos (this).ToArray();
