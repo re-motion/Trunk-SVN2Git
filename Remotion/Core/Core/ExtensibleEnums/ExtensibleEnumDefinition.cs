@@ -25,12 +25,13 @@ using Remotion.Utilities;
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Provides discovery services for extensible enum values. Extensible enum implementations should
-  /// hold an instance of this class in a static propery of the <see cref="ExtensibleEnum{T}"/> subclass representing
+  /// Provides discovery services for extensible enum values. Extensible enum implementations hold
+  /// hold an instance of this class in the <see cref="ExtensibleEnum{T}.Values"/> class which represents
   /// the enumeration. The values of the enumeration should be defined as extension methods for <see cref="ExtensibleEnumDefinition{T}"/>,
   /// where <typeparamref name="T"/> is the <see cref="ExtensibleEnum{T}"/> subclass.
   /// </summary>
   /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum{T}"/> that represents the enumeration.</typeparam>
+  /// <threadsafety static="true" instance="true" />
   public class ExtensibleEnumDefinition<T> : IExtensibleEnumDefinition
       // this constraint forces the user to always write 'ExtensibleEnumDefinition<MyEnum>', never 'ExtensibleEnumDefinition<MyDerivedEnum>'
       where T : ExtensibleEnum<T>

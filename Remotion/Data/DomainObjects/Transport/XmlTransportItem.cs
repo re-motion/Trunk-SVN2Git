@@ -21,7 +21,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ExtensibleEnums;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 

@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Remotion.ExtensibleEnums;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping

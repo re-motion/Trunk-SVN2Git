@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
           new { Value = Color.Values.Green (), DeclaringMethod = _greenMethod }, 
           new { Value = (Color) Color.Values.RedMetallic (), DeclaringMethod = _redMetallicMethod }, };
 
-      Assert.That (result.Select (info => new { info.Value, info.DeclaringMethod }).ToArray (), Is.EquivalentTo (expected));
+      Assert.That (result.Select (info => new { info.Value, DeclaringMethod = info.DefiningMethod }).ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
           new { Value = Color.Values.Red (), DeclaringMethod = _redMethod }, 
           new { Value = Color.Values.Green (), DeclaringMethod = _greenMethod }, };
 
-      Assert.That (result.Select (info => new { info.Value, info.DeclaringMethod }).ToArray (), Is.EquivalentTo (expected));
+      Assert.That (result.Select (info => new { info.Value, DeclaringMethod = info.DefiningMethod }).ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]
@@ -188,8 +188,8 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
       var service = new ExtensibleEnumValueDiscoveryService (typeDiscoveryServiceStub);
       var valueInfos = service.GetValueInfos (new ExtensibleEnumDefinition<Color> (service));
 
-      var declaringMethodOfGreen = valueInfos.Where (info => info.Value.ID == "Green").Single ().DeclaringMethod;
-      var declaringMethodOfRed = valueInfos.Where (info => info.Value.ID == "Red").Single ().DeclaringMethod;
+      var declaringMethodOfGreen = valueInfos.Where (info => info.Value.ID == "Green").Single ().DefiningMethod;
+      var declaringMethodOfRed = valueInfos.Where (info => info.Value.ID == "Red").Single ().DefiningMethod;
       
       Assert.That (declaringMethodOfGreen, Is.EqualTo (_greenMethod));
       Assert.That (declaringMethodOfRed, Is.EqualTo (_redMethod));

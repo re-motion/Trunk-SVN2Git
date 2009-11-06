@@ -23,7 +23,7 @@ namespace Remotion.ExtensibleEnums
 {
   /// <summary>
   /// Holds information about an extensible enum value, including the <see cref="Value"/> itself and meta-info such as the 
-  /// <see cref="DeclaringMethod"/> and the associated <see cref="ResourceManager"/>.
+  /// <see cref="DefiningMethod"/> and the associated <see cref="ResourceManager"/>.
   /// </summary>
   /// <typeparam name="T">The extensible enum type.</typeparam>
   public class ExtensibleEnumInfo<T> : IExtensibleEnumInfo
@@ -42,12 +42,12 @@ namespace Remotion.ExtensibleEnums
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
       Value = value;
-      DeclaringMethod = declaringMethod;
+      DefiningMethod = declaringMethod;
       ResourceManager = resourceManager;
     }
     
     /// <summary>
-    /// Gets the extensible enum value described by this instance.
+    /// Gets the <see cref="ExtensibleEnum{T}"/> value described by this instance.
     /// </summary>
     /// <value>The value.</value>
     public T Value { get; private set; }
@@ -59,13 +59,13 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Gets the method declaring the <see cref="Value"/> described by this instance.
+    /// Gets the method defining the <see cref="Value"/> described by this instance.
     /// </summary>
-    /// <value>The declaring method of the <see cref="Value"/>.</value>
-    public MethodInfo DeclaringMethod { get; private set; }
+    /// <value>The defining method of the <see cref="Value"/>.</value>
+    public MethodInfo DefiningMethod { get; private set; }
 
     /// <summary>
-    /// Gets the resource manager associated with the <see cref="DeclaringMethod"/> of the <see cref="Value"/> described by this instance.
+    /// Gets the resource manager associated with the <see cref="DefiningMethod"/> of the <see cref="Value"/> described by this instance.
     /// </summary>
     /// <value>The resource manager of this <see cref="Value"/>.</value>
     public IResourceManager ResourceManager { get; private set; }

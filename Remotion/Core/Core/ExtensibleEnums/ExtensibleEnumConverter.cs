@@ -18,13 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Provides support for converting extensible enums from and to instances of type <see cref="string"/>.
+  /// Provides support for converting extensible enums to and from instances of type <see cref="string"/>.
   /// </summary>
   public class ExtensibleEnumConverter : TypeConverter
   {

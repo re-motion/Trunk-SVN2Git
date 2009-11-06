@@ -28,13 +28,13 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
     {
     }
 
-    public EnumWithDifferentCtors (string idPrefix, string shortID)
-        : base (idPrefix, shortID)
+    public EnumWithDifferentCtors (string declarationSpace, string valueName)
+        : base (declarationSpace, valueName)
     {
     }
 
-    public EnumWithDifferentCtors (Type declaringType, string shortID)
-        : base (declaringType, shortID)
+    public EnumWithDifferentCtors (Type declaringType, string valueName)
+        : base (declaringType, valueName)
     {
     }
 

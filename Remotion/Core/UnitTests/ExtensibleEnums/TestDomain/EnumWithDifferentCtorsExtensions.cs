@@ -21,32 +21,32 @@ namespace Remotion.UnitTests.ExtensibleEnums.TestDomain
 {
   public static class EnumWithDifferentCtorsExtensions
   {
-    public static EnumWithDifferentCtors ShortIDOnly (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
+    public static EnumWithDifferentCtors IDOnly (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
     {
-      return new EnumWithDifferentCtors ("ShortID");
+      return new EnumWithDifferentCtors ("ValueName");
     }
 
-    public static EnumWithDifferentCtors ShortIDAndPrefix (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
+    public static EnumWithDifferentCtors DeclarationSpaceAndName (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
     {
-      return new EnumWithDifferentCtors ("Prefix", "ShortID");
+      return new EnumWithDifferentCtors ("DeclarationSpace", "ValueName");
     }
 
-    public static EnumWithDifferentCtors ShortIDAndNullPrefix (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
+    public static EnumWithDifferentCtors NameAndNullDeclarationSpace (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
     {
-      return new EnumWithDifferentCtors ((string) null, "ShortID");
+      return new EnumWithDifferentCtors ((string) null, "ValueName");
     }
 
-    public static EnumWithDifferentCtors ShortIDAndEmptyPrefix (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
+    public static EnumWithDifferentCtors NameAndEmptyDeclarationSpace (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
     {
-      return new EnumWithDifferentCtors ("", "ShortID");
+      return new EnumWithDifferentCtors ("", "ValueName");
     }
 
-    public static EnumWithDifferentCtors ShortIDAndType (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
+    public static EnumWithDifferentCtors DeclaringTypeAndName (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
     {
-      return new EnumWithDifferentCtors (typeof (EnumWithDifferentCtorsExtensions), "ShortID");
+      return new EnumWithDifferentCtors (typeof (EnumWithDifferentCtorsExtensions), "ValueName");
     }
 
-    public static EnumWithDifferentCtors MethodAsID (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
+    public static EnumWithDifferentCtors CurrentMethod (this ExtensibleEnumDefinition<EnumWithDifferentCtors> enumWithDifferentCtors)
     {
       return new EnumWithDifferentCtors (MethodBase.GetCurrentMethod());
     }

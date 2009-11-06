@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ExtensibleEnums.Infrastructure;
 
 namespace Remotion.ExtensibleEnums
 {
@@ -29,22 +28,26 @@ namespace Remotion.ExtensibleEnums
   public interface IExtensibleEnum
   {
     /// <summary>
-    /// Gets the identifier representing this extensible enum value. This is the combination of <see cref="IDPrefix"/> and <see cref="ShortID"/>.
+    /// Gets the identifier representing this extensible enum value. This is the combination of <see cref="DeclarationSpace"/> and 
+    /// <see cref="ValueName"/>. Use <see cref="IExtensibleEnumDefinition.GetValueInfoByID"/> to retrieve an <see cref="IExtensibleEnum"/>
+    /// value by its <see cref="ID"/>.
     /// </summary>
     /// <value>The ID of this value.</value>
     string ID { get; }
 
     /// <summary>
-    /// Gets the ID prefix. This is used to form the <see cref="ID"/> representing this extensible enum value.
+    /// Gets a string identifying the declaration space of the identifier of the value being created. This can be a 
+    /// namespace, a type name, or anything else that helps in uniquely identifying the enum value. It is used as a prefix to the <see cref="ID"/>
+    /// of the value. Can be <see langword="null" />.
     /// </summary>
-    /// <value>The ID prefix of this value.</value>
-    string IDPrefix { get; }
+    /// <value>The declaration space of this value, or <see langword="null" /> if the value does not define a declaration space.</value>
+    string DeclarationSpace { get; }
 
     /// <summary>
-    /// Gets the short ID. This is used to form the <see cref="ID"/> representing this extensible enum value.
+    /// Gets name of this value. This is a part of the <see cref="ID"/> of this extensible enum value.
     /// </summary>
-    /// <value>The short ID of this value.</value>
-    string ShortID { get; }
+    /// <value>The name of this value.</value>
+    string ValueName { get; }
 
     /// <summary>
     /// Gets the type of the extensible enum this value belongs to.

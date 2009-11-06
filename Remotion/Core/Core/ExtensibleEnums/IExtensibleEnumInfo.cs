@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Globalization;
 
 namespace Remotion.ExtensibleEnums
@@ -31,19 +30,19 @@ namespace Remotion.ExtensibleEnums
   public interface IExtensibleEnumInfo
   {
     /// <summary>
-    /// Gets the extensible enum value described by this instance.
+    /// Gets the <see cref="ExtensibleEnum{T}"/> value described by this instance.
     /// </summary>
     /// <value>The value.</value>
     IExtensibleEnum Value { get; }
 
     /// <summary>
-    /// Gets the method declaring the <see cref="Value"/> described by this instance.
+    /// Gets the method defining the <see cref="Value"/> described by this instance.
     /// </summary>
-    /// <value>The declaring method of the <see cref="Value"/>.</value>
-    MethodInfo DeclaringMethod { get; }
+    /// <value>The defining method of the <see cref="Value"/>.</value>
+    MethodInfo DefiningMethod { get; }
 
     /// <summary>
-    /// Gets the resource manager associated with the <see cref="DeclaringMethod"/> of the <see cref="Value"/> described by this instance.
+    /// Gets the resource manager associated with the <see cref="DefiningMethod"/> of the <see cref="Value"/> described by this instance.
     /// </summary>
     /// <value>The resource manager of this <see cref="Value"/>.</value>
     IResourceManager ResourceManager { get; }

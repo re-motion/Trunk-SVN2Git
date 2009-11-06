@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.ExtensibleEnums
@@ -39,19 +38,20 @@ namespace Remotion.ExtensibleEnums
     public static readonly ExtensibleEnumDefinition<T> Values = (ExtensibleEnumDefinition<T>) ExtensibleEnumDefinitionCache.Instance.GetDefinition (typeof (T));
 
     /// <summary>
-    /// Initializes a new enumeration value with an <see cref="ID"/> prefix and a short ID. The actual <see cref="ID"/> is formed of both prefix
-    /// and short ID.
+    /// Initializes a new enumeration value with a declaration space and a value name. The actual <see cref="ID"/> is formed by combining declaration
+    /// space and value name.
     /// </summary>
-    /// <param name="idPrefix">The prefix (e.g. a namespace) of the identifier of the value being created. This identifier is used for equality 
-    /// comparisons and hash code calculations. Can be <see langword="null" />.</param>
-    /// <param name="shortID">The short identifier of the value being created. This identifier is used for equality comparisons
+    /// <param name="declarationSpace">A string identifying the declaration space of the identifier of the value being created. This can be a 
+    /// namespace, a type name, or anything else that helps in uniquely identifying the enum value. It is used as a prefix to the <see cref="ID"/>
+    /// of the value. This identifier is used for equality comparisons and hash code calculations. Can be <see langword="null" />.</param>
+    /// <param name="valueName">The name of the value being created. This identifier is used for equality comparisons
     /// and hash code calculations.</param>
-    protected ExtensibleEnum (string idPrefix, string shortID)
+    protected ExtensibleEnum (string declarationSpace, string valueName)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("shortID", shortID);
+      ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName);
 
-      IDPrefix = idPrefix;
-      ShortID = shortID;
+      DeclarationSpace = declarationSpace;
+      ValueName = valueName;
     }
 
     /// <summary>
@@ -67,17 +67,17 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Initializes a new enumeration value with a declaring type and a short ID. The actual <see cref="ID"/> is formed of the full name of the
-    /// declaring type and the short ID.
+    /// Initializes a new enumeration value with a declaring type and a value name. The actual <see cref="ID"/> is formed of the full name of the
+    /// declaring type and the value name.
     /// </summary>
     /// <param name="declaringType">The type declaring the extension method defining the enum value. This type's full name is used as a prefix of the 
     /// identifier of the value being created. This identifier is used for equality comparisons and hash code calculations.</param>
-    /// <param name="shortID">The short identifier of the value being created. This identifier is used for equality comparisons
+    /// <param name="valueName">The name of the value being created. This identifier is used for equality comparisons
     /// and hash code calculations.</param>
-    protected ExtensibleEnum (Type declaringType, string shortID)
+    protected ExtensibleEnum (Type declaringType, string valueName)
         : this (
             ArgumentUtility.CheckNotNull ("declaringType", declaringType).FullName, 
-            ArgumentUtility.CheckNotNullOrEmpty ("shortID", shortID))
+            ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName))
     {
     }
 
@@ -85,7 +85,7 @@ namespace Remotion.ExtensibleEnums
     /// Initializes a new enumeration value, automatically setting its <see cref="ID"/> using the extension method defining the value.
     /// </summary>
     /// <param name="currentMethod">The extension method defining the enum value, use <see cref="MethodBase.GetCurrentMethod"/> to retrieve the value
-    /// to pass for this parameter. The method's full name is used as the identifier of the value being  created. This identifier is used for 
+    /// to pass for this parameter. The method's full name is used as the identifier of the value being created. This identifier is used for 
     /// equality comparisons and hash code calculations.</param>
     protected ExtensibleEnum (MethodBase currentMethod)
         : this (
@@ -95,25 +95,29 @@ namespace Remotion.ExtensibleEnums
     }
 
     /// <summary>
-    /// Gets the full identifier representing this extensible enum value. This is the combination of <see cref="IDPrefix"/> and <see cref="ShortID"/>.
+    /// Gets the full identifier representing this extensible enum value. This is the combination of <see cref="DeclarationSpace"/> and 
+    /// <see cref="ValueName"/>. Use <see cref="ExtensibleEnumDefinition{T}.GetValueInfoByID"/> to retrieve an <see cref="ExtensibleEnum{T}"/>
+    /// value by its <see cref="ID"/>.
     /// </summary>
     /// <value>The ID of this value.</value>
     public string ID 
     {
-      get { return string.IsNullOrEmpty (IDPrefix) ? ShortID : IDPrefix + "." + ShortID; }
+      get { return string.IsNullOrEmpty (DeclarationSpace) ? ValueName : DeclarationSpace + "." + ValueName; }
     }
     
     /// <summary>
-    /// Gets the ID prefix. This is used to form the <see cref="ID"/> representing this extensible enum value.
+    /// Gets a string identifying the declaration space of the identifier of the value being created. This can be a 
+    /// namespace, a type name, or anything else that helps in uniquely identifying the enum value. It is used as a prefix to the <see cref="ID"/>
+    /// of the value. Can be <see langword="null" />.
     /// </summary>
-    /// <value>The ID prefix of this value.</value>
-    public string IDPrefix { get; private set; }
+    /// <value>The declaration space of this value, or <see langword="null" /> if the value does not define a declaration space.</value>
+    public string DeclarationSpace { get; private set; }
 
     /// <summary>
-    /// Gets the short ID. This is used to form the <see cref="ID"/> representing this extensible enum value.
+    /// Gets name of this value. This is a part of the <see cref="ID"/> of this extensible enum value.
     /// </summary>
-    /// <value>The short ID of this value.</value>
-    public string ShortID { get; private set; }
+    /// <value>The name of this value.</value>
+    public string ValueName { get; private set; }
 
     /// <summary>
     /// Gets the localized name of the value represented by this instance by using the <see cref="ExtensibleEnumInfo{T}.ResourceManager"/> associated
@@ -162,7 +166,14 @@ namespace Remotion.ExtensibleEnums
       return ID.GetHashCode();
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents this <see cref="ExtensibleEnum{T}"/> value. The string returned by this method is meant
+    /// to be read, not parsed. Use <see cref="ID"/> to get a string that can be used to get back to the actual value. Use 
+    /// <see cref="GetLocalizedName()"/> to get a localized name of the value.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="System.String"/> that represents this <see cref="ExtensibleEnum{T}"/> value.
+    /// </returns>
     public override string ToString ()
     {
       return ID;

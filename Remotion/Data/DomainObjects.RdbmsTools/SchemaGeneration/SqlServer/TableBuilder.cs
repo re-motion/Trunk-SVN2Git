@@ -20,7 +20,6 @@ using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.ExtensibleEnums;
-using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer

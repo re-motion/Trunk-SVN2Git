@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Type 'System.Object' is not an extensible enum type "
-        + "directly derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
+        + "derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
     public void GetDefinition_ThrowsOnInvalidType ()
     {
       _cache.GetDefinition (typeof (object));
@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Type 'Remotion.UnitTests.ExtensibleEnums.TestDomain.MetallicColor' is not an extensible enum type "
-        + "directly derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
+        + "derived from ExtensibleEnum<T>.\r\nParameter name: extensibleEnumType")]
     public void GetDefinition_ThrowsOnDerivedEnum ()
     {
       _cache.GetDefinition (typeof (MetallicColor));

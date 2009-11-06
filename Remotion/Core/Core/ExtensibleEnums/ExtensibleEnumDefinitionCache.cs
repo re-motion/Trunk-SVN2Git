@@ -16,16 +16,21 @@
 // 
 using System;
 using Remotion.Collections;
+using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
-namespace Remotion.ExtensibleEnums.Infrastructure
+namespace Remotion.ExtensibleEnums
 {
   /// <summary>
-  /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic access.
+  /// Caches <see cref="ExtensibleEnumDefinition{T}"/> instances for non-generic, reflective access.
   /// </summary>
-  public class ExtensibleEnumDefinitionCache
+  /// <threadsafety static="true" instance="true" />
+  public sealed class ExtensibleEnumDefinitionCache
   {
+    /// <summary>
+    /// Returns the single instance of the <see cref="ExtensibleEnumDefinitionCache"/> class.
+    /// </summary>
     public static readonly ExtensibleEnumDefinitionCache Instance = new ExtensibleEnumDefinitionCache();
 
     private readonly InterlockedCache<Type, IExtensibleEnumDefinition> _cache = new InterlockedCache<Type, IExtensibleEnumDefinition>();
@@ -36,11 +41,25 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       _valueDiscoveryService = new ExtensibleEnumValueDiscoveryService (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
     }
 
+    /// <summary>
+    /// Gets the <see cref="IExtensibleEnumValueDiscoveryService"/> used to discover values for <see cref="ExtensibleEnumDefinition{T}"/> instances
+    /// created by this <see cref="ExtensibleEnumDefinitionCache"/>.
+    /// </summary>
+    /// <value>The value discovery service.</value>
     public IExtensibleEnumValueDiscoveryService ValueDiscoveryService
     {
       get { return _valueDiscoveryService; }
     }
 
+    /// <summary>
+    /// Gets the <see cref="ExtensibleEnumDefinition{T}"/> for the given <paramref name="extensibleEnumType"/> from the cache creating a new
+    /// one if necessary. If a new instance is created, the <see cref="ValueDiscoveryService"/> is used to discover the values of the enum type.
+    /// </summary>
+    /// <param name="extensibleEnumType">The type of the extensible enum for which to retrieve an <see cref="ExtensibleEnumDefinition{T}"/>.</param>
+    /// <returns>The <see cref="ExtensibleEnumDefinition{T}"/> for the given type.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="extensibleEnumType"/> parameter is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">The <paramref name="extensibleEnumType"/> parameter is not derived from 
+    /// <see cref="ExtensibleEnumInfo{T}"/>.</exception>
     public IExtensibleEnumDefinition GetDefinition (Type extensibleEnumType)
     {
       ArgumentUtility.CheckNotNull ("extensibleEnumType", extensibleEnumType);
@@ -57,7 +76,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
       }
       catch (ArgumentException ex) // constraint violation
       {
-        var message = string.Format ("Type '{0}' is not an extensible enum type directly derived from ExtensibleEnum<T>.", extensibleEnumType);
+        var message = string.Format ("Type '{0}' is not an extensible enum type derived from ExtensibleEnum<T>.", extensibleEnumType);
         throw new ArgumentException (message, "extensibleEnumType", ex);
       }
       return (IExtensibleEnumDefinition) Activator.CreateInstance (definitionType, new[] { ValueDiscoveryService });
