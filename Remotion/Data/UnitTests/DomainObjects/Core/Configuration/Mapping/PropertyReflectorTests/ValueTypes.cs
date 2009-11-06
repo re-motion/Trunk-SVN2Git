@@ -69,6 +69,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
     }
 
     [Test]
+    public void GetMetadata_WithExtensibleEnumProperty ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithAllDataTypes> ("ExtensibleEnumProperty");
+
+      PropertyDefinition actual = propertyReflector.GetMetadata ();
+
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty", actual.PropertyName);
+      Assert.AreSame (typeof (Color), actual.PropertyType);
+      Assert.IsFalse (actual.IsNullable);
+      Assert.IsNull (actual.MaxLength);
+      Assert.AreEqual (Color.Values.Blue(), actual.DefaultValue);
+    }
+
+    [Test]
     public void GetMetadata_WithOptionalRelationProperty()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithGuidKey> ("ClassWithValidRelationsOptional");

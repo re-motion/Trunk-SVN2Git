@@ -80,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.DecimalProperty, Is.EqualTo (123456.789m), "DecimalProperty");
       Assert.That (classWithAllDataTypes.DoubleProperty, Is.EqualTo (987654.321d), "DoubleProperty");
       Assert.That (classWithAllDataTypes.EnumProperty, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value1), "EnumProperty");
+      Assert.That (classWithAllDataTypes.ExtensibleEnumProperty, Is.EqualTo (Color.Values.Red()), "ExtensibleEnumProperty");
       Assert.That (classWithAllDataTypes.FlagsProperty, Is.EqualTo (ClassWithAllDataTypes.FlagsType.Flag2), "FlagsProperty");
       Assert.That (classWithAllDataTypes.GuidProperty, Is.EqualTo (new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}")), "GuidProperty");
       Assert.That (classWithAllDataTypes.Int16Property, Is.EqualTo (32767), "Int16Property");
@@ -118,6 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.NaInt64WithNullValueProperty, Is.Null, "NaInt64WithNullValueProperty");
       Assert.That (classWithAllDataTypes.NaSingleWithNullValueProperty, Is.Null, "NaSingleWithNullValueProperty");
       Assert.That (classWithAllDataTypes.StringWithNullValueProperty, Is.Null, "StringWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.ExtensibleEnumWithNullValueProperty, Is.Null, "ExtensibleEnumWithNullValueProperty");
       Assert.That (classWithAllDataTypes.NullableBinaryProperty, Is.Null, "NullableBinaryProperty");
     }
 

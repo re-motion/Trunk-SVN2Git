@@ -236,6 +236,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].SetValue<string> (null);
       Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"].IsNull);
+
+      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull);
+      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"].IsNull);
+
+      cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].SetValue (Color.Values.Green());
+      Assert.IsFalse (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull);
+      
+      cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].SetValue<Color> (null);
+      Assert.IsTrue (cwadt.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"].IsNull);
     }
 
     [Test]
