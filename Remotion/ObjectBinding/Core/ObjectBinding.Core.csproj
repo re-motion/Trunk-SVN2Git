@@ -129,6 +129,7 @@
     <Compile Include="BindableObject\BindableObjectWithIdentityBaseImplementation.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityMixin.cs" />
     <Compile Include="BindableObject\BindableObjectServiceFactory.cs" />
+    <Compile Include="BindableObject\CompositeEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\ConstantEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectMetadataFactory.cs" />
