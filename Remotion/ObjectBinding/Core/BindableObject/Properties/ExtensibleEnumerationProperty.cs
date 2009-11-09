@@ -40,6 +40,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public IEnumerationValueInfo[] GetAllValues (IBusinessObject businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
       return _definition.GetValueInfos ()
           .Select (info => CreateEnumerationValueInfo (info, businessObject))
           .ToArray();
@@ -47,7 +48,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueInfo[] GetEnabledValues (IBusinessObject businessObject)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
+      return _definition.GetValueInfos ()
+          .Select (info => CreateEnumerationValueInfo (info, businessObject))
+          .Where (valueInfo => valueInfo.IsEnabled)
+          .ToArray();
     }
 
     public IEnumerationValueInfo GetValueInfoByValue (object value, IBusinessObject businessObject)

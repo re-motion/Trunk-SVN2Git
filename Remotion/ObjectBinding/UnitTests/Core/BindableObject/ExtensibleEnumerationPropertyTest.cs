@@ -32,14 +32,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private BindableObjectProvider _businessObjectProvider;
     private ExtensibleEnumerationProperty _propertyWithResources;
     private IBusinessObject _businessObjectStub;
+    private ExtensibleEnumerationProperty _propertyWithFilteredType;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
-      _propertyWithResources = CreateProperty (typeof (ExtensibleEnumWithResources));
       _businessObjectStub = MockRepository.GenerateStub<IBusinessObject> ();
+
+      _propertyWithResources = CreateProperty (typeof (ExtensibleEnumWithResources));
+      _propertyWithFilteredType = CreateProperty (typeof (ExtensibleEnumWithFilter));
     }
 
     [Test]
@@ -122,12 +125,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void IsEnabled_IntegrationTest ()
     {
-      var propertyWithFilteredType = CreateProperty (typeof (ExtensibleEnumWithFilter));
-
-      Assert.That (IsEnabled (propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value1 ()),  Is.False);
-      Assert.That (IsEnabled (propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value2 ()), Is.True);
-      Assert.That (IsEnabled (propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value3 ()), Is.False);
-      Assert.That (IsEnabled (propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value4 ()), Is.True);
+      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value1 ()),  Is.False);
+      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value2 ()), Is.True);
+      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value3 ()), Is.False);
+      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value4 ()), Is.True);
 
       var propertyInfoStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInfoStub.Stub (stub => stub.PropertyType).Return (typeof (ExtensibleEnumWithResources));
@@ -143,9 +144,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetAllValues ()
     {
-      var businessObjectStub = MockRepository.GenerateStub<IBusinessObject> ();
-
-      var valueInfos = _propertyWithResources.GetAllValues (businessObjectStub);
+      var valueInfos = _propertyWithResources.GetAllValues (_businessObjectStub);
 
       Assert.That (valueInfos.Length, Is.EqualTo(3));
 
@@ -155,10 +154,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [Ignore ("TODO 1824")]
     public void GetEnabledValues ()
     {
-      Assert.Fail ();
+      var valueInfos = _propertyWithFilteredType.GetEnabledValues (_businessObjectStub);
+
+      Assert.That (valueInfos.Length, Is.EqualTo (2));
+
+      Assert.That (valueInfos[0].Value, Is.EqualTo (ExtensibleEnumWithFilter.Values.Value2 ()));
+      Assert.That (valueInfos[1].Value, Is.EqualTo (ExtensibleEnumWithFilter.Values.Value4 ()));
     }
 
     [Test]
