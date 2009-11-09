@@ -58,12 +58,34 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueInfo GetValueInfoByValue (object value, IBusinessObject businessObject)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
+      var enumValue = value as IExtensibleEnum;
+      if (enumValue == null)
+        return null;
+
+      IExtensibleEnumInfo extensibleEnumInfo;
+      if (!_definition.TryGetValueInfoByID (enumValue.ID, out extensibleEnumInfo))
+        return null;
+
+      return CreateEnumerationValueInfo (extensibleEnumInfo, businessObject);
     }
 
     public IEnumerationValueInfo GetValueInfoByIdentifier (string identifier, IBusinessObject businessObject)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
+      if (string.IsNullOrEmpty (identifier))
+        return null;
+
+      IExtensibleEnumInfo extensibleEnumInfo;
+      if (!_definition.TryGetValueInfoByID (identifier, out extensibleEnumInfo))
+      {
+        var message = string.Format ("The identifier '{0}' does not identify a defined value for type '{1}'.", identifier, _definition.GetEnumType());
+        throw new ArgumentException (message, "identifier");
+      }
+
+      return CreateEnumerationValueInfo (extensibleEnumInfo, businessObject);
     }
 
     public EnumerationValueInfo CreateEnumerationValueInfo (IExtensibleEnumInfo extensibleEnumInfo, IBusinessObject businessObject)

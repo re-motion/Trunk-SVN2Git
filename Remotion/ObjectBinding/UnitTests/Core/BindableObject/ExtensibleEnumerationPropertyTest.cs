@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -165,17 +166,54 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [Ignore ("TODO 1824")]
     public void GetValueInfoByIdentifier ()
     {
-      Assert.Fail ();
+      var info = _propertyWithResources.GetValueInfoByIdentifier (ExtensibleEnumWithResources.Values.Value1().ID, _businessObjectStub);
+      Assert.That (info.Value, Is.EqualTo (ExtensibleEnumWithResources.Values.Value1()));
     }
 
     [Test]
-    [Ignore ("TODO 1824")]
+    public void GetValueInfoByIdentifier_NullOrEmpty ()
+    {
+      Assert.That (_propertyWithResources.GetValueInfoByIdentifier ("", _businessObjectStub), Is.Null);
+      Assert.That (_propertyWithResources.GetValueInfoByIdentifier (null, _businessObjectStub), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The identifier '?' does not identify a defined value for type " 
+        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ExtensibleEnumWithResources'.\r\nParameter name: identifier")]
+    public void GetValueInfoByIdentifier_InvalidID ()
+    {
+      _propertyWithResources.GetValueInfoByIdentifier ("?", _businessObjectStub);
+    }
+
+    [Test]
     public void GetValueInfoByValue ()
     {
-      Assert.Fail ();
+      var info = _propertyWithResources.GetValueInfoByValue (ExtensibleEnumWithResources.Values.Value1 (), _businessObjectStub);
+      Assert.That (info.Value, Is.EqualTo (ExtensibleEnumWithResources.Values.Value1()));
+    }
+
+    [Test]
+    public void GetValueInfoByValue_Null ()
+    {
+      var info = _propertyWithResources.GetValueInfoByValue (null, _businessObjectStub);
+      Assert.That (info, Is.Null);
+    }
+
+    [Test]
+    public void GetValueInfoByValue_UndefinedValue ()
+    {
+      var info = _propertyWithResources.GetValueInfoByValue (new ExtensibleEnumWithResources (MethodBase.GetCurrentMethod()), _businessObjectStub);
+      Assert.That (info, Is.Null);
+    }
+
+    [Test]
+    public void GetValueInfoByValue_InvalidType ()
+    {
+      var info = _propertyWithResources.GetValueInfoByValue ("?", _businessObjectStub);
+      Assert.That (info, Is.Null);
     }
 
     private ExtensibleEnumerationProperty CreateProperty (Type propertyType)
