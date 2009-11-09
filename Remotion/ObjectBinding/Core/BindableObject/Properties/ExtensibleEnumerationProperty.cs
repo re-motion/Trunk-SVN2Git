@@ -24,18 +24,24 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   public class ExtensibleEnumerationProperty : PropertyBase, IBusinessObjectEnumerationProperty
   {
     private readonly IExtensibleEnumDefinition _definition;
+    private readonly IEnumerationValueFilter _enumerationValueFilter;
 
     public ExtensibleEnumerationProperty (Parameters parameters)
         : base(parameters)
     {
       _definition = ExtensibleEnumUtility.GetDefinition (PropertyType);
+
+      var filterProvider = new EnumValueFilterProvider<DisableExtensibleEnumValuesAttribute> (
+          PropertyInfo,
+          t => _definition.GetCustomAttributes<DisableExtensibleEnumValuesAttribute> ());
+      _enumerationValueFilter = filterProvider.GetEnumerationValueFilter ();
     }
 
     public IEnumerationValueInfo[] GetAllValues (IBusinessObject businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       return _definition.GetValueInfos ()
-          .Select (info => CreateEnumerationValueInfo(info))
+          .Select (info => CreateEnumerationValueInfo (info, businessObject))
           .ToArray();
     }
 
@@ -54,11 +60,16 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       throw new NotImplementedException();
     }
 
-    public EnumerationValueInfo CreateEnumerationValueInfo (IExtensibleEnumInfo extensibleEnumInfo)
+    public EnumerationValueInfo CreateEnumerationValueInfo (IExtensibleEnumInfo extensibleEnumInfo, IBusinessObject businessObject)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNull ("extensibleEnumInfo", extensibleEnumInfo);
-
-      return new EnumerationValueInfo (extensibleEnumInfo.Value, extensibleEnumInfo.Value.ID, GetDisplayName(extensibleEnumInfo), false);
+      
+      return new EnumerationValueInfo (
+          extensibleEnumInfo.Value, 
+          extensibleEnumInfo.Value.ID, 
+          GetDisplayName (extensibleEnumInfo), 
+          IsEnabled (extensibleEnumInfo.Value, businessObject));
     }
 
     private string GetDisplayName (IExtensibleEnumInfo extensibleEnumInfo)
@@ -67,6 +78,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (globalizationService == null)
         return extensibleEnumInfo.Value.ToString ();
       return globalizationService.GetExtensibleEnumerationValueDisplayName (extensibleEnumInfo.Value);
+    }
+
+    private bool IsEnabled (IExtensibleEnum value, IBusinessObject businessObject)
+    {
+      return _enumerationValueFilter.IsEnabled (
+          new EnumerationValueInfo (value, value.ID, null, true),
+          businessObject,
+          this);
     }
   }
 }

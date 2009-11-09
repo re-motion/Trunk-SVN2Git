@@ -121,6 +121,9 @@
     <Compile Include="Core\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod.cs" />
+    <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions2.cs" />
+    <Compile Include="Core\TestDomain\ExtensibleEnumWithFilter.cs" />
+    <Compile Include="Core\TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResources.cs" />
     <Compile Include="Core\TestDomain\ExtensibleEnumWithResourcesExtensions.cs" />
     <Compile Include="Core\TestDomain\MixinOverridingProperty.cs" />
