@@ -39,8 +39,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueInfo[] GetAllValues (IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-
       return _definition.GetValueInfos ()
           .Select (info => CreateEnumerationValueInfo (info, businessObject))
           .ToArray();
@@ -48,8 +46,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueInfo[] GetEnabledValues (IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-
       return _definition.GetValueInfos ()
           .Select (info => CreateEnumerationValueInfo (info, businessObject))
           .Where (valueInfo => valueInfo.IsEnabled)
@@ -58,8 +54,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueInfo GetValueInfoByValue (object value, IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-
       var enumValue = value as IExtensibleEnum;
       if (enumValue == null)
         return null;
@@ -73,8 +67,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueInfo GetValueInfoByIdentifier (string identifier, IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-
       if (string.IsNullOrEmpty (identifier))
         return null;
 
@@ -90,7 +82,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public EnumerationValueInfo CreateEnumerationValueInfo (IExtensibleEnumInfo extensibleEnumInfo, IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNull ("extensibleEnumInfo", extensibleEnumInfo);
       
       return new EnumerationValueInfo (

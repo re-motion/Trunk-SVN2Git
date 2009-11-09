@@ -73,5 +73,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var filter = new CompositeEnumerationValueFilter (new[] {_trueFilterStub, _falseFilterStub });
       Assert.That (filter.IsEnabled (_value1, _businessObjectStub, _propertyStub), Is.False);
     }
+
+    [Test]
+    public void IsEnabled_NullBusinessObject ()
+    {
+      var filter = new CompositeEnumerationValueFilter (new IEnumerationValueFilter[0]);
+      Assert.That (filter.IsEnabled (_value1, null, _propertyStub), Is.True);
+    }
   }
 }

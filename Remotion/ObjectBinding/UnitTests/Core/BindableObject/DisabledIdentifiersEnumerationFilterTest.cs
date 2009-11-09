@@ -56,5 +56,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (filter.IsEnabled (_value1, _businessObjectStub, _propertyStub), Is.False);
       Assert.That (filter.IsEnabled (_value2, _businessObjectStub, _propertyStub), Is.False);
     }
+
+    [Test]
+    public void IsEnabled_NullBusinessObject ()
+    {
+      var filter = new DisabledIdentifiersEnumerationFilter (new string[0]);
+
+      Assert.That (filter.IsEnabled (_value1, null, _propertyStub), Is.True);
+    }
   }
 }

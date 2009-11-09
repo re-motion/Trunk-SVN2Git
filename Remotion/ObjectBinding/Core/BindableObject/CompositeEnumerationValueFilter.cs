@@ -42,7 +42,6 @@ namespace Remotion.ObjectBinding.BindableObject
     public bool IsEnabled (IEnumerationValueInfo value, IBusinessObject businessObject, IBusinessObjectEnumerationProperty property)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
       return !_filters.Any (f => !f.IsEnabled (value, businessObject, property));
