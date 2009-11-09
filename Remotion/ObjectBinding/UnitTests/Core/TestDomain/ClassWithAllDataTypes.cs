@@ -42,6 +42,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public TestFlags Flags { get; set; }
 
+    public ExtensibleEnumWithResources ExtensibleEnum { get; set; }
+
     public Guid Guid { get; set; }
 
     public short Int16 { get; set; }

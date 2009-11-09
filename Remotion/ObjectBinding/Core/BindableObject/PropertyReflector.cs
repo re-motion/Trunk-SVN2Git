@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.ExtensibleEnums;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
@@ -75,8 +76,10 @@ namespace Remotion.ObjectBinding.BindableObject
         return new DecimalProperty (parameters);
       else if (underlyingType == typeof (Double))
         return new DoubleProperty (parameters);
-      else if (underlyingType.IsEnum && !AttributeUtility.IsDefined<FlagsAttribute>(underlyingType, false))
+      else if (underlyingType.IsEnum && !AttributeUtility.IsDefined<FlagsAttribute> (underlyingType, false))
         return new EnumerationProperty (parameters);
+      else if (ExtensibleEnumUtility.IsExtensibleEnumType (underlyingType))
+        return new ExtensibleEnumerationProperty (parameters);
       else if (underlyingType == typeof (Guid))
         return new GuidProperty (parameters);
       else if (underlyingType == typeof (Int16))
@@ -175,7 +178,8 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private PropertyBase.Parameters CreateParameters (Type underlyingType)
     {
-      return new PropertyBase.Parameters (_businessObjectProvider, _propertyInfo, underlyingType, GetConcreteType (underlyingType), GetListInfo (), GetIsRequired (), GetIsReadOnly ());
+      return new PropertyBase.Parameters (
+          _businessObjectProvider, _propertyInfo, underlyingType, GetConcreteType (underlyingType), GetListInfo(), GetIsRequired(), GetIsReadOnly());
     }
 
     private Type GetItemTypeFromAttribute ()

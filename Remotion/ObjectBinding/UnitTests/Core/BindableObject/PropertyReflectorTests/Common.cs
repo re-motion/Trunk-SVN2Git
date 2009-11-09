@@ -135,6 +135,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     }
 
     [Test]
+    public void GetMetadata_WithExtensibleEnum ()
+    {
+      IBusinessObjectProperty businessObjectProperty = GetMetadataFromPropertyReflector ("ExtensibleEnum");
+
+      Assert.That (businessObjectProperty, Is.TypeOf (typeof (ExtensibleEnumerationProperty)));
+      Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ExtensibleEnum"));
+    }
+
+    [Test]
     public void GetMetadata_WithGuid ()
     {
       IBusinessObjectProperty businessObjectProperty = GetMetadataFromPropertyReflector ("Guid");
