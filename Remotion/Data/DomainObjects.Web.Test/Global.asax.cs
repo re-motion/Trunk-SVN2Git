@@ -15,21 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Configuration;
-using System.Web;
-using System.Web.Configuration;
-using System.Web.SessionState;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using CommonServiceLocator.WindsorAdapter;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Configuration;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Web.Test.Domain;
-using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.Web;
+using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
@@ -51,6 +45,23 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected void Application_Start (Object sender, EventArgs e)
     {
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
+
+      IWindsorContainer container = new WindsorContainer();
+      container.Register (
+          AllTypes.Pick()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces()));
+      container.Register (
+          AllTypes.Pick()
+              .FromAssembly (typeof (BocRendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces()));
+      container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
+      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
+
+      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
+      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
 
     protected void Session_Start (Object sender, EventArgs e)

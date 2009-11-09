@@ -16,8 +16,8 @@
 --%>
 <%@ Page language="c#" Codebehind="EditObject.aspx.cs" AutoEventWireup="false" Inherits="Remotion.Data.DomainObjects.Web.Test.EditObjectPage" %>
 <%@ Register TagPrefix="remotion" TagName="ControlWithAllDataTypes" Src="ControlWithAllDataTypes.ascx" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
-<HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <HEAD>
     <title>Bestehendes Objekt mit allen Datentypen editieren</title>
     <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
