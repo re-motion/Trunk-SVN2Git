@@ -58,6 +58,12 @@
         </TR>
         <TR>
           <TD></TD>
+          <TD><remotion:bocenumvalue id="ExtensibleEnumPropertyValue" runat="server" DataSourceControl="CurrentSearchObject" PropertyIdentifier="ExtensibleEnumProperty">
+              <ListControlStyle></ListControlStyle>
+            </remotion:bocenumvalue></TD>
+        </TR>
+        <TR>
+          <TD></TD>
           <TD>
             <remotion:BocDateTimeValue id="DatePropertyFromValue" runat="server" PropertyIdentifier="DatePropertyFrom"
               DataSourceControl="CurrentSearchObject"></remotion:BocDateTimeValue></TD>
@@ -92,6 +98,11 @@
 </PersistedCommand>
 </remotion:BocSimpleColumnDefinition>
 <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="EnumProperty">
+<PersistedCommand>
+<remotion:BocListItemCommand Type="None"></remotion:BocListItemCommand>
+</PersistedCommand>
+</remotion:BocSimpleColumnDefinition>
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="ExtensibleEnumProperty">
 <PersistedCommand>
 <remotion:BocListItemCommand Type="None"></remotion:BocListItemCommand>
 </PersistedCommand>

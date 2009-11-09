@@ -16,9 +16,11 @@
 // 
 using System.Reflection;
 using Remotion.ExtensibleEnums;
+using Remotion.Globalization;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain
 {
+  [MultiLingualResources ("Remotion.Data.DomainObjects.Web.Test.Globalization.ColorExtensions")]
   public static class ColorExtensions
   {
     public static Color Red (this ExtensibleEnumDefinition<Color> definition)

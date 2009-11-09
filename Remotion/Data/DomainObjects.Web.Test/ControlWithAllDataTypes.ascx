@@ -89,8 +89,14 @@ beachten!</FONT></STRONG></P>
   <TR>
     <TD></TD>
     <TD>
-      <remotion:bocenumvalue id="Bocenumvalue5" runat="server" PropertyIdentifier="EnumProperty" DataSourceControl="CurrentObject"
+      <remotion:bocenumvalue id="Bocenumvalue5" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="EnumProperty"
         ReadOnly="True">
+        <ListControlStyle></ListControlStyle>
+      </remotion:bocenumvalue></TD>
+  </TR>
+  <TR>
+    <TD></TD>
+    <TD><remotion:bocenumvalue id="BocEnumValue6" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="ExtensibleEnumProperty" Width="30em">
         <ListControlStyle></ListControlStyle>
       </remotion:bocenumvalue></TD>
   </TR>
@@ -331,6 +337,12 @@ beachten!</FONT></STRONG></P>
     <TD><remotion:boctextvalue id="BocTextValue2" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="StringWithNullValueProperty">
         <TextBoxStyle TextMode="SingleLine"></TextBoxStyle>
       </remotion:boctextvalue></TD>
+  </TR>
+  <TR>
+    <TD></TD>
+    <TD><remotion:bocenumvalue id="BocEnumValue7" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="ExtensibleEnumWithNullValueProperty" Width="30em">
+        <ListControlStyle></ListControlStyle>
+      </remotion:bocenumvalue></TD>
   </TR>
   <TR>
     <TD></TD>

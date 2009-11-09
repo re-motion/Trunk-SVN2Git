@@ -24,77 +24,44 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
   [BindableObject]
   public class ClassWithAllDataTypesSearch
   {
-    private string _stringProperty;
-    private byte? _bytePropertyFrom;
-    private byte? _bytePropertyTo;
-    private ClassWithAllDataTypes.EnumType _enumProperty = ClassWithAllDataTypes.EnumType.Value1;
-    private DateTime? _datePropertyFrom;
-    private DateTime? _datePropertyTo;
-    private DateTime? _dateTimePropertyFrom;
-    private DateTime? _dateTimePropertyTo;
-
-    public string StringProperty
+    public ClassWithAllDataTypesSearch ()
     {
-      get { return _stringProperty; }
-      set { _stringProperty = value; }
+      EnumProperty = ClassWithAllDataTypes.EnumType.Value1;
     }
 
-    public byte? BytePropertyFrom
-    {
-      get { return _bytePropertyFrom; }
-      set { _bytePropertyFrom = value; }
-    }
+    public string StringProperty { get; set; }
 
-    public byte? BytePropertyTo
-    {
-      get { return _bytePropertyTo; }
-      set { _bytePropertyTo = value; }
-    }
+    public byte? BytePropertyFrom { get; set; }
 
-    public ClassWithAllDataTypes.EnumType EnumProperty
-    {
-      get { return _enumProperty; }
-      set { _enumProperty = value; }
-    }
+    public byte? BytePropertyTo { get; set; }
+
+    public ClassWithAllDataTypes.EnumType EnumProperty { get; set; }
+    
+    public Color ExtensibleEnumProperty { get; set; }
 
     [DateProperty]
-    public DateTime? DatePropertyFrom
-    {
-      get { return _datePropertyFrom; }
-      set { _datePropertyFrom = value; }
-    }
+    public DateTime? DatePropertyFrom { get; set; }
 
     [DateProperty]
-    public DateTime? DatePropertyTo
-    {
-      get { return _datePropertyTo; }
-      set { _datePropertyTo = value; }
-    }
+    public DateTime? DatePropertyTo { get; set; }
 
-    public DateTime? DateTimePropertyFrom
-    {
-      get { return _dateTimePropertyFrom; }
-      set { _dateTimePropertyFrom = value; }
-    }
+    public DateTime? DateTimePropertyFrom { get; set; }
 
-    public DateTime? DateTimePropertyTo
-    {
-      get { return _dateTimePropertyTo; }
-      set { _dateTimePropertyTo = value; }
-    }
+    public DateTime? DateTimePropertyTo { get; set; }
 
     public IQuery CreateQuery ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithAllDataTypes");
 
-      query.Parameters.Add ("@stringProperty", _stringProperty);
-      query.Parameters.Add ("@bytePropertyFrom", _bytePropertyFrom);
-      query.Parameters.Add ("@bytePropertyTo", _bytePropertyTo);
-      query.Parameters.Add ("@enumProperty", _enumProperty);
-      query.Parameters.Add ("@datePropertyFrom", _datePropertyFrom);
-      query.Parameters.Add ("@datePropertyTo", _datePropertyTo);
-      query.Parameters.Add ("@dateTimePropertyFrom", _dateTimePropertyFrom);
-      query.Parameters.Add ("@dateTimePropertyTo", _dateTimePropertyTo);
+      query.Parameters.Add ("@stringProperty", StringProperty);
+      query.Parameters.Add ("@bytePropertyFrom", BytePropertyFrom);
+      query.Parameters.Add ("@bytePropertyTo", BytePropertyTo);
+      query.Parameters.Add ("@enumProperty", EnumProperty);
+      query.Parameters.Add ("@extensibleEnumProperty", ExtensibleEnumProperty);
+      query.Parameters.Add ("@datePropertyFrom", DatePropertyFrom);
+      query.Parameters.Add ("@datePropertyTo", DatePropertyTo);
+      query.Parameters.Add ("@dateTimePropertyFrom", DateTimePropertyFrom);
+      query.Parameters.Add ("@dateTimePropertyTo", DateTimePropertyTo);
 
       return query;
     }

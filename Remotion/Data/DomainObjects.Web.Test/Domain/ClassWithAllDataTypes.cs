@@ -136,6 +136,10 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     [DBColumn ("Enum")]
     public abstract EnumType EnumProperty { get; set; }
 
+    [DBColumn ("ExtensibleEnum")]
+    [ExtensibleEnumProperty (IsNullable = false)]
+    public abstract Color ExtensibleEnumProperty { get; set; }
+
     [DBColumn ("Guid")]
     public abstract Guid GuidProperty { get; set; }
 
@@ -204,6 +208,9 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     [StringProperty (MaximumLength = 100)]
     public abstract string StringWithNullValueProperty { get; set; }
 
+    [DBColumn ("ExtensibleEnumWithNullValue")]
+    public abstract Color ExtensibleEnumWithNullValueProperty { get; set; }
+
     [DBColumn ("NaBooleanWithNullValue")]
     public abstract bool? NaBooleanWithNullValueProperty { get; set; }
 
@@ -242,7 +249,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     public abstract float? NaSingleWithNullValueProperty { get; set; }
 
     [DBColumn ("NullableBinary")]
-    [BinaryProperty (MaximumLength = 1000000)]
+    [BinaryProperty (MaximumLength = 1000)]
     public abstract byte[] NullableBinaryProperty { get; set; }
 
     [DBColumn ("TableForRelationTestMandatory")]

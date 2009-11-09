@@ -27,6 +27,7 @@
             ([Byte] >= @bytePropertyFrom OR @bytePropertyFrom IS NULL) AND
             ([Byte] <= @bytePropertyTo OR @bytePropertyTo IS NULL) AND
              [Enum] = @enumProperty AND
+            ([ExtensibleEnum] = @extensibleEnumProperty OR @extensibleEnumProperty IS NULL) AND
             ([Date] >= @datePropertyFrom OR @datePropertyFrom IS NULL) AND
             ([Date] <= @datePropertyTo OR @datePropertyTo IS NULL) AND
             ([DateTime] >= @dateTimePropertyFrom OR @dateTimePropertyFrom IS NULL) AND
