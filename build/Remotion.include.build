@@ -571,6 +571,7 @@
         <include name="**/Remotion.xml" />
         <include name="**/Remotion.Interfaces.*" />
         <include name="**/Remotion.Data.Linq.*" />
+        <exclude name="*/bin/documentation/**" />
       </fileset>
 
       <fileset basedir="${solution.basedir}\Remotion">
