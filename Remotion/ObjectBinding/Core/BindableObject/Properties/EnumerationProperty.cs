@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       
       var filterProvider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
           PropertyInfo, 
-          t => AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (t, true));
+          t => AttributeUtility.GetCustomAttributes<DisableEnumValuesAttribute> (t, true));
       _enumerationValueFilter = filterProvider.GetEnumerationValueFilter ();
     }
 

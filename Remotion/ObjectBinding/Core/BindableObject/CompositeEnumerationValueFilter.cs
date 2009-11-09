@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -31,6 +32,11 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("filters", filters);
       _filters = filters;
+    }
+
+    public ReadOnlyCollection<IEnumerationValueFilter> Filters
+    {
+      get { return new ReadOnlyCollection<IEnumerationValueFilter> (_filters); }
     }
 
     public bool IsEnabled (IEnumerationValueInfo value, IBusinessObject businessObject, IBusinessObjectEnumerationProperty property)

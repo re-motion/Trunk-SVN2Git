@@ -62,9 +62,39 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           delegate (Type type)
           {
             Assert.That (type, Is.SameAs (typeof (int)));
-            return _attribute;
+            return new[] { _attribute };
           });
       Assert.That (provider.GetEnumerationValueFilter (), Is.TypeOf (typeof (StubEnumerationValueFilter)));
+    }
+
+    [Test]
+    public void GetEnumerationValueFilter_FromAttributeProvider_Multiple ()
+    {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      propertyInformationStub.Stub (stub => stub.GetCustomAttribute<IDisableEnumValuesAttribute> (true)).Return (null);
+      propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
+
+      var filterStub = MockRepository.GenerateStub<IEnumerationValueFilter> ();
+      
+      var additionalAttributeStub = MockRepository.GenerateStub<IDisableEnumValuesAttribute> ();
+      additionalAttributeStub.Stub (stub => stub.GetEnumerationValueFilter ()).Return (filterStub);
+
+      var provider = new EnumValueFilterProvider<IDisableEnumValuesAttribute> (
+          propertyInformationStub,
+          delegate (Type type)
+          {
+            Assert.That (type, Is.SameAs (typeof (int)));
+            return new[] { _attribute, additionalAttributeStub };
+          });
+
+      var actualFilter = provider.GetEnumerationValueFilter ();
+
+      Assert.That (actualFilter, Is.TypeOf (typeof (CompositeEnumerationValueFilter)));
+
+      var compositeFilter = ((CompositeEnumerationValueFilter) actualFilter);
+      Assert.That (compositeFilter.Filters.Count, Is.EqualTo (2));
+      Assert.That (compositeFilter.Filters[0], Is.TypeOf (typeof (StubEnumerationValueFilter)));
+      Assert.That (compositeFilter.Filters[1], Is.SameAs (filterStub));
     }
 
     [Test]
@@ -79,7 +109,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           delegate (Type type)
           {
             Assert.That (type, Is.SameAs (typeof (int)));
-            return null;
+            return new DisableEnumValuesAttribute[0];
           });
       Assert.That (provider.GetEnumerationValueFilter (), Is.TypeOf (typeof (NullEnumerationValueFilter)));
     }

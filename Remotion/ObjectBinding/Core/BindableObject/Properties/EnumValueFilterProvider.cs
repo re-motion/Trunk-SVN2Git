@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -26,9 +27,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       where T: class, IDisableEnumValuesAttribute
   {
     private readonly IPropertyInformation _propertyInformation;
-    private readonly Func<Type, T> _typeAttributeProvider;
+    private readonly Func<Type, T[]> _typeAttributeProvider;
 
-    public EnumValueFilterProvider (IPropertyInformation propertyInformation, Func<Type, T> typeAttributeProvider)
+    public EnumValueFilterProvider (IPropertyInformation propertyInformation, Func<Type, T[]> typeAttributeProvider)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
       ArgumentUtility.CheckNotNull ("typeAttributeProvider", typeAttributeProvider);
@@ -44,9 +45,26 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public IEnumerationValueFilter GetEnumerationValueFilter ()
     {
-      var disableEnumValuesAttribute = PropertyInformation.GetCustomAttribute<T> (true) ?? _typeAttributeProvider (PropertyInformation.PropertyType);
+      return GetFilterFromProperty () ?? GetFilterFromType () ?? new NullEnumerationValueFilter();
+    }
 
-      return disableEnumValuesAttribute != null ? disableEnumValuesAttribute.GetEnumerationValueFilter() : new NullEnumerationValueFilter();
+    private IEnumerationValueFilter GetFilterFromProperty ()
+    {
+      var attribute = PropertyInformation.GetCustomAttribute<T> (true);
+      return attribute != null ? attribute.GetEnumerationValueFilter () : null;
+    }
+
+    private IEnumerationValueFilter GetFilterFromType ()
+    {
+      var attributes = _typeAttributeProvider (PropertyInformation.PropertyType);
+      Assertion.IsNotNull (attributes, "TypeAttributeProvider must return a non-null array.");
+
+      if (attributes.Length == 0)
+        return null;
+      else if (attributes.Length == 1)
+        return attributes[0].GetEnumerationValueFilter ();
+      else
+        return new CompositeEnumerationValueFilter (attributes.Select (attribute => attribute.GetEnumerationValueFilter ()).ToArray ());
     }
   }
 }
