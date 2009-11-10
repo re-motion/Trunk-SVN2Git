@@ -18,49 +18,61 @@ using System;
 using System.Collections.Generic;
 using Remotion.ExtensibleEnums;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
   public class TypeProvider
   {
-    private readonly Dictionary<Type, object> _supportedTypes = new Dictionary<Type, object>();
+    private readonly HashSet<Type> _supportedTypes = new HashSet<Type>();
+    private readonly List<Type> _supportedBaseTypes = new List<Type> ();
 
     public TypeProvider()
     {      
-      _supportedTypes.Add (typeof (bool), null);
-      _supportedTypes.Add (typeof (byte), null);
-      _supportedTypes.Add (typeof (DateTime), null);
-      _supportedTypes.Add (typeof (decimal), null);
-      _supportedTypes.Add (typeof (double), null);
-      _supportedTypes.Add (typeof (Enum), null);
-      _supportedTypes.Add (typeof (IExtensibleEnum), null);
-      _supportedTypes.Add (typeof (Guid), null);
-      _supportedTypes.Add (typeof (short), null);
-      _supportedTypes.Add (typeof (int), null);
-      _supportedTypes.Add (typeof (long), null);
-      _supportedTypes.Add (typeof (float), null);
-      _supportedTypes.Add (typeof (string), null);
-      _supportedTypes.Add (typeof (ObjectID), null);
-      _supportedTypes.Add (typeof (byte[]), null);
+      AddSupportedType (typeof (bool));
+      AddSupportedType (typeof (byte));
+      AddSupportedType (typeof (DateTime));
+      AddSupportedType (typeof (decimal));
+      AddSupportedType (typeof (double));
+      AddSupportedType (typeof (Guid));
+      AddSupportedType (typeof (short));
+      AddSupportedType (typeof (int));
+      AddSupportedType (typeof (long));
+      AddSupportedType (typeof (float));
+      AddSupportedType (typeof (string));
+      AddSupportedType (typeof (ObjectID));
+      AddSupportedType (typeof (byte[]));
+
+      AddSupportedBaseType (typeof (Enum));
+      AddSupportedBaseType (typeof (IExtensibleEnum));
     }
 
     public bool IsTypeSupported (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (type.IsEnum)
-        type = typeof (Enum);
-
-      if (ExtensibleEnumUtility.IsExtensibleEnumType (type))
-        type = typeof (IExtensibleEnum);
-
-      return _supportedTypes.ContainsKey (type);
+      return _supportedTypes.Contains (type) 
+          || _supportedBaseTypes.Any (t => t != type && t.IsAssignableFrom (type));
     }
 
-    // TODO: Remove
+    public void AddSupportedType (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      _supportedTypes.Add (type);
+    }
+
+    public void AddSupportedBaseType (Type baseTypeOrInterface)
+    {
+      ArgumentUtility.CheckNotNull ("baseTypeOrInterface", baseTypeOrInterface);
+
+      _supportedBaseTypes.Add (baseTypeOrInterface);
+    }
+
+    [Obsolete ("This API is obsolete since version 1.13.34, use IsTypeSupported, AddSupportedType, and AddSupportedBaseType instead.")]
     protected Dictionary<Type, object> SupportedTypes
     {
-      get { return _supportedTypes; }
+      get { throw new NotImplementedException ("Obsolete"); }
     }
   }
 }
