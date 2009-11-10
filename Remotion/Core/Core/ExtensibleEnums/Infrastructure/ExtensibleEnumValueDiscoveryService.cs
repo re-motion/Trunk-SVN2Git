@@ -57,7 +57,9 @@ namespace Remotion.ExtensibleEnums.Infrastructure
 
       return from mi in extensionMethods
              let value = (T) mi.Invoke (null, new object[] { definition })
-             select new ExtensibleEnumInfo<T> (value, mi, resourceManager);
+             let positionAttribute = AttributeUtility.GetCustomAttribute<ExtensibleEnumPositionAttribute> (mi, true)
+             let positionalKey = positionAttribute != null ? positionAttribute.PositionalKey : 0.0
+             select new ExtensibleEnumInfo<T> (value, mi, resourceManager, positionalKey);
     }
 
     public static IEnumerable<Type> GetStaticTypes (IEnumerable<Type> types)

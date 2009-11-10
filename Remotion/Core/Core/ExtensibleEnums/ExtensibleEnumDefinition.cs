@@ -32,7 +32,7 @@ namespace Remotion.ExtensibleEnums
   /// </summary>
   /// <typeparam name="T">The subclass of <see cref="ExtensibleEnum{T}"/> that represents the enumeration.</typeparam>
   /// <threadsafety static="true" instance="true" />
-  public class ExtensibleEnumDefinition<T> : IExtensibleEnumDefinition
+  public sealed class ExtensibleEnumDefinition<T> : IExtensibleEnumDefinition
       // this constraint forces the user to always write 'ExtensibleEnumDefinition<MyEnum>', never 'ExtensibleEnumDefinition<MyDerivedEnum>'
       where T : ExtensibleEnum<T>
   {
@@ -58,7 +58,9 @@ namespace Remotion.ExtensibleEnums
 
       public CacheItem (ExtensibleEnumInfo<T>[] valueInfoArray)
       {
-        Collection = new ReadOnlyCollection<ExtensibleEnumInfo<T>> (valueInfoArray.OrderBy (info => info.Value.ID).ToArray ());
+        var orderedValueInfos = valueInfoArray.OrderBy (info => info, ExtensibleEnumInfoComparer<ExtensibleEnumInfo<T>>.Instance);
+
+        Collection = new ReadOnlyCollection<ExtensibleEnumInfo<T>> (orderedValueInfos.ToArray ());
         Dictionary = new ReadOnlyDictionary<string, ExtensibleEnumInfo<T>> (CreateValueDictionary (valueInfoArray));
       }
 

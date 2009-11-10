@@ -47,5 +47,12 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The resource manager of this <see cref="Value"/>.</value>
     IResourceManager ResourceManager { get; }
+
+    /// <summary>
+    /// Gets the positional key associated with the <see cref="Value"/>. The positional key determines the position of the <see cref="Value"/>
+    /// in the list of all values of the extensible enum type.
+    /// </summary>
+    /// <value>The positional key.</value>
+    double PositionalKey { get; }
   }
 }

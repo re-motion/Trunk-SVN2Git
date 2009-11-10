@@ -107,7 +107,9 @@
       extensible enum type and to retrieve a single value by its <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.ID" />. Instances
       of <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinition`1"/> can be retrieved via the 
       <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.Values" /> (strongly types) or
-      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinitionUtility" /> (in reflective scenarios).
+      <see cref="T:Remotion.ExtensibleEnums.ExtensibleEnumDefinitionUtility" /> (in reflective scenarios). The order of the values is alphabetic
+      by default (based on the full <see cref="P:Remotion.ExtensibleEnums.ExtensibleEnum`1.ID" />), but can be modified using 
+      <see cref="Remotion.ExtensibleEnums.ExtensibleEnumPositionAttribute"/>.
     </para>
     <para>
       It is possible to derive classes from an extensible enum type and override methods in those subclasses. Values for the enum type must still

@@ -26,6 +26,12 @@ namespace Remotion.ExtensibleEnums
   /// to define the values of the enumeration. Each value is uniquely identified by the <see cref="ID"/> string
   /// passed to the <see cref="ExtensibleEnum{T}"/> constructor. Value comparisons act solely based on this identifier.
   /// </summary>
+  /// <remarks>
+  /// Instances of this class should be immutable, i.e. they should not change once initialized. This is due to their value
+  /// semantics (a value retrieved from a cache should not be distinguishable from a value freshly created by an extension method call) and
+  /// leads to inherent thread-safety.
+  /// </remarks>
+  /// <threadsafety static="true" instance="true" />
   [Serializable]
   public abstract class ExtensibleEnum<T> : IExtensibleEnum
       where T: ExtensibleEnum<T>
@@ -99,7 +105,7 @@ namespace Remotion.ExtensibleEnums
     /// <see cref="ValueName"/>. Use <see cref="ExtensibleEnumDefinition{T}.GetValueInfoByID"/> to retrieve an <see cref="ExtensibleEnum{T}"/>
     /// value by its <see cref="ID"/>.
     /// </summary>
-    /// <value>The ID of this value.</value>
+    /// <value>The ID of this value. Once an <see cref="ExtensibleEnum{T}"/> instance is constructed, this value is guaranteed to never change.</value>
     public string ID 
     {
       get { return string.IsNullOrEmpty (DeclarationSpace) ? ValueName : DeclarationSpace + "." + ValueName; }
@@ -110,13 +116,14 @@ namespace Remotion.ExtensibleEnums
     /// namespace, a type name, or anything else that helps in uniquely identifying the enum value. It is used as a prefix to the <see cref="ID"/>
     /// of the value. Can be <see langword="null" />.
     /// </summary>
-    /// <value>The declaration space of this value, or <see langword="null" /> if the value does not define a declaration space.</value>
+    /// <value>The declaration space of this value, or <see langword="null" /> if the value does not define a declaration space.
+    /// Once an <see cref="ExtensibleEnum{T}"/> instance is constructed, this value is guaranteed to never change.</value>
     public string DeclarationSpace { get; private set; }
 
     /// <summary>
     /// Gets name of this value. This is a part of the <see cref="ID"/> of this extensible enum value.
     /// </summary>
-    /// <value>The name of this value.</value>
+    /// <value>The name of this value. Once an <see cref="ExtensibleEnum{T}"/> instance is constructed, this value is guaranteed to never change.</value>
     public string ValueName { get; private set; }
 
     /// <summary>

@@ -25,6 +25,7 @@ using Remotion.ExtensibleEnums.Infrastructure;
 using Remotion.Globalization;
 using Remotion.UnitTests.ExtensibleEnums.TestDomain;
 using Rhino.Mocks;
+using System.Reflection;
 
 namespace Remotion.UnitTests.ExtensibleEnums
 {
@@ -34,6 +35,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     private Color _red;
     private Color _green;
     private Color _blue;
+    private MethodInfo _fakeMethod;
 
     [SetUp]
     public void SetUp ()
@@ -41,6 +43,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
       _red = new Color ("Red");
       _green = new Color ("Green");
       _blue = new Color ("Blue");
+      _fakeMethod = typeof (ColorExtensions).GetMethod ("Red");
     }
 
     [Test]
@@ -93,7 +96,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
     public void GetValueInfos ()
     {
       var infos = GetInfos (_red, _green, _blue).ToArray();
-      var definition = CreateDefinition (infos);
+      var definition = CreateDefinition<Color> (infos);
       var valueInstances = definition.GetValueInfos().ToArray();
 
       Assert.That (valueInstances, Is.EquivalentTo (infos));
@@ -141,6 +144,35 @@ namespace Remotion.UnitTests.ExtensibleEnums
     }
 
     [Test]
+    public void GetValueInfos_ExplicitOrder_WithKeys ()
+    {
+      var infos = new[]  { 
+          CreateInfo (new Planet ("Earth"), 1.5),
+          CreateInfo (new Planet ("Mars"), 2.0),
+          CreateInfo (new Planet ("Venus"), 1.0),
+      };
+      var definition = CreateDefinition<Planet> (infos);
+
+      var values = definition.GetValueInfos ();
+
+      Assert.That (values, Is.EqualTo (new[] { infos[2], infos[0], infos[1] }));
+    }
+
+    [Test]
+    public void GetValueInfos_ExplicitOrder_SameKeys_DefaultToAlphabetic ()
+    {
+      var infos = new[]  { 
+          CreateInfo (new Planet ("Saturn"), 1.0),
+          CreateInfo (new Planet ("Jupiter"), 1.0)
+      };
+      var definition = CreateDefinition<Planet> (infos);
+
+      var values = definition.GetValueInfos ();
+
+      Assert.That (values, Is.EqualTo (new[] { infos[1], infos[0] }));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidExtensibleEnumDefinitionException), ExpectedMessage =
         "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' defines two values with ID 'Red'.")]
     public void GetValueInfos_DuplicateIDs ()
@@ -154,7 +186,7 @@ namespace Remotion.UnitTests.ExtensibleEnums
         "Extensible enum 'Remotion.UnitTests.ExtensibleEnums.TestDomain.Color' does not define any values.")]
     public void GetValueInfos_NoValues ()
     {
-      var definition = CreateDefinition();
+      var definition = CreateDefinition<Color>();
       definition.GetValueInfos();
     }
 
@@ -289,23 +321,32 @@ namespace Remotion.UnitTests.ExtensibleEnums
       Assert.That (valueInfo, Is.SameAs (expectedValueInfo));
     }
 
-    private IEnumerable<ExtensibleEnumInfo<Color>> GetInfos (params Color[] values)
+    private IEnumerable<ExtensibleEnumInfo<T>> GetInfos<T> (params T[] values) 
+        where T: ExtensibleEnum<T>
     {
-      return values.Select (value => new ExtensibleEnumInfo<Color> (value, typeof (ColorExtensions).GetMethod ("Red"), NullResourceManager.Instance));
+      return values.Select (value => CreateInfo (value, 0.0));
     }
 
-    private ExtensibleEnumDefinition<Color> CreateDefinition (params Color[] colors)
+    private ExtensibleEnumInfo<T> CreateInfo<T> (T value,  double positionalKey) 
+        where T: ExtensibleEnum<T>
     {
-      var infos = GetInfos (colors);
+      return new ExtensibleEnumInfo<T> (value, _fakeMethod, NullResourceManager.Instance, positionalKey);
+    }
+
+    private ExtensibleEnumDefinition<T> CreateDefinition<T> (params T[] values) 
+        where T: ExtensibleEnum<T>
+    {
+      var infos = GetInfos (values);
       return CreateDefinition (infos);
     }
 
-    private ExtensibleEnumDefinition<Color> CreateDefinition (IEnumerable<ExtensibleEnumInfo<Color>> infos)
+    private ExtensibleEnumDefinition<T> CreateDefinition<T> (IEnumerable<ExtensibleEnumInfo<T>> infos) 
+        where T: ExtensibleEnum<T>
     {
       var valueDiscoveryServiceStub = MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService>();
-      var definition = new ExtensibleEnumDefinition<Color> (valueDiscoveryServiceStub);
+      var definition = new ExtensibleEnumDefinition<T> (valueDiscoveryServiceStub);
 
-      valueDiscoveryServiceStub.Stub (stub => stub.GetValueInfos (Arg<ExtensibleEnumDefinition<Color>>.Is.Anything)).Return (infos);
+      valueDiscoveryServiceStub.Stub (stub => stub.GetValueInfos (Arg<ExtensibleEnumDefinition<T>>.Is.Anything)).Return (infos);
       return definition;
     }
   }

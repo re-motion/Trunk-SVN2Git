@@ -36,12 +36,14 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     private readonly MethodInfo _greenMethod = typeof (ColorExtensions).GetMethod ("Green");
     private readonly MethodInfo _redMetallicMethod = typeof (MetallicColorExtensions).GetMethod ("RedMetallic");
 
-    private ExtensibleEnumDefinition<Color> _fakeDefinition;
+    private ExtensibleEnumDefinition<Color> _fakeColorDefinition;
+    private ExtensibleEnumDefinition<Planet> _fakePlanetDefinition;
 
     [SetUp]
     public void SetUp ()
     {
-      _fakeDefinition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
+      _fakeColorDefinition = new ExtensibleEnumDefinition<Color> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
+      _fakePlanetDefinition = new ExtensibleEnumDefinition<Planet> (MockRepository.GenerateStub<IExtensibleEnumValueDiscoveryService> ());
     }
 
     [Test]
@@ -66,7 +68,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     {
       var types = new[] { typeof (ColorExtensions), typeof (MetallicColorExtensions), typeof (object) };
 
-      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForTypes (_fakeDefinition, types).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForTypes (_fakeColorDefinition, types).ToArray ();
 
       var expected = new[] { 
           new { Value = Color.Values.Red (), DeclaringMethod = _redMethod }, 
@@ -79,7 +81,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void GetValueInfosForType ()
     {
-      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeDefinition, typeof (ColorExtensions)).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeColorDefinition, typeof (ColorExtensions)).ToArray ();
 
       var expected = new[] { 
           new { Value = Color.Values.Red (), DeclaringMethod = _redMethod }, 
@@ -91,7 +93,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void GetValueInfosForType_ResourceManager ()
     {
-      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeDefinition, typeof (ColorExtensions)).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeColorDefinition, typeof (ColorExtensions)).ToArray ();
 
       var expectedResourceManager = MultiLingualResources.GetResourceManager (typeof (ColorExtensions));
       var expected = new[] { 
@@ -104,7 +106,7 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     [Test]
     public void GetValueInfosForType_NullResourceManager ()
     {
-      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeDefinition, typeof (MetallicColorExtensions)).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeColorDefinition, typeof (MetallicColorExtensions)).ToArray ();
 
       var expected = new[] { 
           new { Value = (Color) Color.Values.RedMetallic (), ResourceManager = (IResourceManager) NullResourceManager.Instance}, };
@@ -113,11 +115,31 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     }
 
     [Test]
-    public void GetValueInfosForType_PassesEnumValuesToMethod ()
+    public void GetValueInfosForType_PositionalKey_Default ()
     {
-      ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeDefinition, typeof (ColorExtensions)).ToArray ();
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakePlanetDefinition, typeof (SmallPlanetExtensions)).ToArray ();
 
-      Assert.That (ColorExtensions.LastCallArgument, Is.EqualTo (_fakeDefinition));
+      var valueWithDefaultKey = result.Single (p => p.Value.ValueName == "Earth");
+
+      Assert.That (valueWithDefaultKey.PositionalKey, Is.EqualTo (0.0));
+    }
+
+    [Test]
+    public void GetValueInfosForType_PositionalKey_ViaAttribute ()
+    {
+      var result = ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakePlanetDefinition, typeof (SmallPlanetExtensions)).ToArray ();
+
+      var valueWithAttributeKey = result.Single (p => p.Value.ValueName == "Mars");
+
+      Assert.That (valueWithAttributeKey.PositionalKey, Is.EqualTo (1.0));
+    }
+
+    [Test]
+    public void GetValueInfosForType_PassesEnumDefinitionToMethod ()
+    {
+      ExtensibleEnumValueDiscoveryService.GetValueInfosForType (_fakeColorDefinition, typeof (ColorExtensions)).ToArray ();
+
+      Assert.That (ColorExtensions.LastCallArgument, Is.EqualTo (_fakeColorDefinition));
     }
 
     [Test]

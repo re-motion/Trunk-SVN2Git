@@ -26,7 +26,11 @@ namespace Remotion.ExtensibleEnums
   /// <see cref="DefiningMethod"/> and the associated <see cref="ResourceManager"/>.
   /// </summary>
   /// <typeparam name="T">The extensible enum type.</typeparam>
-  public class ExtensibleEnumInfo<T> : IExtensibleEnumInfo
+  /// <remarks>
+  /// Instances of this class are immutable, i.e. they will not change once initialized.
+  /// </remarks>
+  /// <threadsafety static="true" instance="true" />
+  public sealed class ExtensibleEnumInfo<T> : IExtensibleEnumInfo
       where T : ExtensibleEnum<T>
   {
     /// <summary>
@@ -35,7 +39,8 @@ namespace Remotion.ExtensibleEnums
     /// <param name="value">The value.</param>
     /// <param name="declaringMethod">The declaring method of the value.</param>
     /// <param name="resourceManager">The resource manager for the value.</param>
-    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod, IResourceManager resourceManager)
+    /// <param name="positionalKey">The positional key of the value.</param>
+    public ExtensibleEnumInfo (T value, MethodInfo declaringMethod, IResourceManager resourceManager, double positionalKey)
     {
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("declaringMethod", declaringMethod);
@@ -44,6 +49,7 @@ namespace Remotion.ExtensibleEnums
       Value = value;
       DefiningMethod = declaringMethod;
       ResourceManager = resourceManager;
+      PositionalKey = positionalKey;
     }
     
     /// <summary>
@@ -69,5 +75,17 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The resource manager of this <see cref="Value"/>.</value>
     public IResourceManager ResourceManager { get; private set; }
+
+    /// <summary>
+    /// Gets the positional key associated with the <see cref="Value"/>. The positional key determines the position of the <see cref="Value"/>
+    /// in the list of all values of the extensible enum type.
+    /// </summary>
+    /// <value>The positional key.</value>
+    public double PositionalKey { get; private set; }
+
+    public override string ToString ()
+    {
+      return string.Format ("ExtensibleEnumInfo: {0} ({1})", Value.ValueName, Value.GetEnumType ());
+    }
   }
 }

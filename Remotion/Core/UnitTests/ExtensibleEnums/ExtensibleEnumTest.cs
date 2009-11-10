@@ -148,12 +148,32 @@ namespace Remotion.UnitTests.ExtensibleEnums
     {
       var valueInfos = Color.Values.GetValueInfos();
       Assert.That (valueInfos.Select (info => info.Value).ToArray(),
-          Is.EquivalentTo (new[] { 
-              Color.Values.Red (), 
-              Color.Values.Green (), 
-              Color.Values.RedMetallic (), 
+          Is.EqualTo (new[] { 
+              Color.Values.Green (),
+              Color.Values.LightBlue(),
               Color.Values.LightRed(), 
-              Color.Values.LightBlue() }));
+              Color.Values.Red (), 
+              Color.Values.RedMetallic (), 
+          }));
+    }
+
+    [Test]
+    public void Values_Ordering_IntegrationTest ()
+    {
+      var valueInfos = Planet.Values.GetValueInfos ();
+      Assert.That (
+          valueInfos.Select (info => info.Value).ToArray (),
+          Is.EqualTo (new[] { 
+              Planet.Values.Mercury(), 
+              Planet.Values.Venus(), 
+              Planet.Values.Earth(), 
+              Planet.Values.Mars(), 
+              Planet.Values.Jupiter(), 
+              Planet.Values.Saturn(), 
+              Planet.Values.Uranus(), 
+              Planet.Values.Neptune(), 
+              Planet.Values.Pluto(), 
+              Planet.Values.Eris() }));
     }
 
     [Test]

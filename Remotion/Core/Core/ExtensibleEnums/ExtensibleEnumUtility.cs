@@ -23,6 +23,7 @@ namespace Remotion.ExtensibleEnums
   /// <summary>
   /// Provides utility functionality for extensible enums.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public static class ExtensibleEnumUtility
   {
     /// <summary>
