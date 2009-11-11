@@ -31,6 +31,7 @@ using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -676,62 +677,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetObjects_UnloadedObjects_PropagatedToParent ()
     {
-      MockRepository mockRepository = new MockRepository();
-      ClientTransactionMock mockParent = mockRepository.PartialMock<ClientTransactionMock>();
+      var parent = ClientTransaction.CreateRootTransaction();
+      ClientTransaction subTransaction = parent.CreateSubTransaction();
 
-      Expect.Call (mockParent.MockableGetObjects<DomainObject> (null, true)).Constraints (Mocks_List.Count (Mocks_Is.Equal (3)),
-          Mocks_Is.Equal (true)).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+      GetObjectInTransaction (DomainObjectIDs.ClassWithAllDataTypes1, subTransaction); // preload ClassWithAllDataTypes
 
-      mockRepository.ReplayAll ();
+      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
+      parent.Extensions.Add ("mock", extensionMock);
 
-      ClientTransaction subTransaction = mockParent.CreateSubTransaction();
+      subTransaction.GetObjects<DomainObject> (
+          DomainObjectIDs.Order1,
+          DomainObjectIDs.ClassWithAllDataTypes1, // this has already been loaded
+          DomainObjectIDs.Order2,
+          DomainObjectIDs.OrderItem1);
 
-      using (subTransaction.EnterDiscardingScope())
-      {
-        ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-        ObjectList<DomainObject> objects = subTransaction.GetObjects<DomainObject> (
-            DomainObjectIDs.Order1,
-            DomainObjectIDs.ClassWithAllDataTypes1,
-            DomainObjectIDs.Order2,
-            DomainObjectIDs.OrderItem1);
-
-        mockRepository.VerifyAll ();
-
-        object[] expectedObjects = new object[]
-            {
-                Order.GetObject (DomainObjectIDs.Order1),
-                ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1),
-                Order.GetObject (DomainObjectIDs.Order2),
-                OrderItem.GetObject (DomainObjectIDs.OrderItem1)
-            };
-        Assert.That (objects, Is.EqualTo (expectedObjects));
-      }
+      extensionMock.AssertWasCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.Order1));
+      extensionMock.AssertWasCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.Order2));
+      extensionMock.AssertWasCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.OrderItem1));
+      extensionMock.AssertWasNotCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.ClassWithAllDataTypes1));
     }
 
     [Test]
-    public void TryObjects_UnloadedObjects_PropagatedToParent ()
+    public void TryGetObjects_UnloadedObjects_PropagatedToParent ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      ClientTransactionMock mockParent = mockRepository.PartialMock<ClientTransactionMock> ();
+      var parent = ClientTransaction.CreateRootTransaction ();
+      ClientTransaction subTransaction = parent.CreateSubTransaction ();
 
-      Expect.Call (mockParent.MockableGetObjects<DomainObject> (null, false)).Constraints (Mocks_List.Count (Mocks_Is.Equal (3)),
-          Mocks_Is.Equal (false)).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+      GetObjectInTransaction (DomainObjectIDs.ClassWithAllDataTypes1, subTransaction); // preload ClassWithAllDataTypes
 
-      mockRepository.ReplayAll ();
+      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
+      parent.Extensions.Add ("mock", extensionMock);
 
-      ClientTransaction subTransaction = mockParent.CreateSubTransaction();
+      subTransaction.TryGetObjects<DomainObject> (
+          DomainObjectIDs.Order1,
+          DomainObjectIDs.ClassWithAllDataTypes1, // this has already been loaded
+          DomainObjectIDs.Order2,
+          DomainObjectIDs.OrderItem1);
 
-      using (subTransaction.EnterDiscardingScope ())
-      {
-        ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-        subTransaction.TryGetObjects<DomainObject> (
-            DomainObjectIDs.Order1,
-            DomainObjectIDs.ClassWithAllDataTypes1,
-            DomainObjectIDs.Order2,
-            DomainObjectIDs.OrderItem1);
-
-        mockRepository.VerifyAll ();
-      }
+      extensionMock.AssertWasCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.Order1));
+      extensionMock.AssertWasCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.Order2));
+      extensionMock.AssertWasCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.OrderItem1));
+      extensionMock.AssertWasNotCalled (mock => mock.ObjectLoading (parent, DomainObjectIDs.ClassWithAllDataTypes1));
     }
 
     [Test]
@@ -743,8 +729,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
         PrivateInvoke.InvokeNonPublicMethod (subTransaction, "AddListener", listenerMock);
 
-        ClientTransactionEventReceiver eventReceiver = new ClientTransactionEventReceiver (subTransaction);
-        ObjectList<DomainObject> objects = subTransaction.GetObjects<DomainObject> (
+        var eventReceiver = new ClientTransactionEventReceiver (subTransaction);
+        DomainObject[] objects = subTransaction.GetObjects<DomainObject> (
             DomainObjectIDs.Order1,
             DomainObjectIDs.Order2,
             DomainObjectIDs.OrderItem1);
@@ -771,7 +757,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
                 Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
                 OrderItem.GetObject (DomainObjectIDs.OrderItem1)
             };
-        ObjectList<DomainObject> objects = subTransaction.GetObjects<DomainObject> (
+        DomainObject[] objects = subTransaction.GetObjects<DomainObject> (
             DomainObjectIDs.Order1,
             DomainObjectIDs.Order2,
             DomainObjectIDs.OrderItem1);
@@ -810,7 +796,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope ())
       {
         DomainObject[] expectedObjects = new DomainObject[] {Order.NewObject(), OrderItem.NewObject()};
-        ObjectList<DomainObject> objects = subTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
+        DomainObject[] objects = subTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
         Assert.That (objects, Is.EqualTo (expectedObjects));
       }
     }
@@ -857,21 +843,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope ())
       {
         Order newObject = Order.NewObject();
-        ObjectList<Order> objects = subTransaction.TryGetObjects<Order> (
+        Order[] objects = subTransaction.TryGetObjects<Order> (
             DomainObjectIDs.Order1,
             newObject.ID,
             new ObjectID (typeof (Order), guid),
             DomainObjectIDs.Order2);
-        DomainObject[] expectedObjects =
-            new DomainObject[] {Order.GetObject (DomainObjectIDs.Order1), newObject, Order.GetObject (DomainObjectIDs.Order2)};
+        var expectedObjects = new DomainObject[] {
+            Order.GetObject (DomainObjectIDs.Order1), 
+            newObject, 
+            null,
+            Order.GetObject (DomainObjectIDs.Order2)};
         Assert.That (objects, Is.EqualTo (expectedObjects));
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' "
-      + "cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' or derived from "
-      + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'.\r\nParameter name: domainObject")]
+    [ExpectedException (typeof (InvalidCastException))]
     public void GetObjects_InvalidType ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -941,6 +928,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           subTransaction.GetObjects<Order> (DomainObjectIDs.Order1);
         };
         Order.GetObject (DomainObjectIDs.Order2);
+      }
+    }
+
+    private void GetObjectInTransaction (ObjectID objectID, ClientTransaction subTransaction)
+    {
+      using (subTransaction.EnterNonDiscardingScope ())
+      {
+        RepositoryAccessor.GetObject (objectID, false);
       }
     }
   }

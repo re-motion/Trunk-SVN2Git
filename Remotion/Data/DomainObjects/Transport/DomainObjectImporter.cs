@@ -68,12 +68,14 @@ namespace Remotion.Data.DomainObjects.Transport
       {
         using (targetTransaction.EnterNonDiscardingScope())
         {
-          ObjectID[] transportedObjectIDs = GetIDs (_transportItems);
-          ObjectList<DomainObject> existingObjects = targetTransaction.TryGetObjects<DomainObject> (transportedObjectIDs);
+          var transportedObjectIDs = GetIDs (_transportItems);
+
+          var existingObjects = targetTransaction.TryGetObjects<DomainObject> (transportedObjectIDs);
+          var existingObjectDictionary = existingObjects.Where (obj => obj != null).ToDictionary (obj => obj.ID);
 
           foreach (TransportItem transportItem in _transportItems)
           {
-            DataContainer targetDataContainer = GetTargetDataContainer(transportItem, existingObjects, targetTransaction);
+            DataContainer targetDataContainer = GetTargetDataContainer (transportItem, existingObjectDictionary, targetTransaction);
             result.Add (Tuple.NewTuple (transportItem, targetDataContainer));
           }
         }
@@ -81,11 +83,13 @@ namespace Remotion.Data.DomainObjects.Transport
       return result;
     }
 
-    private DataContainer GetTargetDataContainer (TransportItem transportItem, ObjectList<DomainObject> existingObjects, ClientTransaction targetTransaction)
+    private DataContainer GetTargetDataContainer (TransportItem transportItem, Dictionary<ObjectID, DomainObject> existingObjects, ClientTransaction targetTransaction)
     {
-      DomainObject existingObject = existingObjects[transportItem.ID];
-      if (existingObject != null)
-        return targetTransaction.GetDataContainer(existingObject);
+      DomainObject existingObject;
+      if (existingObjects.TryGetValue (transportItem.ID, out existingObject))
+      {
+        return targetTransaction.GetDataContainer (existingObject);
+      }
       else
       {
         DataContainer targetDataContainer = targetTransaction.CreateNewDataContainer (transportItem.ID);

@@ -362,9 +362,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetObjects_UnloadedObjects ()
     {
-      ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
+      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (
+          DomainObjectIDs.Order1, 
+          DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
-      var expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
+
+      var expectedObjects = new object[] {
+          Order.GetObject (DomainObjectIDs.Order1), 
+          Order.GetObject (DomainObjectIDs.Order2),
           OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
@@ -375,7 +380,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
+      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (
+          DomainObjectIDs.Order1, 
+          DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
       Assert.That (_eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
@@ -392,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
           OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
-      ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
+      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
@@ -420,7 +427,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void GetObjects_NewObjects ()
     {
       var expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
-      ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
+      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
 
@@ -454,20 +461,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order newObject = Order.NewObject();
       var guid = new Guid ("33333333333333333333333333333333");
-      ObjectList<Order> objects = ClientTransactionMock.TryGetObjects<Order> (
+      Order[] objects = ClientTransactionMock.TryGetObjects<Order> (
           DomainObjectIDs.Order1,
           newObject.ID,
           new ObjectID (typeof (Order), guid),
           DomainObjectIDs.Order2);
-      var expectedObjects =
-          new DomainObject[] { Order.GetObject (DomainObjectIDs.Order1), newObject, Order.GetObject (DomainObjectIDs.Order2) };
+      var expectedObjects = new DomainObject[] { 
+          Order.GetObject (DomainObjectIDs.Order1), 
+          newObject, 
+          null,
+          Order.GetObject (DomainObjectIDs.Order2) };
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
     
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' "
-      + "cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' or derived from "
-      + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'.\r\nParameter name: domainObject")]
+    [ExpectedException (typeof (InvalidCastException))]
     public void GetObjects_InvalidType ()
     {
       ClientTransactionMock.GetObjects<OrderItem> (DomainObjectIDs.Order1);

@@ -858,15 +858,16 @@ public abstract class ClientTransaction
   /// <exception cref="ObjectDeletedException">One of the retrieved objects has already been deleted.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  public ObjectList<T> GetObjects<T> (params ObjectID[] objectIDs) where T : DomainObject
+  public T[] GetObjects<T> (params ObjectID[] objectIDs) 
+      where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
     return GetObjects<T> (objectIDs, true);
   }
 
   /// <summary>
-  /// Gets a number of objects that are already loaded or attempts to load them from the data source. If an object cannot be found, it is simply not
-  /// included in the results list.
+  /// Gets a number of objects that are already loaded or attempts to load them from the data source. If an object is not be found, the result array
+  /// will contain a <see langword="null" /> reference in its place.
   /// </summary>
   /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
   /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
@@ -877,7 +878,8 @@ public abstract class ClientTransaction
   /// <exception cref="ObjectDeletedException">One of the retrieved objects has already been deleted.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  public ObjectList<T> TryGetObjects<T> (params ObjectID[] objectIDs) where T : DomainObject
+  public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
+      where T : DomainObject
   {
     ArgumentUtility.CheckNotNullOrEmpty ("objectIDs", objectIDs);
     return GetObjects<T> (objectIDs, false);
@@ -898,18 +900,19 @@ public abstract class ClientTransaction
   /// <exception cref="ObjectDeletedException">One of the retrieved objects has already been deleted.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  protected internal virtual ObjectList<T> GetObjects<T> (ObjectID[] objectIDs, bool throwOnNotFound) where T : DomainObject
+  protected internal virtual T[] GetObjects<T> (ObjectID[] objectIDs, bool throwOnNotFound) 
+      where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
     using (EnterNonDiscardingScope ())
     {
-      var loadedObjects = new DomainObject[objectIDs.Length];
+      var loadedObjects = new T[objectIDs.Length];
       var idsToBeLoaded = new List<ObjectID> ();
 
       for (int i = 0; i < objectIDs.Length; i++)
       {
-        DomainObject alreadyLoadedObject = DataManager.DataContainerMap.GetObjectWithoutLoading (objectIDs[i], false);
+        var alreadyLoadedObject = (T) DataManager.DataContainerMap.GetObjectWithoutLoading (objectIDs[i], false);
         if (alreadyLoadedObject != null)
           loadedObjects[i] = alreadyLoadedObject;
         else
@@ -931,25 +934,12 @@ public abstract class ClientTransaction
           {
             DataContainer dataContainer = additionalDataContainers[objectIDs[i]];
             if (dataContainer != null)
-              loadedObjects[i] = dataContainer.DomainObject;
+              loadedObjects[i] = (T) dataContainer.DomainObject;
           }
         }
       }
-
-      ObjectList<T> objectList = MakeObjectList<T> (loadedObjects);
-      return objectList;
+      return loadedObjects;
     }
-  }
-
-  private ObjectList<T> MakeObjectList<T> (DomainObject[] loadedObjects) where T : DomainObject
-  {
-    var objectList = new ObjectList<T> ();
-    foreach (DomainObject domainObject in loadedObjects)
-    {
-      if (domainObject != null)
-        objectList.Add (domainObject);
-    }
-    return objectList;
   }
 
   internal DataContainer CreateNewDataContainer (Type type)

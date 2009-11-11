@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
@@ -163,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        IEnumerable<DomainObject> parentObjects = ParentTransaction.GetObjects<DomainObject> (new List<ObjectID> (objectIDs).ToArray(), throwOnNotFound);
+        var parentObjects = ParentTransaction.GetObjects<DomainObject> (objectIDs.ToArray(), throwOnNotFound).Where (obj => obj != null);
         var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {

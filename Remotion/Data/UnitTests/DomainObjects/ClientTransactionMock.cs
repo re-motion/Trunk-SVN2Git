@@ -75,16 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return base.GetObject (id, includeDeleted);
     }
 
-    protected override ObjectList<T> GetObjects<T> (ObjectID[] objectIDs, bool throwOnNotFound)
-    {
-      return MockableGetObjects<T> (objectIDs, throwOnNotFound);
-    }
-
-    public virtual ObjectList<T> MockableGetObjects<T> (ObjectID[] objectIDs, bool throwOnNotFound) where T: DomainObject
-    {
-      return base.GetObjects<T> (objectIDs, throwOnNotFound);
-    }
-
     public new DomainObject GetRelatedObject (RelationEndPointID relationEndPointID)
     {
       return base.GetRelatedObject (relationEndPointID);
