@@ -60,10 +60,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNullOrEmpty ("parameterName", parameterName);
       ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-      IDataParameter commandParameter = AddCommandParameter (command, parameterName, propertyValue.GetFieldValue (ValueAccess.Current));
+      var value = propertyValue.GetFieldValue (ValueAccess.Current);
+      IDataParameter commandParameter = AddCommandParameter (command, parameterName, value);
 
+      // The default DbType for null values is String, which is alright for most data types, but not for Binary. Therefore, explicitly set the
+      // DbType to binary for byte[]s.
       if (propertyValue.PropertyType == typeof (byte[]))
+      {
+        Assertion.IsTrue (commandParameter.DbType == DbType.Binary || value == null);
         commandParameter.DbType = DbType.Binary;
+      }
 
       return commandParameter;
     }
