@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
@@ -27,34 +28,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// </summary>
   public class ChangeDelegateCollectionData : IDomainObjectCollectionData
   {
-    private readonly DomainObjectCollectionData _data = new DomainObjectCollectionData ();
+    private readonly ICollectionEndPoint _collectionEndPoint;
+    private readonly IDomainObjectCollectionData _actualData; // TODO 1766: Should be IReadOnlyDomainObjectCollectionData
 
-    private readonly ICollectionChangeDelegate _changeDelegate;
-    private readonly IDomainObjectCollectionEventRaiser _eventRaiser;
-    private readonly DomainObjectCollection _parentCollection;
-
-    public ChangeDelegateCollectionData (
-        ICollectionChangeDelegate changeDelegate,
-        IDomainObjectCollectionEventRaiser eventRaiser,
-        DomainObjectCollection parentCollection)
+    public ChangeDelegateCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)
     {
-      ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
-      ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
-      ArgumentUtility.CheckNotNull ("parentCollection", parentCollection);
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("actualData", actualData);
 
-      _changeDelegate = changeDelegate;
-      _eventRaiser = eventRaiser;
-      _parentCollection = parentCollection;
+      _collectionEndPoint = collectionEndPoint;
+      _actualData = actualData;
     }
 
-    public ICollectionChangeDelegate ChangeDelegate
+    public ICollectionEndPoint CollectionEndPoint
     {
-      get { return _changeDelegate; }
+      get { return _collectionEndPoint; }
     }
 
     public int Count
     {
-      get { return _data.Count; }
+      get { return _actualData.Count; }
     }
 
     public bool IsReadOnly
@@ -65,29 +58,29 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _data.ContainsObjectID (objectID);
+      return _actualData.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _data.GetObject (index);
+      return _actualData.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _data.GetObject (objectID);
+      return _actualData.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _data.IndexOf (objectID);
+      return _actualData.IndexOf (objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      return _data.GetEnumerator ();
+      return _actualData.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
@@ -95,25 +88,35 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       return GetEnumerator();
     }
 
+    // TODO 1780: Inline calls to ICollectionChangeDelegate - move code from RelationEndPointModifier here
+
     public void Clear ()
     {
       for (int i = Count - 1; i >= 0; --i)
-        _changeDelegate.PerformRemove (_parentCollection, GetObject (i));
+        (CollectionEndPoint).PerformRemove (null, GetObject (i));
     }
 
     public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      _changeDelegate.PerformInsert (_parentCollection, domainObject, index);
+      (CollectionEndPoint).PerformInsert (null, domainObject, index);
     }
 
-    public void Remove (ObjectID objectID)
+    public void Remove (DomainObject domainObject)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      if (ContainsObjectID (objectID))
-        _changeDelegate.PerformRemove (_parentCollection, GetObject (objectID));
+      CheckClientTransaction (domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
+      CheckNotDeleted (domainObject);
+      CheckNotDeleted (CollectionEndPoint.GetDomainObject());
+
+      if (ContainsObjectID (domainObject.ID))
+      {
+        var modification = CollectionEndPoint.CreateRemoveModification (domainObject);
+        var bidirectionalModification = modification.CreateBidirectionalModification ();
+        bidirectionalModification.ExecuteAllSteps ();
+      }
     }
 
     public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
@@ -121,53 +124,52 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      _changeDelegate.PerformReplace (_parentCollection, newDomainObject, IndexOf (oldDomainObjectID));
+      (CollectionEndPoint).PerformReplace (null, newDomainObject, IndexOf (oldDomainObjectID));
     }
 
-    public void RaiseBeginAddEvent (int index, DomainObject domainObject)
+    private void CheckClientTransaction (DomainObject domainObject, string exceptionFormatString)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      _eventRaiser.BeginAdd (index, domainObject);
+      if (!domainObject.TransactionContext[CollectionEndPoint.ClientTransaction].CanBeUsedInTransaction)
+      {
+        string transactionInfo = GetTransactionInfoForMismatchingClientTransactions (domainObject);
+
+        var formattedMessage = string.Format (
+            exceptionFormatString, 
+            domainObject.ID, 
+            CollectionEndPoint.ID.PropertyName, 
+            CollectionEndPoint.ID.ObjectID);
+        throw new ClientTransactionsDifferException (formattedMessage + " The objects do not belong to the same ClientTransaction." + transactionInfo);
+      }
     }
 
-    public void RaiseEndAddEvent (int index, DomainObject domainObject)
+    private string GetTransactionInfoForMismatchingClientTransactions (DomainObject otherDomainObject)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      _eventRaiser.EndAdd (index, domainObject);
+      var transactionInfo = new StringBuilder ();
+
+      var endPointObject = CollectionEndPoint.GetDomainObject ();
+      if (otherDomainObject.HasBindingTransaction)
+      {
+        transactionInfo.AppendFormat (" The {0} object is bound to a BindingClientTransaction.", otherDomainObject.GetPublicDomainObjectType ().Name);
+        if (endPointObject.HasBindingTransaction)
+        {
+          transactionInfo.AppendFormat (
+              " The {0} object owning the collection is also bound, but to a different BindingClientTransaction.",
+              endPointObject.GetPublicDomainObjectType ().Name);
+        }
+      }
+      else if (endPointObject.HasBindingTransaction)
+      {
+        transactionInfo.AppendFormat (
+            "The {0} object owning the collection is bound to a BindingClientTransaction.", 
+            endPointObject.GetPublicDomainObjectType ().Name);
+      }
+      return transactionInfo.ToString();
     }
 
-    public void RaiseBeginRemoveEvent (int index, DomainObject domainObject)
+    private void CheckNotDeleted (DomainObject domainObject)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      _eventRaiser.BeginRemove (index, domainObject);
-    }
-
-    public void RaiseEndRemoveEvent (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      _eventRaiser.EndRemove(index, domainObject);
-    }
-
-    public void InsertData (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      _data.Insert (index, domainObject);
-    }
-
-    public void RemoveData (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      _data.Remove (objectID);
-    }
-
-    public void ReplaceData (ObjectID oldDomainObjectID, DomainObject newDomainObject)
-    {
-      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
-
-      _data.Replace (oldDomainObjectID, newDomainObject);
+      if (domainObject.TransactionContext[CollectionEndPoint.ClientTransaction].State == StateType.Deleted)
+        throw new ObjectDeletedException (domainObject.ID);
     }
   }
 }

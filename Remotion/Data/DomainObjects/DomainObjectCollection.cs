@@ -1185,7 +1185,7 @@ namespace Remotion.Data.DomainObjects
       if (IsReadOnly)
         throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
 
-      _data.Remove (domainObject.ID);
+      _data.Remove (domainObject);
       Touch ();
     }
 

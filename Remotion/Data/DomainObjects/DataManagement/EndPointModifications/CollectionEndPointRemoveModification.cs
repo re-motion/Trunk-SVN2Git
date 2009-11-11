@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Remove (OldRelatedObject.ID);
+      ModifiedCollectionData.Remove (OldRelatedObject);
       ModifiedEndPoint.Touch ();
     }
 

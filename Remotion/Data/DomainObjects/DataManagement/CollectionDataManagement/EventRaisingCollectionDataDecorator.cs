@@ -122,17 +122,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _eventRaiser.EndAdd (index, domainObject);
     }
 
-    public void Remove (ObjectID objectID)
+    public void Remove (DomainObject domainObject)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      int index = IndexOf (objectID);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      
+      int index = IndexOf (domainObject.ID);
       if (index != -1)
       {
-        var domainObject = GetObject (index);
-
         _eventRaiser.BeginRemove (index, domainObject);
-        _wrappedData.Remove (objectID);
+        _wrappedData.Remove (domainObject);
         _eventRaiser.EndRemove (index, domainObject);
       }
     }

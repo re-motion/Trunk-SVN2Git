@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove ()
     {
-      _data.Remove (_order1.ID);
+      _data.Remove (_order1);
       Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
     }

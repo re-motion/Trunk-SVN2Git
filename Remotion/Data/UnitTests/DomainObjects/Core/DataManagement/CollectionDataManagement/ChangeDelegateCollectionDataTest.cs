@@ -14,65 +14,67 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
   public class ChangeDelegateCollectionDataTest : ClientTransactionBaseTest
   {
-    private ChangeDelegateCollectionData _data;
-    private ICollectionChangeDelegate _changeDelegateMock;
-    private IDomainObjectCollectionEventRaiser _eventRaiserMock;
-    private DomainObjectCollection _parentCollection;
+    private Order _owningOrder;
 
-    private Order _order1;
-    private Order _order2;
-    private Order _order3;
-    private Order _order4;
+    private ICollectionEndPoint _collectionEndPointMock;
+    private IDomainObjectCollectionData _actualDataStub;
+    private BidirectionalRelationModificationBase _bidirectionalModificationMock;
+    private IRelationEndPointModification _modificationStub;
+
+    private ChangeDelegateCollectionData _data;
+
+    private OrderItem _orderItem;
+    private OrderItem _orderItemInOtherTransaction;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _parentCollection = new DomainObjectCollection ();
+      _owningOrder = Order.GetObject (DomainObjectIDs.Order1);
 
-      var mockRepository = new MockRepository ();
-      _changeDelegateMock = mockRepository.StrictMock<ICollectionChangeDelegate> ();
-      _eventRaiserMock = mockRepository.StrictMock<IDomainObjectCollectionEventRaiser> ();
+      _collectionEndPointMock = MockRepository.GenerateMock<ICollectionEndPoint>();
+      _collectionEndPointMock.Stub (mock => mock.ClientTransaction).Return (ClientTransactionMock);
+      var relationEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      _collectionEndPointMock.Stub (mock => mock.ID).Return (relationEndPointID);
+      _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningOrder);
 
-      _data = new ChangeDelegateCollectionData (_changeDelegateMock, _eventRaiserMock, _parentCollection);
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
-      _order3 = Order.GetObject (DomainObjectIDs.Order3);
-      _order4 = Order.GetObject (DomainObjectIDs.Order4);
+      _actualDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
 
-      _data.InsertData (0, _order1);
-      _data.InsertData (1, _order2);
-      _data.InsertData (2, _order3);
+      _modificationStub = MockRepository.GenerateStub<IRelationEndPointModification> ();
+      _bidirectionalModificationMock = MockRepository.GenerateMock<BidirectionalRelationModificationBase> (new[] { new IRelationEndPointModification[0] });
+
+      _data = new ChangeDelegateCollectionData (_collectionEndPointMock, _actualDataStub);
+
+      _orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        _orderItemInOtherTransaction = OrderItem.NewObject();
+      }
+
+      ClientTransactionScope.EnterNullScope (); // no active transaction
     }
 
-    [Test]
-    public void ChangeDelegate ()
+    public override void TearDown ()
     {
-      Assert.That (_data.ChangeDelegate, Is.SameAs (_changeDelegateMock));
-    }
-
-    [Test]
-    public void Count ()
-    {
-      Assert.That (_data.Count, Is.EqualTo (3));
+      ClientTransactionScope.ActiveScope.Leave ();
+      base.TearDown ();
     }
 
     [Test]
@@ -82,288 +84,143 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Count ()
+    {
+      _actualDataStub.Stub (stub => stub.Count).Return (12);
+      Assert.That (_data.Count, Is.EqualTo (12));
+    }
+
+    [Test]
     public void ContainsObjectID ()
     {
-      Assert.That (_data.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_data.ContainsObjectID (_order4.ID), Is.False);
+      _actualDataStub.Stub (stub => stub.ContainsObjectID (DomainObjectIDs.OrderItem1)).Return (true);
+      _actualDataStub.Stub (stub => stub.ContainsObjectID (DomainObjectIDs.OrderItem2)).Return (false);
+
+      Assert.That (_data.ContainsObjectID (DomainObjectIDs.OrderItem1), Is.True);
+      Assert.That (_data.ContainsObjectID (DomainObjectIDs.OrderItem2), Is.False);
     }
 
     [Test]
-    public void GetObject_ByIndex ()
+    public void GetObject_Index ()
     {
-      Assert.That (_data.GetObject (0), Is.SameAs (_order1));
+      _actualDataStub.Stub (stub => stub.GetObject (12)).Return (_orderItem);
+
+      Assert.That (_data.GetObject (12), Is.SameAs (_orderItem));
     }
 
     [Test]
-    public void GetObject_ByID ()
+    public void GetObject_ID ()
     {
-      Assert.That (_data.GetObject (_order1.ID), Is.SameAs (_order1));
+      _actualDataStub.Stub (stub => stub.GetObject (DomainObjectIDs.OrderItem1)).Return (_orderItem);
+
+      Assert.That (_data.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (_orderItem));
     }
 
     [Test]
     public void IndexOf ()
     {
-      Assert.That (_data.IndexOf (_order1.ID), Is.EqualTo (0));
-      Assert.That (_data.IndexOf (_order2.ID), Is.EqualTo (1));
-      Assert.That (_data.IndexOf (_order3.ID), Is.EqualTo (2));
-      Assert.That (_data.IndexOf (_order4.ID), Is.EqualTo (-1));
+      _actualDataStub.Stub (stub => stub.IndexOf (DomainObjectIDs.OrderItem1)).Return (17);
+
+      Assert.That (_data.IndexOf (DomainObjectIDs.OrderItem1), Is.EqualTo (17));
     }
 
     [Test]
     public void GetEnumerator ()
     {
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      var enumeratorStub = MockRepository.GenerateStub<IEnumerator<DomainObject>> ();
+      _actualDataStub.Stub (stub => stub.GetEnumerator()).Return (enumeratorStub);
+
+      Assert.That (_data.GetEnumerator(), Is.SameAs (enumeratorStub));
     }
 
     [Test]
+    [Ignore ("TODO 1780")]
     public void Clear ()
     {
-      using (_changeDelegateMock.GetMockRepository ().Ordered ())
-      {
-        _changeDelegateMock.Expect (
-            mock => mock.PerformRemove (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order3)));
-        _changeDelegateMock.Expect (
-            mock => mock.PerformRemove (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order2)));
-        _changeDelegateMock.Expect (
-            mock => mock.PerformRemove (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order1)));
-      }
-
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.Clear ();
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-
-      _changeDelegateMock.VerifyAllExpectations ();
-
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      Assert.Fail ("TODO");
     }
 
     [Test]
+    [Ignore ("TODO 1780")]
     public void Insert ()
     {
-      _changeDelegateMock.Expect (
-          mock =>
-          mock.PerformInsert (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order4), Arg<int>.Is.Equal (0)));
-
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.Insert (0, _order4);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-
-      _changeDelegateMock.VerifyAllExpectations ();
-
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      Assert.Fail ("TODO");
     }
 
     [Test]
     public void Remove ()
     {
-      _changeDelegateMock.Expect (
-        mock =>
-        mock.PerformRemove (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order2)));
+      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem.ID)).Return (true);
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem)).Return (_modificationStub);
+      _collectionEndPointMock.Replay ();
+      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
+      _data.Remove (_orderItem);
 
-      _data.Remove (_order2.ID);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-
-      _changeDelegateMock.VerifyAllExpectations ();
-
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
     }
 
     [Test]
-    public void Remove_NonExistingObject ()
+    public void Remove_ObjectNotContained ()
     {
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
+      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem.ID)).Return (false);
 
-      _data.Remove (_order4.ID);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      _data.Remove (_orderItem);
 
-      _changeDelegateMock.AssertWasNotCalled (mock => mock.PerformRemove (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        @"Cannot remove DomainObject 'OrderItem\|.*\|System.Guid' from collection of property "
+        + @"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order\|.*\|System.Guid'. The objects do not belong "
+        + @"to the same ClientTransaction.", MatchType = MessageMatch.Regex)]
+    public void Remove_ClientTransactionDiffers ()
+    {
+      _data.Remove (_orderItemInOtherTransaction);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void Remove_ObjectDeleted ()
+    {
+      SetTransactionAndDelete (_orderItem);
+
+      _data.Remove (_orderItem);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void Remove_OwningObjectDeleted ()
+    {
+      SetTransactionAndDelete (_owningOrder);
+
+      _data.Remove (_orderItem);
+    }
+    
+    [Test]
+    [Ignore ("TODO 1780")]
     public void Replace ()
     {
-      _changeDelegateMock.Expect (
-        mock =>
-        mock.PerformReplace (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order4), Arg<int>.Is.Equal (1)));
-
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.Replace (_order2.ID, _order4);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-
-      _changeDelegateMock.VerifyAllExpectations ();
-
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      Assert.Fail ("TODO");
     }
 
     [Test]
-    public void SelfReplace ()
+    [Ignore ("TODO 1780")]
+    public void ClientTransactionsDiffer_Variants ()
     {
-      _changeDelegateMock.Expect (
-        mock =>
-        mock.PerformReplace (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order2), Arg<int>.Is.Equal (1)));
-
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.Replace (_order2.ID, _order2);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-
-      _changeDelegateMock.VerifyAllExpectations ();
-
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      Assert.Fail ("TODO");
+     
     }
 
-    [Test]
-    public void RaiseBeginAddEvent ()
+    private void SetTransactionAndDelete (DomainObject domainObject)
     {
-      _eventRaiserMock.Expect (mock => mock.BeginAdd (12, _order2));
-      _eventRaiserMock.Replay ();
-
-      _data.RaiseBeginAddEvent (12, _order2);
-
-      _eventRaiserMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void RaiseEndAddEvent ()
-    {
-      _eventRaiserMock.Expect (mock => mock.EndAdd (12, _order2));
-      _eventRaiserMock.Replay ();
-
-      _data.RaiseEndAddEvent (12, _order2);
-
-      _eventRaiserMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void RaiseBeginRemoveEvent ()
-    {
-      _eventRaiserMock.Expect (mock => mock.BeginRemove (12, _order2));
-      _eventRaiserMock.Replay ();
-
-      _data.RaiseBeginRemoveEvent (12, _order2);
-
-      _eventRaiserMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void RaiseEndRemoveEvent ()
-    {
-      _eventRaiserMock.Expect (mock => mock.EndRemove (12, _order2));
-      _eventRaiserMock.Replay ();
-
-      _data.RaiseEndRemoveEvent (12, _order2);
-
-      _eventRaiserMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void InsertData ()
-    {
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.InsertData (2, _order4);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order4, _order3 }));
-
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformInsert (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void InsertData_Invalid ()
-    {
-      _data.InsertData (2, _order1);
-    }
-
-    [Test]
-    public void RemoveData ()
-    {
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.RemoveData (_order2.ID);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order3 }));
-
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformRemove (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-    }
-
-    [Test]
-    public void ReplaceData ()
-    {
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.ReplaceData (_order2.ID, _order4);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order4, _order3 }));
-
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-    }
-
-    [Test]
-    public void ReplaceData_SelfReplace ()
-    {
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      _data.ReplaceData (_order2.ID, _order2);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-    }
-
-    [Test]
-    public void ReplaceData_Invalid ()
-    {
-      _changeDelegateMock.Replay ();
-      _eventRaiserMock.Replay ();
-
-      try
+      using (ClientTransactionMock.EnterNonDiscardingScope ())
       {
-        _data.ReplaceData (_order2.ID, _order1);
-        Assert.Fail ("Expected exception");
+        RepositoryAccessor.DeleteObject (domainObject);
       }
-      catch (InvalidOperationException)
-      {
-      }
-
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
-      _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
+
   }
 }

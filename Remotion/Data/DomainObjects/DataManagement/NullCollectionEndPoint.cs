@@ -42,27 +42,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       return new NullEndPointModification (this, removedRelatedObject, null);
     }
 
-    public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
     {
       return new NullEndPointModification (this, selfReplaceRelatedObject, selfReplaceRelatedObject);
     }
 
-    public override RelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public override IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       return new NullEndPointModification (this, null, insertedRelatedObject);
     }
 
-    public override RelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    public override IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
     {
       return new NullEndPointModification (this, null, addedRelatedObject);
     }
 
-    public override RelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
+    public override IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
     { 
       return new NullEndPointModification (this, null, replacementObject);
     }

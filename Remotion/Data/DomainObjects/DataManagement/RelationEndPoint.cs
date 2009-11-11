@@ -119,8 +119,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract void Rollback ();
     public abstract void CheckMandatory ();
     public abstract void PerformDelete ();
-    public abstract RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
-    public abstract RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject);
+    public abstract IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
+    public abstract IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject);
 
     // methods and properties
 

@@ -89,15 +89,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       IncrementVersion();
     }
 
-    public void Remove (ObjectID objectID)
+    public void Remove (DomainObject domainObject)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      var index = IndexOf (objectID);
+      var index = IndexOf (domainObject.ID);
       if (index != -1)
       {
         _orderedObjectIDs.RemoveAt (index);
-        _objectsByID.Remove (objectID);
+        _objectsByID.Remove (domainObject.ID);
 
         IncrementVersion();
       }

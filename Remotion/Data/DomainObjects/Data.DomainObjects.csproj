@@ -153,6 +153,7 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointInsertModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointSelfReplaceModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\IRelationEndPointModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NonNotifyingBidirectionalRelationModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NotifyingBidirectionalRelationModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneManyModification.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetSameModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
+    <Compile Include="DataManagement\ICollectionEndPoint.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializer.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\StringObjectIDValueParser.cs" />

@@ -80,12 +80,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       throw new System.NotImplementedException();
     }
 
-    public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
     {
       throw new System.NotImplementedException();
     }

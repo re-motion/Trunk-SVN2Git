@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       throw new InvalidOperationException ("Cannot insert an item into a read-only collection.");
     }
 
-    public void Remove (ObjectID objectID)
+    public void Remove (DomainObject domainObject)
     {
       throw new InvalidOperationException ("Cannot remove an item from a read-only collection.");
     }

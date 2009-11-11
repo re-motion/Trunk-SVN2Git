@@ -32,20 +32,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </remarks>
   public abstract class BidirectionalRelationModificationBase
   {
-    private readonly List<RelationEndPointModification> _modifications;
+    private readonly List<IRelationEndPointModification> _modifications;
 
-    protected BidirectionalRelationModificationBase (params RelationEndPointModification[] modifications)
+    protected BidirectionalRelationModificationBase (params IRelationEndPointModification[] modifications)
     {
       ArgumentUtility.CheckNotNull ("modifications", modifications);
-      _modifications = new List<RelationEndPointModification>(modifications);
+      _modifications = new List<IRelationEndPointModification>(modifications);
     }
 
-    public ReadOnlyCollection<RelationEndPointModification> GetModificationSteps ()
+    public ReadOnlyCollection<IRelationEndPointModification> GetModificationSteps ()
     {
       return _modifications.AsReadOnly ();
     }
 
-    public void AddModificationStep (RelationEndPointModification modification)
+    public void AddModificationStep (IRelationEndPointModification modification)
     {
       ArgumentUtility.CheckNotNull ("modification", modification);
       _modifications.Add (modification);

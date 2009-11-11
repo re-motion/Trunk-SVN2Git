@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
       CollectionDataMock.BackToRecord();
-      CollectionDataMock.Expect (mock => mock.Remove (_removedRelatedObject.ID));
+      CollectionDataMock.Expect (mock => mock.Remove (_removedRelatedObject));
       CollectionDataMock.Replay();
 
       _modification.Perform();

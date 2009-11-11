@@ -102,9 +102,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _data.Insert (index, domainObject);
     }
 
-    public void Remove (ObjectID objectID)
+    public void Remove (DomainObject domainObject)
     {
-      _data.Remove (objectID);
+      _data.Remove (domainObject);
     }
 
     public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)

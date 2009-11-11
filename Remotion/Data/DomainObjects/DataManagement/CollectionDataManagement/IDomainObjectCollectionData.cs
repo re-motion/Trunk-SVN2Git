@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     void Clear ();
     void Insert (int index, DomainObject domainObject);
-    void Remove (ObjectID objectID);
+    void Remove (DomainObject domainObject);
     void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject);
   }
 }

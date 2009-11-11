@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// the modification is performed on a unidirectional relation, the composite returned by <see cref="CreateBidirectionalModification"/> needs only 
   /// contain this <see cref="RelationEndPointModification"/>.
   /// </summary>
-  public abstract class RelationEndPointModification
+  public abstract class RelationEndPointModification : IRelationEndPointModification
   {
     private readonly RelationEndPoint _modifiedEndPoint;
     private readonly DomainObject _oldRelatedObject;

@@ -16,10 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
@@ -28,31 +25,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
   public class NotifyingBidirectionalRelationModificationTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
-    private ObjectEndPoint _endPointMock;
-    private RelationEndPointModification _modificationMock1;
-    private RelationEndPointModification _modificationMock2;
-    private RelationEndPointModification _modificationMock3;
-    private Order _oldRelatedObject;
-    private Order _newRelatedObject;
+    private IRelationEndPointModification _modificationMock1;
+    private IRelationEndPointModification _modificationMock2;
+    private IRelationEndPointModification _modificationMock3;
     private NotifyingBidirectionalRelationModification _collection;
-    private RelationEndPointID _id;
 
     public override void SetUp ()
     {
       base.SetUp ();
       _mockRepository = new MockRepository ();
-      _id = new RelationEndPointID (
-          DomainObjectIDs.Computer1,
-          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
-
-      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-
-      _oldRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-      _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
-
-      _modificationMock1 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
-      _modificationMock2 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
-      _modificationMock3 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
+    
+      _modificationMock1 = _mockRepository.StrictMock<IRelationEndPointModification> ();
+      _modificationMock2 = _mockRepository.StrictMock<IRelationEndPointModification> ();
+      _modificationMock3 = _mockRepository.StrictMock<IRelationEndPointModification> ();
 
       _collection = new NotifyingBidirectionalRelationModification (_modificationMock1, _modificationMock2, _modificationMock3);
     }

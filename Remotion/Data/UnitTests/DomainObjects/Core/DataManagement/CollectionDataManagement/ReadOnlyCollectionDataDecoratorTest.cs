@@ -23,7 +23,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
@@ -116,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_Throws ()
     {
-      _data.Remove (_order1.ID);
+      _data.Remove (_order1);
     }
 
     [Test]

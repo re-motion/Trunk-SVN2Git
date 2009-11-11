@@ -99,11 +99,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData.Insert (index, domainObject);
     }
 
-    public void Remove (ObjectID objectID)
+    public void Remove (DomainObject domainObject)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      _wrappedData.Remove (objectID);
+      _wrappedData.Remove (domainObject);
     }
 
     public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)

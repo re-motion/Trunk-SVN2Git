@@ -22,38 +22,38 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class NotifyingBidirectionalRelationModification : BidirectionalRelationModificationBase
   {
-    public NotifyingBidirectionalRelationModification (params RelationEndPointModification[] modifications)
+    public NotifyingBidirectionalRelationModification (params IRelationEndPointModification[] modifications)
         : base (modifications)
     {
     }
 
     public void Begin ()
     {
-      foreach (RelationEndPointModification modification in GetModificationSteps())
+      foreach (IRelationEndPointModification modification in GetModificationSteps())
         modification.Begin ();
     }
 
     public void Perform ()
     {
-      foreach (RelationEndPointModification modification in GetModificationSteps ())
+      foreach (IRelationEndPointModification modification in GetModificationSteps ())
         modification.Perform ();
     }
 
     public void End ()
     {
-      foreach (RelationEndPointModification modification in GetModificationSteps ())
+      foreach (IRelationEndPointModification modification in GetModificationSteps ())
         modification.End ();
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      foreach (RelationEndPointModification modification in GetModificationSteps ())
+      foreach (IRelationEndPointModification modification in GetModificationSteps ())
         modification.NotifyClientTransactionOfBegin ();
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      foreach (RelationEndPointModification modification in GetModificationSteps ())
+      foreach (IRelationEndPointModification modification in GetModificationSteps ())
         modification.NotifyClientTransactionOfEnd ();
     }
 

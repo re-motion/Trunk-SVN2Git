@@ -200,31 +200,31 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
       return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data);
     }
 
-    public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
       return new CollectionEndPointSelfReplaceModification (this, selfReplaceRelatedObject, _oppositeDomainObjects._data);
     }
 
-    public virtual RelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public virtual IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
       return new CollectionEndPointInsertModification (this, insertedRelatedObject, index, _oppositeDomainObjects._data);
     }
 
-    public virtual RelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    public virtual IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
       return CreateInsertModification (addedRelatedObject, OppositeDomainObjects.Count);
     }
 
-    public virtual RelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
+    public virtual IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)

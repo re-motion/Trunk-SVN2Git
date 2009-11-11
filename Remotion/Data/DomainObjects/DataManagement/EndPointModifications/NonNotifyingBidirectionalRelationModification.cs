@@ -27,14 +27,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class NonNotifyingBidirectionalRelationModification : BidirectionalRelationModificationBase
   {
-    public NonNotifyingBidirectionalRelationModification (params RelationEndPointModification[] modifications)
+    public NonNotifyingBidirectionalRelationModification (params IRelationEndPointModification[] modifications)
         : base(modifications)
     {
     }
 
     public void Perform ()
     {
-      foreach (RelationEndPointModification modification in GetModificationSteps ())
+      foreach (IRelationEndPointModification modification in GetModificationSteps ())
         modification.Perform ();
     }
 

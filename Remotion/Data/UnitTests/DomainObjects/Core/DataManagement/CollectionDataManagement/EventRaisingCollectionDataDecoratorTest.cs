@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _eventRaiserMock.Replay ();
 
-      _data.Remove (_order2.ID);
+      _data.Remove (_order2);
 
       _eventRaiserMock.VerifyAllExpectations ();
     }
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock.Replay ();
 
-      _data.Remove (_order4.ID);
+      _data.Remove (_order4);
 
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));

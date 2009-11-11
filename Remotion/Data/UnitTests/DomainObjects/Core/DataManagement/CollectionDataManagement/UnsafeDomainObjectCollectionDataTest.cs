@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Remove (_order2.ID);
+      _data.Remove (_order2);
       Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order3 }));
     }
 
@@ -184,20 +184,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Remove (_order3.ID));
+      Assert_VersionChanged (() => _data.Remove (_order3));
     }
 
     [Test]
     public void Remove_NonExistingElement ()
     {
-      _data.Remove (_order2.ID);
+      _data.Remove (_order2);
       Assert.That (_data.ToArray (), Is.Empty);
     }
 
     [Test]
     public void Remove_NonExistingElement_DoesntChangeVersion ()
     {
-      Assert_VersionSame (() => _data.Remove (_order2.ID));
+      Assert_VersionSame (() => _data.Remove (_order2));
     }
 
     [Test]
@@ -268,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
 
       foreach (var x in _data)
-        _data.Remove (x.ID);
+        _data.Remove (x);
     }
 
     [Test]

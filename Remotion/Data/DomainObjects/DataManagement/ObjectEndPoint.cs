@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetModification (null);
     }
 
-    public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
       var currentRelatedObject = GetOppositeObject (true);
@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new ObjectEndPointSetSameModification (this);
     }
 
-    public virtual RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
+    public virtual IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
     {
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (_oppositeObjectID == newRelatedObjectID)
