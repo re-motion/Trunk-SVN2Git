@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp ();
 
       _storageProviderManager = new StorageProviderManager ();
-      RdbmsProvider provider = (RdbmsProvider) _storageProviderManager.GetMandatory ("TestDomain");
+      var provider = (RdbmsProvider) _storageProviderManager.GetMandatory ("TestDomain");
       provider.Connect ();
       _connection = provider.Connection;
 
@@ -56,10 +56,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GetObjectIDWithGuidValue ()
+    public void GetObjectID_WithGuidValue ()
     {
       Guid value = Guid.NewGuid ();
-      ObjectID expectedID = new ObjectID ("Order", value);
+      var expectedID = new ObjectID ("Order", value);
       ObjectID actualID = _converter.GetObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], value);
 
       Assert.AreEqual (expectedID, actualID);
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (ConverterException), ExpectedMessage = "Invalid null value for not-nullable property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type' encountered. Class: 'Customer'.")]
-    public void GetNullValueForEnum ()
+    public void GetValue_ForEnum_Null ()
     {
       ClassDefinition customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory ("Customer");
       PropertyDefinition enumProperty = customerDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Type"];
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (ConverterException), ExpectedMessage = "Invalid null value for not-nullable relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company' encountered. Class: 'Ceo'.")]
-    public void GetValueForCeoWithCompanyIDAndCompanyIDClassIDNull ()
+    public void GetValue_ForCeo_WithCompanyIDNull_AndCompanyIDClassIDNull ()
     {
       IDbCommand command = CreateCeoCommand (new Guid ("{2927059E-AE59-49a7-8B59-B959E579C629}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (ConverterException), ExpectedMessage = "Invalid null value for not-nullable relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company' encountered. Class: 'Ceo'.")]
-    public void GetValueForCeoWithCompanyIDNull ()
+    public void GetValue_ForCeo_WithCompanyIDNull ()
     {
       IDbCommand command = CreateCeoCommand (new Guid ("{523B490A-5B18-4f22-AF5B-BD9A4DA3F629}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database value encountered. Column 'CompanyIDClassID' of entity 'Ceo' must not contain null.")]
-    public void GetValueForCeoWithCompanyIDClassIDNull ()
+    public void GetValue_ForCeo_WithCompanyIDClassIDNull ()
     {
       IDbCommand command = CreateCeoCommand (new Guid ("{04341C7D-7B7C-49fc-82E6-8E481CDACA30}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database value encountered. Column 'CompanyIDClassID' of"
         + " entity 'TableWithOptionalOneToOneRelationAndOppositeDerivedClass' must not contain a value.")]
-    public void GetValueForClassWithOptionalOneToOneRelationAndOppositeDerivedClassWithCompanyIDClassIDNotNull ()
+    public void GetValue_ForClassWithOptionalOneToOneRelation_AndOppositeDerivedClass_WithCompanyIDClassIDNotNull ()
     {
       ClassDefinition classWithOptionalOneToOneRelationAndOppositeDerivedClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
           "ClassWithOptionalOneToOneRelationAndOppositeDerivedClass");
@@ -132,20 +132,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GetValueForCeo ()
+    public void GetValue_ForCeo ()
     {
       IDbCommand command = CreateCeoCommand ((Guid) DomainObjectIDs.Ceo1.Value);
       using (IDataReader reader = command.ExecuteReader ())
       {
         Assert.IsTrue (reader.Read ());
-        ObjectID actualID = (ObjectID) _converter.GetValue (_ceoDefinition, _ceoDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"], reader);
+        var actualID = (ObjectID) _converter.GetValue (_ceoDefinition, _ceoDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company"], reader);
 
         Assert.AreEqual (DomainObjectIDs.Company1, actualID);
       }
     }
 
     [Test]
-    public void GetValueForFolderWithoutParent ()
+    public void GetValue_ForFolder_WithoutParent ()
     {
       IDbCommand command = CreateFileSystemItemCommand (new Guid ("{976A6864-3344-4b3c-8F67-6348CF361D22}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database value encountered. Column 'ParentFolderIDClassID' of entity 'FileSystemItem' must not contain a value.")]
-    public void GetValueForFileWithParentFolderIDNull ()
+    public void GetValue_ForFile_WithParentFolderIDNull ()
     {
       IDbCommand command = CreateFileSystemItemCommand (new Guid ("{DCBE9554-2724-49a6-AECA-B811E20E4110}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database value encountered. Column 'ParentFolderIDClassID' of entity 'FileSystemItem' must not contain null.")]
-    public void GetValueForFileWithParentFolderIDClassIDNull ()
+    public void GetValue_ForFile_WithParentFolderIDClassIDNull ()
     {
       IDbCommand command = CreateFileSystemItemCommand (new Guid ("{A26B6A4E-D497-4b32-821B-74AFAD7EAD0A}"));
       using (IDataReader reader = command.ExecuteReader ())
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Invalid database value encountered. Column 'ClassID' must not contain null.")]
-    public void GetIDWithClassIDNull ()
+    public void GetID_WithClassIDNull ()
     {
       using (IDbCommand command = _connection.CreateCommand ())
       {
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GetNullID ()
+    public void GetID_Null ()
     {
       using (IDbCommand command = _connection.CreateCommand ())
       {
@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void GetNullIDWithClassIDNull ()
+    public void GetNullID_WithClassIDNull ()
     {
       using (IDbCommand command = _connection.CreateCommand ())
       {
