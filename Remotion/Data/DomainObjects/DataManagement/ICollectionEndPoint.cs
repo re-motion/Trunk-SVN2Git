@@ -23,7 +23,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface ICollectionEndPoint : IEndPoint, ICollectionChangeDelegate
   {
-    RelationEndPointID ID { get; }
+    void Touch ();
+    
     IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
+    IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index);
+    IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject);
+    IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject);
   }
 }

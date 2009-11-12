@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Replace (_order2.ID, _order4);
+      _data.Replace (1, _order4);
 
       Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order4, _order3 }));
     }
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Replace (_order2.ID, _order4));
+      Assert_VersionChanged (() => _data.Replace (1, _order4));
     }
 
     [Test]
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Replace (_order2.ID, _order2);
+      _data.Replace (1, _order2);
 
       Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionSame (() => _data.Replace (_order2.ID, _order2));
+      Assert_VersionSame (() => _data.Replace (1, _order2));
     }
 
     [Test]

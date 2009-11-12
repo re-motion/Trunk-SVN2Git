@@ -18,7 +18,6 @@
 // All rights reserved.
 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using System.Linq;
@@ -243,17 +242,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Replace (_order2.ID, _order4);
+      _data.Replace (1, _order4);
 
       Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order4, _order3 }));
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "The collection does not contain a DomainObject with ID "
-                                                                         + "'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
+    [ExpectedException (typeof (ArgumentOutOfRangeException))]
     public void Replace_NonExisting ()
     {
-      _data.Replace (_order2.ID, _order4);
+      _data.Replace (1, _order4);
     }
 
     [Test]
@@ -263,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Replace (_order2.ID, _order4));
+      Assert_VersionChanged (() => _data.Replace (1, _order4));
     }
 
     [Test]
@@ -274,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order3);
 
       var oldVersion = _data.Version;
-      _data.Replace (_order2.ID, _order2);
+      _data.Replace (1, _order2);
       Assert.That (_data.Version, Is.EqualTo (oldVersion));
     }
 
@@ -286,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Replace (_order2.ID, _order1);
+      _data.Replace (1, _order1);
     }
 
     [Test]
@@ -296,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Replace (_order2.ID, _order2);
+      _data.Replace (1, _order2);
 
       Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }

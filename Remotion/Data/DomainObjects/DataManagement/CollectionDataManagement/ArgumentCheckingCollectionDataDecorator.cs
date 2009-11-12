@@ -88,8 +88,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      
       if (ContainsObjectID (domainObject.ID))
         throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
+
+      // TODO 1779: Check index
 
       _wrappedData.Insert(index, domainObject);
     }
@@ -97,22 +100,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public void Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      // TODO 1779: Check whether this collection holds the same object reference (or null) for this ID
+
       _wrappedData.Remove (domainObject);
     }
 
-    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject newDomainObject)
     {
-      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      int index = IndexOf (oldDomainObjectID);
-      if (index == -1)
-        throw new KeyNotFoundException (string.Format ("The collection does not contain a DomainObject with ID '{0}'.", oldDomainObjectID));
+      // TODO 1779: Check index
 
-      if (ContainsObjectID (newDomainObject.ID) && oldDomainObjectID != newDomainObject.ID)
+      if (ContainsObjectID (newDomainObject.ID) && !ReferenceEquals (GetObject (index), newDomainObject))
         throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID));
 
-      _wrappedData.Replace (oldDomainObjectID, newDomainObject);
+      _wrappedData.Replace (index, newDomainObject);
     }
   }
 }

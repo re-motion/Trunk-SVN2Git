@@ -25,11 +25,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class CollectionEndPointReplaceModification : RelationEndPointModification
   {
+    private readonly int _index;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
     public CollectionEndPointReplaceModification (
-        CollectionEndPoint modifiedEndPoint, DomainObject replacedObject, DomainObject replacementObject, IDomainObjectCollectionData collectionData)
+        CollectionEndPoint modifiedEndPoint, DomainObject replacedObject, int index, DomainObject replacementObject, IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             ArgumentUtility.CheckNotNull ("replacedObject", replacedObject),
@@ -38,6 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
 
+      _index = index;
       _modifiedCollectionData = collectionData;
       _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
     }
@@ -61,7 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Replace (OldRelatedObject.ID, NewRelatedObject);
+      ModifiedCollectionData.Replace (_index, NewRelatedObject);
       ModifiedEndPoint.Touch();
     }
 

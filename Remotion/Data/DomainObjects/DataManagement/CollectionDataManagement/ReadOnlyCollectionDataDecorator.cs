@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       throw new InvalidOperationException ("Cannot remove an item from a read-only collection.");
     }
 
-    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject newDomainObject)
     {
       throw new InvalidOperationException ("Cannot replace an item in a read-only collection.");
     }

@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Replace ()
     {
-      _data.Replace (_order1.ID, _order4);
+      _data.Replace (0, _order4);
       Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
     }
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: newDomainObject")]
     public void Replace_ThrowsOnInvalidType ()
     {
-      _data.Replace (_order1.ID, _orderItem1);
+      _data.Replace (0, _orderItem1);
     }
 
     [Test]

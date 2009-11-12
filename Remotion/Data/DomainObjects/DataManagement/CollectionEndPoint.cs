@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class CollectionEndPoint : RelationEndPoint, ICollectionChangeDelegate
+  public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     // types
 
@@ -230,7 +230,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (replacedObject == replacementObject)
         return new CollectionEndPointSelfReplaceModification (this, replacedObject, _oppositeDomainObjects._data);
       else
-        return new CollectionEndPointReplaceModification (this, replacedObject, replacementObject, _oppositeDomainObjects._data);
+        return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, _oppositeDomainObjects._data);
     }
 
     public override void PerformDelete ()

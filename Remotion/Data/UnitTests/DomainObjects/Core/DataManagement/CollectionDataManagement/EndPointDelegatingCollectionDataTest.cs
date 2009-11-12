@@ -310,8 +310,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private void StubCollectionEndPoint (ICollectionEndPoint endPointStub, ClientTransaction clientTransaction, Order owningOrder)
     {
       endPointStub.Stub (stub => stub.ClientTransaction).Return (clientTransaction);
-      var relationEndPointID = new RelationEndPointID (owningOrder.ID, typeof (Order).FullName + ".OrderItems");
-      endPointStub.Stub (mock => mock.ID).Return (relationEndPointID);
+      var relationEndPointDefinition = owningOrder.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+      endPointStub.Stub (mock => mock.ObjectID).Return (owningOrder.ID);
+      endPointStub.Stub (mock => mock.Definition).Return (relationEndPointDefinition);
       endPointStub.Stub (mock => mock.GetDomainObject ()).Return (owningOrder);
     }
   }

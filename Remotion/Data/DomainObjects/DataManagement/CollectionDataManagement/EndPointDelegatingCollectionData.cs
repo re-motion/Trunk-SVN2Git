@@ -100,7 +100,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      (CollectionEndPoint).PerformInsert (null, domainObject, index);
+      CheckClientTransaction (domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
+      CheckNotDeleted (domainObject);
+      CheckNotDeleted (CollectionEndPoint.GetDomainObject());
+
+      var insertModification = CollectionEndPoint.CreateInsertModification (domainObject, index);
+      var bidirectionalModification = insertModification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
+
+      CollectionEndPoint.Touch ();
     }
 
     public void Remove (DomainObject domainObject)
@@ -117,14 +125,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         var bidirectionalModification = modification.CreateBidirectionalModification ();
         bidirectionalModification.ExecuteAllSteps ();
       }
+
+      CollectionEndPoint.Touch ();
     }
 
-    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject newDomainObject)
     {
-      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      (CollectionEndPoint).PerformReplace (null, newDomainObject, IndexOf (oldDomainObjectID));
+      (CollectionEndPoint).PerformReplace (null, newDomainObject, index);
     }
 
     private void CheckClientTransaction (DomainObject domainObject, string exceptionFormatString)
@@ -136,8 +145,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         var formattedMessage = string.Format (
             exceptionFormatString, 
             domainObject.ID, 
-            CollectionEndPoint.ID.PropertyName, 
-            CollectionEndPoint.ID.ObjectID);
+            CollectionEndPoint.Definition.PropertyName, 
+            CollectionEndPoint.ObjectID);
         throw new ClientTransactionsDifferException (formattedMessage + " The objects do not belong to the same ClientTransaction." + transactionInfo);
       }
     }

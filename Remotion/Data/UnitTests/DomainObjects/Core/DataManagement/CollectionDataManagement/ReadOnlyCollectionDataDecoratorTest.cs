@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot replace an item in a read-only collection.")]
     public void Replace_Throws ()
     {
-      _data.Replace (_order1.ID, _order1);
+      _data.Replace (1, _order1);
     }
 
     [Test]

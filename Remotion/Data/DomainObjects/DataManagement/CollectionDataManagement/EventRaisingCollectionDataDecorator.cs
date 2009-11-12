@@ -135,19 +135,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       }
     }
 
-    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject newDomainObject)
     {
-      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      int index = IndexOf (oldDomainObjectID);
-      var oldDomainObject = GetObject (oldDomainObjectID);
-
+      var oldDomainObject = GetObject (index);
       if (oldDomainObject != newDomainObject)
       {
         _eventRaiser.BeginRemove (index, oldDomainObject);
         _eventRaiser.BeginAdd (index, newDomainObject);
-        _wrappedData.Replace (oldDomainObjectID, newDomainObject);
+        _wrappedData.Replace (index, newDomainObject);
         _eventRaiser.EndRemove (index, oldDomainObject);
         _eventRaiser.EndAdd (index, newDomainObject);
       }

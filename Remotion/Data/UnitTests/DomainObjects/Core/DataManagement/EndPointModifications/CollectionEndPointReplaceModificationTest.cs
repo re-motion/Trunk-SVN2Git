@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _replacementRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
 
       _modification = 
-          new CollectionEndPointReplaceModification (CollectionEndPoint, _replacedRelatedObject, _replacementRelatedObject, CollectionDataMock);
+          new CollectionEndPointReplaceModification (CollectionEndPoint, _replacedRelatedObject, 12, _replacementRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (RelationEndPointID.Definition);
-      new CollectionEndPointReplaceModification (endPoint, _replacedRelatedObject, _replacementRelatedObject, CollectionDataMock);
+      new CollectionEndPointReplaceModification (endPoint, _replacedRelatedObject, 12, _replacementRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
       CollectionDataMock.BackToRecord ();
-      CollectionDataMock.Expect (mock => mock.Replace(_replacedRelatedObject.ID, _replacementRelatedObject));
+      CollectionDataMock.Expect (mock => mock.Replace (12, _replacementRelatedObject));
       CollectionDataMock.Replay ();
 
       _modification.Perform ();
