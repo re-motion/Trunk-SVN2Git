@@ -22,16 +22,17 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// This class acts as a read-only adapter for another <see cref="IDomainObjectTransactionContext"/> object. Every modifying method of the
-  /// <see cref="IDomainObjectCollectionData"/> interface will throw an <see cref="InvalidOperationException"/> when invoked on this class.
+  /// This class acts as a read-only decorator (and adapter) for another <see cref="IDomainObjectTransactionContext"/> object. Every modifying method 
+  /// of the <see cref="IDomainObjectCollectionData"/> interface will throw an <see cref="InvalidOperationException"/> when invoked on this class.
   /// </summary>
   [Serializable]
-  public class ReadOnlyCollectionDataDecorator : IDomainObjectCollectionData
+  public class ReadOnlyCollectionDataDecorator : IDomainObjectCollectionData, IReadOnlyDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionData _wrappedData;
 
     public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
     {
+      ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
       _wrappedData = wrappedData;
     }
 
@@ -78,27 +79,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       return _wrappedData.IndexOf (objectID);
     }
 
-    public void Clear ()
+    void IDomainObjectCollectionData.Clear ()
     {
       throw new InvalidOperationException ("Cannot clear a read-only collection.");
     }
 
-    public void Insert (int index, DomainObject domainObject)
+    void IDomainObjectCollectionData.Insert (int index, DomainObject domainObject)
     {
       throw new InvalidOperationException ("Cannot insert an item into a read-only collection.");
     }
 
-    public void Remove (DomainObject domainObject)
+    void IDomainObjectCollectionData.Remove (DomainObject domainObject)
     {
       throw new InvalidOperationException ("Cannot remove an item from a read-only collection.");
     }
 
-    public void Remove (ObjectID objectID)
+    void IDomainObjectCollectionData.Remove (ObjectID objectID)
     {
       throw new InvalidOperationException ("Cannot remove an item from a read-only collection.");
     }
 
-    public void Replace (int index, DomainObject newDomainObject)
+    void IDomainObjectCollectionData.Replace (int index, DomainObject newDomainObject)
     {
       throw new InvalidOperationException ("Cannot replace an item in a read-only collection.");
     }

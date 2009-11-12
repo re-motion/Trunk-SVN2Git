@@ -142,6 +142,7 @@
     <Compile Include="ClientTransactionScope.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EndPointDelegatingCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\IReadOnlyDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\UnsafeDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecorator.cs" />

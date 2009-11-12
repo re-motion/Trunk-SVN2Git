@@ -101,35 +101,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot clear a read-only collection.")]
     public void Clear_Throws ()
     {
-      _data.Clear ();
+      ((IDomainObjectCollectionData) _data).Clear ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
     public void Insert_Throws ()
     {
-      _data.Insert (0, _order4);
+      ((IDomainObjectCollectionData) _data).Insert (0, _order4);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_Throws ()
     {
-      _data.Remove (_order1);
+      ((IDomainObjectCollectionData) _data).Remove (_order1);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_ID_Throws ()
     {
-      _data.Remove (_order1.ID);
+      ((IDomainObjectCollectionData) _data).Remove (_order1.ID);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot replace an item in a read-only collection.")]
     public void Replace_Throws ()
     {
-      _data.Replace (1, _order1);
+      ((IDomainObjectCollectionData) _data).Replace (1, _order1);
     }
 
     [Test]

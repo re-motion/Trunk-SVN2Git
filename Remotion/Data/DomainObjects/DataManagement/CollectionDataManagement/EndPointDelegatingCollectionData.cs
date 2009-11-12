@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
     private readonly ICollectionEndPoint _collectionEndPoint;
-    private readonly IDomainObjectCollectionData _actualData; // TODO 1766: Should be IReadOnlyDomainObjectCollectionData
+    private readonly IReadOnlyDomainObjectCollectionData _actualData;
 
-    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)
+    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IReadOnlyDomainObjectCollectionData actualData)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("actualData", actualData);

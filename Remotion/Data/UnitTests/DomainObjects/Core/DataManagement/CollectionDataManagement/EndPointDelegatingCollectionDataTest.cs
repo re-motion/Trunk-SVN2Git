@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private Order _owningOrder;
 
     private ICollectionEndPoint _collectionEndPointMock;
-    private IDomainObjectCollectionData _actualDataStub;
+    private IReadOnlyDomainObjectCollectionData _actualDataStub;
     private BidirectionalRelationModificationBase _bidirectionalModificationMock;
     private IRelationEndPointModification _modificationStub;
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock = MockRepository.GenerateMock<ICollectionEndPoint>();
       StubCollectionEndPoint(_collectionEndPointMock, ClientTransactionMock, _owningOrder);
 
-      _actualDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
+      _actualDataStub = MockRepository.GenerateStub<IReadOnlyDomainObjectCollectionData> ();
 
       _modificationStub = MockRepository.GenerateStub<IRelationEndPointModification> ();
       _bidirectionalModificationMock = MockRepository.GenerateMock<BidirectionalRelationModificationBase> (new[] { new IRelationEndPointModification[0] });
