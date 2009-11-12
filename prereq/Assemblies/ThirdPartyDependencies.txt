@@ -1,10 +1,11 @@
 Component				License			Source                                             	Custom Build
 =============================================================================================================================================
 AjaxControlToolkit			MS-PL			http://ajaxcontroltoolkit.codeplex.com/			
+IronPython.*				ML-PL			http://ironpython.codeplex.com/
 Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex.com/
-HtmlAgilityPack				MS-PL			http://htmlagilitypack.codeplex.com/
-Castle.*				Apache License 2.0	http://www.castleproject.org/				trunk latest version
+Microsoft.Scripting.*			MS-PL			http://dlr.codeplex.com/
+Castle.*				Apache License 2.0	http://www.castleproject.org/				trunk, latest version
 log4net					Apache License 2.0	http://logging.apache.org/log4net/index.html
 nunit.*					zlib/libpng variant	http://nunit.org/
-Rhino.Mocks				BSD			http://ayende.com/projects/rhino-mocks.aspx		trunk latest version
+Rhino.Mocks				BSD			http://ayende.com/projects/rhino-mocks.aspx		trunk, latest version
 SharpZipLib				GPL, with exceptions	http://www.icsharpcode.net/OpenSource/SharpZipLib/
