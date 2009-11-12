@@ -24,12 +24,14 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 using Rhino.Mocks;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
-  public class ChangeDelegateCollectionDataTest : ClientTransactionBaseTest
+  public class EndPointDelegatingCollectionDataTest : ClientTransactionBaseTest
   {
     private Order _owningOrder;
 
@@ -38,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private BidirectionalRelationModificationBase _bidirectionalModificationMock;
     private IRelationEndPointModification _modificationStub;
 
-    private ChangeDelegateCollectionData _data;
+    private EndPointDelegatingCollectionData _data;
 
     private OrderItem _orderItem;
     private OrderItem _orderItemInOtherTransaction;
@@ -50,23 +52,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _owningOrder = Order.GetObject (DomainObjectIDs.Order1);
 
       _collectionEndPointMock = MockRepository.GenerateMock<ICollectionEndPoint>();
-      _collectionEndPointMock.Stub (mock => mock.ClientTransaction).Return (ClientTransactionMock);
-      var relationEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
-      _collectionEndPointMock.Stub (mock => mock.ID).Return (relationEndPointID);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject()).Return (_owningOrder);
+      StubCollectionEndPoint(_collectionEndPointMock, ClientTransactionMock, _owningOrder);
 
       _actualDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
 
       _modificationStub = MockRepository.GenerateStub<IRelationEndPointModification> ();
       _bidirectionalModificationMock = MockRepository.GenerateMock<BidirectionalRelationModificationBase> (new[] { new IRelationEndPointModification[0] });
 
-      _data = new ChangeDelegateCollectionData (_collectionEndPointMock, _actualDataStub);
+      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _actualDataStub);
 
       _orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        _orderItemInOtherTransaction = OrderItem.NewObject();
-      }
+      _orderItemInOtherTransaction = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
       ClientTransactionScope.EnterNullScope (); // no active transaction
     }
@@ -207,11 +203,85 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [Ignore ("TODO 1780")]
-    public void ClientTransactionsDiffer_Variants ()
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        @"Cannot xx DomainObject 'OrderItem\|.*@|System.Guid' from/to collection of property "
+        + @"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order\|.*\|System.Guid'. The objects do not belong "
+        + @"to the same ClientTransaction.", MatchType = MessageMatch.Regex)]
+    public void ClientTransactionsDiffer_NoObjectInBindingTransaction ()
     {
-      Assert.Fail ("TODO");
-     
+      var owningObject = CreateDomainObjectInTransaction<Order> (ClientTransactionMock);
+      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
+
+      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
+
+      CallCheckClientTransaction(data, relatedObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage =
+        @"Cannot xx DomainObject 'OrderItem\|.*@|System.Guid' from/to collection of property "
+        + @"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order\|.*\|System.Guid'. The objects do not belong "
+        + @"to the same ClientTransaction. The OrderItem object is bound to a BindingClientTransaction.", MatchType = MessageMatch.Regex)]
+    public void ClientTransactionsDiffer_RelatedObjectInBindingTransaction ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+
+      var owningObject = CreateDomainObjectInTransaction<Order> (ClientTransactionMock);
+      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (bindingTransaction);
+
+      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
+
+      CallCheckClientTransaction (data, relatedObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage =
+        @"Cannot xx DomainObject 'OrderItem\|.*@|System.Guid' from/to collection of property "
+        + @"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order\|.*\|System.Guid'. The objects do not belong "
+        + @"to the same ClientTransaction. The Order object owning the collection is bound to a BindingClientTransaction.",
+        MatchType = MessageMatch.Regex)]
+    public void ClientTransactionsDiffer_OwningObjectInBindingTransaction ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction();
+
+      var owningObject = CreateDomainObjectInTransaction<Order> (bindingTransaction);
+      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
+
+      var endPointStub = CreateCollectionEndPointStub (bindingTransaction, owningObject);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
+
+      CallCheckClientTransaction (data, relatedObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage =
+        @"Cannot xx DomainObject 'OrderItem\|.*@|System.Guid' from/to collection of property "
+        + @"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order\|.*\|System.Guid'. The objects do not belong "
+        + @"to the same ClientTransaction. The OrderItem object is bound to a BindingClientTransaction. The Order object owning the collection is "
+        + @"also bound, but to a different BindingClientTransaction.",
+        MatchType = MessageMatch.Regex)]
+    public void ClientTransactionsDiffer_BothObjectsInBindingTransactions ()
+    {
+      var bindingTransaction1 = ClientTransaction.CreateBindingTransaction ();
+      var bindingTransaction2 = ClientTransaction.CreateBindingTransaction ();
+      var owningObject = CreateDomainObjectInTransaction<Order> (bindingTransaction1);
+      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (bindingTransaction2);
+
+      var endPointStub = CreateCollectionEndPointStub (bindingTransaction1, owningObject);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
+
+      CallCheckClientTransaction (data, relatedObject);
+    }
+
+    private void CallCheckClientTransaction (EndPointDelegatingCollectionData data, DomainObject relatedObject)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (
+          data,
+          "CheckClientTransaction",
+          relatedObject,
+          "Cannot xx DomainObject '{0}' from/to collection of property '{1}' of DomainObject '{2}'.");
     }
 
     private void SetTransactionAndDelete (DomainObject domainObject)
@@ -222,5 +292,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       }
     }
 
+    private T CreateDomainObjectInTransaction<T> (ClientTransaction transaction) where T : DomainObject
+    {
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.Empty);
+      }
+    }
+
+    private ICollectionEndPoint CreateCollectionEndPointStub (ClientTransaction clientTransaction, Order owningOrder)
+    {
+      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      StubCollectionEndPoint (endPointStub, clientTransaction, owningOrder);
+      return endPointStub;
+    }
+
+    private void StubCollectionEndPoint (ICollectionEndPoint endPointStub, ClientTransaction clientTransaction, Order owningOrder)
+    {
+      endPointStub.Stub (stub => stub.ClientTransaction).Return (clientTransaction);
+      var relationEndPointID = new RelationEndPointID (owningOrder.ID, typeof (Order).FullName + ".OrderItems");
+      endPointStub.Stub (mock => mock.ID).Return (relationEndPointID);
+      endPointStub.Stub (mock => mock.GetDomainObject ()).Return (owningOrder);
+    }
   }
 }

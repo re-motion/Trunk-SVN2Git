@@ -18,12 +18,12 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public interface ICollectionEndPoint : ICollectionChangeDelegate
+  /// <summary>
+  /// Represents an <see cref="IEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
+  /// </summary>
+  public interface ICollectionEndPoint : IEndPoint, ICollectionChangeDelegate
   {
     RelationEndPointID ID { get; }
-    ClientTransaction ClientTransaction { get; }
-    DomainObject GetDomainObject ();
-
     IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
   }
 }

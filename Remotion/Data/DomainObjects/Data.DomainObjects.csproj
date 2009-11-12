@@ -141,7 +141,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecorator.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\ChangeDelegateCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\EndPointDelegatingCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\UnsafeDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecorator.cs" />

@@ -23,15 +23,15 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// Implements the <see cref="IDomainObjectCollectionData"/>, forwarding all requests to an implementation of 
-  /// <see cref="ICollectionChangeDelegate"/> (<see cref="CollectionEndPoint"/>).
+  /// Implements the <see cref="IDomainObjectCollectionData"/> by forwarding all requests to an implementation of 
+  /// <see cref="ICollectionEndPoint"/>.
   /// </summary>
-  public class ChangeDelegateCollectionData : IDomainObjectCollectionData
+  public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
     private readonly ICollectionEndPoint _collectionEndPoint;
     private readonly IDomainObjectCollectionData _actualData; // TODO 1766: Should be IReadOnlyDomainObjectCollectionData
 
-    public ChangeDelegateCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)
+    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("actualData", actualData);
@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       else if (endPointObject.HasBindingTransaction)
       {
         transactionInfo.AppendFormat (
-            "The {0} object owning the collection is bound to a BindingClientTransaction.", 
+            " The {0} object owning the collection is bound to a BindingClientTransaction.", 
             endPointObject.GetPublicDomainObjectType ().Name);
       }
       return transactionInfo.ToString();
