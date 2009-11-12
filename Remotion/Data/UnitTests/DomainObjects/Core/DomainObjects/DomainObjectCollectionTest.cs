@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -1170,6 +1171,90 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       destination.Remove (_customer1);
 
       mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void EventRaiser_BeginAdd ()
+    {
+      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
+      collectionMock.Replay ();
+
+      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
+      eventRaiser.BeginAdd (1, _customer1);
+
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (
+          mock,
+          "OnAdding",
+          Arg<DomainObjectCollectionChangeEventArgs>.Matches (args => args.DomainObject == _customer1)));
+    }
+
+    [Test]
+    public void EventRaiser_EndAdd ()
+    {
+      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
+      collectionMock.Replay ();
+
+      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
+      eventRaiser.EndAdd (1, _customer1);
+
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (
+          mock,
+          "OnAdded",
+          Arg<DomainObjectCollectionChangeEventArgs>.Matches (args => args.DomainObject == _customer1)));
+    }
+
+    [Test]
+    public void EventRaiser_BeginRemove ()
+    {
+      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
+      collectionMock.Replay ();
+
+      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
+      eventRaiser.BeginRemove (1, _customer1);
+
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (
+          mock, 
+          "OnRemoving", 
+          Arg<DomainObjectCollectionChangeEventArgs>.Matches (args => args.DomainObject == _customer1)));
+    }
+
+    [Test]
+    public void EventRaiser_EndRemove ()
+    {
+      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
+      collectionMock.Replay ();
+
+      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
+      eventRaiser.EndRemove (1, _customer1);
+
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (
+          mock,
+          "OnRemoved",
+          Arg<DomainObjectCollectionChangeEventArgs>.Matches (args => args.DomainObject == _customer1)));
+    }
+
+    [Test]
+    public void EventRaiser_BeginDelete ()
+    {
+      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
+      collectionMock.Replay ();
+      
+      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
+      eventRaiser.BeginDelete ();
+
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnDeleting"));
+    }
+
+    [Test]
+    public void EventRaiser_EndDelete ()
+    {
+      var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
+      collectionMock.Replay ();
+
+      var eventRaiser = (IDomainObjectCollectionEventRaiser) collectionMock;
+      eventRaiser.EndDelete ();
+
+      collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnDeleted"));
     }
   }
 }

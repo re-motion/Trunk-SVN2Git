@@ -38,5 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void EndRemove (int index, DomainObject domainObject)
     {
     }
+
+    public void BeginDelete ()
+    {
+    }
+
+    public void EndDelete ()
+    {
+    }
   }
 }

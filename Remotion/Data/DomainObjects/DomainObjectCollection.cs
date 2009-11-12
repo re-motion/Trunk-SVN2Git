@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  public class DomainObjectCollection : ICloneable, IList
+  public class DomainObjectCollection : ICloneable, IList, IDomainObjectCollectionEventRaiser
   {
     // types
 
@@ -1350,6 +1350,40 @@ namespace Remotion.Data.DomainObjects
             index,
             "Index is out of range. Must be non-negative and less than the size of the collection.");
       }
+    }
+
+    void IDomainObjectCollectionEventRaiser.BeginAdd (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      OnAdding (new DomainObjectCollectionChangeEventArgs (domainObject));
+    }
+
+    void IDomainObjectCollectionEventRaiser.EndAdd (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      OnAdded (new DomainObjectCollectionChangeEventArgs (domainObject));
+    }
+
+    void IDomainObjectCollectionEventRaiser.BeginRemove (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      OnRemoving (new DomainObjectCollectionChangeEventArgs (domainObject));
+    }
+
+    void IDomainObjectCollectionEventRaiser.EndRemove (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      OnRemoved (new DomainObjectCollectionChangeEventArgs (domainObject));
+    }
+
+    void IDomainObjectCollectionEventRaiser.BeginDelete ()
+    {
+      OnDeleting ();
+    }
+
+    void IDomainObjectCollectionEventRaiser.EndDelete ()
+    {
+      OnDeleted ();
     }
   }
 }

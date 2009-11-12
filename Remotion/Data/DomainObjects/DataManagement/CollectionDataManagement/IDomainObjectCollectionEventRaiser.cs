@@ -19,7 +19,7 @@ using System;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// Provides an interface to clients requiring to raise <see cref="DomainObjectCollection"/> events from the outside.
+  /// Provides an interface to clients requiring to raise <see cref="DomainObjectCollection"/> events from outside of the collection.
   /// </summary>
   public interface IDomainObjectCollectionEventRaiser
   {
@@ -28,5 +28,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     void BeginRemove (int index, DomainObject domainObject);
     void EndRemove (int index, DomainObject domainObject);
+
+    void BeginDelete ();
+    void EndDelete ();
   }
 }

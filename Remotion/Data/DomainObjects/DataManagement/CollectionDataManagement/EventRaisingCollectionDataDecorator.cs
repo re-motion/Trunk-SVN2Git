@@ -22,14 +22,9 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// Extends <see cref="DomainObjectCollectionData"/> by events being raised whenever the collection is modified. The events are raised via
-  /// an <see cref="IDomainObjectCollectionEventRaiser"/> instance.
+  /// Decorates <see cref="IDomainObjectCollectionData"/> by raising events whenever the inner collection is modified. The events are raised via
+  /// an <see cref="IDomainObjectCollectionEventRaiser"/> instance before and after the modification.
   /// </summary>
-  /// <remarks>
-  /// The reason this class derives from <see cref="DomainObjectCollectionData"/> rather than wrapping an <see cref="IDomainObjectCollectionData"/>
-  /// instance is that it guarantees that the modification events are definitely only raised when the modification takes place. Argument checks
-  /// and semantic checks are performed before the events are raised.
-  /// </remarks>
   [Serializable]
   public class EventRaisingCollectionDataDecorator : IDomainObjectCollectionData
   {
@@ -90,7 +85,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void Clear ()
     {
-      var removedObjects = new Stack<DomainObject> ();
+      var removedObjects = new Stack<DomainObject> (); // holds the removed objects in order to raise 
 
       int index = 0;
       foreach (var domainObject in this)
