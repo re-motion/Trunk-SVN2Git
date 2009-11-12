@@ -588,6 +588,7 @@
         <include name="Remotion/Core/Core/**" />
         <include name="Remotion/Core/Interfaces/**" />
         <include name="Remotion/Data/Linq/**" />
+        <include name="Remotion/license/**/*"/>
 
         <exclude name="Remotion/**/obj/**" />
         <exclude name="Remotion/**/bin/**" />
