@@ -171,7 +171,7 @@
     <call target="release" />
   </target>
 
-  <target name="all" depends="prereq,
+  <target name="all" depends="prereq, Remotion.License, Dms.License, SecurityManager.License,
       Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, Core.Scripting,
       Development.CodeDom, Development.Core, Development.Data, 
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
@@ -184,7 +184,8 @@
     <echo message="Target has executed."/>
   </target>
 
-  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, 
+  <target name="all-test" depends="prereq, Remotion.License, Dms.License, SecurityManager.License,
+      Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, 
       Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
       Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests,       
       Security.UnitTests.TestDomain, Security.UnitTests, Dms.UnitTests, SecurityManager.Core.UnitTests">
@@ -202,6 +203,14 @@
   <target name="prereq">
     <property name="project.name" value="prereq" />
     <property name="project.dir" value="prereq" />
+    <property name="project.output" value="" />
+    <property name="project.extension" value="" />
+    <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
+  </target>
+
+  <target name="Remotion.License">
+    <property name="project.name" value="Remotion.License" />
+    <property name="project.dir" value="Remotion/License" />
     <property name="project.output" value="" />
     <property name="project.extension" value="" />
     <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
@@ -269,6 +278,14 @@
     <property name="project.output" value="Remotion.Development.CodeDom" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
+  </target>
+
+  <target name="Dms.License">
+    <property name="project.name" value="Dms.License" />
+    <property name="project.dir" value="Dms/License" />
+    <property name="project.output" value="" />
+    <property name="project.extension" value="" />
+    <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
   </target>
 
   <target name="Dms.Core" depends="Dms.Shared, Web">
@@ -445,6 +462,14 @@
     <property name="project.output" value="Remotion.Security.MSBuild.Tasks" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
+  </target>
+
+  <target name="SecurityManager.License">
+    <property name="project.name" value="SecurityManager.License" />
+    <property name="project.dir" value="SecurityManager/License" />
+    <property name="project.output" value="" />
+    <property name="project.extension" value="" />
+    <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
   </target>
 
   <target name="SecurityManager.Core" depends="Core.Core, ObjectBinding, Data.DomainObjects">
