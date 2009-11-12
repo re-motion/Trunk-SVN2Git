@@ -29,8 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointInsertModification (
-        CollectionEndPoint modifiedEndPoint, DomainObject insertedObject, int index, IDomainObjectCollectionData collectionData)
+    public CollectionEndPointInsertModification (CollectionEndPoint modifiedEndPoint, int index, DomainObject insertedObject, IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,

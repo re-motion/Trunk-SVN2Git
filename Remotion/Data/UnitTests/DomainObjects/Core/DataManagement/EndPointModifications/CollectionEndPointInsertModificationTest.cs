@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       base.SetUp();
 
       _insertedRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
-      _modification = new CollectionEndPointInsertModification (CollectionEndPoint, _insertedRelatedObject, 12, CollectionDataMock);
+      _modification = new CollectionEndPointInsertModification (CollectionEndPoint, 12, _insertedRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (RelationEndPointID.Definition);
-      new CollectionEndPointInsertModification (endPoint, _insertedRelatedObject, 0, CollectionDataMock);
+      new CollectionEndPointInsertModification (endPoint, 0, _insertedRelatedObject, CollectionDataMock);
     }
 
     [Test]

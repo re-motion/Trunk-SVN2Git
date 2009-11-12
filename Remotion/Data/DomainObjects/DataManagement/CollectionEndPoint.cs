@@ -215,7 +215,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public virtual IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertModification (this, insertedRelatedObject, index, _oppositeDomainObjects._data);
+      return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, _oppositeDomainObjects._data);
     }
 
     public virtual IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
