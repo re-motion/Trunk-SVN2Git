@@ -43,7 +43,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private EndPointDelegatingCollectionData _data;
 
     private OrderItem _orderItem;
-    private OrderItem _orderItemInOtherTransaction;
 
     public override void SetUp ()
     {
@@ -62,7 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _actualDataStub);
 
       _orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      _orderItemInOtherTransaction = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
       ClientTransactionScope.EnterNullScope (); // no active transaction
     }
@@ -151,6 +149,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Insert_ChecksErrorConditions ()
+    {
+      CheckClientTransactionDiffersException ((data, relatedObjectInOtherTransaction) => data.Insert (17, relatedObjectInOtherTransaction));
+      CheckObjectDeletedException ((data, deletedRelatedObject) => data.Insert (17, deletedRelatedObject));
+      CheckOwningObjectDeletedException ((data, relatedObject) => data.Insert (17, relatedObject));
+    }
+
+    [Test]
     public void Remove ()
     {
       _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem.ID)).Return (true);
@@ -177,38 +183,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
-        @"Cannot remove DomainObject 'OrderItem\|.*\|System.Guid' from collection of property "
-        + @"'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order\|.*\|System.Guid'. The objects do not belong "
-        + @"to the same ClientTransaction.", MatchType = MessageMatch.Regex)]
-    public void Remove_ClientTransactionDiffers ()
+    public void Remove_ChecksErrorConditions ()
     {
-      _data.Remove (_orderItemInOtherTransaction);
+      CheckClientTransactionDiffersException ((data, relatedObjectInOtherTransaction) => data.Remove (relatedObjectInOtherTransaction));
+      CheckObjectDeletedException ((data, deletedRelatedObject) => data.Remove (deletedRelatedObject));
+      CheckOwningObjectDeletedException ((data, relatedObject) => data.Remove (relatedObject));
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void Remove_ObjectDeleted ()
-    {
-      SetTransactionAndDelete (_orderItem);
-
-      _data.Remove (_orderItem);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void Remove_OwningObjectDeleted ()
-    {
-      SetTransactionAndDelete (_owningOrder);
-
-      _data.Remove (_orderItem);
-    }
-    
-    [Test]
-    [Ignore ("TODO 1780")]
     public void Replace ()
     {
-      Assert.Fail ("TODO");
+      _collectionEndPointMock.Expect (mock => mock.CreateReplaceModification (17, _orderItem)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
+
+      _data.Replace (17, _orderItem);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+    }
+
+    [Test]
+    public void Replace_ChecksErrorConditions ()
+    {
+      CheckClientTransactionDiffersException ((data, relatedObjectInOtherTransaction) => data.Replace (17, relatedObjectInOtherTransaction));
+      CheckObjectDeletedException ((data, deletedRelatedObject) => data.Replace (17, deletedRelatedObject));
+      CheckOwningObjectDeletedException ((data, relatedObject) => data.Replace (17, relatedObject));
     }
 
     [Test]
@@ -293,14 +294,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
           "Cannot xx DomainObject '{0}' from/to collection of property '{1}' of DomainObject '{2}'.");
     }
 
-    private void SetTransactionAndDelete (DomainObject domainObject)
-    {
-      using (ClientTransactionMock.EnterNonDiscardingScope ())
-      {
-        RepositoryAccessor.DeleteObject (domainObject);
-      }
-    }
-
     private T CreateDomainObjectInTransaction<T> (ClientTransaction transaction) where T : DomainObject
     {
       using (transaction.EnterNonDiscardingScope ())
@@ -323,6 +316,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       endPointStub.Stub (mock => mock.ObjectID).Return (owningOrder.ID);
       endPointStub.Stub (mock => mock.Definition).Return (relationEndPointDefinition);
       endPointStub.Stub (mock => mock.GetDomainObject ()).Return (owningOrder);
+    }
+
+    private void CheckClientTransactionDiffersException (Action<EndPointDelegatingCollectionData, DomainObject> action)
+    {
+      var orderItemInOtherTransaction = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
+      try
+      {
+        action (_data, orderItemInOtherTransaction);
+        Assert.Fail ("Expected ClientTransactionsDifferException");
+      }
+      catch (ClientTransactionsDifferException)
+      {
+        // ok
+      }
+    }
+
+    private void CheckObjectDeletedException (Action<EndPointDelegatingCollectionData, DomainObject> action)
+    {
+      OrderItem deletedObject;
+      using (_data.CollectionEndPoint.ClientTransaction.EnterNonDiscardingScope ())
+      {
+        deletedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem5);
+        deletedObject.Delete();
+      }
+
+      try
+      {
+        action (_data, deletedObject);
+        Assert.Fail ("Expected ObjectDeletedException");
+      }
+      catch (ObjectDeletedException)
+      {
+        // ok
+      }
+    }
+
+    private void CheckOwningObjectDeletedException (Action<EndPointDelegatingCollectionData, DomainObject> action)
+    {
+      Order deletedOwningObject;
+      using (_data.CollectionEndPoint.ClientTransaction.EnterNonDiscardingScope ())
+      {
+        deletedOwningObject = Order.GetObject (DomainObjectIDs.Order4);
+      }
+
+      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
+
+      using (_data.CollectionEndPoint.ClientTransaction.EnterNonDiscardingScope ())
+      {
+        deletedOwningObject.Delete ();
+      }
+
+      try
+      {
+        action (data, _orderItem);
+        Assert.Fail ("Expected ObjectDeletedException");
+      }
+      catch (ObjectDeletedException)
+      {
+        // ok
+      }
     }
   }
 }

@@ -133,7 +133,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      (CollectionEndPoint).PerformReplace (null, newDomainObject, index);
+      CheckClientTransaction (newDomainObject, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
+      CheckNotDeleted (newDomainObject);
+      CheckNotDeleted (CollectionEndPoint.GetDomainObject ());
+
+      var replaceModification = CollectionEndPoint.CreateReplaceModification (index, newDomainObject);
+      var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
+
+      CollectionEndPoint.Touch ();
     }
 
     private void CheckClientTransaction (DomainObject domainObject, string exceptionFormatString)
