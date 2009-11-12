@@ -103,9 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       {
         var removedObject = GetObject (i);
 
-        var modification = CollectionEndPoint.CreateRemoveModification (removedObject);
-        var bidirectionalModification = modification.CreateBidirectionalModification ();
-        bidirectionalModification.ExecuteAllSteps ();
+        CreateAndExecuteRemoveModification (removedObject);
       }
 
       CollectionEndPoint.Touch ();
@@ -135,18 +133,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       CheckNotDeleted (CollectionEndPoint.GetDomainObject());
 
       if (ContainsObjectID (domainObject.ID))
-      {
-        ExecuteRemove(domainObject);
-      }
+        CreateAndExecuteRemoveModification (domainObject);
 
       CollectionEndPoint.Touch ();
     }
 
-    private void ExecuteRemove (DomainObject domainObject)
+    public void Remove (ObjectID objectID)
     {
-      var modification = CollectionEndPoint.CreateRemoveModification (domainObject);
-      var bidirectionalModification = modification.CreateBidirectionalModification ();
-      bidirectionalModification.ExecuteAllSteps ();
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      CheckNotDeleted (CollectionEndPoint.GetDomainObject ());
+
+      var domainObject = GetObject (objectID);
+      if (domainObject != null)
+      {
+        // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
+        Assertion.IsTrue (domainObject.TransactionContext[CollectionEndPoint.ClientTransaction].State != StateType.Deleted);
+
+        CreateAndExecuteRemoveModification (domainObject);
+      }
+
+      CollectionEndPoint.Touch ();
     }
 
     public void Replace (int index, DomainObject newDomainObject)
@@ -162,6 +169,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       bidirectionalModification.ExecuteAllSteps ();
 
       CollectionEndPoint.Touch ();
+    }
+
+    private void CreateAndExecuteRemoveModification (DomainObject domainObject)
+    {
+      var modification = CollectionEndPoint.CreateRemoveModification (domainObject);
+      var bidirectionalModification = modification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     private void CheckClientTransaction (DomainObject domainObject, string exceptionFormatString)

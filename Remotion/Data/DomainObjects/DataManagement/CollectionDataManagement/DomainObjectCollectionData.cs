@@ -107,6 +107,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _data.Remove (domainObject);
     }
 
+    public void Remove (ObjectID objectID)
+    {
+      _data.Remove (objectID);
+    }
+
     public void Replace (int index, DomainObject newDomainObject)
     {
       _data.Replace (index, newDomainObject);

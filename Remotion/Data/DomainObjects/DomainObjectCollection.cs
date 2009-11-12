@@ -672,7 +672,7 @@ namespace Remotion.Data.DomainObjects
       if (domainObject != null)
         Remove (domainObject);
       else
-        Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation unless an overload of Remove is added.
+        Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingCollectionData.
     }
 
     /// <summary>
@@ -1094,7 +1094,7 @@ namespace Remotion.Data.DomainObjects
     ///   the <see cref="ClientTransaction"/> managing this collection. 
     ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
     /// </exception>
-    // TODO 905: Consider making private; if it is only used by Commit and Rollback, PerformAdd isn't necessary (the _data ctor could take it).
+    // TODO 1870: Remove this method, move logic to CollectionEndPoint.
     protected virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
       bool isReadOnly = IsReadOnly;

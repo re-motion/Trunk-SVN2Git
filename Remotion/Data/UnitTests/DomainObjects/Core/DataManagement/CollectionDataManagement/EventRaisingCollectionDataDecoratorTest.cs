@@ -170,6 +170,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Remove_ID ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (2)));
+      }
+
+      _eventRaiserMock.Replay ();
+
+      _data.Remove (_order2.ID);
+
+      _eventRaiserMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Remove_ID_NoEventIfNoRemove ()
+    {
+      _eventRaiserMock.Replay ();
+
+      _data.Remove (_order4.ID);
+
+      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
     public void Replace ()
     {
       using (_mockRepository.Ordered ())

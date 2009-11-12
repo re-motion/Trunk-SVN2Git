@@ -236,6 +236,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Remove_ID ()
+    {
+      Add (_order1);
+      Add (_order2);
+      Add (_order3);
+
+      _data.Remove (_order2.ID);
+      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order3 }));
+    }
+
+    [Test]
+    public void Remove_ID_ChangesVersion ()
+    {
+      Add (_order1);
+      Add (_order2);
+      Add (_order3);
+
+      Assert_VersionChanged (() => _data.Remove (_order3.ID));
+    }
+
+    [Test]
+    public void Remove_ID_NonExistingElement ()
+    {
+      _data.Remove (_order2.ID);
+      Assert.That (_data.ToArray (), Is.Empty);
+    }
+
+    [Test]
+    public void Remove_ID_NonExistingElement_NoVersionChange ()
+    {
+      long oldVersion = _data.Version;
+      _data.Remove (_order2.ID);
+      Assert.That (_data.Version, Is.EqualTo (oldVersion));
+    }
+
+    [Test]
     public void Replace ()
     {
       Add (_order1);

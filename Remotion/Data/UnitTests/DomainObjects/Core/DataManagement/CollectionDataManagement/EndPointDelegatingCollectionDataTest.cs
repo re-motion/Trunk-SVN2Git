@@ -195,7 +195,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove ()
     {
-      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (true);
+      StubActualDataContents (_orderItem1);
+
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
@@ -210,8 +211,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove_ObjectNotContained ()
     {
-      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (false);
-
       _data.Remove (_orderItem1);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
@@ -224,6 +223,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       CheckClientTransactionDiffersException ((data, relatedObjectInOtherTransaction) => data.Remove (relatedObjectInOtherTransaction));
       CheckObjectDeletedException ((data, deletedRelatedObject) => data.Remove (deletedRelatedObject));
       CheckOwningObjectDeletedException ((data, relatedObject) => data.Remove (relatedObject));
+    }
+
+    [Test]
+    public void Remove_ID ()
+    {
+      StubActualDataContents (_orderItem1);
+
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
+
+      _data.Remove (_orderItem1.ID);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+    }
+
+    [Test]
+    public void Remove_ID_ObjectNotContained ()
+    {
+      _data.Remove (_orderItem1.ID);
+
+      _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
+      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
+    }
+
+    [Test]
+    public void Remove_ID_ChecksErrorConditions ()
+    {
+      CheckOwningObjectDeletedException ((data, relatedObject) => data.Remove (relatedObject.ID));
     }
 
     [Test]

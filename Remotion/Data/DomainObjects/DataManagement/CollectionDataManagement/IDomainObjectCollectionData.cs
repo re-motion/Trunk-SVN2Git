@@ -36,7 +36,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     void Clear ();
     void Insert (int index, DomainObject domainObject);
-    void Remove (DomainObject domainObject);
+    void Remove (DomainObject domainObject); // this overload should be called from DomainObjectCollection.Remove (DomainObject)
+    void Remove (ObjectID objectID); // this overload should be called from DomainObjectCollection.Remove (ObjectID)
     void Replace (int index, DomainObject newDomainObject);
   }
 }

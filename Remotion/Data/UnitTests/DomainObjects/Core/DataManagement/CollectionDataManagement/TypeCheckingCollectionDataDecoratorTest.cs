@@ -133,6 +133,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Remove_ID ()
+    {
+      _data.Remove (_order1.ID);
+      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
+      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
+    }
+
+    [Test]
     public void Replace ()
     {
       _data.Replace (0, _order4);

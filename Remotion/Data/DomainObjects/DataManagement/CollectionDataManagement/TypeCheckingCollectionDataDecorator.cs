@@ -106,6 +106,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData.Remove (domainObject);
     }
 
+    public void Remove (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      
+      _wrappedData.Remove (objectID);
+    }
+
     public void Replace (int index, DomainObject newDomainObject)
     {
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
