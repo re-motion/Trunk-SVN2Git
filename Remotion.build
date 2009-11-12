@@ -210,7 +210,7 @@
 
   <target name="Remotion.License">
     <property name="project.name" value="Remotion.License" />
-    <property name="project.dir" value="Remotion/License" />
+    <property name="project.dir" value="Remotion/license" />
     <property name="project.output" value="" />
     <property name="project.extension" value="" />
     <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
@@ -282,7 +282,7 @@
 
   <target name="Dms.License">
     <property name="project.name" value="Dms.License" />
-    <property name="project.dir" value="Dms/License" />
+    <property name="project.dir" value="Dms/license" />
     <property name="project.output" value="" />
     <property name="project.extension" value="" />
     <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
@@ -466,7 +466,7 @@
 
   <target name="SecurityManager.License">
     <property name="project.name" value="SecurityManager.License" />
-    <property name="project.dir" value="SecurityManager/License" />
+    <property name="project.dir" value="SecurityManager/license" />
     <property name="project.output" value="" />
     <property name="project.extension" value="" />
     <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
