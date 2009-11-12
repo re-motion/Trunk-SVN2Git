@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.GetObject(objectID);
+      return _wrappedData.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
@@ -88,20 +88,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      
+
       if (ContainsObjectID (domainObject.ID))
         throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
 
-      // TODO 1779: Check index
+      if (index < 0 || index > Count)
+      {
+        throw new ArgumentOutOfRangeException (
+            "index",
+            index,
+            "Index is out of range. Must be non-negative and less than or equal to the size of the collection.");
+      }
 
-      _wrappedData.Insert(index, domainObject);
+      _wrappedData.Insert (index, domainObject);
     }
 
     public void Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      // TODO 1779: Check whether this collection holds the same object reference (or null) for this ID
+      var existingObject = GetObject (domainObject.ID);
+      if (existingObject != null && existingObject != domainObject)
+      {
+        var message = "The object to be removed has the same ID as an object in this collection, but is a different object reference.";
+        throw new ArgumentException (message, "domainObject");
+      }
 
       _wrappedData.Remove (domainObject);
     }
