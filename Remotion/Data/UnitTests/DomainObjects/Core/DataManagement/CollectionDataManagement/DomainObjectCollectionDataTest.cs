@@ -18,9 +18,11 @@
 // All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -82,27 +84,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The collection already contains an object with ID "
-                                                                              + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
+    [ExpectedException (typeof (ArgumentException))]
     public void Insert_SameItemTwice ()
     {
       Add (_order1);
-      Add (_order2);
-      Add (_order3);
 
-      _data.Insert (2, _order1);
+      _data.Insert (1, _order1);
+    }
+
+    [Test]
+    public void Insert_SameItemTwice_DoesNotCorruptState ()
+    {
+      Add (_order1);
+
+      try { _data.Insert (1, _order1); } catch (ArgumentException) { }
+
+      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_orderedObjectIDs"), Is.EqualTo (new[] { _order1.ID }));
+      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_objectsByID"), Is.EqualTo (new[] { new KeyValuePair<ObjectID, DomainObject>(_order1.ID, _order1) }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentOutOfRangeException))]
+    public void Insert_InvalidIndex ()
+    {
+      Add (_order1);
+
+      _data.Insert (17, _order2);
+    }
+
+    [Test]
+    public void Insert_InvalidIndex_DoesNotCorruptState ()
+    {
+      Add (_order1);
+
+      try { _data.Insert (17, _order2); } catch (ArgumentOutOfRangeException) { }
+
+      CheckInternalState (_order1);
     }
 
     [Test]
     public void Insert_ChangesVersion ()
     {
       Add (_order1);
-      Add (_order2);
-      Add (_order3);
 
-      Assert_VersionChanged (() => _data.Insert (2, _order4));
+      CheckVersionChanged (() => _data.Insert (1, _order4));
     }
-
 
     [Test]
     public void ContainsObjectID_False ()
@@ -196,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Clear());
+      CheckVersionChanged (() => _data.Clear());
     }
 
     [Test]
@@ -217,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Remove (_order3));
+      CheckVersionChanged (() => _data.Remove (_order3));
     }
 
     [Test]
@@ -253,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Remove (_order3.ID));
+      CheckVersionChanged (() => _data.Remove (_order3.ID));
     }
 
     [Test]
@@ -285,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException))]
-    public void Replace_NonExisting ()
+    public void Replace_InvalidIndex ()
     {
       _data.Replace (1, _order4);
     }
@@ -297,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      Assert_VersionChanged (() => _data.Replace (1, _order4));
+      CheckVersionChanged (() => _data.Replace (1, _order4));
     }
 
     [Test]
@@ -313,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The collection already contains an object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
+    [ExpectedException (typeof (ArgumentException))]
     public void Replace_WithDuplicate ()
     {
       Add (_order1);
@@ -321,6 +347,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order3);
 
       _data.Replace (1, _order1);
+    }
+
+    [Test]
+    public void Replace_WithDuplicate_DoesNotCorruptState ()
+    {
+      Add (_order1);
+      Add (_order2);
+      Add (_order3);
+
+      try { _data.Replace (1, _order1); } catch (ArgumentException) { }
+
+      CheckInternalState (_order1, _order2, _order3);
     }
 
     [Test]
@@ -378,11 +416,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _data.Insert (_data.Count, order);
     }
 
-    private void Assert_VersionChanged (Action action)
+    private void CheckVersionChanged (Action action)
     {
       long version = _data.Version;
       action ();
       Assert.That (_data.Version, Is.GreaterThan (version));
+    }
+
+    private void CheckInternalState (params DomainObject[] expectedData)
+    {
+      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_orderedObjectIDs"), Is.EqualTo (expectedData.Select (obj => obj.ID).ToArray ()));
+
+      var keyValuePairs = expectedData.Select (obj => new KeyValuePair<ObjectID, DomainObject> (obj.ID, obj)).ToArray ();
+      Assert.That (PrivateInvoke.GetNonPublicField (_data, "_objectsByID"), Is.EqualTo (keyValuePairs));
     }
   }
 }
