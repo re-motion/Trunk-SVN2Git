@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
@@ -88,12 +89,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       return GetEnumerator();
     }
 
-    // TODO 1780: Inline calls to ICollectionChangeDelegate - move code from RelationEndPointModifier here
-
     public void Clear ()
     {
+      CheckNotDeleted (CollectionEndPoint.GetDomainObject ());
+
+      // no need to check the inner objects for being deleted or for differing client transactions - we can rely on objects being part of an
+      // endpoint fitting this transaction and not being deleted
+      Assertion.DebugAssert (this.All (obj => 
+          obj.TransactionContext[CollectionEndPoint.ClientTransaction].CanBeUsedInTransaction 
+          && obj.TransactionContext[CollectionEndPoint.ClientTransaction].State != StateType.Deleted));
+
       for (int i = Count - 1; i >= 0; --i)
-        (CollectionEndPoint).PerformRemove (null, GetObject (i));
+      {
+        var removedObject = GetObject (i);
+
+        var modification = CollectionEndPoint.CreateRemoveModification (removedObject);
+        var bidirectionalModification = modification.CreateBidirectionalModification ();
+        bidirectionalModification.ExecuteAllSteps ();
+      }
+
+      CollectionEndPoint.Touch ();
     }
 
     public void Insert (int index, DomainObject domainObject)
@@ -121,12 +136,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       if (ContainsObjectID (domainObject.ID))
       {
-        var modification = CollectionEndPoint.CreateRemoveModification (domainObject);
-        var bidirectionalModification = modification.CreateBidirectionalModification ();
-        bidirectionalModification.ExecuteAllSteps ();
+        ExecuteRemove(domainObject);
       }
 
       CollectionEndPoint.Touch ();
+    }
+
+    private void ExecuteRemove (DomainObject domainObject)
+    {
+      var modification = CollectionEndPoint.CreateRemoveModification (domainObject);
+      var bidirectionalModification = modification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     public void Replace (int index, DomainObject newDomainObject)

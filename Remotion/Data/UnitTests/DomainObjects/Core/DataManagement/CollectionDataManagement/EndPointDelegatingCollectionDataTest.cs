@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
@@ -42,7 +43,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     private EndPointDelegatingCollectionData _data;
 
-    private OrderItem _orderItem;
+    private OrderItem _orderItem1;
+    private OrderItem _orderItem2;
+    private OrderItem _orderItem3;
 
     public override void SetUp ()
     {
@@ -60,7 +63,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _actualDataStub);
 
-      _orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      _orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
 
       ClientTransactionScope.EnterNullScope (); // no active transaction
     }
@@ -97,17 +102,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void GetObject_Index ()
     {
-      _actualDataStub.Stub (stub => stub.GetObject (12)).Return (_orderItem);
+      _actualDataStub.Stub (stub => stub.GetObject (12)).Return (_orderItem1);
 
-      Assert.That (_data.GetObject (12), Is.SameAs (_orderItem));
+      Assert.That (_data.GetObject (12), Is.SameAs (_orderItem1));
     }
 
     [Test]
     public void GetObject_ID ()
     {
-      _actualDataStub.Stub (stub => stub.GetObject (DomainObjectIDs.OrderItem1)).Return (_orderItem);
+      _actualDataStub.Stub (stub => stub.GetObject (DomainObjectIDs.OrderItem1)).Return (_orderItem1);
 
-      Assert.That (_data.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (_orderItem));
+      Assert.That (_data.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (_orderItem1));
     }
 
     [Test]
@@ -128,21 +133,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [Ignore ("TODO 1780")]
     public void Clear ()
     {
-      Assert.Fail ("TODO");
+      StubActualDataContents (_orderItem1, _orderItem2, _orderItem3);
+
+      using (_collectionEndPointMock.GetMockRepository ().Ordered ())
+      {
+        _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem3)).Return (_modificationStub);
+        _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem2)).Return (_modificationStub);
+        _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
+      }
+      _collectionEndPointMock.Expect (mock => mock.Touch());
+      _collectionEndPointMock.Replay();
+
+      _modificationStub.Stub (stub => stub.CreateBidirectionalModification()).Return (_bidirectionalModificationMock);
+
+      _bidirectionalModificationMock.Expect (mock => mock.ExecuteAllSteps ()).Repeat.Times (3);
+      _bidirectionalModificationMock.Replay ();
+
+      _data.Clear();
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _bidirectionalModificationMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Clear_WithoutItems ()
+    {
+      StubActualDataContents ();
+
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+
+      _data.Clear ();
+
+      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Insert ()
     {
-      _collectionEndPointMock.Expect (mock => mock.CreateInsertModification (_orderItem, 17)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.CreateInsertModification (_orderItem1, 17)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
       _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
-      _data.Insert (17, _orderItem);
+      _data.Insert (17, _orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
@@ -159,13 +195,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove ()
     {
-      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem.ID)).Return (true);
-      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem)).Return (_modificationStub);
+      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (true);
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
       _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
-      _data.Remove (_orderItem);
+      _data.Remove (_orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
@@ -174,9 +210,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove_ObjectNotContained ()
     {
-      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem.ID)).Return (false);
+      _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem1.ID)).Return (false);
 
-      _data.Remove (_orderItem);
+      _data.Remove (_orderItem1);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
@@ -193,12 +229,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Replace ()
     {
-      _collectionEndPointMock.Expect (mock => mock.CreateReplaceModification (17, _orderItem)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.CreateReplaceModification (17, _orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
       _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
-      _data.Replace (17, _orderItem);
+      _data.Replace (17, _orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
@@ -370,13 +406,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       try
       {
-        action (data, _orderItem);
+        action (data, _orderItem1);
         Assert.Fail ("Expected ObjectDeletedException");
       }
       catch (ObjectDeletedException)
       {
         // ok
       }
+    }
+
+    private void StubActualDataContents (params OrderItem[] orderItems)
+    {
+      _actualDataStub.Stub (stub => stub.Count).Return (orderItems.Length);
+
+      for (int i = 0; i < orderItems.Length; i++)
+      {
+        // ReSharper disable AccessToModifiedClosure
+        _actualDataStub.Stub (stub => stub.GetObject (orderItems[i].ID)).Return (orderItems[i]);
+        _actualDataStub.Stub (stub => stub.GetObject (i)).Return (orderItems[i]);
+        _actualDataStub.Stub (stub => stub.ContainsObjectID (orderItems[i].ID)).Return (true);
+        // ReSharper restore AccessToModifiedClosure
+      }
+
+      _actualDataStub.Stub (stub => stub.GetEnumerator ()).Return (orderItems.Cast<DomainObject>().GetEnumerator ());
     }
   }
 }

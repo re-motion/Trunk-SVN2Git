@@ -409,7 +409,7 @@ namespace Remotion.Data.DomainObjects
           Add (domainObject);
       }
 
-      Touch ();
+      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation.
     }
 
     /// <summary>
@@ -536,6 +536,7 @@ namespace Remotion.Data.DomainObjects
           _changeDelegate.PerformReplace (this, value, index);
         else if (ReferenceEquals (this[index], value)) // If old and new objects are the same: Perform no operation
         {
+          Assertion.IsNull (_changeDelegate); // TODO: Due to this, the call to Touch never has an effect and can be removed.
           Touch ();
           return;
         }
@@ -671,7 +672,7 @@ namespace Remotion.Data.DomainObjects
       if (domainObject != null)
         Remove (domainObject);
       else
-        Touch ();
+        Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation unless an overload of Remove is added.
     }
 
     /// <summary>
@@ -701,7 +702,7 @@ namespace Remotion.Data.DomainObjects
       // Do not perform remove if domain object is not part of this collection     
       if (this[domainObject.ID] == null)
       {
-        Touch();
+        Touch(); // TODO: This call to Touch will be handled by EndPointDelegatingCollectionData.
         return false;
       }
       else if (this[domainObject.ID] != domainObject)
@@ -732,7 +733,7 @@ namespace Remotion.Data.DomainObjects
       for (int i = Count - 1; i >= 0; i--)
         Remove (this[i].ID);
 
-      Touch ();
+      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
     }
 
     /// <summary>
@@ -1104,7 +1105,7 @@ namespace Remotion.Data.DomainObjects
         PerformAdd (domainObject);
 
       SetIsReadOnly (isReadOnly);
-      Touch ();
+      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation.
     }
 
     /// <summary>
@@ -1129,7 +1130,7 @@ namespace Remotion.Data.DomainObjects
       int index = Count;
       _data.Insert (index, domainObject);
 
-      Touch ();
+      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
       return index;
     }
 
@@ -1160,7 +1161,7 @@ namespace Remotion.Data.DomainObjects
       CheckItemType (domainObject, "domainObject");
 
       _data.Insert (index, domainObject);
-      Touch ();
+      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
     }
 
     internal void EndAdd (DomainObject domainObject)
@@ -1186,7 +1187,7 @@ namespace Remotion.Data.DomainObjects
         throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
 
       _data.Remove (domainObject);
-      Touch ();
+      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
     }
 
     internal void EndRemove (DomainObject domainObject)
@@ -1205,7 +1206,7 @@ namespace Remotion.Data.DomainObjects
 
       OnDeleting();
       _data.Clear ();
-      Touch ();
+      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
       OnDeleted ();
     }
 
@@ -1323,7 +1324,7 @@ namespace Remotion.Data.DomainObjects
       Removing += source.Removing;
     }
 
-    private void Touch ()
+    private void Touch () // TODO: Replaced by EndPointDelegatingCollectionData.
     {
       if (_changeDelegate != null)
         _changeDelegate.MarkAsTouched ();
