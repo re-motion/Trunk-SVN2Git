@@ -137,10 +137,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [Ignore ("TODO 1780")]
     public void Insert ()
     {
-      Assert.Fail ("TODO");
+      _collectionEndPointMock.Expect (mock => mock.CreateInsertModification (_orderItem, 17)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
+      _collectionEndPointMock.Replay ();
+      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
+
+      _data.Insert (17, _orderItem);
+
+      _collectionEndPointMock.VerifyAllExpectations ();
+      _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
     }
 
     [Test]
@@ -148,6 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _actualDataStub.Stub (stub => stub.ContainsObjectID (_orderItem.ID)).Return (true);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
       _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
@@ -165,6 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _data.Remove (_orderItem);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
+      _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
     }
 
     [Test]
