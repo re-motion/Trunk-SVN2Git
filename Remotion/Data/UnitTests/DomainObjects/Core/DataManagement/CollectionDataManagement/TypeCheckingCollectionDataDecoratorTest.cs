@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   public class TypeCheckingCollectionDataDecoratorTest : ClientTransactionBaseTest
   {
     private IDomainObjectCollectionData _wrappedData;
-    private TypeCheckingCollectionDataDecorator _data;
+    private TypeCheckingCollectionDataDecorator _typeCheckingDecorator;
 
     private Order _order1;
     private Order _order2;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       base.SetUp ();
 
       _wrappedData = new DomainObjectCollectionData ();
-      _data = new TypeCheckingCollectionDataDecorator (_wrappedData, typeof (Order));
+      _typeCheckingDecorator = new TypeCheckingCollectionDataDecorator (_wrappedData, typeof (Order));
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -59,59 +59,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Enumeration ()
     {
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
 
     [Test]
     public void Count ()
     {
-      Assert.That (_data.Count, Is.EqualTo (3));
+      Assert.That (_typeCheckingDecorator.Count, Is.EqualTo (3));
     }
 
     [Test]
     public void IsReadOnly ()
     {
-      Assert.That (_data.IsReadOnly, Is.False);
+      Assert.That (_typeCheckingDecorator.IsReadOnly, Is.False);
     }
 
     [Test]
     public void ContainsObjectID ()
     {
-      Assert.That (_data.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_data.ContainsObjectID (_order4.ID), Is.False);
+      Assert.That (_typeCheckingDecorator.ContainsObjectID (_order1.ID), Is.True);
+      Assert.That (_typeCheckingDecorator.ContainsObjectID (_order4.ID), Is.False);
     }
 
     [Test]
     public void GetObject_ByIndex ()
     {
-      Assert.That (_data.GetObject (0), Is.SameAs (_order1));
+      Assert.That (_typeCheckingDecorator.GetObject (0), Is.SameAs (_order1));
     }
 
     [Test]
     public void GetObject_ByID ()
     {
-      Assert.That (_data.GetObject (_order2.ID), Is.SameAs (_order2));
+      Assert.That (_typeCheckingDecorator.GetObject (_order2.ID), Is.SameAs (_order2));
     }
 
     [Test]
     public void IndexOf ()
     {
-      Assert.That (_data.IndexOf (_order2.ID), Is.EqualTo (1));
+      Assert.That (_typeCheckingDecorator.IndexOf (_order2.ID), Is.EqualTo (1));
     }
 
     [Test]
     public void Clear ()
     {
-      _data.Clear ();
-      Assert.That (_data.ToArray(), Is.Empty);
+      _typeCheckingDecorator.Clear ();
+      Assert.That (_typeCheckingDecorator.ToArray(), Is.Empty);
       Assert.That (_wrappedData.ToArray (), Is.Empty);
     }
 
     [Test]
     public void Insert ()
     {
-      _data.Insert (0, _order4);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order4, _order1, _order2, _order3 }));
+      _typeCheckingDecorator.Insert (0, _order4);
+      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order4, _order1, _order2, _order3 }));
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order4, _order1, _order2, _order3 }));
     }
 
@@ -121,30 +121,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: domainObject")]
     public void Insert_ThrowsOnInvalidType ()
     {
-      _data.Insert (0, _orderItem1);
+      _typeCheckingDecorator.Insert (0, _orderItem1);
     }
 
     [Test]
     public void Remove ()
     {
-      _data.Remove (_order1);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
+      _typeCheckingDecorator.Remove (_order1);
+      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
     }
 
     [Test]
     public void Remove_ID ()
     {
-      _data.Remove (_order1.ID);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
+      _typeCheckingDecorator.Remove (_order1.ID);
+      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
     }
 
     [Test]
     public void Replace ()
     {
-      _data.Replace (0, _order4);
-      Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
+      _typeCheckingDecorator.Replace (0, _order4);
+      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
       Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
     }
 
@@ -154,13 +154,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: newDomainObject")]
     public void Replace_ThrowsOnInvalidType ()
     {
-      _data.Replace (0, _orderItem1);
+      _typeCheckingDecorator.Replace (0, _orderItem1);
     }
 
     [Test]
     public void Serializable ()
     {
-      var result = Serializer.SerializeAndDeserialize (_data);
+      var result = Serializer.SerializeAndDeserialize (_typeCheckingDecorator);
       Assert.That (result.Count, Is.EqualTo (3));
     }
   }

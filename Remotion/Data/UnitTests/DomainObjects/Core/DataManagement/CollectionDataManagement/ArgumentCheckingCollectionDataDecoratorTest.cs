@@ -28,8 +28,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   [TestFixture]
   public class ArgumentCheckingCollectionDataDecoratorTest : ClientTransactionBaseTest
   {
-    private IDomainObjectCollectionData _innerDataMock;
-    private ArgumentCheckingCollectionDataDecorator _argumentCheckingDataDecorator;
+    private IDomainObjectCollectionData _wrappedDataMock;
+    private ArgumentCheckingCollectionDataDecorator _argumentCheckingDecorator;
 
     private Order _order1;
     private Order _order2;
@@ -38,15 +38,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp ();
 
-      _innerDataMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
-      _argumentCheckingDataDecorator = new ArgumentCheckingCollectionDataDecorator (_innerDataMock);
+      _wrappedDataMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
+      _argumentCheckingDecorator = new ArgumentCheckingCollectionDataDecorator (_wrappedDataMock);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
     }
 
     [Test]
-    public void AllMembers_Delegated ()
+    public void TrivialMembers_Delegated ()
     {
       CheckDelegation (data => data.GetEnumerator ());
       CheckDelegation (data => Dev.Null = data.Count);
@@ -55,73 +55,133 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       CheckDelegation (data => data.GetObject (0));
       CheckDelegation (data => data.GetObject (DomainObjectIDs.Order1));
       CheckDelegation (data => data.Clear());
-      CheckDelegation (data => data.Insert (0, _order1));
-      CheckDelegation (data => data.Remove (_order1));
       CheckDelegation (data => data.Remove (DomainObjectIDs.Order1));
-      CheckDelegation (data => data.Replace (0, _order1));
+    }
+
+    [Test]
+    public void Insert ()
+    {
+      StubInnerData (_order1);
+
+      _argumentCheckingDecorator.Insert (0, _order2);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _order2));
     }
 
     [Test]
     public void Insert_Duplicate ()
     {
-      _innerDataMock.Stub (stub => stub.ContainsObjectID (DomainObjectIDs.Order1)).Return (true);
+      StubInnerData (_order1);
 
       CheckThrows<InvalidOperationException> (
-          () => _argumentCheckingDataDecorator.Insert (0, _order1), 
+          () => _argumentCheckingDecorator.Insert (0, _order1), 
           "The collection already contains an object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.");
 
-      _innerDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
     public void Insert_IndexTooHigh ()
     {
-      _innerDataMock.Stub (stub => stub.ContainsObjectID (DomainObjectIDs.Order1)).Return (false);
-      _innerDataMock.Stub (stub => stub.Count).Return (0);
-
       CheckThrows<ArgumentOutOfRangeException> (
-          () => _argumentCheckingDataDecorator.Insert (1, _order1),
+          () => _argumentCheckingDecorator.Insert (1, _order1),
           "Index is out of range. Must be non-negative and less than or equal to the size of the collection.\r\nParameter name: index\r\nActual value was 1.");
 
-      _innerDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
     public void Insert_IndexTooLow ()
     {
-      _innerDataMock.Stub (stub => stub.ContainsObjectID (DomainObjectIDs.Order1)).Return (false);
-      _innerDataMock.Stub (stub => stub.Count).Return (0);
-
       CheckThrows<ArgumentOutOfRangeException> (
-          () => _argumentCheckingDataDecorator.Insert (-1, _order1),
+          () => _argumentCheckingDecorator.Insert (-1, _order1),
           "Index is out of range. Must be non-negative and less than or equal to the size of the collection.\r\nParameter name: index\r\nActual value was -1.");
 
-      _innerDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Remove ()
+    {
+      StubInnerData (_order1);
+
+      _argumentCheckingDecorator.Remove (_order1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Remove (_order1));
     }
 
     [Test]
     public void Remove_HoldsObjectFromOtherTransaction ()
     {
-      _innerDataMock.Stub (stub => stub.GetObject (DomainObjectIDs.Order1)).Return (_order2);
+      _wrappedDataMock.Stub (stub => stub.GetObject (DomainObjectIDs.Order1)).Return (_order2);
 
       CheckThrows<ArgumentException> (
-          () => _argumentCheckingDataDecorator.Remove (_order1),
+          () => _argumentCheckingDecorator.Remove (_order1),
           "The object to be removed has the same ID as an object in this collection, but is a different object reference.\r\nParameter name: domainObject");
 
-      _innerDataMock.AssertWasNotCalled (mock => mock.Remove (Arg<DomainObject>.Is.Anything));
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Remove (Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
-    [Ignore ("TODO 1779")]
     public void Replace ()
     {
-      Assert.Fail ("TODO");
+      StubInnerData (_order1);
+
+      _argumentCheckingDecorator.Replace (0, _order2);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order2));
+    }
+
+    [Test]
+    public void Replace_WithSameObject ()
+    {
+      StubInnerData (_order1);
+
+      _argumentCheckingDecorator.Replace (0, _order1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order1));
+    }
+
+    [Test]
+    public void Replace_WithDuplicate ()
+    {
+      StubInnerData (_order1, _order2);
+
+      CheckThrows<InvalidOperationException> (
+          () => _argumentCheckingDecorator.Replace (1, _order1),
+          "The collection already contains an object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Replace_IndexTooLow ()
+    {
+      StubInnerData (_order1);
+
+      CheckThrows<ArgumentOutOfRangeException> (
+          () => _argumentCheckingDecorator.Replace (-1, _order1),
+          "Index is out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\r\nActual value was -1.");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Replace_IndexTooHigh ()
+    {
+      StubInnerData (_order1);
+
+      CheckThrows<ArgumentOutOfRangeException> (
+          () => _argumentCheckingDecorator.Replace (1, _order1),
+          "Index is out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\r\nActual value was 1.");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     private void CheckDelegation (Action<IDomainObjectCollectionData> action)
     {
-      action (_argumentCheckingDataDecorator);
-      _innerDataMock.AssertWasCalled (action);
+      action (_argumentCheckingDecorator);
+      _wrappedDataMock.AssertWasCalled (action);
     }
 
     private void CheckThrows<T> (Action action, string expectedMessage) where T : Exception
@@ -140,6 +200,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
         Assert.Fail ("Expected " + typeof (T) + ", got " + ex);
       }
       Assert.Fail ("Expected " + typeof (T));
+    }
+
+    private void StubInnerData (params DomainObject[] contents)
+    {
+      _wrappedDataMock.Stub (stub => stub.Count).Return (contents.Length);
+
+      for (int i = 0; i < contents.Length; i++)
+      {
+        int currentIndex = i; // required because Stub creates a closure
+        _wrappedDataMock.Stub (stub => stub.ContainsObjectID (contents[currentIndex].ID)).Return (true);
+        _wrappedDataMock.Stub (stub => stub.GetObject (contents[currentIndex].ID)).Return (contents[currentIndex]);
+        _wrappedDataMock.Stub (stub => stub.GetObject (currentIndex)).Return (contents[currentIndex]);
+        _wrappedDataMock.Stub (stub => stub.IndexOf (contents[currentIndex].ID)).Return (currentIndex);
+      }
     }
   }
 }

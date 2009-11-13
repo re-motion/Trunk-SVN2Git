@@ -451,11 +451,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       for (int i = 0; i < orderItems.Length; i++)
       {
-        // ReSharper disable AccessToModifiedClosure
-        _actualDataStub.Stub (stub => stub.GetObject (orderItems[i].ID)).Return (orderItems[i]);
-        _actualDataStub.Stub (stub => stub.GetObject (i)).Return (orderItems[i]);
-        _actualDataStub.Stub (stub => stub.ContainsObjectID (orderItems[i].ID)).Return (true);
-        // ReSharper restore AccessToModifiedClosure
+        int currentIndex = i; // required because Stub creates a closure
+        _actualDataStub.Stub (stub => stub.ContainsObjectID (orderItems[currentIndex].ID)).Return (true);
+        _actualDataStub.Stub (stub => stub.GetObject (orderItems[currentIndex].ID)).Return (orderItems[currentIndex]);
+        _actualDataStub.Stub (stub => stub.GetObject (currentIndex)).Return (orderItems[currentIndex]);
+        _actualDataStub.Stub (stub => stub.IndexOf (orderItems[currentIndex].ID)).Return (currentIndex);
       }
 
       _actualDataStub.Stub (stub => stub.GetEnumerator ()).Return (orderItems.Cast<DomainObject>().GetEnumerator ());

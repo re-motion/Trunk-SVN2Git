@@ -89,9 +89,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      if (ContainsObjectID (domainObject.ID))
-        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
-
       if (index < 0 || index > Count)
       {
         throw new ArgumentOutOfRangeException (
@@ -99,6 +96,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
             index,
             "Index is out of range. Must be non-negative and less than or equal to the size of the collection.");
       }
+
+      if (ContainsObjectID (domainObject.ID))
+        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
 
       _wrappedData.Insert (index, domainObject);
     }
@@ -128,10 +128,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      // TODO 1779: Check index
+      if (index < 0 || index >= Count)
+      {
+        throw new ArgumentOutOfRangeException (
+            "index",
+            index,
+            "Index is out of range. Must be non-negative and less than the size of the collection.");
+      }
 
       if (ContainsObjectID (newDomainObject.ID) && !ReferenceEquals (GetObject (index), newDomainObject))
-        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID));
+      {
+        var message = string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID);
+        throw new InvalidOperationException (message);
+      }
 
       _wrappedData.Replace (index, newDomainObject);
     }
