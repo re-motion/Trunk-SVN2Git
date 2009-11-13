@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -235,8 +236,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void PerformDelete ()
     {
-      _oppositeDomainObjects.PerformDelete();
+      Assertion.IsFalse (_oppositeDomainObjects.IsReadOnly);
+
+      ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete ();
+      _oppositeDomainObjects._data.Clear ();
       _hasBeenTouched = true;
+      ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ();
     }
 
     public DomainObjectCollection OriginalOppositeDomainObjects

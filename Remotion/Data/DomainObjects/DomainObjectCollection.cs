@@ -536,8 +536,6 @@ namespace Remotion.Data.DomainObjects
           _changeDelegate.PerformReplace (this, value, index);
         else if (ReferenceEquals (this[index], value)) // If old and new objects are the same: Perform no operation
         {
-          Assertion.IsNull (_changeDelegate); // TODO: Due to this, the call to Touch never has an effect and can be removed.
-          Touch ();
           return;
         }
         else
@@ -547,8 +545,8 @@ namespace Remotion.Data.DomainObjects
           BeginRemove (oldObject);
           BeginAdd (value);
 
-          PerformRemove (oldObject);
-          PerformInsert (index, value);
+          _data.Remove (oldObject);
+          _data.Insert (index, value);
 
           EndRemove (oldObject);
           EndAdd (value);
@@ -596,7 +594,9 @@ namespace Remotion.Data.DomainObjects
       else
       {
         BeginAdd (domainObject);
-        PerformAdd (domainObject);
+
+        _data.Insert (Count, domainObject);
+
         EndAdd (domainObject);
       }
 
@@ -715,7 +715,9 @@ namespace Remotion.Data.DomainObjects
       else
       {
         BeginRemove (domainObject);
-        PerformRemove (domainObject);
+
+        _data.Remove (domainObject);
+
         EndRemove (domainObject);
       }
       return true;
@@ -801,7 +803,9 @@ namespace Remotion.Data.DomainObjects
       else
       {
         BeginAdd (domainObject);
-        PerformInsert (index, domainObject);
+
+        _data.Insert (index, domainObject);
+
         EndAdd (domainObject);
       }
     }
@@ -1114,69 +1118,10 @@ namespace Remotion.Data.DomainObjects
     {
       bool isReadOnly = IsReadOnly;
 
-      _data = new DomainObjectCollectionData ();
-
-      foreach (DomainObject domainObject in domainObjects)
-        PerformAdd (domainObject);
+      _data = new DomainObjectCollectionData (domainObjects.Cast<DomainObject>());
 
       SetIsReadOnly (isReadOnly);
       Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. However, this method is removed anyway.
-    }
-
-    /// <summary>
-    /// Adds a <see cref="DomainObject"/> to the collection without raising the <see cref="Adding"/> and <see cref="Added"/> events.
-    /// </summary>
-    /// <param name="domainObject">The <see cref="DomainObject"/> to add to the collection. Must not be <see langword="null"/>.</param>
-    /// <returns>The position into which the new <see cref="DomainObject"/> was inserted.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
-    /// <exception cref="System.ArgumentException"><paramref name="domainObject"/> is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
-    /// <exception cref="DataManagement.ClientTransactionsDifferException">
-    ///   <paramref name="domainObject"/> belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> managing this collection. 
-    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
-    /// </exception>
-    protected internal int PerformAdd (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot add an item to a read-only collection.");
-      CheckItemType (domainObject, "domainObject");
-
-      int index = Count;
-      _data.Insert (index, domainObject);
-
-      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
-      return index;
-    }
-
-    /// <summary>
-    /// Inserts a <see cref="DomainObject"/> at a given index to the collection without raising the <see cref="Adding"/> and <see cref="Added"/> events.
-    /// </summary>
-    /// <param name="index">The zero-based <paramref name="index"/> at which the item should be inserted.</param>
-    /// <param name="domainObject">The <paramref name="domainObject"/> to add. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException">
-    ///   <paramref name="index"/> is less than zero.<br /> -or- <br />
-    ///   <paramref name="index"/> is greater than the number of items in the collection.
-    /// </exception>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.ArgumentException">
-    ///   The <paramref name="domainObject"/> already exists in the collection.<br /> -or- <br />
-    ///   <paramref name="domainObject"/> is not of type <see cref="RequiredItemType"/> or one of its derived types.
-    /// </exception>
-    /// <exception cref="DataManagement.ClientTransactionsDifferException">
-    ///   <paramref name="domainObject"/> belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> managing this collection. 
-    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
-    /// </exception>
-    protected internal void PerformInsert (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot insert an item into a read-only collection.");
-      CheckItemType (domainObject, "domainObject");
-
-      _data.Insert (index, domainObject);
-      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
     }
 
     internal void EndAdd (DomainObject domainObject)
@@ -1189,40 +1134,9 @@ namespace Remotion.Data.DomainObjects
       OnRemoving (new DomainObjectCollectionChangeEventArgs (domainObject));
     }
 
-    /// <summary>
-    /// Removes a <see cref="DomainObject"/> from the collection without raising the <see cref="Removing"/> and <see cref="Removed"/> events.
-    /// </summary>
-    /// <param name="domainObject">The <see cref="DomainObject"/> to remove from the collection. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
-    protected internal void PerformRemove (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
-
-      _data.Remove (domainObject);
-      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
-    }
-
     internal void EndRemove (DomainObject domainObject)
     {
       OnRemoved (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    /// <summary>
-    /// Clears the <see cref="DomainObjectCollection"/> without raising the <see cref="Removing"/> and <see cref="Removed"/> events.
-    /// </summary>
-    /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
-    internal void PerformDelete()
-    {
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot clear a read-only collection.");
-
-      OnDeleting();
-      _data.Clear ();
-      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
-      OnDeleted ();
     }
 
     /// <summary>
