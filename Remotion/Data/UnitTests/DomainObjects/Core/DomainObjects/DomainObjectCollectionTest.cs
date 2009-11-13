@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -126,13 +127,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreSame (company, domainObjectCollection2[DomainObjectIDs.Company1], "Company");
       Assert.AreSame (partner, domainObjectCollection2[DomainObjectIDs.Partner1], "Partner");
       Assert.AreSame (distributor, domainObjectCollection2[DomainObjectIDs.Distributor2], "Distributor");
-    }
-
-    private void CheckKeys (ObjectID[] expectedKeys, DomainObjectCollection collection)
-    {
-      Assert.AreEqual (expectedKeys.Length, collection.Count, "DomainObjectCollection.Count");
-      foreach (ObjectID expectedKey in expectedKeys)
-        Assert.IsTrue (collection.Contains (expectedKey), string.Format ("Key {0}", expectedKey));
     }
 
     [Test]
@@ -1091,86 +1085,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsEmpty (domainObjectCollection);
     }
 
-    private DomainObjectCollection CreateCustomerCollection ()
-    {
-      DomainObjectCollection collection = new DomainObjectCollection (typeof (Customer));
-      collection.Add (_customer1);
-      collection.Add (_customer2);
-
-      return collection;
-    }
-
-    private void CheckForEachOrder (DomainObject[] exptectedDomainObjects, DomainObjectCollection collection)
-    {
-      Assert.AreEqual (exptectedDomainObjects.Length, collection.Count);
-
-      int i = 0;
-      foreach (DomainObject domainObject in collection)
-      {
-        Assert.AreSame (exptectedDomainObjects[i], domainObject);
-        i++;
-      }
-    }
-
-    public interface IEventHandlerReceiver
-    {
-      void Added (object sender, DomainObjectCollectionChangeEventArgs args);
-      void Adding (object sender, DomainObjectCollectionChangeEventArgs args);
-      void Removed (object sender, DomainObjectCollectionChangeEventArgs args);
-      void Removing (object sender, DomainObjectCollectionChangeEventArgs args);
-    }
-
     [Test]
     public void CopyEventHandlers ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IEventHandlerReceiver eventReceiver1 = mockRepository.StrictMock<IEventHandlerReceiver> ();
-      IEventHandlerReceiver eventReceiver2 = mockRepository.StrictMock<IEventHandlerReceiver> ();
+      var source = new DomainObjectCollection ();
+      var destination = new DomainObjectCollection ();
 
-      DomainObjectCollection source = new DomainObjectCollection ();
-      DomainObjectCollection destination = new DomainObjectCollection ();
+      source.Added += delegate { };
+      source.Added += delegate { };
+      source.Adding += delegate { };
+      source.Adding += delegate { };
+      source.Removed += delegate { };
+      source.Removed += delegate { };
+      source.Removing += delegate { };
+      source.Removing += delegate { };
 
-      source.Added += eventReceiver1.Added;
-      source.Added += eventReceiver2.Added;
-      source.Adding += eventReceiver1.Adding;
-      source.Adding += eventReceiver2.Adding;
-      source.Removed += eventReceiver1.Removed;
-      source.Removed += eventReceiver2.Removed;
-      source.Removing += eventReceiver1.Removing;
-      source.Removing += eventReceiver2.Removing;
+      CopyEventHandlersFrom (source, destination);
 
-      using (mockRepository.Ordered ())
-      {
-        // expectations
-        eventReceiver1.Adding (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull());
-        eventReceiver2.Adding (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull ());
+      CheckSameEventHandlers (source, destination, "Adding");
+      CheckSameEventHandlers (source, destination, "Added");
+      CheckSameEventHandlers (source, destination, "Removing");
+      CheckSameEventHandlers (source, destination, "Removed");
+    }
 
-        eventReceiver1.Added (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull());
-        eventReceiver2.Added (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull ());
+    [Test]
+    public void GetNonNotifyingData_RepresentsCollectionData ()
+    {
+      var nonNotifyingData = GetNonNotifyingData(_collection);
 
-        eventReceiver1.Removing (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull());
-        eventReceiver2.Removing (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull ());
+      _collection.Add (_customer3NotInCollection);
+      Assert.That (nonNotifyingData.ToArray (), Is.EqualTo (new[] { _customer1, _customer2, _customer3NotInCollection }));
 
-        eventReceiver1.Removed (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull());
-        eventReceiver2.Removed (null, null);
-        LastCall.Constraints (Mocks_Is.Same (destination), Mocks_Is.NotNull ());
-      }
+      nonNotifyingData.Remove (_customer1.ID);
+      Assert.That (_collection, Is.EqualTo (new[] { _customer2, _customer3NotInCollection }));
+    }
 
-      mockRepository.ReplayAll ();
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.")]
+    public void GetNonNotifyingData_PerformsArgumentChecks ()
+    {
+      var nonNotifyingData = GetNonNotifyingData (_collection);
 
-      PrivateInvoke.InvokeNonPublicMethod (destination, "CopyEventHandlersFrom", source);
+      nonNotifyingData.Insert (1, _customer1);
+    }
 
-      destination.Add (_customer1);
-      destination.Remove (_customer1);
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException))]
+    public void GetNonNotifyingData_PerformsTypeChecks ()
+    {
+      var nonNotifyingData = GetNonNotifyingData (_collection);
 
-      mockRepository.VerifyAll ();
+      nonNotifyingData.Insert (1, Order.NewObject());
+    }
+
+    [Test]
+    public void GetNonNotifyingData_DoesNotRaiseEvents ()
+    {
+      var nonNotifyingData = GetNonNotifyingData (_collection);
+
+      nonNotifyingData.Insert (1, _customer3NotInCollection);
     }
 
     [Test]
@@ -1255,6 +1229,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       eventRaiser.EndDelete ();
 
       collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnDeleted"));
+    }
+
+    private void CheckKeys (ObjectID[] expectedKeys, DomainObjectCollection collection)
+    {
+      Assert.AreEqual (expectedKeys.Length, collection.Count, "DomainObjectCollection.Count");
+      foreach (ObjectID expectedKey in expectedKeys)
+        Assert.IsTrue (collection.Contains (expectedKey), string.Format ("Key {0}", expectedKey));
+    }
+
+    private IDomainObjectCollectionData GetNonNotifyingData (DomainObjectCollection collection)
+    {
+      return (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
+    }
+
+    private void CopyEventHandlersFrom (DomainObjectCollection source, DomainObjectCollection destination)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (destination, "CopyEventHandlersFrom", source);
+    }
+
+    private DomainObjectCollection CreateCustomerCollection ()
+    {
+      DomainObjectCollection collection = new DomainObjectCollection (typeof (Customer));
+      collection.Add (_customer1);
+      collection.Add (_customer2);
+
+      return collection;
+    }
+
+    private void CheckForEachOrder (DomainObject[] exptectedDomainObjects, DomainObjectCollection collection)
+    {
+      Assert.AreEqual (exptectedDomainObjects.Length, collection.Count);
+
+      int i = 0;
+      foreach (DomainObject domainObject in collection)
+      {
+        Assert.AreSame (exptectedDomainObjects[i], domainObject);
+        i++;
+      }
+    }
+
+    private void CheckSameEventHandlers (DomainObjectCollection source, DomainObjectCollection destination, string eventName)
+    {
+      var sourceEvent = ((Delegate) PrivateInvoke.GetNonPublicField (source, eventName));
+      var sourceInvocationList = sourceEvent.GetInvocationList ();
+
+      var destinationEvent = ((Delegate) PrivateInvoke.GetNonPublicField (destination, eventName));
+      Assert.That (destinationEvent, Is.Not.Null, eventName + " event handlers not copied");
+      var destinationInvocationList = destinationEvent.GetInvocationList ();
+      
+      Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");
     }
   }
 }

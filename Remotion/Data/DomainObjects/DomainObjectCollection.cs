@@ -409,7 +409,7 @@ namespace Remotion.Data.DomainObjects
           Add (domainObject);
       }
 
-      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation.
+      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. Document this.
     }
 
     /// <summary>
@@ -834,6 +834,21 @@ namespace Remotion.Data.DomainObjects
       _data.ToArray ().CopyTo (array, index);
     }
 
+    /// <summary>
+    /// Returns an implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection but will
+    /// not raise any notifications. This means that no events wil be raised when the data is manipulated. When the collection is part of a
+    /// <see cref="CollectionEndPoint"/>, the manipulations performed on the data will not trigger bidirectional modifications on related objects,
+    /// so manipulations must be performed with care, otherwise inconsistent state might arise. The end point will also not be marked as touched by 
+    /// manipulations performed on the returned data. (The end point's <see cref="CollectionEndPoint.HasChanged"/> method might still return 
+    /// <see langword="true" />, though, since it compares the original data with the collection's contents.)
+    /// </summary>
+    /// <returns>An implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection and will
+    /// not raise any notifications and manipulation.</returns>
+    protected IDomainObjectCollectionData GetNonNotifyingData ()
+    {
+      return new TypeCheckingCollectionDataDecorator (new ArgumentCheckingCollectionDataDecorator (_data), RequiredItemType);
+    }
+
     #region Explicitly implemeted IList and ICollection Members
 
     /// <summary>
@@ -1105,7 +1120,7 @@ namespace Remotion.Data.DomainObjects
         PerformAdd (domainObject);
 
       SetIsReadOnly (isReadOnly);
-      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation.
+      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. However, this method is removed anyway.
     }
 
     /// <summary>
@@ -1300,7 +1315,7 @@ namespace Remotion.Data.DomainObjects
       if (_requiredItemType != null && !_requiredItemType.IsInstanceOfType (domainObject))
       {
         string message = string.Format ("Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
-            domainObject.GetPublicDomainObjectType (), _requiredItemType);
+                                        domainObject.GetPublicDomainObjectType (), _requiredItemType);
         throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType());
       }
     }
@@ -1318,10 +1333,11 @@ namespace Remotion.Data.DomainObjects
     internal void CopyEventHandlersFrom (DomainObjectCollection source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
-      Added += source.Added;
+
       Adding += source.Adding;
-      Removed += source.Removed;
+      Added += source.Added;
       Removing += source.Removing;
+      Removed += source.Removed;
     }
 
     private void Touch () // TODO: Replaced by EndPointDelegatingCollectionData.
