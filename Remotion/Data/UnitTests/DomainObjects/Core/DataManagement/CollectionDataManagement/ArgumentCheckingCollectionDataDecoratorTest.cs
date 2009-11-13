@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
@@ -176,6 +177,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
           "Index is out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\r\nActual value was 1.");
 
       _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var decorator = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData(new[] { _order1, _order2 }));
+      var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
+
+      Assert.That (deserializedDecorator.Count(), Is.EqualTo (2));
     }
 
     private void CheckDelegation (Action<IDomainObjectCollectionData> action)
