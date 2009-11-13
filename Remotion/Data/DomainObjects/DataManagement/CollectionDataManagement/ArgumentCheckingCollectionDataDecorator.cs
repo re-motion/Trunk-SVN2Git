@@ -37,16 +37,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData = wrappedData;
     }
 
-    public IEnumerator<DomainObject> GetEnumerator ()
-    {
-      return _wrappedData.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator ();
-    }
-
     public int Count
     {
       get { return _wrappedData.Count; }
@@ -55,6 +45,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public bool IsReadOnly
     {
       get { return _wrappedData.IsReadOnly; }
+    }
+
+    public IDomainObjectCollectionData GetUndecoratedDataStore ()
+    {
+      return _wrappedData.GetUndecoratedDataStore ();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
@@ -143,6 +138,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       }
 
       _wrappedData.Replace (index, newDomainObject);
+    }
+
+    public IEnumerator<DomainObject> GetEnumerator ()
+    {
+      return _wrappedData.GetEnumerator ();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
     }
   }
 }

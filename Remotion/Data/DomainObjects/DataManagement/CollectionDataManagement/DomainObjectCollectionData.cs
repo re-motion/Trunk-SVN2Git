@@ -58,6 +58,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return false; }
     }
 
+    IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
+    {
+      return this;
+    }
+
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

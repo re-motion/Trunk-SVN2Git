@@ -66,6 +66,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void GetUndecoratedDataStore ()
+    {
+      Assert.That (((IDomainObjectCollectionData) _data).GetUndecoratedDataStore (), Is.SameAs (_data));
+    }
+
+    [Test]
     public void IsReadOnly ()
     {
       Assert.That (_data.IsReadOnly, Is.False);

@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     int Count { get; }
     bool IsReadOnly { get; }
 
+    IDomainObjectCollectionData GetUndecoratedDataStore ();
+
     bool ContainsObjectID (ObjectID objectID);
 
     DomainObject GetObject (int index);

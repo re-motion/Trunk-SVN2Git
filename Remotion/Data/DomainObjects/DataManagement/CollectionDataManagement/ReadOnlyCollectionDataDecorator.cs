@@ -56,6 +56,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return true; }
     }
 
+    IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
+    {
+      var message = "It is not supported to get the underlying data store from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
+      throw new NotSupportedException (message);
+    }
+
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

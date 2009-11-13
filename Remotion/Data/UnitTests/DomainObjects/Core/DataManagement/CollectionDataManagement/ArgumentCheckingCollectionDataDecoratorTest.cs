@@ -47,6 +47,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void GetUndecoratedDataStore ()
+    {
+      var dataStoreStub = new DomainObjectCollectionData ();
+      _wrappedDataMock.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
+      
+      Assert.That (_argumentCheckingDecorator.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
+    }
+
+    [Test]
     public void TrivialMembers_Delegated ()
     {
       CheckDelegation (data => data.GetEnumerator ());
@@ -55,7 +64,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       CheckDelegation (data => data.ContainsObjectID (DomainObjectIDs.Order1));
       CheckDelegation (data => data.GetObject (0));
       CheckDelegation (data => data.GetObject (DomainObjectIDs.Order1));
-      CheckDelegation (data => data.Clear());
+      CheckDelegation (data => data.IndexOf (DomainObjectIDs.Order1));
+      CheckDelegation (data => data.Clear ());
       CheckDelegation (data => data.Remove (DomainObjectIDs.Order1));
     }
 

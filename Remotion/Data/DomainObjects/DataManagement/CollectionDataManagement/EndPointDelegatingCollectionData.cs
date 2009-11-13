@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
     private readonly ICollectionEndPoint _collectionEndPoint;
-    private readonly IReadOnlyDomainObjectCollectionData _actualData;
+    private readonly DomainObjectCollectionData _actualData;
 
-    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IReadOnlyDomainObjectCollectionData actualData)
+    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, DomainObjectCollectionData actualData)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("actualData", actualData);
@@ -54,6 +54,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public bool IsReadOnly
     {
       get { return false; }
+    }
+
+    public IDomainObjectCollectionData GetUndecoratedDataStore ()
+    {
+      return _actualData;
     }
 
     public bool ContainsObjectID (ObjectID objectID)

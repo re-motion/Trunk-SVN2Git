@@ -18,150 +18,153 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
   public class TypeCheckingCollectionDataDecoratorTest : ClientTransactionBaseTest
   {
-    private IDomainObjectCollectionData _wrappedData;
+    private IDomainObjectCollectionData _wrappedDataMock;
     private TypeCheckingCollectionDataDecorator _typeCheckingDecorator;
+    private TypeCheckingCollectionDataDecorator _typeCheckingDecoratorWithoutType;
 
     private Order _order1;
-    private Order _order2;
-    private Order _order3;
-    private Order _order4;
     private OrderItem _orderItem1;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _wrappedData = new DomainObjectCollectionData ();
-      _typeCheckingDecorator = new TypeCheckingCollectionDataDecorator (_wrappedData, typeof (Order));
+      _wrappedDataMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
+      _typeCheckingDecorator = new TypeCheckingCollectionDataDecorator (_wrappedDataMock, typeof (Order));
+      _typeCheckingDecoratorWithoutType = new TypeCheckingCollectionDataDecorator (_wrappedDataMock, null);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
-      _order3 = Order.GetObject (DomainObjectIDs.Order3);
-      _order4 = Order.GetObject (DomainObjectIDs.Order4);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-
-      _wrappedData.Insert (0, _order1);
-      _wrappedData.Insert (1, _order2);
-      _wrappedData.Insert (2, _order3);
     }
 
     [Test]
-    public void Enumeration ()
+    public void GetUndecoratedDataStore ()
     {
-      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      var dataStoreStub = new DomainObjectCollectionData ();
+      _wrappedDataMock.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
+      
+      Assert.That (_typeCheckingDecorator.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
     }
 
     [Test]
-    public void Count ()
+    public void TrivialMembers_Delegated ()
     {
-      Assert.That (_typeCheckingDecorator.Count, Is.EqualTo (3));
-    }
-
-    [Test]
-    public void IsReadOnly ()
-    {
-      Assert.That (_typeCheckingDecorator.IsReadOnly, Is.False);
-    }
-
-    [Test]
-    public void ContainsObjectID ()
-    {
-      Assert.That (_typeCheckingDecorator.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_typeCheckingDecorator.ContainsObjectID (_order4.ID), Is.False);
-    }
-
-    [Test]
-    public void GetObject_ByIndex ()
-    {
-      Assert.That (_typeCheckingDecorator.GetObject (0), Is.SameAs (_order1));
-    }
-
-    [Test]
-    public void GetObject_ByID ()
-    {
-      Assert.That (_typeCheckingDecorator.GetObject (_order2.ID), Is.SameAs (_order2));
-    }
-
-    [Test]
-    public void IndexOf ()
-    {
-      Assert.That (_typeCheckingDecorator.IndexOf (_order2.ID), Is.EqualTo (1));
-    }
-
-    [Test]
-    public void Clear ()
-    {
-      _typeCheckingDecorator.Clear ();
-      Assert.That (_typeCheckingDecorator.ToArray(), Is.Empty);
-      Assert.That (_wrappedData.ToArray (), Is.Empty);
+      CheckDelegation (data => data.GetEnumerator ());
+      CheckDelegation (data => Dev.Null = data.Count);
+      CheckDelegation (data => Dev.Null = data.IsReadOnly);
+      CheckDelegation (data => data.ContainsObjectID (DomainObjectIDs.Order1));
+      CheckDelegation (data => data.GetObject (0));
+      CheckDelegation (data => data.GetObject (DomainObjectIDs.Order1));
+      CheckDelegation (data => data.IndexOf (DomainObjectIDs.Order1));
+      CheckDelegation (data => data.Clear());
+      CheckDelegation (data => data.Remove (DomainObjectIDs.Order1));
+      CheckDelegation (data => data.Remove (_order1));
     }
 
     [Test]
     public void Insert ()
     {
-      _typeCheckingDecorator.Insert (0, _order4);
-      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order4, _order1, _order2, _order3 }));
-      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order4, _order1, _order2, _order3 }));
+      _typeCheckingDecorator.Insert (0, _order1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _order1));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'" 
-        + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: domainObject")]
-    public void Insert_ThrowsOnInvalidType ()
+    public void Insert_WrongType ()
     {
-      _typeCheckingDecorator.Insert (0, _orderItem1);
+      CheckThrows<ArgumentTypeException> (
+          () => _typeCheckingDecorator.Insert (0, _orderItem1), 
+          "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'" 
+          + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
+          + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: domainObject");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
-    public void Remove ()
+    public void Insert_RequiredItemTypeNull ()
     {
-      _typeCheckingDecorator.Remove (_order1);
-      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
-      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
-    }
+      _typeCheckingDecoratorWithoutType.Insert (0, _order1);
+      _typeCheckingDecoratorWithoutType.Insert (0, _orderItem1);
 
-    [Test]
-    public void Remove_ID ()
-    {
-      _typeCheckingDecorator.Remove (_order1.ID);
-      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
-      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order2, _order3 }));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _order1));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _orderItem1));
     }
 
     [Test]
     public void Replace ()
     {
-      _typeCheckingDecorator.Replace (0, _order4);
-      Assert.That (_typeCheckingDecorator.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
-      Assert.That (_wrappedData.ToArray (), Is.EqualTo (new[] { _order4, _order2, _order3 }));
+      _typeCheckingDecorator.Replace (0, _order1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order1));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
-        + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: newDomainObject")]
-    public void Replace_ThrowsOnInvalidType ()
+    public void Replace_WrongType ()
     {
-      _typeCheckingDecorator.Replace (0, _orderItem1);
+      CheckThrows<ArgumentTypeException> (
+          () => _typeCheckingDecorator.Replace (0, _orderItem1),
+          "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
+          + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
+          + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: newDomainObject");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Replace_RequiredItemTypeNull ()
+    {
+      _typeCheckingDecoratorWithoutType.Replace (0, _order1);
+      _typeCheckingDecoratorWithoutType.Replace (0, _orderItem1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order1));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _orderItem1));
     }
 
     [Test]
     public void Serializable ()
     {
-      var result = Serializer.SerializeAndDeserialize (_typeCheckingDecorator);
-      Assert.That (result.Count, Is.EqualTo (3));
+      var decorator = new TypeCheckingCollectionDataDecorator (new DomainObjectCollectionData(new[] { _order1 }), typeof (Order));
+      var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
+
+      Assert.That (deserializedDecorator.Count(), Is.EqualTo (1));
+    }
+
+    private void CheckDelegation (Action<IDomainObjectCollectionData> action)
+    {
+      action (_typeCheckingDecorator);
+      _wrappedDataMock.AssertWasCalled (action);
+    }
+
+    private void CheckThrows<T> (Action action, string expectedMessage) where T : Exception
+    {
+      try
+      {
+        action ();
+      }
+      catch (T ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo (expectedMessage), "Exception message doesn't match.");
+        return;
+      }
+      catch (Exception ex)
+      {
+        Assert.Fail ("Expected " + typeof (T) + ", got " + ex);
+      }
+      Assert.Fail ("Expected " + typeof (T));
     }
   }
 }

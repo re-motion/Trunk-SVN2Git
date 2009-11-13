@@ -34,20 +34,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public TypeCheckingCollectionDataDecorator (IDomainObjectCollectionData wrappedData, Type requiredItemType)
     {
       ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
-      ArgumentUtility.CheckNotNull ("requiredItemType", requiredItemType);
 
       _wrappedData = wrappedData;
       _requiredItemType = requiredItemType;
-    }
-
-    public IEnumerator<DomainObject> GetEnumerator ()
-    {
-      return _wrappedData.GetEnumerator ();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator();
     }
 
     public int Count
@@ -58,6 +47,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public bool IsReadOnly
     {
       get { return _wrappedData.IsReadOnly; }
+    }
+
+    public IDomainObjectCollectionData GetUndecoratedDataStore ()
+    {
+      return _wrappedData.GetUndecoratedDataStore ();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
@@ -119,6 +113,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       CheckItemType (newDomainObject, "newDomainObject");
 
       _wrappedData.Replace (index, newDomainObject);
+    }
+
+    public IEnumerator<DomainObject> GetEnumerator ()
+    {
+      return _wrappedData.GetEnumerator ();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
     }
 
     private void CheckItemType (DomainObject domainObject, string argumentName)

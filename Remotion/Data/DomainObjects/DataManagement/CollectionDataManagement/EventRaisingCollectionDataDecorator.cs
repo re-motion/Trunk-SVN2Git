@@ -60,6 +60,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.IsReadOnly; }
     }
 
+    public IDomainObjectCollectionData GetUndecoratedDataStore ()
+    {
+      return _wrappedData.GetUndecoratedDataStore ();
+    }
+
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

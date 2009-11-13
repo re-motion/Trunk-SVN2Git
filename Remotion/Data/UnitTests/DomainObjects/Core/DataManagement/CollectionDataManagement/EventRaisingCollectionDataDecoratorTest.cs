@@ -81,6 +81,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void GetUndecoratedDataStore ()
+    {
+      var dataStoreStub = new DomainObjectCollectionData ();
+      var wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      wrappedDataStub.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
+
+      var eventRaisingDecorator = new EventRaisingCollectionDataDecorator (new DomainObjectCollectionEventRaiserFake (), wrappedDataStub);
+
+      Assert.That (eventRaisingDecorator.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
+    }
+
+    [Test]
     public void ContainsObjectID ()
     {
       Assert.That (_eventRaisingDecorator.ContainsObjectID (_order1.ID), Is.True);

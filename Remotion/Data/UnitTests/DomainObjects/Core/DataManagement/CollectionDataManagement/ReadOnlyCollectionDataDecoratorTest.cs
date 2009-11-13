@@ -73,6 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void GetUndecoratedDataStore ()
+    {
+      ((IDomainObjectCollectionData) _readOnlyDecorator).GetUndecoratedDataStore ();
+    }
+
+    [Test]
     public void ContainsObjectID ()
     {
       Assert.That (_readOnlyDecorator.ContainsObjectID (_order1.ID), Is.True);
