@@ -20,7 +20,6 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -48,6 +47,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
 
       _collection = CreateCustomerCollection ();
+    }
+
+    [Test]
+    public void Initialization_WithData ()
+    {
+      var data = new DomainObjectCollectionData ();
+
+      var collection = new DomainObjectCollection (data, typeof (Customer));
+      
+      var outerDecorator = PrivateInvoke.GetNonPublicField (collection, "_data");
+      Assert.That (outerDecorator, Is.InstanceOfType (typeof (TypeCheckingCollectionDataDecorator)));
+      Assert.That (((TypeCheckingCollectionDataDecorator) outerDecorator).RequiredItemType, Is.SameAs (typeof (Customer)));
+
+      var innerDecorator = PrivateInvoke.GetNonPublicField (outerDecorator, "_wrappedData");
+      Assert.That (innerDecorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
+
+      var wrappedData = PrivateInvoke.GetNonPublicField (innerDecorator, "_wrappedData");
+      Assert.That (wrappedData, Is.SameAs (data));
     }
 
     [Test]

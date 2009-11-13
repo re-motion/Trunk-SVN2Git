@@ -20,6 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -46,6 +47,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
       _orderItem4 = OrderItem.GetObject (DomainObjectIDs.OrderItem4);
       _orderItemListAsIList = _order.OrderItems;
+    }
+
+    [Test]
+    public void Initialization_WithData ()
+    {
+      var data = new DomainObjectCollectionData();
+
+      var collection = new ObjectList<Customer> (data);
+
+      var outerDecorator = PrivateInvoke.GetNonPublicField (collection, "_data");
+      Assert.That (outerDecorator, Is.InstanceOfType (typeof (TypeCheckingCollectionDataDecorator)));
+      Assert.That (((TypeCheckingCollectionDataDecorator) outerDecorator).RequiredItemType, Is.SameAs (typeof (Customer)));
+
+      var innerDecorator = PrivateInvoke.GetNonPublicField (outerDecorator, "_wrappedData");
+      Assert.That (innerDecorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
+      
+      var wrappedData = PrivateInvoke.GetNonPublicField (innerDecorator, "_wrappedData");
+      Assert.That (wrappedData, Is.SameAs (data));
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -27,6 +28,26 @@ namespace Remotion.Data.DomainObjects
   {
     public ObjectList()
         : base (typeof (T))
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObjectList{T}"/> class with a given <see cref="IDomainObjectCollectionData"/>
+    /// data storage strategy.
+    /// </summary>
+    /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
+    /// <remarks>
+    /// <para>
+    /// Derived classes must support this constructor.
+    /// </para>
+    /// <para>
+    /// The given <paramref name="dataStrategy"/> is decorated with a <see cref="TypeCheckingCollectionDataDecorator"/> and a
+    /// <see cref="ArgumentCheckingCollectionDataDecorator"/>. The decorated strategy is then used to manage the data of this 
+    /// <see cref="ObjectList{T}"/>. Specifically, the strategy must itself raise any change notification events it needs raised. (TODO)
+    /// </para>
+    /// </remarks>
+    public ObjectList (IDomainObjectCollectionData dataStrategy)
+        : base (dataStrategy, typeof (T))
     {
     }
 

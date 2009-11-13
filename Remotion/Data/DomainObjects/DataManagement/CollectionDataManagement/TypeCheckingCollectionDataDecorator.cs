@@ -39,6 +39,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _requiredItemType = requiredItemType;
     }
 
+    public Type RequiredItemType
+    {
+      get { return _requiredItemType; }
+    }
+
     public int Count
     {
       get { return _wrappedData.Count; }

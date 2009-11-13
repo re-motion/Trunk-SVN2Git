@@ -293,6 +293,30 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="DomainObjectCollection"/> class with a given <see cref="IDomainObjectCollectionData"/>
+    /// data storage strategy.
+    /// </summary>
+    /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
+    /// <param name="requiredItemType">The required item type of this collection.</param>
+    /// <remarks>
+    /// <para>
+    /// Derived classes must support this constructor.
+    /// </para>
+    /// <para>
+    /// The given <paramref name="dataStrategy"/> is decorated with a <see cref="TypeCheckingCollectionDataDecorator"/> and a
+    /// <see cref="ArgumentCheckingCollectionDataDecorator"/>. The decorated strategy is then used to manage the data of this 
+    /// <see cref="DomainObjectCollection"/>. Specifically, the strategy must itself raise any change notification events it needs raised. (TODO)
+    /// </para>
+    /// </remarks>
+    public DomainObjectCollection (IDomainObjectCollectionData dataStrategy, Type requiredItemType)
+    {
+      ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
+
+      _requiredItemType = requiredItemType;
+      _data = new TypeCheckingCollectionDataDecorator (new ArgumentCheckingCollectionDataDecorator (dataStrategy), requiredItemType);
+    }
+
+    /// <summary>
     /// Initializes a new <b>DomainObjectCollection</b> that only takes a certain <see cref="Type"/> as members.
     /// </summary>
     /// <param name="requiredItemType">The <see cref="Type"/> that are required for members.</param>
