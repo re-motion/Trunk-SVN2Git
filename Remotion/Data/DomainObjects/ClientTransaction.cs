@@ -925,7 +925,7 @@ public abstract class ClientTransaction
         foreach (DataContainer additionalDataContainer in additionalDataContainers)
           additionalDataContainer.RegisterLoadedDataContainer (this);
 
-        var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers, true);
+        var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers.Cast<DataContainer>().Select (dc => dc.DomainObject), true);
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
         for (int i = 0; i < objectIDs.Length; i++)
@@ -1298,7 +1298,7 @@ public abstract class ClientTransaction
       if (relationEndPointID != null)
         _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjects);
 
-      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers, true);
+      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Cast<DataContainer>().Select (dc => dc.DomainObject), true);
       OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
       return domainObjects;

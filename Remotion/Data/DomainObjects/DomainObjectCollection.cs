@@ -328,7 +328,7 @@ namespace Remotion.Data.DomainObjects
 
     // standard constructor for collections
     /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a given <see cref="DomainObjectCollection"/>.
+    /// Initializes a new <see cref="DomainObjectCollection"/> as a shallow copy of a given <see cref="DomainObjectCollection"/>.
     /// </summary>
     /// <remarks>
     /// The new <b>DomainObjectCollection</b> has the same <see cref="RequiredItemType"/> and the same items as the 
@@ -338,43 +338,19 @@ namespace Remotion.Data.DomainObjects
     /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
-        : this ((IEnumerable) ArgumentUtility.CheckNotNull ("collection", collection), makeCollectionReadOnly)
+        : this (ArgumentUtility.CheckNotNull ("collection", collection).Cast<DomainObject>(), makeCollectionReadOnly)
     {
       Assertion.IsTrue (Count == collection.Count);
       _requiredItemType = collection.RequiredItemType;
     }
 
     /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
+    /// Initializes a new <see cref="DomainObjectCollection"/> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
     /// </summary>
     /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
     /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
     public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, bool makeCollectionReadOnly)
-      :this ((IEnumerable) domainObjects, makeCollectionReadOnly)
-    {
-    }
-
-
-    /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a <see cref="DataManagement.DataContainerCollection"/>s.
-    /// </summary>
-    /// <param name="dataContainers">The <see cref="DataManagement.DataContainerCollection"/> to copy. Must not be <see langword="null"/>.</param>
-    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="dataContainers"/> is <see langword="null"/>.</exception>
-    public DomainObjectCollection (DataContainerCollection dataContainers, bool makeCollectionReadOnly)
-        : this (GetDomainObjectsFromDataContainers (ArgumentUtility.CheckNotNull ("dataContainers", dataContainers)), makeCollectionReadOnly)
-    {
-      Assertion.IsTrue (Count == dataContainers.Count);
-    }
-    
-    /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
-    /// </summary>
-    /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
-    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    private DomainObjectCollection (IEnumerable domainObjects, bool makeCollectionReadOnly)
     {
       _data = new DomainObjectCollectionData ();
       AddRange(domainObjects);
