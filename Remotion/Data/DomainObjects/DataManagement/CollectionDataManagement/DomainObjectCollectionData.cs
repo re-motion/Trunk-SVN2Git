@@ -58,6 +58,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return false; }
     }
 
+    ICollectionEndPoint IDomainObjectCollectionData.AssociatedEndPoint
+    {
+      get { return null; }
+    }
+
     IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
     {
       return this;

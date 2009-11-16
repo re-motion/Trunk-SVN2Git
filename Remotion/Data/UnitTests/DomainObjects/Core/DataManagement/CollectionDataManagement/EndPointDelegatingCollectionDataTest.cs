@@ -77,17 +77,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Count ()
+    {
+      PrepareActualDataContents (_orderItem1);
+
+      Assert.That (_data.Count, Is.EqualTo (1));
+    }
+
+    [Test]
     public void IsReadOnly ()
     {
       Assert.That (_data.IsReadOnly, Is.False);
     }
 
     [Test]
-    public void Count ()
+    public void AssociatedEndPoint ()
     {
-      PrepareActualDataContents (_orderItem1);
-
-      Assert.That (_data.Count, Is.EqualTo (1));
+      Assert.That (_data.AssociatedEndPoint, Is.SameAs (_collectionEndPointMock));
     }
 
     [Test]

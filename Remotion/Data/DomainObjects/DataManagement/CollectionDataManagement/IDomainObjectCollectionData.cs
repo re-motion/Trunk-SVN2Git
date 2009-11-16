@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   {
     int Count { get; }
     bool IsReadOnly { get; }
+    ICollectionEndPoint AssociatedEndPoint { get; }
 
     IDomainObjectCollectionData GetUndecoratedDataStore ();
 

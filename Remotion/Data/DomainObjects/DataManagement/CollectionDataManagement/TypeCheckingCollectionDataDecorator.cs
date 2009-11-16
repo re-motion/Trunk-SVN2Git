@@ -54,6 +54,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.IsReadOnly; }
     }
 
+    public ICollectionEndPoint AssociatedEndPoint
+    {
+      get { return _wrappedData.AssociatedEndPoint; }
+    }
+
     public IDomainObjectCollectionData GetUndecoratedDataStore ()
     {
       return _wrappedData.GetUndecoratedDataStore ();

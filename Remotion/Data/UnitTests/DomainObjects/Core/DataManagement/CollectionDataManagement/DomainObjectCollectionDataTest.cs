@@ -72,6 +72,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void AssociatedEndPoint ()
+    {
+      Assert.That (((IDomainObjectCollectionData) _data).AssociatedEndPoint, Is.Null);
+    }
+
+    [Test]
     public void IsReadOnly ()
     {
       Assert.That (_data.IsReadOnly, Is.False);

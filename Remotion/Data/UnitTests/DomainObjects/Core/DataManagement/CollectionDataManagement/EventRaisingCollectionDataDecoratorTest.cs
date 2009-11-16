@@ -19,6 +19,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -78,6 +79,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void IsReadOnly ()
     {
       Assert.That (_eventRaisingDecorator.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void AssociatedEndPoint ()
+    {
+      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+
+      var wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      wrappedDataStub.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
+
+      var eventRaisingDecorator = new EventRaisingCollectionDataDecorator (_eventRaiserMock, wrappedDataStub);
+      Assert.That (eventRaisingDecorator.AssociatedEndPoint, Is.SameAs (endPointStub));
     }
 
     [Test]

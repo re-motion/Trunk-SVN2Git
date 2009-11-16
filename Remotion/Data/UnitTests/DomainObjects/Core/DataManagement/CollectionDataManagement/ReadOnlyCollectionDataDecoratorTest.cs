@@ -74,6 +74,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
+    public void AssociatedEndPoint ()
+    {
+      Dev.Null = ((IDomainObjectCollectionData) _readOnlyDecorator).AssociatedEndPoint;
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
     public void GetUndecoratedDataStore ()
     {
       ((IDomainObjectCollectionData) _readOnlyDecorator).GetUndecoratedDataStore ();

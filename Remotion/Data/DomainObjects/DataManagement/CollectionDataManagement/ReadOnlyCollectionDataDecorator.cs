@@ -56,6 +56,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return true; }
     }
 
+    ICollectionEndPoint IDomainObjectCollectionData.AssociatedEndPoint
+    {
+      get
+      {
+        var message = "It is not supported to get the associated end point from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
+        throw new NotSupportedException (message);
+      }
+    }
+
     IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
     {
       var message = "It is not supported to get the underlying data store from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
