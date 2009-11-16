@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -303,7 +302,7 @@ namespace Remotion.Data.DomainObjects
     /// Derived classes must support this constructor.
     /// </para>
     /// <para>
-    /// The given <paramref name="dataStrategy"/> is decorated with a <see cref="TypeCheckingCollectionDataDecorator"/> and a
+    /// The given <paramref name="dataStrategy"/> is decorated with an
     /// <see cref="ArgumentCheckingCollectionDataDecorator"/>. The decorated strategy is then used to manage the data of this 
     /// <see cref="DomainObjectCollection"/>. Specifically, the strategy must itself raise any change notification events it needs raised. (TODO)
     /// </para>
@@ -313,7 +312,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
 
       _requiredItemType = requiredItemType;
-      _data = new TypeCheckingCollectionDataDecorator (new ArgumentCheckingCollectionDataDecorator (dataStrategy), requiredItemType);
+      _data = new ArgumentCheckingCollectionDataDecorator (dataStrategy, requiredItemType);
     }
 
     /// <summary>
@@ -850,7 +849,7 @@ namespace Remotion.Data.DomainObjects
     /// not raise any notifications and manipulation.</returns>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
-      return new TypeCheckingCollectionDataDecorator (new ArgumentCheckingCollectionDataDecorator (_data), RequiredItemType);
+      return new ArgumentCheckingCollectionDataDecorator (_data, RequiredItemType);
     }
 
     #region Explicitly implemeted IList and ICollection Members

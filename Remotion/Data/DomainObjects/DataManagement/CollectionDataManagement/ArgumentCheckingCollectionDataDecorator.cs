@@ -23,18 +23,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
   /// Implements a decorator for <see cref="IDomainObjectCollectionData"/> that performs semantic checks on the arguments passed to 
-  /// <see cref="Insert"/> or <see cref="Replace"/>. Use this to avoid <see cref="Insert"/> or <see cref="Replace"/> being called on the wrapped
-  /// <see cref="IDomainObjectCollectionData"/> instance if the operation cannot be executed because of the arguments.
+  /// <see cref="Insert"/>, <see cref="Replace"/>, and <see cref="Remove(Remotion.Data.DomainObjects.DomainObject)"/>.
   /// </summary>
   [Serializable]
   public class ArgumentCheckingCollectionDataDecorator : IDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionData _wrappedData;
+    private readonly Type _requiredItemType;
 
-    public ArgumentCheckingCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
+    public ArgumentCheckingCollectionDataDecorator (IDomainObjectCollectionData wrappedData, Type requiredItemType)
     {
       ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
+
       _wrappedData = wrappedData;
+      _requiredItemType = requiredItemType;
+    }
+
+    public Type RequiredItemType
+    {
+      get { return _requiredItemType; }
     }
 
     public int Count
@@ -100,6 +107,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       if (ContainsObjectID (domainObject.ID))
         throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
 
+      CheckItemType (domainObject, "domainObject");
+
       _wrappedData.Insert (index, domainObject);
     }
 
@@ -142,7 +151,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         throw new InvalidOperationException (message);
       }
 
+      CheckItemType (newDomainObject, "newDomainObject");
+
       _wrappedData.Replace (index, newDomainObject);
+    }
+
+    private void CheckItemType (DomainObject domainObject, string argumentName)
+    {
+      if (_requiredItemType != null && !_requiredItemType.IsInstanceOfType (domainObject))
+      {
+        string message = string.Format ("Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
+            domainObject.GetPublicDomainObjectType (), _requiredItemType);
+        throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType ());
+      }
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()

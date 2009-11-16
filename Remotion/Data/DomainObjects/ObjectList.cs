@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects
     /// Derived classes must support this constructor.
     /// </para>
     /// <para>
-    /// The given <paramref name="dataStrategy"/> is decorated with a <see cref="TypeCheckingCollectionDataDecorator"/> and a
+    /// The given <paramref name="dataStrategy"/> is decorated with an
     /// <see cref="ArgumentCheckingCollectionDataDecorator"/>. The decorated strategy is then used to manage the data of this 
     /// <see cref="ObjectList{T}"/>. Specifically, the strategy must itself raise any change notification events it needs raised. (TODO)
     /// </para>

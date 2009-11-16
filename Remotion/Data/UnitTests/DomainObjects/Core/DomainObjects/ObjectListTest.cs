@@ -56,14 +56,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var collection = new ObjectList<Customer> (data);
 
-      var outerDecorator = PrivateInvoke.GetNonPublicField (collection, "_data");
-      Assert.That (outerDecorator, Is.InstanceOfType (typeof (TypeCheckingCollectionDataDecorator)));
-      Assert.That (((TypeCheckingCollectionDataDecorator) outerDecorator).RequiredItemType, Is.SameAs (typeof (Customer)));
-
-      var innerDecorator = PrivateInvoke.GetNonPublicField (outerDecorator, "_wrappedData");
-      Assert.That (innerDecorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
+      var decorator = PrivateInvoke.GetNonPublicField (collection, "_data");
+      Assert.That (decorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
       
-      var wrappedData = PrivateInvoke.GetNonPublicField (innerDecorator, "_wrappedData");
+      var wrappedData = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
       Assert.That (wrappedData, Is.SameAs (data));
     }
 

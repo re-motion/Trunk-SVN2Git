@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -31,19 +32,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   {
     private IDomainObjectCollectionData _wrappedDataMock;
     private ArgumentCheckingCollectionDataDecorator _argumentCheckingDecorator;
+    private ArgumentCheckingCollectionDataDecorator _argumentCheckingDecoratorWithoutRequiredItemType;
 
     private Order _order1;
     private Order _order2;
+    private OrderItem _orderItem1;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _wrappedDataMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
-      _argumentCheckingDecorator = new ArgumentCheckingCollectionDataDecorator (_wrappedDataMock);
+      _argumentCheckingDecorator = new ArgumentCheckingCollectionDataDecorator (_wrappedDataMock, typeof (Order));
+      _argumentCheckingDecoratorWithoutRequiredItemType = new ArgumentCheckingCollectionDataDecorator (_wrappedDataMock, null);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
+      _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
     }
 
     [Test]
@@ -110,6 +115,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
           "Index is out of range. Must be non-negative and less than or equal to the size of the collection.\r\nParameter name: index\r\nActual value was -1.");
 
       _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Insert_WrongType ()
+    {
+      CheckThrows<ArgumentTypeException> (
+          () => _argumentCheckingDecorator.Insert (0, _orderItem1),
+          "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
+          + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
+          + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: domainObject");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Insert_RequiredItemTypeNull ()
+    {
+      _argumentCheckingDecoratorWithoutRequiredItemType.Insert (0, _order1);
+      _argumentCheckingDecoratorWithoutRequiredItemType.Insert (0, _orderItem1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _order1));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Insert (0, _orderItem1));
     }
 
     [Test]
@@ -191,9 +218,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Replace_WrongType ()
+    {
+      StubInnerData (_order1);
+
+      CheckThrows<ArgumentTypeException> (
+          () => _argumentCheckingDecorator.Replace (0, _orderItem1),
+          "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
+          + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
+          + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: newDomainObject");
+
+      _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Replace_RequiredItemTypeNull ()
+    {
+      StubInnerData (_order1);
+
+      _argumentCheckingDecoratorWithoutRequiredItemType.Replace (0, _order2);
+      _argumentCheckingDecoratorWithoutRequiredItemType.Replace (0, _orderItem1);
+
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _order2));
+      _wrappedDataMock.AssertWasCalled (mock => mock.Replace (0, _orderItem1));
+    }
+
+    [Test]
     public void Serializable ()
     {
-      var decorator = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData(new[] { _order1, _order2 }));
+      var decorator = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData(new[] { _order1, _order2 }), typeof (Order));
       var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
 
       Assert.That (deserializedDecorator.Count(), Is.EqualTo (2));
