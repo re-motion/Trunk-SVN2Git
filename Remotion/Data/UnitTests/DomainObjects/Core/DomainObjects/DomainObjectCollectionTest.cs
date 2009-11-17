@@ -20,6 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -61,6 +62,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var wrappedData = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
       Assert.That (wrappedData, Is.SameAs (data));
+    }
+
+    [Test]
+    public void AssociatedEndPoint ()
+    {
+      Assert.That (_collection.AssociatedEndPoint, Is.Null);
+
+      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      var endPointStrategy = new EndPointDelegatingCollectionData (endPointStub, new DomainObjectCollectionData ());
+      
+      var endPointCollection = new DomainObjectCollection (endPointStrategy, null);
+      Assert.That (endPointCollection.AssociatedEndPoint, Is.SameAs (endPointStub));
     }
 
     [Test]

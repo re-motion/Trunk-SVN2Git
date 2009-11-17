@@ -379,6 +379,12 @@ namespace Remotion.Data.DomainObjects
       get { return _data.IsReadOnly; }
     }
 
+    public ICollectionEndPoint AssociatedEndPoint
+    {
+      get { return _data.AssociatedEndPoint; }
+    }
+
+
     /// <summary>
     /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <b>DomainObjectCollection</b>, that are not already part of it.
     /// </summary>
@@ -969,7 +975,6 @@ namespace Remotion.Data.DomainObjects
     {
       get { return false; }
     }
-
 
     #endregion
 

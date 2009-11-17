@@ -74,6 +74,33 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
+    // TODO: This will be used to replace "ReplaceOppositeCollection".
+    public void SetOppositeCollection (DomainObjectCollection oppositeDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
+
+      if (oppositeDomainObjects.AssociatedEndPoint != this)
+      {
+        throw new ArgumentException (
+            "The new opposite collection must have been prepared to delegate to this end point. Use DomainObjectCollection.AssociateWithEndPoint "
+            + "instead.",
+            "oppositeDomainObjects");
+      }
+
+      if (oppositeDomainObjects.GetType () != _oppositeDomainObjects.GetType ())
+      {
+        string message = string.Format (
+            "The new opposite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.",
+            _oppositeDomainObjects.GetType (),
+            oppositeDomainObjects.GetType ());
+        throw new ArgumentException (message, "oppositeDomainObjects");
+      }
+
+      _oppositeDomainObjects = oppositeDomainObjects;
+      Touch ();
+    }
+
+    // TODO: Remove this, use SetOppositeCollection instead.
     public void ReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
@@ -199,6 +226,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
             PropertyName,
             ObjectID);
       }
+    }
+
+    public EndPointDelegatingCollectionData CreateDelegatingCollectionData (DomainObjectCollectionData actualDataStore)
+    {
+      return new EndPointDelegatingCollectionData (this, actualDataStore);
     }
 
     public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)

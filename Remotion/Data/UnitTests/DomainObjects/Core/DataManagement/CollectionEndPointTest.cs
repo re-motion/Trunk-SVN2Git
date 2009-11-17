@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -863,6 +864,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order2));
       Assert.That (((CollectionEndPointSelfReplaceModification) modification).ModifiedCollectionData,
           Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
+    }
+
+    [Test]
+    public void CreateDelegatingCollectionData ()
+    {
+      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
+      var data = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+
+      Assert.That (data.CollectionEndPoint, Is.SameAs (_customerEndPoint));
+
+      Assert.That (data.Count, Is.EqualTo (1), "contains data of data store");
+      dataStore.Insert (1, _order2);
+      Assert.That (data.Count, Is.EqualTo (2), "is bound to data store");
+    }
+
+    [Test]
+    public void SetOppositeCollection ()
+    {
+      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var newOppositeCollection = new OrderCollection (delegatingData);
+
+      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOppositeCollection));
+    }
+
+    [Test]
+    public void SetOppositeCollection_TouchesEndPoint ()
+    {
+      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var newOppositeCollection = new OrderCollection (delegatingData);
+
+      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The new opposite collection must have been prepared to delegate to this end point. Use DomainObjectCollection.AssociateWithEndPoint instead."
+        + "\r\nParameter name: oppositeDomainObjects")]
+    public void SetOppositeCollection_NotAssociated ()
+    {
+      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
+      var newOppositeCollection = new OrderCollection (dataStore);
+
+      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The new opposite collection must have the same type as the old collection "
+        + "('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection'), but its type is 'Remotion.Data.DomainObjects.DomainObjectCollection'."
+        + "\r\nParameter name: oppositeDomainObjects")]
+    public void SetOppositeCollection_OtherType ()
+    {
+      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var newOppositeCollection = new DomainObjectCollection (delegatingData, null);
+
+      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+
+      Assert.Fail ();
     }
   }
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
@@ -29,6 +30,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     // standard constructor for collections
     public OrderCollection (OrderCollection collection, bool isCollectionReadOnly)
       : base (collection, isCollectionReadOnly)
+    {
+    }
+
+    public OrderCollection (IDomainObjectCollectionData dataStrategy)
+        : base(dataStrategy)
     {
     }
 
