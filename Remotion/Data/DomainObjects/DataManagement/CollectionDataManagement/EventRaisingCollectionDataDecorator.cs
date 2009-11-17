@@ -40,14 +40,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData = wrappedData;
     }
 
-    public IEnumerator<DomainObject> GetEnumerator ()
+    public IDomainObjectCollectionEventRaiser EventRaiser
     {
-      return _wrappedData.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator ();
+      get { return _eventRaiser; }
     }
 
     public int Count
@@ -168,6 +163,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         _eventRaiser.EndRemove (index, oldDomainObject);
         _eventRaiser.EndAdd (index, newDomainObject);
       }
+    }
+
+    public IEnumerator<DomainObject> GetEnumerator ()
+    {
+      return _wrappedData.GetEnumerator ();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
     }
   }
 }

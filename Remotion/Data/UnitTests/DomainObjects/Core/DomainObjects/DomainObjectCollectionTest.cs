@@ -57,10 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var collection = new DomainObjectCollection (data, typeof (Customer));
       
-      var decorator = PrivateInvoke.GetNonPublicField (collection, "_data");
-      Assert.That (decorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
-
-      var wrappedData = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
+      var decorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var wrappedData = GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
       Assert.That (wrappedData, Is.SameAs (data));
     }
 
@@ -1174,6 +1172,114 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void AssociateWithEndPoint ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var newCollection = new DomainObjectCollection (typeof (Order));
+      newCollection.AssociateWithEndPoint (endPoint);
+
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newCollection));
+    }
+
+    [Test]
+    public void AssociateWithEndPoint_SetsNewCollection_ToAssociated ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      // newCollection => argument checking decorator => event decorator => actual data store
+
+      var newCollection = new DomainObjectCollection (typeof (Order));
+      var newCollectionDataStore = GetCollectionDataAndCheckType<IDomainObjectCollectionData> (newCollection).GetUndecoratedDataStore();
+      newCollection.AssociateWithEndPoint (endPoint);
+
+      // newCollection => argument checking decorator => end point data => actual data store
+      
+      var newCollectionDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (newCollection);
+      Assert.That (newCollectionDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
+
+      var newCollectionDelegatingData = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (newCollectionDecorator);
+      var newActualDataStore = GetActualDataAndCheckType<DomainObjectCollectionData> (newCollectionDelegatingData);
+      Assert.That (newActualDataStore, Is.SameAs (newCollectionDataStore), "new collection still uses its original data store");
+    }
+
+    [Test]
+    public void AssociateWithEndPoint_SetsOldCollection_ToStandAlone ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      // oldCollection => argument decorator => end point data => actual data store
+
+      var oldCollection = endPoint.OppositeDomainObjects;
+      var oldCollectionData = GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection);
+      var oldCollectionActualDataStore = oldCollectionData.GetUndecoratedDataStore ();
+
+      var newCollection = new DomainObjectCollection (typeof (Order));
+      newCollection.AssociateWithEndPoint (endPoint);
+
+      // oldCollection => argument decorator => event decorator => actual data store
+
+      Assert.That (oldCollection.AssociatedEndPoint, Is.Null);
+
+      var oldCollectionNewArgumentDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (oldCollection);
+      Assert.That (oldCollectionNewArgumentDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
+
+      var oldCollectionNewEventDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (oldCollectionNewArgumentDecorator);
+      Assert.That (oldCollectionNewEventDecorator.EventRaiser, Is.SameAs (oldCollection));
+
+      var oldCollectionNewActualDataStore = GetWrappedDataAndCheckType<DomainObjectCollectionData> (oldCollectionNewEventDecorator);
+      Assert.That (oldCollectionNewActualDataStore, Is.SameAs (oldCollectionActualDataStore));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "This collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
+        + "as the end point's current opposite collection ('Remotion.Data.DomainObjects.DomainObjectCollection').")]
+    public void AssociateWithEndPoint_DifferentCollectionTypes ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var newCollection = new ObjectList<Order>();
+      newCollection.AssociateWithEndPoint (endPoint);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "This collection has a different item type than the end point's current opposite collection.")]
+    public void AssociateWithEndPoint_DifferentRequiredItemType ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var newCollection = new DomainObjectCollection (typeof (Customer));
+      newCollection.AssociateWithEndPoint (endPoint);
+
+      Assert.Fail ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A read-only collection cannot be associated with an end point.")]
+    public void AssociateWithEndPoint_CollectionIsReadOnly ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var newCollection = new DomainObjectCollection (new DomainObjectCollection (typeof (Customer)), true);
+      newCollection.AssociateWithEndPoint (endPoint);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The collection is already associated with an end point.")]
+    public void AssociateWithEndPoint_CollectionIsAlreadyAssociated ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var newCollection = new DomainObjectCollection (typeof (Order));
+      newCollection.AssociateWithEndPoint (endPoint);
+      newCollection.AssociateWithEndPoint (endPoint);
+
+      Assert.Fail ();
+    }
+
+    [Test]
     public void EventRaiser_BeginAdd ()
     {
       var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
@@ -1305,6 +1411,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var destinationInvocationList = destinationEvent.GetInvocationList ();
       
       Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");
+    }
+
+    private T GetCollectionDataAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
+    {
+      var data = PrivateInvoke.GetNonPublicField (collection, "_data");
+      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      return (T) data;
+    }
+
+    private T GetWrappedDataAndCheckType<T> (ArgumentCheckingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
+    {
+      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
+      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      return (T) data;
+    }
+
+    private T GetWrappedDataAndCheckType<T> (EventRaisingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
+    {
+      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
+      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      return (T) data;
+    }
+
+    private T GetActualDataAndCheckType<T> (EndPointDelegatingCollectionData newCollectionDelegatingData) where T : IDomainObjectCollectionData
+    {
+      var data = PrivateInvoke.GetNonPublicField (newCollectionDelegatingData, "_actualData");
+      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      return (T) data;
+    }
+
+    private CollectionEndPoint CreateCollectionEndPointForOrders ()
+    {
+      var customerEndPointID = new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      return new CollectionEndPoint (
+          ClientTransactionMock,
+          customerEndPointID,
+          new DomainObjectCollection (typeof (Order)),
+          MockRepository.GenerateStub<ICollectionEndPointChangeDelegate> ());
     }
   }
 }

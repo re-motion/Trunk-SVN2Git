@@ -228,7 +228,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public EndPointDelegatingCollectionData CreateDelegatingCollectionData (DomainObjectCollectionData actualDataStore)
+    public EndPointDelegatingCollectionData CreateDelegatingCollectionData (IDomainObjectCollectionData actualDataStore)
     {
       return new EndPointDelegatingCollectionData (this, actualDataStore);
     }

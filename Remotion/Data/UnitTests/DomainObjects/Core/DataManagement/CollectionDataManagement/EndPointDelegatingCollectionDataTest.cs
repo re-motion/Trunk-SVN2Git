@@ -99,7 +99,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void GetUndecoratedDataStore ()
     {
-      Assert.That (_data.GetUndecoratedDataStore (), Is.SameAs (_actualData));
+      var dataStoreStub = new DomainObjectCollectionData ();
+
+      var actualDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+      actualDataStub.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
+
+      var data = new EndPointDelegatingCollectionData (_collectionEndPointMock, actualDataStub);
+
+      Assert.That (data.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
     }
 
     [Test]
