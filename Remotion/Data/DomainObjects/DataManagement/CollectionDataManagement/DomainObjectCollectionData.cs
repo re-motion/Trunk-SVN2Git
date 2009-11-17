@@ -58,6 +58,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return false; }
     }
 
+    public Type RequiredItemType
+    {
+      get { return null; }
+    }
+
     ICollectionEndPoint IDomainObjectCollectionData.AssociatedEndPoint
     {
       get { return null; }

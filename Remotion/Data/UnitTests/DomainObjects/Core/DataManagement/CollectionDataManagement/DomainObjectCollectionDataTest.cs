@@ -84,6 +84,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void RequiredItemType ()
+    {
+      Assert.That (_data.RequiredItemType, Is.Null);
+    }
+
+    [Test]
     public void Insert ()
     {
       Add (_order1);

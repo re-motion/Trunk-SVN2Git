@@ -53,7 +53,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public bool IsReadOnly
     {
-      get { return false; }
+      get { return _actualData.IsReadOnly; }
+    }
+
+    public Type RequiredItemType
+    {
+      get { return _actualData.RequiredItemType; }
     }
 
     public ICollectionEndPoint AssociatedEndPoint

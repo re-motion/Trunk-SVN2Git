@@ -76,6 +76,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void RequiredItemType ()
+    {
+      Assert.That (_argumentCheckingDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
+      Assert.That (_argumentCheckingDecoratorWithoutRequiredItemType.RequiredItemType, Is.Null);
+    }
+
+    [Test]
     public void Insert ()
     {
       StubInnerData (_order1);
