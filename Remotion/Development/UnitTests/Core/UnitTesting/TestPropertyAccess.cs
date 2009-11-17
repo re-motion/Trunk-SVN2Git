@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
@@ -50,6 +51,23 @@ public class TypeWithProperties
     get { return s_stringField; }
     set { s_stringField = value; }
   }
+
+  // ReSharper disable UnusedAutoPropertyAccessor.Local
+  public static string PublicPropertyWithPrivateSetter
+  {
+    get;
+    private set;
+  }
+  // ReSharper restore UnusedAutoPropertyAccessor.Local
+
+  // ReSharper disable UnusedAutoPropertyAccessor.Local
+  public static string PublicPropertyWithPrivateGetter
+  {
+    private get;
+    set;
+  }
+  // ReSharper restore UnusedAutoPropertyAccessor.Local
+
 }
 
 [TestFixture]
@@ -61,21 +79,35 @@ public class TestPropertyAccess
     TypeWithProperties twp = new TypeWithProperties();
 
     PrivateInvoke.SetPublicProperty (twp, "IntProperty", 12);
-    Assert.AreEqual (12, PrivateInvoke.GetPublicProperty (twp, "IntProperty"));
+    Assert.That (PrivateInvoke.GetPublicProperty (twp, "IntProperty"), Is.EqualTo (12));
 
     PrivateInvoke.SetNonPublicProperty (twp, "StringProperty", "test 1");
-    Assert.AreEqual ("test 1", PrivateInvoke.GetNonPublicProperty (twp, "StringProperty"));
+    Assert.That (PrivateInvoke.GetNonPublicProperty (twp, "StringProperty"), Is.EqualTo ("test 1"));
 	}
 
   [Test]
 	public void TestStaticProperties()
 	{
     PrivateInvoke.SetPublicStaticProperty (typeof (TypeWithProperties), "StaticIntProperty", 13);
-    Assert.AreEqual (13, PrivateInvoke.GetPublicStaticProperty (typeof (TypeWithProperties), "StaticIntProperty"));
+    Assert.That (PrivateInvoke.GetPublicStaticProperty (typeof (TypeWithProperties), "StaticIntProperty"), Is.EqualTo (13));
 
     PrivateInvoke.SetNonPublicStaticProperty (typeof (TypeWithProperties), "StaticStringProperty", "test 2");
-    Assert.AreEqual ("test 2", PrivateInvoke.GetNonPublicStaticProperty (typeof (TypeWithProperties), "StaticStringProperty"));
+    Assert.That (PrivateInvoke.GetNonPublicStaticProperty (typeof (TypeWithProperties), "StaticStringProperty"), Is.EqualTo ("test 2"));
 	}
+
+  [Test]
+  public void TestPublicPropertyWithPrivateSetter ()
+  {
+    PrivateInvoke.SetPublicStaticProperty (typeof (TypeWithProperties), "PublicPropertyWithPrivateSetter", "Test");
+    Assert.That (TypeWithProperties.PublicPropertyWithPrivateSetter, Is.EqualTo ("Test"));
+  }
+
+  [Test]
+  public void TestPublicPropertyWithPrivateGetter ()
+  {
+    TypeWithProperties.PublicPropertyWithPrivateGetter = "Test2";
+    Assert.That (PrivateInvoke.GetPublicStaticProperty (typeof (TypeWithProperties), "PublicPropertyWithPrivateGetter"), Is.EqualTo ("Test2"));
+  }
 }
 
 }
