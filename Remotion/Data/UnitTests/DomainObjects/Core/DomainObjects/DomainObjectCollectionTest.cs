@@ -57,8 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var collection = new DomainObjectCollection (data, typeof (Customer));
       
-      var decorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var wrappedData = GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
+      var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
       Assert.That (wrappedData, Is.SameAs (data));
     }
 
@@ -1190,16 +1190,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       // newCollection => argument checking decorator => event decorator => actual data store
 
       var newCollection = new DomainObjectCollection (typeof (Order));
-      var newCollectionDataStore = GetCollectionDataAndCheckType<IDomainObjectCollectionData> (newCollection).GetUndecoratedDataStore();
+      var newCollectionDataStore = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (newCollection).GetUndecoratedDataStore();
       newCollection.AssociateWithEndPoint (endPoint);
 
       // newCollection => argument checking decorator => end point data => actual data store
       
-      var newCollectionDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (newCollection);
+      var newCollectionDecorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (newCollection);
       Assert.That (newCollectionDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
 
-      var newCollectionDelegatingData = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (newCollectionDecorator);
-      var newActualDataStore = GetActualDataAndCheckType<DomainObjectCollectionData> (newCollectionDelegatingData);
+      var newCollectionDelegatingData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (newCollectionDecorator);
+      var newActualDataStore = DomainObjectCollectionDataTestHelper.GetActualDataAndCheckType<DomainObjectCollectionData> (newCollectionDelegatingData);
       Assert.That (newActualDataStore, Is.SameAs (newCollectionDataStore), "new collection still uses its original data store");
     }
 
@@ -1211,7 +1211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       // oldCollection => argument decorator => end point data => actual data store
 
       var oldCollection = endPoint.OppositeDomainObjects;
-      var oldCollectionData = GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection);
+      var oldCollectionData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection);
       var oldCollectionActualDataStore = oldCollectionData.GetUndecoratedDataStore ();
 
       var newCollection = new DomainObjectCollection (typeof (Order));
@@ -1221,13 +1221,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (oldCollection.AssociatedEndPoint, Is.Null);
 
-      var oldCollectionNewArgumentDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (oldCollection);
+      var oldCollectionNewArgumentDecorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (oldCollection);
       Assert.That (oldCollectionNewArgumentDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
 
-      var oldCollectionNewEventDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (oldCollectionNewArgumentDecorator);
+      var oldCollectionNewEventDecorator = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (oldCollectionNewArgumentDecorator);
       Assert.That (oldCollectionNewEventDecorator.EventRaiser, Is.SameAs (oldCollection));
 
-      var oldCollectionNewActualDataStore = GetWrappedDataAndCheckType<DomainObjectCollectionData> (oldCollectionNewEventDecorator);
+      var oldCollectionNewActualDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (oldCollectionNewEventDecorator);
       Assert.That (oldCollectionNewActualDataStore, Is.SameAs (oldCollectionActualDataStore));
     }
 
@@ -1411,34 +1411,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var destinationInvocationList = destinationEvent.GetInvocationList ();
       
       Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");
-    }
-
-    private T GetCollectionDataAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
-    {
-      var data = PrivateInvoke.GetNonPublicField (collection, "_data");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
-    }
-
-    private T GetWrappedDataAndCheckType<T> (ArgumentCheckingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
-    {
-      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
-    }
-
-    private T GetWrappedDataAndCheckType<T> (EventRaisingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
-    {
-      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
-    }
-
-    private T GetActualDataAndCheckType<T> (EndPointDelegatingCollectionData newCollectionDelegatingData) where T : IDomainObjectCollectionData
-    {
-      var data = PrivateInvoke.GetNonPublicField (newCollectionDelegatingData, "_actualData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
     }
 
     private CollectionEndPoint CreateCollectionEndPointForOrders ()

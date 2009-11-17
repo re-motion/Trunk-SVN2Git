@@ -805,8 +805,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
-      Assert.That (((CollectionEndPointRemoveModification) modification).ModifiedCollectionData, 
-          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
+
+      var ordersData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_orders);
+      Assert.That (((CollectionEndPointRemoveModification) modification).ModifiedCollectionData, Is.SameAs (ordersData));
     }
 
     [Test]
@@ -817,8 +818,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertModification) modification).Index, Is.EqualTo (12));
-      Assert.That (((CollectionEndPointInsertModification) modification).ModifiedCollectionData,
-          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
+
+      var ordersData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_orders);
+      Assert.That (((CollectionEndPointInsertModification) modification).ModifiedCollectionData, Is.SameAs (ordersData));
     }
 
     [Test]
@@ -829,8 +831,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertModification) modification).Index, Is.EqualTo (2));
-      Assert.That (((CollectionEndPointInsertModification) modification).ModifiedCollectionData,
-          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
+
+      var ordersData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_orders);
+      Assert.That (((CollectionEndPointInsertModification) modification).ModifiedCollectionData, Is.SameAs (ordersData));
     }
 
     [Test]
@@ -841,8 +844,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
       Assert.That (modification.NewRelatedObject, Is.SameAs (_order2));
-      Assert.That (((CollectionEndPointReplaceModification) modification).ModifiedCollectionData,
-          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
+      
+      var ordersData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_orders);
+      Assert.That (((CollectionEndPointReplaceModification) modification).ModifiedCollectionData, Is.SameAs (ordersData));
     }
 
     [Test]
@@ -862,8 +866,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointSelfReplaceModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order2));
-      Assert.That (((CollectionEndPointSelfReplaceModification) modification).ModifiedCollectionData,
-          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
+
+      var ordersData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_orders);
+      Assert.That (((CollectionEndPointSelfReplaceModification) modification).ModifiedCollectionData, Is.SameAs (ordersData));
     }
 
     [Test]
