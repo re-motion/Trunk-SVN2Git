@@ -1320,6 +1320,15 @@ namespace Remotion.Data.DomainObjects
       OnDeleted ();
     }
 
+    /// <summary>
+    /// Associates this <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>, replacing that end point's
+    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection. The previous <see cref="ICollectionEndPoint.OppositeDomainObjects"/> 
+    /// collection of the end point is transformed into a stand-alone collection.
+    /// </summary>
+    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
+    /// must have the same type and <see cref="RequiredItemType"/> as this collection.</param>
+    /// <exception cref="NotSupportedException">This collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
     public void AssociateWithEndPoint (ICollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
