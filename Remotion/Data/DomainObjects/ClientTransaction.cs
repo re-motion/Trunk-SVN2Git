@@ -1203,12 +1203,29 @@ public abstract class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-    DataContainerCollection relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
-    return MergeLoadedDomainObjects (
-        relatedDataContainers,
-        relationEndPointID.Definition.PropertyType,
-        relationEndPointID.OppositeEndPointDefinition.ClassDefinition.ClassType,
-        relationEndPointID);
+    using (EnterNonDiscardingScope ())
+    {
+      DataContainerCollection relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
+
+      // TODO: Consider using LINQ query instead: relatedDataContainers.Where (dc => !_dataManager.DataContainerMap.Contains (dc.ID));
+      DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (relatedDataContainers);
+      foreach (DataContainer dataContainer in newLoadedDataContainers)
+        TransactionEventSink.ObjectLoading (dataContainer.ID);
+
+      foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
+        newLoadedDataContainer.RegisterLoadedDataContainer (this);
+
+      // TODO: Consider using LINQ query instead: relatedDataContainers.Select (dc => _dataManager[dc.ID].DomainObject);
+      var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (relatedDataContainers);
+      var mergedObjects = mergedContainers.Cast<DataContainer>().Select (dc => dc.DomainObject);
+
+      var domainObjects = _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, mergedObjects);
+
+      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Cast<DataContainer>().Select (dc => dc.DomainObject), true);
+      OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
+
+      return domainObjects;
+    }
   }
 
   /// <summary>
@@ -1259,49 +1276,6 @@ public abstract class ClientTransaction
 
       var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
-    }
-  }
-
-  /// <summary>
-  /// Creates a new <see cref="DomainObjectCollection"/> with the specified <paramref name="collectionType"/>, registers the <see cref="DataContainer"/>s with this <b>ClientTransaction</b>, discards already loaded <see cref="DataContainer"/>s, raises the <see cref="Loaded"/> event and optionally registers the relation with the specified <see cref="DataManagement.RelationEndPointID"/>.
-  /// </summary>
-  /// <param name="dataContainers">The newly loaded <see cref="DataContainer"/>s.</param>
-  /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated.</param>
-  /// <param name="requiredItemType">The permitted <see cref="Type"/> of an item in the <see cref="DomainObjectCollection"/>. If specified only this type or derived types can be added to the <b>DomainObjectCollection</b>.</param>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> that should be evaluated.</param>
-  /// <returns>A <see cref="DomainObjectCollection"/>.</returns>
-  /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-  internal DomainObjectCollection MergeLoadedDomainObjects (
-      DataContainerCollection dataContainers, 
-      Type collectionType,
-      Type requiredItemType,
-      RelationEndPointID relationEndPointID)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-    ArgumentUtility.CheckNotNull ("collectionType", collectionType);
-
-    using (EnterNonDiscardingScope ())
-    {
-      DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (dataContainers);
-      foreach (DataContainer dataContainer in newLoadedDataContainers)
-        TransactionEventSink.ObjectLoading (dataContainer.ID);
-
-      foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
-        newLoadedDataContainer.RegisterLoadedDataContainer (this);
-
-      var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (dataContainers);
-      DomainObjectCollection domainObjects = DomainObjectCollection.Create (
-          collectionType, 
-          mergedContainers.Cast<DataContainer>().Select (dc => dc.DomainObject), 
-          requiredItemType);
-
-      if (relationEndPointID != null)
-        _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjects);
-
-      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Cast<DataContainer>().Select (dc => dc.DomainObject), true);
-      OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
-
-      return domainObjects;
     }
   }
 

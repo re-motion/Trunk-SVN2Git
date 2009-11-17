@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -195,13 +196,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Add (objectEndPoint);
     }
 
-    public void RegisterCollectionEndPoint (RelationEndPointID endPointID, DomainObjectCollection domainObjects)
+    public DomainObjectCollection RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContents)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
+      var requiredItemType = endPointID.OppositeEndPointDefinition.ClassDefinition.ClassType;
+      var collectionType = endPointID.Definition.PropertyType;
+
+      var domainObjects = DomainObjectCollection.Create (collectionType, initialContents, requiredItemType);
       var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, domainObjects, this);
       Add (collectionEndPoint);
+
+      return domainObjects;
     }
 
     public void RegisterExistingDataContainer (DataContainer dataContainer)
@@ -248,10 +255,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           RegisterObjectEndPoint (endPointID, null);
         else
         {
-          DomainObjectCollection domainObjects = DomainObjectCollection.Create (
-              endPointID.Definition.PropertyType, endPointID.OppositeEndPointDefinition.ClassDefinition.ClassType);
-
-          RegisterCollectionEndPoint (endPointID, domainObjects);
+          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
         }
       }
     }

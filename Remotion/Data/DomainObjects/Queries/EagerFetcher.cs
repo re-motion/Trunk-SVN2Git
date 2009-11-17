@@ -106,12 +106,7 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       if (_relationEndPointMap[relationEndPointID] == null)
       {
-        var domainObjectCollection = DomainObjectCollection.Create (
-            relationEndPointID.Definition.PropertyType,
-            relatedObjects,
-            relationEndPointID.OppositeEndPointDefinition.ClassDefinition.ClassType);
-
-        _relationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjectCollection);
+        _relationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, relatedObjects);
       }
       else
       {

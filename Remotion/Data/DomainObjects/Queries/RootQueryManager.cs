@@ -178,7 +178,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return resultArray;
     }
 
-    // TODO 1051: This is very similar to ClientTransaction.MergeLoadedDomainObjects, unify.
+    // TODO 1051: This is very similar to ClientTransaction.LoadRelatedObjects, unify.
     private T[] MergeQueryResultWithExistingObjects<T> (DataContainer[] dataContainers) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
