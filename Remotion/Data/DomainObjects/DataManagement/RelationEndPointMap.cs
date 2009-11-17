@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         collectionEndPoint = (CollectionEndPoint) _relationEndPoints[endPointID];
       }
 
-      return collectionEndPoint.OriginalOppositeDomainObjects;
+      return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
     public void SetRelatedObject (RelationEndPointID endPointID, DomainObject newRelatedObject)
@@ -201,14 +201,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
-      var requiredItemType = endPointID.OppositeEndPointDefinition.ClassDefinition.ClassType;
-      var collectionType = endPointID.Definition.PropertyType;
-
-      var domainObjects = DomainObjectCollection.Create (collectionType, initialContents, requiredItemType);
-      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, domainObjects, this);
+      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, this, initialContents);
       Add (collectionEndPoint);
 
-      return domainObjects;
+      return collectionEndPoint.OppositeDomainObjects;
     }
 
     public void RegisterExistingDataContainer (DataContainer dataContainer)
@@ -367,6 +363,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Remove (endPointID);
     }
 
+    // TODO 1876: Remove.
     public void CopyFrom (RelationEndPointMap source)
     {
       ArgumentUtility.CheckNotNull ("source", source);

@@ -1339,17 +1339,17 @@ namespace Remotion.Data.DomainObjects
       if (AssociatedEndPoint != null)
         throw new InvalidOperationException ("The collection is already associated with an end point.");
 
+      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)
+        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
+
       if (GetType () != endPoint.OppositeDomainObjects.GetType ())
       {
         var message = string.Format (
             "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
-            GetType(),
-            endPoint.OppositeDomainObjects.GetType());
+            GetType (),
+            endPoint.OppositeDomainObjects.GetType ());
         throw new InvalidOperationException (message);
       }
-
-      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)
-        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
 
       // transform original opposite collection to stand-alone collection
       var originalOppositeCollection = endPoint.OppositeDomainObjects;

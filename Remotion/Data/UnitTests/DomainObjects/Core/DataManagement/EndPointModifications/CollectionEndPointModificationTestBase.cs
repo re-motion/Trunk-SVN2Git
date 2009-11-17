@@ -65,9 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
       _relationEndPointID = new RelationEndPointID (DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      var oppositeDomainObjects = new DomainObjectCollection ();
-      _collectionEventReceiver = new DomainObjectCollectionEventReceiver (oppositeDomainObjects);
-      _collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, RelationEndPointID, oppositeDomainObjects, new FakeChangeDelegate ());
+      _collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, RelationEndPointID, new FakeChangeDelegate (), new DomainObject[0]);
+      _collectionEventReceiver = new DomainObjectCollectionEventReceiver (_collectionEndPoint.OppositeDomainObjects);
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();
       CollectionDataMock.Replay ();

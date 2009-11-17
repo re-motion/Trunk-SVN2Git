@@ -266,6 +266,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     get { return _discardedDataContainers.Count; }
   }
 
+  // TODO 1876: Remove.
   public void CopyFrom (DataManager source)
   {
     ArgumentUtility.CheckNotNull ("source", source);

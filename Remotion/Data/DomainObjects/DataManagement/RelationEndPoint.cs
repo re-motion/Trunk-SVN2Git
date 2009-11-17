@@ -110,7 +110,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // abstract methods and properties
 
+    // TODO 1876: Remove.
     public abstract RelationEndPoint Clone (ClientTransaction clientTransaction);
+
     protected internal abstract void TakeOverCommittedData (RelationEndPoint source);
     public abstract bool HasChanged { get; }
     public abstract bool HasBeenTouched { get; }

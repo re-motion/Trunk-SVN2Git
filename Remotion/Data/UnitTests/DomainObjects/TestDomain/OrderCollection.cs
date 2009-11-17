@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 
@@ -28,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     }
 
     // standard constructor for collections
-    public OrderCollection (OrderCollection collection, bool isCollectionReadOnly)
-      : base (collection, isCollectionReadOnly)
+    public OrderCollection (IEnumerable<Order> contents, bool isCollectionReadOnly)
+      : base (contents, isCollectionReadOnly)
     {
     }
 

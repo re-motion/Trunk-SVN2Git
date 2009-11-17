@@ -1176,7 +1176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
-      var newCollection = new DomainObjectCollection (typeof (Order));
+      var newCollection = new OrderCollection ();
       newCollection.AssociateWithEndPoint (endPoint);
 
       Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newCollection));
@@ -1189,7 +1189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       // newCollection => argument checking decorator => event decorator => actual data store
 
-      var newCollection = new DomainObjectCollection (typeof (Order));
+      var newCollection = new OrderCollection ();
       var newCollectionDataStore = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (newCollection).GetUndecoratedDataStore();
       newCollection.AssociateWithEndPoint (endPoint);
 
@@ -1214,7 +1214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var oldCollectionData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection);
       var oldCollectionActualDataStore = oldCollectionData.GetUndecoratedDataStore ();
 
-      var newCollection = new DomainObjectCollection (typeof (Order));
+      var newCollection = new OrderCollection ();
       newCollection.AssociateWithEndPoint (endPoint);
 
       // oldCollection => argument decorator => event decorator => actual data store
@@ -1234,7 +1234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "This collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
-        + "as the end point's current opposite collection ('Remotion.Data.DomainObjects.DomainObjectCollection').")]
+        + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
     public void AssociateWithEndPoint_DifferentCollectionTypes ()
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
@@ -1272,7 +1272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
-      var newCollection = new DomainObjectCollection (typeof (Order));
+      var newCollection = new OrderCollection ();
       newCollection.AssociateWithEndPoint (endPoint);
       newCollection.AssociateWithEndPoint (endPoint);
 
@@ -1419,8 +1419,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       return new CollectionEndPoint (
           ClientTransactionMock,
           customerEndPointID,
-          new DomainObjectCollection (typeof (Order)),
-          MockRepository.GenerateStub<ICollectionEndPointChangeDelegate> ());
+          MockRepository.GenerateStub<ICollectionEndPointChangeDelegate> (),
+          new DomainObject[0]);
     }
   }
 }

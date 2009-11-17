@@ -384,7 +384,7 @@ public abstract class ClientTransaction
   /// </returns>
   /// <remarks>
   /// Implementations will usually just compare the <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection with the
-  /// <see cref="CollectionEndPoint.OriginalOppositeDomainObjects"/> collection to check for changes. However, implementations can choose whether
+  /// <see cref="CollectionEndPoint.OriginalOppositeDomainObjectsContents"/> collection to check for changes. However, implementations can choose whether
   /// to ignore ordering or not for such a check. Ignoring ordering means a collection end point will not be committed if only the ordering of
   /// its opposite objects has changed.
   /// </remarks>

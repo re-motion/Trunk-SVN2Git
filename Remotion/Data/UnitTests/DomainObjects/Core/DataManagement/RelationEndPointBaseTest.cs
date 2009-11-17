@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -25,9 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     protected CollectionEndPoint CreateCollectionEndPoint (
         RelationEndPointID endPointID,
-        DomainObjectCollection domainObjects)
+        IEnumerable<DomainObject> initialContents)
     {
-      var newCollectionEndPoint = new CollectionEndPoint (ClientTransactionMock, endPointID, domainObjects, ClientTransactionMock.DataManager.RelationEndPointMap);
+      var newCollectionEndPoint = new CollectionEndPoint (
+          ClientTransactionMock, 
+          endPointID, 
+          ClientTransactionMock.DataManager.RelationEndPointMap, 
+          initialContents);
       return newCollectionEndPoint;
     }
 

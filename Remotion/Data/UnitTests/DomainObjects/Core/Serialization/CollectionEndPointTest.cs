@@ -73,11 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsFalse (deserializedEndPoint.OppositeDomainObjects.IsReadOnly);
       Assert.AreSame (deserializedEndPoint, deserializedEndPoint.OppositeDomainObjects.ChangeDelegate);
 
-      Assert.AreEqual (2, deserializedEndPoint.OriginalOppositeDomainObjects.Count);
-      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.Contains (DomainObjectIDs.OrderItem1));
-      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.Contains (DomainObjectIDs.OrderItem2));
-      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.IsReadOnly);
-      Assert.AreSame (deserializedEndPoint, deserializedEndPoint.OriginalOppositeDomainObjects.ChangeDelegate);
+      Assert.AreEqual (2, deserializedEndPoint.OriginalOppositeDomainObjectsContents.Count);
+      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjectsContents.Contains (DomainObjectIDs.OrderItem1));
+      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjectsContents.Contains (DomainObjectIDs.OrderItem2));
+      Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjectsContents.IsReadOnly);
+      Assert.AreSame (deserializedEndPoint, deserializedEndPoint.OriginalOppositeDomainObjectsContents.ChangeDelegate);
     }
 
     [Test]
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serialization_WithCustomChangeDelegate ()
     {
-      var endPoint = new CollectionEndPoint (ClientTransactionMock, _endPoint.ID, new DomainObjectCollection(), new FakeChangeDelegate ());
+      var endPoint = new CollectionEndPoint (ClientTransactionMock, _endPoint.ID, new FakeChangeDelegate (), new DomainObject[0]);
 
       var deserializedCollectionEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
       Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.Null);
