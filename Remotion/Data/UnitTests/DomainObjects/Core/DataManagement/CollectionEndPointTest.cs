@@ -21,10 +21,12 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -60,16 +62,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void InitializeWithInvalidRelationEndPointID ()
+    public void Initialize_WithInvalidRelationEndPointID_Throws ()
     {
       CreateCollectionEndPoint (null, new DomainObject[0]);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
-    public void InitializeWithNullInitialContents ()
+    public void Initialize_WithNullInitialContents_Throws ()
     {
       CreateCollectionEndPoint (_customerEndPointID, null);
+    }
+
+    [Test]
+    [Ignore ("TODO 992")]
+    [ExpectedException (typeof (MissingMethodException))]
+    public void Initialize_WithoutCollectionCtorTakingData_Throws ()
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainObjectWithCollectionMissingCtor));
+
+      var endPointID = new RelationEndPointID (
+          new ObjectID (classDefinition, Guid.NewGuid ()), 
+          typeof (DomainObjectWithCollectionMissingCtor) + ".OppositeObjects");
+      CreateCollectionEndPoint (endPointID, new DomainObject[0]);
     }
 
     [Test]

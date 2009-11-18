@@ -228,6 +228,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\DomainObjectCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EndPointDelegatingCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataTest.cs" />
@@ -246,6 +247,11 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithProtectedCtor.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestDomain\DomainObjectWithCollectionMissingCtor.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionNotDerivedFromDomainObjectCollection.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithMissingDataCtor.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestDomain\OppositeObject.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectCollectionDataTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
