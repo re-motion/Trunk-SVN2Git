@@ -18,11 +18,14 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using NUnit.Framework.SyntaxHelpers;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
@@ -30,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   public class DomainObjectCollectionTest : ClientTransactionBaseTest
   {
     [Test]
-    public void DomainObjectCollectionIsSerializable ()
+    public void DomainObjectCollection_IsSerializable ()
     {
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
@@ -42,23 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void DomainObjectCollectionIsFlattenedSerializable ()
+    public void DomainObjectCollection_StandAlone_Contents ()
     {
-      DomainObjectCollection collection = new DomainObjectCollection ();
+      var collection = new DomainObjectCollection (typeof (Order));
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
-
-      DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
-      Assert.AreNotSame (collection, deserializedCollection);
-      Assert.IsNotNull (deserializedCollection);
-    }
-
-    [Test]
-    public void DomainObjectCollection_Contents ()
-    {
-      DomainObjectCollection collection = new DomainObjectCollection (typeof (Order));
-      collection.Add (Order.GetObject (DomainObjectIDs.Order1));
-      var data = (DomainObjectCollectionData) PrivateInvoke.GetNonPublicField (collection, "_data");
-      long version = data.Version;
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
       Assert.AreEqual (1, deserializedCollection.Count);
@@ -67,30 +57,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
       Assert.IsFalse (deserializedCollection.IsReadOnly);
       Assert.IsNull (PrivateInvoke.GetNonPublicField (deserializedCollection, "_changeDelegate"));
-      Assert.AreEqual (version, data.Version);
+    }
+
+    [Test]
+    [Ignore ("TODO 992: Fix standalone collections to include event raiser")]
+    public void DomainObjectCollection_StandAlone_Data ()
+    {
+      var collection = new DomainObjectCollection (typeof (Order));
+      collection.Add (Order.GetObject (DomainObjectIDs.Order1));
+
+      var data = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var eventRaiser = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (data);
+      var dataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (eventRaiser);
+
+      long version = dataStore.Version;
+
+      DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
+      var deserializedData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (deserializedCollection);
+      var deserializedEventRaiser = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (deserializedData);
+      Assert.That (deserializedEventRaiser.EventRaiser, Is.SameAs (deserializedCollection));
+      var deserializedDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (deserializedEventRaiser);
+
+      Assert.AreEqual (version, deserializedDataStore.Version);
+    }
+
+    [Test]
+    public void DomainObjectCollection_Associated ()
+    {
+      var customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
+      var collection = customer1.Orders;
+      var endPointID = new RelationEndPointID (customer1.ID, collection.AssociatedEndPoint.Definition);
+      var relatedIDs = collection.Select (obj => obj.ID).ToArray();
+
+      var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.NewTuple (collection, ClientTransactionMock));
+      var deserializedCollection = deserializedCollectionAndTransaction.A;
+      var deserializedTransaction = deserializedCollectionAndTransaction.B;
+
+      var deserializedEndPoint = deserializedTransaction.DataManager.RelationEndPointMap[endPointID];
+      Assert.That (deserializedCollection.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
+
+      var deserializedData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (deserializedCollection);
+      DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (deserializedData);
+
+      Assert.That (collection.Select (obj => obj.ID).ToArray (), Is.EqualTo (relatedIDs));
     }
 
     [Test]
     public void DomainObjectCollection_Events_Contents ()
     {
       var collection = new DomainObjectCollection (typeof (Order)) {Order.GetObject (DomainObjectIDs.Order1)};
-      var data = (DomainObjectCollectionData) PrivateInvoke.GetNonPublicField (collection, "_data");
-      long version = data.Version;
 
       var eventReceiver = new DomainObjectCollectionEventReceiver (collection);
 
-      var tuple = Tuple.NewTuple (collection, eventReceiver);
-      var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
-      var deserializedCollection = deserializedTuple.A;
-      var deserializedEventReceiver = deserializedTuple.B;
-
-      Assert.AreEqual (1, deserializedCollection.Count);
-      Assert.IsTrue (deserializedCollection.Contains (DomainObjectIDs.Order1));
-      Assert.AreEqual (DomainObjectIDs.Order1, deserializedCollection[0].ID);
-      Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
-      Assert.IsFalse (deserializedCollection.IsReadOnly);
-      Assert.IsNull (deserializedCollection.ChangeDelegate);
-      Assert.AreEqual (version, data.Version);
+      var deserializedCollectionAndEventReceiver = Serializer.SerializeAndDeserialize (Tuple.NewTuple (collection, eventReceiver));
+      var deserializedCollection = deserializedCollectionAndEventReceiver.A;
+      var deserializedEventReceiver = deserializedCollectionAndEventReceiver.B;
 
       Assert.IsFalse (deserializedEventReceiver.HasAddedEventBeenCalled);
       Assert.IsFalse (deserializedEventReceiver.HasAddingEventBeenCalled);

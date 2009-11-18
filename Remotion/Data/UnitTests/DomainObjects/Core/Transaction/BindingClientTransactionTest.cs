@@ -113,9 +113,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot insert DomainObject 'OrderItem[^']*' at position 0 into " 
-        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The OrderItem object to be inserted is bound to a BindingClientTransaction.", 
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        "Cannot insert DomainObject 'OrderItem|90a931d6-d7e9-4a6c-9109-53f5e3b481ee|System.Guid' into collection of property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
+        + "'Order|442d21bd-ff55-4168-b75f-cc0a29ebf8c5|System.Guid'. The objects do not belong to the same ClientTransaction. The OrderItem object is "
+        + "bound to a BindingClientTransaction.", 
         MatchType = MessageMatch.Regex)]
     public void InsertBoundObject_IntoCollectionOfUnboundObject ()
     {
@@ -128,9 +130,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot insert DomainObject 'OrderItem[^']*' at position 0 into "
-        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The Order object owning the collection is bound to a BindingClientTransaction.", 
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage =
+        "Cannot insert DomainObject 'OrderItem|657828f9-fcc4-4b6f-bbb6-86054f437105|System.Guid' into collection of property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
+        + "'Order|8da27c17-d110-4ecb-92e4-e7984830a2ed|System.Guid'. The objects do not belong to the same ClientTransaction. The Order object "
+        + "owning the collection is bound to a BindingClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void InsertUnboundObject_IntoCollectionOfBoundObject ()
     {
@@ -143,10 +147,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot insert DomainObject 'OrderItem[^']*' at position 0 into "
-        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The OrderItem object to be inserted is bound to a BindingClientTransaction. The Order object "
-        + "owning the collection is also bound, but to a different BindingClientTransaction.",
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        "Cannot insert DomainObject 'OrderItem|5a0e9087-de57-49f4-a0d5-5253b687ea35|System.Guid' into collection of property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
+        + "'Order|fcfa221d-7919-4241-bce2-0f0f9d701891|System.Guid'. The objects do not belong to the same ClientTransaction. The OrderItem object "
+        + "is bound to a BindingClientTransaction. The Order object owning the collection is also bound, but to a different BindingClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void InsertBoundObject_IntoCollectionOfBoundObject_InOtherTx ()
     {
@@ -199,10 +204,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot replace DomainObject at position 0 with DomainObject "
-        + "'OrderItem[^']*' in collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
-        + "'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The OrderItem object to be inserted is bound to a BindingClientTransaction.",
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        "Cannot put DomainObject 'OrderItem|6f4fb909-5fee-4332-9bb1-c302041927b0|System.Guid' into the collection of property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
+        + "'Order|e5f2b5ea-4979-4403-9388-6de10ea08a71|System.Guid'. The objects do not belong to the same ClientTransaction. The OrderItem object is "
+        + "bound to a BindingClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void ReplaceBoundObject_IntoCollectionOfUnboundObject ()
     {
@@ -216,10 +222,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot replace DomainObject at position 0 with DomainObject "
-        + "'OrderItem[^']*' in collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
-        + "'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The Order object owning the collection is bound to a BindingClientTransaction.",
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        "Cannot put DomainObject 'OrderItem|1a89a208-f70f-4d0c-910d-0be05a63a24e|System.Guid' into the collection of property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
+        + "'Order|57041610-340f-4cfb-b318-5cfd75226613|System.Guid'. The objects do not belong to the same ClientTransaction. The Order object "
+        + "owning the collection is bound to a BindingClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void ReplaceUnboundObject_IntoCollectionOfBoundObject ()
     {
@@ -233,11 +240,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot replace DomainObject at position 0 with DomainObject "
-        + "'OrderItem[^']*' in collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
-        + "'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The OrderItem object to be inserted is bound to a BindingClientTransaction. The Order object "
-        + "owning the collection is also bound, but to a different BindingClientTransaction.",
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        "Cannot put DomainObject 'OrderItem|067c0750-8985-4419-a76e-7e4db6bf68e2|System.Guid' into the collection of property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
+        + "'Order|a50f8e9f-0444-4f23-80fd-10012dcb10c3|System.Guid'. The objects do not belong to the same ClientTransaction. The OrderItem object is "
+        + "bound to a BindingClientTransaction. The Order object owning the collection is also bound, but to a different BindingClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void ReplaceBoundObject_IntoCollectionOfBoundObject_InOtherTx ()
     {

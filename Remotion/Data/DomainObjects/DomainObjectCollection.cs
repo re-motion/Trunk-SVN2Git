@@ -322,7 +322,7 @@ namespace Remotion.Data.DomainObjects
     public DomainObjectCollection (Type requiredItemType)
     {
       _requiredItemType = requiredItemType;
-      _data = new DomainObjectCollectionData ();
+      _data = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData (), _requiredItemType);
     }
 
     // standard constructor for collections
@@ -449,7 +449,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public Type RequiredItemType
     {
-      get { return _requiredItemType; }
+      get { return _requiredItemType ?? _data.RequiredItemType; }
     }
 
     public ICollectionChangeDelegate ChangeDelegate
@@ -538,7 +538,7 @@ namespace Remotion.Data.DomainObjects
         if (Contains (value.ID) && !ReferenceEquals (this[index], value))
           throw CreateInvalidOperationException ("The object '{0}' is already part of this collection.", value.ID);
         else if (_changeDelegate != null)
-          _changeDelegate.PerformReplace (this, value, index);
+          _data.Replace (index, value);
         else if (ReferenceEquals (this[index], value)) // If old and new objects are the same: Perform no operation
         {
           return;
@@ -595,7 +595,7 @@ namespace Remotion.Data.DomainObjects
       }
 
       if (_changeDelegate != null)
-        _changeDelegate.PerformInsert (this, domainObject, Count);
+        _data.Insert (Count, domainObject);
       else
       {
         BeginAdd (domainObject);
@@ -716,7 +716,7 @@ namespace Remotion.Data.DomainObjects
         throw new ArgumentException (message, "domainObject");
       } 
       else if (_changeDelegate != null)
-        _changeDelegate.PerformRemove (this, domainObject);
+        _data.Remove (domainObject);
       else
       {
         BeginRemove (domainObject);
@@ -804,7 +804,7 @@ namespace Remotion.Data.DomainObjects
       }
 
       if (_changeDelegate != null)
-        _changeDelegate.PerformInsert (this, domainObject, index);
+        _data.Insert (index, domainObject);
       else
       {
         BeginAdd (domainObject);

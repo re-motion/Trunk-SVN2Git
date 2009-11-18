@@ -27,9 +27,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// Implements the <see cref="IDomainObjectCollectionData"/> by forwarding all requests to an implementation of 
   /// <see cref="ICollectionEndPoint"/>.
   /// </summary>
+  [Serializable]
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
-    private readonly ICollectionEndPoint _associatedEndPoint;
+    [NonSerialized] // relies on the collection end point restoring the association on deserialization
+    private readonly ICollectionEndPoint _associatedEndPoint; 
     private readonly IDomainObjectCollectionData _actualData;
 
     public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)

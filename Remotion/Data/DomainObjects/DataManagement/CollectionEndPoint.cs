@@ -16,12 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
+using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -58,7 +60,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var factory = new DomainObjectCollectionFactory ();
 
-      _oppositeDomainObjects = factory.CreateCollection (collectionType, new DomainObjectCollectionData (initialContents), requiredItemType);
+      var dataStore = new DomainObjectCollectionData (initialContents);
+      _oppositeDomainObjects = factory.CreateCollection (collectionType, new EndPointDelegatingCollectionData (this, dataStore), requiredItemType);
       _oppositeDomainObjects.ChangeDelegate = this;
 
       _originalOppositeDomainObjectsContents = _oppositeDomainObjects.Clone (true);
@@ -76,7 +79,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    // TODO: This will be used to replace "ReplaceOppositeCollection".
     public void SetOppositeCollection (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
@@ -84,8 +86,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (oppositeDomainObjects.AssociatedEndPoint != this)
       {
         throw new ArgumentException (
-            "The new opposite collection must have been prepared to delegate to this end point. Use DomainObjectCollection.AssociateWithEndPoint "
-            + "instead.",
+            "The new opposite collection must have been prepared to delegate to this end point. Use ReplaceOppositeCollection instead.",
             "oppositeDomainObjects");
       }
 
@@ -102,57 +103,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Touch ();
     }
 
-    // TODO: Remove this, use SetOppositeCollection instead.
     public void ReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      if (oppositeDomainObjects == _oppositeDomainObjects)
+
+      if (ReferenceEquals (oppositeDomainObjects, OppositeDomainObjects))
       {
-        _hasBeenTouched = true;
-        return;
+        Touch ();
       }
-
-      CheckNewOppositeCollection (oppositeDomainObjects);
-
-      DomainObjectCollection oldOpposites = _oppositeDomainObjects;
-      oldOpposites.ChangeDelegate = null;
-
-      // temporarily set a clone of the old collection; that way, we can keep the old collection unmodified while synchronizing
-      _oppositeDomainObjects = oldOpposites.Clone (false);
-      _oppositeDomainObjects.ChangeDelegate = this;
-
-      SynchronizeWithNewOppositeObjects (oppositeDomainObjects);
-
-      PerformReplaceOppositeCollection (oppositeDomainObjects);
-      _hasBeenTouched = true;
-    }
-
-    private void CheckNewOppositeCollection (DomainObjectCollection oppositeDomainObjects)
-    {
-      if (oppositeDomainObjects.ChangeDelegate != null)
-        throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
-
-      if (_oppositeDomainObjects.GetType() != oppositeDomainObjects.GetType())
+      else
       {
-        string message = string.Format (
-            "The new opposite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.",
-            _oppositeDomainObjects.GetType().FullName,
-            oppositeDomainObjects.GetType().FullName);
-        throw new InvalidOperationException (message);
+        var modification = new CollectionEndPointReplaceWholeCollectionModification (this, oppositeDomainObjects);
+        var bidirectionalModification = modification.CreateBidirectionalModification ();
+        bidirectionalModification.ExecuteAllSteps ();
       }
-    }
-
-    private void PerformReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
-    {
-      _oppositeDomainObjects = oppositeDomainObjects;
-      _oppositeDomainObjects.ChangeDelegate = this;
-    }
-
-    private void SynchronizeWithNewOppositeObjects (DomainObjectCollection newOppositeObjects)
-    {
-      _oppositeDomainObjects.Clear();
-      foreach (DomainObject opposite in newOppositeObjects)
-        _oppositeDomainObjects.Add (opposite);
     }
 
     public override RelationEndPoint Clone (ClientTransaction clientTransaction)
@@ -194,7 +158,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (HasChanged)
       {
         _oppositeDomainObjects.ChangeDelegate = null;
-        PerformReplaceOppositeCollection (_originalOppositeDomainObjectsReference);
+        _oppositeDomainObjects = _originalOppositeDomainObjectsReference;
+        _oppositeDomainObjects.ChangeDelegate = this;
         _oppositeDomainObjects.Rollback (_originalOppositeDomainObjectsContents);
       }
 
@@ -241,19 +206,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data);
+      return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
     }
 
     public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
-      return new CollectionEndPointSelfReplaceModification (this, selfReplaceRelatedObject, _oppositeDomainObjects._data);
+      return new CollectionEndPointSelfReplaceModification (this, selfReplaceRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
     }
 
     public virtual IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, _oppositeDomainObjects._data);
+      return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
     }
 
     public virtual IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
@@ -266,9 +231,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointSelfReplaceModification (this, replacedObject, _oppositeDomainObjects._data);
+        return new CollectionEndPointSelfReplaceModification (this, replacedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore());
       else
-        return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, _oppositeDomainObjects._data);
+        return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
     }
 
     public override void PerformDelete ()
@@ -276,7 +241,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsFalse (_oppositeDomainObjects.IsReadOnly);
 
       ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete ();
-      _oppositeDomainObjects._data.Clear ();
+      _oppositeDomainObjects._data.GetUndecoratedDataStore ().Clear ();
       _hasBeenTouched = true;
       ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ();
     }
@@ -345,6 +310,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // only do that after deserialization has finished
       if (_changeDelegate == null)
         info.DeserializationFinished += ((sender, args) => _changeDelegate = ClientTransaction.DataManager.RelationEndPointMap);
+
+      FixupAssociatedEndPoint (_oppositeDomainObjects);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -357,6 +324,33 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // cannot serialize back-references, therefore, we only add the ChangeDelegate if it is not the (default) back-reference to 
       // ClientTransaction.DataManager.RelationEndPointMap
       info.AddHandle (_changeDelegate == ClientTransaction.DataManager.RelationEndPointMap ? null : _changeDelegate);
+    }
+
+    private void FixupAssociatedEndPoint (DomainObjectCollection collection)
+    {
+      // The reason we need to do a fix up for associated collections is that:
+      // - CollectionEndPoint is not serializable; it is /flattened/ serializable (for performance reasons); this means no reference to it can be
+      //   by a serializable object.
+      // - DomainObjectCollection is serializable, not flattened serializable.
+      // - Therefore, EndPointDelegatingCollectionData can only be serializable, not flattened serializable.
+      // - Therefore, EndPointDelegatingCollectionData's back-reference to CollectionEndPoint cannot be serialized. (It is marked as [NonSerializable].)
+      // - Therefore, it needs to be fixed up manually when the end point is restored.
+
+      // Fixups could be avoided if DomainObjectCollection and all IDomainObjectCollectionData implementations were made flattened serializable, 
+      // but that would be complex and it would impose the details of flattened serialization to re-store's users. Won't happen.
+      // Fixups could also be avoided if the end points stop being flattened serializable. For that, however, they must lose any references they 
+      // currently have to RelationEndPointMap. Will probably happen in the future.
+      // If it doesn't happen, fixups can be made prettier by adding an IAssociatedEndPointFixup interface to DomainObjectCollection and all 
+      // IDomainObjectCollectionData implementors.
+
+      var dataField = typeof (DomainObjectCollection).GetField ("_data", BindingFlags.NonPublic | BindingFlags.Instance);
+      var decorator = dataField.GetValue (collection);
+
+      var wrappedDataField = typeof (ArgumentCheckingCollectionDataDecorator).GetField ("_wrappedData", BindingFlags.NonPublic | BindingFlags.Instance);
+      var endPointDelegatingData = (EndPointDelegatingCollectionData) wrappedDataField.GetValue (decorator);
+
+      var associatedEndPointField = typeof (EndPointDelegatingCollectionData).GetField ("_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
+      associatedEndPointField.SetValue (endPointDelegatingData, this);
     }
 
     #endregion
