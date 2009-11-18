@@ -56,7 +56,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var requiredItemType = id.OppositeEndPointDefinition.ClassDefinition.ClassType;
       var collectionType = id.Definition.PropertyType;
 
-      _oppositeDomainObjects = DomainObjectCollection.Create (collectionType, initialContents, requiredItemType);
+      var factory = new DomainObjectCollectionFactory ();
+
+      _oppositeDomainObjects = factory.CreateCollection (collectionType, new DomainObjectCollectionData (initialContents), requiredItemType);
       _oppositeDomainObjects.ChangeDelegate = this;
 
       _originalOppositeDomainObjectsContents = _oppositeDomainObjects.Clone (true);

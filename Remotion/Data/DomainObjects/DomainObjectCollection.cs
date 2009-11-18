@@ -1354,7 +1354,7 @@ namespace Remotion.Data.DomainObjects
       // transform original opposite collection to stand-alone collection
       var originalOppositeCollection = endPoint.OppositeDomainObjects;
       originalOppositeCollection._data = new ArgumentCheckingCollectionDataDecorator (
-          new EventRaisingCollectionDataDecorator (originalOppositeCollection, originalOppositeCollection._data), 
+          new EventRaisingCollectionDataDecorator (originalOppositeCollection, originalOppositeCollection._data.GetUndecoratedDataStore()), 
           originalOppositeCollection.RequiredItemType);
 
       // transform this collection to associated collection

@@ -75,7 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 992")]
     [ExpectedException (typeof (MissingMethodException))]
     public void Initialize_WithoutCollectionCtorTakingData_Throws ()
     {
