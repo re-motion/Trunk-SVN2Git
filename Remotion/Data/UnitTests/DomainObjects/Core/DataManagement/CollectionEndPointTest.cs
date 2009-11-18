@@ -54,10 +54,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.ID, Is.EqualTo (_customerEndPointID));
 
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _order2 }));
-
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _order2 }));
+
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _order2 }));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.Not.SameAs (_customerEndPoint.OppositeDomainObjects));
+    }
+
+    [Test]
+    [Ignore ("TODO 992")]
+    public void Initialize_UsesEndPointDelegatingData ()
+    {
+      var dataDecorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (
+          _customerEndPoint.OppositeDomainObjects);
+      Assert.That (dataDecorator.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+      
+      DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (dataDecorator);
     }
 
     [Test]
@@ -877,7 +889,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataStore = new DomainObjectCollectionData (new[] { _order1 });
       var data = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
 
-      Assert.That (data.CollectionEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (data.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
 
       Assert.That (data.Count, Is.EqualTo (1), "contains data of data store");
       dataStore.Insert (1, _order2);

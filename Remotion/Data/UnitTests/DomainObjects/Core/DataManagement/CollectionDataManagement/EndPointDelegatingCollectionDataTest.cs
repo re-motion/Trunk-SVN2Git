@@ -432,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private void CheckObjectDeletedException (Action<EndPointDelegatingCollectionData, DomainObject> action)
     {
       OrderItem deletedObject;
-      using (_data.CollectionEndPoint.ClientTransaction.EnterNonDiscardingScope ())
+      using (_data.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope ())
       {
         deletedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem5);
         deletedObject.Delete();
@@ -452,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private void CheckOwningObjectDeletedException (Action<EndPointDelegatingCollectionData, DomainObject> action)
     {
       Order deletedOwningObject;
-      using (_data.CollectionEndPoint.ClientTransaction.EnterNonDiscardingScope ())
+      using (_data.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope ())
       {
         deletedOwningObject = Order.GetObject (DomainObjectIDs.Order4);
       }
@@ -460,7 +460,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
       var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
 
-      using (_data.CollectionEndPoint.ClientTransaction.EnterNonDiscardingScope ())
+      using (_data.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope ())
       {
         deletedOwningObject.Delete ();
       }

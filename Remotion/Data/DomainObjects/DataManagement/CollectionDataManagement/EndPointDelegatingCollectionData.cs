@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// </summary>
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
-    private readonly ICollectionEndPoint _collectionEndPoint;
+    private readonly ICollectionEndPoint _associatedEndPoint;
     private readonly IDomainObjectCollectionData _actualData;
 
     public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)
@@ -37,13 +37,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("actualData", actualData);
 
-      _collectionEndPoint = collectionEndPoint;
+      _associatedEndPoint = collectionEndPoint;
       _actualData = actualData;
-    }
-
-    public ICollectionEndPoint CollectionEndPoint
-    {
-      get { return _collectionEndPoint; }
     }
 
     public int Count
@@ -63,7 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public ICollectionEndPoint AssociatedEndPoint
     {
-      get { return _collectionEndPoint; }
+      get { return _associatedEndPoint; }
     }
 
     public IDomainObjectCollectionData GetUndecoratedDataStore ()
@@ -106,13 +101,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void Clear ()
     {
-      CheckNotDeleted (CollectionEndPoint.GetDomainObject ());
+      CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
       // no need to check the inner objects for being deleted or for differing client transactions - we can rely on objects being part of an
       // endpoint fitting this transaction and not being deleted
-      Assertion.DebugAssert (this.All (obj => 
-          obj.TransactionContext[CollectionEndPoint.ClientTransaction].CanBeUsedInTransaction 
-          && obj.TransactionContext[CollectionEndPoint.ClientTransaction].State != StateType.Deleted));
+      Assertion.DebugAssert (this.All (obj =>
+          obj.TransactionContext[AssociatedEndPoint.ClientTransaction].CanBeUsedInTransaction
+          && obj.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted));
 
       for (int i = Count - 1; i >= 0; --i)
       {
@@ -121,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         CreateAndExecuteRemoveModification (removedObject);
       }
 
-      CollectionEndPoint.Touch ();
+      AssociatedEndPoint.Touch ();
     }
 
     public void Insert (int index, DomainObject domainObject)
@@ -130,13 +125,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       CheckClientTransaction (domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
       CheckNotDeleted (domainObject);
-      CheckNotDeleted (CollectionEndPoint.GetDomainObject());
+      CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
-      var insertModification = CollectionEndPoint.CreateInsertModification (domainObject, index);
+      var insertModification = AssociatedEndPoint.CreateInsertModification (domainObject, index);
       var bidirectionalModification = insertModification.CreateBidirectionalModification ();
       bidirectionalModification.ExecuteAllSteps ();
 
-      CollectionEndPoint.Touch ();
+      AssociatedEndPoint.Touch ();
     }
 
     public void Remove (DomainObject domainObject)
@@ -145,30 +140,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       CheckClientTransaction (domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
       CheckNotDeleted (domainObject);
-      CheckNotDeleted (CollectionEndPoint.GetDomainObject());
+      CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
       if (ContainsObjectID (domainObject.ID))
         CreateAndExecuteRemoveModification (domainObject);
 
-      CollectionEndPoint.Touch ();
+      AssociatedEndPoint.Touch ();
     }
 
     public void Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      CheckNotDeleted (CollectionEndPoint.GetDomainObject ());
+      CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
       var domainObject = GetObject (objectID);
       if (domainObject != null)
       {
         // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
-        Assertion.IsTrue (domainObject.TransactionContext[CollectionEndPoint.ClientTransaction].State != StateType.Deleted);
+        Assertion.IsTrue (domainObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
 
         CreateAndExecuteRemoveModification (domainObject);
       }
 
-      CollectionEndPoint.Touch ();
+      AssociatedEndPoint.Touch ();
     }
 
     public void Replace (int index, DomainObject newDomainObject)
@@ -177,33 +172,33 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       CheckClientTransaction (newDomainObject, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
       CheckNotDeleted (newDomainObject);
-      CheckNotDeleted (CollectionEndPoint.GetDomainObject ());
+      CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
-      var replaceModification = CollectionEndPoint.CreateReplaceModification (index, newDomainObject);
+      var replaceModification = AssociatedEndPoint.CreateReplaceModification (index, newDomainObject);
       var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
       bidirectionalModification.ExecuteAllSteps ();
 
-      CollectionEndPoint.Touch ();
+      AssociatedEndPoint.Touch ();
     }
 
     private void CreateAndExecuteRemoveModification (DomainObject domainObject)
     {
-      var modification = CollectionEndPoint.CreateRemoveModification (domainObject);
+      var modification = AssociatedEndPoint.CreateRemoveModification (domainObject);
       var bidirectionalModification = modification.CreateBidirectionalModification ();
       bidirectionalModification.ExecuteAllSteps ();
     }
 
     private void CheckClientTransaction (DomainObject domainObject, string exceptionFormatString)
     {
-      if (!domainObject.TransactionContext[CollectionEndPoint.ClientTransaction].CanBeUsedInTransaction)
+      if (!domainObject.TransactionContext[AssociatedEndPoint.ClientTransaction].CanBeUsedInTransaction)
       {
         string transactionInfo = GetTransactionInfoForMismatchingClientTransactions (domainObject);
 
         var formattedMessage = string.Format (
             exceptionFormatString, 
             domainObject.ID, 
-            CollectionEndPoint.Definition.PropertyName, 
-            CollectionEndPoint.ObjectID);
+            AssociatedEndPoint.Definition.PropertyName, 
+            AssociatedEndPoint.ObjectID);
         throw new ClientTransactionsDifferException (formattedMessage + " The objects do not belong to the same ClientTransaction." + transactionInfo);
       }
     }
@@ -212,7 +207,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       var transactionInfo = new StringBuilder ();
 
-      var endPointObject = CollectionEndPoint.GetDomainObject ();
+      var endPointObject = AssociatedEndPoint.GetDomainObject ();
       if (otherDomainObject.HasBindingTransaction)
       {
         transactionInfo.AppendFormat (" The {0} object is bound to a BindingClientTransaction.", otherDomainObject.GetPublicDomainObjectType ().Name);
@@ -234,7 +229,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     private void CheckNotDeleted (DomainObject domainObject)
     {
-      if (domainObject.TransactionContext[CollectionEndPoint.ClientTransaction].State == StateType.Deleted)
+      if (domainObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State == StateType.Deleted)
         throw new ObjectDeletedException (domainObject.ID);
     }
   }
