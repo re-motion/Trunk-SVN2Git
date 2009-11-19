@@ -1381,7 +1381,7 @@ namespace Remotion.Data.DomainObjects
       if (IsReadOnly)
         throw new NotSupportedException ("A read-only collection cannot be associated with an end point.");
 
-      if (AssociatedEndPoint != null)
+      if (AssociatedEndPoint != null && endPoint.OppositeDomainObjects != this)
         throw new InvalidOperationException ("The collection is already associated with an end point.");
 
       if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)

@@ -1187,6 +1187,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void CreateAssociationModification_SelfReplace ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var modification = (CollectionEndPointReplaceWholeCollectionModification) 
+          endPoint.OppositeDomainObjects.CreateAssociationModification (endPoint);
+
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (endPoint));
+      Assert.That (modification.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (modification.NewOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (modification.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "This collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
         + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]

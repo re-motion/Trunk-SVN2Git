@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       var oldOpposites = ModifiedEndPoint.OppositeDomainObjects;
 
-      OldOppositeCollectionTransformer.TransformToStandAlone();
+      OldOppositeCollectionTransformer.TransformToStandAlone ();
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
       ModifiedEndPoint.SetOppositeCollection (NewOppositeCollection);

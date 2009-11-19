@@ -608,18 +608,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ReplaceOppositeCollection_SelfSet ()
-    {
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-
-      var originalOpposites = _customerEndPoint.OppositeDomainObjects;
-      _customerEndPoint.ReplaceOppositeCollection (_customerEndPoint.OppositeDomainObjects);
-
-      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (originalOpposites));
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
     public void CreateRemoveModification ()
     {
       var modification = _customerEndPoint.CreateRemoveModification (_order1);

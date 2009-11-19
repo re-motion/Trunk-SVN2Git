@@ -106,16 +106,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
 
-      if (ReferenceEquals (oppositeDomainObjects, OppositeDomainObjects))
-      {
-        Touch ();
-      }
-      else
-      {
-        var modification = oppositeDomainObjects.CreateAssociationModification (this);
-        var bidirectionalModification = modification.CreateBidirectionalModification ();
-        bidirectionalModification.ExecuteAllSteps ();
-      }
+      var modification = oppositeDomainObjects.CreateAssociationModification (this);
+      var bidirectionalModification = modification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     public override RelationEndPoint Clone (ClientTransaction clientTransaction)

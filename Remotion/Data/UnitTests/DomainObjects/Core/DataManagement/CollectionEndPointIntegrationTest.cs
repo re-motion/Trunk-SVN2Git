@@ -238,6 +238,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void ReplaceOppositeCollection_SelfSet ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+
+      var originalOpposites = _customerEndPoint.OppositeDomainObjects;
+      _customerEndPoint.ReplaceOppositeCollection (_customerEndPoint.OppositeDomainObjects);
+
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (originalOpposites));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+    }
+
+    [Test]
     public void RollbackAfterReplace_RestoresPreviousReference ()
     {
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
