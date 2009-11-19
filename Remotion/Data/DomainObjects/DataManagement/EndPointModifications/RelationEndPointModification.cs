@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
@@ -99,5 +100,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// <see cref="CreateBidirectionalModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
     /// </remarks>
     public abstract BidirectionalRelationModificationBase CreateBidirectionalModification ();
+
+    protected ObjectEndPoint GetOppositeEndPoint (DomainObject domainObject)
+    {
+      return (ObjectEndPoint) GetEndPoint (domainObject, ModifiedEndPoint.OppositeEndPointDefinition);
+    }
+
+    protected CollectionEndPoint GetEquivalentEndPoint (DomainObject domainObject)
+    {
+      return (CollectionEndPoint) GetEndPoint (domainObject, ModifiedEndPoint.Definition);
+    }
+
+    private RelationEndPoint GetEndPoint (DomainObject domainObject, IRelationEndPointDefinition endPointDefinition)
+    {
+      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+      return relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPointDefinition);
+    }
   }
 }

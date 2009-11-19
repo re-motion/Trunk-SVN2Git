@@ -18,13 +18,11 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  // TODO 992: Test
   /// <summary>
   /// Represents the replacement of the whole <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection, including the transformation
   /// of the involved <see cref="DomainObjectCollection"/> instances into stand-alone resp. associated collections.
@@ -32,17 +30,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   public class CollectionEndPointReplaceWholeCollectionModification : RelationEndPointModification
   {
     public CollectionEndPointReplaceWholeCollectionModification (
-        CollectionEndPoint endPointBeingModified, 
+        CollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newOppositeCollection,
         IDomainObjectCollectionTransformer oldOppositeCollectionTransformer,
         IDomainObjectCollectionTransformer newOppositeCollectionTransformer)
-      : base (ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified), null, null)
+      : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
       ArgumentUtility.CheckNotNull ("oldOppositeCollectionTransformer", oldOppositeCollectionTransformer);
       ArgumentUtility.CheckNotNull ("newOppositeCollectionTransformer", newOppositeCollectionTransformer);
 
-      ModifiedEndPoint = endPointBeingModified;
+      if (modifiedEndPoint.IsNull)
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
+
+      ModifiedEndPoint = modifiedEndPoint;
       NewOppositeCollection = newOppositeCollection;
       OldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
       NewOppositeCollectionTransformer = newOppositeCollectionTransformer;
@@ -62,7 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       OldOppositeCollectionTransformer.TransformToStandAlone ();
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
-      ModifiedEndPoint.SetOppositeCollection (NewOppositeCollection);
+      ModifiedEndPoint.SetOppositeCollection (NewOppositeCollection); // also touches the end point
       
       oldOpposites.ChangeDelegate = null;
       NewOppositeCollection.ChangeDelegate = ModifiedEndPoint;
@@ -94,15 +95,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
                                        where !ModifiedEndPoint.OppositeDomainObjects.ContainsObject (newObject)
                                        let endPointOfNewObject = GetOppositeEndPoint (newObject) // newOrder.Customer
                                        let oldRelatedOfNewObject = relationEndPointMap.GetRelatedObject (endPointOfNewObject.ID, false) // newOrder.Customer
-                                       let endPointOfOldRelatedOfNewObject = GetSameEndPoint (oldRelatedOfNewObject) // newOrder.Customer.Orders
+                                       let endPointOfOldRelatedOfNewObject = GetEquivalentEndPoint (oldRelatedOfNewObject) // newOrder.Customer.Orders
                                        let removeModification = endPointOfOldRelatedOfNewObject.CreateRemoveModification (newObject) // newOrder.Customer.Orders.Remove (newOrder)
                                        let setModification = endPointOfNewObject.CreateSetModification (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
-                                       select Tuple.NewTuple (setModification, removeModification);
+                                       select Tuple.NewTuple (removeModification, setModification);
 
       var modifications = 
-          new IRelationEndPointModification[] { this } // customer.Orders = newOrders
-          .Concat (modificationsOfOldNotInNew)
+          modificationsOfOldNotInNew
           .Concat (Unzip (modificationsOfNewNotInOld))
+          .Concat (new IRelationEndPointModification[] { this }) // customer.Orders = newOrders
           .ToArray ();
       
       return new NotifyingBidirectionalRelationModification (modifications);
@@ -115,22 +116,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
         yield return tuple.A;
         yield return tuple.B;
       }
-    }
-
-    private ObjectEndPoint GetOppositeEndPoint (DomainObject domainObject)
-    {
-      return (ObjectEndPoint) GetEndPoint (domainObject, base.ModifiedEndPoint.OppositeEndPointDefinition);
-    }
-
-    private CollectionEndPoint GetSameEndPoint (DomainObject domainObject)
-    {
-      return (CollectionEndPoint) GetEndPoint (domainObject, base.ModifiedEndPoint.Definition);
-    }
-
-    private RelationEndPoint GetEndPoint (DomainObject domainObject, IRelationEndPointDefinition endPointDefinition)
-    {
-      var relationEndPointMap = base.ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      return relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPointDefinition);
     }
   }
 }
