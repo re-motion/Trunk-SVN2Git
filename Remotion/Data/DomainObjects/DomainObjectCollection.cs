@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -110,6 +111,33 @@ namespace Remotion.Data.DomainObjects
   public class DomainObjectCollection : ICloneable, IList, IDomainObjectCollectionEventRaiser
   {
     // types
+
+    private class Transformer : IDomainObjectCollectionTransformer
+    {
+      public Transformer (DomainObjectCollection owningCollection)
+      {
+        Collection = owningCollection;
+      }
+
+      public DomainObjectCollection Collection { get; private set; }
+
+      public void TransformToAssociated (ICollectionEndPoint endPoint)
+      {
+        Assertion.IsNull (Collection.AssociatedEndPoint);
+
+        var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData (Collection._data.GetUndecoratedDataStore ());
+        Collection._data = new ArgumentCheckingCollectionDataDecorator (endPointDelegatingCollectionData, Collection.RequiredItemType);
+      }
+
+      public void TransformToStandAlone ()
+      {
+        Assertion.IsNotNull (Collection.AssociatedEndPoint);
+
+        Collection._data = new ArgumentCheckingCollectionDataDecorator (
+            new EventRaisingCollectionDataDecorator (Collection, Collection._data.GetUndecoratedDataStore ()),
+            Collection.RequiredItemType);
+      }
+    }
 
     // static members and constants
 
@@ -1320,16 +1348,33 @@ namespace Remotion.Data.DomainObjects
       OnDeleted ();
     }
 
+    // TODO 992: Test
     /// <summary>
-    /// Associates this <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>, replacing that end point's
-    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection. The previous <see cref="ICollectionEndPoint.OppositeDomainObjects"/> 
-    /// collection of the end point is transformed into a stand-alone collection.
+    /// Creates an <see cref="IRelationEndPointModification"/> instance that encapsulates all the modifications required to associate this
+    /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
+    /// but it is invoked when a collection-valued relation property is set to a new collection.
     /// </summary>
     /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
     /// must have the same type and <see cref="RequiredItemType"/> as this collection.</param>
     /// <exception cref="NotSupportedException">This collection is read-only.</exception>
     /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
-    public void AssociateWithEndPoint (ICollectionEndPoint endPoint)
+    /// <remarks>
+    /// <para>
+    /// When the modification is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
+    /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
+    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
+    /// </para>
+    /// <para>
+    /// The returned <see cref="IRelationEndPointModification"/> should be executed as a bidirectional modification 
+    /// (<see cref="IRelationEndPointModification.CreateBidirectionalModification"/>), otherwise inconsistent state might arise.
+    /// </para>
+    /// <para>
+    /// This method is part of <see cref="DomainObjectCollection"/> rather than <see cref="CollectionEndPoint"/> because it is very tightly
+    /// coupled to <see cref="DomainObjectCollection"/>: associating a collection will modify its inner data storage strategy, and 
+    /// <see cref="CollectionEndPoint"/> has no possibility to do that.
+    /// </para>
+    /// </remarks>
+    public IRelationEndPointModification CreateAssociationModification (CollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -1351,18 +1396,11 @@ namespace Remotion.Data.DomainObjects
         throw new InvalidOperationException (message);
       }
 
-      // transform original opposite collection to stand-alone collection
-      var originalOppositeCollection = endPoint.OppositeDomainObjects;
-      originalOppositeCollection._data = new ArgumentCheckingCollectionDataDecorator (
-          new EventRaisingCollectionDataDecorator (originalOppositeCollection, originalOppositeCollection._data.GetUndecoratedDataStore()), 
-          originalOppositeCollection.RequiredItemType);
-
-      // transform this collection to associated collection
-      var endPointDelegatingData = endPoint.CreateDelegatingCollectionData (_data.GetUndecoratedDataStore());
-      _data = new ArgumentCheckingCollectionDataDecorator (endPointDelegatingData, _requiredItemType);
-
-      // inform end point about the change
-      endPoint.SetOppositeCollection (this);
+      return new CollectionEndPointReplaceWholeCollectionModification (
+          endPoint,
+          this,
+          new Transformer (endPoint.OppositeDomainObjects), 
+          new Transformer (this));
     }
   }
 }

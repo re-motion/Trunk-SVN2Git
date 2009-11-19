@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
@@ -113,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
       else
       {
-        var modification = new CollectionEndPointReplaceWholeCollectionModification (this, oppositeDomainObjects);
+        var modification = oppositeDomainObjects.CreateAssociationModification (this);
         var bidirectionalModification = modification.CreateBidirectionalModification ();
         bidirectionalModification.ExecuteAllSteps ();
       }

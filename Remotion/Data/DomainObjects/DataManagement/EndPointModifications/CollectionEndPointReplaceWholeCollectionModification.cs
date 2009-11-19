@@ -17,35 +17,55 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  // TODO 992: Test
+  /// <summary>
+  /// Represents the replacement of the whole <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection, including the transformation
+  /// of the involved <see cref="DomainObjectCollection"/> instances into stand-alone resp. associated collections.
+  /// </summary>
   public class CollectionEndPointReplaceWholeCollectionModification : RelationEndPointModification
   {
-    private readonly CollectionEndPoint _endPointBeingModified;
-    private readonly DomainObjectCollection _newOppositeCollection;
-
     public CollectionEndPointReplaceWholeCollectionModification (
         CollectionEndPoint endPointBeingModified, 
-        DomainObjectCollection newOppositeCollection)
+        DomainObjectCollection newOppositeCollection,
+        IDomainObjectCollectionTransformer oldOppositeCollectionTransformer,
+        IDomainObjectCollectionTransformer newOppositeCollectionTransformer)
       : base (ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified), null, null)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
+      ArgumentUtility.CheckNotNull ("oldOppositeCollectionTransformer", oldOppositeCollectionTransformer);
+      ArgumentUtility.CheckNotNull ("newOppositeCollectionTransformer", newOppositeCollectionTransformer);
 
-      _endPointBeingModified = endPointBeingModified;
-      _newOppositeCollection = newOppositeCollection;
+      ModifiedEndPoint = endPointBeingModified;
+      NewOppositeCollection = newOppositeCollection;
+      OldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
+      NewOppositeCollectionTransformer = newOppositeCollectionTransformer;
     }
+
+    public new CollectionEndPoint ModifiedEndPoint { get; private set; }
+
+    public DomainObjectCollection NewOppositeCollection { get; private set; }
+
+    public IDomainObjectCollectionTransformer OldOppositeCollectionTransformer { get; private set; }
+    public IDomainObjectCollectionTransformer NewOppositeCollectionTransformer { get; private set; }
 
     public override void Perform ()
     {
-      var oldOpposites = _endPointBeingModified.OppositeDomainObjects;
-      _newOppositeCollection.AssociateWithEndPoint (_endPointBeingModified);
+      var oldOpposites = ModifiedEndPoint.OppositeDomainObjects;
 
+      OldOppositeCollectionTransformer.TransformToStandAlone();
+      NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
+
+      ModifiedEndPoint.SetOppositeCollection (NewOppositeCollection);
+      
       oldOpposites.ChangeDelegate = null;
-      _newOppositeCollection.ChangeDelegate = _endPointBeingModified;
+      NewOppositeCollection.ChangeDelegate = ModifiedEndPoint;
     }
 
     /// <summary>
@@ -62,16 +82,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      var domainObjectOfCollectionEndPoint = ModifiedEndPoint.GetDomainObject ();
+      var relationEndPointMap = base.ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+      var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
       
-      var modificationsOfOldNotInNew = from oldObject in _endPointBeingModified.OppositeDomainObjects.Cast<DomainObject> ()
-                                       where !_newOppositeCollection.ContainsObject (oldObject)
+      var modificationsOfOldNotInNew = from oldObject in ModifiedEndPoint.OppositeDomainObjects.Cast<DomainObject> ()
+                                       where !NewOppositeCollection.ContainsObject (oldObject)
                                        let endPoint = GetOppositeEndPoint (oldObject)
                                        select endPoint.CreateRemoveModification (domainObjectOfCollectionEndPoint); // oldOrder.Customer = null
       
-      var modificationsOfNewNotInOld = from newObject in _newOppositeCollection.Cast<DomainObject> ()
-                                       where !_endPointBeingModified.OppositeDomainObjects.ContainsObject (newObject)
+      var modificationsOfNewNotInOld = from newObject in NewOppositeCollection.Cast<DomainObject> ()
+                                       where !ModifiedEndPoint.OppositeDomainObjects.ContainsObject (newObject)
                                        let endPointOfNewObject = GetOppositeEndPoint (newObject) // newOrder.Customer
                                        let oldRelatedOfNewObject = relationEndPointMap.GetRelatedObject (endPointOfNewObject.ID, false) // newOrder.Customer
                                        let endPointOfOldRelatedOfNewObject = GetSameEndPoint (oldRelatedOfNewObject) // newOrder.Customer.Orders
@@ -99,17 +119,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     private ObjectEndPoint GetOppositeEndPoint (DomainObject domainObject)
     {
-      return (ObjectEndPoint) GetEndPoint (domainObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      return (ObjectEndPoint) GetEndPoint (domainObject, base.ModifiedEndPoint.OppositeEndPointDefinition);
     }
 
     private CollectionEndPoint GetSameEndPoint (DomainObject domainObject)
     {
-      return (CollectionEndPoint) GetEndPoint (domainObject, ModifiedEndPoint.Definition);
+      return (CollectionEndPoint) GetEndPoint (domainObject, base.ModifiedEndPoint.Definition);
     }
 
     private RelationEndPoint GetEndPoint (DomainObject domainObject, IRelationEndPointDefinition endPointDefinition)
     {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+      var relationEndPointMap = base.ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
       return relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPointDefinition);
     }
   }

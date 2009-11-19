@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -1172,111 +1173,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void AssociateWithEndPoint ()
+    public void CreateAssociationModification ()
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
       var newCollection = new OrderCollection ();
-      newCollection.AssociateWithEndPoint (endPoint);
+      var modification = (CollectionEndPointReplaceWholeCollectionModification) newCollection.CreateAssociationModification (endPoint);
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newCollection));
-    }
-
-    [Test]
-    public void AssociateWithEndPoint_SetsNewCollection_ToAssociated ()
-    {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
-
-      // newCollection => argument checking decorator => event decorator => actual data store
-
-      var newCollection = new OrderCollection ();
-      var newCollectionDataStore = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (newCollection).GetUndecoratedDataStore();
-      newCollection.AssociateWithEndPoint (endPoint);
-
-      // newCollection => argument checking decorator => end point data => actual data store
-      
-      var newCollectionDecorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (newCollection);
-      Assert.That (newCollectionDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
-
-      var newCollectionDelegatingData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (newCollectionDecorator);
-      var newActualDataStore = DomainObjectCollectionDataTestHelper.GetActualDataAndCheckType<DomainObjectCollectionData> (newCollectionDelegatingData);
-      Assert.That (newActualDataStore, Is.SameAs (newCollectionDataStore), "new collection still uses its original data store");
-    }
-
-    [Test]
-    public void AssociateWithEndPoint_SetsOldCollection_ToStandAlone ()
-    {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
-
-      // oldCollection => argument decorator => end point data => actual data store
-
-      var oldCollection = endPoint.OppositeDomainObjects;
-      var oldCollectionData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection);
-      var oldCollectionActualDataStore = oldCollectionData.GetUndecoratedDataStore ();
-
-      var newCollection = new OrderCollection ();
-      newCollection.AssociateWithEndPoint (endPoint);
-
-      // oldCollection => argument decorator => event decorator => actual data store
-
-      Assert.That (oldCollection.AssociatedEndPoint, Is.Null);
-
-      var oldCollectionNewArgumentDecorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (oldCollection);
-      Assert.That (oldCollectionNewArgumentDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
-
-      var oldCollectionNewEventDecorator = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (oldCollectionNewArgumentDecorator);
-      Assert.That (oldCollectionNewEventDecorator.EventRaiser, Is.SameAs (oldCollection));
-
-      var oldCollectionNewActualDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (oldCollectionNewEventDecorator);
-      Assert.That (oldCollectionNewActualDataStore, Is.SameAs (oldCollectionActualDataStore));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (endPoint));
+      Assert.That (modification.NewOppositeCollection, Is.SameAs (newCollection));
+      Assert.That (modification.NewOppositeCollectionTransformer.Collection, Is.SameAs (newCollection));
+      Assert.That (modification.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "This collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
         + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
-    public void AssociateWithEndPoint_DifferentCollectionTypes ()
+    public void CreateAssociationModification_DifferentCollectionTypes ()
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
       var newCollection = new ObjectList<Order>();
-      newCollection.AssociateWithEndPoint (endPoint);
+      newCollection.CreateAssociationModification (endPoint);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "This collection has a different item type than the end point's current opposite collection.")]
-    public void AssociateWithEndPoint_DifferentRequiredItemType ()
+    public void CreateAssociationModification_DifferentRequiredItemType ()
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
       var newCollection = new DomainObjectCollection (typeof (Customer));
-      newCollection.AssociateWithEndPoint (endPoint);
-
-      Assert.Fail ();
+      newCollection.CreateAssociationModification (endPoint);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A read-only collection cannot be associated with an end point.")]
-    public void AssociateWithEndPoint_CollectionIsReadOnly ()
+    public void CreateAssociationModification_CollectionIsReadOnly ()
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
       var newCollection = new DomainObjectCollection (new DomainObjectCollection (typeof (Customer)), true);
-      newCollection.AssociateWithEndPoint (endPoint);
+      newCollection.CreateAssociationModification (endPoint);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The collection is already associated with an end point.")]
-    public void AssociateWithEndPoint_CollectionIsAlreadyAssociated ()
+    public void CreateAssociationModification_CollectionIsAlreadyAssociated ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+      CollectionEndPoint endPoint1 = CreateCollectionEndPointForOrders ();
+      CollectionEndPoint endPoint2 = CreateCollectionEndPointForOrders ();
 
-      var newCollection = new OrderCollection ();
-      newCollection.AssociateWithEndPoint (endPoint);
-      newCollection.AssociateWithEndPoint (endPoint);
-
-      Assert.Fail ();
+      endPoint1.OppositeDomainObjects.CreateAssociationModification (endPoint2);
     }
 
     [Test]

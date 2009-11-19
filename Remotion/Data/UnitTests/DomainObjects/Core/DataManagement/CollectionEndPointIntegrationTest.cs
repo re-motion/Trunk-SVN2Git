@@ -34,6 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private Order _orderWithoutOrderItem; // belongs to customer1
     private Order _order2; // belongs to customer3
 
+    private CollectionEndPoint _customerEndPoint;
+    
     public override void SetUp ()
     {
       base.SetUp ();
@@ -42,97 +44,117 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      _customerEndPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
     }
 
     [Test]
     public void AddToOppositeDomainObjects ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
       var newOrder = Order.NewObject ();
 
-      endPoint.OppositeDomainObjects.Add (newOrder);
+      _customerEndPoint.OppositeDomainObjects.Add (newOrder);
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, newOrder }), "changes go down to actual data store");
-      Assert.That (newOrder.Customer, Is.SameAs (endPoint.GetDomainObject()), "bidirectional modification");
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, newOrder }), "changes go down to actual data store");
+      Assert.That (newOrder.Customer, Is.SameAs (_customerEndPoint.GetDomainObject()), "bidirectional modification");
     }
 
     [Test]
     public void RemoveFromOppositeDomainObjects ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
+      _customerEndPoint.OppositeDomainObjects.Remove (_order1.ID);
 
-      endPoint.OppositeDomainObjects.Remove (_order1.ID);
-
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }), "changes go down to actual data store");
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }), "changes go down to actual data store");
       Assert.That (_order1.Customer, Is.Null, "bidirectional modification");
     }
 
     [Test]
     public void ReplaceOppositeCollection()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
-
-      var oldOpposites = endPoint.OppositeDomainObjects;
-      var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
-      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetUndecoratedDataStore();
-
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
       var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
-      var originalDataOfNewOpposites = GetDomainObjectCollectionData (newOpposites);
-      var originalDataStoreOfNewOpposites = originalDataOfNewOpposites.GetUndecoratedDataStore();
 
-      endPoint.ReplaceOppositeCollection (newOpposites);
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
       Assert.That (oldOpposites, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
-      var dataOfNewOpposites = GetDomainObjectCollectionData (newOpposites);
-      var dataStoreOfNewOpposites = dataOfNewOpposites.GetUndecoratedDataStore();
-      Assert.That (dataOfNewOpposites, Is.TypeOf (typeof (EndPointDelegatingCollectionData)));
-      Assert.That (dataOfNewOpposites.AssociatedEndPoint, Is.SameAs (endPoint));
-      Assert.That (dataStoreOfNewOpposites, Is.SameAs (originalDataStoreOfNewOpposites));
-
-      var dataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
-      var dataStoreOfOldOpposites = dataOfOldOpposites.GetUndecoratedDataStore ();
-      Assert.That (dataOfOldOpposites, Is.TypeOf (typeof (EventRaisingCollectionDataDecorator)));
-      Assert.That (dataOfOldOpposites.AssociatedEndPoint, Is.Null);
-      Assert.That (dataStoreOfOldOpposites, Is.SameAs (originalDataStoreOfOldOpposites));
+      Assert.That (newOpposites.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (oldOpposites.AssociatedEndPoint, Is.Null);
     }
 
     [Test]
-    public void ReplaceOppositeCollection_PerformsBidirectionalChanges ()
+    public void ReplaceOppositeCollection_DataStrategy_OfOldEndPoint ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
+      var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
+      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetUndecoratedDataStore ();
 
+      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+
+      // oldCollection => argument decorator => event decorator => actual data store
+
+      var argChecker = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (oldOpposites);
+      Assert.That (argChecker.RequiredItemType, Is.SameAs (typeof (Order)));
+
+      var eventRaiser = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (argChecker);
+      Assert.That (eventRaiser.EventRaiser, Is.SameAs (oldOpposites));
+
+      var dataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (eventRaiser);
+      Assert.That (dataStore, Is.SameAs (originalDataStoreOfOldOpposites));
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_DataStrategy_OfNewEndPoint ()
+    {
+      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
+      var originalDataOfNewOpposites = GetDomainObjectCollectionData (newOpposites);
+      var originalDataStoreOfNewOpposites = originalDataOfNewOpposites.GetUndecoratedDataStore ();
+
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+
+      // newCollection => argument checking decorator => end point data => actual data store
+
+      var argChecker = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (newOpposites);
+      Assert.That (argChecker.RequiredItemType, Is.SameAs (typeof (Order)));
+
+      var delegator = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (argChecker);
+      var dataStore = DomainObjectCollectionDataTestHelper.GetActualDataAndCheckType<DomainObjectCollectionData> (delegator);
+      Assert.That (dataStore, Is.SameAs (originalDataStoreOfNewOpposites), "new collection still uses its original data store");
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_PerformsAllBidirectionalChanges ()
+    {
       var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem, _order2}));
 
       var customer3 = Customer.GetObject (DomainObjectIDs.Customer3);
       
-      Assert.That (_order1.Customer, Is.SameAs (endPoint.GetDomainObject ()));
-      Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (endPoint.GetDomainObject ()));
+      Assert.That (_order1.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
+      Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
       Assert.That (_order2.Customer, Is.SameAs (customer3));
       Assert.That (customer3.Orders, List.Contains (_order2));
 
-      endPoint.ReplaceOppositeCollection (newOpposites);
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
 
       Assert.That (_order1.Customer, Is.Null);
-      Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (endPoint.GetDomainObject ()));
-      Assert.That (_order2.Customer, Is.SameAs (endPoint.GetDomainObject()));
+      Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_customerEndPoint.GetDomainObject ()));
+      Assert.That (_order2.Customer, Is.SameAs (_customerEndPoint.GetDomainObject()));
       Assert.That (customer3.Orders, List.Not.Contains (_order2));
     }
 
     [Test]
     public void ReplaceOppositeCollection_RaisesNoEventsOnCollections ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
-
-      var oldOpposites = endPoint.OppositeDomainObjects;
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
       var oldEventListener = new DomainObjectCollectionEventReceiver (oldOpposites);
 
       var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
       var newEventListener = new DomainObjectCollectionEventReceiver (newOpposites);
 
-      endPoint.ReplaceOppositeCollection (newOpposites);
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
 
       Assert.That (oldEventListener.HasAddedEventBeenCalled, Is.False);
       Assert.That (oldEventListener.HasAddingEventBeenCalled, Is.False);
@@ -146,53 +168,107 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ReplaceOppositeCollection_SetsChangedFlag_WhenSetToNewCollection ()
+    public void ReplaceOppositeCollection_HasChanged_OnlyWhenSetToNewCollection ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
-      Assert.That (endPoint.HasChanged, Is.False);
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
 
-      endPoint.ReplaceOppositeCollection (endPoint.OppositeDomainObjects);
-      Assert.That (endPoint.HasChanged, Is.False);
+      _customerEndPoint.ReplaceOppositeCollection (_customerEndPoint.OppositeDomainObjects);
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
-      endPoint.ReplaceOppositeCollection (newOpposites);
-      Assert.That (endPoint.HasChanged, Is.True);
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (_customerEndPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_HasChanged_EvenWhenSetToEqualCollection ()
+    {
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
+
+      var newOpposites = new OrderCollection { _order1, _orderWithoutOrderItem };
+      Assert.That (newOpposites, Is.EqualTo (_customerEndPoint.OppositeDomainObjects));
+      Assert.That (newOpposites, Is.Not.SameAs (_customerEndPoint.OppositeDomainObjects));
+
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (_customerEndPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_RemembersOriginalCollection ()
+    {
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
+      var oldOriginalOpposites = _customerEndPoint.OriginalOppositeDomainObjectsContents;
+
+      var newOpposites = new OrderCollection { _order2 };
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.SameAs (oldOriginalOpposites));
+      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (oldOpposites));
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_SetsChangeDelegateOfNewCollection ()
+    {
+      var newOpposites = new OrderCollection { _order2 };
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+
+      Assert.That (newOpposites.ChangeDelegate, Is.SameAs (_customerEndPoint));
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_ResetsChangeDelegateOfOldCollection ()
+    {
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
+
+      var newOpposites = new OrderCollection { _order2 };
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+
+      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_SetsTouchedFlag ()
+    {
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+
+      var newOpposites = new OrderCollection { _order2 };
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
+
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
     public void RollbackAfterReplace_RestoresPreviousReference ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
-      var oldOpposites = endPoint.OppositeDomainObjects;
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
-      endPoint.ReplaceOppositeCollection (newOpposites); // replace collection
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites); // replace collection
 
-      endPoint.Rollback ();
+      _customerEndPoint.Rollback ();
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
       Assert.That (newOpposites.ChangeDelegate, Is.Null);
     }
 
     [Test]
     public void RollbackAfterReplace_RestoresPreviousReference_UndoesModifications_LeavesModificationOnDetached ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
-      endPoint.OppositeDomainObjects.Clear (); // modify collection
-      var oldOpposites = endPoint.OppositeDomainObjects;
+      _customerEndPoint.OppositeDomainObjects.Clear (); // modify collection
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
-      endPoint.ReplaceOppositeCollection (newOpposites); // replace collection
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites); // replace collection
 
       newOpposites.Add (_order1);
 
-      endPoint.Rollback ();
+      _customerEndPoint.Rollback ();
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
       Assert.That (newOpposites.ChangeDelegate, Is.Null);
       Assert.That (newOpposites, Is.EqualTo (new[] { _orderWithoutOrderItem, _order1 })); // does not undo changes on detached collection
     }
@@ -200,25 +276,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CommitAfterReplace_SavesReference ()
     {
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
-      var oldOpposites = endPoint.OppositeDomainObjects;
+      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
 
       oldOpposites.Clear (); // modify collection
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
-      endPoint.ReplaceOppositeCollection (newOpposites); // replace collection
-      endPoint.Commit ();
+      _customerEndPoint.ReplaceOppositeCollection (newOpposites); // replace collection
+      _customerEndPoint.Commit ();
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
-      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
       Assert.That (oldOpposites.ChangeDelegate, Is.Null);
 
-      endPoint.Rollback ();
+      _customerEndPoint.Rollback ();
 
-      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
-      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
       Assert.That (oldOpposites.ChangeDelegate, Is.Null);
     }
 
