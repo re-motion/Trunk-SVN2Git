@@ -133,5 +133,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (_newCompany2.IndustrialSector, Is.SameAs (_newIndustrialSector));
       Assert.That (oldCompanies, Is.Empty);
     }
+
+    [Test]
+    public void ReplaceCollectionProperty_Cascade_Rollback ()
+    {
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var customer1 = Customer.GetObject (DomainObjectIDs.Customer1); // Order1, OrderWithoutOrderItems
+        var customer3 = Customer.GetObject (DomainObjectIDs.Customer3); // Order2
+        var newCollection = new OrderCollection { Order.GetObject (DomainObjectIDs.Order4) };
+
+        var oldOrdersOfCustomer1 = customer1.Orders;
+        var oldOrdersOfCustomer3 = customer3.Orders;
+
+        customer1.Orders = newCollection;
+        customer3.Orders = oldOrdersOfCustomer1;
+        Assert.That (oldOrdersOfCustomer3.AssociatedEndPoint, Is.Null);
+
+        ClientTransaction.Current.Rollback ();
+
+        Assert.That (customer1.Orders, Is.SameAs (oldOrdersOfCustomer1));
+        Assert.That (customer3.Orders, Is.SameAs (oldOrdersOfCustomer3));
+
+        Assert.That (customer1.Orders.AssociatedEndPoint.GetDomainObject (), Is.SameAs (customer1));
+        Assert.That (customer3.Orders.AssociatedEndPoint.GetDomainObject (), Is.SameAs (customer3));
+        Assert.That (newCollection.AssociatedEndPoint, Is.Null);
+      }
+    }
   }
 }

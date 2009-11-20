@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public abstract CustomerType Type { get; set; }
 
     [DBBidirectionalRelation ("Customer", SortExpression = "OrderNo asc")]
-    public abstract OrderCollection Orders { get; }
+    public abstract OrderCollection Orders { get; set;  }
 
     public void OnDeserialization (object sender)
     {

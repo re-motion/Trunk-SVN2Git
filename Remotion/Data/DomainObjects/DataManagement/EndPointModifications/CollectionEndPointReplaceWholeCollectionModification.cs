@@ -60,12 +60,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       var oldOpposites = ModifiedEndPoint.OppositeDomainObjects;
 
-      OldOppositeCollectionTransformer.TransformToStandAlone ();
+      // only transform the old collection to stand-alone if it is still associated with this end point
+      // rationale: during rollback, the old relation might have already been associated with another end-point, we must nur overwrite this!
+      if (OldOppositeCollectionTransformer.Collection.AssociatedEndPoint == ModifiedEndPoint)
+      {
+        OldOppositeCollectionTransformer.TransformToStandAlone();
+        oldOpposites.ChangeDelegate = null;
+      }
+
+      // this must always be done, even during rollback phase
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
       ModifiedEndPoint.SetOppositeCollection (NewOppositeCollection); // also touches the end point
       
-      oldOpposites.ChangeDelegate = null;
       NewOppositeCollection.ChangeDelegate = ModifiedEndPoint;
     }
 

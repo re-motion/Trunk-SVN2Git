@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using Remotion.Development.UnitTesting;
 using System.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
@@ -133,6 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       using (_mockRepository.Ordered ())
       {
+        _oldTransformerMock.Stub (mock => mock.Collection).Return (CollectionEndPoint.OppositeDomainObjects);
         _oldTransformerMock.Expect (mock => mock.TransformToStandAlone ());
         _newTransformerMock
             .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
@@ -153,6 +153,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       Assert.That (CollectionEndPoint.OppositeDomainObjects, Is.SameAs (_newCollection));
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void Perform_DoesNotTransformOldCollectionToStandAlone_WhenOldCollectionAssociatedWithOtherEndPoint ()
+    {
+      var endPointData = new EndPointDelegatingCollectionData (MockRepository.GenerateStub<ICollectionEndPoint> (), new DomainObjectCollectionData ());
+      var collectionOfDifferentEndPoint = new DomainObjectCollection (endPointData);
+
+      Assert.That (collectionOfDifferentEndPoint.AssociatedEndPoint != null);
+      Assert.That (collectionOfDifferentEndPoint.AssociatedEndPoint != CollectionEndPoint);
+
+      _oldTransformerMock.Stub (mock => mock.Collection).Return (collectionOfDifferentEndPoint);
+      // _oldTransformerMock.TransformToStandAlone is not called because collectionOfDifferentEndPoint belongs to a different end point
+      _newTransformerMock
+          .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
+          .WhenCalled (mi => TransformToAssociated (_newCollection));
+
+      _mockRepository.ReplayAll ();
+
+      _modification.Perform ();
+
+      _oldTransformerMock.AssertWasNotCalled (mock => mock.TransformToStandAlone ());
+      _newTransformerMock.VerifyAllExpectations ();
     }
 
     [Test]

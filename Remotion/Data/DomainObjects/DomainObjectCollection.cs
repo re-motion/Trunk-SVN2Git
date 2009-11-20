@@ -123,8 +123,6 @@ namespace Remotion.Data.DomainObjects
 
       public void TransformToAssociated (ICollectionEndPoint endPoint)
       {
-        Assertion.IsNull (Collection.AssociatedEndPoint);
-
         var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData (Collection._data.GetUndecoratedDataStore ());
         Assertion.IsTrue (endPointDelegatingCollectionData.RequiredItemType == Collection.RequiredItemType);
 
@@ -1225,7 +1223,6 @@ namespace Remotion.Data.DomainObjects
       OnDeleted ();
     }
 
-    // TODO 992: Test
     /// <summary>
     /// Creates an <see cref="IRelationEndPointModification"/> instance that encapsulates all the modifications required to associate this
     /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
@@ -1246,6 +1243,10 @@ namespace Remotion.Data.DomainObjects
     /// (<see cref="IRelationEndPointModification.CreateBidirectionalModification"/>), otherwise inconsistent state might arise.
     /// </para>
     /// <para>
+    /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,
+    /// otherwise an inconsistent state might result.
+    /// </para>
+    /// <para>
     /// This method is part of <see cref="DomainObjectCollection"/> rather than <see cref="CollectionEndPoint"/> because it is very tightly
     /// coupled to <see cref="DomainObjectCollection"/>: associating a collection will modify its inner data storage strategy, and 
     /// <see cref="CollectionEndPoint"/> has no possibility to do that.
@@ -1254,9 +1255,6 @@ namespace Remotion.Data.DomainObjects
     public IRelationEndPointModification CreateAssociationModification (CollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (AssociatedEndPoint != null && endPoint.OppositeDomainObjects != this)
-        throw new InvalidOperationException ("The collection is already associated with an end point.");
 
       if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)
         throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");

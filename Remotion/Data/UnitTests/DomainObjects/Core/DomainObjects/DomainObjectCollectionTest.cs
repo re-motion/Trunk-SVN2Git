@@ -1297,16 +1297,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The collection is already associated with an end point.")]
-    public void CreateAssociationModification_CollectionIsAlreadyAssociated ()
-    {
-      CollectionEndPoint endPoint1 = CreateCollectionEndPointForOrders ();
-      CollectionEndPoint endPoint2 = CreateCollectionEndPointForOrders ();
-
-      endPoint1.OppositeDomainObjects.CreateAssociationModification (endPoint2);
-    }
-
-    [Test]
     public void EventRaiser_BeginAdd ()
     {
       var collectionMock = new MockRepository ().PartialMock<DomainObjectCollection> ();
