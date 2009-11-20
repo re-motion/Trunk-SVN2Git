@@ -60,24 +60,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    [Ignore ("TODO 992: Fix standalone collections to include event raiser")]
     public void DomainObjectCollection_StandAlone_Data ()
     {
       var collection = new DomainObjectCollection (typeof (Order));
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
 
-      var data = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var eventRaiser = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (data);
-      var dataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (eventRaiser);
-
+      var dataStore = (DomainObjectCollectionData) 
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection).GetUndecoratedDataStore();
       long version = dataStore.Version;
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
-      var deserializedData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (deserializedCollection);
-      var deserializedEventRaiser = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (deserializedData);
-      Assert.That (deserializedEventRaiser.EventRaiser, Is.SameAs (deserializedCollection));
-      var deserializedDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (deserializedEventRaiser);
 
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (deserializedCollection, typeof (Order));
+      var deserializedDataStore = (DomainObjectCollectionData)
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (deserializedCollection).GetUndecoratedDataStore ();
       Assert.AreEqual (version, deserializedDataStore.Version);
     }
 

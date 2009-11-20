@@ -152,10 +152,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 992")]
     public void ReplaceOppositeCollection_SourceCollection_IsReadOnly ()
     {
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem, _order2 }));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2 };
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
 
       ((OrderCollection) _customerEndPoint.OppositeDomainObjects).SetIsReadOnly (true);
@@ -166,10 +165,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 992")]
     public void ReplaceOppositeCollection_TargetCollection_IsReadOnly ()
     {
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem, _order2 }));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2 };
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
 
       newOpposites.SetIsReadOnly (true);
@@ -279,7 +277,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 992")]
     public void Rollback_AfterReplace_RestoresDelegationChain ()
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;

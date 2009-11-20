@@ -150,9 +150,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
+        var oppositeObjectsReferenceBeforeRollback = _oppositeDomainObjects;
+        
+        var modification = _originalOppositeDomainObjectsReference.CreateAssociationModification (this);
+        modification.Perform (); // no notifications, no bidirectional changes, we only change the collections' associations
+
         _oppositeDomainObjects.ChangeDelegate = null;
         _oppositeDomainObjects = _originalOppositeDomainObjectsReference;
+
         _oppositeDomainObjects.ChangeDelegate = this;
+
+        Assertion.IsTrue (_oppositeDomainObjects.AssociatedEndPoint == this);
+        Assertion.IsTrue (_oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback || oppositeObjectsReferenceBeforeRollback.AssociatedEndPoint == null);
+
         _oppositeDomainObjects.Rollback (_originalOppositeDomainObjectsContents);
       }
 

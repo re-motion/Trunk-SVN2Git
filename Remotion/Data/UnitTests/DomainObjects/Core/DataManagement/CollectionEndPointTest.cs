@@ -472,7 +472,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 992")]
     public void Rollback_RestoresCollectionStrategies_AfterReplace ()
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
