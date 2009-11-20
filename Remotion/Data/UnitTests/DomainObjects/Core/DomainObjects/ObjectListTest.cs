@@ -52,15 +52,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialization_WithData ()
     {
-      var data = new DomainObjectCollectionData();
+      var givenData = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData (), typeof (Customer));
+      var collection = new ObjectList<Customer> (givenData);
 
-      var collection = new ObjectList<Customer> (data);
+      var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      Assert.That (actualData, Is.SameAs (givenData));
+    }
 
-      var decorator = PrivateInvoke.GetNonPublicField (collection, "_data");
-      Assert.That (decorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
-      
-      var wrappedData = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
-      Assert.That (wrappedData, Is.SameAs (data));
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The given data strategy must have a required item type of 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' in order to be used "
+        + "with this collection type.\r\nParameter name: dataStrategy")]
+    public void Initialization_WithData_InvalidRequiredItemType ()
+    {
+      var givenData = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData (), null);
+      var collection = new ObjectList<Customer> (givenData);
+
+      var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      Assert.That (actualData, Is.SameAs (givenData));
+    }
+
+    [Test]
+    public void Initialization_WithData_DerivedRequiredItemType ()
+    {
+      var givenData = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData (), typeof (Order));
+      var collection = new ObjectList<DomainObject> (givenData);
+
+      Assert.That (collection.RequiredItemType, Is.SameAs (typeof (Order)));
+    }
+
+    [Test]
+    public void Initialization_WithIEnumerable_RequiredItemType ()
+    {
+      var list = new ObjectList<OrderItem> (new OrderItem[0], false);
+      Assert.That (list.RequiredItemType, Is.SameAs (typeof (OrderItem)));
     }
 
     [Test]
@@ -77,28 +102,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var list = new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }, true);
       Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }));
       Assert.That (list.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemDuplicateException), ExpectedMessage = "Item 1 of argument domainObjects is a duplicate "
-        + "('OrderItem|ad620a11-4bc4-4791-bcf4-a0770a08c5b0|System.Guid').")]
-    public void Initialization_WithEnumerableWithDuplicates ()
-    {
-      new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem1 }, false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 0 of argument domainObjects is null.")]
-    public void Initialization_WithEnumerableWithNulls ()
-    {
-      new ObjectList<OrderItem> (new OrderItem[] { null }, false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 2 of argument domainObjects is null.")]
-    public void Initialization_WithEnumerableWithLaterNulls ()
-    {
-      new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, null }, false);
     }
 
     [Test]

@@ -192,7 +192,7 @@ namespace Remotion.Data.DomainObjects.Queries
         foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
           newLoadedDataContainer.RegisterLoadedDataContainer (ClientTransaction);
 
-        var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), true);
+        var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), null, true);
         ClientTransaction.OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
         return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID, true)));

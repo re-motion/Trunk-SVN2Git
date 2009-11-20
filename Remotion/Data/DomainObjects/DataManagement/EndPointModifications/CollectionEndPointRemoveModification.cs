@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
+    private readonly int _index;
 
     public CollectionEndPointRemoveModification (CollectionEndPoint modifiedEndPoint, DomainObject removedObject, IDomainObjectCollectionData collectionData)
         : base (
@@ -37,6 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
 
+      _index = modifiedEndPoint.OppositeDomainObjects.IndexOf (removedObject);
       _modifiedCollectionData = collectionData;
       _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
     }
@@ -53,7 +55,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Begin ()
     {
-      ModifiedCollection.BeginRemove (OldRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginRemove (_index, OldRelatedObject);
+      
       base.Begin ();
     }
 
@@ -65,7 +68,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void End ()
     {
-      ModifiedCollection.EndRemove (OldRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndRemove (_index, OldRelatedObject);
       base.End ();
     }
 

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
@@ -180,17 +179,15 @@ namespace Remotion.Data.DomainObjects.Queries
     public DomainObjectCollection ToCustomCollection ()
     {
       var collectionType = Query.CollectionType ?? typeof (DomainObjectCollection);
-      var collection = DomainObjectCollection.Create (collectionType);
       try
       {
-        collection.AddRange (_queryResult);
+        return new DomainObjectCollectionFactory ().CreateCollection (collectionType, _queryResult);
       }
       catch (Exception ex)
       {
-        throw new UnexpectedQueryResultException (string.Format ("Cannot create a custom collection of type '{0}' for the query result: {1}", 
-            collectionType.Name, ex.Message), ex);
+        var message = string.Format ("Cannot create a custom collection of type '{0}' for the query result: {1}", collectionType.Name, ex.Message);
+        throw new UnexpectedQueryResultException (message, ex);
       }
-      return collection;
     }
 
     private ObjectList<TResult> ToObjectList<TResult> (IEnumerable<TResult> values)

@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ReplaceOppositeCollection()
     {
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
 
       _customerEndPoint.ReplaceOppositeCollection (newOpposites);
 
@@ -91,28 +91,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
       var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetUndecoratedDataStore ();
 
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       _customerEndPoint.ReplaceOppositeCollection (newOpposites);
 
-      CheckStandAloneCollectionStrategy(oldOpposites, originalDataStoreOfOldOpposites);
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy(oldOpposites, typeof (Order), originalDataStoreOfOldOpposites);
     }
 
     [Test]
     public void ReplaceOppositeCollection_DataStrategy_OfNewEndPoint ()
     {
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       var originalDataOfNewOpposites = GetDomainObjectCollectionData (newOpposites);
       var originalDataStoreOfNewOpposites = originalDataOfNewOpposites.GetUndecoratedDataStore ();
 
       _customerEndPoint.ReplaceOppositeCollection (newOpposites);
 
-      CheckAssociatedCollectionStrategy (newOpposites, originalDataStoreOfNewOpposites);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint, originalDataStoreOfNewOpposites);
     }
 
     [Test]
     public void ReplaceOppositeCollection_PerformsAllBidirectionalChanges ()
     {
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem, _order2}));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2};
 
       var customer3 = Customer.GetObject (DomainObjectIDs.Customer3);
       
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
       var oldEventListener = new DomainObjectCollectionEventReceiver (oldOpposites);
 
-      var newOpposites = new OrderCollection (new DomainObjectCollectionData (new[] { _orderWithoutOrderItem }));
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       var newEventListener = new DomainObjectCollectionEventReceiver (newOpposites);
 
       _customerEndPoint.ReplaceOppositeCollection (newOpposites);
@@ -298,8 +298,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.Rollback ();
 
-      CheckAssociatedCollectionStrategy (oldCollection, oldCollectionDataStore);
-      CheckStandAloneCollectionStrategy (newCollection, newCollectionDataStore);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint, oldCollectionDataStore);
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order), newCollectionDataStore);
     }
 
     [Test]
@@ -379,8 +379,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.Commit ();
 
-      CheckStandAloneCollectionStrategy (oldCollection, oldCollectionDataStore);
-      CheckAssociatedCollectionStrategy (newCollection, newCollectionDataStore);
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (oldCollection, typeof (Order), oldCollectionDataStore);
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newCollection, typeof (Order), _customerEndPoint, newCollectionDataStore);
     }
 
     [Test]
@@ -402,34 +402,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
       return DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (decorator);
     }
-
-    private void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedDataStore)
-    {
-      // collection => argument checking decorator => end point data => actual data store
-
-      var argChecker = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      Assert.That (argChecker.RequiredItemType, Is.SameAs (typeof (Order)));
-
-      var delegator = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (argChecker);
-      Assert.That (delegator.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-
-      var dataStore = DomainObjectCollectionDataTestHelper.GetActualDataAndCheckType<DomainObjectCollectionData> (delegator);
-      Assert.That (dataStore, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
-    }
-
-    private void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedDataStore)
-    {
-      // collection => argument decorator => event decorator => actual data store
-
-      var argChecker = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      Assert.That (argChecker.RequiredItemType, Is.SameAs (typeof (Order)));
-
-      var eventRaiser = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (argChecker);
-      Assert.That (eventRaiser.EventRaiser, Is.SameAs (collection));
-
-      var dataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (eventRaiser);
-      Assert.That (dataStore, Is.SameAs (expectedDataStore));
-    }
-
   }
 }

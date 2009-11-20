@@ -26,6 +26,20 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class ObjectList<T> : DomainObjectCollection, IList<T> where T : DomainObject
   {
+    private static IDomainObjectCollectionData CheckStrategy (IDomainObjectCollectionData dataStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
+
+      if (!typeof (T).IsAssignableFrom (dataStrategy.RequiredItemType))
+      {
+        var message = string.Format (
+            "The given data strategy must have a required item type of '{0}' in order to be used with this collection type.",
+            typeof (T));
+        throw new ArgumentException (message, "dataStrategy");
+      }
+      return dataStrategy;
+    }
+
     public ObjectList()
         : base (typeof (T))
     {
@@ -33,7 +47,8 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ObjectList{T}"/> class with a given <see cref="IDomainObjectCollectionData"/>
-    /// data storage strategy.
+    /// data storage strategy. The <see cref="IDomainObjectCollectionData"/>'s <see cref="IDomainObjectCollectionData.RequiredItemType"/>
+    /// must be set to <typeparamref name="T"/>.
     /// </summary>
     /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
     /// <remarks>
@@ -41,13 +56,11 @@ namespace Remotion.Data.DomainObjects
     /// Derived classes must support this constructor.
     /// </para>
     /// <para>
-    /// The given <paramref name="dataStrategy"/> is decorated with an
-    /// <see cref="ArgumentCheckingCollectionDataDecorator"/>. The decorated strategy is then used to manage the data of this 
-    /// <see cref="ObjectList{T}"/>. Specifically, the strategy must itself raise any change notification events it needs raised. (TODO)
+    /// The given <paramref name="dataStrategy"/> is directly used, so it should perform any argument checks and event raising on its own.
     /// </para>
     /// </remarks>
     public ObjectList (IDomainObjectCollectionData dataStrategy)
-        : base (dataStrategy, typeof (T))
+        : base (CheckStrategy (dataStrategy))
     {
     }
 
@@ -57,7 +70,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     public ObjectList (IEnumerable<T> collection, bool isCollectionReadOnly)
-      : base (collection.Cast<DomainObject>(), isCollectionReadOnly)
+      : base (collection.Cast<DomainObject>(), typeof (T), isCollectionReadOnly)
     {
     }
 
@@ -104,7 +117,7 @@ namespace Remotion.Data.DomainObjects
 
     bool ICollection<T>.Contains (T item)
     {
-      return base.ContainsObject (item);
+      return ContainsObject (item);
     }
 
     public void CopyTo (T[] array, int arrayIndex)
@@ -127,7 +140,7 @@ namespace Remotion.Data.DomainObjects
 
     public T[] ToArray()
     {
-      return ArrayUtility.Convert<T> (this);
+      return ArrayUtility.Convert (this);
     }
   }
 }

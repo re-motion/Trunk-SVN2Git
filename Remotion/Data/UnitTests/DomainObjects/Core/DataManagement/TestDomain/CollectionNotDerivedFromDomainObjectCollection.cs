@@ -23,13 +23,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain
 {
   public class CollectionNotDerivedFromDomainObjectCollection : List<DomainObject>
   {
-    public CollectionNotDerivedFromDomainObjectCollection (IDomainObjectCollectionData data, Type requiredItemType)
+    public CollectionNotDerivedFromDomainObjectCollection (IDomainObjectCollectionData data)
     {
       Data = data;
-      RequiredItemType = requiredItemType;
     }
 
     public IDomainObjectCollectionData Data { get; set; }
-    public Type RequiredItemType { get; set; }
   }
 }

@@ -747,8 +747,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "\r\nParameter name: oppositeDomainObjects")]
     public void SetOppositeCollection_NotAssociated ()
     {
-      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
-      var newOppositeCollection = new OrderCollection (dataStore);
+      var newOppositeCollection = new OrderCollection { _order1 };
 
       _customerEndPoint.SetOppositeCollection (newOppositeCollection);
     }
@@ -762,7 +761,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dataStore = new DomainObjectCollectionData (new[] { _order1 });
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
-      var newOppositeCollection = new DomainObjectCollection (delegatingData, null);
+      var newOppositeCollection = new DomainObjectCollection (delegatingData);
 
       _customerEndPoint.SetOppositeCollection (newOppositeCollection);
     }

@@ -126,87 +126,37 @@ namespace Remotion.Data.DomainObjects
         Assertion.IsNull (Collection.AssociatedEndPoint);
 
         var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData (Collection._data.GetUndecoratedDataStore ());
-        Collection._data = new ArgumentCheckingCollectionDataDecorator (endPointDelegatingCollectionData, Collection.RequiredItemType);
+        Assertion.IsTrue (endPointDelegatingCollectionData.RequiredItemType == Collection.RequiredItemType);
+
+        Collection._data = endPointDelegatingCollectionData;
       }
 
       public void TransformToStandAlone ()
       {
         Assertion.IsNotNull (Collection.AssociatedEndPoint);
 
-        Collection._data = new ArgumentCheckingCollectionDataDecorator (
-            new EventRaisingCollectionDataDecorator (Collection, Collection._data.GetUndecoratedDataStore ()),
-            Collection.RequiredItemType);
+        Collection._data = CreateDataStrategyForStandAloneCollection (Collection._data.GetUndecoratedDataStore (), Collection.RequiredItemType, Collection);
       }
     }
 
     // static members and constants
 
     /// <summary>
-    /// Creates an empty <see cref="DomainObjectCollection"/> of a given <see cref="Type"/>.
+    /// Creates an <see cref="IDomainObjectCollectionData"/> object for stand-alone collections. The returned object takes care of argument checks,
+    /// required item checks, and event raising.
     /// </summary>
-    /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated. Must not be <see langword="null"/>.</param>
-    /// <returns>The new <see cref="DomainObjectCollection"/>.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="collectionType"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-    public static DomainObjectCollection Create (Type collectionType)
+    /// <param name="dataStore">The data store to use for the collection.</param>
+    /// <param name="requiredItemType">The required item type to use for the collection.</param>
+    /// <param name="eventRaiser">The event raiser to use for raising events.</param>
+    /// <returns>An instance of <see cref="IDomainObjectCollectionData"/> that can be used for stand-alone collections.</returns>
+    public static IDomainObjectCollectionData CreateDataStrategyForStandAloneCollection (IDomainObjectCollectionData dataStore, Type requiredItemType, IDomainObjectCollectionEventRaiser eventRaiser)
     {
-      return Create (collectionType, new DomainObject[0], null);
+      ArgumentUtility.CheckNotNull ("dataStore", dataStore);
+      ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
+
+      return new ArgumentCheckingCollectionDataDecorator (new EventRaisingCollectionDataDecorator (eventRaiser, dataStore), requiredItemType);
     }
 
-    /// <summary>
-    /// Creates a <see cref="DomainObjectCollection"/> of a given <see cref="System.Type"/> and sets the <see cref="RequiredItemType"/>.
-    /// </summary>
-    /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated. Must not be <see langword="null"/>.</param>
-    /// <param name="requiredItemType">The permitted <see cref="Type"/> of an item in the <see cref="DomainObjectCollection"/>. If specified only this type or derived types can be added to the <b>DomainObjectCollection</b>.</param>
-    /// <returns>The new <see cref="DomainObjectCollection"/>.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="collectionType"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-    public static DomainObjectCollection Create (Type collectionType, Type requiredItemType)
-    {
-      return Create (collectionType, new DomainObject[0], requiredItemType);
-    }
-
-    /// <summary>
-    /// Creates a <see cref="DomainObjectCollection"/> of a given <see cref="System.Type"/> and adds the <see cref="DomainObject"/>s of the given <see cref="DataContainerCollection"/>.
-    /// </summary>
-    /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated. Must not be <see langword="null"/>.</param>
-    /// <param name="contents">The <see cref="DomainObject"/>s that are added to the collection. Must not be <see langword="null"/>.</param>
-    /// <returns>The new <see cref="DomainObjectCollection"/>.</returns>
-    /// <exception cref="System.ArgumentNullException">
-    ///   <paramref name="collectionType"/> is <see langword="null"/>.<br /> -or- <br />
-    ///   <paramref name="contents"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-    public static DomainObjectCollection Create (Type collectionType, IEnumerable<DomainObject> contents)
-    {
-      return Create (collectionType, contents, null);
-    }
-
-    /// <summary>
-    /// Creates a <see cref="DomainObjectCollection"/> of a given <see cref="System.Type"/> and adds the <see cref="DomainObject"/>s of the given <see cref="DataContainerCollection"/>.
-    /// </summary>
-    /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated. Must not be <see langword="null"/>.</param>
-    /// <param name="contents">The <see cref="DomainObject"/>s of that are added to the collection. Must not be <see langword="null"/>.</param>
-    /// <param name="requiredItemType">The permitted <see cref="Type"/> of an item in the <see cref="DomainObjectCollection"/>. If specified only this type or derived types can be added to the <b>DomainObjectCollection</b>.</param>
-    /// <returns>The new <see cref="DomainObjectCollection"/>.</returns>
-    /// <exception cref="System.ArgumentNullException">
-    ///   <paramref name="collectionType"/> is <see langword="null"/>.<br /> -or- <br />
-    ///   <paramref name="contents"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-    public static DomainObjectCollection Create (
-        Type collectionType,
-        IEnumerable<DomainObject> contents,
-        Type requiredItemType)
-    {
-      ArgumentUtility.CheckNotNull ("collectionType", collectionType);
-      ArgumentUtility.CheckNotNull ("contents", contents);
-
-      var domainObjects = (DomainObjectCollection) ReflectionUtility.CreateObject (collectionType);
-      domainObjects._requiredItemType = requiredItemType;
-      domainObjects.AddRange (contents);
-      return domainObjects;
-    }
 
     /// <summary>
     /// Compares two instances of <see cref="DomainObjectCollection"/> for equality.
@@ -264,12 +214,6 @@ namespace Remotion.Data.DomainObjects
       return true;
     }
 
-    private static IEnumerable<DomainObject> GetDomainObjectsFromDataContainers (DataContainerCollection dataContainers)
-    {
-      foreach (DataContainer dataContainer in dataContainers)
-        yield return dataContainer.DomainObject;
-    }
-
     // member fields
 
     /// <summary>
@@ -320,28 +264,25 @@ namespace Remotion.Data.DomainObjects
     {
     }
 
+    // standard constructor for collections
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObjectCollection"/> class with a given <see cref="IDomainObjectCollectionData"/>
     /// data storage strategy.
     /// </summary>
     /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
-    /// <param name="requiredItemType">The required item type of this collection.</param>
     /// <remarks>
     /// <para>
     /// Derived classes must support this constructor.
     /// </para>
     /// <para>
-    /// The given <paramref name="dataStrategy"/> is decorated with an
-    /// <see cref="ArgumentCheckingCollectionDataDecorator"/>. The decorated strategy is then used to manage the data of this 
-    /// <see cref="DomainObjectCollection"/>. Specifically, the strategy must itself raise any change notification events it needs raised. (TODO)
+    /// The given <paramref name="dataStrategy"/> is directly used, so it should perform any argument checks and event raising on its own.
     /// </para>
     /// </remarks>
-    public DomainObjectCollection (IDomainObjectCollectionData dataStrategy, Type requiredItemType)
+    public DomainObjectCollection (IDomainObjectCollectionData dataStrategy)
     {
       ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
 
-      _requiredItemType = requiredItemType;
-      _data = new ArgumentCheckingCollectionDataDecorator (dataStrategy, requiredItemType);
+      _data = dataStrategy;
     }
 
     /// <summary>
@@ -350,8 +291,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="requiredItemType">The <see cref="Type"/> that are required for members.</param>
     public DomainObjectCollection (Type requiredItemType)
     {
-      _requiredItemType = requiredItemType;
-      _data = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData (), _requiredItemType);
+      _data = CreateDataStrategyForStandAloneCollection (new DomainObjectCollectionData (), requiredItemType, this);
     }
 
     // standard constructor for collections
@@ -366,22 +306,24 @@ namespace Remotion.Data.DomainObjects
     /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
-        : this (ArgumentUtility.CheckNotNull ("collection", collection).Cast<DomainObject>(), makeCollectionReadOnly)
     {
-      Assertion.IsTrue (Count == collection.Count);
-      _requiredItemType = collection.RequiredItemType;
+      _data = CreateDataStrategyForStandAloneCollection (new DomainObjectCollectionData (collection.Cast<DomainObject>()), collection.RequiredItemType, this);
+      SetIsReadOnly (makeCollectionReadOnly);
     }
 
     /// <summary>
     /// Initializes a new <see cref="DomainObjectCollection"/> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
     /// </summary>
     /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
+    /// <param name="requiredItemType">The required item type of the new collection.</param>
     /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, bool makeCollectionReadOnly)
+    public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, Type requiredItemType, bool makeCollectionReadOnly)
     {
-      _data = new DomainObjectCollectionData ();
-      AddRange(domainObjects);
+      var dataStore = new DomainObjectCollectionData ();
+      dataStore.AddRangeAndCheckItems (domainObjects, requiredItemType);
+
+      _data = CreateDataStrategyForStandAloneCollection (dataStore, requiredItemType, this);
       SetIsReadOnly(makeCollectionReadOnly);
     }
 
@@ -572,16 +514,7 @@ namespace Remotion.Data.DomainObjects
         }
         else
         {
-          DomainObject oldObject = this[index];
-
-          BeginRemove (oldObject);
-          BeginAdd (value);
-
-          _data.Remove (oldObject);
-          _data.Insert (index, value);
-
-          EndRemove (oldObject);
-          EndAdd (value);
+          _data.Replace (index, value);
         }
       }
     }
@@ -623,13 +556,7 @@ namespace Remotion.Data.DomainObjects
       if (_changeDelegate != null)
         _data.Insert (Count, domainObject);
       else
-      {
-        BeginAdd (domainObject);
-
         _data.Insert (Count, domainObject);
-
-        EndAdd (domainObject);
-      }
 
       return Count - 1;
     }
@@ -742,13 +669,7 @@ namespace Remotion.Data.DomainObjects
       else if (_changeDelegate != null)
         _data.Remove (domainObject);
       else
-      {
-        BeginRemove (domainObject);
-
         _data.Remove (domainObject);
-
-        EndRemove (domainObject);
-      }
       return true;
     }
 
@@ -828,13 +749,7 @@ namespace Remotion.Data.DomainObjects
       if (_changeDelegate != null)
         _data.Insert (index, domainObject);
       else
-      {
-        BeginAdd (domainObject);
-
         _data.Insert (index, domainObject);
-
-        EndAdd (domainObject);
-      }
     }
 
     /// <summary>
@@ -883,7 +798,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
-      return new ArgumentCheckingCollectionDataDecorator (_data, RequiredItemType);
+      return new ArgumentCheckingCollectionDataDecorator (_data.GetUndecoratedDataStore(), RequiredItemType);
     }
 
     #region Explicitly implemeted IList and ICollection Members
@@ -1054,41 +969,34 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Creates a shallow copy of this collection. Can be overridden in derived classes.
+    /// Creates a shallow copy of this collection. No events are raised on the clone.
     /// </summary>
     /// <param name="makeCloneReadOnly">Specifies whether the cloned collection should be read-only.</param>
     /// <returns>The cloned collection.</returns>
     /// <remarks>
+    /// <para>
     /// A shallow copy creates a new <see cref="DomainObjectCollection"/> instance
     /// which can be independently modified without affecting the original collection.
     /// Thus meaning the references to the domain objects are copied, not the domain objects themselves.<br/><br/>
     /// The <see cref="System.Type"/> of the cloned collection is equal to the <see cref="System.Type"/> of the <b>DomainObjectCollection</b>.
+    /// </para>
+    /// <para>
+    /// The clone is always a stand-alone collection, even when the source was associated with a collection end point.
+    /// </para>
     /// </remarks>
     public virtual DomainObjectCollection Clone (bool makeCloneReadOnly)
     {
-      DomainObjectCollection clone = Create (GetType());
+      var clone = new DomainObjectCollectionFactory().CreateCollection (GetType (), _data, RequiredItemType);
 
-      clone._requiredItemType = RequiredItemType;
-      clone.AddRange (this);
+      Assertion.IsTrue (clone._data != _data);
+      Assertion.IsTrue (clone._data.GetUndecoratedDataStore () != _data);
+      Assertion.IsTrue (clone.RequiredItemType == RequiredItemType);
 
-      IDomainObjectCollectionData clonedData = new DomainObjectCollectionData (_data);
-      clone._data = clonedData;
       clone.SetIsReadOnly (makeCloneReadOnly);
-
       return clone;
     }
 
     #endregion
-
-    internal void TakeOverCommittedData (DomainObjectCollection source)
-    {
-      AssumeSameState (source);
-    }
-
-    internal void BeginAdd (DomainObject domainObject)
-    {
-      OnAdding (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
 
     /// <summary>
     /// Performs a rollback of the collection by replacing the items in the collection with the items of a given <see cref="DomainObjectCollection"/>.
@@ -1138,37 +1046,11 @@ namespace Remotion.Data.DomainObjects
     ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
     /// </exception>
     // TODO 1870: Remove this method, move logic to CollectionEndPoint.
-    protected virtual void ReplaceItems (DomainObjectCollection domainObjects)
+    protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
-      bool isReadOnly = IsReadOnly;
-
-      _data = new DomainObjectCollectionData (domainObjects.Cast<DomainObject>());
-
-      SetIsReadOnly (isReadOnly);
+      var nonNotifyingData = GetNonNotifyingData ();
+      nonNotifyingData.ReplaceContents (domainObjects.Cast<DomainObject> ());
       Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. However, this method is removed anyway.
-    }
-
-    internal void AssumeSameState (DomainObjectCollection source)
-    {
-      Assertion.IsTrue (_requiredItemType == source._requiredItemType);
-
-      _data = new DomainObjectCollectionData (source.Cast<DomainObject> ());
-      SetIsReadOnly (source.IsReadOnly);
-    }
-
-    internal void EndAdd (DomainObject domainObject)
-    {
-      OnAdded (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    internal void BeginRemove (DomainObject domainObject)
-    {
-      OnRemoving (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    internal void EndRemove (DomainObject domainObject)
-    {
-      OnRemoved (new DomainObjectCollectionChangeEventArgs (domainObject));
     }
 
     /// <summary>
@@ -1253,11 +1135,11 @@ namespace Remotion.Data.DomainObjects
 
     private void CheckItemType (DomainObject domainObject, string argumentName)
     {
-      if (_requiredItemType != null && !_requiredItemType.IsInstanceOfType (domainObject))
+      if (RequiredItemType != null && !RequiredItemType.IsInstanceOfType (domainObject))
       {
         string message = string.Format ("Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
-                                        domainObject.GetPublicDomainObjectType (), _requiredItemType);
-        throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType());
+                                        domainObject.GetPublicDomainObjectType (), RequiredItemType);
+        throw new ArgumentTypeException (message, argumentName, RequiredItemType, domainObject.GetPublicDomainObjectType());
       }
     }
 
@@ -1400,5 +1282,42 @@ namespace Remotion.Data.DomainObjects
       if (IsReadOnly)
         throw new NotSupportedException (message);
     }
+
+    #region Obsolete
+    [Obsolete (
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        true)]
+    public static DomainObjectCollection Create (Type collectionType)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        true)]
+    public static DomainObjectCollection Create (Type collectionType, Type requiredItemType)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        true)]
+    public static DomainObjectCollection Create (Type collectionType, IEnumerable<DomainObject> contents)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        true)]
+    public static DomainObjectCollection Create (
+        Type collectionType,
+        IEnumerable<DomainObject> contents,
+        Type requiredItemType)
+    {
+      throw new NotImplementedException ();
+    }
+    #endregion
   }
 }

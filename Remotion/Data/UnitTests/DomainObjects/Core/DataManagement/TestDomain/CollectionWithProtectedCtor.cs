@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain
   public class CollectionWithProtectedCtor : ObjectList<Order>
   {
     protected CollectionWithProtectedCtor (IDomainObjectCollectionData dataStrategy)
-        : base(dataStrategy)
+        : base (dataStrategy)
     {
     }
   }

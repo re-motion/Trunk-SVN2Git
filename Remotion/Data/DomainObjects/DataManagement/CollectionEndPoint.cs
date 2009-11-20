@@ -54,13 +54,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
 
-      var requiredItemType = id.OppositeEndPointDefinition.ClassDefinition.ClassType;
       var collectionType = id.Definition.PropertyType;
 
       var factory = new DomainObjectCollectionFactory ();
 
       var dataStore = new DomainObjectCollectionData (initialContents);
-      _oppositeDomainObjects = factory.CreateCollection (collectionType, new EndPointDelegatingCollectionData (this, dataStore), requiredItemType);
+      var dataStrategy = CreateDelegatingCollectionData (dataStore);
+      _oppositeDomainObjects = factory.CreateCollection (collectionType, dataStrategy);
       _oppositeDomainObjects.ChangeDelegate = this;
 
       _originalOppositeDomainObjectsContents = _oppositeDomainObjects.Clone (true);
@@ -119,8 +119,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
           clientTransaction.DataManager.RelationEndPointMap, 
           _oppositeDomainObjects.Cast<DomainObject>());
 
-      clone._oppositeDomainObjects.AssumeSameState (_oppositeDomainObjects);
-      clone._originalOppositeDomainObjectsContents.AssumeSameState (_originalOppositeDomainObjectsContents);
+      clone._oppositeDomainObjects.ReplaceItems (_oppositeDomainObjects);
+      clone._originalOppositeDomainObjectsContents.ReplaceItems (_originalOppositeDomainObjectsContents);
       clone._hasBeenTouched = _hasBeenTouched;
       return clone;
     }
@@ -129,9 +129,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
       Assertion.IsTrue (Definition == sourceCollectionEndPoint.Definition);
-      
-      _oppositeDomainObjects.TakeOverCommittedData (sourceCollectionEndPoint._oppositeDomainObjects);
-      _hasBeenTouched |= sourceCollectionEndPoint._hasBeenTouched || HasChanged;
+
+      var touchedBefore = _hasBeenTouched;
+      _oppositeDomainObjects.ReplaceItems (sourceCollectionEndPoint._oppositeDomainObjects);
+      _hasBeenTouched = touchedBefore || sourceCollectionEndPoint._hasBeenTouched || HasChanged;
     }
 
     public override void Commit ()
@@ -190,9 +191,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public EndPointDelegatingCollectionData CreateDelegatingCollectionData (IDomainObjectCollectionData actualDataStore)
+    public IDomainObjectCollectionData CreateDelegatingCollectionData (IDomainObjectCollectionData actualDataStore)
     {
-      return new EndPointDelegatingCollectionData (this, actualDataStore);
+      var requiredItemType = ID.OppositeEndPointDefinition.ClassDefinition.ClassType;
+      var dataStrategy = new ArgumentCheckingCollectionDataDecorator (new EndPointDelegatingCollectionData (this, actualDataStore), requiredItemType);
+
+      return dataStrategy;
     }
 
     public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)

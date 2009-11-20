@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Begin ()
     {
-      ModifiedCollection.BeginAdd (NewRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginAdd (Index, NewRelatedObject);
       base.Begin();
     }
 
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void End ()
     {
-      ModifiedCollection.EndAdd (NewRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndAdd (Index, NewRelatedObject);
       base.End();
     }
 

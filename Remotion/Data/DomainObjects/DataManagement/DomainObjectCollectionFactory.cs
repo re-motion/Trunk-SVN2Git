@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
@@ -27,60 +28,62 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public class DomainObjectCollectionFactory
   {
-    public DomainObjectCollection CreateCollection (
-        Type collectionType,
-        IDomainObjectCollectionData data,
-        Type requiredItemType)
+    public DomainObjectCollection CreateCollection (Type collectionType, IDomainObjectCollectionData data)
     {
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
       ArgumentUtility.CheckNotNull ("data", data);
 
-      var collection = CreateCollectionWithDataOnlyCtor (collectionType, data) 
-          ?? CreateCollectionWithDataAndTypeCtor (collectionType, data, requiredItemType);
-
-      if (collection == null)
+      var ctor = collectionType.GetConstructor (
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
+          null, 
+          new[] { typeof (IDomainObjectCollectionData) }, 
+          null);
+      
+      if (ctor == null)
         throw CreateMissingConstructorException (collectionType);
 
-      if (requiredItemType != null && collection.RequiredItemType != requiredItemType)
-      {
-        var message = string.Format (
-            "Cannot create an instance of '{0}' with required item type '{1}': The collection's constructor sets a different required item type.",
-            collectionType,
-            requiredItemType);
-        throw new InvalidOperationException (message);
-      }
+      return (DomainObjectCollection) ctor.Invoke (new[] { data });
+    }
+
+    public DomainObjectCollection CreateCollection (Type collectionType, IEnumerable<DomainObject> content, Type requiredItemType)
+    {
+      ArgumentUtility.CheckNotNull ("collectionType", collectionType);
+      ArgumentUtility.CheckNotNull ("content", content);
+
+      var eventRaiser = new IndirectDomainObjectCollectionEventRaiser ();
+      
+      var dataStore = new DomainObjectCollectionData ();
+      dataStore.AddRangeAndCheckItems (content, requiredItemType);
+      
+      var dataStrategy = DomainObjectCollection.CreateDataStrategyForStandAloneCollection (dataStore, requiredItemType, eventRaiser);
+      var collection = CreateCollection (collectionType, dataStrategy);
+
+      eventRaiser.EventRaiser = collection;
 
       return collection;
     }
 
-    private DomainObjectCollection CreateCollectionWithDataOnlyCtor (Type collectionType, IDomainObjectCollectionData data)
+    public DomainObjectCollection CreateCollection (Type collectionType, IEnumerable<DomainObject> content)
     {
-      var ctor = GetCollectionConstructor (collectionType, typeof (IDomainObjectCollectionData));
-      if (ctor != null)
-        return (DomainObjectCollection) ctor.Invoke (new[] { data });
-      else
-        return null;
+      ArgumentUtility.CheckNotNull ("collectionType", collectionType);
+      ArgumentUtility.CheckNotNull ("content", content);
+
+      var requiredItemType = GetRequiredItemType(collectionType);
+      return CreateCollection (collectionType, content, requiredItemType);
     }
 
-    private DomainObjectCollection CreateCollectionWithDataAndTypeCtor (Type collectionType, IDomainObjectCollectionData data, Type requiredItemType)
+    private Type GetRequiredItemType (Type collectionType)
     {
-      var ctor = GetCollectionConstructor (collectionType, typeof (IDomainObjectCollectionData), typeof (Type));
-      if (ctor != null)
-        return (DomainObjectCollection) ctor.Invoke (new object[] { data, requiredItemType });
+      if (Utilities.ReflectionUtility.CanAscribe (collectionType, typeof (IEnumerable<>)))
+        return Utilities.ReflectionUtility.GetAscribedGenericArguments (collectionType, typeof (IEnumerable<>))[0];
       else
         return null;
-    }
-
-    private ConstructorInfo GetCollectionConstructor (Type collectionType, params Type[] parameterTypes)
-    {
-      return collectionType.GetConstructor (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, parameterTypes, null);
     }
 
     private MissingMethodException CreateMissingConstructorException (Type collectionType)
     {
       var message = string.Format (
-          "Cannot create an instance of '{0}' because that type does not provide a constructor taking an IDomainObjectCollectionData object and "
-          + "optionally a required item type." + Environment.NewLine
+          "Cannot create an instance of '{0}' because that type does not provide a constructor taking an IDomainObjectCollectionData object." + Environment.NewLine
           + "Example: " + Environment.NewLine
           + "public class {1} : ObjectList<...>" + Environment.NewLine
           + "{{" + Environment.NewLine

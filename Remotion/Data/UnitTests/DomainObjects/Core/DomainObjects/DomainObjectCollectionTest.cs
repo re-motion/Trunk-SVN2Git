@@ -52,15 +52,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void Initialization_StandaloneVariants_Strategies ()
+    {
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (new DomainObjectCollection (), null);
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (new DomainObjectCollection (typeof (Order)), typeof (Order));
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (new DomainObjectCollection (_collection, true), typeof (Customer));
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (
+          new DomainObjectCollection (new[] { _customer1, _customer2 }, typeof (Customer), false), typeof (Customer));
+    }
+
+    [Test]
     public void Initialization_WithData ()
     {
-      var data = new DomainObjectCollectionData ();
-
-      var collection = new DomainObjectCollection (data, typeof (Customer));
+      var givenData = new DomainObjectCollectionData ();
+      var collection = new DomainObjectCollection (givenData);
       
-      var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
-      Assert.That (wrappedData, Is.SameAs (data));
+      var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      Assert.That (actualData, Is.SameAs (givenData));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage = 
+        "Item 0 of argument domainObjects has the type Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer instead of "
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.")]
+    public void Initialization_WithEnumerable_ChecksItems ()
+    {
+      new DomainObjectCollection (new[] { _customer1 }, typeof (Order), false);
     }
 
     [Test]
@@ -71,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
       var endPointStrategy = new EndPointDelegatingCollectionData (endPointStub, new DomainObjectCollectionData ());
       
-      var endPointCollection = new DomainObjectCollection (endPointStrategy, null);
+      var endPointCollection = new DomainObjectCollection (endPointStrategy);
       Assert.That (endPointCollection.AssociatedEndPoint, Is.SameAs (endPointStub));
     }
 
@@ -209,16 +226,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       DomainObjectCollection customers = new DomainObjectCollection ();
 
       customers.ContainsObject ((DomainObject) null);
-    }
-
-    [Test]
-    public void CloneRequiredItemType ()
-    {
-      DomainObjectCollection collection = new DomainObjectCollection (typeof (Order));
-      DomainObjectCollection clone = (DomainObjectCollection) collection.Clone ();
-
-      Assert.IsNotNull (clone, "Clone does not exist");
-      Assert.AreEqual (typeof (Order), clone.RequiredItemType, "Required item type does not match.");
     }
 
     [Test]
@@ -687,8 +694,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Clone ()
     {
-      ICloneable cloneableCollection = (ICloneable) _collection;
-      DomainObjectCollection clonedCollection = (DomainObjectCollection) cloneableCollection.Clone ();
+      ICloneable cloneableCollection = _collection;
+      var clonedCollection = (DomainObjectCollection) cloneableCollection.Clone ();
 
       Assert.IsNotNull (clonedCollection);
       Assert.AreEqual (_collection.Count, clonedCollection.Count);
@@ -696,14 +703,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (_collection.RequiredItemType, clonedCollection.RequiredItemType);
       Assert.AreSame (_collection[0], clonedCollection[0]);
       Assert.AreSame (_collection[1], clonedCollection[1]);
+
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (clonedCollection, typeof (Customer));
     }
 
     [Test]
-    public void CloneReadOnlyCollection ()
+    public void Clone_ReadOnlyCollection ()
     {
-      DomainObjectCollection readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var readOnlyCollection = new DomainObjectCollection (_collection, true);
 
-      DomainObjectCollection clone = (DomainObjectCollection) readOnlyCollection.Clone ();
+      var clone = readOnlyCollection.Clone ();
 
       Assert.IsNotNull (clone, "Clone does not exist");
       Assert.AreEqual (2, clone.Count, "Item count of clone");
@@ -713,13 +722,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void CloneDerivedCollection ()
+    public void Clone_MakeReadOnly_True ()
     {
-      OrderCollection orderCollection = new OrderCollection ();
-      OrderCollection clone = (OrderCollection) orderCollection.Clone ();
+      var clonedCollection = _collection.Clone (true);
+
+      Assert.That (clonedCollection, Is.EqualTo (_collection));
+      Assert.That (clonedCollection.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void Clone_MakeReadOnly_False ()
+    {
+      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var clonedCollection = readOnlyCollection.Clone (false);
+
+      Assert.That (clonedCollection, Is.EqualTo (readOnlyCollection));
+      Assert.That (clonedCollection.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void Clone_RequiredItemType ()
+    {
+      var collection = new DomainObjectCollection (typeof (Order));
+      var clone = collection.Clone ();
+
+      Assert.IsNotNull (clone, "Clone does not exist");
+      Assert.AreEqual (typeof (Order), clone.RequiredItemType, "Required item type does not match.");
+    }
+    
+    [Test]
+    public void Clone_DerivedCollection ()
+    {
+      var orderCollection = new OrderCollection ();
+      
+      var clone = (OrderCollection) orderCollection.Clone ();
 
       Assert.AreEqual (typeof (OrderCollection), clone.GetType ());
       Assert.AreEqual (orderCollection.RequiredItemType, clone.RequiredItemType);
+    }
+
+    [Test]
+    public void Clone_AssociatedCollection ()
+    {
+      OrderCollection associatedCollection = CreateAssociatedCollection();
+      var clonedCollection = (DomainObjectCollection) associatedCollection.Clone ();
+
+      // clone is always stand-alone, even when source is associated with end point
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (clonedCollection, associatedCollection.RequiredItemType);
     }
 
     [Test]
@@ -903,17 +952,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ChangeEvents ()
     {
-      SequenceEventReceiver eventReceiver = new SequenceEventReceiver (_collection);
+      var eventReceiver = new SequenceEventReceiver (_collection);
 
       _collection[0] = _customer3NotInCollection;
 
-      ChangeState[] expectedStates = new ChangeState[] 
-    {
-      new CollectionChangeState (_collection, _customer1, "1. Removing event"),
-      new CollectionChangeState (_collection, _customer3NotInCollection, "2. Adding event"),
-      new CollectionChangeState (_collection, _customer1, "3. Removed event"),
-      new CollectionChangeState (_collection, _customer3NotInCollection, "4. Added event")
-    };
+      var expectedStates = new ChangeState[] 
+      {
+        new CollectionChangeState (_collection, _customer1, "1. Removing event"),
+        new CollectionChangeState (_collection, _customer3NotInCollection, "2. Adding event"),
+        new CollectionChangeState (_collection, _customer1, "3. Removed event"),
+        new CollectionChangeState (_collection, _customer3NotInCollection, "4. Added event")
+      };
 
       Assert.AreSame (_customer3NotInCollection, _collection[0]);
       Assert.AreEqual (2, _collection.Count);
@@ -988,16 +1037,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void SetNumericIndexerWithInvalidType ()
     {
       _collection[0] = Order.NewObject ();
-    }
-
-    [Test]
-    public void CreateWithItemType ()
-    {
-      DomainObjectCollection collection = DomainObjectCollection.Create (
-          typeof (DomainObjectCollection), new DomainObject[0], typeof (Order));
-
-      Assert.IsNotNull (collection);
-      Assert.AreEqual (typeof (Order), collection.RequiredItemType);
     }
 
     [Test]
@@ -1134,6 +1173,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void GetNonNotifyingData_UsesUndecoratedDataStore ()
+    {
+      var dataStore = new DomainObjectCollectionData ();
+
+      var dataDecoratorMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
+      dataDecoratorMock.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStore);
+
+      var collection = new DomainObjectCollection (dataDecoratorMock);
+      var nonNotifyingData = GetNonNotifyingData (collection);
+
+      nonNotifyingData.Insert (0, _customer1);
+      dataDecoratorMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+
+      Assert.That (dataStore.ToArray (), Is.EqualTo (new[] { _customer1 }));
+    }
+
+    [Test]
+    // integration test
     public void GetNonNotifyingData_RepresentsCollectionData ()
     {
       var nonNotifyingData = GetNonNotifyingData(_collection);
@@ -1143,6 +1200,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       nonNotifyingData.Remove (_customer1.ID);
       Assert.That (_collection, Is.EqualTo (new[] { _customer2, _customer3NotInCollection }));
+    }
+
+    [Test]
+    // integration test
+    public void GetNonNotifyingData_DoesNotRaiseEvents ()
+    {
+      var nonNotifyingData = GetNonNotifyingData (_collection);
+
+      var eventReceiver = new DomainObjectCollectionEventReceiver (_collection);
+
+      nonNotifyingData.Insert (1, _customer3NotInCollection);
+
+      Assert.That (eventReceiver.AddingDomainObject, Is.Null);
+      Assert.That (eventReceiver.AddedDomainObject, Is.Null);
     }
 
     [Test]
@@ -1162,14 +1233,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var nonNotifyingData = GetNonNotifyingData (_collection);
 
       nonNotifyingData.Insert (1, Order.NewObject());
-    }
-
-    [Test]
-    public void GetNonNotifyingData_DoesNotRaiseEvents ()
-    {
-      var nonNotifyingData = GetNonNotifyingData (_collection);
-
-      nonNotifyingData.Insert (1, _customer3NotInCollection);
     }
 
     [Test]
@@ -1201,7 +1264,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [Ignore ("TODO 992")]
     public void CreateAssociationModification_CollectionIsReadOnly ()
     {
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
@@ -1328,6 +1390,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       collectionMock.AssertWasCalled (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnDeleted"));
     }
 
+    [Test]
+    public void ReplaceItems_Content ()
+    {
+      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      ReplaceItems (_collection, sourceCollection);
+
+      Assert.That (_collection, Is.EqualTo (sourceCollection));
+    }
+
+    [Test]
+    public void ReplaceItems_DecoratorChain_Kept ()
+    {
+      var originalData = new DomainObjectCollectionData ();
+      var collection = new DomainObjectCollection (originalData);
+
+      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      ReplaceItems (collection, sourceCollection);
+
+      var data = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      Assert.That (data, Is.SameAs (originalData));
+    }
+
+    [Test]
+    public void ReplaceItems_ReadOnlyness_Kept ()
+    {
+      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      ReplaceItems (readOnlyCollection, sourceCollection);
+
+      Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
+      Assert.That (readOnlyCollection.IsReadOnly, Is.True);
+    }
+
+    private void ReplaceItems (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (collection, "ReplaceItems", sourceCollection);
+    }
+
     private void CheckKeys (ObjectID[] expectedKeys, DomainObjectCollection collection)
     {
       Assert.AreEqual (expectedKeys.Length, collection.Count, "DomainObjectCollection.Count");
@@ -1386,6 +1486,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           customerEndPointID,
           MockRepository.GenerateStub<ICollectionEndPointChangeDelegate> (),
           new DomainObject[0]);
+    }
+
+    private OrderCollection CreateAssociatedCollection ()
+    {
+      var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      var actualData = new DomainObjectCollectionData ();
+
+      var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, actualData);
+      var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (delegatingStrategy, typeof (Order)));
+      Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));
+      return associatedCollection;
     }
   }
 }

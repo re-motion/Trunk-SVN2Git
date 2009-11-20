@@ -22,96 +22,116 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class DomainObjectCollectionFactoryTest
+  public class DomainObjectCollectionFactoryTest : ClientTransactionBaseTest
   {
     private DomainObjectCollectionFactory _factory;
     private DomainObjectCollectionData _data;
+    private ArgumentCheckingCollectionDataDecorator _dataWithOrderType;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp ();
+
       _factory = new DomainObjectCollectionFactory ();
       _data = new DomainObjectCollectionData ();
+      _dataWithOrderType = new ArgumentCheckingCollectionDataDecorator (_data, typeof (Order));
     }
 
     [Test]
     public void CreateCollection_SetsData_ObjectListCtor ()
     {
-      var collection = _factory.CreateCollection (typeof (ObjectList<Order>), _data, null);
+      var collection = _factory.CreateCollection (typeof (ObjectList<Order>), _dataWithOrderType);
 
       Assert.That (collection, Is.InstanceOfType (typeof (ObjectList<Order>)));
-      var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
-      Assert.That (wrappedData, Is.SameAs (_data));
+      CheckDataStrategy (collection, _dataWithOrderType);
     }
 
     [Test]
     public void CreateCollection_SetsData_DomainObjectCollectionCtor ()
     {
-      var collection = _factory.CreateCollection (typeof (DomainObjectCollection), _data, null);
+      var collection = _factory.CreateCollection (typeof (DomainObjectCollection), _data);
 
       Assert.That (collection, Is.InstanceOfType (typeof (DomainObjectCollection)));
-      var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
-      Assert.That (wrappedData, Is.SameAs (_data));
+      CheckDataStrategy (collection, _data);
     }
 
     [Test]
     public void CreateCollection_ProtectedCtor ()
     {
-      var collection = _factory.CreateCollection (typeof (CollectionWithProtectedCtor), _data, null);
+      var collection = _factory.CreateCollection (typeof (CollectionWithProtectedCtor), _dataWithOrderType);
 
       Assert.That (collection, Is.InstanceOfType (typeof (CollectionWithProtectedCtor)));
-      var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<DomainObjectCollectionData> (decorator);
-      Assert.That (wrappedData, Is.SameAs (_data));
-    }
-
-    [Test]
-    public void CreateCollection_PassesRequiredItemType ()
-    {
-      var collection1 = _factory.CreateCollection (typeof (DomainObjectCollection), _data, null);
-      var collection2 = _factory.CreateCollection (typeof (DomainObjectCollection), _data, typeof (Order));
-
-      Assert.That (collection1.RequiredItemType, Is.Null);
-      Assert.That (collection2.RequiredItemType, Is.SameAs (typeof (Order)));
-    }
-
-    [Test]
-    public void CreateCollection_ChecksRequiredItemType_IfProvided ()
-    {
-      _factory.CreateCollection (typeof (OrderCollection), _data, typeof (Order));
-      _factory.CreateCollection (typeof (OrderCollection), _data, null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "Cannot create an instance of 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection' with required item type "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer': The collection's constructor sets a different required item type.")]
-    public void CreateCollection_ChecksRequiredItemType_ThrowsIfInvalidRequiredItemType ()
-    {
-      _factory.CreateCollection (typeof (OrderCollection), _data, typeof (Customer));
+      CheckDataStrategy (collection, _dataWithOrderType);
     }
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = 
         "Cannot create an instance of 'Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain.CollectionWithMissingDataCtor' because "
-        + "that type does not provide a constructor taking an IDomainObjectCollectionData object and optionally a required item type.", 
+        + "that type does not provide a constructor taking an IDomainObjectCollectionData object.", 
         MatchType = MessageMatch.Contains)]
     public void CreateCollection_ThrowsIfNoSupportedCtor ()
     {
-      _factory.CreateCollection (typeof (CollectionWithMissingDataCtor), _data, null);
+      _factory.CreateCollection (typeof (CollectionWithMissingDataCtor), _data);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidCastException))]
     public void CreateCollection_ThrowsIfNonCollectionType ()
     {
-      _factory.CreateCollection (typeof (CollectionNotDerivedFromDomainObjectCollection), _data, null);
+      _factory.CreateCollection (typeof (CollectionNotDerivedFromDomainObjectCollection), _data);
+    }
+
+    [Test]
+    public void CreateCollection_ForStandaloneCollection ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      
+      DomainObjectCollection collection = _factory.CreateCollection (typeof (ObjectList<Order>), new[] { order1, order2 }, typeof (Order));
+
+      Assert.That (collection, Is.Not.Null);
+      Assert.That (collection.RequiredItemType, Is.EqualTo (typeof (Order)));
+
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Order));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemNullException))]
+    public void CreateCollection_ForStandaloneCollection_PerformsItemChecks ()
+    {
+      DomainObjectCollection collection = _factory.CreateCollection (typeof (ObjectList<Order>), new Order[] { null }, typeof (Order));
+
+      Assert.That (collection, Is.Not.Null);
+      Assert.That (collection.RequiredItemType, Is.EqualTo (typeof (Order)));
+
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Order));
+    }
+
+    [Test]
+    public void CreateCollection_ForStandaloneCollection_WithInferredItemType ()
+    {
+      DomainObjectCollection collection = _factory.CreateCollection (typeof (ObjectList<Order>), new Order[0]);
+
+      Assert.That (collection.RequiredItemType, Is.SameAs (typeof (Order)));
+    }
+
+    [Test]
+    public void CreateCollection_ForStandaloneCollection_WithInferredItemType_NoneFound ()
+    {
+      DomainObjectCollection collection = _factory.CreateCollection (typeof (DomainObjectCollection), new Order[0]);
+
+      Assert.That (collection.RequiredItemType, Is.Null);
+    }
+
+    private void CheckDataStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedData)
+    {
+      var data = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      Assert.That (data, Is.SameAs (expectedData));
     }
   }
 }
