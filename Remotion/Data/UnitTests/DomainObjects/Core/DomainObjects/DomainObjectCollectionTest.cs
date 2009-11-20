@@ -1201,6 +1201,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    [Ignore ("TODO 992")]
+    public void CreateAssociationModification_CollectionIsReadOnly ()
+    {
+      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+
+      var newCollection = new OrderCollection ();
+      newCollection.SetIsReadOnly (true);
+      newCollection.CreateAssociationModification (endPoint);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "This collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
         + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
@@ -1220,16 +1231,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
 
       var newCollection = new DomainObjectCollection (typeof (Customer));
-      newCollection.CreateAssociationModification (endPoint);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A read-only collection cannot be associated with an end point.")]
-    public void CreateAssociationModification_CollectionIsReadOnly ()
-    {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
-
-      var newCollection = new DomainObjectCollection (new DomainObjectCollection (typeof (Customer)), true);
       newCollection.CreateAssociationModification (endPoint);
     }
 

@@ -1080,14 +1080,6 @@ namespace Remotion.Data.DomainObjects
 
     #endregion
 
-    internal void AssumeSameState (DomainObjectCollection source)
-    {
-      Assertion.IsTrue (_requiredItemType == source._requiredItemType);
-
-      _data = new DomainObjectCollectionData (source.Cast<DomainObject>());
-      SetIsReadOnly (source.IsReadOnly);
-    }
-
     internal void TakeOverCommittedData (DomainObjectCollection source)
     {
       AssumeSameState (source);
@@ -1154,6 +1146,14 @@ namespace Remotion.Data.DomainObjects
 
       SetIsReadOnly (isReadOnly);
       Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. However, this method is removed anyway.
+    }
+
+    internal void AssumeSameState (DomainObjectCollection source)
+    {
+      Assertion.IsTrue (_requiredItemType == source._requiredItemType);
+
+      _data = new DomainObjectCollectionData (source.Cast<DomainObject> ());
+      SetIsReadOnly (source.IsReadOnly);
     }
 
     internal void EndAdd (DomainObject domainObject)
@@ -1377,9 +1377,6 @@ namespace Remotion.Data.DomainObjects
     public IRelationEndPointModification CreateAssociationModification (CollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (IsReadOnly)
-        throw new NotSupportedException ("A read-only collection cannot be associated with an end point.");
 
       if (AssociatedEndPoint != null && endPoint.OppositeDomainObjects != this)
         throw new InvalidOperationException ("The collection is already associated with an end point.");
