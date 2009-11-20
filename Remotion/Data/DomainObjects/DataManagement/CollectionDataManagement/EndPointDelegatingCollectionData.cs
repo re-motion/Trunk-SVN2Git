@@ -48,11 +48,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _actualData.Count; }
     }
 
-    public bool IsReadOnly
-    {
-      get { return _actualData.IsReadOnly; }
-    }
-
     public Type RequiredItemType
     {
       get { return _actualData.RequiredItemType; }

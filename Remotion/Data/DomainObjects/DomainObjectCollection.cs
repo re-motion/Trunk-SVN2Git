@@ -304,6 +304,7 @@ namespace Remotion.Data.DomainObjects
 
     internal IDomainObjectCollectionData _data; // TODO 1033: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.
     private Type _requiredItemType;
+    private bool _isReadOnly;
     
     [NonSerialized]
     private ICollectionChangeDelegate _changeDelegate = null;
@@ -404,7 +405,7 @@ namespace Remotion.Data.DomainObjects
     /// </returns>
     public bool IsReadOnly
     {
-      get { return _data.IsReadOnly; }
+      get { return _isReadOnly; }
     }
 
     public ICollectionEndPoint AssociatedEndPoint
@@ -433,8 +434,7 @@ namespace Remotion.Data.DomainObjects
     public void Combine (DomainObjectCollection domainObjects)
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-      if (IsReadOnly)
-        throw new NotSupportedException ("A read-only collection cannot be combined with another collection.");
+      CheckNotReadOnly ("A read-only collection cannot be combined with another collection.");
 
       foreach (DomainObject domainObject in domainObjects)
       {
@@ -551,8 +551,7 @@ namespace Remotion.Data.DomainObjects
       set
       {
         CheckIndexForIndexer ("index", index);
-        if (IsReadOnly)
-          throw new NotSupportedException ("Cannot modify a read-only collection.");
+        CheckNotReadOnly ("Cannot modify a read-only collection.");
 
         // If new value is null: This is actually a remove operation
         if (value == null)
@@ -613,8 +612,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       CheckItemType (domainObject, "domainObject");
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot add an item to a read-only collection.");
+      CheckNotReadOnly ("Cannot add an item to a read-only collection.");
 
       if (Contains (domainObject.ID))
       {
@@ -698,8 +696,7 @@ namespace Remotion.Data.DomainObjects
     public void Remove (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
+      CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
 
       DomainObject domainObject = this[id];
       if (domainObject != null)
@@ -729,8 +726,7 @@ namespace Remotion.Data.DomainObjects
     public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
+      CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
 
       // Do not perform remove if domain object is not part of this collection     
       if (this[domainObject.ID] == null)
@@ -762,8 +758,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     public void Clear()
     {
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot clear a read-only collection.");
+      CheckNotReadOnly ("Cannot clear a read-only collection.");
 
       for (int i = Count - 1; i >= 0; i--)
         Remove (this[i].ID);
@@ -821,8 +816,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       CheckIndexForInsert ("index", index);
-      if (IsReadOnly)
-        throw new NotSupportedException ("Cannot insert an item into a read-only collection.");
+      CheckNotReadOnly ("Cannot insert an item into a read-only collection.");
       CheckItemType (domainObject, "domainObject");
 
       if (Contains (domainObject.ID))
@@ -873,14 +867,20 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Returns an implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection but will
-    /// not raise any notifications. This means that no events wil be raised when the data is manipulated. When the collection is part of a
+    /// not raise any notifications. This means that no events wil be raised when the data is manipulated and no bidirectional notifications will be
+    /// performed. The returned object also does not check whether this collection is read-only.
+    /// </summary>
+    /// <returns>An implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection and will
+    /// not raise any notifications and manipulation.</returns>
+    /// <remarks>
+    /// <para>
+    /// When the collection is part of a
     /// <see cref="CollectionEndPoint"/>, the manipulations performed on the data will not trigger bidirectional modifications on related objects,
     /// so manipulations must be performed with care, otherwise inconsistent state might arise. The end point will also not be marked as touched by 
     /// manipulations performed on the returned data. (The end point's <see cref="CollectionEndPoint.HasChanged"/> method might still return 
     /// <see langword="true" />, though, since it compares the original data with the collection's contents.)
-    /// </summary>
-    /// <returns>An implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection and will
-    /// not raise any notifications and manipulation.</returns>
+    /// </para>
+    /// </remarks>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
       return new ArgumentCheckingCollectionDataDecorator (_data, RequiredItemType);
@@ -1248,12 +1248,7 @@ namespace Remotion.Data.DomainObjects
 
     protected void SetIsReadOnly (bool isReadOnly)
     {
-      if (isReadOnly)
-        _data = new ReadOnlyCollectionDataDecorator (_data);
-      else if (_data.IsReadOnly)
-        _data = new DomainObjectCollectionData (_data);
-
-      Assertion.IsTrue (IsReadOnly == isReadOnly);
+      _isReadOnly = isReadOnly;
     }
 
     private void CheckItemType (DomainObject domainObject, string argumentName)
@@ -1398,6 +1393,12 @@ namespace Remotion.Data.DomainObjects
           this,
           new Transformer (endPoint.OppositeDomainObjects), 
           new Transformer (this));
+    }
+
+    private void CheckNotReadOnly (string message)
+    {
+      if (IsReadOnly)
+        throw new NotSupportedException (message);
     }
   }
 }

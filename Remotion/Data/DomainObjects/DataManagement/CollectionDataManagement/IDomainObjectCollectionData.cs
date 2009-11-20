@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public interface IDomainObjectCollectionData : IEnumerable<DomainObject>
   {
     int Count { get; }
-    bool IsReadOnly { get; }
     Type RequiredItemType { get; }
     ICollectionEndPoint AssociatedEndPoint { get; }
 

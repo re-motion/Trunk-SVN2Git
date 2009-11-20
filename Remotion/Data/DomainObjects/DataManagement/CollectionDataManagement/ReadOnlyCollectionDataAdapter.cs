@@ -22,15 +22,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// This class acts as a read-only decorator (and adapter) for another <see cref="IDomainObjectTransactionContext"/> object. Every modifying method 
-  /// of the <see cref="IDomainObjectCollectionData"/> interface will throw an <see cref="InvalidOperationException"/> when invoked on this class.
+  /// This class acts as a read-only adapter for an <see cref="IDomainObjectTransactionContext"/> object.
   /// </summary>
   [Serializable]
-  public class ReadOnlyCollectionDataDecorator : IDomainObjectCollectionData, IReadOnlyDomainObjectCollectionData
+  public class ReadOnlyCollectionDataAdapter : IReadOnlyDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionData _wrappedData;
 
-    public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
+    public ReadOnlyCollectionDataAdapter (IDomainObjectCollectionData wrappedData)
     {
       ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
       _wrappedData = wrappedData;
@@ -49,31 +48,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public int Count
     {
       get { return _wrappedData.Count; }
-    }
-
-    public bool IsReadOnly
-    {
-      get { return true; }
-    }
-
-    public Type RequiredItemType
-    {
-      get { return _wrappedData.RequiredItemType; }
-    }
-
-    ICollectionEndPoint IDomainObjectCollectionData.AssociatedEndPoint
-    {
-      get
-      {
-        var message = "It is not supported to get the associated end point from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
-        throw new NotSupportedException (message);
-      }
-    }
-
-    IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
-    {
-      var message = "It is not supported to get the underlying data store from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
-      throw new NotSupportedException (message);
     }
 
     public bool ContainsObjectID (ObjectID objectID)
@@ -97,31 +71,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       return _wrappedData.IndexOf (objectID);
-    }
-
-    void IDomainObjectCollectionData.Clear ()
-    {
-      throw new InvalidOperationException ("Cannot clear a read-only collection.");
-    }
-
-    void IDomainObjectCollectionData.Insert (int index, DomainObject domainObject)
-    {
-      throw new InvalidOperationException ("Cannot insert an item into a read-only collection.");
-    }
-
-    void IDomainObjectCollectionData.Remove (DomainObject domainObject)
-    {
-      throw new InvalidOperationException ("Cannot remove an item from a read-only collection.");
-    }
-
-    void IDomainObjectCollectionData.Remove (ObjectID objectID)
-    {
-      throw new InvalidOperationException ("Cannot remove an item from a read-only collection.");
-    }
-
-    void IDomainObjectCollectionData.Replace (int index, DomainObject newDomainObject)
-    {
-      throw new InvalidOperationException ("Cannot replace an item in a read-only collection.");
     }
   }
 }

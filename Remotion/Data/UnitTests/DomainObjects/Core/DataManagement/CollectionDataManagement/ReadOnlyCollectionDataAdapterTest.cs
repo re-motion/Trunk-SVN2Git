@@ -31,9 +31,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
-  public class ReadOnlyCollectionDataDecoratorTest : ClientTransactionBaseTest
+  public class ReadOnlyCollectionDataAdapterTest : ClientTransactionBaseTest
   {
-    private ReadOnlyCollectionDataDecorator _readOnlyDecorator;
+    private ReadOnlyCollectionDataAdapter _readOnlyAdapter;
     private IDomainObjectCollectionData _wrappedDataStub;
 
     private Order _order1;
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp ();
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-      _readOnlyDecorator = new ReadOnlyCollectionDataDecorator (_wrappedDataStub);
+      _readOnlyAdapter = new ReadOnlyCollectionDataAdapter (_wrappedDataStub);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -57,34 +57,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void Enumeration ()
     {
       StubInnerData (_order1, _order2, _order3);
-      Assert.That (_readOnlyDecorator.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (_readOnlyAdapter.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
     }
 
     [Test]
     public void Count ()
     {
       StubInnerData (_order1, _order2, _order3);
-      Assert.That (_readOnlyDecorator.Count, Is.EqualTo (3));
-    }
-
-    [Test]
-    public void IsReadOnly ()
-    {
-      Assert.That (_readOnlyDecorator.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void AssociatedEndPoint ()
-    {
-      Dev.Null = ((IDomainObjectCollectionData) _readOnlyDecorator).AssociatedEndPoint;
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void GetUndecoratedDataStore ()
-    {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).GetUndecoratedDataStore ();
+      Assert.That (_readOnlyAdapter.Count, Is.EqualTo (3));
     }
 
     [Test]
@@ -92,8 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyDecorator.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_readOnlyDecorator.ContainsObjectID (_order4.ID), Is.False);
+      Assert.That (_readOnlyAdapter.ContainsObjectID (_order1.ID), Is.True);
+      Assert.That (_readOnlyAdapter.ContainsObjectID (_order4.ID), Is.False);
     }
 
     [Test]
@@ -101,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyDecorator.GetObject (0), Is.SameAs (_order1));
+      Assert.That (_readOnlyAdapter.GetObject (0), Is.SameAs (_order1));
     }
 
     [Test]
@@ -109,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyDecorator.GetObject (_order2.ID), Is.SameAs (_order2));
+      Assert.That (_readOnlyAdapter.GetObject (_order2.ID), Is.SameAs (_order2));
     }
 
     [Test]
@@ -117,48 +97,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyDecorator.IndexOf (_order2.ID), Is.EqualTo (1));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot clear a read-only collection.")]
-    public void Clear_Throws ()
-    {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Clear ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
-    public void Insert_Throws ()
-    {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Insert (0, _order4);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
-    public void Remove_Throws ()
-    {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Remove (_order1);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
-    public void Remove_ID_Throws ()
-    {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Remove (_order1.ID);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot replace an item in a read-only collection.")]
-    public void Replace_Throws ()
-    {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Replace (1, _order1);
+      Assert.That (_readOnlyAdapter.IndexOf (_order2.ID), Is.EqualTo (1));
     }
 
     [Test]
     public void Serializable ()
     {
-      var decorator = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }));
+      var decorator = new ReadOnlyCollectionDataAdapter (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }));
       var result = Serializer.SerializeAndDeserialize (decorator);
       Assert.That (result.Count, Is.EqualTo (3));
     }

@@ -22,12 +22,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <summary>
   /// Provides a read-only interface for objects holding <see cref="DomainObjectCollection"/> data. To convert from an 
   /// <see cref="IDomainObjectCollectionData"/> object to <see cref="IReadOnlyDomainObjectCollectionData"/>, use 
-  /// <see cref="ReadOnlyCollectionDataDecorator"/>.
+  /// <see cref="ReadOnlyCollectionDataAdapter"/>.
   /// </summary>
   public interface IReadOnlyDomainObjectCollectionData : IEnumerable<DomainObject>
   {
     int Count { get; }
-    bool IsReadOnly { get; }
     bool ContainsObjectID (ObjectID objectID);
     DomainObject GetObject (int index);
     DomainObject GetObject (ObjectID objectID);

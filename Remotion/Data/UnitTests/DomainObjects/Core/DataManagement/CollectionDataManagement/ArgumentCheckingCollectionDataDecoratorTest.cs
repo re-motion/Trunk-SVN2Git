@@ -65,7 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       CheckDelegation (data => data.GetEnumerator ());
       CheckDelegation (data => Dev.Null = data.Count);
-      CheckDelegation (data => Dev.Null = data.IsReadOnly);
       CheckDelegation (data => Dev.Null = data.AssociatedEndPoint);
       CheckDelegation (data => data.ContainsObjectID (DomainObjectIDs.Order1));
       CheckDelegation (data => data.GetObject (0));

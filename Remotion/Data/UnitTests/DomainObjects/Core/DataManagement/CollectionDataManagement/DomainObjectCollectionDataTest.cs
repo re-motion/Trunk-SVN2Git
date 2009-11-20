@@ -78,12 +78,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IsReadOnly ()
-    {
-      Assert.That (_data.IsReadOnly, Is.False);
-    }
-
-    [Test]
     public void RequiredItemType ()
     {
       Assert.That (_data.RequiredItemType, Is.Null);

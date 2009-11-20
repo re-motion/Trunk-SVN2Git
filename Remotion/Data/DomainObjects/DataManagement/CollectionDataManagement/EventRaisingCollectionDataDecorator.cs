@@ -50,11 +50,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.Count; }
     }
 
-    public bool IsReadOnly
-    {
-      get { return _wrappedData.IsReadOnly; }
-    }
-
     public Type RequiredItemType
     {
       get { return _wrappedData.RequiredItemType; }

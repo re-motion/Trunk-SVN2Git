@@ -30,10 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   [TestFixture]
   public class EventRaisingCollectionDataDecoratorTest : ClientTransactionBaseTest
   {
-    private readonly MockRepository _mockRepository = new MockRepository();
-
+    private MockRepository _mockRepository;
     private IDomainObjectCollectionEventRaiser _eventRaiserMock;
     private EventRaisingCollectionDataDecorator _eventRaisingDecoratorWithStubbedContent;
+
     private EventRaisingCollectionDataDecorator _eventRaisingDecoratorWithRealContent;
     private IDomainObjectCollectionData _wrappedDataStub;
 
@@ -46,9 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp();
 
+      _mockRepository = new MockRepository ();
       _eventRaiserMock = _mockRepository.StrictMock<IDomainObjectCollectionEventRaiser> ();
-
       _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
+
       _eventRaisingDecoratorWithStubbedContent = new EventRaisingCollectionDataDecorator (_eventRaiserMock, _wrappedDataStub);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -73,20 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void Count ()
     {
       Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3));
-    }
-
-    [Test]
-    public void IsReadOnly_True ()
-    {
-      _wrappedDataStub.Stub (stub => stub.IsReadOnly).Return (true);
-      Assert.That (_eventRaisingDecoratorWithStubbedContent.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    public void IsReadOnly_False ()
-    {
-      _wrappedDataStub.Stub (stub => stub.IsReadOnly).Return (false);
-      Assert.That (_eventRaisingDecoratorWithStubbedContent.IsReadOnly, Is.False);
     }
 
     [Test]

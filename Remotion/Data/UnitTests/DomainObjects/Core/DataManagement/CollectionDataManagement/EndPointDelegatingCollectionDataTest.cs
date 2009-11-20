@@ -85,20 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IsReadOnly_True ()
-    {
-      _actualDataStub.Stub (stub => stub.IsReadOnly).Return (true);
-      Assert.That (_data.IsReadOnly, Is.True);
-    }
-
-    [Test]
-    public void IsReadOnly_False ()
-    {
-      _actualDataStub.Stub (stub => stub.IsReadOnly).Return (false);
-      Assert.That (_data.IsReadOnly, Is.False);
-    }
-
-    [Test]
     public void RequiredItemType ()
     {
       _actualDataStub.Stub (mock => mock.RequiredItemType).Return (typeof (Computer));

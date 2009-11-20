@@ -53,11 +53,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _orderedObjectIDs.Count; }
     }
 
-    public bool IsReadOnly
-    {
-      get { return false; }
-    }
-
     public Type RequiredItemType
     {
       get { return null; }
