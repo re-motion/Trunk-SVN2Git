@@ -283,7 +283,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // If it doesn't happen, fixups can be made prettier by adding an IAssociatedEndPointFixup interface to DomainObjectCollection and all 
       // IDomainObjectCollectionData implementors.
 
-      var dataField = typeof (DomainObjectCollection).GetField ("_data", BindingFlags.NonPublic | BindingFlags.Instance);
+      var dataField = typeof (DomainObjectCollection).GetField ("_dataStrategy", BindingFlags.NonPublic | BindingFlags.Instance);
       var decorator = dataField.GetValue (collection);
 
       var wrappedDataField = typeof (ArgumentCheckingCollectionDataDecorator).GetField ("_wrappedData", BindingFlags.NonPublic | BindingFlags.Instance);

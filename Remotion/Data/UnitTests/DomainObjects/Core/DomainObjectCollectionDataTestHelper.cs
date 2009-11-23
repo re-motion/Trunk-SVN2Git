@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   {
     public static T GetCollectionDataAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
     {
-      var data = PrivateInvoke.GetNonPublicField (collection, "_data");
+      var data = PrivateInvoke.GetNonPublicField (collection, "_dataStrategy");
       Assert.That (data, Is.InstanceOfType (typeof (T)));
       return (T) data;
     }
