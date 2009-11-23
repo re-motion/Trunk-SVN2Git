@@ -98,6 +98,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
 
+      if (oppositeDomainObjects.AssociatedEndPoint != null && oppositeDomainObjects.AssociatedEndPoint != this)
+        throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
+
       var modification = oppositeDomainObjects.CreateAssociationModification (this);
       var bidirectionalModification = modification.CreateBidirectionalModification ();
       bidirectionalModification.ExecuteAllSteps ();

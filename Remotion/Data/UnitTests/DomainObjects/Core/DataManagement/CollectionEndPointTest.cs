@@ -392,6 +392,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The given collection is already associated with an end point.\r\n"
+        + "Parameter name: oppositeDomainObjects")]
+    public void ReplaceOppositeCollection_NewCollectionAlreadyAssociated ()
+    {
+      var otherEndPoint = CreateCollectionEndPoint (_customerEndPointID, new DomainObject[0]);
+      _customerEndPoint.ReplaceOppositeCollection (otherEndPoint.OppositeDomainObjects);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_SelfReplace ()
+    {
+      _customerEndPoint.ReplaceOppositeCollection (_customerEndPoint.OppositeDomainObjects);
+      
+      Assert.That (_customerEndPoint.OppositeDomainObjects.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+    }
+
+    [Test]
     public void Commit ()
     {
       var newOrder = Order.NewObject ();
