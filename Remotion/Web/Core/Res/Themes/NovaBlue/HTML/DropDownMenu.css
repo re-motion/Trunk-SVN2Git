@@ -8,9 +8,15 @@ span.DropDownMenuContainer
 	width: 100%;
 }
 
+tr.bocListDataRow span.DropDownMenuContainer,
+tr.bocListDataRowSelected span.DropDownMenuContainer   
+{
+ display: inline-block;
+}
+
 span.DropDownMenuSelect 
 {
-  display: inline-block;
+  display: block;
   position: relative;
 	border: solid 1px #083779;
 	text-align: left;
