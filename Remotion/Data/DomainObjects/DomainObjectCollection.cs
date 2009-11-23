@@ -74,8 +74,8 @@ namespace Remotion.Data.DomainObjects
   ///       These methods can be used to adjust internal state whenever an item is removed from the collection. 
   ///       The actual adjustment should be performed in the <see cref="OnRemoved"/> method, 
   ///       because the operation could be cancelled after the <see cref="OnRemoving"/> method has been called. 
-  ///       Note: If the collection is cleared through the <see cref="Clear"/> method <see cref="OnRemoving"/> 
-  ///       and <see cref="OnRemoved"/> are called for every item.
+  ///       If the collection is cleared through the <see cref="Clear"/> method, <see cref="OnRemoving"/> is called for each item, then
+  ///       the collection data is cleared, then <see cref="OnRemoved"/> is called for every item.
   ///     </description>
   ///   </item>
   ///   <item>
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects
   ///   <item>
   ///     <term><see cref="Commit"/></term>
   ///     <description>
-  ///       This method is only called on <see cref="DomainObjectCollection"/>s representing the original values 
+  ///       This method is only called on <see cref="DomainObjectCollection"/>s representing the values 
   ///       of a one-to-many relation during the commit operation of the associated <see cref="ClientTransaction"/>. 
   ///       A derived collection should replace its internal state with the state of the provided collection passed 
   ///       as an argument to this method.
@@ -112,6 +112,9 @@ namespace Remotion.Data.DomainObjects
   {
     // types
 
+    /// <summary>
+    /// Implements <see cref="IDomainObjectCollectionTransformer"/> for <see cref="DomainObjectCollection"/>.
+    /// </summary>
     private class Transformer : IDomainObjectCollectionTransformer
     {
       public Transformer (DomainObjectCollection owningCollection)
@@ -154,8 +157,7 @@ namespace Remotion.Data.DomainObjects
 
       return new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EventRaisingCollectionDataDecorator (eventRaiser, dataStore));
     }
-
-
+    
     /// <summary>
     /// Compares two instances of <see cref="DomainObjectCollection"/> for equality.
     /// </summary>
@@ -245,7 +247,6 @@ namespace Remotion.Data.DomainObjects
     public event DomainObjectCollectionChangeEventHandler Removed;
 
     internal IDomainObjectCollectionData _data; // TODO 1033: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.
-    private Type _requiredItemType;
     private bool _isReadOnly;
     
     // construction and disposing
@@ -414,7 +415,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public Type RequiredItemType
     {
-      get { return _requiredItemType ?? _data.RequiredItemType; }
+      get { return _data.RequiredItemType; }
     }
 
     /// <summary>
@@ -432,7 +433,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      return _data.ContainsObjectID (domainObject.ID) && object.ReferenceEquals (_data.GetObject (domainObject.ID), domainObject);
+      return _data.ContainsObjectID (domainObject.ID) && ReferenceEquals (_data.GetObject (domainObject.ID), domainObject);
     }
 
     /// <summary>
@@ -560,7 +561,6 @@ namespace Remotion.Data.DomainObjects
         ++index;
       }
     }
-
 
     /// <summary>
     /// Removes a <see cref="DomainObject"/> from the collection.

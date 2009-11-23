@@ -19,8 +19,9 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// Provides a public interface for <see cref="DomainObjectCollection.Transformer"/>. This interface is used by 
-  /// <see cref="CollectionEndPointReplaceWholeCollectionModification"/> and should usually not be required by framework users.
+  /// Provides an interface that allows transforming collections from stand-alone to end point-associated collections and back.
+  /// This interface is used by  <see cref="CollectionEndPointReplaceWholeCollectionModification"/> and should usually not be required by framework 
+  /// users.
   /// </summary>
   public interface IDomainObjectCollectionTransformer
   {
