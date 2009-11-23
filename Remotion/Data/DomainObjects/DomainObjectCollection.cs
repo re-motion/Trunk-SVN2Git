@@ -110,8 +110,6 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class DomainObjectCollection : ICloneable, IList, IDomainObjectCollectionEventRaiser
   {
-    // types
-
     /// <summary>
     /// Implements <see cref="IDomainObjectCollectionTransformer"/> for <see cref="DomainObjectCollection"/>.
     /// </summary>
@@ -139,8 +137,6 @@ namespace Remotion.Data.DomainObjects
         Collection._data = CreateDataStrategyForStandAloneCollection (Collection._data.GetUndecoratedDataStore (), Collection.RequiredItemType, Collection);
       }
     }
-
-    // static members and constants
 
     /// <summary>
     /// Creates an <see cref="IDomainObjectCollectionData"/> object for stand-alone collections. The returned object takes care of argument checks,
@@ -214,8 +210,6 @@ namespace Remotion.Data.DomainObjects
       return true;
     }
 
-    // member fields
-
     /// <summary>
     /// Occurs before an object is added to the collection.
     /// </summary>
@@ -249,8 +243,6 @@ namespace Remotion.Data.DomainObjects
     internal IDomainObjectCollectionData _data; // TODO 1033: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.
     private bool _isReadOnly;
     
-    // construction and disposing
-
     /// <summary>
     /// Initializes a new <see cref="DomainObjectCollection" />.
     /// </summary>
@@ -322,8 +314,6 @@ namespace Remotion.Data.DomainObjects
       _data = CreateDataStrategyForStandAloneCollection (dataStore, requiredItemType, this);
       SetIsReadOnly (makeCollectionReadOnly);
     }
-
-    // methods and properties
 
     /// <summary>
     /// Gets the number of elements contained in the <see cref="DomainObjectCollection"/>.
