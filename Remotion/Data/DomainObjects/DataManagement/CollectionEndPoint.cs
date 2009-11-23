@@ -194,13 +194,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
+      return new CollectionEndPointRemoveModification (this, removedRelatedObject, _dataStore);
     }
 
     public virtual IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
+      return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, _dataStore);
     }
 
     public virtual IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
@@ -213,9 +213,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointSelfReplaceModification (this, replacedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore());
+        return new CollectionEndPointSelfReplaceModification (this, replacedObject, _dataStore);
       else
-        return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
+        return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, _dataStore);
     }
 
     public override void PerformDelete ()
@@ -223,7 +223,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsFalse (_oppositeDomainObjects.IsReadOnly);
 
       ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete ();
-      _oppositeDomainObjects._data.GetUndecoratedDataStore ().Clear ();
+      _dataStore.Clear ();
       _hasBeenTouched = true;
       ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ();
     }

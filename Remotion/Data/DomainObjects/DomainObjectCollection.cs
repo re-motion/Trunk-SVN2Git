@@ -241,7 +241,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public event DomainObjectCollectionChangeEventHandler Removed;
 
-    internal IDomainObjectCollectionData _data; // TODO 1033: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.
+    private IDomainObjectCollectionData _data;
     private bool _isReadOnly;
     
     /// <summary>
