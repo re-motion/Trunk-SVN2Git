@@ -357,13 +357,14 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <see cref="DomainObjectCollection" />, that are not already part of it.
+    /// This method is a convenienve method combining <see cref="Contains"/> and <see cref="AddRange"/>. If there are no changes made to this 
+    /// collection, the <see cref="Combine"/> method does not touch the associated end point (if any).
     /// </summary>
     /// <remarks>
-    /// <para>The method does not modify the given <see cref="DomainObjectCollection"/>.</para>
     /// <para>To check if an item is already part of the <see cref="DomainObjectCollection" /> its <see cref="DomainObject.ID"/> is used. 
-    /// <see cref="Combine"/> does not check if the item references are identical.
-    /// The two <see cref="DomainObjectCollection"/>s could contain items with the same ID, but reference different <see cref="DomainObject"/>s, 
-    /// if the collections contain items of different <see cref="ClientTransaction"/>s.</para>
+    /// <see cref="Combine"/> does not check if the item references are identical. In case the two <see cref="DomainObjectCollection"/> contain 
+    /// different items with the same <see cref="DomainObject.ID"/>, <see cref="Combine"/> will thus ignore those items.
+    /// </para>
     /// </remarks>
     /// <param name="domainObjects">The <see cref="DomainObjectCollection"/> to add items from. Must not be <see langword="null"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
@@ -377,13 +378,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
       CheckNotReadOnly ("A read-only collection cannot be combined with another collection.");
 
-      foreach (DomainObject domainObject in domainObjects)
-      {
-        if (!Contains (domainObject.ID))
-          Add (domainObject);
-      }
-
-      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. Document this.
+      AddRange (domainObjects.Cast<DomainObject> ().Where (obj => !Contains (obj.ID)));
     }
 
     /// <summary>
@@ -420,10 +415,11 @@ namespace Remotion.Data.DomainObjects
     /// <returns><see langword="true"/> if <paramref name="domainObject"/> is found in the <see cref="DomainObjectCollection"/>; otherwise, false;</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/></exception>
     /// <remarks>
-    /// <para>This method only returns true, if the same reference is found in the collection.</para>
-    /// <para>Note: The <see cref="DomainObjectCollection" /> could contain an item with the same ID, 
-    /// but reference a different <see cref="DomainObject"/>, 
-    /// if the given <paramref name="domainObject" /> is part of a different <see cref="ClientTransaction"/>.</para></remarks>
+    /// <para>This method only returns <see langword="true" /> if the same reference is found in the collection. It returns <see langword="false" /> 
+    /// when the collection contains no matching object or another object reference (from another <see cref="ClientTransaction"/>) with the same
+    /// <see cref="DomainObject.ID"/>.
+    /// </para>
+    /// </remarks>
     public bool ContainsObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -910,24 +906,22 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Replaces the items in the collection with the items of a given <see cref="DomainObjectCollection"/>.
+    /// Replaces the items in the collection with the items of a given <see cref="DomainObjectCollection"/>. This method raises no events
+    /// and it does not touch the associated end point, if any.
     /// </summary>
     /// <param name="domainObjects">A <see cref="DomainObjectCollection"/> containing the new items for the collection.</param>
     /// <remarks>
     ///   This method actually performs the replace operation for <see cref="Commit"/> and <see cref="Rollback"/>.
-    ///   Note: The replacement raises no events.
     /// </remarks>
     /// <exception cref="DataManagement.ClientTransactionsDifferException">
     ///   <paramref name="domainObjects"/> contains a <see cref="DomainObject"/> that belongs to a <see cref="ClientTransaction"/> that is different from 
     ///   the <see cref="ClientTransaction"/> managing this collection. 
     ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
     /// </exception>
-    // TODO 1870: Remove this method, move logic to CollectionEndPoint.
     protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
       var nonNotifyingData = GetNonNotifyingData ();
       nonNotifyingData.ReplaceContents (domainObjects.Cast<DomainObject> ());
-      Touch (); // TODO: This call to Touch cannot be moved to the IDomainObjectCollectionData implementation. However, this method is removed anyway.
     }
 
     /// <summary>
@@ -1013,12 +1007,6 @@ namespace Remotion.Data.DomainObjects
       Added += source.Added;
       Removing += source.Removing;
       Removed += source.Removed;
-    }
-
-    private void Touch () // TODO: Replaced by EndPointDelegatingCollectionData.
-    {
-      if (AssociatedEndPoint != null)
-        AssociatedEndPoint.Touch ();
     }
 
     private void CheckNotReadOnly (string message)
