@@ -28,10 +28,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public class DomainObjectCollectionFactory
   {
-    public DomainObjectCollection CreateCollection (Type collectionType, IDomainObjectCollectionData data)
+    /// <summary>
+    /// Creates a collection of the given <paramref name="collectionType"/> via reflection, passing in the given 
+    /// <see cref="IDomainObjectCollectionData"/> object as the data storage strategy.
+    /// The collection must provide a constructor that takes a single parameter of type <see cref="IDomainObjectCollectionData"/>.
+    /// </summary>
+    /// <param name="collectionType">The type of the collection to create.</param>
+    /// <param name="dataStrategy">The data strategy to use for the new collection.</param>
+    /// <returns>An instance of the given <paramref name="collectionType"/>.</returns>
+    /// <exception cref="MissingMethodException">The <paramref name="collectionType"/> does not provide a constructor taking
+    /// a single parameter of type <see cref="IDomainObjectCollectionData"/>.</exception>
+    public DomainObjectCollection CreateCollection (Type collectionType, IDomainObjectCollectionData dataStrategy)
     {
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
-      ArgumentUtility.CheckNotNull ("data", data);
+      ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
 
       var ctor = collectionType.GetConstructor (
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
@@ -42,9 +52,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (ctor == null)
         throw CreateMissingConstructorException (collectionType);
 
-      return (DomainObjectCollection) ctor.Invoke (new[] { data });
+      return (DomainObjectCollection) ctor.Invoke (new[] { dataStrategy });
     }
 
+    /// <summary>
+    /// Creates a stand-alone collection of the given <paramref name="collectionType"/> via reflection. The collection is initialized to have
+    /// the given <paramref name="requiredItemType"/> and initial <paramref name="content"/>.
+    /// The collection must provide a constructor that takes a single parameter of type <see cref="IDomainObjectCollectionData"/>.
+    /// </summary>
+    /// <param name="collectionType">The type of the collection to create.</param>
+    /// <param name="content">The initial content of the collection. This must match <paramref name="requiredItemType"/> and it cannot contain
+    /// duplicates or <see langword="null" /> values.</param>
+    /// <param name="requiredItemType">The required item type of the collection.</param>
+    /// <returns>A stand-alone instance of <paramref name="collectionType"/>.</returns>
     public DomainObjectCollection CreateCollection (Type collectionType, IEnumerable<DomainObject> content, Type requiredItemType)
     {
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
@@ -63,6 +83,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collection;
     }
 
+    /// <summary>
+    /// Creates a stand-alone collection of the given <paramref name="collectionType"/> via reflection, inferring the collection's required item
+    /// type from the <paramref name="collectionType"/>. The collection is initialized to have the given initial <paramref name="content"/>.
+    /// The collection must provide a constructor that takes a single parameter of type <see cref="IDomainObjectCollectionData"/>.
+    /// </summary>
+    /// <param name="collectionType">The type of the collection to create.</param>
+    /// <param name="content">The initial content of the collection. This must not contain duplicates or <see langword="null" /> values.</param>
+    /// <returns>A stand-alone instance of <paramref name="collectionType"/>.</returns>
+    /// <remarks>
+    /// The required item type of the collection is inferred from its interfaces: if an implementation of <see cref="IEnumerable{T}"/> is found
+    /// in the collection's list of interfaces, that implementation's type parameter is used as the required item type. If none is found,
+    /// no required item type is set.
+    /// </remarks>
     public DomainObjectCollection CreateCollection (Type collectionType, IEnumerable<DomainObject> content)
     {
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
