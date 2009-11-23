@@ -61,7 +61,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var dataStore = new DomainObjectCollectionData (initialContents);
       var dataStrategy = CreateDelegatingCollectionData (dataStore);
       _oppositeDomainObjects = factory.CreateCollection (collectionType, dataStrategy);
-      _oppositeDomainObjects.ChangeDelegate = this;
 
       _originalOppositeDomainObjectsContents = _oppositeDomainObjects.Clone (true);
       _originalOppositeDomainObjectsReference = _oppositeDomainObjects;
@@ -155,10 +154,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         var modification = _originalOppositeDomainObjectsReference.CreateAssociationModification (this);
         modification.Perform (); // no notifications, no bidirectional changes, we only change the collections' associations
 
-        _oppositeDomainObjects.ChangeDelegate = null;
         _oppositeDomainObjects = _originalOppositeDomainObjectsReference;
-
-        _oppositeDomainObjects.ChangeDelegate = this;
 
         Assertion.IsTrue (_oppositeDomainObjects.AssociatedEndPoint == this);
         Assertion.IsTrue (_oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback || oppositeObjectsReferenceBeforeRollback.AssociatedEndPoint != this);
@@ -272,42 +268,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _changeDelegate; }
     }
 
-    #region ICollectionChangeDelegate Members
-
-    void ICollectionChangeDelegate.PerformInsert (DomainObjectCollection collection, DomainObject domainObject, int index)
-    {
-      ChangeDelegate.PerformInsert (this, domainObject, index);
-      _hasBeenTouched = true;
-    }
-
-    void ICollectionChangeDelegate.PerformReplace (DomainObjectCollection collection, DomainObject newDomainObject, int index)
-    {
-      ChangeDelegate.PerformReplace (this, index, newDomainObject);
-      _hasBeenTouched = true;
-    }
-
-    void ICollectionChangeDelegate.PerformRemove (DomainObjectCollection collection, DomainObject domainObject)
-    {
-      ChangeDelegate.PerformRemove (this, domainObject);
-      _hasBeenTouched = true;
-    }
-
-    void ICollectionChangeDelegate.MarkAsTouched ()
-    {
-      _hasBeenTouched = true;
-    }
-
-    #endregion
-
     #region Serialization
 
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
       _originalOppositeDomainObjectsContents = info.GetValueForHandle<DomainObjectCollection>();
-      _originalOppositeDomainObjectsContents.ChangeDelegate = this;
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
-      _oppositeDomainObjects.ChangeDelegate = this;
       _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
       _changeDelegate = info.GetValueForHandle<ICollectionEndPointChangeDelegate>();

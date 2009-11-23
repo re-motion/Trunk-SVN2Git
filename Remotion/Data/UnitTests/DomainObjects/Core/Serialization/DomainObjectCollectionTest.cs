@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (DomainObjectIDs.Order1, deserializedCollection[0].ID);
       Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
       Assert.IsFalse (deserializedCollection.IsReadOnly);
-      Assert.IsNull (PrivateInvoke.GetNonPublicField (deserializedCollection, "_changeDelegate"));
+      Assert.IsNull (deserializedCollection.AssociatedEndPoint);
     }
 
     [Test]

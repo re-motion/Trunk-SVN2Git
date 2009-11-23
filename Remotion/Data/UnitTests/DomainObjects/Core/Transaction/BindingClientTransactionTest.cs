@@ -161,46 +161,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot remove DomainObject 'OrderItem[^']*' from "
-        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The OrderItem object to be removed is bound to a BindingClientTransaction.",
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The object to be removed has the same ID as an object in this collection, but is a different object reference.\r\n"
+        + "Parameter name: domainObject",
         MatchType = MessageMatch.Regex)]
     public void RemoveBoundObject_FromCollectionOfUnboundObject ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        var orderItem = NewBound<OrderItem> ();
-        var order = Order.NewObject ();
-        order.OrderItems.ChangeDelegate.PerformRemove (order.OrderItems, orderItem);
+        var order = Order.GetObject (DomainObjectIDs.Order1);
+        var orderItem = GetBound<OrderItem> (order.OrderItems[0].ID);
+        order.OrderItems.Remove (orderItem);
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot remove DomainObject 'OrderItem[^']*' from "
-        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The Order object owning the collection is bound to a BindingClientTransaction.",
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The object to be removed has the same ID as an object in this collection, but is a different object reference.\r\n"
+        + "Parameter name: domainObject",
         MatchType = MessageMatch.Regex)]
     public void RemoveUnboundObject_FromCollectionOfBoundObject ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        var order = NewBound<Order> ();
-        var orderItem = OrderItem.NewObject ();
-        order.OrderItems.ChangeDelegate.PerformRemove (order.OrderItems, orderItem);
+        var order = GetBound<Order> (DomainObjectIDs.Order1);
+        var orderItem = OrderItem.GetObject (order.OrderItems[0].ID);
+        order.OrderItems.Remove (orderItem);
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot remove DomainObject 'OrderItem[^']*' from "
-        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order[^']*'. The objects do not "
-        + "belong to the same ClientTransaction. The OrderItem object to be removed is bound to a BindingClientTransaction. The Order object "
-        + "owning the collection is also bound, but to a different BindingClientTransaction.",
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The object to be removed has the same ID as an object in this collection, but is a different object reference.\r\n"
+        + "Parameter name: domainObject",
         MatchType = MessageMatch.Regex)]
     public void RemoveBoundObject_FromCollectionOfBoundObject_InOtherTx ()
     {
-      var order = NewBound<Order> ();
-      var orderItem = NewObject<OrderItem> (ClientTransaction.CreateBindingTransaction ());
-      order.OrderItems.ChangeDelegate.PerformRemove (order.OrderItems, orderItem);
+      var order = GetBound<Order> (DomainObjectIDs.Order1);
+      var orderItem = GetObject<OrderItem> (order.OrderItems[0].ID, ClientTransaction.CreateBindingTransaction ());
+      order.OrderItems.Remove (orderItem);
     }
 
     [Test]
@@ -318,7 +317,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     private T GetBound<T> (ObjectID id)
         where T : DomainObject
     {
-      using (_bindingTransaction.EnterNonDiscardingScope ())
+      return GetObject<T> (id, _bindingTransaction);
+    }
+
+    private T GetObject<T> (ObjectID id, ClientTransaction transaction)
+        where T : DomainObject
+    {
+      using (transaction.EnterNonDiscardingScope ())
       {
         return (T) RepositoryAccessor.GetObject (id, true);
       }

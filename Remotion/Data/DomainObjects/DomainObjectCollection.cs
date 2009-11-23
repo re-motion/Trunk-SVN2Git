@@ -248,9 +248,6 @@ namespace Remotion.Data.DomainObjects
     private Type _requiredItemType;
     private bool _isReadOnly;
     
-    [NonSerialized]
-    private ICollectionChangeDelegate _changeDelegate = null;
-
     // construction and disposing
 
     /// <summary>
@@ -420,12 +417,6 @@ namespace Remotion.Data.DomainObjects
       get { return _requiredItemType ?? _data.RequiredItemType; }
     }
 
-    public ICollectionChangeDelegate ChangeDelegate
-    {
-      get { return _changeDelegate; }
-      internal set { _changeDelegate = value; }
-    }
-
     /// <summary>
     /// Determines whether the <see cref="DomainObjectCollection"/> contains a reference to the specified <paramref name="domainObject"/>.
     /// </summary>
@@ -504,16 +495,8 @@ namespace Remotion.Data.DomainObjects
 
         if (Contains (value.ID) && !ReferenceEquals (this[index], value))
           throw CreateInvalidOperationException ("The object '{0}' is already part of this collection.", value.ID);
-        else if (_changeDelegate != null)
-          _data.Replace (index, value);
-        else if (ReferenceEquals (this[index], value)) // If old and new objects are the same: Perform no operation
-        {
-          return;
-        }
-        else
-        {
-          _data.Replace (index, value);
-        }
+
+        _data.Replace (index, value);
       }
     }
 
@@ -551,10 +534,7 @@ namespace Remotion.Data.DomainObjects
             "domainObject", "Cannot add object '{0}' already part of this collection.", domainObject.ID);
       }
 
-      if (_changeDelegate != null)
-        _data.Insert (Count, domainObject);
-      else
-        _data.Insert (Count, domainObject);
+      _data.Insert (Count, domainObject);
 
       return Count - 1;
     }
@@ -664,10 +644,8 @@ namespace Remotion.Data.DomainObjects
         var message = "The object to be removed has the same ID as an object in this collection, but is a different object reference.";
         throw new ArgumentException (message, "domainObject");
       } 
-      else if (_changeDelegate != null)
-        _data.Remove (domainObject);
-      else
-        _data.Remove (domainObject);
+
+      _data.Remove (domainObject);
       return true;
     }
 
@@ -744,10 +722,8 @@ namespace Remotion.Data.DomainObjects
             "domainObject", "Cannot insert object '{0}' already part of this collection.", domainObject.ID);
       }
 
-      if (_changeDelegate != null)
-        _data.Insert (index, domainObject);
-      else
-        _data.Insert (index, domainObject);
+
+      _data.Insert (index, domainObject);
     }
 
     /// <summary>
@@ -1163,8 +1139,8 @@ namespace Remotion.Data.DomainObjects
 
     private void Touch () // TODO: Replaced by EndPointDelegatingCollectionData.
     {
-      if (_changeDelegate != null)
-        _changeDelegate.MarkAsTouched ();
+      if (AssociatedEndPoint != null)
+        AssociatedEndPoint.Touch ();
     }
 
     private void CheckIndexForInsert (string argumentName, int index)

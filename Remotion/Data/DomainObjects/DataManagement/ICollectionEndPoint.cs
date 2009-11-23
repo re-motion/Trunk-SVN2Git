@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <summary>
   /// Represents an <see cref="IEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
   /// </summary>
-  public interface ICollectionEndPoint : IEndPoint, ICollectionChangeDelegate
+  public interface ICollectionEndPoint : IEndPoint
   {
     DomainObjectCollection OppositeDomainObjects { get; }
    

@@ -217,26 +217,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ReplaceOppositeCollection_SetsChangeDelegateOfNewCollection ()
-    {
-      var newOpposites = new OrderCollection { _order2 };
-      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
-
-      Assert.That (newOpposites.ChangeDelegate, Is.SameAs (_customerEndPoint));
-    }
-
-    [Test]
-    public void ReplaceOppositeCollection_ResetsChangeDelegateOfOldCollection ()
-    {
-      var oldOpposites = _customerEndPoint.OppositeDomainObjects;
-
-      var newOpposites = new OrderCollection { _order2 };
-      _customerEndPoint.ReplaceOppositeCollection (newOpposites);
-
-      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
-    }
-
-    [Test]
     public void ReplaceOppositeCollection_SetsTouchedFlag ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
@@ -272,8 +252,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
-      Assert.That (newOpposites.ChangeDelegate, Is.Null);
     }
 
     [Test]
@@ -314,8 +292,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
-      Assert.That (newOpposites.ChangeDelegate, Is.Null);
       Assert.That (newOpposites, Is.EqualTo (new[] { _orderWithoutOrderItem, _order1 })); // does not undo changes on detached collection
     }
 
@@ -346,15 +322,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
-      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
 
       _customerEndPoint.Rollback ();
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (_customerEndPoint));
-      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
     }
 
     [Test]

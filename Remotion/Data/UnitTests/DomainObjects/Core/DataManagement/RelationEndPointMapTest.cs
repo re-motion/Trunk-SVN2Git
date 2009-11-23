@@ -246,8 +246,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       }
 
-      var changeDelegate = order1.OrderItems.ChangeDelegate;
-      changeDelegate.PerformRemove (order1.OrderItems, orderItem1);
+      var endPoint = (CollectionEndPoint) order1.OrderItems.AssociatedEndPoint;
+      ((ICollectionEndPointChangeDelegate) _map).PerformRemove (endPoint, orderItem1);
     }
 
     [Test]
