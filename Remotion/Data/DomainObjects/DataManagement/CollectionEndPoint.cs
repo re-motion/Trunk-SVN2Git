@@ -206,12 +206,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
     }
 
-    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
-    {
-      ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
-      return new CollectionEndPointSelfReplaceModification (this, selfReplaceRelatedObject, _oppositeDomainObjects._data.GetUndecoratedDataStore ());
-    }
-
     public virtual IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);

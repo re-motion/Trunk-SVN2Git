@@ -706,19 +706,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateSelfReplaceModification ()
-    {
-      var modification = _customerEndPoint.CreateSelfReplaceModification (_orderWithoutOrderItem);
-      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointSelfReplaceModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (_orderWithoutOrderItem));
-
-      var collectionData =
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointSelfReplaceModification) modification).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
-    }
-
-    [Test]
     public void CreateDelegatingCollectionData ()
     {
       var dataStore = new DomainObjectCollectionData (new[] { _order1 });

@@ -165,6 +165,7 @@
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetSameModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
+    <Compile Include="DataManagement\EndPointModifications\RelationEndPointTouchModification.cs" />
     <Compile Include="DataManagement\ICollectionEndPoint.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializer.cs" />

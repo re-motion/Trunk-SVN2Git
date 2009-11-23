@@ -82,12 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
-      throw new System.NotImplementedException();
-    }
-
-    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
-    {
-      throw new System.NotImplementedException();
+      throw new NotImplementedException();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)

@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// <remarks>
     /// A same-set operation of the form "order.OrderTicket = order.OrderTicket" needs two steps:
     /// <list type="bullet">
-    ///   <item>order.Touch()1 and</item>
+    ///   <item>order.Touch() and</item>
     ///   <item>order.OrderTicket.Touch.</item>
     /// </list>
     /// No change notifications are sent for this operation.
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       {
         var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
         var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
-        bidirectionalModification.AddModificationStep (oppositeEndPoint.CreateSelfReplaceModification(ModifiedEndPoint.GetDomainObject()));
+        bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
       }
       return bidirectionalModification;
     }

@@ -138,9 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (steps[0], Is.SameAs (_modification));
 
       // customer.Orders[index].Touch()
-      Assert.That (steps[1], Is.InstanceOfType (typeof (ObjectEndPointSetSameModification)));
+      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchModification)));
       Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (oppositeEndPoint));
-      Assert.That (steps[1].NewRelatedObject, Is.SameAs (DomainObject));
     }
   }
 }

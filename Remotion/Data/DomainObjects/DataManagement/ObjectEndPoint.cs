@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool HasChanged
     {
-      get { return !object.Equals (_oppositeObjectID, _originalOppositeObjectID); }
+      get { return !Equals (_oppositeObjectID, _originalOppositeObjectID); }
     }
 
     public override bool HasBeenTouched
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetModification (null);
     }
 
-    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    public virtual IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
       var currentRelatedObject = GetOppositeObject (true);
@@ -244,10 +244,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       _hasBeenTouched = info.GetBoolValue ();
       _oppositeObjectID = info.GetValueForHandle<ObjectID>();
-      if (_hasBeenTouched)
-        _originalOppositeObjectID = info.GetValueForHandle<ObjectID> ();
-      else
-        _originalOppositeObjectID = _oppositeObjectID;
+      _originalOppositeObjectID = _hasBeenTouched ? info.GetValueForHandle<ObjectID> () : _oppositeObjectID;
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)

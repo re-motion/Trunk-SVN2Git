@@ -16,9 +16,8 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
-using FlattenedSerializationInfo=Remotion.Data.DomainObjects.Infrastructure.Serialization.FlattenedSerializationInfo;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -45,11 +44,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       return new NullEndPointModification (this, removedRelatedObject, null);
-    }
-
-    public override IRelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
-    {
-      return new NullEndPointModification (this, selfReplaceRelatedObject, selfReplaceRelatedObject);
     }
 
     public override IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)

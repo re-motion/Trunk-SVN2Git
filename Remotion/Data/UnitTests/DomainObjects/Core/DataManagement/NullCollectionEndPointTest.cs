@@ -63,11 +63,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.CreateReplaceModification (12, _relatedObject), Is.InstanceOfType (typeof (NullEndPointModification)));
     }
-
-    [Test]
-    public void CreateSelfReplaceModification ()
-    {
-      Assert.That (_endPoint.CreateSelfReplaceModification (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModification)));
-    }
   }
 }
