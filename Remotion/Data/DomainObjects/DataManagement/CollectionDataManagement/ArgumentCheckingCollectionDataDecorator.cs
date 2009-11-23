@@ -100,14 +100,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       }
 
       if (ContainsObjectID (domainObject.ID))
-        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
+        throw new ArgumentException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID), "domainObject");
 
       CheckItemType (domainObject, "domainObject");
 
       _wrappedData.Insert (index, domainObject);
     }
 
-    public void Remove (DomainObject domainObject)
+    public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -118,19 +118,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         throw new ArgumentException (message, "domainObject");
       }
 
-      _wrappedData.Remove (domainObject);
+      return _wrappedData.Remove (domainObject);
     }
 
-    public void Remove (ObjectID objectID)
+    public bool Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      _wrappedData.Remove (objectID);
+      return _wrappedData.Remove (objectID);
     }
 
-    public void Replace (int index, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject value)
     {
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+      ArgumentUtility.CheckNotNull ("value", value);
 
       if (index < 0 || index >= Count)
       {
@@ -140,15 +140,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
             "Index is out of range. Must be non-negative and less than the size of the collection.");
       }
 
-      if (ContainsObjectID (newDomainObject.ID) && !ReferenceEquals (GetObject (index), newDomainObject))
+      if (ContainsObjectID (value.ID) && !ReferenceEquals (GetObject (index), value))
       {
-        var message = string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID);
+        var message = string.Format ("The collection already contains an object with ID '{0}'.", value.ID);
         throw new InvalidOperationException (message);
       }
 
-      CheckItemType (newDomainObject, "newDomainObject");
+      CheckItemType (value, "value");
 
-      _wrappedData.Replace (index, newDomainObject);
+      _wrappedData.Replace (index, value);
     }
 
     private void CheckItemType (DomainObject domainObject, string argumentName)

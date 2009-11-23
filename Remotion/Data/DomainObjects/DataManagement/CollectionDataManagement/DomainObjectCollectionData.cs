@@ -118,42 +118,43 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       IncrementVersion ();
     }
 
-    public void Remove (DomainObject domainObject)
+    public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      Remove (domainObject.ID);
+      return Remove (domainObject.ID);
     }
 
-    public void Remove (ObjectID objectID)
+    public bool Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       var index = IndexOf (objectID);
-      if (index != -1)
-      {
-        // if we got in here, the following two lines must succeed => corruption impossible
-        _orderedObjectIDs.RemoveAt (index);
-        _objectsByID.Remove (objectID);
+      if (index == -1)
+        return false;
 
-        IncrementVersion ();
-      }
+      // if we got in here, the following two lines must succeed => corruption impossible
+      _orderedObjectIDs.RemoveAt (index);
+      _objectsByID.Remove (objectID);
+
+      IncrementVersion();
+      return true;
     }
 
-    public void Replace (int index, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject value)
     {
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+      ArgumentUtility.CheckNotNull ("value", value);
 
       var oldDomainObject = GetObject (index);
-      if (oldDomainObject != newDomainObject)
+      if (oldDomainObject != value)
       {
         Assertion.IsTrue (_orderedObjectIDs[index] == oldDomainObject.ID);
         Assertion.IsTrue (_objectsByID.ContainsKey (oldDomainObject.ID));
 
         // only the first line can fail => corruption impossible
 
-        _objectsByID.Add (newDomainObject.ID, newDomainObject); // this can fail
-        _orderedObjectIDs.Insert (index + 1, newDomainObject.ID);  // this must succeed, see assertion above
+        _objectsByID.Add (value.ID, value); // this can fail
+        _orderedObjectIDs.Insert (index + 1, value.ID);  // this must succeed, see assertion above
 
         _orderedObjectIDs.RemoveAt (index); // this must succeed, see assertion above
         _objectsByID.Remove (oldDomainObject.ID); // this must succeed, see assertion above

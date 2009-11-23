@@ -293,9 +293,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "Cannot add object 'Employee|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e|System.Guid'"
-        + " already part of this collection.\r\nParameter name: domainObject")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Employee|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e|System.Guid'.\r\n"
+        + "Parameter name: domainObject")]
     public void AddObjectAlreadyInCollection ()
     {
       _supervisor.Subordinates.Add (_subordinate);
@@ -303,9 +303,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "Cannot insert object 'Employee|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e|System.Guid'"
-        + " already part of this collection.\r\nParameter name: domainObject")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Employee|c3b2bbc3-e083-4974-bac7-9cee1fb85a5e|System.Guid'.\r\n"
+        + "Parameter name: domainObject")]
     public void InsertObjectAlreadyInCollection ()
     {
       _supervisor.Subordinates.Insert (0, _subordinate);
@@ -318,14 +318,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee subordinate = Employee.GetObject (DomainObjectIDs.Employee3);
       Employee oldSupervisorOfSubordinate = Employee.GetObject (DomainObjectIDs.Employee2);
 
-      DomainObjectEventReceiver subordinateEventReceiver = new DomainObjectEventReceiver (subordinate);
+      var subordinateEventReceiver = new DomainObjectEventReceiver (subordinate);
       subordinateEventReceiver.Cancel = false;
 
-      DomainObjectEventReceiver oldSupervisorEventReceiver = new DomainObjectEventReceiver (oldSupervisorOfSubordinate);
+      var oldSupervisorEventReceiver = new DomainObjectEventReceiver (oldSupervisorOfSubordinate);
       oldSupervisorEventReceiver.Cancel = false;
 
-      DomainObjectCollectionEventReceiver oldSupervisorSubordinateCollectionEventReceiver =
-          new DomainObjectCollectionEventReceiver (oldSupervisorOfSubordinate.Subordinates);
+      var oldSupervisorSubordinateCollectionEventReceiver = new DomainObjectCollectionEventReceiver (oldSupervisorOfSubordinate.Subordinates);
       oldSupervisorSubordinateCollectionEventReceiver.Cancel = false;
 
       _subordinateCollectionEventReceiver.Cancel = false;

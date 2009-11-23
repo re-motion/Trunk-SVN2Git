@@ -24,12 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
   [TestFixture]
   public class DomainObjectCollectionsWithDifferentClientTransactionsTest : ClientTransactionBaseTest
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private DomainObjectCollection _collection;
     private Customer _customer1;
     private Customer _customer2;
@@ -37,14 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private ClientTransaction _secondClientTransaction;
     private DomainObjectCollection _secondCollection;
     private Customer _secondCustomer1;
-
-    // construction and disposing
-
-    public DomainObjectCollectionsWithDifferentClientTransactionsTest ()
-    {
-    }
-
-    // methods and properties
 
     public override void SetUp ()
     {
@@ -64,7 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' is already part of this collection.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.")]
     public void ReplaceObjectWithDifferentClientTransaction ()
     {
       _secondCollection.Add (_secondCustomer1);
@@ -73,7 +60,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Cannot add object 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' already part of this collection.\r\nParameter name: domainObject")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.\r\n"
+        + "Parameter name: domainObject")]
     public void AddSameObjectWithDifferentClientTransaction ()
     {
       _secondCollection.Add (_secondCustomer1);
@@ -82,7 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Cannot insert object 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid' already part of this collection.\r\nParameter name: domainObject")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.\r\n"
+        + "Parameter name: domainObject")]
     public void InsertSameObjectWithDifferentClientTransaction ()
     {
       _secondCollection.Add (_secondCustomer1);
@@ -104,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     private DomainObjectCollection CreateCustomerCollection ()
     {
-      DomainObjectCollection collection = new DomainObjectCollection (typeof (Customer));
+      var collection = new DomainObjectCollection (typeof (Customer));
       collection.Add (_customer1);
       collection.Add (_customer2);
 

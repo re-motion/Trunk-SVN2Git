@@ -438,7 +438,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
       catch (InvalidOperationException e)
       {
-        string expectedMessage = string.Format ("The object '{0}' is already part of this collection.", _customer.Orders[1].ID);
+        string expectedMessage = string.Format ("The collection already contains an object with ID '{0}'.", _customer.Orders[1].ID);
         Assert.AreEqual (expectedMessage, e.Message);
       }
     }

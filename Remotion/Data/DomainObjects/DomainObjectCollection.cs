@@ -320,7 +320,7 @@ namespace Remotion.Data.DomainObjects
       dataStore.AddRangeAndCheckItems (domainObjects, requiredItemType);
 
       _data = CreateDataStrategyForStandAloneCollection (dataStore, requiredItemType, this);
-      SetIsReadOnly(makeCollectionReadOnly);
+      SetIsReadOnly (makeCollectionReadOnly);
     }
 
     // methods and properties
@@ -346,11 +346,23 @@ namespace Remotion.Data.DomainObjects
       get { return _isReadOnly; }
     }
 
+    /// <summary>
+    /// Gets the required <see cref="Type"/> for all members of the collection.
+    /// </summary>
+    public Type RequiredItemType
+    {
+      get { return _data.RequiredItemType; }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="ICollectionEndPoint"/> associated with this <see cref="DomainObjectCollection"/>, or <see langword="null" /> if
+    /// this is a stand-alone collection.
+    /// </summary>
+    /// <value>The associated end point.</value>
     public ICollectionEndPoint AssociatedEndPoint
     {
       get { return _data.AssociatedEndPoint; }
     }
-
 
     /// <summary>
     /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <see cref="DomainObjectCollection" />, that are not already part of it.
@@ -399,7 +411,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
-      DomainObjectCollection itemsNotInCollection = new DomainObjectCollection();
+      var itemsNotInCollection = new DomainObjectCollection();
 
       foreach (DomainObject domainObject in domainObjects)
       {
@@ -408,14 +420,6 @@ namespace Remotion.Data.DomainObjects
       }
 
       return itemsNotInCollection;
-    }
-
-    /// <summary>
-    /// Gets the required <see cref="Type"/> for all members of the collection.
-    /// </summary>
-    public Type RequiredItemType
-    {
-      get { return _data.RequiredItemType; }
     }
 
     /// <summary>
@@ -433,7 +437,8 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      return _data.ContainsObjectID (domainObject.ID) && ReferenceEquals (_data.GetObject (domainObject.ID), domainObject);
+      var existingObject = _data.GetObject (domainObject.ID);
+      return existingObject != null && ReferenceEquals (existingObject, domainObject);
     }
 
     /// <summary>
@@ -447,6 +452,63 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("id", id);
 
       return _data.ContainsObjectID (id);
+    }
+
+    bool IList.Contains (object value)
+    {
+      if (value is DomainObject)
+        return ContainsObject ((DomainObject) value);
+
+      if (value is ObjectID)
+        return Contains ((ObjectID) value);
+
+      return false;
+    }
+
+    /// <summary>
+    /// Returns the zero-based index of a given <see cref="DomainObject"/> in the collection.
+    /// </summary>
+    /// <param name="domainObject">The <paramref name="domainObject"/> to locate in the collection.</param>
+    /// <returns>The zero-based index of the <paramref name="domainObject"/>, if found; otherwise, -1.</returns>
+    /// <remarks>
+    /// The method returns -1 if the <paramref name="domainObject"/> is <see langword="null" />. If the collection holds a different item with the
+    /// same <see cref="DomainObject.ID"/> as <paramref name="domainObject"/>, -1 is returned as well. Use the 
+    /// <see cref="IndexOf(Remotion.Data.DomainObjects.ObjectID)"/> overload taking an <see cref="ObjectID"/> to find the index in such cases.
+    /// </remarks>
+    public int IndexOf (DomainObject domainObject)
+    {
+      if (domainObject == null)
+        return -1;
+
+      var index = IndexOf (domainObject.ID);
+      if (index != -1 && this[index] != domainObject)
+        return -1;
+
+      return index;
+    }
+
+    /// <summary>
+    /// Returns the zero-based index of a given <see cref="ObjectID"/> in the collection.
+    /// </summary>
+    /// <param name="id">The <paramref name="id"/> to locate in the collection.</param>
+    /// <returns>The zero-based index of the <paramref name="id"/>, if found; otherwise, -1.</returns>
+    public int IndexOf (ObjectID id)
+    {
+      if (id != null)
+        return _data.IndexOf (id);
+      else
+        return -1;
+    }
+
+    int IList.IndexOf (object value)
+    {
+      if (value is DomainObject)
+        return IndexOf ((DomainObject) value);
+
+      if (value is ObjectID)
+        return IndexOf ((ObjectID) value);
+
+      return -1;
     }
 
     /// <summary>
@@ -466,23 +528,20 @@ namespace Remotion.Data.DomainObjects
       get { return _data.GetObject (index); }
       set
       {
-        CheckIndexForIndexer ("index", index);
         CheckNotReadOnly ("Cannot modify a read-only collection.");
 
         // If new value is null: This is actually a remove operation
         if (value == null)
-        {
           RemoveAt (index);
-          return;
-        }
-
-        CheckItemType (value, "value");
-
-        if (Contains (value.ID) && !ReferenceEquals (this[index], value))
-          throw CreateInvalidOperationException ("The object '{0}' is already part of this collection.", value.ID);
-
-        _data.Replace (index, value);
+        else
+          _data.Replace (index, value);
       }
+    }
+
+    object IList.this[int index]
+    {
+      get { return this[index]; }
+      set { this[index] = ArgumentUtility.CheckType<DomainObject> ("value", value); }
     }
 
     /// <summary>
@@ -510,18 +569,15 @@ namespace Remotion.Data.DomainObjects
     public int Add (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      CheckItemType (domainObject, "domainObject");
       CheckNotReadOnly ("Cannot add an item to a read-only collection.");
 
-      if (Contains (domainObject.ID))
-      {
-        throw CreateArgumentException (
-            "domainObject", "Cannot add object '{0}' already part of this collection.", domainObject.ID);
-      }
-
       _data.Insert (Count, domainObject);
-
       return Count - 1;
+    }
+
+    int IList.Add (object value)
+    {
+      return Add (ArgumentUtility.CheckNotNullAndType<DomainObject> ("value", value));
     }
 
     /// <summary>
@@ -541,25 +597,9 @@ namespace Remotion.Data.DomainObjects
     public void AddRange (IEnumerable domainObjects)
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      CheckNotReadOnly ("Cannot add items to a read-only collection.");
 
-      int index = 0;
-      foreach (DomainObject domainObject in domainObjects)
-      {
-        if (domainObject == null)
-          throw new ArgumentItemNullException ("domainObjects", index);
-        if (Contains (domainObject.ID))
-          throw new ArgumentItemDuplicateException ("domainObjects", index, domainObject.ID);
-
-        try
-        {
-          Add (domainObject);
-        }
-        catch (ArgumentTypeException ex)
-        {
-          throw new ArgumentItemTypeException ("domainObjects", index, ex.ExpectedType, ex.ActualType);
-        }
-        ++index;
-      }
+      _data.AddRangeAndCheckItems (domainObjects.Cast<DomainObject>(), RequiredItemType);
     }
 
     /// <summary>
@@ -587,11 +627,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("id", id);
       CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
 
-      DomainObject domainObject = this[id];
-      if (domainObject != null)
-        Remove (domainObject);
-      else
-        Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingCollectionData.
+      _data.Remove (id);
     }
 
     /// <summary>
@@ -617,20 +653,16 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
 
-      // Do not perform remove if domain object is not part of this collection     
-      if (this[domainObject.ID] == null)
-      {
-        Touch(); // TODO: This call to Touch will be handled by EndPointDelegatingCollectionData.
-        return false;
-      }
-      else if (this[domainObject.ID] != domainObject)
-      {
-        var message = "The object to be removed has the same ID as an object in this collection, but is a different object reference.";
-        throw new ArgumentException (message, "domainObject");
-      } 
+      return _data.Remove (domainObject);
+    }
 
-      _data.Remove (domainObject);
-      return true;
+    void IList.Remove (object value)
+    {
+      if (value is DomainObject)
+        Remove ((DomainObject) value);
+
+      if (value is ObjectID)
+        Remove ((ObjectID) value);
     }
 
     /// <summary>
@@ -641,36 +673,7 @@ namespace Remotion.Data.DomainObjects
     {
       CheckNotReadOnly ("Cannot clear a read-only collection.");
 
-      for (int i = Count - 1; i >= 0; i--)
-        Remove (this[i].ID);
-
-      Touch (); // TODO: This call to Touch will be handled by EndPointDelegatingDomainObjectCollectionData.
-    }
-
-    /// <summary>
-    /// Returns the zero-based index of a given <see cref="DomainObject"/> in the collection.
-    /// </summary>
-    /// <param name="domainObject">The <paramref name="domainObject"/> to locate in the collection.</param>
-    /// <returns>The zero-based index of the <paramref name="domainObject"/>, if found; otherwise, -1.</returns>
-    public int IndexOf (DomainObject domainObject)
-    {
-      if (domainObject != null)
-        return IndexOf (domainObject.ID);
-      else
-        return -1;
-    }
-
-    /// <summary>
-    /// Returns the zero-based index of a given <see cref="ObjectID"/> in the collection.
-    /// </summary>
-    /// <param name="id">The <paramref name="id"/> to locate in the collection.</param>
-    /// <returns>The zero-based index of the <paramref name="id"/>, if found; otherwise, -1.</returns>
-    public int IndexOf (ObjectID id)
-    {
-      if (id != null)
-        return _data.IndexOf (id);
-      else
-        return -1;
+      _data.Clear ();
     }
 
     /// <summary>
@@ -696,18 +699,14 @@ namespace Remotion.Data.DomainObjects
     public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      CheckIndexForInsert ("index", index);
       CheckNotReadOnly ("Cannot insert an item into a read-only collection.");
-      CheckItemType (domainObject, "domainObject");
-
-      if (Contains (domainObject.ID))
-      {
-        throw CreateArgumentException (
-            "domainObject", "Cannot insert object '{0}' already part of this collection.", domainObject.ID);
-      }
-
 
       _data.Insert (index, domainObject);
+    }
+
+    void IList.Insert (int index, object value)
+    {
+      Insert (index, ArgumentUtility.CheckNotNullAndType<DomainObject> ("value", value));
     }
 
     /// <summary>
@@ -759,127 +758,10 @@ namespace Remotion.Data.DomainObjects
       return new ArgumentCheckingCollectionDataDecorator (RequiredItemType, _data.GetUndecoratedDataStore());
     }
 
-    #region Explicitly implemeted IList and ICollection Members
-
     /// <summary>
-    /// Gets or sets the element at the specified index. 
+    /// Gets an enumerator for iterating over the items in this <see cref="DomainObjectCollection"/>.
     /// </summary>
-    /// <exception cref="Remotion.Utilities.ArgumentTypeException"><paramref name="value"/> is not of type <see cref="DomainObject"/> or a derived type.</exception>
-    object IList.this [int index]
-    {
-      get { return this[index]; }
-      set
-      {
-        ArgumentUtility.CheckType<DomainObject> ("value", value);
-
-        this[index] = (DomainObject) value;
-      }
-    }
-
-    /// <summary>
-    /// Inserts an item to the IList at the specified position
-    /// </summary>
-    /// <param name="index">The zero-based index at which <paramref name="value"/> should be inserted.</param>
-    /// <param name="value">The <see cref="DomainObject"/> to insert into the <see cref="IList"/>. Must not be <see langword="null"/>.</param>
-    /// <exception cref="DataManagement.ClientTransactionsDifferException">
-    ///   <paramref name="value"/> is a <see cref="DomainObject"/> that belongs to a <see cref="ClientTransaction"/> that is different 
-    ///   from the <see cref="ClientTransaction"/> managing this collection. 
-    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
-    /// </exception>
-    /// <exception cref="System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentTypeException"><paramref name="value"/> is not of type <see cref="DomainObject"/> or a derived type.</exception>
-    void IList.Insert (int index, object value)
-    {
-      ArgumentUtility.CheckNotNullAndType<DomainObject> ("value", value);
-
-      Insert (index, (DomainObject) value);
-    }
-
-    /// <summary>
-    /// Removes a specific object from the <see cref="IList"/>.
-    /// </summary>
-    /// <param name="value">The <see cref="Object"/> to remove from the <see cref="IList"/>.</param>
-    void IList.Remove (object value)
-    {
-      if (value is DomainObject)
-        Remove ((DomainObject) value);
-
-      if (value is ObjectID)
-        Remove ((ObjectID) value);
-    }
-
-    /// <summary>
-    /// Determines whether the <see cref="IList"/> contains a specific <see cref="DomainObject"/> or <see cref="ObjectID"/>.
-    /// </summary>
-    /// <param name="value">The <see cref="DomainObject"/> or <see cref="ObjectID"/> to locate in the <see cref="IList"/>.</param>
-    /// <returns><see langword="true"/> if the <see cref="DomainObject"/> or <see cref="ObjectID"/> is found in the <see cref="IList"/>; otherwise, <see langword="false"/></returns>
-    bool IList.Contains (object value)
-    {
-      if (value is DomainObject)
-        return ContainsObject ((DomainObject) value);
-
-      if (value is ObjectID)
-        return Contains ((ObjectID) value);
-
-      return false;
-    }
-
-    /// <summary>
-    /// Determines the index of a specific item in the <see cref="IList"/>.
-    /// </summary>
-    /// <param name="value">The <see cref="Object"/> to locate in the <see cref="IList"/>.</param>
-    /// <returns>The index of <paramref name="value"/> if found in the list; otherwise, -1.</returns>
-    int IList.IndexOf (object value)
-    {
-      if (value is DomainObject)
-        return IndexOf ((DomainObject) value);
-
-      if (value is ObjectID)
-        return IndexOf ((ObjectID) value);
-
-      return -1;
-    }
-
-    /// <summary>
-    /// Adds an item to the <see cref="IList"/>.
-    /// </summary>
-    /// <param name="value">The <see cref="DomainObject"/> to add to the <see cref="IList"/>. Must not be <see langword="null"/>.</param>
-    /// <returns>The position into which the new element was inserted.</returns>
-    /// <exception cref="DataManagement.ClientTransactionsDifferException">
-    ///   <paramref name="value"/> is a <see cref="DomainObject"/> that belongs to a <see cref="ClientTransaction"/> that is different 
-    ///   from the <see cref="ClientTransaction"/> managing this collection. 
-    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
-    /// </exception>
-    /// <exception cref="System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentTypeException"><paramref name="value"/> is not of type <see cref="DomainObject"/> or a derived type.</exception>
-    int IList.Add (object value)
-    {
-      ArgumentUtility.CheckNotNullAndType<DomainObject> ("value", value);
-
-      return Add ((DomainObject) value);
-    }
-
-    object ICollection.SyncRoot
-    {
-      get { return this; }
-    }
-
-    bool ICollection.IsSynchronized
-    {
-      get { return false; }
-    }
-
-    /// <summary>
-    /// Gets a value indicating if the collection has a fixed size. Always returns false.
-    /// </summary>
-    bool IList.IsFixedSize
-    {
-      get { return false; }
-    }
-
-    #endregion
-
-    #region IEnumerable<DomainObject> members
+    /// <returns>An enumerator for iterating over the items in this collection.</returns>
     public IEnumerator<DomainObject> GetEnumerator ()
     {
       return _data.GetEnumerator ();
@@ -890,10 +772,6 @@ namespace Remotion.Data.DomainObjects
       return GetEnumerator ();
     }
 
-    #endregion
-
-    #region ICloneable Members
-
     /// <summary>
     /// Creates a shallow copy of this collection.
     /// </summary>
@@ -905,23 +783,7 @@ namespace Remotion.Data.DomainObjects
     /// which can be independently modified without affecting the original collection.
     /// Thus meaning the references to the domain objects are copied, not the domain objects themselves.
     /// </remarks>
-    object ICloneable.Clone()
-    {
-      return Clone();
-    }
-
-    /// <summary>
-    /// Creates a shallow copy of this collection.
-    /// </summary>
-    /// <returns>The cloned collection.</returns>
-    /// <remarks>
-    /// If this collection is read-only, the clone will be read-only too. 
-    /// If this collection is not read-only, the clone will not be read-only too.<br/><br/>
-    /// A shallow copy creates a new <see cref="DomainObjectCollection"/> instance
-    /// which can be independently modified without affecting the original collection.
-    /// Thus meaning the references to the domain objects are copied, not the domain objects themselves.
-    /// </remarks>
-    public DomainObjectCollection Clone()
+    public DomainObjectCollection Clone ()
     {
       return Clone (IsReadOnly);
     }
@@ -944,7 +806,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public virtual DomainObjectCollection Clone (bool makeCloneReadOnly)
     {
-      var clone = new DomainObjectCollectionFactory().CreateCollection (GetType (), _data, RequiredItemType);
+      var clone = new DomainObjectCollectionFactory ().CreateCollection (GetType (), _data, RequiredItemType);
 
       Assertion.IsTrue (clone._data != _data);
       Assertion.IsTrue (clone._data.GetUndecoratedDataStore () != _data);
@@ -954,7 +816,72 @@ namespace Remotion.Data.DomainObjects
       return clone;
     }
 
-    #endregion
+    object ICloneable.Clone ()
+    {
+      return Clone ();
+    }
+
+    /// <summary>
+    /// Creates an <see cref="IRelationEndPointModification"/> instance that encapsulates all the modifications required to associate this
+    /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
+    /// but it is invoked when a collection-valued relation property is set to a new collection.
+    /// </summary>
+    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
+    /// must have the same type and <see cref="RequiredItemType"/> as this collection.</param>
+    /// <exception cref="NotSupportedException">This collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
+    /// <remarks>
+    /// <para>
+    /// When the modification is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
+    /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
+    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
+    /// </para>
+    /// <para>
+    /// The returned <see cref="IRelationEndPointModification"/> should be executed as a bidirectional modification 
+    /// (<see cref="IRelationEndPointModification.CreateBidirectionalModification"/>), otherwise inconsistent state might arise.
+    /// </para>
+    /// <para>
+    /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,
+    /// otherwise an inconsistent state might result.
+    /// </para>
+    /// <para>
+    /// This method is part of <see cref="DomainObjectCollection"/> rather than <see cref="CollectionEndPoint"/> because it is very tightly
+    /// coupled to <see cref="DomainObjectCollection"/>: associating a collection will modify its inner data storage strategy, and 
+    /// <see cref="CollectionEndPoint"/> has no possibility to do that.
+    /// </para>
+    /// </remarks>
+    public IRelationEndPointModification CreateAssociationModification (CollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)
+        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
+
+      if (GetType () != endPoint.OppositeDomainObjects.GetType ())
+      {
+        var message = string.Format (
+            "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
+            GetType (),
+            endPoint.OppositeDomainObjects.GetType ());
+        throw new InvalidOperationException (message);
+      }
+
+      return new CollectionEndPointReplaceWholeCollectionModification (
+          endPoint,
+          this,
+          new Transformer (endPoint.OppositeDomainObjects),
+          new Transformer (this));
+    }
+
+    /// <summary>
+    /// Changes the <see cref="IsReadOnly"/> flag which controls whether this collection is read-only.
+    /// </summary>
+    /// <param name="isReadOnly">If set to <see langword="true"/>, the collection is made read-only. If set to <see langword="false" />,
+    /// the collection is made modifiable.</param>
+    protected void SetIsReadOnly (bool isReadOnly)
+    {
+      _isReadOnly = isReadOnly;
+    }
 
     /// <summary>
     /// Performs a rollback of the collection by replacing the items in the collection with the items of a given <see cref="DomainObjectCollection"/>.
@@ -1086,31 +1013,6 @@ namespace Remotion.Data.DomainObjects
     {
     }
 
-    protected void SetIsReadOnly (bool isReadOnly)
-    {
-      _isReadOnly = isReadOnly;
-    }
-
-    private void CheckItemType (DomainObject domainObject, string argumentName)
-    {
-      if (RequiredItemType != null && !RequiredItemType.IsInstanceOfType (domainObject))
-      {
-        string message = string.Format ("Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
-                                        domainObject.GetPublicDomainObjectType (), RequiredItemType);
-        throw new ArgumentTypeException (message, argumentName, RequiredItemType, domainObject.GetPublicDomainObjectType());
-      }
-    }
-
-    private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)
-    {
-      return new InvalidOperationException (string.Format (message, args));
-    }
-
-    private ArgumentException CreateArgumentException (string argumentName, string message, params object[] args)
-    {
-      return new ArgumentException (string.Format (message, args), argumentName);
-    }
-
     internal void CopyEventHandlersFrom (DomainObjectCollection source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
@@ -1127,26 +1029,32 @@ namespace Remotion.Data.DomainObjects
         AssociatedEndPoint.Touch ();
     }
 
-    private void CheckIndexForInsert (string argumentName, int index)
+    private void CheckNotReadOnly (string message)
     {
-      if (index < 0 || index > Count)
-      {
-        throw new ArgumentOutOfRangeException (
-            argumentName,
-            index,
-            "Index is out of range. Must be non-negative and less than or equal to the size of the collection.");
-      }
+      if (IsReadOnly)
+        throw new NotSupportedException (message);
+    }
+    
+    object ICollection.SyncRoot
+    {
+      get { return this; }
     }
 
-    private void CheckIndexForIndexer (string argumentName, int index)
+    /// <summary>
+    /// Gets a value indicating whether access to the <see cref="T:System.Collections.ICollection"/> is synchronized (thread safe). Always
+    /// returns <see langword="false" />.
+    /// </summary>
+    bool ICollection.IsSynchronized
     {
-      if (index < 0 || index >= Count)
-      {
-        throw new ArgumentOutOfRangeException (
-            argumentName,
-            index,
-            "Index is out of range. Must be non-negative and less than the size of the collection.");
-      }
+      get { return false; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the <see cref="T:System.Collections.IList"/> has a fixed size. Always returns <see langword="false" />.
+    /// </summary>
+    bool IList.IsFixedSize
+    {
+      get { return false; }
     }
 
     void IDomainObjectCollectionEventRaiser.BeginAdd (int index, DomainObject domainObject)
@@ -1181,64 +1089,6 @@ namespace Remotion.Data.DomainObjects
     void IDomainObjectCollectionEventRaiser.EndDelete ()
     {
       OnDeleted ();
-    }
-
-    /// <summary>
-    /// Creates an <see cref="IRelationEndPointModification"/> instance that encapsulates all the modifications required to associate this
-    /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
-    /// but it is invoked when a collection-valued relation property is set to a new collection.
-    /// </summary>
-    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
-    /// must have the same type and <see cref="RequiredItemType"/> as this collection.</param>
-    /// <exception cref="NotSupportedException">This collection is read-only.</exception>
-    /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
-    /// <remarks>
-    /// <para>
-    /// When the modification is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
-    /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
-    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
-    /// </para>
-    /// <para>
-    /// The returned <see cref="IRelationEndPointModification"/> should be executed as a bidirectional modification 
-    /// (<see cref="IRelationEndPointModification.CreateBidirectionalModification"/>), otherwise inconsistent state might arise.
-    /// </para>
-    /// <para>
-    /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,
-    /// otherwise an inconsistent state might result.
-    /// </para>
-    /// <para>
-    /// This method is part of <see cref="DomainObjectCollection"/> rather than <see cref="CollectionEndPoint"/> because it is very tightly
-    /// coupled to <see cref="DomainObjectCollection"/>: associating a collection will modify its inner data storage strategy, and 
-    /// <see cref="CollectionEndPoint"/> has no possibility to do that.
-    /// </para>
-    /// </remarks>
-    public IRelationEndPointModification CreateAssociationModification (CollectionEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)
-        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
-
-      if (GetType () != endPoint.OppositeDomainObjects.GetType ())
-      {
-        var message = string.Format (
-            "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
-            GetType (),
-            endPoint.OppositeDomainObjects.GetType ());
-        throw new InvalidOperationException (message);
-      }
-
-      return new CollectionEndPointReplaceWholeCollectionModification (
-          endPoint,
-          this,
-          new Transformer (endPoint.OppositeDomainObjects), 
-          new Transformer (this));
-    }
-
-    private void CheckNotReadOnly (string message)
-    {
-      if (IsReadOnly)
-        throw new NotSupportedException (message);
     }
 
     #region Obsolete

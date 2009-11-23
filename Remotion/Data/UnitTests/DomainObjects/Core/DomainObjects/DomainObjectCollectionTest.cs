@@ -28,7 +28,6 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -793,6 +792,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void IndexOf_ObjectWithameID_FromOtherTransaction ()
+    {
+      var customer2FromOtherTransaction = new ClientTransactionMock ().GetObject (DomainObjectIDs.Customer2);
+      Assert.AreEqual (1, _collection.IndexOf (customer2FromOtherTransaction.ID));
+      Assert.AreEqual (-1, _collection.IndexOf (customer2FromOtherTransaction));
+    }
+
+    [Test]
     public void Insert ()
     {
       _collection.Insert (1, _customer3NotInCollection);
@@ -807,7 +814,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void InsertWithNegativeIndex ()
+    public void Insert_WithNegativeIndex ()
     {
       try
       {
@@ -822,7 +829,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void InsertWithIndexGreaterThanCollectionSize ()
+    public void Insert_WithIndexGreaterThanCollectionSize ()
     {
       try
       {
@@ -837,9 +844,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void InsertAfterLastElement ()
+    public void Insert_AfterLastElement ()
     {
       _collection.Insert (_collection.Count, _customer3NotInCollection);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Insert_ReadOnly_Throws ()
+    {
+      new DomainObjectCollection (_collection, true).Insert (0, _customer3NotInCollection);
+    }
+
+
+    [Test]
+    public void Add ()
+    {
+      _collection.Add (_customer3NotInCollection);
+
+      Assert.That (_collection, Is.EqualTo (new[] { _customer1, _customer2, _customer3NotInCollection }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void Add_ReadOnly_Throws ()
+    {
+      new DomainObjectCollection (_collection, true).Add (_customer3NotInCollection);
+    }
+
+    [Test]
+    public void AddRange ()
+    {
+      var collection = new DomainObjectCollection ();
+      collection.AddRange (new[] { _customer1, _customer2 });
+
+      Assert.That (collection, Is.EqualTo (new[] { _customer1, _customer2 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 1 of argument domainObjects is null.")]
+    public void AddRange_ChecksItems ()
+    {
+      var collection = new DomainObjectCollection ();
+      collection.AddRange (new[] { _customer1, null });
     }
 
     [Test]
@@ -1217,8 +1264,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.\r\nParameter name: domainObject")]
     public void GetNonNotifyingData_PerformsArgumentChecks ()
     {
       var nonNotifyingData = GetNonNotifyingData (_collection);

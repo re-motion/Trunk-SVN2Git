@@ -96,9 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       StubInnerData (_order1);
 
-      CheckThrows<InvalidOperationException> (
+      CheckThrows<ArgumentException> (
           () => _argumentCheckingDecorator.Insert (0, _order1), 
-          "The collection already contains an object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.");
+          "The collection already contains an object with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.\r\nParameter name: domainObject");
 
       _wrappedDataMock.AssertWasNotCalled (mock => mock.Insert (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
           () => _argumentCheckingDecorator.Replace (0, _orderItem1),
           "Values of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem'"
           + " cannot be added to this collection. Values must be of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' or derived from "
-          + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: newDomainObject");
+          + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order'.\r\nParameter name: value");
 
       _wrappedDataMock.AssertWasNotCalled (mock => mock.Replace (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }

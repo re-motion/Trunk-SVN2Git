@@ -122,46 +122,49 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _eventRaiser.EndAdd (index, domainObject);
     }
 
-    public void Remove (DomainObject domainObject)
+    public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       
       int index = IndexOf (domainObject.ID);
-      if (index != -1)
-      {
-        _eventRaiser.BeginRemove (index, domainObject);
-        _wrappedData.Remove (domainObject);
-        _eventRaiser.EndRemove (index, domainObject);
-      }
+      if (index == -1)
+        return false;
+
+      _eventRaiser.BeginRemove (index, domainObject);
+      _wrappedData.Remove (domainObject);
+      _eventRaiser.EndRemove (index, domainObject);
+
+      return true;
     }
 
-    public void Remove (ObjectID objectID)
+    public bool Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       int index = IndexOf (objectID);
-      if (index != -1)
-      {
-        var domainObject = GetObject (objectID);
-
-        _eventRaiser.BeginRemove (index, domainObject);
-        _wrappedData.Remove (objectID);
-        _eventRaiser.EndRemove (index, domainObject);
-      }
+      if (index == -1)
+        return false;
+      
+      var domainObject = GetObject (objectID);
+      _eventRaiser.BeginRemove (index, domainObject);
+      _wrappedData.Remove (objectID);
+      _eventRaiser.EndRemove (index, domainObject);
+      
+      return true;
     }
 
-    public void Replace (int index, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject value)
     {
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+      ArgumentUtility.CheckNotNull ("value", value);
 
       var oldDomainObject = GetObject (index);
-      if (oldDomainObject != newDomainObject)
+      if (oldDomainObject != value)
       {
         _eventRaiser.BeginRemove (index, oldDomainObject);
-        _eventRaiser.BeginAdd (index, newDomainObject);
-        _wrappedData.Replace (index, newDomainObject);
+        _eventRaiser.BeginAdd (index, value);
+        _wrappedData.Replace (index, value);
         _eventRaiser.EndRemove (index, oldDomainObject);
-        _eventRaiser.EndAdd (index, newDomainObject);
+        _eventRaiser.EndAdd (index, value);
       }
     }
 

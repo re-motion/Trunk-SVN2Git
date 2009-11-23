@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       AssociatedEndPoint.Touch ();
     }
 
-    public void Remove (DomainObject domainObject)
+    public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -139,13 +139,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       CheckNotDeleted (domainObject);
       CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
-      if (ContainsObjectID (domainObject.ID))
+      var containsObjectID = ContainsObjectID (domainObject.ID);
+      if (containsObjectID)
         CreateAndExecuteRemoveModification (domainObject);
 
       AssociatedEndPoint.Touch ();
+      return containsObjectID;
     }
 
-    public void Remove (ObjectID objectID)
+    public bool Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
@@ -161,17 +163,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       }
 
       AssociatedEndPoint.Touch ();
+      return domainObject != null;
     }
 
-    public void Replace (int index, DomainObject newDomainObject)
+    public void Replace (int index, DomainObject value)
     {
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+      ArgumentUtility.CheckNotNull ("value", value);
 
-      CheckClientTransaction (newDomainObject, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
-      CheckNotDeleted (newDomainObject);
+      CheckClientTransaction (value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
+      CheckNotDeleted (value);
       CheckNotDeleted (AssociatedEndPoint.GetDomainObject ());
 
-      var replaceModification = AssociatedEndPoint.CreateReplaceModification (index, newDomainObject);
+      var replaceModification = AssociatedEndPoint.CreateReplaceModification (index, value);
       var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
       bidirectionalModification.ExecuteAllSteps ();
 

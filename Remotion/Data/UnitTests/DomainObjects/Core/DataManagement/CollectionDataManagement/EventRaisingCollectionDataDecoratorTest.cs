@@ -167,9 +167,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Remove (_order2);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order2);
 
       _eventRaiserMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
@@ -177,10 +179,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Remove (_order4);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order4);
 
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -194,9 +198,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Remove (_order2.ID);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order2.ID);
 
       _eventRaiserMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
@@ -204,10 +210,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _eventRaiserMock.Replay ();
 
-      _eventRaisingDecoratorWithRealContent.Remove (_order4.ID);
+      var result = _eventRaisingDecoratorWithRealContent.Remove (_order4.ID);
 
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+
+      Assert.That (result, Is.False);
     }
 
     [Test]

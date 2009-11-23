@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException),
-        ExpectedMessage = "Index is out of range. Must be non-negative and less than the size of the collection.",
+        ExpectedMessage = "Index was out of range. Must be non-negative and less than the size of the collection.",
         MatchType = MessageMatch.Contains)]
     public void IList_ItemSetThrowsOnWrongIndex ()
     {
@@ -333,32 +333,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       newList.AddRange (new[] { _orderItem1, _orderItem2 });
 
       Assert.That (newList, Is.EqualTo (new[] { _orderItem1, _orderItem2 }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 1 of argument domainObjects is null.")]
-    public void AddRange_NullValue ()
-    {
-      var newList = new ObjectList<OrderItem> ();
-      newList.AddRange (new[] { _orderItem1, null });
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemDuplicateException), ExpectedMessage = "Item 1 of argument domainObjects is a duplicate " 
-        + "('OrderItem|ad620a11-4bc4-4791-bcf4-a0770a08c5b0|System.Guid').")]
-    public void AddRange_DuplicateValue ()
-    {
-      var newList = new ObjectList<OrderItem> ();
-      newList.AddRange (new[] { _orderItem1, _orderItem1 });
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage = "Item 0 of argument domainObjects has the type " 
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order instead of Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.")]
-    public void AddRange_InvalidType ()
-    {
-      var newList = new ObjectList<OrderItem> ();
-      newList.AddRange (new DomainObject[] { _order });
     }
   }
 }

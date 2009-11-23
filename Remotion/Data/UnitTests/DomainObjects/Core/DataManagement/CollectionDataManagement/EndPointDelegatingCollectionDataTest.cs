@@ -219,19 +219,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Replay ();
       _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
-      _data.Remove (_orderItem1);
+      var result = _data.Remove (_orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
     public void Remove_ObjectNotContained ()
     {
-      _data.Remove (_orderItem1);
+      bool result = _data.Remove (_orderItem1);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
+
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -252,19 +256,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Replay ();
       _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_bidirectionalModificationMock);
 
-      _data.Remove (_orderItem1.ID);
+      var result = _data.Remove (_orderItem1.ID);
 
       _collectionEndPointMock.VerifyAllExpectations ();
       _bidirectionalModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
     public void Remove_ID_ObjectNotContained ()
     {
-      _data.Remove (_orderItem1.ID);
+      var result = _data.Remove (_orderItem1.ID);
 
       _collectionEndPointMock.AssertWasNotCalled (mock => mock.CreateRemoveModification (Arg<DomainObject>.Is.Anything));
       _collectionEndPointMock.AssertWasCalled (mock => mock.Touch ());
+
+      Assert.That (result, Is.False);
     }
 
     [Test]

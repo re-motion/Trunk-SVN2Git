@@ -244,8 +244,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Remove (_order2);
+      bool result = _data.Remove (_order2);
       Assert.That (_data.ToArray(), Is.EqualTo (new[] { _order1, _order3 }));
+
+      Assert.That (result, Is.True);
     }
 
     [Test]
@@ -261,8 +263,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove_NonExistingElement ()
     {
-      _data.Remove (_order2);
+      bool result = _data.Remove (_order2);
+
       Assert.That (_data.ToArray (), Is.Empty);
+      Assert.That (result, Is.False);
     }
 
     [Test]
@@ -280,8 +284,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order2);
       Add (_order3);
 
-      _data.Remove (_order2.ID);
+      var result = _data.Remove (_order2.ID);
       Assert.That (_data.ToArray (), Is.EqualTo (new[] { _order1, _order3 }));
+      Assert.That (result, Is.True);
     }
 
     [Test]
@@ -297,8 +302,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Remove_ID_NonExistingElement ()
     {
-      _data.Remove (_order2.ID);
+      bool result = _data.Remove (_order2.ID);
+
       Assert.That (_data.ToArray (), Is.Empty);
+      Assert.That (result, Is.False);
     }
 
     [Test]
