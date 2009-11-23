@@ -152,7 +152,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("dataStore", dataStore);
       ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
 
-      return new ArgumentCheckingCollectionDataDecorator (new EventRaisingCollectionDataDecorator (eventRaiser, dataStore), requiredItemType);
+      return new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EventRaisingCollectionDataDecorator (eventRaiser, dataStore));
     }
 
 
@@ -796,7 +796,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
-      return new ArgumentCheckingCollectionDataDecorator (_data.GetUndecoratedDataStore(), RequiredItemType);
+      return new ArgumentCheckingCollectionDataDecorator (RequiredItemType, _data.GetUndecoratedDataStore());
     }
 
     #region Explicitly implemeted IList and ICollection Members

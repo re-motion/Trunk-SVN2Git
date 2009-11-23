@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     private readonly IDomainObjectCollectionData _wrappedData;
     private readonly Type _requiredItemType;
 
-    public ArgumentCheckingCollectionDataDecorator (IDomainObjectCollectionData wrappedData, Type requiredItemType)
+    public ArgumentCheckingCollectionDataDecorator (Type requiredItemType, IDomainObjectCollectionData wrappedData)
     {
       ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
 

@@ -1484,7 +1484,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var actualData = new DomainObjectCollectionData ();
 
       var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, actualData);
-      var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (delegatingStrategy, typeof (Order)));
+      var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
       Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));
       return associatedCollection;
     }

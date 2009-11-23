@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _factory = new DomainObjectCollectionFactory ();
       _data = new DomainObjectCollectionData ();
-      _dataWithOrderType = new ArgumentCheckingCollectionDataDecorator (_data, typeof (Order));
+      _dataWithOrderType = new ArgumentCheckingCollectionDataDecorator (typeof (Order), _data);
     }
 
     [Test]

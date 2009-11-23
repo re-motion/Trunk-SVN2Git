@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       base.SetUp ();
 
       _wrappedDataMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
-      _argumentCheckingDecorator = new ArgumentCheckingCollectionDataDecorator (_wrappedDataMock, typeof (Order));
-      _argumentCheckingDecoratorWithoutRequiredItemType = new ArgumentCheckingCollectionDataDecorator (_wrappedDataMock, null);
+      _argumentCheckingDecorator = new ArgumentCheckingCollectionDataDecorator (typeof (Order), _wrappedDataMock);
+      _argumentCheckingDecoratorWithoutRequiredItemType = new ArgumentCheckingCollectionDataDecorator (null, _wrappedDataMock);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void Serializable ()
     {
-      var decorator = new ArgumentCheckingCollectionDataDecorator (new DomainObjectCollectionData(new[] { _order1, _order2 }), typeof (Order));
+      var decorator = new ArgumentCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData(new[] { _order1, _order2 }));
       var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
 
       Assert.That (deserializedDecorator.Count(), Is.EqualTo (2));
