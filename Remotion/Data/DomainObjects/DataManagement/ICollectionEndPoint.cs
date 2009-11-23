@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject);
     IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject);
 
-    IDomainObjectCollectionData CreateDelegatingCollectionData (IDomainObjectCollectionData actualDataStore);
+    IDomainObjectCollectionData CreateDelegatingCollectionData ();
     void SetOppositeCollection (DomainObjectCollection oppositeDomainObjects);
   }
 }

@@ -86,6 +86,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
+    public void CollectionEndPoint_DataStore ()
+    {
+      CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var dataStore = deserializedEndPoint.CreateDelegatingCollectionData ().GetUndecoratedDataStore ();
+      Assert.That (dataStore, Is.Not.Null);
+
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (
+          deserializedEndPoint.OppositeDomainObjects, 
+          typeof (OrderItem), 
+          deserializedEndPoint, 
+          dataStore);
+    }
+
+    [Test]
     public void CollectionEndPoint_ClientTransaction ()
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);

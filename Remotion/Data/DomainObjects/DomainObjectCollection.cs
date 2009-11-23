@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects
 
       public void TransformToAssociated (ICollectionEndPoint endPoint)
       {
-        var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData (Collection._data.GetUndecoratedDataStore ());
+        var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData ();
         Assertion.IsTrue (endPointDelegatingCollectionData.RequiredItemType == Collection.RequiredItemType);
 
         Collection._data = endPointDelegatingCollectionData;
@@ -134,7 +134,8 @@ namespace Remotion.Data.DomainObjects
       {
         Assertion.IsNotNull (Collection.AssociatedEndPoint);
 
-        Collection._data = CreateDataStrategyForStandAloneCollection (Collection._data.GetUndecoratedDataStore (), Collection.RequiredItemType, Collection);
+        var standAloneDataStore = new DomainObjectCollectionData (Collection._data.GetUndecoratedDataStore ()); // copy data
+        Collection._data = CreateDataStrategyForStandAloneCollection (standAloneDataStore, Collection.RequiredItemType, Collection);
       }
     }
 
@@ -860,7 +861,8 @@ namespace Remotion.Data.DomainObjects
           endPoint,
           this,
           new Transformer (endPoint.OppositeDomainObjects),
-          new Transformer (this));
+          new Transformer (this),
+          endPoint.OppositeDomainObjects._data.GetUndecoratedDataStore());
     }
 
     /// <summary>

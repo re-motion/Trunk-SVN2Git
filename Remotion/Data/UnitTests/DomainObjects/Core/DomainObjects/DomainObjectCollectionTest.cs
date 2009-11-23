@@ -1285,7 +1285,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationModification ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders ();
+      var endPoint = CreateCollectionEndPointForOrders ();
+      var endPointDataStore = DomainObjectCollectionDataTestHelper
+          .GetCollectionDataAndCheckType<IDomainObjectCollectionData> (endPoint.OppositeDomainObjects)
+          .GetUndecoratedDataStore();
 
       var newCollection = new OrderCollection ();
       var modification = (CollectionEndPointReplaceWholeCollectionModification) newCollection.CreateAssociationModification (endPoint);
@@ -1294,6 +1297,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (modification.NewOppositeCollection, Is.SameAs (newCollection));
       Assert.That (modification.NewOppositeCollectionTransformer.Collection, Is.SameAs (newCollection));
       Assert.That (modification.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (modification.ModifiedEndPointDataStore, Is.SameAs (endPointDataStore));
     }
 
     [Test]

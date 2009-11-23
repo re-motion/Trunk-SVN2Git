@@ -708,21 +708,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateDelegatingCollectionData ()
     {
-      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
-      var data = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var data = _customerEndPoint.CreateDelegatingCollectionData ();
 
       Assert.That (data.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-
-      Assert.That (data.Count, Is.EqualTo (1), "contains data of data store");
-      dataStore.Insert (1, _orderWithoutOrderItem);
-      Assert.That (data.Count, Is.EqualTo (2), "is bound to data store");
+      Assert.That (data.Count, Is.EqualTo (2), "contains data of end point");
+      _customerEndPoint.OppositeDomainObjects.Insert (1, _order2);
+      Assert.That (data.Count, Is.EqualTo (3), "represents end point");
     }
 
     [Test]
     public void SetOppositeCollection ()
     {
-      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
-      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
       _customerEndPoint.SetOppositeCollection (newOppositeCollection);
@@ -733,8 +730,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetOppositeCollection_TouchesEndPoint ()
     {
-      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
-      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
       _customerEndPoint.SetOppositeCollection (newOppositeCollection);
@@ -760,8 +756,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "\r\nParameter name: oppositeDomainObjects")]
     public void SetOppositeCollection_OtherType ()
     {
-      var dataStore = new DomainObjectCollectionData (new[] { _order1 });
-      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData (dataStore);
+      var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new DomainObjectCollection (delegatingData);
 
       _customerEndPoint.SetOppositeCollection (newOppositeCollection);

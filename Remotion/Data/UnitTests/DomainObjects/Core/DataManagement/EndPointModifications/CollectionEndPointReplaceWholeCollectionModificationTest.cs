@@ -35,8 +35,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     private MockRepository _mockRepository;
     private IDomainObjectCollectionTransformer _oldTransformerMock;
     private IDomainObjectCollectionTransformer _newTransformerMock;
-    
+
     private CollectionEndPointReplaceWholeCollectionModification _modification;
+
+    private Order _order1;
+    private Order _orderWithoutOrderItem;
+    private Order _order2;
 
     public override void SetUp ()
     {
@@ -52,7 +56,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
           CollectionEndPoint, 
           _newCollection,
           _oldTransformerMock,
-          _newTransformerMock);
+          _newTransformerMock,
+          CollectionDataMock);
+
+      _order1 = Order.GetObject (DomainObjectIDs.Order1);
+      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      _order2 = Order.GetObject (DomainObjectIDs.Order2);
     }
 
     [Test]
@@ -72,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (RelationEndPointID.Definition);
-      new CollectionEndPointReplaceWholeCollectionModification (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock);
+      new CollectionEndPointReplaceWholeCollectionModification (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock, CollectionDataMock);
     }
 
     [Test]
@@ -124,6 +133,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Perform ()
     {
+      _newCollection.Add (_order1);
+
       bool relationChangingCalled = false;
       bool relationChangedCalled = false;
 
@@ -132,8 +143,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       using (_mockRepository.Ordered ())
       {
+        // Transform old collection to stand-alone
         _oldTransformerMock.Stub (mock => mock.Collection).Return (CollectionEndPoint.OppositeDomainObjects);
         _oldTransformerMock.Expect (mock => mock.TransformToStandAlone ());
+
+        // Replace items of end point, _after_ old collection has been transformed to stand-alone
+        CollectionDataMock.Expect (mock => mock.Clear ());
+        CollectionDataMock.Expect (mock => mock.Count).Return (0);
+        CollectionDataMock.Expect (mock => mock.Insert (0, _newCollection[0]));
+
+        // Transform new collection to associated
         _newTransformerMock
             .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
             .WhenCalled (mi =>
@@ -158,6 +177,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Perform_DoesNotTransformOldCollectionToStandAlone_WhenOldCollectionAssociatedWithOtherEndPoint ()
     {
+      _newCollection.Add (_order1);
+
       var endPointData = new EndPointDelegatingCollectionData (MockRepository.GenerateStub<ICollectionEndPoint> (), new DomainObjectCollectionData ());
       var collectionOfDifferentEndPoint = new DomainObjectCollection (endPointData);
 
@@ -166,6 +187,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _oldTransformerMock.Stub (mock => mock.Collection).Return (collectionOfDifferentEndPoint);
       // _oldTransformerMock.TransformToStandAlone is not called because collectionOfDifferentEndPoint belongs to a different end point
+
+      // Replace items of end point, _after_ old collection has been transformed to stand-alone
+      CollectionDataMock.Expect (mock => mock.Clear ());
+      CollectionDataMock.Expect (mock => mock.Count).Return (0);
+      CollectionDataMock.Expect (mock => mock.Insert (0, _newCollection[0]));
+
       _newTransformerMock
           .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
           .WhenCalled (mi => TransformToAssociated (_newCollection));
@@ -181,20 +208,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-      CollectionEndPoint.OppositeDomainObjects.Add (order1);
-      CollectionEndPoint.OppositeDomainObjects.Add (orderWithoutOrderItem);
+      CollectionEndPoint.OppositeDomainObjects.Add (_order1);
+      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem);
 
-      Assert.That (order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
-      Assert.That (orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
+      Assert.That (_order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
+      Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
 
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
       var customer3 = Customer.GetObject (DomainObjectIDs.Customer3);
-      Assert.That (order2.Customer, Is.SameAs (customer3));
+      Assert.That (_order2.Customer, Is.SameAs (customer3));
 
-      _newCollection.Add (order1);
-      _newCollection.Add (order2);
+      _newCollection.Add (_order1);
+      _newCollection.Add (_order2);
       
       var bidirectionalModification = _modification.CreateBidirectionalModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
@@ -212,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       // orderWithoutOrderItem.Customer = null;
       Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
       Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (orderWithoutOrderItem.ID));
+      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_orderWithoutOrderItem.ID));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
       Assert.That (steps[0].NewRelatedObject, Is.Null);
 
@@ -220,13 +244,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
       Assert.That (steps[1].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (steps[1].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (customer3.ID));
-      Assert.That (steps[1].OldRelatedObject, Is.SameAs (order2));
+      Assert.That (steps[1].OldRelatedObject, Is.SameAs (_order2));
       Assert.That (steps[1].NewRelatedObject, Is.Null);
 
       // order2.Customer = DomainObject
       Assert.That (steps[2], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
       Assert.That (steps[2].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (order2.ID));
+      Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_order2.ID));
       Assert.That (steps[2].OldRelatedObject, Is.SameAs (customer3));
       Assert.That (steps[2].NewRelatedObject, Is.SameAs (DomainObject));
 

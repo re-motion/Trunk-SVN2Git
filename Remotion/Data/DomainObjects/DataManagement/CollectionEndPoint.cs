@@ -28,11 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
-    // types
-
-    // static members and constants
-
-    // member fields
+    private readonly DomainObjectCollectionData _dataStore;
 
     private readonly DomainObjectCollection _originalOppositeDomainObjectsContents;
     private DomainObjectCollection _originalOppositeDomainObjectsReference;
@@ -40,20 +36,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private bool _hasBeenTouched;
 
-    // construction and disposing
-
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         IEnumerable<DomainObject> initialContents)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
-      var collectionType = id.Definition.PropertyType;
+      _dataStore = new DomainObjectCollectionData (initialContents);
 
       var factory = new DomainObjectCollectionFactory ();
-
-      var dataStore = new DomainObjectCollectionData (initialContents);
-      var dataStrategy = CreateDelegatingCollectionData (dataStore);
+      var collectionType = id.Definition.PropertyType;
+      var dataStrategy = CreateDelegatingCollectionData ();
       _oppositeDomainObjects = factory.CreateCollection (collectionType, dataStrategy);
 
       _originalOppositeDomainObjectsContents = _oppositeDomainObjects.Clone (true);
@@ -67,8 +60,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       _hasBeenTouched = false;
     }
-
-    // methods and properties
 
     public void SetOppositeCollection (DomainObjectCollection oppositeDomainObjects)
     {
@@ -192,10 +183,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public IDomainObjectCollectionData CreateDelegatingCollectionData (IDomainObjectCollectionData actualDataStore)
+    public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = ID.OppositeEndPointDefinition.ClassDefinition.ClassType;
-      var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, actualDataStore));
+      var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataStore));
 
       return dataStrategy;
     }
@@ -261,6 +252,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
       _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
+      _dataStore = info.GetValue<DomainObjectCollectionData> ();
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
     }
@@ -271,6 +263,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_oppositeDomainObjects);
       info.AddHandle (_originalOppositeDomainObjectsReference);
       info.AddBoolValue (_hasBeenTouched);
+      info.AddValue (_dataStore);
     }
 
     private void FixupAssociatedEndPoint (DomainObjectCollection collection)
