@@ -254,7 +254,7 @@ namespace Remotion.Data.DomainObjects
     // construction and disposing
 
     /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b>.
+    /// Initializes a new <see cref="DomainObjectCollection" />.
     /// </summary>
     /// <remarks>A derived class must support this constructor.</remarks>
     public DomainObjectCollection()
@@ -284,7 +284,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b> that only takes a certain <see cref="Type"/> as members.
+    /// Initializes a new <see cref="DomainObjectCollection" /> that only takes a certain <see cref="Type"/> as members.
     /// </summary>
     /// <param name="requiredItemType">The <see cref="Type"/> that are required for members.</param>
     public DomainObjectCollection (Type requiredItemType)
@@ -297,7 +297,7 @@ namespace Remotion.Data.DomainObjects
     /// Initializes a new <see cref="DomainObjectCollection"/> as a shallow copy of a given <see cref="DomainObjectCollection"/>.
     /// </summary>
     /// <remarks>
-    /// The new <b>DomainObjectCollection</b> has the same <see cref="RequiredItemType"/> and the same items as the 
+    /// The new <see cref="DomainObjectCollection" /> has the same <see cref="RequiredItemType"/> and the same items as the 
     /// given <paramref name="collection"/>.
     /// </remarks>
     /// <param name="collection">The <see cref="DomainObjectCollection"/> to copy. Must not be <see langword="null"/>.</param>
@@ -355,12 +355,12 @@ namespace Remotion.Data.DomainObjects
 
 
     /// <summary>
-    /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <b>DomainObjectCollection</b>, that are not already part of it.
+    /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <see cref="DomainObjectCollection" />, that are not already part of it.
     /// </summary>
     /// <remarks>
     /// <para>The method does not modify the given <see cref="DomainObjectCollection"/>.</para>
-    /// <para>To check if an item is already part of the <b>DomainObjectCollection</b> its <see cref="DomainObject.ID"/> is used. 
-    /// <b>Combine</b> does not check if the item references are identical.
+    /// <para>To check if an item is already part of the <see cref="DomainObjectCollection" /> its <see cref="DomainObject.ID"/> is used. 
+    /// <see cref="Combine"/> does not check if the item references are identical.
     /// The two <see cref="DomainObjectCollection"/>s could contain items with the same ID, but reference different <see cref="DomainObject"/>s, 
     /// if the collections contain items of different <see cref="ClientTransaction"/>s.</para>
     /// </remarks>
@@ -386,13 +386,13 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns all items of a given <see cref="DomainObjectCollection"/> that are not part of the <b>DomainObjectCollection</b>.
+    /// Returns all items of a given <see cref="DomainObjectCollection"/> that are not part of the <see cref="DomainObjectCollection" />.
     /// </summary>
     /// <remarks>
-    /// <para>The method does not modify the given <see cref="DomainObjectCollection"/> nor the <b>DomainObjectCollection</b> itself.</para>
-    /// <para>To check if an item is already part of the <b>DomainObjectCollection</b> its <see cref="DomainObject.ID"/> 
+    /// <para>The method does not modify the given <see cref="DomainObjectCollection"/> nor the <see cref="DomainObjectCollection" /> itself.</para>
+    /// <para>To check if an item is already part of the <see cref="DomainObjectCollection" /> its <see cref="DomainObject.ID"/> 
     /// and the item reference are considered. 
-    /// Therefore <b>GetItemsNotInCollection</b> does return items with the same ID but are from different <see cref="ClientTransaction"/>s.</para>
+    /// Therefore <see cref="GetItemsNotInCollection"/> does return items with the same ID but are from different <see cref="ClientTransaction"/>s.</para>
     /// </remarks>
     /// <param name="domainObjects">The collection to evaluate. Must not be <see langword="null"/>.</param>
     /// <returns>A <see cref="DomainObjectCollection"/> with all items of <paramref name="domainObjects"/> that are not part of the collection.</returns>
@@ -450,7 +450,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/></exception>
     /// <remarks>
     /// <para>This method only returns true, if the same reference is found in the collection.</para>
-    /// <para>Note: The <b>DomainObjectCollection</b> could contain an item with the same ID, 
+    /// <para>Note: The <see cref="DomainObjectCollection" /> could contain an item with the same ID, 
     /// but reference a different <see cref="DomainObject"/>, 
     /// if the given <paramref name="domainObject" /> is part of a different <see cref="ClientTransaction"/>.</para></remarks>
     public bool ContainsObject (DomainObject domainObject)
@@ -636,7 +636,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>True if the collection contained the given object when the method was called; false otherwise.
     /// </returns>
     /// <remarks>
-    ///   If <b>Remove</b> is called with an object that is not in the collection, no exception is thrown, and no events are raised. 
+    ///   If <see cref="Remove(Remotion.Data.DomainObjects.DomainObject)"/> is called with an object that is not in the collection, no exception is thrown, and no events are raised. 
     /// </remarks>
     /// <param name="domainObject">The <see cref="DomainObject"/> to remove. Must not be <see langword="null"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
@@ -976,7 +976,7 @@ namespace Remotion.Data.DomainObjects
     /// A shallow copy creates a new <see cref="DomainObjectCollection"/> instance
     /// which can be independently modified without affecting the original collection.
     /// Thus meaning the references to the domain objects are copied, not the domain objects themselves.<br/><br/>
-    /// The <see cref="System.Type"/> of the cloned collection is equal to the <see cref="System.Type"/> of the <b>DomainObjectCollection</b>.
+    /// The <see cref="System.Type"/> of the cloned collection is equal to the <see cref="System.Type"/> of the <see cref="DomainObjectCollection" />.
     /// </para>
     /// <para>
     /// The clone is always a stand-alone collection, even when the source was associated with a collection end point.
@@ -1100,27 +1100,27 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// The method is invoked immediately before the <see cref="DomainObject"/> holding this collection is deleted if the <b>DomainObjectCollection</b> represents a one-to-many relation.
+    /// The method is invoked immediately before the <see cref="DomainObject"/> holding this collection is deleted if the <see cref="DomainObjectCollection" /> represents a one-to-many relation.
     /// </summary>
     /// <remarks>
-    /// During the delete process of a <see cref="DomainObject"/> all <see cref="DomainObject"/>s are removed from the <b>DomainObjectCollection</b> without notifying other objects.
-    /// Immediately before all <see cref="DomainObject"/>s will be removed the <b>OnDeleting</b> method is invoked.
+    /// During the delete process of a <see cref="DomainObject"/> all <see cref="DomainObject"/>s are removed from the <see cref="DomainObjectCollection" /> without notifying other objects.
+    /// Immediately before all <see cref="DomainObject"/>s will be removed the <see cref="OnDeleting"/> method is invoked.
     /// To clear any internal state or to unsubscribe from events whenever the <see cref="DomainObject"/> holding this collection is deleted 
     /// use the <see cref="OnDeleted"/> method, because the operation could be cancelled after the <see cref="OnDeleting"/> method has been called.<br/><br/>
-    /// <b>Note:</b> A derived collection overriding this method must not raise an exception.
+    /// <note type="inotes">Inheritors overriding this method must not throw an exception from the override.</note>
     /// </remarks>
     protected virtual void OnDeleting()
     {
     }
 
     /// <summary>
-    /// The method is invoked after the <see cref="DomainObject"/> holding this collection is deleted if the <b>DomainObjectCollection</b> represents a one-to-many relation.
+    /// The method is invoked after the <see cref="DomainObject"/> holding this collection is deleted if the <see cref="DomainObjectCollection" /> represents a one-to-many relation.
     /// </summary>
     /// <remarks>
-    /// During the delete process of a <see cref="DomainObject"/> all <see cref="DomainObject"/>s are removed from the <b>DomainObjectCollection</b> without notifying other objects.
-    /// After all <see cref="DomainObject"/>s have been removed the <b>OnDeleted</b> method is invoked 
+    /// During the delete process of a <see cref="DomainObject"/> all <see cref="DomainObject"/>s are removed from the <see cref="DomainObjectCollection" /> without notifying other objects.
+    /// After all <see cref="DomainObject"/>s have been removed the <see cref="OnDeleted"/> method is invoked 
     /// to allow derived collections to adjust their internal state or to unsubscribe from events of contained <see cref="DomainObject"/>s.<br/><br/>
-    /// <b>Note:</b> A derived collection overriding this method must not raise an exception.
+    /// <note type="inotes">Inheritors overriding this method must not throw an exception from the override.</note>
     /// </remarks>
     protected virtual void OnDeleted()
     {
