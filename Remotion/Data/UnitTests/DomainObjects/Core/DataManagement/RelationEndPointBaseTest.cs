@@ -30,7 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newCollectionEndPoint = new CollectionEndPoint (
           ClientTransactionMock, 
           endPointID, 
-          ClientTransactionMock.DataManager.RelationEndPointMap, 
           initialContents);
       return newCollectionEndPoint;
     }

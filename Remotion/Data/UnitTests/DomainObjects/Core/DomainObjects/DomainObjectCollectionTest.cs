@@ -1474,7 +1474,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       return new CollectionEndPoint (
           ClientTransactionMock,
           customerEndPointID,
-          MockRepository.GenerateStub<ICollectionEndPointChangeDelegate> (),
           new DomainObject[0]);
     }
 

@@ -200,86 +200,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException),
-       ExpectedMessage = "Cannot insert DomainObject '.*'  at position 2 into collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', because the objects do not belong to the same ClientTransaction.",
-       MatchType = MessageMatch.Regex)]
-    public void PerformCollectionAddWithOtherClientTransaction ()
-    {
-      Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      OrderItem orderItem3;
-
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      }
-
-      order1.OrderItems.Add (orderItem3);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-        ExpectedMessage = "Cannot insert DomainObject '.*' at position 0 into collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', because the objects do not belong to the same ClientTransaction.",
-        MatchType = MessageMatch.Regex)]
-    public void PerformCollectionInsertWithOtherClientTransaction ()
-    {
-      Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      OrderItem orderItem3;
-
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      }
-
-      order1.OrderItems.Insert (0, orderItem3);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-       ExpectedMessage = "Cannot remove DomainObject '.*' from collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', because the objects do not belong to the same ClientTransaction.",
-        MatchType = MessageMatch.Regex)]
-    public void PerformCollectionRemoveWithOtherClientTransaction ()
-    {
-      Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-
-      OrderItem orderItem1;
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      }
-
-      var endPoint = (CollectionEndPoint) order1.OrderItems.AssociatedEndPoint;
-      ((ICollectionEndPointChangeDelegate) _map).PerformRemove (endPoint, orderItem1);
-    }
-
-    [Test]
-    public void PerformCollectionReplaceWithOtherClientTransaction ()
-    {
-      Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-
-      OrderItem orderItem3;
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      }
-
-      int index = order1.OrderItems.IndexOf (DomainObjectIDs.OrderItem1);
-
-      try
-      {
-        order1.OrderItems[index] = orderItem3;
-        Assert.Fail ("This test expects a ClientTransactionsDifferException.");
-      }
-      catch (ClientTransactionsDifferException ex)
-      {
-        string expectedMessage = 
-            "Cannot put DomainObject 'OrderItem|0d7196a5-8161-4048-820d-b1bbdabe3293|System.Guid' into the collection of property "
-            + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
-            + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. The objects do not belong to the same ClientTransaction.";
-        Assert.AreEqual (expectedMessage, ex.Message);
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
        ExpectedMessage = "Cannot remove DomainObject '.*' from RelationEndPointMap, because it belongs to a different ClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void PerformDeletionWithOtherClientTransaction ()
@@ -336,7 +256,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.AreNotEqual (0, sourceMap.Count);
       Assert.IsNotNull (sourceMap[orderItemsID]);
-      Assert.AreSame (sourceMap, ((CollectionEndPoint) sourceMap[orderItemsID]).ChangeDelegate);
 
       Assert.AreEqual (0, destinationMap.Count);
 
@@ -349,7 +268,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreNotSame (sourceMap[orderItemsID], destinationMap[orderItemsID]);
       
       Assert.AreSame (destinationTransaction, destinationMap[orderItemsID].ClientTransaction);
-      Assert.AreSame (destinationMap, ((CollectionEndPoint)destinationMap[orderItemsID]).ChangeDelegate);
 
       Assert.IsNotNull (destinationMap[officialID]);
       Assert.AreNotSame (sourceMap[officialID], destinationMap[officialID]);

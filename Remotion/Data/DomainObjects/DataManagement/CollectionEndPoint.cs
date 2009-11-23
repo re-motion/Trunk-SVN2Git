@@ -34,9 +34,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // member fields
 
-    // this field is not serialized via IFlattenedSerializable.SerializeIntoFlatStructure
-    private ICollectionEndPointChangeDelegate _changeDelegate = null;
-
     private readonly DomainObjectCollection _originalOppositeDomainObjectsContents;
     private DomainObjectCollection _originalOppositeDomainObjectsReference;
     private DomainObjectCollection _oppositeDomainObjects;
@@ -48,12 +45,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        ICollectionEndPointChangeDelegate changeDelegate,
         IEnumerable<DomainObject> initialContents)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
-      ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
-
       var collectionType = id.Definition.PropertyType;
 
       var factory = new DomainObjectCollectionFactory ();
@@ -66,7 +60,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _originalOppositeDomainObjectsReference = _oppositeDomainObjects;
       
       _hasBeenTouched = false;
-      _changeDelegate = changeDelegate;
     }
 
     protected CollectionEndPoint (IRelationEndPointDefinition definition)
@@ -115,7 +108,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var clone = new CollectionEndPoint (
           clientTransaction, 
           ID, 
-          clientTransaction.DataManager.RelationEndPointMap, 
           _oppositeDomainObjects.Cast<DomainObject>());
 
       clone._oppositeDomainObjects.ReplaceItems (_oppositeDomainObjects);
@@ -263,11 +255,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _oppositeDomainObjects; }
     }
 
-    public ICollectionEndPointChangeDelegate ChangeDelegate
-    {
-      get { return _changeDelegate; }
-    }
-
     #region Serialization
 
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
@@ -277,12 +264,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
       _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
-      _changeDelegate = info.GetValueForHandle<ICollectionEndPointChangeDelegate>();
-
-      // if _changeDelegate == null, we didn't serialize the back-reference to the RelationEndPointMap, so get it from the ClientTransaction
-      // only do that after deserialization has finished
-      if (_changeDelegate == null)
-        info.DeserializationFinished += ((sender, args) => _changeDelegate = ClientTransaction.DataManager.RelationEndPointMap);
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
     }
@@ -293,10 +274,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_oppositeDomainObjects);
       info.AddHandle (_originalOppositeDomainObjectsReference);
       info.AddBoolValue (_hasBeenTouched);
-
-      // cannot serialize back-references, therefore, we only add the ChangeDelegate if it is not the (default) back-reference to 
-      // ClientTransaction.DataManager.RelationEndPointMap
-      info.AddHandle (_changeDelegate == ClientTransaction.DataManager.RelationEndPointMap ? null : _changeDelegate);
     }
 
     private void FixupAssociatedEndPoint (DomainObjectCollection collection)

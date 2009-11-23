@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class RelationEndPointMap : IEnumerable, IFlattenedSerializable, ICollectionEndPointChangeDelegate
+  public class RelationEndPointMap : IEnumerable, IFlattenedSerializable
   {
     // types
 
@@ -123,10 +123,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // TODO: Refactor in COMMONS-1034
     public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-      return _modifier.GetOppositeEndPointModificationsForDelete (deletedObject);
+
+      RelationEndPointCollection allAffectedRelationEndPoints = GetAllRelationEndPointsWithLazyLoad (deletedObject);
+      RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (deletedObject);
+
+      var modifications = new NotifyingBidirectionalRelationModification ();
+      foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
+        modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (deletedObject));
+
+      return modifications;
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)
@@ -201,7 +210,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
-      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, this, initialContents);
+      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, initialContents);
       Add (collectionEndPoint);
 
       return collectionEndPoint.OppositeDomainObjects;
@@ -403,21 +412,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
             methodName,
             expectedCardinality), argumentName);
       }
-    }
-
-    void ICollectionEndPointChangeDelegate.PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index)
-    {
-      _modifier.PerformInsert (collectionEndPoint, insertedObject, index);
-    }
-
-    void ICollectionEndPointChangeDelegate.PerformReplace (CollectionEndPoint endPoint, int index, DomainObject newRelatedObject)
-    {
-      _modifier.PerformReplace (endPoint, index, newRelatedObject);
-    }
-
-    void ICollectionEndPointChangeDelegate.PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)
-    {
-      _modifier.PerformRemove (endPoint, removedRelatedObject);
     }
 
     #region Serialization

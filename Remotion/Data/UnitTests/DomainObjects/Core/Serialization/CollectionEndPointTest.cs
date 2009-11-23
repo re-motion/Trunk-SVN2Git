@@ -152,36 +152,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serialization_IntegrationWithRelationEndPointMap ()
     {
-      Assert.That (_endPoint.ChangeDelegate, Is.SameAs (ClientTransactionMock.DataManager.RelationEndPointMap));
-
       var deserializedTransactionMock = Serializer.SerializeAndDeserialize (ClientTransactionMock);
       var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
       var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.SameAs (deserializedMap));
-    }
-
-    [Test]
-    public void Serialization_WithCustomChangeDelegate ()
-    {
-      var endPoint = new CollectionEndPoint (ClientTransactionMock, _endPoint.ID, new FakeChangeDelegate (), new DomainObject[0]);
-
-      var deserializedCollectionEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.Null);
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.InstanceOfType (typeof (RelationEndPointMap)));
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.InstanceOfType (typeof (FakeChangeDelegate)));
-    }
-
-    [Test]
-    public void Serialization_IntegrationWithRelationEndPointMap_WithCustomChangeDelegate ()
-    {
-      PrivateInvoke.SetNonPublicField (_endPoint, "_changeDelegate", new FakeChangeDelegate ());
-
-      var deserializedTransactionMock = Serializer.SerializeAndDeserialize (ClientTransactionMock);
-      var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
-      var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.SameAs (deserializedMap));
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.Null);
-      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.InstanceOfType (typeof (FakeChangeDelegate)));
+      Assert.That (deserializedCollectionEndPoint, Is.Not.Null);
     }
   }
 }

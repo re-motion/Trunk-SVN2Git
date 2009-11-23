@@ -268,6 +268,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\GuidObjectIDValueParserTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\Int32ObjectIDValueParserTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializerTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\ClientTransactionDiffersTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\ConcurrencyViolationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransaction.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransactionTest.cs" />
@@ -326,7 +327,6 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Queries\SubQueryManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\Serialization\FakeChangeDelegate.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />

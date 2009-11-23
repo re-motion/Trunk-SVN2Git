@@ -266,7 +266,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (actual, Is.Not.SameAs (expected));
 
-      Assert.That (actual.ChangeDelegate, Is.SameAs (expected.ChangeDelegate));
       Assert.That (actual.ClientTransaction, Is.SameAs (expected.ClientTransaction));
       Assert.That (actual.Definition, Is.SameAs (expected.Definition));
       Assert.That (actual.GetDomainObject (), Is.SameAs (expected.GetDomainObject ()));
@@ -300,7 +299,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var id = new RelationEndPointID (order.ID, typeof (Order) + ".OrderItems");
       var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
-      Assert.That (endPoint.ChangeDelegate, Is.Not.Null);
       Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
       Assert.That (endPoint.Definition, Is.Not.Null);
       Assert.That (endPoint.GetDomainObject (), Is.SameAs (order));
@@ -346,7 +344,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var id = new RelationEndPointID (order.ID, typeof (Order) + ".OrderItems");
       var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
-      Assert.That (endPoint.ChangeDelegate, Is.Not.Null);
       Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
       Assert.That (endPoint.Definition, Is.Not.Null);
       Assert.That (endPoint.GetDomainObject (), Is.SameAs (order));

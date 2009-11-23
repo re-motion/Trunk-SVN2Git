@@ -20,7 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  public class RelationEndPointModifier : ICollectionEndPointChangeDelegate
+  public class RelationEndPointModifier
   {
     private readonly RelationEndPointMap _relationEndPointMap;
 
@@ -55,63 +55,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var setModification = endPoint.CreateSetModification (newRelatedObject);
       var bidirectionalModification = setModification.CreateBidirectionalModification ();
       bidirectionalModification.ExecuteAllSteps ();
-    }
-
-    public void PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index)
-    {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("insertedObject", insertedObject);
-
-      CheckClientTransactionForInsertionIntoCollectionEndPoint (collectionEndPoint, insertedObject, index);
-      CheckDeleted (collectionEndPoint.GetDomainObject ());
-      CheckDeleted (insertedObject);
-
-      var insertModification = collectionEndPoint.CreateInsertModification (insertedObject, index);
-      var bidirectionalModification = insertModification.CreateBidirectionalModification ();
-      bidirectionalModification.ExecuteAllSteps ();
-    }
-
-    public void PerformReplace (CollectionEndPoint endPoint, int index, DomainObject newRelatedObject)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("newRelatedObject", newRelatedObject);
-
-      CheckClientTransactionForReplacementInCollectionEndPoint (endPoint, newRelatedObject, index);
-      CheckDeleted (endPoint.GetDomainObject ());
-      CheckDeleted (newRelatedObject);
-
-      var replaceModification = endPoint.CreateReplaceModification (index, newRelatedObject);
-      var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
-      bidirectionalModification.ExecuteAllSteps ();
-    }
-
-    public void PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-
-      CheckClientTransactionForRemovalFromCollectionEndPoint (endPoint, removedRelatedObject);
-      CheckDeleted (endPoint.GetDomainObject ());
-      CheckDeleted (removedRelatedObject);
-
-      var removeModification = endPoint.CreateRemoveModification (removedRelatedObject);
-      var bidirectionalModification = removeModification.CreateBidirectionalModification ();
-      bidirectionalModification.ExecuteAllSteps ();
-    }
-
-    // TODO: Refactor in COMMONS-1034
-    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
-    {
-      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-
-      RelationEndPointCollection allAffectedRelationEndPoints = _relationEndPointMap.GetAllRelationEndPointsWithLazyLoad (deletedObject);
-      RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (deletedObject);
-
-      var modifications = new NotifyingBidirectionalRelationModification ();
-      foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
-        modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (deletedObject));
-
-      return modifications;
     }
 
     private void CheckDeleted (DomainObject domainObject)
@@ -150,63 +93,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
             endPointID.PropertyName,
             endPointID.ObjectID,
             newRelatedObject.ID,
-            additionalInfo);
-      }
-    }
-
-    private void CheckClientTransactionForInsertionIntoCollectionEndPoint (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
-    {
-      if (newRelatedObject != null && !newRelatedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
-      {
-        var endPointObject = endPoint.GetDomainObject ();
-        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions (
-            "owning the collection", endPointObject, "to be inserted", newRelatedObject);
-
-        throw CreateClientTransactionsDifferException (
-            "Cannot insert DomainObject '{0}' at position {1} into collection of property '{2}' of DomainObject '{3}'."
-            + " The objects do not belong to the same ClientTransaction.{4}",
-            newRelatedObject.ID,
-            index,
-            endPoint.PropertyName,
-            endPoint.ObjectID,
-            additionalInfo);
-      }
-    }
-
-    private void CheckClientTransactionForRemovalFromCollectionEndPoint (RelationEndPoint endPoint, DomainObject relatedObject)
-    {
-      if (relatedObject != null && !relatedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
-      {
-        var endPointObject = endPoint.GetDomainObject ();
-        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions (
-            "owning the collection", endPointObject, "to be removed", relatedObject);
-
-        throw CreateClientTransactionsDifferException (
-            "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'."
-            + " The objects do not belong to the same ClientTransaction.{3}",
-            relatedObject.ID,
-            endPoint.ID.PropertyName,
-            endPoint.ID.ObjectID,
-            additionalInfo);
-      }
-    }
-
-    private void CheckClientTransactionForReplacementInCollectionEndPoint (RelationEndPoint endPoint, DomainObject newRelatedObject, int index)
-    {
-      if (newRelatedObject != null && !newRelatedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
-      {
-        var endPointObject = endPoint.GetDomainObject ();
-        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions (
-            "owning the collection", endPointObject, "to be inserted", newRelatedObject);
-
-        throw CreateClientTransactionsDifferException (
-            "Cannot replace DomainObject at position {0} with DomainObject '{1}'"
-            + " in collection of property '{2}' of DomainObject '{3}'."
-            + " The objects do not belong to the same ClientTransaction.{4}",
-            index,
-            newRelatedObject.ID,
-            endPoint.ID.PropertyName,
-            endPoint.ID.ObjectID,
             additionalInfo);
       }
     }

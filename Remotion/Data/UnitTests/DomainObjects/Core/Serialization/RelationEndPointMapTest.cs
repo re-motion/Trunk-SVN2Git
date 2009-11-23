@@ -67,7 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           deserializedMap[new RelationEndPointID (DomainObjectIDs.Order1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"))];
 
       Assert.That (collectionEndPoint.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
-      Assert.That (collectionEndPoint.ChangeDelegate, Is.SameAs (deserializedMap));
     }
   }
 }

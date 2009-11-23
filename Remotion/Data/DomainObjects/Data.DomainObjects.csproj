@@ -374,9 +374,6 @@
     <Compile Include="DataManagement\DataManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\ICollectionEndPointChangeDelegate.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DataManagement\IEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
