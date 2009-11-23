@@ -423,22 +423,6 @@ namespace Remotion.Data.DomainObjects
     /// <param name="domainObject">The <see cref="DomainObject"/> to locate in the <see cref="DomainObjectCollection"/>. Must not be <see langword="null"/>.</param>
     /// <returns><see langword="true"/> if <paramref name="domainObject"/> is found in the <see cref="DomainObjectCollection"/>; otherwise, false;</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/></exception>
-    /// <remarks>This method only returns true, if the same reference is found in the collection.</remarks>
-    [Obsolete ("Use Contains (ObjectID) to determine if the DomainObjectCollection contains a DomainObject with the specified ID or use"
-        + " ContainsObject (DomainObject) to determine if the DomainObjectCollection contains a reference to the specified DomainObject."
-            + " Note: In most scenarios Contains (ObjectID) should be used.", true)]
-    // TODO: Remove this method after 01.06.2006
-    public bool Contains (DomainObject domainObject)
-    {
-      return ContainsObject (domainObject);
-    }
-
-    /// <summary>
-    /// Determines whether the <see cref="DomainObjectCollection"/> contains a reference to the specified <paramref name="domainObject"/>.
-    /// </summary>
-    /// <param name="domainObject">The <see cref="DomainObject"/> to locate in the <see cref="DomainObjectCollection"/>. Must not be <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> if <paramref name="domainObject"/> is found in the <see cref="DomainObjectCollection"/>; otherwise, false;</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/></exception>
     /// <remarks>
     /// <para>This method only returns true, if the same reference is found in the collection.</para>
     /// <para>Note: The <see cref="DomainObjectCollection" /> could contain an item with the same ID, 
