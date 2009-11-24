@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     }
 
     // standard constructor for collections
-    public OrderCollection (IEnumerable<Order> contents, bool isCollectionReadOnly)
-      : base (contents, isCollectionReadOnly)
+    public OrderCollection (IEnumerable<Order> contents)
+      : base (contents)
     {
     }
 

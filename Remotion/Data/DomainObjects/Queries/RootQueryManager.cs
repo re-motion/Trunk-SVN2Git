@@ -15,11 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
@@ -91,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Collection)
         throw new ArgumentException ("A collection query cannot be used with GetScalar.", "query");
 
-      using (StorageProviderManager storageProviderManager = new StorageProviderManager())
+      using (var storageProviderManager = new StorageProviderManager())
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         return provider.ExecuteScalarQuery (query);
@@ -192,7 +189,7 @@ namespace Remotion.Data.DomainObjects.Queries
         foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
           newLoadedDataContainer.RegisterLoadedDataContainer (ClientTransaction);
 
-        var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), null, true);
+        var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), null).AsReadOnly();
         ClientTransaction.OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
         return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID, true)));

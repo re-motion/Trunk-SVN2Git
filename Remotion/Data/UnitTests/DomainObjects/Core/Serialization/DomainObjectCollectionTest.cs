@@ -20,7 +20,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -35,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DomainObjectCollection_IsSerializable ()
     {
-      DomainObjectCollection collection = new DomainObjectCollection ();
+      var collection = new DomainObjectCollection ();
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
 
       DomainObjectCollection deserializedCollection = Serializer.SerializeAndDeserialize (collection);
@@ -127,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DomainObjectCollection_ReadOnlyContents ()
     {
       var collection = new DomainObjectCollection (typeof (Order));
-      collection = new DomainObjectCollection (collection, true);
+      collection = collection.AsReadOnly();
 
       var deserializedCollection = SerializeAndDeserialize (collection);
       Assert.IsTrue (deserializedCollection.IsReadOnly);

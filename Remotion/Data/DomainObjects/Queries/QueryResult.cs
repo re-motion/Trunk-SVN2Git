@@ -195,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       try
       {
-        return new ObjectList<TResult> (values, false);
+        return new ObjectList<TResult> (values);
       }
       catch (Exception ex)
       {

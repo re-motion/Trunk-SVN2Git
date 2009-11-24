@@ -53,14 +53,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Test")]
     public void CheckNotReadOnly_ReadOnly ()
     {
-      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var readOnlyCollection = _collection.AsReadOnly();
       readOnlyCollection.CheckNotReadOnly ("Test");
     }
 
     [Test]
     public void UnionWith ()
     {
-      var secondCollection = new DomainObjectCollection (_collection, false);
+      var secondCollection = _collection.Clone();
       secondCollection.Add (Customer.GetObject (DomainObjectIDs.Customer3));
 
       _collection.UnionWith (secondCollection);
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A read-only collection cannot be combined with another collection.")]
     public void UnionWith_ChecksNotReadOnly ()
     {
-      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var readOnlyCollection = _collection.AsReadOnly();
       readOnlyCollection.UnionWith (_collection);
     }
 

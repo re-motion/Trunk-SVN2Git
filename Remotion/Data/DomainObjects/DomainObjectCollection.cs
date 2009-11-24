@@ -247,31 +247,9 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Initializes a new <see cref="DomainObjectCollection" />.
     /// </summary>
-    /// <remarks>A derived class must support this constructor.</remarks>
     public DomainObjectCollection()
         : this ((Type) null)
     {
-    }
-
-    // standard constructor for collections
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DomainObjectCollection"/> class with a given <see cref="IDomainObjectCollectionData"/>
-    /// data storage strategy.
-    /// </summary>
-    /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
-    /// <remarks>
-    /// <para>
-    /// Derived classes must support this constructor.
-    /// </para>
-    /// <para>
-    /// The given <paramref name="dataStrategy"/> is directly used, so it should perform any argument checks and event raising on its own.
-    /// </para>
-    /// </remarks>
-    public DomainObjectCollection (IDomainObjectCollectionData dataStrategy)
-    {
-      ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
-
-      _dataStrategy = dataStrategy;
     }
 
     /// <summary>
@@ -283,21 +261,25 @@ namespace Remotion.Data.DomainObjects
       _dataStrategy = CreateDataStrategyForStandAloneCollection (new DomainObjectCollectionData (), requiredItemType, this);
     }
 
-    // standard constructor for collections
     /// <summary>
-    /// Initializes a new <see cref="DomainObjectCollection"/> as a shallow copy of a given <see cref="DomainObjectCollection"/>.
+    /// Initializes a new instance of the <see cref="DomainObjectCollection"/> class with a given <see cref="IDomainObjectCollectionData"/>
+    /// data storage strategy.
     /// </summary>
+    /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
     /// <remarks>
-    /// The new <see cref="DomainObjectCollection" /> has the same <see cref="RequiredItemType"/> and the same items as the 
-    /// given <paramref name="collection"/>.
+    /// <para>
+    /// Derived classes must provide a constructor with the same signature. (The constructor is used for cloning as well as by relation end points.)
+    /// </para>
+    /// <para>
+    /// Most members of <see cref="DomainObjectCollection"/> directly delegate to the given <paramref name="dataStrategy"/>, so it should 
+    /// any special argument checks and event raising must be performed by the <paramref name="dataStrategy"/> itself.
+    /// </para>
     /// </remarks>
-    /// <param name="collection">The <see cref="DomainObjectCollection"/> to copy. Must not be <see langword="null"/>.</param>
-    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
-    public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
+    public DomainObjectCollection (IDomainObjectCollectionData dataStrategy)
     {
-      _dataStrategy = CreateDataStrategyForStandAloneCollection (new DomainObjectCollectionData (collection.Cast<DomainObject>()), collection.RequiredItemType, this);
-      SetIsReadOnly (makeCollectionReadOnly);
+      ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
+
+      _dataStrategy = dataStrategy;
     }
 
     /// <summary>
@@ -305,15 +287,13 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
     /// <param name="requiredItemType">The required item type of the new collection.</param>
-    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, Type requiredItemType, bool makeCollectionReadOnly)
+    public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, Type requiredItemType)
     {
       var dataStore = new DomainObjectCollectionData ();
       dataStore.AddRangeAndCheckItems (domainObjects, requiredItemType);
 
       _dataStrategy = CreateDataStrategyForStandAloneCollection (dataStore, requiredItemType, this);
-      SetIsReadOnly (makeCollectionReadOnly);
     }
 
     /// <summary>
@@ -707,15 +687,23 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Creates a shallow copy of this collection.
+    /// Creates a shallow copy of this collection, i.e. a collection of the same type and with the same contents as this collection. 
+    /// No <see cref="Adding"/>, <see cref="Added"/>, <see cref="Removing"/>, or <see cref="Removed"/> 
+    /// events are raised during the process of cloning.
     /// </summary>
     /// <returns>The cloned collection.</returns>
     /// <remarks>
-    /// If this collection is read-only, the clone will be read-only too. 
-    /// If this collection is not read-only, the clone will not be read-only too.<br/><br/>
-    /// A shallow copy creates a new <see cref="DomainObjectCollection"/> instance
-    /// which can be independently modified without affecting the original collection.
-    /// Thus meaning the references to the domain objects are copied, not the domain objects themselves.
+    /// <para>
+    /// The clone is always a stand-alone collection, even when the source was associated with a collection end point.
+    /// </para>
+    /// <para>
+    /// If this collection is read-only, the clone will be read-only, too. Otherwise, the clone will not be read-only.
+    /// </para>
+    /// <para>
+    /// The <see cref="DomainObjectCollection"/> returned by this method contains the same <see cref="DomainObject"/> instances as the original
+    /// collection, it does not reflect any changes made to the original collection after cloning, and changes made to it are not reflected upon
+    /// the original collection.
+    /// </para>
     /// </remarks>
     public DomainObjectCollection Clone ()
     {
@@ -723,27 +711,29 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Creates a shallow copy of this collection. No events are raised on the clone.
+    /// Creates a shallow copy of this collection, i.e. a collection of the same type and with the same contents as this collection, while allowing
+    /// to specify whether the clone should be read-only or not. 
+    /// No <see cref="Adding"/>, <see cref="Added"/>, <see cref="Removing"/>, or <see cref="Removed"/> 
+    /// events are raised during the process of cloning.
     /// </summary>
     /// <param name="makeCloneReadOnly">Specifies whether the cloned collection should be read-only.</param>
     /// <returns>The cloned collection.</returns>
     /// <remarks>
     /// <para>
-    /// A shallow copy creates a new <see cref="DomainObjectCollection"/> instance
-    /// which can be independently modified without affecting the original collection.
-    /// Thus meaning the references to the domain objects are copied, not the domain objects themselves.<br/><br/>
-    /// The <see cref="System.Type"/> of the cloned collection is equal to the <see cref="System.Type"/> of the <see cref="DomainObjectCollection" />.
+    /// The clone is always a stand-alone collection, even when the source was associated with a collection end point.
     /// </para>
     /// <para>
-    /// The clone is always a stand-alone collection, even when the source was associated with a collection end point.
+    /// The <see cref="DomainObjectCollection"/> returned by this method contains the same <see cref="DomainObject"/> instances as the original
+    /// collection, it does not reflect any changes made to the original collection after cloning, and changes made to it are not reflected upon
+    /// the original collection.
     /// </para>
     /// </remarks>
     public virtual DomainObjectCollection Clone (bool makeCloneReadOnly)
     {
-      var clone = new DomainObjectCollectionFactory ().CreateCollection (GetType (), _dataStrategy, RequiredItemType);
+      IEnumerable<DomainObject> contents = _dataStrategy;
+      var clone = new DomainObjectCollectionFactory ().CreateCollection (GetType (), contents, RequiredItemType);
 
       Assertion.IsTrue (clone._dataStrategy != _dataStrategy);
-      Assertion.IsTrue (clone._dataStrategy.GetUndecoratedDataStore () != _dataStrategy);
       Assertion.IsTrue (clone.RequiredItemType == RequiredItemType);
 
       clone.SetIsReadOnly (makeCloneReadOnly);
@@ -809,14 +799,17 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns a read-only <see cref="DomainObjectCollection"/> that holds the same data as this <see cref="DomainObjectCollection"/>. The data
-    /// is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
+    /// Returns a read-only <see cref="DomainObjectCollection"/> of the same type as this collection and holding the same data as this 
+    /// <see cref="DomainObjectCollection"/>.
+    /// The data is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
     /// any changes made to the original.
     /// </summary>
     /// <returns>A read-only <see cref="DomainObjectCollection"/> that holds the same data as this <see cref="DomainObjectCollection"/>.</returns>
     public DomainObjectCollection AsReadOnly ()
     {
-      var newCollection = new DomainObjectCollection (new ReadOnlyCollectionDataDecorator (_dataStrategy));
+      var factory = new DomainObjectCollectionFactory ();
+
+      var newCollection = factory.CreateCollection (GetType(), new ReadOnlyCollectionDataDecorator (_dataStrategy));
       newCollection.SetIsReadOnly (true);
       return newCollection;
     }
@@ -1074,6 +1067,24 @@ namespace Remotion.Data.DomainObjects
     {
       throw new NotImplementedException ();
     }
+
+    // ReSharper disable UnusedParameter.Local
+    [Obsolete (
+       "This constructor has been removed. Use the constructor taking IEnumerable<DomainObject> (or Clone) to copy a collection, use AsReadOnly to "
+       + "get a read-only version of a collection.", true)]
+    public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This constructor has been removed. Use the constructor taking IEnumerable<DomainObject> (or Clone) to copy a collection, use AsReadOnly to "
+        + "get a read-only version of a collection.", true)]
+    public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, Type requiredItemType, bool makeCollectionReadOnly)
+    {
+      throw new NotImplementedException ();
+    }
+    // ReSharper restore UnusedParameter.Local
 
     #endregion
   }

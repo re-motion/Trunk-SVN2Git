@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -84,24 +83,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialization_WithIEnumerable_RequiredItemType ()
     {
-      var list = new ObjectList<OrderItem> (new OrderItem[0], false);
+      var list = new ObjectList<OrderItem> (new OrderItem[0]);
       Assert.That (list.RequiredItemType, Is.SameAs (typeof (OrderItem)));
     }
 
     [Test]
-    public void Initialization_WithIEnumerable_ReadOnlyFalse ()
+    public void Initialization_WithIEnumerable ()
     {
-      var list = new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }, false);
+      var list = new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 });
       Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }));
       Assert.That (list.IsReadOnly, Is.False);
-    }
-
-    [Test]
-    public void Initialization_WithIEnumerable_ReadOnlyTrue ()
-    {
-      var list = new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }, true);
-      Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }));
-      Assert.That (list.IsReadOnly, Is.True);
     }
 
     [Test]
@@ -139,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
     public void IList_InsertThrowsIfReadOnly ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> (new ObjectList<OrderItem> (), true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
       readOnlyList.Insert (0, _orderItem2);
     }
 
@@ -188,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot modify a read-only collection.")]
     public void IList_ItemSetThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>)_orderItemListAsIList, true);
+      IList<OrderItem> readOnlyList = ((ObjectList<OrderItem>)_orderItemListAsIList).AsReadOnly();
       readOnlyList[0] = null;
     }
 
@@ -207,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot add an item to a read-only collection.")]
     public void IList_AddThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemListAsIList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
       readOnlyList.Add (_orderItem1);
     }
 
@@ -281,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void IList_RemoveThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemListAsIList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
       readOnlyList.Remove (_orderItem1);
     }
 
@@ -289,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void IList_RemoveInexistentThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemListAsIList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
       readOnlyList.Remove (_orderItem3);
     }
 

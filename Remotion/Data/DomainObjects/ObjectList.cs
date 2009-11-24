@@ -46,17 +46,18 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ObjectList{T}"/> class with a given <see cref="IDomainObjectCollectionData"/>
+    /// Initializes a new instance of the <see cref="DomainObjectCollection"/> class with a given <see cref="IDomainObjectCollectionData"/>
     /// data storage strategy. The <see cref="IDomainObjectCollectionData"/>'s <see cref="IDomainObjectCollectionData.RequiredItemType"/>
     /// must be set to <typeparamref name="T"/>.
     /// </summary>
     /// <param name="dataStrategy">The <see cref="IDomainObjectCollectionData"/> instance to use as the data storage strategy.</param>
     /// <remarks>
     /// <para>
-    /// Derived classes must support this constructor.
+    /// Derived classes must provide a constructor with the same signature. (The constructor is used for cloning as well as by relation end points.)
     /// </para>
     /// <para>
-    /// The given <paramref name="dataStrategy"/> is directly used, so it should perform any argument checks and event raising on its own.
+    /// Most members of <see cref="DomainObjectCollection"/> directly delegate to the given <paramref name="dataStrategy"/>, so it should 
+    /// any special argument checks and event raising must be performed by the <paramref name="dataStrategy"/> itself.
     /// </para>
     /// </remarks>
     public ObjectList (IDomainObjectCollectionData dataStrategy)
@@ -64,13 +65,12 @@ namespace Remotion.Data.DomainObjects
     {
     }
 
-    public ObjectList (ObjectList<T> collection, bool isCollectionReadOnly)
-      : base (collection, isCollectionReadOnly)
-    {
-    }
-
-    public ObjectList (IEnumerable<T> collection, bool isCollectionReadOnly)
-      : base (collection.Cast<DomainObject>(), typeof (T), isCollectionReadOnly)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObjectList{T}"/> class with a given initial contents.
+    /// </summary>
+    /// <param name="domainObjects">The domain objects to use as the initial contents of the <see cref="ObjectList{T}"/>.</param>
+    public ObjectList (IEnumerable<T> domainObjects)
+        : base (domainObjects.Cast<DomainObject>(), typeof (T))
     {
     }
 
@@ -103,6 +103,17 @@ namespace Remotion.Data.DomainObjects
     public new ObjectList<T> Clone (bool makeCloneReadOnly)
     {
       return (ObjectList<T>) base.Clone (makeCloneReadOnly);
+    }
+
+    /// <summary>
+    /// Returns a read-only <see cref="ObjectList{T}"/> that holds the same data as this <see cref="DomainObjectCollection"/>. The data
+    /// is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
+    /// any changes made to the original.
+    /// </summary>
+    /// <returns>A read-only <see cref="ObjectList{T}"/> that holds the same data as this <see cref="DomainObjectCollection"/>.</returns>
+    public new ObjectList<T> AsReadOnly ()
+    {
+      return (ObjectList<T>) base.AsReadOnly ();
     }
 
     public void Add (T item)
@@ -141,6 +152,20 @@ namespace Remotion.Data.DomainObjects
     public T[] ToArray()
     {
       return ArrayUtility.Convert (this);
+    }
+
+    [Obsolete ("This constructor has been removed. Use the constructor taking IEnumerable<T> (or Clone) to copy a collection, use AsReadOnly to "
+    + "get a read-only version of a collection.", true)]
+    public ObjectList (ObjectList<T> collection, bool isCollectionReadOnly)
+      : base (collection, isCollectionReadOnly)
+    {
+    }
+
+    [Obsolete ("This constructor has been removed. Use the constructor taking IEnumerable<T> (or Clone) to copy a collection, use AsReadOnly to "
+        + "get a read-only version of a collection.", true)]
+    public ObjectList (IEnumerable<T> collection, bool isCollectionReadOnly)
+      : base (collection.Cast<DomainObject> (), typeof (T), isCollectionReadOnly)
+    {
     }
   }
 }

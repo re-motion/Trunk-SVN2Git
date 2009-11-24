@@ -127,7 +127,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [ObjectBinding (ReadOnly = true)]
     public virtual ObjectList<Permission> Permissions
     {
-      get { return new ObjectList<Permission> (CurrentProperty.GetValue<ObjectList<Permission>>(), true); }
+      get { return CurrentProperty.GetValue<ObjectList<Permission>> ().AsReadOnly (); }
     }
 
     private ObjectList<Permission> GetPermissions ()

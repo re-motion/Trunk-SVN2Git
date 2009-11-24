@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException))]
     public void Add_ReadOnly_Throws ()
     {
-      new DomainObjectCollection (_collection, true).Add (_customer3NotInCollection);
+      _collection.AsReadOnly().Add (_customer3NotInCollection);
     }
 
     [Test]
@@ -218,13 +218,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void AddToReadOnlyCollection ()
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot add items to a read-only collection.")]
+    public void AddRange_ToReadOnlyCollection ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var readOnlyCollection = new DomainObjectCollection (order.OrderItems, true);
-
-      readOnlyCollection.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem3));
+      _collection.AsReadOnly ().AddRange (new[] { _customer3NotInCollection });
     }
 
     [Test]
@@ -244,8 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var collection = new DomainObjectCollection (typeof (Customer));
 
-      var eventReceiver = new DomainObjectCollectionEventReceiver (
-          collection, true);
+      var eventReceiver = new DomainObjectCollectionEventReceiver (collection, true);
 
       try
       {
@@ -265,8 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CancelClearEvents ()
     {
-      var eventReceiver = new DomainObjectCollectionEventReceiver (
-          _collection, true);
+      var eventReceiver = new DomainObjectCollectionEventReceiver (_collection, true);
 
       try
       {
@@ -286,8 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CancelRemoveEvents ()
     {
-      var eventReceiver = new DomainObjectCollectionEventReceiver (
-          _collection, true);
+      var eventReceiver = new DomainObjectCollectionEventReceiver (_collection, true);
 
       try
       {
@@ -431,10 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException))]
     public void ClearReadOnlyCollection ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var readOnlyCollection = new DomainObjectCollection (order.OrderItems, true);
-
-      readOnlyCollection.Clear();
+      _collection.AsReadOnly().Clear();
     }
 
     [Test]
@@ -469,6 +460,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void Clone_DecouplesFromOriginalDataStore ()
+    {
+      var clonedCollection = _collection.Clone ();
+
+      _collection.Remove (_customer1);
+      clonedCollection.Add (_customer3NotInCollection);
+
+      Assert.That (_collection, Is.EqualTo (new[] { _customer2 }));
+      Assert.That (clonedCollection, Is.EqualTo (new[] { _customer1, _customer2, _customer3NotInCollection }));
+    }
+
+    [Test]
     public void Clone_AssociatedCollection ()
     {
       OrderCollection associatedCollection = CreateAssociatedCollection();
@@ -492,7 +495,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Clone_MakeReadOnly_False ()
     {
-      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var readOnlyCollection = _collection.AsReadOnly();
       DomainObjectCollection clonedCollection = readOnlyCollection.Clone (false);
 
       Assert.That (clonedCollection, Is.EqualTo (readOnlyCollection));
@@ -511,7 +514,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Clone_ReadOnlyCollection ()
     {
-      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var readOnlyCollection = _collection.AsReadOnly ();
 
       DomainObjectCollection clone = readOnlyCollection.Clone();
 
@@ -710,32 +713,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       IList list = _collection;
       Assert.That (list.Contains (new object ()), Is.False);
-    }
-
-    [Test]
-    public void CopyConstructorWithDerivedType ()
-    {
-      Company company = Company.GetObject (DomainObjectIDs.Company1);
-      Partner partner = Partner.GetObject (DomainObjectIDs.Partner1);
-      Distributor distributor = Distributor.GetObject (DomainObjectIDs.Distributor2);
-
-      var domainObjectCollection1 = new DomainObjectCollection (typeof (Company));
-      domainObjectCollection1.Add (company);
-      domainObjectCollection1.Add (partner);
-      domainObjectCollection1.Add (distributor);
-
-      var domainObjectCollection2 = new DomainObjectCollection (
-          domainObjectCollection1, true);
-
-      Assert.That (domainObjectCollection2.Count, Is.EqualTo (3), "Count");
-
-      CheckKeys (
-          new[] { DomainObjectIDs.Company1, DomainObjectIDs.Partner1, DomainObjectIDs.Distributor2 },
-          domainObjectCollection2);
-
-      Assert.That (domainObjectCollection2[DomainObjectIDs.Company1], Is.SameAs (company), "Company");
-      Assert.That (domainObjectCollection2[DomainObjectIDs.Partner1], Is.SameAs (partner), "Partner");
-      Assert.That (domainObjectCollection2[DomainObjectIDs.Distributor2], Is.SameAs (distributor), "Distributor");
     }
 
     [Test]
@@ -1137,9 +1114,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (new DomainObjectCollection(), null);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (new DomainObjectCollection (typeof (Order)), typeof (Order));
-      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (new DomainObjectCollection (_collection, true), typeof (Customer));
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (
-          new DomainObjectCollection (new[] { _customer1, _customer2 }, typeof (Customer), false), typeof (Customer));
+          new DomainObjectCollection (new[] { _customer1, _customer2 }, typeof (Customer)), typeof (Customer));
     }
 
     [Test]
@@ -1153,12 +1129,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void Initialization_WithEnumerable ()
+    {
+      var collection = new DomainObjectCollection (new[] { _customer1, _customer2 }, typeof (Customer));
+      
+      Assert.That (collection, Is.EqualTo (new[] { _customer1, _customer2 }));
+      Assert.That (collection.RequiredItemType, Is.SameAs (typeof (Customer)));
+      Assert.That (collection.IsReadOnly, Is.False);
+
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Customer));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentItemTypeException), ExpectedMessage =
         "Item 0 of argument domainObjects has the type Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer instead of "
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.")]
     public void Initialization_WithEnumerable_ChecksItems ()
     {
-      new DomainObjectCollection (new[] { _customer1 }, typeof (Order), false);
+      new DomainObjectCollection (new[] { _customer1 }, typeof (Order));
     }
 
     [Test]
@@ -1185,7 +1173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException))]
     public void Insert_ReadOnly_Throws ()
     {
-      new DomainObjectCollection (_collection, true).Insert (0, _customer3NotInCollection);
+      _collection.AsReadOnly().Insert (0, _customer3NotInCollection);
     }
 
     [Test]
@@ -1289,10 +1277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException))]
     public void RemoveFromReadOnlyCollection ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      var readOnlyCollection = new DomainObjectCollection (order.OrderItems, true);
-
-      readOnlyCollection.Remove (DomainObjectIDs.OrderItem1);
+      _collection.AsReadOnly().Remove (DomainObjectIDs.Customer1);
     }
 
     [Test]
@@ -1478,6 +1463,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void AsReadOnly_DerivedType ()
+    {
+      var collection = new OrderCollection ();
+      var readOnlyCollection = collection.AsReadOnly ();
+
+      Assert.That (readOnlyCollection, Is.InstanceOfType (typeof (OrderCollection)));
+    }
+
+    [Test]
     public void ReplaceItems_Content ()
     {
       var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
@@ -1502,7 +1496,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ReplaceItems_ReadOnlyness_Kept ()
     {
-      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      var readOnlyCollection = _collection.Clone (true);
       var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
       ReplaceItems (readOnlyCollection, sourceCollection);
 

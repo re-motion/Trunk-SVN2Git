@@ -144,7 +144,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
           foreach (var propertyReference in StatePropertyReferences)
             stateProperties.Add (propertyReference.StateProperty);
 
-          _stateProperties = new ObjectList<StatePropertyDefinition> (stateProperties, true);
+          _stateProperties = stateProperties.AsReadOnly();
         }
 
         return _stateProperties;
@@ -167,7 +167,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
           foreach (var accessTypeReference in AccessTypeReferences)
             accessTypes.Add (accessTypeReference.AccessType);
 
-          _accessTypes = new ObjectList<AccessTypeDefinition> (accessTypes, true);
+          _accessTypes = accessTypes.AsReadOnly();
         }
 
         return _accessTypes;

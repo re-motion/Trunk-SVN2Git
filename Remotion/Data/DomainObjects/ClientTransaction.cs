@@ -925,7 +925,7 @@ public abstract class ClientTransaction
         foreach (DataContainer additionalDataContainer in additionalDataContainers)
           additionalDataContainer.RegisterLoadedDataContainer (this);
 
-        var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject), null, true);
+        var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject), null).AsReadOnly();
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
         for (int i = 0; i < objectIDs.Length; i++)
@@ -1132,7 +1132,7 @@ public abstract class ClientTransaction
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
       Assertion.IsTrue (DataManager.DataContainerMap[id] == dataContainer);
 
-      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, null, true);
+      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, null).AsReadOnly();
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
       return dataContainer.DomainObject;
@@ -1173,7 +1173,7 @@ public abstract class ClientTransaction
       {
         relatedDataContainer.RegisterLoadedDataContainer (this);
 
-        var loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, null, true);
+        var loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, null).AsReadOnly();
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
         return relatedDataContainer.DomainObject;
@@ -1221,7 +1221,7 @@ public abstract class ClientTransaction
 
       var domainObjects = _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, mergedObjects);
 
-      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject), null, true);
+      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject), null).AsReadOnly();
       OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
       return domainObjects;
@@ -1274,7 +1274,7 @@ public abstract class ClientTransaction
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
       Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] == dataContainer);
 
-      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, null, true);
+      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, null).AsReadOnly();
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
     }
   }
@@ -1470,7 +1470,7 @@ public abstract class ClientTransaction
 
       clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised);
       
-      OnCommitting (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionCommittingEventNotRaised, null, true)));
+      OnCommitting (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionCommittingEventNotRaised, null).AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1532,7 +1532,7 @@ public abstract class ClientTransaction
 
       clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
 
-      OnRollingBack (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionRollingBackEventNotRaised, null, true)));
+      OnRollingBack (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionRollingBackEventNotRaised, null).AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
