@@ -1446,6 +1446,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void AsReadOnly ()
+    {
+      var readOnlyCollection = _collection.AsReadOnly ();
+
+      Assert.That (readOnlyCollection.IsReadOnly, Is.True);
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
+    }
+
+    [Test]
+    public void AsReadOnly_ResultReflectsChangesToOriginalCollection ()
+    {
+      var readOnlyCollection = _collection.AsReadOnly ();
+
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
+
+      _collection.Add (_customer3NotInCollection);
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 , _customer3NotInCollection}));
+    }
+
+    [Test]
+    public void AsReadOnly_DecoratorChain ()
+    {
+      var readOnlyCollection = _collection.AsReadOnly ();
+
+      var originalData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_collection);
+      var readOnlyData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ReadOnlyCollectionDataDecorator> (readOnlyCollection);
+
+      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (readOnlyData);
+      Assert.That (wrappedData, Is.SameAs (originalData));
+    }
+
+    [Test]
     public void ReplaceItems_Content ()
     {
       var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };

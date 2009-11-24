@@ -809,6 +809,19 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Returns a read-only <see cref="DomainObjectCollection"/> that holds the same data as this <see cref="DomainObjectCollection"/>. The data
+    /// is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
+    /// any changes made to the original.
+    /// </summary>
+    /// <returns>A read-only <see cref="DomainObjectCollection"/> that holds the same data as this <see cref="DomainObjectCollection"/>.</returns>
+    public DomainObjectCollection AsReadOnly ()
+    {
+      var newCollection = new DomainObjectCollection (new ReadOnlyCollectionDataDecorator (_dataStrategy));
+      newCollection.SetIsReadOnly (true);
+      return newCollection;
+    }
+
+    /// <summary>
     /// Changes the <see cref="IsReadOnly"/> flag which controls whether this collection is read-only.
     /// </summary>
     /// <param name="isReadOnly">If set to <see langword="true"/>, the collection is made read-only. If set to <see langword="false" />,

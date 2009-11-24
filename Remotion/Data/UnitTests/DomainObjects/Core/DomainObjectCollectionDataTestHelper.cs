@@ -47,6 +47,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (T) data;
     }
 
+    public static T GetWrappedDataAndCheckType<T> (ReadOnlyCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
+    {
+      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
+      Assert.That (data, Is.InstanceOfType (typeof (T)));
+      return (T) data;
+    }
+
+
     public static T GetActualDataAndCheckType<T> (EndPointDelegatingCollectionData newCollectionDelegatingData) where T : IDomainObjectCollectionData
     {
       var data = PrivateInvoke.GetNonPublicField (newCollectionDelegatingData, "_actualData");

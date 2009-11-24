@@ -143,6 +143,7 @@
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataExtensions.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionTransformer.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IndirectDomainObjectCollectionEventRaiser.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\DomainObjectCollectionFactory.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EndPointDelegatingCollectionData.cs" />

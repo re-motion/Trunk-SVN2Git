@@ -972,7 +972,7 @@ public abstract class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-    DataContainer dataContainer = this.GetDataContainer(domainObject);
+    DataContainer dataContainer = GetDataContainer(domainObject);
     return _dataManager.RelationEndPointMap.HasRelationChanged (dataContainer);
   }
 
