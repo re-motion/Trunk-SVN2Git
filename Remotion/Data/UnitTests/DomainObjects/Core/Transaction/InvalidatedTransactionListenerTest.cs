@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       InvalidatedTransactionListener listener = new InvalidatedTransactionListener();
       MethodInfo[] methods = typeof (InvalidatedTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-      Assert.AreEqual (34, methods.Length);
+      Assert.AreEqual (28, methods.Length);
 
       foreach (MethodInfo method in methods)
       {

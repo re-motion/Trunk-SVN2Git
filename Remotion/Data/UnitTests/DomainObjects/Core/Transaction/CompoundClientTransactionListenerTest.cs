@@ -173,33 +173,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapPerformingDelete"),
           new object[] {new RelationEndPointID[0]});
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapCopyingFrom"),
-          new object[] { ClientTransactionMock.DataManager.RelationEndPointMap });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapCopyingTo"),
-          new object[] { ClientTransactionMock.DataManager.RelationEndPointMap });
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("DataManagerMarkingObjectDiscarded"),
           new object[] {order.ID});
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("DataManagerCopyingFrom"),
-          new object[] { ClientTransactionMock.DataManager });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("DataManagerCopyingTo"),
-          new object[] { ClientTransactionMock.DataManager });
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataContainerMapRegistering"), new object[] {order.InternalDataContainer});
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("DataContainerMapUnregistering"),
           new object[] {order.InternalDataContainer});
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("DataContainerMapCopyingFrom"),
-          new object[] { ClientTransactionMock.DataManager.DataContainerMap });
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("DataContainerMapCopyingTo"),
-          new object[] { ClientTransactionMock.DataManager.DataContainerMap });
     }
 
     [Test]
