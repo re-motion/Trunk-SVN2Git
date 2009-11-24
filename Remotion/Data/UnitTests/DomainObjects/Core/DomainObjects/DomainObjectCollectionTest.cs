@@ -1024,38 +1024,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void GetItemsNotInCollection ()
-    {
-      var collection2 = new DomainObjectCollection();
-      collection2.Add (_customer1);
-
-      DomainObjectCollection itemsNotInCollection = collection2.GetItemsNotInCollection (_collection);
-
-      Assert.That (itemsNotInCollection.Count, Is.EqualTo (1));
-      Assert.That (itemsNotInCollection[0], Is.SameAs (_customer2));
-    }
-
-    [Test]
-    public void GetItemsNotInCollectionBothCollectionsEmpty ()
-    {
-      var collection = new DomainObjectCollection();
-      DomainObjectCollection itemsNotInCollection = collection.GetItemsNotInCollection (new DomainObjectCollection());
-      Assert.That (itemsNotInCollection.Count, Is.EqualTo (0));
-    }
-
-    [Test]
-    public void GetItemsNotInCollectionForEmptyCollection ()
-    {
-      var collection2 = new DomainObjectCollection();
-
-      DomainObjectCollection itemsNotInCollection = collection2.GetItemsNotInCollection (_collection);
-
-      Assert.That (itemsNotInCollection.Count, Is.EqualTo (2));
-      Assert.That (itemsNotInCollection.ContainsObject (_customer1), Is.True);
-      Assert.That (itemsNotInCollection.ContainsObject (_customer2), Is.True);
-    }
-
-    [Test]
     // integration test
     public void GetNonNotifyingData_DoesNotRaiseEvents ()
     {

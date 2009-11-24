@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -29,6 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private DomainObjectCollection _collection;
     private Customer _customer1;
     private Customer _customer2;
+    private DomainObject _customer1FromOtherTransaction;
 
     public override void SetUp ()
     {
@@ -36,8 +38,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
       _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
+      _customer1FromOtherTransaction = new ClientTransactionMock ().GetObject (_customer1.ID);
 
       _collection = new DomainObjectCollection (typeof (Customer)) { _customer1, _customer2 };
+    }
+
+    [Test]
+    public void CheckNotReadOnly_NotReadOnly ()
+    {
+      _collection.CheckNotReadOnly ("Test");
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Test")]
+    public void CheckNotReadOnly_ReadOnly ()
+    {
+      var readOnlyCollection = new DomainObjectCollection (_collection, true);
+      readOnlyCollection.CheckNotReadOnly ("Test");
     }
 
     [Test]
@@ -58,13 +75,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void UnionWith_WithIdenticalID_AndDifferentReference ()
     {
-      var customer1FromOtherTransaction = new ClientTransactionMock ().GetObject (_customer1.ID);
       var secondCollection = new DomainObjectCollection ();
-      secondCollection.Add (customer1FromOtherTransaction);
+      secondCollection.Add (_customer1FromOtherTransaction);
 
       secondCollection.UnionWith (_collection);
 
-      Assert.That (secondCollection, Is.EqualTo (new[] { customer1FromOtherTransaction, _customer2 }));
+      Assert.That (secondCollection, Is.EqualTo (new[] { _customer1FromOtherTransaction, _customer2 }));
     }
 
     [Test]
@@ -83,22 +99,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var readOnlyCollection = new DomainObjectCollection (_collection, true);
       readOnlyCollection.UnionWith (_collection);
-
-      Assert.Fail ();
     }
 
     [Test]
-    public void CheckNotReadOnly_NotReadOnly ()
+    public void GetItemsExcept ()
     {
-      _collection.CheckNotReadOnly ("Test");
+      var exceptedDomainObjects = new DomainObjectCollection { _customer1 };
+
+      var itemsNotInCollection = _collection.GetItemsExcept (exceptedDomainObjects);
+
+      Assert.That (itemsNotInCollection.ToArray(), Is.EqualTo (new[] { _customer2 }));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Test")]
-    public void CheckNotReadOnly_ReadOnly ()
+    public void GetItemsExcept_BasedOnID ()
     {
-      var readOnlyCollection = new DomainObjectCollection (_collection, true);
-      readOnlyCollection.CheckNotReadOnly ("Test");
+      var exceptedDomainObjects = new DomainObjectCollection { _customer1FromOtherTransaction };
+
+      var itemsNotInCollection = _collection.GetItemsExcept (exceptedDomainObjects);
+
+      Assert.That (itemsNotInCollection.ToArray (), Is.EqualTo (new[] { _customer2 }));
     }
   }
 }

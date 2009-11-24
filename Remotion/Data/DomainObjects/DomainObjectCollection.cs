@@ -356,33 +356,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns all items of a given <see cref="DomainObjectCollection"/> that are not part of the <see cref="DomainObjectCollection" />.
-    /// </summary>
-    /// <remarks>
-    /// <para>The method does not modify the given <see cref="DomainObjectCollection"/> nor the <see cref="DomainObjectCollection" /> itself.</para>
-    /// <para>To check if an item is already part of the <see cref="DomainObjectCollection" /> its <see cref="DomainObject.ID"/> 
-    /// and the item reference are considered. 
-    /// Therefore <see cref="GetItemsNotInCollection"/> does return items with the same ID but are from different <see cref="ClientTransaction"/>s.</para>
-    /// </remarks>
-    /// <param name="domainObjects">The collection to evaluate. Must not be <see langword="null"/>.</param>
-    /// <returns>A <see cref="DomainObjectCollection"/> with all items of <paramref name="domainObjects"/> that are not part of the collection.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    public DomainObjectCollection GetItemsNotInCollection (DomainObjectCollection domainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-
-      var itemsNotInCollection = new DomainObjectCollection();
-
-      foreach (DomainObject domainObject in domainObjects)
-      {
-        if (!ContainsObject (domainObject))
-          itemsNotInCollection.Add (domainObject);
-      }
-
-      return itemsNotInCollection;
-    }
-
-    /// <summary>
     /// Determines whether the <see cref="DomainObjectCollection"/> contains a reference to the specified <paramref name="domainObject"/>.
     /// </summary>
     /// <param name="domainObject">The <see cref="DomainObject"/> to locate in the <see cref="DomainObjectCollection"/>. Must not be <see langword="null"/>.</param>
@@ -1077,6 +1050,14 @@ namespace Remotion.Data.DomainObjects
 
     [Obsolete ("This method has been renamed and moved. Use UnionWith (extension method declared on DomainObjectCollectionExtensions) instead.", true)]
     public void Combine (DomainObjectCollection domainObjects)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This method has been renamed and moved. Use GetItemsExcept (extension method declared on DomainObjectCollectionExtensions) instead."
+        + "Note that the comparison is now based on IDs and that the order of arguments has been reversed for clarity.", true)]
+    public DomainObjectCollection GetItemsNotInCollection (DomainObjectCollection domainObjects)
     {
       throw new NotImplementedException ();
     }

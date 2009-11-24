@@ -1447,11 +1447,11 @@ public abstract class ClientTransaction
     var domainObjectComittingEventRaised = new DomainObjectCollection ();
     var clientTransactionCommittingEventRaised = new DomainObjectCollection ();
 
-    DomainObjectCollection clientTransactionCommittingEventNotRaised;
+    IEnumerable<DomainObject> clientTransactionCommittingEventNotRaised;
     do
     {
-      DomainObjectCollection domainObjectCommittingEventNotRaised = domainObjectComittingEventRaised.GetItemsNotInCollection (changedDomainObjects);
-      while (domainObjectCommittingEventNotRaised.Count > 0)
+      var domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised);
+      while (domainObjectCommittingEventNotRaised.Any())
       {
         foreach (DomainObject domainObject in domainObjectCommittingEventNotRaised)
         {
@@ -1465,12 +1465,12 @@ public abstract class ClientTransaction
         }
 
         changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-        domainObjectCommittingEventNotRaised = domainObjectComittingEventRaised.GetItemsNotInCollection (changedDomainObjects);
+        domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised);
       }
 
-      clientTransactionCommittingEventNotRaised = clientTransactionCommittingEventRaised.GetItemsNotInCollection (changedDomainObjects);
+      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised);
       
-      OnCommitting (new ClientTransactionEventArgs (clientTransactionCommittingEventNotRaised.Clone (true)));
+      OnCommitting (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionCommittingEventNotRaised, null, true)));
       foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1478,8 +1478,8 @@ public abstract class ClientTransaction
       }
 
       changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-      clientTransactionCommittingEventNotRaised = clientTransactionCommittingEventRaised.GetItemsNotInCollection (changedDomainObjects);
-    } while (clientTransactionCommittingEventNotRaised.Count > 0);
+      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised);
+    } while (clientTransactionCommittingEventNotRaised.Any());
   }
 
   private void EndCommit (DomainObjectCollection changedDomainObjects)
@@ -1509,11 +1509,11 @@ public abstract class ClientTransaction
     var domainObjectRollingBackEventRaised = new DomainObjectCollection ();
     var clientTransactionRollingBackEventRaised = new DomainObjectCollection ();
 
-    DomainObjectCollection clientTransactionRollingBackEventNotRaised;
+    List<DomainObject> clientTransactionRollingBackEventNotRaised;
     do
     {
-      DomainObjectCollection domainObjectRollingBackEventNotRaised = domainObjectRollingBackEventRaised.GetItemsNotInCollection (changedDomainObjects);
-      while (domainObjectRollingBackEventNotRaised.Count > 0)
+      var domainObjectRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectRollingBackEventRaised).ToList();
+      while (domainObjectRollingBackEventNotRaised.Any())
       {
         foreach (DomainObject domainObject in domainObjectRollingBackEventNotRaised)
         {
@@ -1527,12 +1527,12 @@ public abstract class ClientTransaction
         }
 
         changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-        domainObjectRollingBackEventNotRaised = domainObjectRollingBackEventRaised.GetItemsNotInCollection (changedDomainObjects);
+        domainObjectRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectRollingBackEventRaised).ToList ();
       }
 
-      clientTransactionRollingBackEventNotRaised = clientTransactionRollingBackEventRaised.GetItemsNotInCollection (changedDomainObjects);
+      clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
 
-      OnRollingBack (new ClientTransactionEventArgs (clientTransactionRollingBackEventNotRaised.Clone (true)));
+      OnRollingBack (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionRollingBackEventNotRaised, null, true)));
       foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1540,8 +1540,8 @@ public abstract class ClientTransaction
       }
 
       changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-      clientTransactionRollingBackEventNotRaised = clientTransactionRollingBackEventRaised.GetItemsNotInCollection (changedDomainObjects);
-    } while (clientTransactionRollingBackEventNotRaised.Count > 0);
+      clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
+    } while (clientTransactionRollingBackEventNotRaised.Any());
   }
 
   private void EndRollback (DomainObjectCollection changedDomainObjects)

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Utilities;
 
@@ -33,16 +34,16 @@ namespace Remotion.Data.DomainObjects
     /// <param name="collection">The collection to add items to.</param>
     /// <param name="sourceCollection">The collection to add items from. Must not be <see langword="null"/>.</param>
     /// <remarks>
+    /// <para>
     /// To check if an item is already part of the <see cref="DomainObject.ID"/> its <see cref="DomainObject"/> is used.
     /// <see cref="DomainObject.ID"/> does not check if the item references are identical. In case the two <see cref="DomainObject"/> contain
     /// different items with the same <see cref="DomainObjectCollection"/>, <see cref="System"/> will thus ignore those items.
+    /// </para>
+    /// <para>
+    /// This method calls <see cref="DomainObjectCollection.AddRange"/> and might throw any of the exceptions that can be thrown by 
+    /// <see cref="DomainObjectCollection.AddRange"/>-
+    /// </para>
     /// </remarks>
-    /// <exception cref="Remotion.Data.DomainObjects.DataManagement"><paramref name="sourceCollection"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ClientTransaction">
-    /// 	<paramref name="sourceCollection"/> contains a <see cref="DomainObjectCollection"/> that belongs to a <see cref="UnionWith"/> that is different from
-    /// the <see cref="UnionWith"/> managing this collection.
-    /// This applies only to <see cref="UnionWith"/>s that represent a relation.
-    /// </exception>
     public static void UnionWith (this DomainObjectCollection collection, DomainObjectCollection sourceCollection)
     {
       ArgumentUtility.CheckNotNull ("collection", collection);
@@ -51,6 +52,30 @@ namespace Remotion.Data.DomainObjects
       collection.CheckNotReadOnly ("A read-only collection cannot be combined with another collection.");
 
       collection.AddRange (sourceCollection.Cast<DomainObject> ().Where (obj => !collection.Contains (obj.ID)));
+    }
+
+    /// <summary>
+    /// Returns all items of a given <see cref="DomainObjectCollection"/> that are not part of another <see cref="DomainObjectCollection"/>. The
+    /// comparison is made by <see cref="DomainObject.ID"/>, not by reference.
+    /// </summary>
+    /// <param name="collection">The collection to return items from.</param>
+    /// <param name="exceptedDomainObjects">A collection containing items that should not be returned.</param>
+    /// <returns>
+    /// An enumeration of all items from <paramref name="collection"/> that are not part of <paramref name="exceptedDomainObjects"/>.
+    /// </returns>
+    /// <remarks>
+    /// 	<para>The method does not modify the given <see cref="DomainObjectCollection"/> istances.</para>
+    /// </remarks>
+    public static IEnumerable<DomainObject> GetItemsExcept (this DomainObjectCollection collection, DomainObjectCollection exceptedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+      ArgumentUtility.CheckNotNull ("exceptedDomainObjects", exceptedDomainObjects);
+
+      foreach (DomainObject domainObject in collection)
+      {
+        if (!exceptedDomainObjects.Contains (domainObject.ID))
+          yield return domainObject;
+      }
     }
 
     /// <summary>
