@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           ID, 
           _oppositeDomainObjects.Cast<DomainObject>());
 
-      clone._oppositeDomainObjects.ReplaceItems (_oppositeDomainObjects);
+      Assertion.DebugAssert (clone._oppositeDomainObjects.SequenceEqual (_oppositeDomainObjects.Cast<DomainObject>()));
       clone._originalOppositeDomainObjectsContents.ReplaceItems (_originalOppositeDomainObjectsContents);
       clone._hasBeenTouched = _hasBeenTouched;
       return clone;
@@ -115,9 +115,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
       Assertion.IsTrue (Definition == sourceCollectionEndPoint.Definition);
 
-      var touchedBefore = _hasBeenTouched;
-      _oppositeDomainObjects.ReplaceItems (sourceCollectionEndPoint._oppositeDomainObjects);
-      _hasBeenTouched = touchedBefore || sourceCollectionEndPoint._hasBeenTouched || HasChanged;
+      _dataStore.ReplaceContents (sourceCollectionEndPoint._dataStore);
+      _hasBeenTouched = _hasBeenTouched || sourceCollectionEndPoint._hasBeenTouched || HasChanged;
     }
 
     public override void Commit ()
