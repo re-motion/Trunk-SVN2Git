@@ -140,6 +140,8 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
+    <Compile Include="DomainObjectCollection.EventRaiser.cs" />
+    <Compile Include="DomainObjectCollection.Transformer.cs" />
     <Compile Include="DataManagement\ICollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="DomainObjectCollection.IList.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataExtensions.cs" />

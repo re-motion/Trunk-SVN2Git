@@ -108,37 +108,8 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  public partial class DomainObjectCollection : ICloneable, IList, IDomainObjectCollectionEventRaiser
+  public partial class DomainObjectCollection : ICloneable, IList
   {
-    /// <summary>
-    /// Implements <see cref="IDomainObjectCollectionTransformer"/> for <see cref="DomainObjectCollection"/>.
-    /// </summary>
-    private class Transformer : IDomainObjectCollectionTransformer
-    {
-      public Transformer (DomainObjectCollection owningCollection)
-      {
-        Collection = owningCollection;
-      }
-
-      public DomainObjectCollection Collection { get; private set; }
-
-      public void TransformToAssociated (ICollectionEndPoint endPoint)
-      {
-        var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData ();
-        Assertion.IsTrue (endPointDelegatingCollectionData.RequiredItemType == Collection.RequiredItemType);
-
-        Collection._dataStrategy = endPointDelegatingCollectionData;
-      }
-
-      public void TransformToStandAlone ()
-      {
-        Assertion.IsNotNull (Collection.AssociatedEndPoint);
-
-        var standAloneDataStore = new DomainObjectCollectionData (Collection._dataStrategy.GetUndecoratedDataStore ()); // copy data
-        Collection._dataStrategy = CreateDataStrategyForStandAloneCollection (standAloneDataStore, Collection.RequiredItemType, Collection);
-      }
-    }
-
     /// <summary>
     /// Creates an <see cref="IDomainObjectCollectionData"/> object for stand-alone collections. The returned object takes care of argument checks,
     /// required item checks, and event raising.
@@ -147,7 +118,10 @@ namespace Remotion.Data.DomainObjects
     /// <param name="requiredItemType">The required item type to use for the collection.</param>
     /// <param name="eventRaiser">The event raiser to use for raising events.</param>
     /// <returns>An instance of <see cref="IDomainObjectCollectionData"/> that can be used for stand-alone collections.</returns>
-    public static IDomainObjectCollectionData CreateDataStrategyForStandAloneCollection (IDomainObjectCollectionData dataStore, Type requiredItemType, IDomainObjectCollectionEventRaiser eventRaiser)
+    public static IDomainObjectCollectionData CreateDataStrategyForStandAloneCollection (
+        IDomainObjectCollectionData dataStore, 
+        Type requiredItemType, 
+        IDomainObjectCollectionEventRaiser eventRaiser)
     {
       ArgumentUtility.CheckNotNull ("dataStore", dataStore);
       ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
@@ -277,6 +251,20 @@ namespace Remotion.Data.DomainObjects
     public ICollectionEndPoint AssociatedEndPoint
     {
       get { return _dataStrategy.AssociatedEndPoint; }
+    }
+
+    /// <summary>
+    /// Gets an enumerator for iterating over the items in this <see cref="DomainObjectCollection"/>.
+    /// </summary>
+    /// <returns>An enumerator for iterating over the items in this collection.</returns>
+    public IEnumerator<DomainObject> GetEnumerator ()
+    {
+      return _dataStrategy.GetEnumerator ();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
     }
 
     /// <summary>
@@ -549,20 +537,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets an enumerator for iterating over the items in this <see cref="DomainObjectCollection"/>.
-    /// </summary>
-    /// <returns>An enumerator for iterating over the items in this collection.</returns>
-    public IEnumerator<DomainObject> GetEnumerator ()
-    {
-      return _dataStrategy.GetEnumerator ();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator ();
-    }
-
-    /// <summary>
     /// Creates a shallow copy of this collection, i.e. a collection of the same type and with the same contents as this collection. 
     /// No <see cref="Adding"/>, <see cref="Added"/>, <see cref="Removing"/>, or <see cref="Removed"/> 
     /// events are raised during the process of cloning.
@@ -819,40 +793,6 @@ namespace Remotion.Data.DomainObjects
       Added += source.Added;
       Removing += source.Removing;
       Removed += source.Removed;
-    }
-
-    void IDomainObjectCollectionEventRaiser.BeginAdd (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      OnAdding (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    void IDomainObjectCollectionEventRaiser.EndAdd (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      OnAdded (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    void IDomainObjectCollectionEventRaiser.BeginRemove (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      OnRemoving (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    void IDomainObjectCollectionEventRaiser.EndRemove (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      OnRemoved (new DomainObjectCollectionChangeEventArgs (domainObject));
-    }
-
-    void IDomainObjectCollectionEventRaiser.BeginDelete ()
-    {
-      OnDeleting ();
-    }
-
-    void IDomainObjectCollectionEventRaiser.EndDelete ()
-    {
-      OnDeleted ();
     }
   }
 }
