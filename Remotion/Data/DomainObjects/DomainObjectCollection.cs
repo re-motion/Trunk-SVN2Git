@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  public class DomainObjectCollection : ICloneable, IList, IDomainObjectCollectionEventRaiser
+  public partial class DomainObjectCollection : ICloneable, IList, IDomainObjectCollectionEventRaiser
   {
     /// <summary>
     /// Implements <see cref="IDomainObjectCollectionTransformer"/> for <see cref="DomainObjectCollection"/>.
@@ -312,17 +312,6 @@ namespace Remotion.Data.DomainObjects
       return _dataStrategy.ContainsObjectID (id);
     }
 
-    bool IList.Contains (object value)
-    {
-      if (value is DomainObject)
-        return ContainsObject ((DomainObject) value);
-
-      if (value is ObjectID)
-        return Contains ((ObjectID) value);
-
-      return false;
-    }
-
     /// <summary>
     /// Returns the zero-based index of a given <see cref="DomainObject"/> in the collection.
     /// </summary>
@@ -358,17 +347,6 @@ namespace Remotion.Data.DomainObjects
         return -1;
     }
 
-    int IList.IndexOf (object value)
-    {
-      if (value is DomainObject)
-        return IndexOf ((DomainObject) value);
-
-      if (value is ObjectID)
-        return IndexOf ((ObjectID) value);
-
-      return -1;
-    }
-
     /// <summary>
     /// Gets or sets the <see cref="DomainObject"/> with a given <paramref name="index"/> in the <see cref="DomainObjectCollection"/>.
     /// </summary>
@@ -394,12 +372,6 @@ namespace Remotion.Data.DomainObjects
         else
           _dataStrategy.Replace (index, value);
       }
-    }
-
-    object IList.this[int index]
-    {
-      get { return this[index]; }
-      set { this[index] = ArgumentUtility.CheckType<DomainObject> ("value", value); }
     }
 
     /// <summary>
@@ -431,11 +403,6 @@ namespace Remotion.Data.DomainObjects
 
       _dataStrategy.Insert (Count, domainObject);
       return Count - 1;
-    }
-
-    int IList.Add (object value)
-    {
-      return Add (ArgumentUtility.CheckNotNullAndType<DomainObject> ("value", value));
     }
 
     /// <summary>
@@ -514,15 +481,6 @@ namespace Remotion.Data.DomainObjects
       return _dataStrategy.Remove (domainObject);
     }
 
-    void IList.Remove (object value)
-    {
-      if (value is DomainObject)
-        Remove ((DomainObject) value);
-
-      if (value is ObjectID)
-        Remove ((ObjectID) value);
-    }
-
     /// <summary>
     /// Removes all items from the <see cref="DomainObjectCollection"/>.
     /// </summary>
@@ -562,34 +520,8 @@ namespace Remotion.Data.DomainObjects
       _dataStrategy.Insert (index, domainObject);
     }
 
-    void IList.Insert (int index, object value)
-    {
-      Insert (index, ArgumentUtility.CheckNotNullAndType<DomainObject> ("value", value));
-    }
-
-    /// <summary>
-    /// Copies the elements of the collection to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
-    /// </summary>
-    /// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from the collection. The 
-    /// <see cref="T:System.Array"/> must have zero-based indexing.</param>
-    /// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-    /// <exception cref="T:System.ArgumentNullException">
-    /// 	<paramref name="array"/> is null.
-    /// </exception>
-    /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// 	<paramref name="index"/> is less than zero.
-    /// </exception>
-    /// <exception cref="T:System.ArgumentException">
-    /// 	<paramref name="array"/> is multidimensional.
-    /// -or-
-    /// <paramref name="index"/> is equal to or greater than the length of <paramref name="array"/>.
-    /// -or-
-    /// The number of elements in this collection is greater than the available space from <paramref name="index"/> to the end of the destination 
-    /// <paramref name="array"/>.
-    /// </exception>
-    /// <exception cref="T:System.ArgumentException">
-    /// The type of the source collection cannot be cast automatically to the type of the destination <paramref name="array"/>.
-    /// </exception>
+   
+    /// <inheritdoc />
     public void CopyTo (Array array, int index)
     {
       _dataStrategy.ToArray ().CopyTo (array, index);
@@ -817,6 +749,8 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
       var nonNotifyingData = GetNonNotifyingData ();
       nonNotifyingData.ReplaceContents (domainObjects.Cast<DomainObject> ());
     }
@@ -906,28 +840,6 @@ namespace Remotion.Data.DomainObjects
       Removed += source.Removed;
     }
 
-    object ICollection.SyncRoot
-    {
-      get { return this; }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether access to the <see cref="T:System.Collections.ICollection"/> is synchronized (thread safe). Always
-    /// returns <see langword="false" />.
-    /// </summary>
-    bool ICollection.IsSynchronized
-    {
-      get { return false; }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the <see cref="T:System.Collections.IList"/> has a fixed size. Always returns <see langword="false" />.
-    /// </summary>
-    bool IList.IsFixedSize
-    {
-      get { return false; }
-    }
-
     void IDomainObjectCollectionEventRaiser.BeginAdd (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -961,91 +873,5 @@ namespace Remotion.Data.DomainObjects
     {
       OnDeleted ();
     }
-
-    #region Obsolete
-    [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
-        true)]
-    public static DomainObjectCollection Create (Type collectionType)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
-        true)]
-    public static DomainObjectCollection Create (Type collectionType, Type requiredItemType)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
-        true)]
-    public static DomainObjectCollection Create (Type collectionType, IEnumerable<DomainObject> contents)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
-        true)]
-    public static DomainObjectCollection Create (
-        Type collectionType,
-        IEnumerable<DomainObject> contents,
-        Type requiredItemType)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete ("This method has been renamed and moved. Use UnionWith (extension method declared on DomainObjectCollectionExtensions) instead.", true)]
-    public void Combine (DomainObjectCollection domainObjects)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete (
-        "This method has been renamed and moved. Use GetItemsExcept (extension method declared on DomainObjectCollectionExtensions) instead."
-        + "Note that the comparison is now based on IDs and that the order of arguments has been reversed for clarity.", true)]
-    public DomainObjectCollection GetItemsNotInCollection (DomainObjectCollection domainObjects)
-    {
-      throw new NotImplementedException ();
-    }
-
-    // ReSharper disable UnusedParameter.Local
-    [Obsolete (
-       "This constructor has been removed. Use the constructor taking IEnumerable<DomainObject> (or Clone) to copy a collection, use AsReadOnly to "
-       + "get a read-only version of a collection.", true)]
-    public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete (
-        "This constructor has been removed. Use the constructor taking IEnumerable<DomainObject> (or Clone) to copy a collection, use AsReadOnly to "
-        + "get a read-only version of a collection.", true)]
-    public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, Type requiredItemType, bool makeCollectionReadOnly)
-    {
-      throw new NotImplementedException ();
-    }
-    // ReSharper restore UnusedParameter.Local
-
-    [Obsolete (
-    "This method has been removed. Use SequenceEqual (extension method defined on DomainObjectCollectionExtensions) instead. Note that that "
-    + "method does not handle null arguments.", true)]
-    public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2)
-    {
-      throw new NotImplementedException ();
-    }
-
-    [Obsolete (
-        "This method has been removed. Use SequenceEqual or SetEquals (extension methods defined on DomainObjectCollectionExtensions) instead. "
-        + "Note that those methods do not handle null arguments.", true)]
-    public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2, bool ignoreItemOrder)
-    {
-      throw new NotImplementedException ();
-    }
-
-    #endregion
   }
 }
