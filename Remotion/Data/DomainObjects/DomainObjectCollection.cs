@@ -705,8 +705,8 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="originalDomainObjects">A <see cref="DomainObjectCollection"/> containing the original items of the collection. Must not be <see langword="null"/>.</param>
     /// <remarks>
-    ///   This method is only called on <see cref="DomainObjectCollection"/>s representing the current values 
-    ///   of a one-to-many relation during the rollback operation of the associated <see cref="ClientTransaction"/>. 
+    ///   This method is called for collections associated to a collection end point during the rollvack operation of the associated 
+    ///   <see cref="ClientTransaction"/>. 
     ///   A derived collection should replace its internal state with the state of <paramref name="originalDomainObjects"/>.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="originalDomainObjects"/> is <see langword="null"/>.</exception>
@@ -714,7 +714,8 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("originalDomainObjects", originalDomainObjects);
 
-      ReplaceItems (originalDomainObjects);
+      var nonNotifyingData = GetNonNotifyingData ();
+      nonNotifyingData.ReplaceContents (originalDomainObjects.Cast<DomainObject> ());
     }
 
     /// <summary>
@@ -722,32 +723,12 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="domainObjects">A <see cref="DomainObjectCollection"/> containing the new items for the collection. Must not be <see langword="null"/>.</param>
     /// <remarks>
-    ///   This method is only called on <see cref="DomainObjectCollection"/>s representing the original values 
-    ///   of a one-to-many relation during the commit operation of the associated <see cref="ClientTransaction"/>. 
+    ///   This method is called for collections associated to a collection end point during the commit operation of the associated 
+    ///   <see cref="ClientTransaction"/>. 
     ///   A derived collection should replace its internal state with the state of <paramref name="domainObjects"/>.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
     protected internal virtual void Commit (DomainObjectCollection domainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-
-      ReplaceItems (domainObjects);
-    }
-
-    /// <summary>
-    /// Replaces the items in the collection with the items of a given <see cref="DomainObjectCollection"/>. This method raises no events
-    /// and it does not touch the associated end point, if any.
-    /// </summary>
-    /// <param name="domainObjects">A <see cref="DomainObjectCollection"/> containing the new items for the collection.</param>
-    /// <remarks>
-    ///   This method actually performs the replace operation for <see cref="Commit"/> and <see cref="Rollback"/>.
-    /// </remarks>
-    /// <exception cref="DataManagement.ClientTransactionsDifferException">
-    ///   <paramref name="domainObjects"/> contains a <see cref="DomainObject"/> that belongs to a <see cref="ClientTransaction"/> that is different from 
-    ///   the <see cref="ClientTransaction"/> managing this collection. 
-    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
-    /// </exception>
-    protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 

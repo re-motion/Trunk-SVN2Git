@@ -54,81 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private Customer _customer2;
     private Customer _customer3NotInCollection;
 
-    private void ReplaceItems (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (collection, "ReplaceItems", sourceCollection);
-    }
-
-    private void CheckKeys (ObjectID[] expectedKeys, DomainObjectCollection collection)
-    {
-      Assert.That (collection.Count, Is.EqualTo (expectedKeys.Length), "DomainObjectCollection.Count");
-      foreach (ObjectID expectedKey in expectedKeys)
-        Assert.That (collection.Contains (expectedKey), Is.True, string.Format ("Key {0}", expectedKey));
-    }
-
-    private IDomainObjectCollectionData GetNonNotifyingData (DomainObjectCollection collection)
-    {
-      return (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
-    }
-
-    private void CopyEventHandlersFrom (DomainObjectCollection source, DomainObjectCollection destination)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (destination, "CopyEventHandlersFrom", source);
-    }
-
-    private DomainObjectCollection CreateCustomerCollection ()
-    {
-      var collection = new DomainObjectCollection (typeof (Customer));
-      collection.Add (_customer1);
-      collection.Add (_customer2);
-
-      return collection;
-    }
-
-    private void CheckForEachOrder (DomainObject[] exptectedDomainObjects, DomainObjectCollection collection)
-    {
-      Assert.That (collection.Count, Is.EqualTo (exptectedDomainObjects.Length));
-
-      int i = 0;
-      foreach (DomainObject domainObject in collection)
-      {
-        Assert.That (domainObject, Is.SameAs (exptectedDomainObjects[i]));
-        i++;
-      }
-    }
-
-    private void CheckSameEventHandlers (DomainObjectCollection source, DomainObjectCollection destination, string eventName)
-    {
-      var sourceEvent = ((Delegate) PrivateInvoke.GetNonPublicField (source, eventName));
-      Delegate[] sourceInvocationList = sourceEvent.GetInvocationList();
-
-      var destinationEvent = ((Delegate) PrivateInvoke.GetNonPublicField (destination, eventName));
-      Assert.That (destinationEvent, SyntaxHelper.Not.Null, eventName + " event handlers not copied");
-      Delegate[] destinationInvocationList = destinationEvent.GetInvocationList();
-
-      Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");
-    }
-
-    private CollectionEndPoint CreateCollectionEndPointForOrders ()
-    {
-      var customerEndPointID = new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      return new CollectionEndPoint (
-          ClientTransactionMock,
-          customerEndPointID,
-          new DomainObject[0]);
-    }
-
-    private OrderCollection CreateAssociatedCollection ()
-    {
-      var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      var actualData = new DomainObjectCollectionData();
-
-      var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, actualData);
-      var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
-      Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));
-      return associatedCollection;
-    }
-
     [Test]
     public void AccessIListInterfaceWithDomainObject ()
     {
@@ -1369,33 +1294,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void ReplaceItems_Content ()
+    public void Commit_Content ()
     {
       var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
-      ReplaceItems (_collection, sourceCollection);
+      Commit (_collection, sourceCollection);
 
       Assert.That (_collection, Is.EqualTo (sourceCollection));
     }
 
     [Test]
-    public void ReplaceItems_DecoratorChain_Kept ()
+    public void Commit_DecoratorChain ()
     {
       var originalData = new DomainObjectCollectionData();
       var collection = new DomainObjectCollection (originalData);
 
       var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
-      ReplaceItems (collection, sourceCollection);
+      Commit (collection, sourceCollection);
 
       var data = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
       Assert.That (data, Is.SameAs (originalData));
     }
 
     [Test]
-    public void ReplaceItems_ReadOnlyness_Kept ()
+    public void Commit_ReadOnly ()
     {
       var readOnlyCollection = _collection.Clone (true);
       var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
-      ReplaceItems (readOnlyCollection, sourceCollection);
+      Commit (readOnlyCollection, sourceCollection);
+
+      Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
+      Assert.That (readOnlyCollection.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void Rollback_Content ()
+    {
+      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      Rollback (_collection, sourceCollection);
+
+      Assert.That (_collection, Is.EqualTo (sourceCollection));
+    }
+
+    [Test]
+    public void Rollback_DecoratorChain ()
+    {
+      var originalData = new DomainObjectCollectionData ();
+      var collection = new DomainObjectCollection (originalData);
+
+      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      Rollback (collection, sourceCollection);
+
+      var data = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      Assert.That (data, Is.SameAs (originalData));
+    }
+
+    [Test]
+    public void Rollback_ReadOnly ()
+    {
+      var readOnlyCollection = _collection.Clone (true);
+      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      Rollback (readOnlyCollection, sourceCollection);
 
       Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
       Assert.That (readOnlyCollection.IsReadOnly, Is.True);
@@ -1415,6 +1373,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void SetNumericIndexerWithInvalidType ()
     {
       _collection[0] = Order.NewObject();
+    }
+
+    private void Commit (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (collection, "Commit", sourceCollection);
+    }
+
+    private void Rollback (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (collection, "Rollback", sourceCollection);
+    }
+
+    private void CheckKeys (ObjectID[] expectedKeys, DomainObjectCollection collection)
+    {
+      Assert.That (collection.Count, Is.EqualTo (expectedKeys.Length), "DomainObjectCollection.Count");
+      foreach (ObjectID expectedKey in expectedKeys)
+        Assert.That (collection.Contains (expectedKey), Is.True, string.Format ("Key {0}", expectedKey));
+    }
+
+    private IDomainObjectCollectionData GetNonNotifyingData (DomainObjectCollection collection)
+    {
+      return (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
+    }
+
+    private void CopyEventHandlersFrom (DomainObjectCollection source, DomainObjectCollection destination)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (destination, "CopyEventHandlersFrom", source);
+    }
+
+    private DomainObjectCollection CreateCustomerCollection ()
+    {
+      var collection = new DomainObjectCollection (typeof (Customer));
+      collection.Add (_customer1);
+      collection.Add (_customer2);
+
+      return collection;
+    }
+
+    private void CheckForEachOrder (DomainObject[] exptectedDomainObjects, DomainObjectCollection collection)
+    {
+      Assert.That (collection.Count, Is.EqualTo (exptectedDomainObjects.Length));
+
+      int i = 0;
+      foreach (DomainObject domainObject in collection)
+      {
+        Assert.That (domainObject, Is.SameAs (exptectedDomainObjects[i]));
+        i++;
+      }
+    }
+
+    private void CheckSameEventHandlers (DomainObjectCollection source, DomainObjectCollection destination, string eventName)
+    {
+      var sourceEvent = ((Delegate) PrivateInvoke.GetNonPublicField (source, eventName));
+      Delegate[] sourceInvocationList = sourceEvent.GetInvocationList ();
+
+      var destinationEvent = ((Delegate) PrivateInvoke.GetNonPublicField (destination, eventName));
+      Assert.That (destinationEvent, SyntaxHelper.Not.Null, eventName + " event handlers not copied");
+      Delegate[] destinationInvocationList = destinationEvent.GetInvocationList ();
+
+      Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");
+    }
+
+    private CollectionEndPoint CreateCollectionEndPointForOrders ()
+    {
+      var customerEndPointID = new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      return new CollectionEndPoint (
+          ClientTransactionMock,
+          customerEndPointID,
+          new DomainObject[0]);
+    }
+
+    private OrderCollection CreateAssociatedCollection ()
+    {
+      var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      var actualData = new DomainObjectCollectionData ();
+
+      var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, actualData);
+      var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
+      Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));
+      return associatedCollection;
     }
   }
 }

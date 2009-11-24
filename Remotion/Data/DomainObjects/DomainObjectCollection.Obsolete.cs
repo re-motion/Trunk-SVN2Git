@@ -103,5 +103,12 @@ namespace Remotion.Data.DomainObjects
     {
       throw new NotImplementedException ();
     }
+
+    [Obsolete (
+        "This method has been removed. GetNonNotifyingData in conjunction with DomainObjectCollectionDataExtensions.ReplaceContents to replace the "
+        + "contents of a collection without raising events. To hook commit or rollback events, override Commit or Rollback.", true)]
+    protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
+    {
+    }
   }
 }
