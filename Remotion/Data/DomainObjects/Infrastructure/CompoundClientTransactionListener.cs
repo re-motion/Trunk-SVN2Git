@@ -188,34 +188,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointMapPerformingDelete (endPointIDs);
     }
 
-    public void RelationEndPointMapCopyingFrom (RelationEndPointMap source)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.RelationEndPointMapCopyingFrom (source);
-    }
-
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.RelationEndPointMapCopyingTo (destination);
-    }
-
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.DataManagerMarkingObjectDiscarded (id);
-    }
-
-    public void DataManagerCopyingFrom (DataManager source)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.DataManagerCopyingFrom (source);
-    }
-
-    public void DataManagerCopyingTo (DataManager destination)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.DataManagerCopyingTo (destination);
     }
 
     public void DataContainerMapRegistering (DataContainer container)
@@ -228,18 +204,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.DataContainerMapUnregistering (container);
-    }
-
-    public void DataContainerMapCopyingFrom (DataContainerMap source)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.DataContainerMapCopyingFrom (source);
-    }
-
-    public void DataContainerMapCopyingTo (DataContainerMap destination)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.DataContainerMapCopyingTo (destination);
     }
   }
 }

@@ -183,60 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CopyFromEmpty ()
-    {
-      ClientTransactionMock sourceTransaction = new ClientTransactionMock ();
-      ClientTransactionMock destinationTransaction = new ClientTransactionMock ();
-
-      DataContainerMap sourceMap = sourceTransaction.DataManager.DataContainerMap;
-      DataContainerMap destinationMap = destinationTransaction.DataManager.DataContainerMap;
-
-      destinationMap.CopyFrom (sourceMap);
-
-      Assert.AreEqual (0, destinationMap.Count);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Source cannot be the destination DataContainerMap instance.",
-        MatchType = MessageMatch.Contains)]
-    public void CannotCopyFromSelf ()
-    {
-      _map.CopyFrom (_map);
-    }
-
-    [Test]
-    public void CopyFromNonEmpty ()
-    {
-      ClientTransactionMock sourceTransaction = new ClientTransactionMock ();
-      ClientTransactionMock destinationTransaction = new ClientTransactionMock ();
-
-      DataContainerMap sourceMap = sourceTransaction.DataManager.DataContainerMap;
-      DataContainerMap destinationMap = destinationTransaction.DataManager.DataContainerMap;
-
-      Order newOrder;
-
-      using (sourceTransaction.EnterNonDiscardingScope ())
-      {
-        newOrder = Order.NewObject ();
-      }
-
-      Assert.AreNotEqual (0, sourceMap.Count);
-      Assert.IsNotNull (sourceMap[newOrder.ID]);
-
-      Assert.AreEqual (0, destinationMap.Count);
-      Assert.IsNull (destinationMap[newOrder.ID]);
-
-      destinationMap.CopyFrom (sourceMap);
-
-      Assert.AreNotEqual (0, destinationMap.Count);
-      Assert.AreEqual (sourceMap.Count, destinationMap.Count);
-      Assert.IsNotNull (destinationMap[newOrder.ID]);
-      
-      Assert.AreNotSame (sourceMap[newOrder.ID], destinationMap[newOrder.ID]);
-      Assert.AreSame (destinationTransaction, destinationMap[newOrder.ID].ClientTransaction);
-    }
-
-    [Test]
     public void GetObjectWithoutLoading_LoadedObject ()
     {
       ClassWithAllDataTypes loadedOrder = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);

@@ -174,27 +174,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void RelationEndPointMapCopyingFrom (RelationEndPointMap source)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
-    {
-      // not handled by this listener
-    }
-
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
-    {
-      // not handled by this listener
-    }
-
-    public void DataManagerCopyingFrom (DataManager source)
-    {
-      // not handled by this listener
-    }
-
-    public void DataManagerCopyingTo (DataManager destination)
     {
       // not handled by this listener
     }
@@ -205,16 +185,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     public void DataContainerMapUnregistering (DataContainer container)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerMapCopyingFrom (DataContainerMap source)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerMapCopyingTo (DataContainerMap destination)
     {
       // not handled by this listener
     }

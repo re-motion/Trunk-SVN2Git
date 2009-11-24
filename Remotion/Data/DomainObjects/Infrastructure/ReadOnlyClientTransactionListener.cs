@@ -168,27 +168,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void RelationEndPointMapCopyingFrom (RelationEndPointMap source)
-    {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
-    }
-
-    public virtual void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
-    {
-    }
-
     public virtual void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
-    }
-
-    public virtual void DataManagerCopyingFrom (DataManager source)
-    {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
-    }
-
-    public virtual void DataManagerCopyingTo (DataManager destination)
-    {
     }
 
     public virtual void DataContainerMapRegistering (DataContainer container)
@@ -199,15 +181,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void DataContainerMapUnregistering (DataContainer container)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
-    }
-
-    public virtual void DataContainerMapCopyingFrom (DataContainerMap source)
-    {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
-    }
-
-    public virtual void DataContainerMapCopyingTo (DataContainerMap destination)
-    {
     }
   }
 }

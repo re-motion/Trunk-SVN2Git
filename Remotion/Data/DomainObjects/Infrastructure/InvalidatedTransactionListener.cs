@@ -153,27 +153,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void RelationEndPointMapCopyingFrom (RelationEndPointMap source)
-    {
-      throw CreateException();
-    }
-
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
-    {
-      throw CreateException();
-    }
-
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
-    {
-      throw CreateException();
-    }
-
-    public void DataManagerCopyingFrom (DataManager source)
-    {
-      throw CreateException();
-    }
-
-    public void DataManagerCopyingTo (DataManager destination)
     {
       throw CreateException();
     }
@@ -184,16 +164,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     public void DataContainerMapUnregistering (DataContainer container)
-    {
-      throw CreateException();
-    }
-
-    public void DataContainerMapCopyingFrom (DataContainerMap source)
-    {
-      throw CreateException();
-    }
-
-    public void DataContainerMapCopyingTo (DataContainerMap destination)
     {
       throw CreateException();
     }

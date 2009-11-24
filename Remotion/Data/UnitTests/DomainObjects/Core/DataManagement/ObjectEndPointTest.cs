@@ -352,61 +352,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CloneUnchanged ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      RelationEndPointID id = new RelationEndPointID (order.ID, typeof (Order) + ".Official");
-
-      ObjectEndPoint endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
-      Assert.IsNotNull (endPoint);
-
-      Assert.AreSame (ClientTransactionMock, endPoint.ClientTransaction);
-      Assert.IsNotNull (endPoint.Definition);
-      Assert.IsFalse (endPoint.HasChanged);
-      Assert.IsFalse (endPoint.HasBeenTouched);
-      Assert.AreEqual (id, endPoint.ID);
-      Assert.AreEqual (order.ID, endPoint.ObjectID);
-      Assert.AreEqual (order.Official.ID, endPoint.OppositeObjectID);
-      Assert.AreEqual (endPoint.OppositeObjectID, endPoint.OriginalOppositeObjectID);
-      Assert.AreEqual (order.Official.ID, endPoint.OriginalOppositeObjectID);
-
-      ObjectEndPoint clone = (ObjectEndPoint) endPoint.Clone (ClientTransactionMock);
-
-      Assert.IsNotNull (endPoint);
-
-      CheckIfRelationEndPointsAreEqual (endPoint, clone);
-    }
-
-    [Test]
-    public void CloneChanged ()
-    {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      Employee originalEmployee = computer.Employee;
-      computer.Employee = Employee.NewObject ();
-
-      RelationEndPointID id = new RelationEndPointID (computer.ID, typeof (Computer) + ".Employee");
-
-      ObjectEndPoint endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
-      Assert.IsNotNull (endPoint);
-
-      Assert.AreSame (ClientTransactionMock, endPoint.ClientTransaction);
-      Assert.IsNotNull (endPoint.Definition);
-      Assert.IsTrue (endPoint.HasChanged);
-      Assert.IsTrue (endPoint.HasBeenTouched);
-      Assert.AreEqual (id, endPoint.ID);
-      Assert.AreEqual (computer.ID, endPoint.ObjectID);
-      Assert.AreEqual (computer.Employee.ID, endPoint.OppositeObjectID);
-      Assert.AreNotEqual (endPoint.OppositeObjectID, endPoint.OriginalOppositeObjectID);
-      Assert.AreEqual (originalEmployee.ID, endPoint.OriginalOppositeObjectID);
-
-      ObjectEndPoint clone = (ObjectEndPoint) endPoint.Clone (ClientTransactionMock);
-
-      Assert.IsNotNull (endPoint);
-
-      CheckIfRelationEndPointsAreEqual (endPoint, clone);
-    }
-
-    [Test]
     public void Commit ()
     {
       ObjectID newOppositeID = new ObjectID ("Order", Guid.NewGuid ());

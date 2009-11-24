@@ -385,34 +385,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void DataManagerCopyingFromDataManagerCopyingTo ()
-    {
-      var transactionOne = new ClientTransactionMock ();
-      var transactionTwo = new ClientTransactionMock ();
-      DataManager managerOne = transactionOne.DataManager;
-      DataManager managerTwo = transactionTwo.DataManager;
-
-      transactionOne.AddListener (_strictListenerMock);
-      transactionTwo.AddListener (_strictListenerMock);
-
-      using (_mockRepository.Ordered ())
-      {
-        _strictListenerMock.Expect (mock => mock.DataManagerCopyingFrom (managerOne));
-        _strictListenerMock.Expect (mock => mock.DataManagerCopyingTo (managerTwo));
-        _strictListenerMock.Expect (mock => mock.DataContainerMapCopyingFrom (managerOne.DataContainerMap));
-        _strictListenerMock.Expect (mock => mock.DataContainerMapCopyingTo (managerTwo.DataContainerMap));
-        _strictListenerMock.Expect (mock => mock.RelationEndPointMapCopyingFrom (managerOne.RelationEndPointMap));
-        _strictListenerMock.Expect (mock => mock.RelationEndPointMapCopyingTo (managerTwo.RelationEndPointMap));
-      }
-
-      _mockRepository.ReplayAll ();
-
-      managerTwo.CopyFrom (managerOne);
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
     public void SubTransactionCreatingSubTransactionCreated ()
     {
       ClientTransactionMock.AddListener (_strictListenerMock);

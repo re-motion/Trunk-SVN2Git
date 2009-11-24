@@ -431,59 +431,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
     }
 
-    [Test]
-    public void CopyFromEmpty ()
-    {
-      ClientTransactionMock emptyTransaction = new ClientTransactionMock ();
-      _dataManager.CopyFrom (emptyTransaction.DataManager);
-
-      Assert.AreEqual (0, _dataManager.DataContainerMap.Count);
-      Assert.AreEqual (0, _dataManager.RelationEndPointMap.Count);
-      Assert.AreEqual (0, _dataManager.DiscardedObjectCount);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Source cannot be the destination DataManager instance.",
-        MatchType = MessageMatch.Contains)]
-    public void CannotCopyFromSelf ()
-    {
-      _dataManager.CopyFrom (_dataManager);
-    }
-
-    [Test]
-    public void CopyFromNonEmpty ()
-    {
-      ClientTransactionMock nonEmptyTransaction = new ClientTransactionMock ();
-      using (nonEmptyTransaction.EnterNonDiscardingScope ())
-      {
-        Order order = Order.GetObject (DomainObjectIDs.Order1);
-        OrderItem item = order.OrderItems[0];
-        Official official = order.Official;
-        nonEmptyTransaction.DataManager.MarkDiscarded (Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer);
-      }
-
-      Assert.IsTrue (nonEmptyTransaction.DataManager.IsDiscarded (DomainObjectIDs.Order2));
-      DataContainer oldDiscardedDataContainer = nonEmptyTransaction.DataManager.GetDiscardedDataContainer (DomainObjectIDs.Order2);
-      Assert.IsNotNull (oldDiscardedDataContainer);
-
-      Assert.AreNotEqual (0, nonEmptyTransaction.DataManager.DiscardedObjectCount);
-      Assert.AreNotEqual (0, nonEmptyTransaction.DataManager.DataContainerMap.Count);
-      Assert.AreNotEqual (0, nonEmptyTransaction.DataManager.RelationEndPointMap.Count);
-
-      _dataManager.CopyFrom (nonEmptyTransaction.DataManager);
-
-      Assert.IsTrue (_dataManager.IsDiscarded (DomainObjectIDs.Order2));
-      DataContainer newDiscardedDataContainer = _dataManager.GetDiscardedDataContainer (DomainObjectIDs.Order2);
-      Assert.IsNotNull (newDiscardedDataContainer);
-      Assert.AreNotSame (oldDiscardedDataContainer, newDiscardedDataContainer);
-      Assert.AreEqual (oldDiscardedDataContainer.ID, newDiscardedDataContainer.ID);
-      Assert.AreSame (oldDiscardedDataContainer.DomainObject, newDiscardedDataContainer.DomainObject);
-
-      Assert.AreEqual (nonEmptyTransaction.DataManager.DiscardedObjectCount, _dataManager.DiscardedObjectCount);
-      Assert.AreEqual (nonEmptyTransaction.DataManager.DataContainerMap.Count, _dataManager.DataContainerMap.Count);
-      Assert.AreEqual (nonEmptyTransaction.DataManager.RelationEndPointMap.Count, _dataManager.RelationEndPointMap.Count);
-    }
-
     private DataContainer CreateOrder1DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();

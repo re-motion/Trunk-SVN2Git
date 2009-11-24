@@ -170,27 +170,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     return new ClientTransactionsDifferException (string.Format (message, args));
   }
 
-  public void CopyFrom (DataContainerMap source)
-  {
-    ArgumentUtility.CheckNotNull ("source", source);
-
-    if (source == this)
-      throw new ArgumentException ("Source cannot be the destination DataContainerMap instance.");
-
-    _transactionEventSink.DataContainerMapCopyingFrom (source);
-    source._transactionEventSink.DataContainerMapCopyingTo (this);
-
-    int startingPosition = _dataContainers.Count;
-
-    for (int i = 0; i < source._dataContainers.Count; ++i)
-    {
-      DataContainer newContainer = source._dataContainers[i].Clone ();
-      newContainer.SetClientTransaction (_clientTransaction);
-      int position = _dataContainers.Add (newContainer);
-      Assertion.IsTrue (position == i + startingPosition);
-    }
-  }
-
   #region IEnumerable Members
 
   public IEnumerator GetEnumerator ()

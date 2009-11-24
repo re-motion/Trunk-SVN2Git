@@ -167,27 +167,7 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void RelationEndPointMapCopyingFrom (RelationEndPointMap source)
-    {
-      
-    }
-
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
-    {
-      
-    }
-
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
-    {
-      
-    }
-
-    public void DataManagerCopyingFrom (DataManager source)
-    {
-      
-    }
-
-    public void DataManagerCopyingTo (DataManager destination)
     {
       
     }
@@ -198,16 +178,6 @@ namespace Remotion.Data.DomainObjects.Transport
     }
 
     public void DataContainerMapUnregistering (DataContainer container)
-    {
-      
-    }
-
-    public void DataContainerMapCopyingFrom (DataContainerMap source)
-    {
-      
-    }
-
-    public void DataContainerMapCopyingTo (DataContainerMap destination)
     {
       
     }

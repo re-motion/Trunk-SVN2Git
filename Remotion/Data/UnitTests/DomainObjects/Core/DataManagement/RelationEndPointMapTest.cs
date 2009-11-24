@@ -214,68 +214,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CopyFromEmpty ()
-    {
-      ClientTransactionMock sourceTransaction = new ClientTransactionMock ();
-      ClientTransactionMock destinationTransaction = new ClientTransactionMock ();
-
-      RelationEndPointMap sourceMap = sourceTransaction.DataManager.RelationEndPointMap;
-      RelationEndPointMap destinationMap = destinationTransaction.DataManager.RelationEndPointMap;
-
-      destinationMap.CopyFrom (sourceMap);
-
-      Assert.AreEqual (0, destinationMap.Count);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Source cannot be the destination RelationEndPointMap instance.",
-        MatchType = MessageMatch.Contains)]
-    public void CannotCopyFromSelf ()
-    {
-      _map.CopyFrom (_map);
-    }
-
-    [Test]
-    public void CopyFromNotEmpty ()
-    {
-      ClientTransactionMock sourceTransaction = new ClientTransactionMock ();
-      ClientTransactionMock destinationTransaction = new ClientTransactionMock ();
-
-      RelationEndPointMap sourceMap = sourceTransaction.DataManager.RelationEndPointMap;
-      RelationEndPointMap destinationMap = destinationTransaction.DataManager.RelationEndPointMap;
-
-      Order newOrder;
-
-      using (sourceTransaction.EnterNonDiscardingScope ())
-      {
-        newOrder = Order.NewObject ();
-      }
-
-      RelationEndPointID orderItemsID = new RelationEndPointID (newOrder.ID, typeof (Order).FullName + ".OrderItems");
-      RelationEndPointID officialID = new RelationEndPointID (newOrder.ID, typeof (Order).FullName + ".Official");
-
-      Assert.AreNotEqual (0, sourceMap.Count);
-      Assert.IsNotNull (sourceMap[orderItemsID]);
-
-      Assert.AreEqual (0, destinationMap.Count);
-
-      destinationMap.CopyFrom (sourceMap);
-
-      Assert.AreNotEqual (0, destinationMap.Count);
-      Assert.AreEqual (sourceMap.Count, destinationMap.Count);
-
-      Assert.IsNotNull (destinationMap[orderItemsID]);
-      Assert.AreNotSame (sourceMap[orderItemsID], destinationMap[orderItemsID]);
-      
-      Assert.AreSame (destinationTransaction, destinationMap[orderItemsID].ClientTransaction);
-
-      Assert.IsNotNull (destinationMap[officialID]);
-      Assert.AreNotSame (sourceMap[officialID], destinationMap[officialID]);
-
-      Assert.AreSame (destinationTransaction, destinationMap[officialID].ClientTransaction);
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot get a RelationEndPoint for an anonymous end point definition. " 
         + "There are no end points for the non-existing side of unidirectional relations.")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()

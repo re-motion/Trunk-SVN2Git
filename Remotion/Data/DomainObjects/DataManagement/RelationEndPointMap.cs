@@ -372,28 +372,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Remove (endPointID);
     }
 
-    // TODO 1876: Remove.
-    public void CopyFrom (RelationEndPointMap source)
-    {
-      ArgumentUtility.CheckNotNull ("source", source);
-
-      if (source == this)
-        throw new ArgumentException ("Source cannot be the destination RelationEndPointMap instance.", "source");
-
-      _transactionEventSink.RelationEndPointMapCopyingFrom (source);
-      source._transactionEventSink.RelationEndPointMapCopyingTo (this);
-
-      int startingPosition = _relationEndPoints.Count;
-
-      for (int i = 0; i < source._relationEndPoints.Count; ++i)
-      {
-        RelationEndPoint newEndPoint = source._relationEndPoints[i].Clone (_clientTransaction);
-
-        int position = _relationEndPoints.Add (newEndPoint);
-        Assertion.IsTrue (position == i + startingPosition);
-      }
-    }
-
     public IEnumerator GetEnumerator ()
     {
       return _relationEndPoints.GetEnumerator();

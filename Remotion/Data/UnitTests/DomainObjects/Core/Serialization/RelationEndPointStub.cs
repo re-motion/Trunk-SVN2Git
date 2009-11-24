@@ -35,11 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
     }
 
-    public override RelationEndPoint Clone (ClientTransaction clientTransaction)
-    {
-      throw new NotImplementedException();
-    }
-
     protected override void TakeOverCommittedData (RelationEndPoint source)
     {
       throw new NotImplementedException();

@@ -80,19 +80,19 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public DomainObjectCollection GetChangedDomainObjects ()
   {
-    return GetDomainObjects (new StateType[] { StateType.Changed, StateType.Deleted, StateType.New });
+    return GetDomainObjects (new[] { StateType.Changed, StateType.Deleted, StateType.New });
   }
 
   public DomainObjectCollection GetDomainObjects (StateType stateType)
   {
     ArgumentUtility.CheckValidEnumValue ("stateType", stateType);
 
-    return GetDomainObjects (new StateType[] { stateType });
+    return GetDomainObjects (new[] { stateType });
   }
 
   public DomainObjectCollection GetDomainObjects (StateType[] states)
   {
-    DomainObjectCollection domainObjects = new DomainObjectCollection ();
+    var domainObjects = new DomainObjectCollection ();
 
     bool includeChanged = ContainsState (states, StateType.Changed);
     bool includeDeleted = ContainsState (states, StateType.Deleted);
@@ -266,22 +266,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     get { return _discardedDataContainers.Count; }
   }
 
-  // TODO 1876: Remove.
-  public void CopyFrom (DataManager source)
-  {
-    ArgumentUtility.CheckNotNull ("source", source);
-
-    if (source == this)
-      throw new ArgumentException ("Source cannot be the destination DataManager instance.", "source");
-
-    _transactionEventSink.DataManagerCopyingFrom (source);
-    source._transactionEventSink.DataManagerCopyingTo (this);
-
-    CopyDiscardedDataContainers (source);
-    DataContainerMap.CopyFrom (source.DataContainerMap);
-    RelationEndPointMap.CopyFrom (source.RelationEndPointMap);
-  }
-
   internal void CopyDiscardedDataContainers (DataManager source)
   {
     ArgumentUtility.CheckNotNull ("source", source);
@@ -318,7 +302,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   void IDeserializationCallback.OnDeserialization (object sender)
   {
-    FlattenedDeserializationInfo doInfo = new FlattenedDeserializationInfo (_deserializedData);
+    var doInfo = new FlattenedDeserializationInfo (_deserializedData);
     _clientTransaction = doInfo.GetValueForHandle<ClientTransaction> ();
     _transactionEventSink = _clientTransaction.TransactionEventSink;
     _dataContainerMap = doInfo.GetValue<DataContainerMap> ();
@@ -340,16 +324,16 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
   {
-    FlattenedSerializationInfo doInfo = new FlattenedSerializationInfo();
+    var doInfo = new FlattenedSerializationInfo();
     doInfo.AddHandle (_clientTransaction);
     doInfo.AddValue (_dataContainerMap);
     doInfo.AddHandle (_relationEndPointMap);
 
-    ObjectID[] discardedIDs = new ObjectID[_discardedDataContainers.Count];
+    var discardedIDs = new ObjectID[_discardedDataContainers.Count];
     _discardedDataContainers.Keys.CopyTo (discardedIDs, 0);
     doInfo.AddArray (discardedIDs);
 
-    DataContainer[] discardedContainers = new DataContainer[_discardedDataContainers.Count];
+    var discardedContainers = new DataContainer[_discardedDataContainers.Count];
     _discardedDataContainers.Values.CopyTo (discardedContainers, 0);
     doInfo.AddArray (discardedContainers);
 

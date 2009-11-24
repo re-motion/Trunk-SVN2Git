@@ -97,19 +97,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       bidirectionalModification.ExecuteAllSteps ();
     }
 
-    public override RelationEndPoint Clone (ClientTransaction clientTransaction)
-    {
-      var clone = new CollectionEndPoint (
-          clientTransaction, 
-          ID, 
-          _oppositeDomainObjects.Cast<DomainObject>());
-
-      Assertion.DebugAssert (clone._oppositeDomainObjects.SequenceEqual (_oppositeDomainObjects.Cast<DomainObject>()));
-      clone._originalOppositeDomainObjectsContents.ReplaceItems (_originalOppositeDomainObjectsContents);
-      clone._hasBeenTouched = _hasBeenTouched;
-      return clone;
-    }
-
     protected internal override void TakeOverCommittedData (RelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);

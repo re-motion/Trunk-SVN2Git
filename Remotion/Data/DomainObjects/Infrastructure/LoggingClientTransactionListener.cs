@@ -196,34 +196,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("RelationEndPointMapPerformingDelete: {0}", SeparatedStringBuilder.Build (", ", endPointIDs));
     }
 
-    public void RelationEndPointMapCopyingFrom (RelationEndPointMap source)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationEndPointMapCopyingFrom: {0} relations", source.Count);
-    }
-
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationEndPointMapCopyingTo");
-    }
-
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("DataManagerMarkingObjectDiscarded: {0}", id);
-    }
-
-    public void DataManagerCopyingFrom (DataManager source)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataManagerCopyingFrom");
-    }
-
-    public void DataManagerCopyingTo (DataManager destination)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.Debug ("DataManagerCopyingTo");
     }
 
     public void DataContainerMapRegistering (DataContainer container)
@@ -236,18 +212,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("DataContainerMapUnregistering: {0}", container.ID);
-    }
-
-    public void DataContainerMapCopyingFrom (DataContainerMap source)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataContainerMapCopyingFrom: {0} objects", source.Count);
-    }
-
-    public void DataContainerMapCopyingTo (DataContainerMap destination)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("DataContainerMapCopyingTo");
     }
 
     private string GetDomainObjectsString (IEnumerable domainObjects)

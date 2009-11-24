@@ -82,15 +82,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    public override RelationEndPoint Clone (ClientTransaction clientTransaction)
-    {
-      var clone = new ObjectEndPoint (clientTransaction, ID, null);
-      clone._oppositeObjectID = _oppositeObjectID;
-      clone._originalOppositeObjectID = _originalOppositeObjectID;
-      clone._hasBeenTouched = _hasBeenTouched;
-      return clone;
-    }
-
     protected internal override void TakeOverCommittedData (RelationEndPoint source)
     {
       var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);

@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -71,16 +69,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationEndPointMapRegistering (RelationEndPoint endPoint);
     void RelationEndPointMapUnregistering (RelationEndPointID endPointID);
     void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs);
-    void RelationEndPointMapCopyingFrom (RelationEndPointMap source);
-    void RelationEndPointMapCopyingTo (RelationEndPointMap destination);
 
     void DataManagerMarkingObjectDiscarded (ObjectID id);
-    void DataManagerCopyingFrom (DataManager source);
-    void DataManagerCopyingTo (DataManager destination);
 
     void DataContainerMapRegistering (DataContainer container);
     void DataContainerMapUnregistering (DataContainer container);
-    void DataContainerMapCopyingFrom (DataContainerMap source);
-    void DataContainerMapCopyingTo (DataContainerMap destination);
   }
 }
