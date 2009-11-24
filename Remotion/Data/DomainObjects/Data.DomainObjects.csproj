@@ -140,6 +140,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
+    <Compile Include="DataManagement\ICollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="DomainObjectCollection.IList.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataExtensions.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionTransformer.cs" />
@@ -171,11 +172,13 @@
     <Compile Include="DataManagement\ICollectionEndPoint.cs" />
     <Compile Include="DomainObjectCollectionExtensions.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
+    <Compile Include="Infrastructure\SubCollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializer.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\StringObjectIDValueParser.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\GuidObjectIDValueParser.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\Int32ObjectIDValueParser.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\IObjectIDValueParser.cs" />
+    <Compile Include="Infrastructure\RootCollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationLogger.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\EndPointModifications\BidirectionalRelationModificationBase.cs" />

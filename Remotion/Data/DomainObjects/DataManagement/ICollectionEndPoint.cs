@@ -25,7 +25,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface ICollectionEndPoint : IEndPoint
   {
     DomainObjectCollection OppositeDomainObjects { get; }
-   
+    DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
+    DomainObjectCollection OriginalOppositeDomainObjectsReference { get; }
+
     void Touch ();
     
     IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
