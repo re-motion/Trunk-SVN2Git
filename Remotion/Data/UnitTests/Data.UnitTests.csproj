@@ -258,6 +258,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithMissingDataCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\OppositeObject.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectCollectionDataTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CurrentPropertyManagerTest.cs" />

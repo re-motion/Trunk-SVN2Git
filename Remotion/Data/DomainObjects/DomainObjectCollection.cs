@@ -356,32 +356,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <see cref="DomainObjectCollection" />, that are not already part of it.
-    /// This method is a convenienve method combining <see cref="Contains"/> and <see cref="AddRange"/>. If there are no changes made to this 
-    /// collection, the <see cref="Combine"/> method does not touch the associated end point (if any).
-    /// </summary>
-    /// <remarks>
-    /// <para>To check if an item is already part of the <see cref="DomainObjectCollection" /> its <see cref="DomainObject.ID"/> is used. 
-    /// <see cref="Combine"/> does not check if the item references are identical. In case the two <see cref="DomainObjectCollection"/> contain 
-    /// different items with the same <see cref="DomainObject.ID"/>, <see cref="Combine"/> will thus ignore those items.
-    /// </para>
-    /// </remarks>
-    /// <param name="domainObjects">The <see cref="DomainObjectCollection"/> to add items from. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    /// <exception cref="DataManagement.ClientTransactionsDifferException">
-    ///   <paramref name="domainObjects"/> contains a <see cref="DomainObject"/> that belongs to a <see cref="ClientTransaction"/> that is different from 
-    ///   the <see cref="ClientTransaction"/> managing this collection. 
-    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
-    /// </exception>
-    public void Combine (DomainObjectCollection domainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-      CheckNotReadOnly ("A read-only collection cannot be combined with another collection.");
-
-      AddRange (domainObjects.Cast<DomainObject> ().Where (obj => !Contains (obj.ID)));
-    }
-
-    /// <summary>
     /// Returns all items of a given <see cref="DomainObjectCollection"/> that are not part of the <see cref="DomainObjectCollection" />.
     /// </summary>
     /// <remarks>
@@ -515,7 +489,7 @@ namespace Remotion.Data.DomainObjects
       get { return _dataStrategy.GetObject (index); }
       set
       {
-        CheckNotReadOnly ("Cannot modify a read-only collection.");
+        this.CheckNotReadOnly ("Cannot modify a read-only collection.");
 
         // If new value is null: This is actually a remove operation
         if (value == null)
@@ -556,7 +530,7 @@ namespace Remotion.Data.DomainObjects
     public int Add (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      CheckNotReadOnly ("Cannot add an item to a read-only collection.");
+      this.CheckNotReadOnly ("Cannot add an item to a read-only collection.");
 
       _dataStrategy.Insert (Count, domainObject);
       return Count - 1;
@@ -584,7 +558,7 @@ namespace Remotion.Data.DomainObjects
     public void AddRange (IEnumerable domainObjects)
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-      CheckNotReadOnly ("Cannot add items to a read-only collection.");
+      this.CheckNotReadOnly ("Cannot add items to a read-only collection.");
 
       _dataStrategy.AddRangeAndCheckItems (domainObjects.Cast<DomainObject>(), RequiredItemType);
     }
@@ -612,7 +586,7 @@ namespace Remotion.Data.DomainObjects
     public void Remove (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
+      this.CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
 
       _dataStrategy.Remove (id);
     }
@@ -638,7 +612,7 @@ namespace Remotion.Data.DomainObjects
     public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
+      this.CheckNotReadOnly ("Cannot remove an item from a read-only collection.");
 
       return _dataStrategy.Remove (domainObject);
     }
@@ -658,7 +632,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     public void Clear()
     {
-      CheckNotReadOnly ("Cannot clear a read-only collection.");
+      this.CheckNotReadOnly ("Cannot clear a read-only collection.");
 
       _dataStrategy.Clear ();
     }
@@ -686,7 +660,7 @@ namespace Remotion.Data.DomainObjects
     public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      CheckNotReadOnly ("Cannot insert an item into a read-only collection.");
+      this.CheckNotReadOnly ("Cannot insert an item into a read-only collection.");
 
       _dataStrategy.Insert (index, domainObject);
     }
@@ -1009,12 +983,6 @@ namespace Remotion.Data.DomainObjects
       Removed += source.Removed;
     }
 
-    private void CheckNotReadOnly (string message)
-    {
-      if (IsReadOnly)
-        throw new NotSupportedException (message);
-    }
-    
     object ICollection.SyncRoot
     {
       get { return this; }
@@ -1106,6 +1074,13 @@ namespace Remotion.Data.DomainObjects
     {
       throw new NotImplementedException ();
     }
+
+    [Obsolete ("This method has been renamed and moved. Use UnionWith (extension method declared on DomainObjectCollectionExtensions) instead.", true)]
+    public void Combine (DomainObjectCollection domainObjects)
+    {
+      throw new NotImplementedException ();
+    }
+
     #endregion
   }
 }

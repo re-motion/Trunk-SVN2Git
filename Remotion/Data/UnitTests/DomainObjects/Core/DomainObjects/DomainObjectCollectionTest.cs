@@ -546,31 +546,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void Combine ()
-    {
-      var secondCollection = new DomainObjectCollection (_collection, false);
-      secondCollection.Add (Customer.GetObject (DomainObjectIDs.Customer3));
-
-      _collection.Combine (secondCollection);
-
-      Assert.That (_collection.Count, Is.EqualTo (3));
-      Assert.That (_collection.ContainsObject (_customer1), Is.True);
-      Assert.That (_collection.ContainsObject (_customer2), Is.True);
-      Assert.That (_collection.Contains (DomainObjectIDs.Customer3), Is.True);
-      Assert.That (_collection.IsReadOnly, Is.False);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentItemTypeException))]
-    public void Combine_ChecksItems ()
-    {
-      var secondCollection = new DomainObjectCollection();
-      secondCollection.Add (Order.GetObject (DomainObjectIDs.Order1));
-
-      _collection.Combine (secondCollection);
-    }
-
-    [Test]
     public void CompareFalse ()
     {
       var collection1 = new DomainObjectCollection (typeof (Customer));
@@ -1277,7 +1252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
 
     [Test]
-    public void InsertEvents ()
+    public void Insert_Events ()
     {
       var collection = new DomainObjectCollection (typeof (Customer));
 
@@ -1295,7 +1270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
-    public void InsertObjectOfInvalidType ()
+    public void Insert_ObjectOfInvalidType ()
     {
       IList list = _collection;
       list.Insert (0, new object());

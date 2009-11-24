@@ -24,7 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
   [TestFixture]
   public class DomainObjectCollectionsWithDifferentClientTransactionsTest : ClientTransactionBaseTest
   {
-    private DomainObjectCollection _collection;
     private Customer _customer1;
     private Customer _customer2;
 
@@ -38,8 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
       _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
-
-      _collection = CreateCustomerCollection ();
 
       _secondClientTransaction = ClientTransaction.CreateRootTransaction();
       _secondCollection = new DomainObjectCollection ();
@@ -79,27 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _secondCollection.Add (_secondCustomer1);
 
       _secondCollection.Insert (0, _customer1);
-    }
-
-    [Test]
-    public void CombineWithIdenticalIDAndDifferentDomainObjects ()
-    {
-      _secondCollection.Add (_secondCustomer1);
-
-      _secondCollection.Combine (_collection);
-
-      Assert.AreEqual (2, _secondCollection.Count);
-      Assert.AreSame (_secondCustomer1, _secondCollection[_secondCustomer1.ID]);
-      Assert.AreSame (_customer2, _secondCollection[_customer2.ID]);
-    }
-
-    private DomainObjectCollection CreateCustomerCollection ()
-    {
-      var collection = new DomainObjectCollection (typeof (Customer));
-      collection.Add (_customer1);
-      collection.Add (_customer2);
-
-      return collection;
     }
   }
 }

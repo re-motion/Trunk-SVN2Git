@@ -139,7 +139,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       ObjectList<Tenant> tenants = new ObjectList<Tenant> ();
       tenants.Add (this);
       foreach (Tenant tenant in Children)
-        tenants.Combine (tenant.GetHierachy ());
+        tenants.UnionWith (tenant.GetHierachy ());
 
       return tenants;
     }
