@@ -154,62 +154,6 @@ namespace Remotion.Data.DomainObjects
 
       return new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EventRaisingCollectionDataDecorator (eventRaiser, dataStore));
     }
-    
-    /// <summary>
-    /// Compares two instances of <see cref="DomainObjectCollection"/> for equality.
-    /// </summary>
-    /// <param name="collection1">The first <see cref="DomainObjectCollection"/>.</param>
-    /// <param name="collection2">The second <see cref="DomainObjectCollection"/>.</param>
-    /// <returns><see langword="true"/> if the collections are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2)
-    {
-      if (collection1 == null && collection2 == null)
-        return true;
-      if (collection1 == null)
-        return false;
-      if (collection2 == null)
-        return false;
-      if (collection1.Count != collection2.Count)
-        return false;
-
-      for (int i = 0; i < collection1.Count; i++)
-      {
-        if (collection1[i] != (collection2[i]))
-          return false;
-      }
-
-      return true;
-    }
-
-    /// <summary>
-    /// Compares two instances of <see cref="DomainObjectCollection"/> for equality.
-    /// </summary>
-    /// <param name="collection1">The first <see cref="DomainObjectCollection"/>.</param>
-    /// <param name="collection2">The second <see cref="DomainObjectCollection"/>.</param>
-    /// <param name="ignoreItemOrder">Indicates whether the compare should ignore the order of the items in the collections for the compare operation.</param>
-    /// <returns><see langword="true"/> if the collections are equal; otherwise, <see langword="false"/>.</returns>
-    public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2, bool ignoreItemOrder)
-    {
-      if (!ignoreItemOrder)
-        return (Compare (collection1, collection2));
-
-      if (collection1 == null && collection2 == null)
-        return true;
-      if (collection1 == null)
-        return false;
-      if (collection2 == null)
-        return false;
-      if (collection1.Count != collection2.Count)
-        return false;
-
-      foreach (DomainObject domainObject in collection1)
-      {
-        if (!collection2.ContainsObject (domainObject))
-          return false;
-      }
-
-      return true;
-    }
 
     /// <summary>
     /// Occurs before an object is added to the collection.
@@ -1085,6 +1029,22 @@ namespace Remotion.Data.DomainObjects
       throw new NotImplementedException ();
     }
     // ReSharper restore UnusedParameter.Local
+
+    [Obsolete (
+    "This method has been removed. Use SequenceEqual (extension method defined on DomainObjectCollectionExtensions) instead. Note that that "
+    + "method does not handle null arguments.", true)]
+    public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2)
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This method has been removed. Use SequenceEqual or SetEquals (extension methods defined on DomainObjectCollectionExtensions) instead. "
+        + "Note that those methods do not handle null arguments.", true)]
+    public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2, bool ignoreItemOrder)
+    {
+      throw new NotImplementedException ();
+    }
 
     #endregion
   }

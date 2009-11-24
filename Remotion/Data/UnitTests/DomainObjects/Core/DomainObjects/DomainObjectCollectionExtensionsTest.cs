@@ -30,6 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private DomainObjectCollection _collection;
     private Customer _customer1;
     private Customer _customer2;
+    private Customer _customer3NotInCollection;
     private DomainObject _customer1FromOtherTransaction;
 
     public override void SetUp ()
@@ -38,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
       _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
+      _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
       _customer1FromOtherTransaction = new ClientTransactionMock ().GetObject (_customer1.ID);
 
       _collection = new DomainObjectCollection (typeof (Customer)) { _customer1, _customer2 };
@@ -119,6 +121,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var itemsNotInCollection = _collection.GetItemsExcept (exceptedDomainObjects);
 
       Assert.That (itemsNotInCollection.ToArray (), Is.EqualTo (new[] { _customer2 }));
+    }
+
+    [Test]
+    public void SequenceEqual ()
+    {
+      Assert.That (_collection.SequenceEqual (new[] { _customer1, _customer2 }), Is.True);
+      Assert.That (_collection.SequenceEqual (new[] { _customer2, _customer1 }), Is.False);
+      Assert.That (_collection.SequenceEqual (new[] { _customer1, _customer2, _customer3NotInCollection }), Is.False);
+    }
+
+    [Test]
+    public void SequenceEqual_UsesReferenceComparison ()
+    {
+      Assert.That (_collection.SequenceEqual (new[] { _customer1FromOtherTransaction, _customer2 }), Is.False);
+    }
+
+    [Test]
+    public void SetEquals ()
+    {
+      Assert.That (_collection.SetEquals (new[] { _customer1, _customer2 }), Is.True);
+      Assert.That (_collection.SetEquals (new[] { _customer2, _customer1 }), Is.True);
+      Assert.That (_collection.SetEquals (new[] { _customer1, _customer2, _customer3NotInCollection }), Is.False);
+    }
+
+    [Test]
+    public void SetEquals_UsesReferenceComparison ()
+    {
+      Assert.That (_collection.SetEquals (new[] { _customer1FromOtherTransaction, _customer2 }), Is.False);
+    }
+
+    [Test]
+    public void SetEquals_HandlesDuplicates ()
+    {
+      Assert.That (_collection.SetEquals (new[] { _customer1, _customer2, _customer2, _customer1 }), Is.True);
     }
   }
 }

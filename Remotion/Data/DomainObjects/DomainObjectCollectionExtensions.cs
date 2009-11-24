@@ -27,6 +27,17 @@ namespace Remotion.Data.DomainObjects
   public static class DomainObjectCollectionExtensions
   {
     /// <summary>
+    /// Checks that the given <see cref="DomainObjectCollection"/> is not read only, throwing a <see cref="NotSupportedException"/> if it is.
+    /// </summary>
+    /// <param name="collection">The collection to check.</param>
+    /// <param name="message">The message the exception should have if one is thrown.</param>
+    public static void CheckNotReadOnly (this DomainObjectCollection collection, string message)
+    {
+      if (collection.IsReadOnly)
+        throw new NotSupportedException (message);
+    }
+
+    /// <summary>
     /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <see cref="DomainObjectCollection"/>, that are not already part of it.
     /// This method is a convenienve method combining <see cref="DomainObjectCollection.Contains"/> and <see cref="DomainObjectCollection.AddRange"/>. If there are no changes made to this
     /// collection, the <see cref="DomainObjectCollection"/> method does not touch the associated end point (if any).
@@ -79,14 +90,36 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Checks that the given <see cref="DomainObjectCollection"/> is not read only, throwing a <see cref="NotSupportedException"/> if it is.
+    /// Checks whether a <see cref="DomainObjectCollection"/> matches a sequence of <see cref="DomainObject"/> items by reference. 
+    /// The comparison takes the order of elements into account.
     /// </summary>
-    /// <param name="collection">The collection to check.</param>
-    /// <param name="message">The message the exception should have if one is thrown.</param>
-    public static void CheckNotReadOnly (this DomainObjectCollection collection, string message)
+    /// <param name="collection">The <see cref="DomainObjectCollection"/> to check.</param>
+    /// <param name="comparedSequence">The sequence of elements to check against.</param>
+    /// <returns><see langword="true"/> if the collection contains the same items as the comparedCollection in the same order; otherwise, <see langword="false"/>.</returns>
+    public static bool SequenceEqual (this DomainObjectCollection collection, IEnumerable<DomainObject> comparedSequence)
     {
-      if (collection.IsReadOnly)
-        throw new NotSupportedException (message);
+      return collection.Cast<DomainObject> ().SequenceEqual (comparedSequence);
+    }
+
+    /// <summary>
+    /// Checks whether a <see cref="DomainObjectCollection"/> matches another set of <see cref="DomainObject"/> items by reference. 
+    /// The comparison does not take the order of elements into account.
+    /// </summary>
+    /// <param name="collection">The <see cref="DomainObjectCollection"/> to check.</param>
+    /// <param name="comparedSet">The set of elements to check against.</param>
+    /// <returns><see langword="true"/> if the collection contains the same items as the set in any order; otherwise, <see langword="false"/>.</returns>
+    public static bool SetEquals (this DomainObjectCollection collection, IEnumerable<DomainObject> comparedSet)
+    {
+      var setOfComparedObjects = new HashSet<DomainObject> (); // this is used to get rid of all duplicates to get a correct result
+      foreach (var domainObject in comparedSet)
+      {
+        if (!collection.ContainsObject (domainObject))
+          return false;
+
+        setOfComparedObjects.Add (domainObject);
+      }
+
+      return collection.Count == setOfComparedObjects.Count; // the collection must contain exactly the number of items in the comparedSet - without dups
     }
   }
 }

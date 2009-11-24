@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -230,7 +231,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected internal override bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData)
     {
-      return !DomainObjectCollection.Compare (currentData, originalData, true);
+      ArgumentUtility.CheckNotNull ("currentData", currentData);
+      ArgumentUtility.CheckNotNull ("originalData", originalData);
+      
+      return !currentData.SetEquals (originalData.Cast<DomainObject>());
     }
   }
 }

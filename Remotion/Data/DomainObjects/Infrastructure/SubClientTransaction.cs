@@ -367,7 +367,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected internal override bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData)
     {
-      return !DomainObjectCollection.Compare (currentData, originalData, false);
+      ArgumentUtility.CheckNotNull ("currentData", currentData);
+      ArgumentUtility.CheckNotNull ("originalData", originalData);
+
+      return !currentData.SequenceEqual (originalData.Cast<DomainObject> ());
     }
   }
 }
