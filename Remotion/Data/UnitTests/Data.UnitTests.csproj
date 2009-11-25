@@ -253,6 +253,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithProtectedCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\DomainObjectWithCollectionMissingCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionNotDerivedFromDomainObjectCollection.cs" />
@@ -930,9 +931,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\RegisterInRelationEndPointMapTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointBaseTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointCollectionTest.cs">

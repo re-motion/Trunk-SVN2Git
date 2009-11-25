@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// is regarded to have changed when either the opposite collection reference has changed or the sequence of items has changed. The order of the 
   /// items is significant.
   /// </summary>
+  [Serializable]
   public class SubCollectionEndPointChangeDetectionStrategy : ICollectionEndPointChangeDetectionStrategy
   {
     public bool HasChanged (ICollectionEndPoint endPoint)

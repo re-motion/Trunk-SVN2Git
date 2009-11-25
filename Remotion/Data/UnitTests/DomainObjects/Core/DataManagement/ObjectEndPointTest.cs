@@ -29,7 +29,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class ObjectEndPointTest : RelationEndPointBaseTest
+  public class ObjectEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
     private ObjectEndPoint _endPoint;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointID = new RelationEndPointID (DomainObjectIDs.OrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
       _oppositeObjectID = DomainObjectIDs.Order1;
 
-      _endPoint = CreateObjectEndPoint (_endPointID, _oppositeObjectID);
+      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oppositeObjectID);
     }
 
     [Test]
@@ -58,13 +58,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void InitializeWithInvalidRelationEndPointID ()
     {
       ObjectID id = new ObjectID ("Order", Guid.NewGuid ());
-      ObjectEndPoint endPoint = CreateObjectEndPoint (null, id);
+      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (null, id);
     }
 
     [Test]
     public void InitializeWithNullObjectID ()
     {
-      ObjectEndPoint endPoint = CreateObjectEndPoint (_endPointID, null);
+      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
 
       Assert.IsNull (endPoint.OriginalOppositeObjectID);
       Assert.IsNull (endPoint.OppositeObjectID);
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChangedWithInitializedWithNull ()
     {
-      ObjectEndPoint endPoint = CreateObjectEndPoint (_endPointID, null);
+      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
 
       Assert.IsFalse (endPoint.HasChanged);
     }
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasChangedWithOldNullValue ()
     {
-      ObjectEndPoint endPoint = CreateObjectEndPoint (_endPointID, null);
+      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
       endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
 
       Assert.IsTrue (endPoint.HasChanged);
@@ -203,14 +203,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasBeenTouchedWithInitializedWithNull ()
     {
-      ObjectEndPoint endPoint = CreateObjectEndPoint (_endPointID, null);
+      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
       Assert.IsFalse (endPoint.HasBeenTouched);
     }
 
     [Test]
     public void HasBeenTouchedWithOldNullValue ()
     {
-      ObjectEndPoint endPoint = CreateObjectEndPoint (_endPointID, null);
+      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
       endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
 
       Assert.IsTrue (endPoint.HasBeenTouched);
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var virtualEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       var oppositeID = DomainObjectIDs.OrderTicket1;
-      var virtualEndPoint = CreateObjectEndPoint (virtualEndPointID, oppositeID);
+      var virtualEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (virtualEndPointID, oppositeID);
 
       Assert.That (virtualEndPoint.IsVirtual, Is.True);
       Assert.That (virtualEndPoint.HasBeenTouched, Is.False);
@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void IsVirtual ()
     {
       DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
-      RelationEndPoint orderEndPoint = CreateObjectEndPoint (orderContainer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", DomainObjectIDs.OrderTicket1);
+      RelationEndPoint orderEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (orderContainer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", DomainObjectIDs.OrderTicket1);
 
       Assert.AreEqual (true, orderEndPoint.IsVirtual);
     }
@@ -392,7 +392,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_ChangedIntoUnchanged ()
     {
-      ObjectEndPoint endPoint2 = CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
 
       _endPoint.OppositeObjectID = DomainObjectIDs.Order4;
 
@@ -412,7 +412,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoUnchanged ()
     {
-      ObjectEndPoint endPoint2 = CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
 
       Assert.IsFalse (endPoint2.HasChanged);
       Assert.IsFalse (endPoint2.HasBeenTouched);
@@ -430,7 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoChanged ()
     {
-      ObjectEndPoint endPoint2 = CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
 
       endPoint2.OppositeObjectID = DomainObjectIDs.Order3;
 
@@ -450,7 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_ChangedIntoChanged ()
     {
-      ObjectEndPoint endPoint2 = CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
 
       _endPoint.OppositeObjectID = DomainObjectIDs.Order3;
       endPoint2.OppositeObjectID = DomainObjectIDs.Order4;
@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoEqual ()
     {
-      ObjectEndPoint endPoint2 = CreateObjectEndPoint (_endPointID, _endPoint.OppositeObjectID);
+      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _endPoint.OppositeObjectID);
 
       Assert.IsFalse (endPoint2.HasChanged);
       Assert.IsFalse (endPoint2.HasBeenTouched);

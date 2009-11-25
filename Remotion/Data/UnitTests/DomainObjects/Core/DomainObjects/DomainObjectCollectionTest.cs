@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -623,7 +624,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationModification ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders();
+      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
       IDomainObjectCollectionData endPointDataStore = DomainObjectCollectionDataTestHelper
           .GetCollectionDataAndCheckType<IDomainObjectCollectionData> (endPoint.OppositeDomainObjects)
           .GetUndecoratedDataStore();
@@ -641,7 +642,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationModification_CollectionIsReadOnly ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders();
+      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new OrderCollection();
       newCollection.SetIsReadOnly (true);
@@ -654,7 +655,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
     public void CreateAssociationModification_DifferentCollectionTypes ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders();
+      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new ObjectList<Order>();
       newCollection.CreateAssociationModification (endPoint);
@@ -665,7 +666,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         "This collection has a different item type than the end point's current opposite collection.")]
     public void CreateAssociationModification_DifferentRequiredItemType ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders();
+      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new DomainObjectCollection (typeof (Customer));
       newCollection.CreateAssociationModification (endPoint);
@@ -674,7 +675,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateAssociationModification_SelfReplace ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPointForOrders();
+      CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var modification = (CollectionEndPointReplaceWholeCollectionModification)
                          endPoint.OppositeDomainObjects.CreateAssociationModification (endPoint);
@@ -1433,15 +1434,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Delegate[] destinationInvocationList = destinationEvent.GetInvocationList ();
 
       Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");
-    }
-
-    private CollectionEndPoint CreateCollectionEndPointForOrders ()
-    {
-      var customerEndPointID = new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      return new CollectionEndPoint (
-          ClientTransactionMock,
-          customerEndPointID,
-          new DomainObject[0]);
     }
 
     private OrderCollection CreateAssociatedCollection ()

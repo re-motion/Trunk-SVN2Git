@@ -27,10 +27,8 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class CollectionEndPointIntegrationTest : RelationEndPointBaseTest
+  public class CollectionEndPointIntegrationTest : ClientTransactionBaseTest
   {
-    private RelationEndPointID _customerEndPointID;
-
     private Order _order1; // belongs to customer1
     private Order _orderWithoutOrderItem; // belongs to customer1
     private Order _order2; // belongs to customer3
@@ -41,12 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _customerEndPointID = new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _customerEndPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
+      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders (_order1, _orderWithoutOrderItem);
     }
 
     [Test]

@@ -16,14 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class RelationEndPointCollectionTest : RelationEndPointBaseTest
+  public class RelationEndPointCollectionTest : ClientTransactionBaseTest
   {
     private RelationEndPoint _orderTicketEndPoint;
     private RelationEndPointCollection _endPoints;
@@ -32,8 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      _orderTicketEndPoint = CreateObjectEndPoint (orderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.Order1);
+      _orderTicketEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.Order1);
       _endPoints = new RelationEndPointCollection (ClientTransactionMock);
     }
 
@@ -83,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ContainsRelationEndPointFalse ()
     {
       _endPoints.Add (_orderTicketEndPoint);
-      ObjectEndPoint copy = CreateObjectEndPoint (_orderTicketEndPoint.ID, ((ObjectEndPoint) _orderTicketEndPoint).OppositeObjectID);
+      ObjectEndPoint copy = RelationEndPointObjectMother.CreateObjectEndPoint (_orderTicketEndPoint.ID, ((ObjectEndPoint) _orderTicketEndPoint).OppositeObjectID);
 
       Assert.IsFalse (_endPoints.Contains (copy));
     }

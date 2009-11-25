@@ -21,7 +21,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -171,6 +173,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
       var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
       Assert.That (deserializedCollectionEndPoint, Is.Not.Null);
+    }
+
+    [Test]
+    public void Serialization_ChangeDetectionStrategy ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var originalRootTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          endPointID,
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          new DomainObject[0]);
+      var originalSubTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
+          endPointID, 
+          new SubCollectionEndPointChangeDetectionStrategy (), 
+          new DomainObject[0]);
+
+      var deserializedRootTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalRootTxEndPoint);
+      var deserializedSubTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalSubTxEndPoint);
+
+      Assert.That (deserializedRootTxEndPoint.ChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
+      Assert.That (deserializedSubTxEndPoint.ChangeDetectionStrategy, Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
     }
   }
 }

@@ -210,7 +210,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
-      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, initialContents);
+      var changeDetectionStrategy = ClientTransaction.ParentTransaction == null ? (ICollectionEndPointChangeDetectionStrategy) new RootCollectionEndPointChangeDetectionStrategy () : new SubCollectionEndPointChangeDetectionStrategy ();
+      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, changeDetectionStrategy, initialContents);
       Add (collectionEndPoint);
 
       return collectionEndPoint.OppositeDomainObjects;

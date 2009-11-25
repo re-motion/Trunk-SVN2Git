@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -65,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
       _relationEndPointID = new RelationEndPointID (DomainObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-      _collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, RelationEndPointID, new DomainObject[0]);
+      _collectionEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_relationEndPointID, new DomainObject[0]);
       _collectionEventReceiver = new DomainObjectCollectionEventReceiver (_collectionEndPoint.OppositeDomainObjects);
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();

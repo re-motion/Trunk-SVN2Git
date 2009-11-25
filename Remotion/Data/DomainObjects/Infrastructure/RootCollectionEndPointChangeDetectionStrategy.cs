@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// is regarded to have changed when either the opposite collection reference has changed or the set of items has changed. The order of the items
   /// is ignored.
   /// </summary>
+  [Serializable]
   public class RootCollectionEndPointChangeDetectionStrategy : ICollectionEndPointChangeDetectionStrategy
   {
     public bool HasChanged (ICollectionEndPoint endPoint)

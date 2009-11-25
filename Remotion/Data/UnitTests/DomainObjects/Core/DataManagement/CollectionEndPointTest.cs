@@ -30,7 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class CollectionEndPointTest : RelationEndPointBaseTest
+  public class CollectionEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _customerEndPointID;
     private CollectionEndPoint _customerEndPoint;
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _customerEndPoint = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
+      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
     }
 
     [Test]
@@ -76,14 +76,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentNullException))]
     public void Initialize_WithInvalidRelationEndPointID_Throws ()
     {
-      CreateCollectionEndPoint (null, new DomainObject[0]);
+      RelationEndPointObjectMother.CreateCollectionEndPoint (null, new DomainObject[0]);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Initialize_WithNullInitialContents_Throws ()
     {
-      CreateCollectionEndPoint (_customerEndPointID, null);
+      RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = new RelationEndPointID (
           new ObjectID (classDefinition, Guid.NewGuid ()), 
           typeof (DomainObjectWithCollectionMissingCtor) + ".OppositeObjects");
-      CreateCollectionEndPoint (endPointID, new DomainObject[0]);
+      RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, new DomainObject[0]);
     }
 
     [Test]
@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count));
 
-      IEndPoint endPointOfObjectBeingRemoved = CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
+      IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (_order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
       var modification = _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
       modification.Begin ();
       modification.Perform ();
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count));
 
-      IEndPoint endPointOfObjectBeingRemoved = CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
+      IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (_order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
       var modification =
           _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
       modification.Perform();
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count));
 
-      IEndPoint endPointOfObjectBeingRemoved = CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
+      IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (_order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
       var modification = _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
       modification.Begin ();
       _customerEndPoint.PerformDelete ();
@@ -318,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "Parameter name: oppositeDomainObjects")]
     public void ReplaceOppositeCollection_NewCollectionAlreadyAssociated ()
     {
-      var otherEndPoint = CreateCollectionEndPoint (_customerEndPointID, new DomainObject[0]);
+      var otherEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new DomainObject[0]);
       _customerEndPoint.ReplaceOppositeCollection (otherEndPoint.OppositeDomainObjects);
     }
 
@@ -429,8 +429,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_ChangedIntoUnchanged ()
     {
-      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
 
       var newOrder = Order.NewObject ();
       endPoint2.OppositeDomainObjects.Add (newOrder);
@@ -457,8 +457,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoUnchanged ()
     {
-      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
 
       Assert.That (endPoint1.HasChanged, Is.False);
       Assert.That (endPoint1.HasBeenTouched, Is.False);
@@ -482,8 +482,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_ChangedIntoChanged ()
     {
-      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
 
       var newOrder = Order.NewObject ();
       endPoint2.OppositeDomainObjects.Add (newOrder);
@@ -512,8 +512,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoChanged ()
     {
-      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
 
       endPoint1.OppositeDomainObjects.Clear ();
 
@@ -539,8 +539,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoEqual ()
     {
-      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
 
       Assert.That (endPoint1.HasChanged, Is.False);
       Assert.That (endPoint1.HasBeenTouched, Is.False);

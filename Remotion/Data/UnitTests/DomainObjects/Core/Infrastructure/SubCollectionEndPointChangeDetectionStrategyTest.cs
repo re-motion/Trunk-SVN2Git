@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -26,7 +27,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   [TestFixture]
   public class SubCollectionEndPointChangeDetectionStrategyTest : ClientTransactionBaseTest
   {
-    private RelationEndPointID _customerEndPointID;
     private CollectionEndPoint _customerEndPoint;
     private Order _order1; // Customer1
     private Order _orderWithoutOrderItem; // Customer1
@@ -37,12 +37,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       base.SetUp ();
 
-      _customerEndPointID = new RelationEndPointID (DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _customerEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, new[] { _order1, _orderWithoutOrderItem });
+      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders (_order1, _orderWithoutOrderItem);
 
       _strategy = new SubCollectionEndPointChangeDetectionStrategy ();
     }
