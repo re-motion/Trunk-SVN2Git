@@ -1054,30 +1054,6 @@ public abstract class ClientTransaction
   }  
 
   /// <summary>
-  /// Sets a relation between two relationEndPoints.
-  /// </summary>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> referring the <see cref="DataManagement.RelationEndPoint"/> that should relate to <paramref name="newRelatedObject"/>. Must not be <see langword="null"/>.</param>
-  /// <param name="newRelatedObject">The new <see cref="DomainObject"/> that should be related; <see langword="null"/> indicates that no object should be referenced.</param>
-  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
-  /// <exception cref="System.ArgumentException">
-  ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/><br /> -or- <br />
-  ///   <paramref name="relationEndPointID"/> belongs to a <see cref="DomainObject"/> that has been deleted.<br /> -or- <br />
-  ///   <paramref name="newRelatedObject"/> has been deleted.
-  /// </exception>
-  /// <exception cref="DataManagement.ClientTransactionsDifferException">
-  ///   <paramref name="newRelatedObject"/> does belongs to a different <b>ClientTransaction</b>.
-  /// </exception>
-  protected internal virtual void SetRelatedObject (RelationEndPointID relationEndPointID, DomainObject newRelatedObject)
-  {
-    ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-    using (EnterNonDiscardingScope ())
-    {
-      GetObject (relationEndPointID.ObjectID, true); // ensure that the object is actually loaded before accessing its related objects
-      _dataManager.RelationEndPointMap.SetRelatedObject (relationEndPointID, newRelatedObject);
-    }
-  }
-  
-  /// <summary>
   /// Deletes a <see cref="DomainObject"/>.
   /// </summary>
   /// <param name="domainObject">The <see cref="DomainObject"/> to delete. Must not be <see langword="null"/>.</param>

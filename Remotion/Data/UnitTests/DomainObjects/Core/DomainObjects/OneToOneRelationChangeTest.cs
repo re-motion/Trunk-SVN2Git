@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -507,11 +508,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         Assert.Fail ("DataManagementException was expected");
       }
-      catch (DataManagementException ex)
+      catch (ArgumentTypeException ex)
       {
         string expectedMessage = string.Format (
             "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}',"
-            + " because it is not compatible with the type of the property.",
+            + " because it is not compatible with the type of the property.\r\nParameter name: newRelatedObject",
             DomainObjectIDs.Customer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.OrderTicket1);
 
         Assert.AreEqual (expectedMessage, ex.Message);
@@ -519,7 +520,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (DataManagementException))]
+    [ExpectedException (typeof (ArgumentTypeException))]
     public void SetRelatedObjectWithInvalidObjectClassOnVirtualRelationEndPoint ()
     {
       _order.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", Ceo.NewObject ());

@@ -90,11 +90,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return base.GetRelatedObjects (relationEndPointID);
     }
 
-    public new void SetRelatedObject (RelationEndPointID relationEndPointID, DomainObject newRelatedObject)
-    {
-      base.SetRelatedObject (relationEndPointID, newRelatedObject);
-    }
-
     public new void SetClientTransaction (DataContainer dataContainer)
     {
       base.SetClientTransaction (dataContainer);

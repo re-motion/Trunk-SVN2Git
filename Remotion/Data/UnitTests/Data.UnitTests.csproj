@@ -254,6 +254,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointValueCheckerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithProtectedCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\DomainObjectWithCollectionMissingCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionNotDerivedFromDomainObjectCollection.cs" />

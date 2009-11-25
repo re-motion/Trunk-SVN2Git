@@ -156,15 +156,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "SetRelatedObject can only be called for end points with a cardinality of 'One'.")]
-    public void SetRelatedObjectWithEndPointIDOfWrongCardinality ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.SetRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), OrderItem.NewObject ());
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "GetRelatedObjects can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
     public void GetRelatedObjectsWithEndPointIDOfWrongCardinality ()
@@ -180,22 +171,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       _map.GetOriginalRelatedObjects (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-     ExpectedMessage = "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' of DomainObject 'Order|.*' cannot be set to DomainObject 'OrderTicket|.*', because the objects do not belong to the same ClientTransaction.",
-        MatchType = MessageMatch.Regex)]
-    public void SetRelatedObjectWithOtherClientTransaction ()
-    {
-      Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-
-      OrderTicket orderTicket2;
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        orderTicket2 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
-      }
-      _map.SetRelatedObject (new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), orderTicket2);
     }
 
     [Test]
@@ -226,6 +201,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (parentClient, Is.Not.Null);
 
       _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.OppositeEndPointDefinition);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot lazily load the real part of a relation. RegisterExistingDataContainer or RegisterNewDataContainer must be called before any "
+        + "non-virtual end points are retrieved.")]
+    public void GetRelationEndPointWithLazyLoad_DoesNotSupportRealEndPoints_OfObjectsNotYetRegistered ()
+    {
+      var locationEndPointDefinition = DomainObjectIDs.Location1.ClassDefinition.GetRelationEndPointDefinition (typeof (Location) + ".Client");
+      var locationEndPointID = new RelationEndPointID (DomainObjectIDs.Location1, locationEndPointDefinition);
+      _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
     }
 
     [Test]

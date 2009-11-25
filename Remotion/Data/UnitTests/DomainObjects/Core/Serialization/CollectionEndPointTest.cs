@@ -181,12 +181,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var originalRootTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
           endPointID,
-          new RootCollectionEndPointChangeDetectionStrategy (),
-          new DomainObject[0]);
+          new RootCollectionEndPointChangeDetectionStrategy (), ClientTransaction.Current, new DomainObject[0]);
       var originalSubTxEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (
           endPointID, 
-          new SubCollectionEndPointChangeDetectionStrategy (), 
-          new DomainObject[0]);
+          new SubCollectionEndPointChangeDetectionStrategy (), ClientTransaction.Current, new DomainObject[0]);
 
       var deserializedRootTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalRootTxEndPoint);
       var deserializedSubTxEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalSubTxEndPoint);

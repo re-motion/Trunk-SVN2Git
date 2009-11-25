@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -337,26 +336,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           new RelationEndPointID (industrialSector.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
 
       Assert.AreSame (expectedPartner, companies[DomainObjectIDs.Partner2]);
-    }
-
-    [Test]
-    [ExpectedException (typeof (DataManagementException))]
-    public void SetRelatedObjectWithInvalidType ()
-    {
-      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      DomainObject customer = ClientTransactionMock.GetObject (DomainObjectIDs.Customer1);
-
-      ClientTransactionMock.SetRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"), customer);
-    }
-
-    [Test]
-    [ExpectedException (typeof (DataManagementException))]
-    public void SetRelatedObjectWithBaseType ()
-    {
-      DomainObject person = ClientTransactionMock.GetObject (DomainObjectIDs.Person1);
-      DomainObject company = ClientTransactionMock.GetObject (DomainObjectIDs.Company1);
-
-      ClientTransactionMock.SetRelatedObject (new RelationEndPointID (person.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.AssociatedPartnerCompany"), company);
     }
 
     [Test]

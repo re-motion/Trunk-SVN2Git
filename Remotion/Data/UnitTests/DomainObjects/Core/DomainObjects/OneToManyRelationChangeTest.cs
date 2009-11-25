@@ -446,7 +446,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (DataManagementException))]
+    [ExpectedException (typeof (ArgumentTypeException))]
     public void SetRelatedObjectWithInvalidObjectClass ()
     {
       _order.SetRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", Company.GetObject (DomainObjectIDs.Company1));  

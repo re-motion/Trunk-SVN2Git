@@ -208,6 +208,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    public void SetOppositeObjectWithNotifications (DomainObject newRelatedObject)
+    {
+      RelationEndPointValueChecker.CheckClientTransaction (
+          this, 
+          newRelatedObject, 
+          "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
+
+      RelationEndPointValueChecker.CheckNotDeleted (this, newRelatedObject);
+      RelationEndPointValueChecker.CheckNotDeleted (this, GetDomainObject ());
+
+      CheckNewRelatedObjectType (newRelatedObject);
+      
+      var setModification = CreateSetModification (newRelatedObject);
+      var bidirectionalModification = setModification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
+    }
+
     public DomainObject GetOppositeObject (bool includeDeleted)
     {
       if (OppositeObjectID == null)
@@ -225,6 +242,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
         var dataContainer = ClientTransaction.GetDataContainer (GetDomainObject ());
         var foreignKeyProperty = dataContainer.PropertyValues[PropertyName];
         foreignKeyProperty.SetRelationValue (_oppositeObjectID);
+      }
+    }
+
+    private void CheckNewRelatedObjectType (DomainObject newRelatedObject)
+    {
+      if (newRelatedObject == null)
+        return;
+
+      if (!OppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
+      {
+        var message = string.Format (
+            "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
+            + "with the type of the property.",
+            newRelatedObject.ID,
+            PropertyName,
+            ObjectID);
+        throw new ArgumentTypeException (
+            message, 
+            "newRelatedObject", 
+            OppositeEndPointDefinition.ClassDefinition.ClassType, 
+            newRelatedObject.ID.ClassDefinition.ClassType);
       }
     }
 

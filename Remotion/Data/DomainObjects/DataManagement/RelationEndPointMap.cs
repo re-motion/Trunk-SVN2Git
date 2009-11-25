@@ -38,7 +38,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly RelationEndPointCollection _relationEndPoints;
-    private readonly RelationEndPointModifier _modifier;
 
     // construction and disposing
 
@@ -52,7 +51,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _relationEndPoints = new RelationEndPointCollection (_clientTransaction);
-      _modifier = new RelationEndPointModifier (this);
     }
 
     // methods and properties
@@ -202,12 +200,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
-    public void SetRelatedObject (RelationEndPointID endPointID, DomainObject newRelatedObject)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      _modifier.SetRelatedObject (endPointID, newRelatedObject);
-    }
-
     public void RegisterObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -339,6 +331,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_relationEndPoints.Contains (endPointID))
         return _relationEndPoints[endPointID];
+
+      if (!endPointID.Definition.IsVirtual)
+      {
+        throw new InvalidOperationException (
+            "Cannot lazily load the real part of a relation. RegisterExistingDataContainer or RegisterNewDataContainer must be called before any "
+            + "non-virtual end points are retrieved.");
+      }
 
       if (endPointID.Definition.Cardinality == CardinalityType.One)
         _clientTransaction.LoadRelatedObject (endPointID);

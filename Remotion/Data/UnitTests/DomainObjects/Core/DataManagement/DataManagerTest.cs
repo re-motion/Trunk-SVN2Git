@@ -163,8 +163,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer orderTicket2 = CreateOrderTicket2DataContainer ();
       CreateOrderWithoutOrderItemDataContainer();
 
-      RelationEndPointID order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      ClientTransactionMock.SetRelatedObject (order1EndPointID, orderTicket2.DomainObject);
+      var order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectWithNotifications (orderTicket2.DomainObject);
 
       DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
       Assert.AreEqual (4, changedObjects.Count);
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer orderWithoutOrderItemDataContainer = CreateOrderWithoutOrderItemDataContainer ();
 
       RelationEndPointID order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      ClientTransactionMock.SetRelatedObject (order1EndPointID, orderTicket2.DomainObject);
+      ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectWithNotifications (orderTicket2.DomainObject);
 
       _dataManager.Commit ();
 

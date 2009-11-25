@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -95,7 +93,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      transaction.SetRelatedObject (CreateRelationEndPointID (propertyAccessor), (DomainObject) value);
+      transaction.GetObject (propertyAccessor.DomainObject.ID, true); // ensure that the object is actually loaded before accessing the end-point
+
+      var endPointID = CreateRelationEndPointID (propertyAccessor);
+      var endPoint = (ObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      endPoint.SetOppositeObjectWithNotifications ((DomainObject) value);
     }
 
     public object GetOriginalValueWithoutTypeCheck (PropertyAccessor propertyAccessor, ClientTransaction transaction)

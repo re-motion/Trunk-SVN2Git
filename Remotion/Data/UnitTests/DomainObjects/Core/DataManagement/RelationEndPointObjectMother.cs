@@ -29,16 +29,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         RelationEndPointID endPointID,
         IEnumerable<DomainObject> initialContents)
     {
-      return CreateCollectionEndPoint (endPointID, new RootCollectionEndPointChangeDetectionStrategy (), initialContents);
+      return CreateCollectionEndPoint (endPointID, new RootCollectionEndPointChangeDetectionStrategy (), ClientTransaction.Current, initialContents);
     }
 
     public static CollectionEndPoint CreateCollectionEndPoint (
-        RelationEndPointID endPointID,
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
+        RelationEndPointID endPointID, 
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy, 
+        ClientTransaction transaction, 
         IEnumerable<DomainObject> initialContents)
     {
       var newCollectionEndPoint = new CollectionEndPoint (
-          ClientTransaction.Current,
+          transaction,
           endPointID,
           changeDetectionStrategy,
           initialContents);

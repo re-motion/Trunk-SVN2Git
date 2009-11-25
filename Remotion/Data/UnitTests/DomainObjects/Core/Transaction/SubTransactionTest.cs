@@ -392,6 +392,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void ResettingDeletedNewUnidirectionalInSubTransactionWorks2 ()
+    {
+      Customer location = Customer.NewObject ();
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        location.Orders = new OrderCollection ();
+      }
+    }
+
+    [Test]
+    public void ResettingDeletedNewUnidirectionalInSubTransactionWorks3 ()
+    {
+      Location location = Location.NewObject ();
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        location.Client = Client.NewObject();
+      }
+    }
+
+    [Test]
     public void ResettingDeletedLoadedUnidirectionalInRootTransactionWorks ()
     {
       Location location = Location.NewObject ();
