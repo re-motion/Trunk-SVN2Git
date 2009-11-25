@@ -135,10 +135,14 @@ public abstract class ClientTransaction
   
   // construction and disposing
 
-  protected ClientTransaction (Dictionary<Enum, object> applicationData, ClientTransactionExtensionCollection extensions)
+  protected ClientTransaction (
+      Dictionary<Enum, object> applicationData, 
+      ClientTransactionExtensionCollection extensions, 
+      ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
   {
     ArgumentUtility.CheckNotNull ("applicationData", applicationData);
     ArgumentUtility.CheckNotNull ("extensions", extensions);
+    ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
 
     IsReadOnly = false;
     _isDiscarded = false;
@@ -151,7 +155,7 @@ public abstract class ClientTransaction
     _listeners.AddListener (new ExtensionClientTransactionListener (this, _extensions));
 
     _applicationData = applicationData;
-    _dataManager = new DataManager (this);
+    _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
   }
 
   // abstract methods and properties
@@ -373,22 +377,6 @@ public abstract class ClientTransaction
   /// The StorageProvider for the related objects could not be initialized.
   /// </exception>
   protected abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
-
-  /// <summary>
-  /// Determines whether a specific collection end point's data has changed with the semantics defined by this transaction.
-  /// </summary>
-  /// <param name="originalData">The end point to check for changes.</param>
-  /// <param name="currentData">The end point to check for changes.</param>
-  /// <returns>
-  /// True if the collection end point data has changed; otherwise, false.
-  /// </returns>
-  /// <remarks>
-  /// Implementations will usually just compare the <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection with the
-  /// <see cref="CollectionEndPoint.OriginalOppositeDomainObjectsContents"/> collection to check for changes. However, implementations can choose whether
-  /// to ignore ordering or not for such a check. Ignoring ordering means a collection end point will not be committed if only the ordering of
-  /// its opposite objects has changed.
-  /// </remarks>
-  protected internal abstract bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData);
 
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.

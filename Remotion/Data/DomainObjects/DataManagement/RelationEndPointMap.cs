@@ -34,17 +34,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // member fields
 
     private readonly ClientTransaction _clientTransaction;
+    private readonly ICollectionEndPointChangeDetectionStrategy _collectionEndPointChangeDetectionStrategy;
+
     private readonly IClientTransactionListener _transactionEventSink;
     private readonly RelationEndPointCollection _relationEndPoints;
     private readonly RelationEndPointModifier _modifier;
 
     // construction and disposing
 
-    public RelationEndPointMap (ClientTransaction clientTransaction)
+    public RelationEndPointMap (ClientTransaction clientTransaction, ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
 
       _clientTransaction = clientTransaction;
+      _collectionEndPointChangeDetectionStrategy = collectionEndPointChangeDetectionStrategy;
+
       _transactionEventSink = clientTransaction.TransactionEventSink;
       _relationEndPoints = new RelationEndPointCollection (_clientTransaction);
       _modifier = new RelationEndPointModifier (this);
@@ -65,6 +70,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
+    }
+
+    public ICollectionEndPointChangeDetectionStrategy CollectionEndPointChangeDetectionStrategy
+    {
+      get { return _collectionEndPointChangeDetectionStrategy; }
     }
 
     public void Commit (DomainObjectCollection deletedDomainObjects)
@@ -210,8 +220,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("initialContents", initialContents);
 
-      var changeDetectionStrategy = ClientTransaction.ParentTransaction == null ? (ICollectionEndPointChangeDetectionStrategy) new RootCollectionEndPointChangeDetectionStrategy () : new SubCollectionEndPointChangeDetectionStrategy ();
-      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, changeDetectionStrategy, initialContents);
+      var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, _collectionEndPointChangeDetectionStrategy, initialContents);
       Add (collectionEndPoint);
 
       return collectionEndPoint.OppositeDomainObjects;
@@ -397,7 +406,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // Note: RelationEndPointMap should never be serialized on its own; always start from the DataManager.
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
-        : this (info.GetValueForHandle<ClientTransaction>())
+        : this (info.GetValueForHandle<ClientTransaction>(), info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy>())
     {
       ArgumentUtility.CheckNotNull ("info", info);
       using (_clientTransaction.EnterNonDiscardingScope())
@@ -412,6 +421,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("info", info);
       info.AddHandle (_clientTransaction);
+      info.AddHandle (_collectionEndPointChangeDetectionStrategy);
       var endPointArray = new RelationEndPoint[Count];
       _relationEndPoints.CopyTo (endPointArray, 0);
       info.AddArray (endPointArray);

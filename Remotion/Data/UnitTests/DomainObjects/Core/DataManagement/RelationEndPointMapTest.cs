@@ -227,5 +227,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.OppositeEndPointDefinition);
     }
+
+    [Test]
+    public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+
+      var endPoint = (CollectionEndPoint) _map[endPointID];
+      Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
+    }
   }
 }

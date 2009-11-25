@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -32,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      DataManager dataManager = new DataManager (ClientTransactionMock);
+      DataManager dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy());
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.IsNotNull (dataManager2);
       Assert.AreNotSame (dataManager2, dataManager);

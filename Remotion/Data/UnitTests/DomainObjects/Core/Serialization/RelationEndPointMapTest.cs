@@ -18,8 +18,8 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -43,8 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       RelationEndPointMap map = ClientTransactionMock.DataManager.RelationEndPointMap;
 
       RelationEndPointMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
-      Assert.IsNotNull (deserializedMap);
-      Assert.AreNotSame (map, deserializedMap);
+      Assert.That (deserializedMap, Is.Not.Null);
+      Assert.That (deserializedMap, Is.Not.SameAs (map));
     }
 
     [Test]
@@ -52,16 +52,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       RelationEndPointMap map = ClientTransactionMock.DataManager.RelationEndPointMap;
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
-      Assert.AreEqual (5, map.Count);
+      Assert.That (map.Count, Is.EqualTo (5));
 
       var deserializedMap = Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointMap;
 
       Assert.That (deserializedMap.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedMap.ClientTransaction, Is.InstanceOfType (typeof (ClientTransactionMock)));
       Assert.That (deserializedMap.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
+
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"), 
           Is.SameAs (PrivateInvoke.GetNonPublicProperty (deserializedMap.ClientTransaction, "TransactionEventSink")));
-      Assert.AreEqual (5, deserializedMap.Count);
+      
+      Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.Not.Null);
+      Assert.That (deserializedMap.CollectionEndPointChangeDetectionStrategy, Is.InstanceOfType (typeof (RootCollectionEndPointChangeDetectionStrategy)));
+
+      Assert.That (deserializedMap.Count, Is.EqualTo (5));
 
       var collectionEndPoint = (CollectionEndPoint)
           deserializedMap[new RelationEndPointID (DomainObjectIDs.Order1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"))];

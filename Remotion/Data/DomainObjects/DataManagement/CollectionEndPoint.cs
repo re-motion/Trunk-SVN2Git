@@ -243,7 +243,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
       _dataStore = info.GetValue<DomainObjectCollectionData> ();
-      _changeDetectionStrategy = info.GetValue<ICollectionEndPointChangeDetectionStrategy> ();
+      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
     }
@@ -255,7 +255,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_originalOppositeDomainObjectsReference);
       info.AddBoolValue (_hasBeenTouched);
       info.AddValue (_dataStore);
-      info.AddValue (_changeDetectionStrategy);
+      info.AddHandle (_changeDetectionStrategy);
     }
 
     private void FixupAssociatedEndPoint (DomainObjectCollection collection)

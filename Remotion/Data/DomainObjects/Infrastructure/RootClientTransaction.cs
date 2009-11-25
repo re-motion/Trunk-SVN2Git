@@ -16,8 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -52,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Initializes a new instance of the <b>RootClientTransaction</b> class.
     /// </summary>
     protected RootClientTransaction ()
-      : base (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection ())
+      : base (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection (), new RootCollectionEndPointChangeDetectionStrategy())
     {
       _enlistedObjects = new Dictionary<ObjectID, DomainObject>();
     }
@@ -134,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (changedDataContainers.Count > 0)
       {
-        using (PersistenceManager persistenceManager = new PersistenceManager())
+        using (var persistenceManager = new PersistenceManager())
         {
           persistenceManager.Save (changedDataContainers);
         }
@@ -146,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       ObjectID newObjectID;
-      using (PersistenceManager persistenceManager = new PersistenceManager())
+      using (var persistenceManager = new PersistenceManager())
       {
         newObjectID = persistenceManager.CreateNewObjectID (classDefinition);
       }
@@ -157,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      using (PersistenceManager persistenceManager = new PersistenceManager ())
+      using (var persistenceManager = new PersistenceManager ())
       {
         var dataContainer = persistenceManager.LoadDataContainer (id);
         TransactionEventSink.ObjectLoading (dataContainer.ID);
@@ -175,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           throw new ObjectDiscardedException (id);
       }
 
-      using (PersistenceManager persistenceManager = new PersistenceManager ())
+      using (var persistenceManager = new PersistenceManager ())
       {
         DataContainerCollection newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
         foreach (DataContainer dataContainer in newLoadedDataContainers)
@@ -227,14 +225,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         relatedDataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
       }
       return relatedDataContainers;
-    }
-
-    protected internal override bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData)
-    {
-      ArgumentUtility.CheckNotNull ("currentData", currentData);
-      ArgumentUtility.CheckNotNull ("originalData", originalData);
-      
-      return !currentData.SetEquals (originalData.Cast<DomainObject>());
     }
   }
 }

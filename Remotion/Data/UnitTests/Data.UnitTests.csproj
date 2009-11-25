@@ -263,6 +263,8 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubCollectionEndPointChangeDetectionStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CurrentPropertyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextIndexerTest.cs" />

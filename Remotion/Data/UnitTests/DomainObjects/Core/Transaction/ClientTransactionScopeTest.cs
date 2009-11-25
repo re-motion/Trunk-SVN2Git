@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -450,18 +451,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       MockRepository mockRepository = new MockRepository();
 
-      ClientTransaction subTransaction =
-          mockRepository.StrictMock<ClientTransaction> (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection());
+      var transaction = mockRepository.StrictMock<ClientTransaction> (
+          new Dictionary<Enum, object> (), 
+          new ClientTransactionExtensionCollection (), 
+          new RootCollectionEndPointChangeDetectionStrategy ());
 
-      Expect.Call (subTransaction.EnterScope (AutoRollbackBehavior.Discard))
+      Expect.Call (transaction.EnterScope (AutoRollbackBehavior.Discard))
           .Return (
           (ClientTransactionScope)
-          PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), subTransaction, AutoRollbackBehavior.Discard));
-      Expect.Call (subTransaction.Discard()).Return (true);
+          PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), transaction, AutoRollbackBehavior.Discard));
+      Expect.Call (transaction.Discard()).Return (true);
 
       mockRepository.ReplayAll();
 
-      using (subTransaction.EnterScope (AutoRollbackBehavior.Discard))
+      using (transaction.EnterScope (AutoRollbackBehavior.Discard))
       {
       }
 

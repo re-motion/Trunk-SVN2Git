@@ -20,11 +20,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.Linq;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
@@ -41,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [SetUp]
     public void SetUp()
     {
-      _parentTransactionStub = MockRepository.GenerateStub<ClientTransaction> (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection());
+      _parentTransactionStub = MockRepository.GenerateStub<ClientTransaction> (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection(), new RootCollectionEndPointChangeDetectionStrategy());
       _parentQueryManagerMock = MockRepository.GenerateMock<IQueryManager> ();
       _parentTransactionStub.Stub (stub => _parentTransactionStub.QueryManager).Return (_parentQueryManagerMock);
       _subTransactionMock = MockRepository.GenerateMock<SubClientTransaction> (_parentTransactionStub);

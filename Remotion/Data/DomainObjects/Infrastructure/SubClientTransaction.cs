@@ -51,7 +51,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private SubQueryManager _queryManager;
 
     protected SubClientTransaction (ClientTransaction parentTransaction)
-        : base (ArgumentUtility.CheckNotNull("parentTransaction", parentTransaction).ApplicationData, parentTransaction.Extensions)
+        : base (
+          ArgumentUtility.CheckNotNull("parentTransaction", parentTransaction).ApplicationData, 
+          parentTransaction.Extensions, 
+          new SubCollectionEndPointChangeDetectionStrategy())
     {
       parentTransaction.NotifyOfSubTransactionCreating ();
       Assertion.IsTrue (parentTransaction.IsReadOnly);
@@ -363,14 +366,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           parentEndPoint.TakeOverCommittedData (endPoint);
         }
       }
-    }
-
-    protected internal override bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData)
-    {
-      ArgumentUtility.CheckNotNull ("currentData", currentData);
-      ArgumentUtility.CheckNotNull ("originalData", originalData);
-
-      return !currentData.SequenceEqual (originalData.Cast<DomainObject> ());
     }
   }
 }

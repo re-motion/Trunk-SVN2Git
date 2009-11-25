@@ -44,14 +44,15 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   // construction and disposing
 
-  public DataManager (ClientTransaction clientTransaction)
+  public DataManager (ClientTransaction clientTransaction, ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
   {
     ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+    ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
 
     _clientTransaction = clientTransaction;
     _transactionEventSink = clientTransaction.TransactionEventSink;
     _dataContainerMap = new DataContainerMap (clientTransaction);
-    _relationEndPointMap = new RelationEndPointMap (clientTransaction);
+    _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
     _discardedDataContainers = new Dictionary<ObjectID, DataContainer> ();
   }
 
