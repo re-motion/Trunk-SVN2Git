@@ -17,7 +17,7 @@ tr.bocListDataRowSelected span.DropDownMenuContainer
 
 span.DropDownMenuSelect 
 {
-  display: block;
+  display: inline-block;
   position: relative;
 	border: solid 1px #005588;
 	text-align: left;
