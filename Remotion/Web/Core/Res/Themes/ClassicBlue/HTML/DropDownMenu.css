@@ -17,7 +17,7 @@ tr.bocListDataRowSelected span.DropDownMenuContainer
 
 span.DropDownMenuSelect 
 {
-  display: inline-block;
+  display: block;
   position: relative;
 	border: solid 1px #005588;
 	text-align: left;
@@ -26,6 +26,12 @@ span.DropDownMenuSelect
 	cursor: pointer;
 	line-height: 1.25em;
 	height: 1.4em;
+}
+
+td.buttonCell span.DropDownMenuSelect 
+{
+  /* only when display just arrow */
+  display: inline-block;
 }
 
 span.DropDownMenuSelect.disabled
