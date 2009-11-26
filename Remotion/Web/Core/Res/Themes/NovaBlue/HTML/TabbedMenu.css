@@ -26,6 +26,11 @@ td.tabbedSubMenuCell
   border-bottom: solid 1px #083779;
 }
 
+td.tabbedSubMenuCell ul
+{
+  overflow: hidden;
+}
+
 td.tabbedMenuStatusCell
 {
   background-color: White;
