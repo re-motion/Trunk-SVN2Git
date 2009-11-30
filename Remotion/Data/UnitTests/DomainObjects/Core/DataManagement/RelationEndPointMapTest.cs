@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         order1 = Order.GetObject (DomainObjectIDs.Order1);
       }
 
-      _map.PerformDelete (order1, new NotifyingBidirectionalRelationModification());
+      _map.PerformDelete (order1, new CompositeRelationModificationWithEvents());
     }
 
     [Test]

@@ -246,7 +246,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointSelfReplaceModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointReplaceWholeCollectionModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\RelationEndPointTouchModificationTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NonNotifyingBidirectionalRelationModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CompositeRelationModificationWithoutEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneManyModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneOneModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetSameModificationTest.cs" />
@@ -521,7 +521,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\UpdateCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InsertCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\QueryCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NotifyingBidirectionalRelationModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CompositeRelationModificationWithEventsTest.cs" />
     <Compile Include="DomainObjects\Core\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="DomainObjects\Core\Serialization\CollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DomainObjectCollectionTest.cs" />

@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 1034: This is only one step in the process of deletion, the other parts are done by DataManager.
-    public void PerformDelete (DomainObject domainObject, NotifyingBidirectionalRelationModification oppositeEndPointModifications)
+    public void PerformDelete (DomainObject domainObject, CompositeRelationModificationWithEvents oppositeEndPointModifications)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
@@ -132,14 +132,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO: Refactor in COMMONS-1034
-    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
+    public CompositeRelationModificationWithEvents GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 
       RelationEndPointCollection allAffectedRelationEndPoints = GetAllRelationEndPointsWithLazyLoad (deletedObject);
       RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (deletedObject);
 
-      var modifications = new NotifyingBidirectionalRelationModification ();
+      var modifications = new CompositeRelationModificationWithEvents ();
       foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
         modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (deletedObject));
 

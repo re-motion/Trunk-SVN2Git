@@ -61,13 +61,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldCustomer.Orders.Remove (order).</item>
     /// </list>
     /// </remarks>
-    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateBidirectionalModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
       var newRelatedEndPoint = (CollectionEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
       var oldRelatedEndPoint = (CollectionEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, newRelatedEndPoint.Definition);
 
-      var bidirectionalModification = new NotifyingBidirectionalRelationModification (
+      var bidirectionalModification = new CompositeRelationModificationWithEvents (
         // => order.Customer = newCustomer
           this,
         // => newCustomer.Orders.Add (order)

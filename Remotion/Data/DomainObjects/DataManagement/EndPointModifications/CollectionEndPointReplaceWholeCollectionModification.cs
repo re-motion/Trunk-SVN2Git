@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders = newOrders.</item>
     /// </list>
     /// </remarks>
-    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateBidirectionalModification ()
     {
       var relationEndPointMap = base.ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
@@ -109,13 +109,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
                                        let setModification = endPointOfNewObject.CreateSetModification (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
                                        select Tuple.NewTuple (removeModification, setModification);
 
-      var modifications = 
+      var allModificationSteps =
           modificationsOfOldNotInNew
           .Concat (Unzip (modificationsOfNewNotInOld))
-          .Concat (new IRelationEndPointModification[] { this }) // customer.Orders = newOrders
-          .ToArray ();
-      
-      return new NotifyingBidirectionalRelationModification (modifications);
+          .Concat (new IRelationEndPointModification[] { this }); // customer.Orders = newOrders
+      return new CompositeRelationModificationWithEvents (allModificationSteps);
     }
 
     private IEnumerable<IRelationEndPointModification> Unzip (IEnumerable<Tuple<IRelationEndPointModification, IRelationEndPointModification>> tuples)

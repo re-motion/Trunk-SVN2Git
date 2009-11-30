@@ -22,13 +22,13 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class NonNotifyingBidirectionalRelationModificationTest : ClientTransactionBaseTest
+  public class CompositeRelationModificationWithoutEventsTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private IRelationEndPointModification _modificationMock1;
     private IRelationEndPointModification _modificationMock2;
     private IRelationEndPointModification _modificationMock3;
-    private NonNotifyingBidirectionalRelationModification _collection;
+    private CompositeRelationModificationWithoutEvents _collection;
 
     public override void SetUp ()
     {
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modificationMock2 = _mockRepository.StrictMock<IRelationEndPointModification> ();
       _modificationMock3 = _mockRepository.StrictMock<IRelationEndPointModification> ();
 
-      _collection = new NonNotifyingBidirectionalRelationModification (_modificationMock1, _modificationMock2, _modificationMock3);
+      _collection = new CompositeRelationModificationWithoutEvents (_modificationMock1, _modificationMock2, _modificationMock3);
     }
 
     [Test]

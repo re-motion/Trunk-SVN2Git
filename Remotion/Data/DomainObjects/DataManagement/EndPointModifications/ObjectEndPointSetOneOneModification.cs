@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldOrderOfNewTicket.OrderTicket = null.</item>
     /// </list>
     /// </remarks>
-    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateBidirectionalModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
       var newRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : relationEndPointMap.GetRelatedObject (newRelatedEndPoint.ID, true);
       var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewRelatedObject, ModifiedEndPoint.Definition);
 
-      var bidirectionalModification = new NotifyingBidirectionalRelationModification (
+      var bidirectionalModification = new CompositeRelationModificationWithEvents (
         // => order.OrderTicket = newTicket
         this,
         // => oldTicket.Order = null (remove)

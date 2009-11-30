@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _newCollection.Add (_order2);
       
       var bidirectionalModification = _modification.CreateBidirectionalModification ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       // DomainObject.Orders = _newCollection
 

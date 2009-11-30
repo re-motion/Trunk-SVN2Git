@@ -328,7 +328,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       DomainObject domainObject = dataContainer.DomainObject;
       // do not pass any opposite end point modifications to PerformDelete - this method only persists changes made directly to the deleted object
-      var emptyOppositeBidirectionalEndPointModification = new NotifyingBidirectionalRelationModification ();
+      var emptyOppositeBidirectionalEndPointModification = new CompositeRelationModificationWithEvents ();
       ParentTransaction.DataManager.PerformDelete (domainObject, emptyOppositeBidirectionalEndPointModification);
     }
 

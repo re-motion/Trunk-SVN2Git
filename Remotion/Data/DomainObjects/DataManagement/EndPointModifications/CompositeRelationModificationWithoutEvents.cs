@@ -14,28 +14,35 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
-  /// Represents a bidirectional relation modification that only calls <see cref="RelationEndPointModification.Perform"/> on its 
+  /// Represents a modification to a relation that only calls <see cref="RelationEndPointModification.Perform"/> on its 
   /// steps. Specifically, it does not notify the client transaction when its steps are executed, and it does not
-  /// call <see cref="RelationEndPointModification.Begin"/> or <see cref="RelationEndPointModification.End"/>.
-  /// This is used when <see cref="RelationEndPointModification.CreateBidirectionalModification"/> is called on a 
+  /// call <see cref="RelationEndPointModification.Begin"/> or <see cref="RelationEndPointModification.End"/> on its steps.
+  /// This is used when <see cref="RelationEndPointModification.CreateBidirectionalModification"/> is called on a "no-op"
   /// <see cref="RelationEndPointModification"/> such as <see cref="ObjectEndPointSetSameModification"/> or 
-  /// <see cref="CollectionEndPointSelfReplaceModification"/> that should not raise events but still perform the operation (in order to touch the 
-  /// data stored by the end point, for example).
+  /// <see cref="CollectionEndPointSelfReplaceModification"/>. Such relation modifications should be performed (in order to touch the 
+  /// data stored by the end point, for example), but they should not raise any events.
   /// </summary>
-  public class NonNotifyingBidirectionalRelationModification : BidirectionalRelationModificationBase
+  public class CompositeRelationModificationWithoutEvents : CompositeRelationModification
   {
-    public NonNotifyingBidirectionalRelationModification (params IRelationEndPointModification[] modifications)
-        : base(modifications)
+    public CompositeRelationModificationWithoutEvents (params IRelationEndPointModification[] modificationSteps)
+        : this ((IEnumerable<IRelationEndPointModification>) modificationSteps)
+    {
+    }
+
+    public CompositeRelationModificationWithoutEvents (IEnumerable<IRelationEndPointModification> modificationSteps)
+        : base (modificationSteps)
     {
     }
 
     public void Perform ()
     {
-      foreach (IRelationEndPointModification modification in GetModificationSteps ())
-        modification.Perform ();
+      foreach (var modificationStep in GetModificationSteps ())
+        modificationStep.Perform ();
     }
 
     public override void ExecuteAllSteps ()

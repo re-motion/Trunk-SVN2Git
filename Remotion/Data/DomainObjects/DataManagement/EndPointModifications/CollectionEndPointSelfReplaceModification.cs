@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
   /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="CreateBidirectionalModification"/>
-  /// results in a <see cref="NonNotifyingBidirectionalRelationModification"/> that does not raise any events.
+  /// results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise any events.
   /// </summary>
   public class CollectionEndPointSelfReplaceModification : RelationEndPointModification
   {
@@ -79,14 +79,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </list>
     /// No change notifications are sent for this operation.
     /// </remarks>
-    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateBidirectionalModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
 
       var endPointOfRelatedObject =
           (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
 
-      return new NonNotifyingBidirectionalRelationModification (
+      return new CompositeRelationModificationWithoutEvents (
           this,
           new RelationEndPointTouchModification (endPointOfRelatedObject));
     }

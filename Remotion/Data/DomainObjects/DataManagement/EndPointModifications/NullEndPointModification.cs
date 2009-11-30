@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do nothing
     }
 
-    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateBidirectionalModification ()
     {
       throw new NotSupportedException ("Null end points cannot be the starting point for a bidirectional modification.");
     }

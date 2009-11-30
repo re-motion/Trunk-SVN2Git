@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do not issue any change notifications, a same-set is not a change
     }
 
-    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateBidirectionalModification ()
     {
       throw new NotSupportedException ("Cannot create a bidirectional operation from a touch modification.");
     }

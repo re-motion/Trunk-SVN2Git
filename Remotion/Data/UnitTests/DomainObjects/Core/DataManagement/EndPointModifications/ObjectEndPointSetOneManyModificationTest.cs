@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var setDifferentModification = new ObjectEndPointSetOneManyModification (bidirectionalEndPoint, newOrder);
 
       var bidirectionalModification = setDifferentModification.CreateBidirectionalModification ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       var steps = bidirectionalModification.GetModificationSteps ();
       Assert.That (steps.Count, Is.EqualTo (3));

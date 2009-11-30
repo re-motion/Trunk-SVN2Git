@@ -44,6 +44,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
     /// <see cref="RelationEndPointModification.CreateBidirectionalModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
     /// </remarks>
-    BidirectionalRelationModificationBase CreateBidirectionalModification ();
+    CompositeRelationModification CreateBidirectionalModification ();
   }
 }

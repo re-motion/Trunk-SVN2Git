@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
     /// <see cref="CreateBidirectionalModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
     /// </remarks>
-    public abstract BidirectionalRelationModificationBase CreateBidirectionalModification ();
+    public abstract CompositeRelationModification CreateBidirectionalModification ();
 
     protected ObjectEndPoint GetOppositeEndPoint (DomainObject domainObject)
     {

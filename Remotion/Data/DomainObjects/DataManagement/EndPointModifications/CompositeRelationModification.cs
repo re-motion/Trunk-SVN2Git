@@ -22,33 +22,34 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
-  /// Represents all modification steps needed to change a bidirectional relation.
+  /// Collects all <see cref="IRelationEndPointModification"/> steps needed to change a relation.
   /// </summary>
   /// <remarks>
   /// Bidirectional relation modifications always comprise multiple steps: they need to be performed on either side of the relation being changed, 
-  /// and usually they also invole one "previous" or "new" related object. (Eg. an insert modificaton has a previous related object (possibly null),
-  /// a remove modification has a new related object (null).) This class aggregates these modification steps and allows executing them all at once,
-  /// with events being raised before and after the full operation.
+  /// and usually they also invole one "previous" or "new" related object. (Eg. an insert modificaton has a previous related object (possibly 
+  /// <see langword="null" />), a remove modification has a new related object (<see langword="null" />).) Subclasses of 
+  /// <see cref="CompositeRelationModification"/> aggregate these  modification steps and allow executing them all at once, with events being raised 
+  /// before and after the full operation.
   /// </remarks>
-  public abstract class BidirectionalRelationModificationBase
+  public abstract class CompositeRelationModification
   {
-    private readonly List<IRelationEndPointModification> _modifications;
+    private readonly List<IRelationEndPointModification> _modificationSteps;
 
-    protected BidirectionalRelationModificationBase (params IRelationEndPointModification[] modifications)
+    protected CompositeRelationModification (IEnumerable<IRelationEndPointModification> modificationSteps)
     {
-      ArgumentUtility.CheckNotNull ("modifications", modifications);
-      _modifications = new List<IRelationEndPointModification>(modifications);
+      ArgumentUtility.CheckNotNull ("modificationSteps", modificationSteps);
+      _modificationSteps = new List<IRelationEndPointModification>(modificationSteps);
     }
 
     public ReadOnlyCollection<IRelationEndPointModification> GetModificationSteps ()
     {
-      return _modifications.AsReadOnly ();
+      return _modificationSteps.AsReadOnly ();
     }
 
     public void AddModificationStep (IRelationEndPointModification modification)
     {
       ArgumentUtility.CheckNotNull ("modification", modification);
-      _modifications.Add (modification);
+      _modificationSteps.Add (modification);
     }
 
     public abstract void ExecuteAllSteps ();

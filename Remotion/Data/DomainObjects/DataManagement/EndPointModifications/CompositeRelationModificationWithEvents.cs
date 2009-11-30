@@ -14,54 +14,63 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
-  /// Represents a bidirectional relation modification that notifies the client transaction when its steps are executed, and which
-  /// calls <see cref="RelationEndPointModification.Begin"/> and calls <see cref="RelationEndPointModification.End"/>.
+  /// Represents a modification to a relation that notifies the client transaction when its steps are executed, and which
+  /// calls <see cref="RelationEndPointModification.Begin"/> and calls <see cref="RelationEndPointModification.End"/> on all of its steps.
   /// </summary>
-  public class NotifyingBidirectionalRelationModification : BidirectionalRelationModificationBase
+  public class CompositeRelationModificationWithEvents : CompositeRelationModification
   {
-    public NotifyingBidirectionalRelationModification (params IRelationEndPointModification[] modifications)
-        : base (modifications)
+    public CompositeRelationModificationWithEvents (params IRelationEndPointModification[] modificationSteps)
+        : this ((IEnumerable<IRelationEndPointModification>) modificationSteps)
+    {
+    }
+
+    public CompositeRelationModificationWithEvents (IEnumerable<IRelationEndPointModification> modificationSteps)
+        : base (modificationSteps)
     {
     }
 
     public void Begin ()
     {
-      foreach (IRelationEndPointModification modification in GetModificationSteps())
-        modification.Begin ();
+      foreach (var modificationStep in GetModificationSteps())
+        modificationStep.Begin ();
     }
 
     public void Perform ()
     {
-      foreach (IRelationEndPointModification modification in GetModificationSteps ())
-        modification.Perform ();
+      foreach (var modificationStep in GetModificationSteps ())
+        modificationStep.Perform ();
     }
 
     public void End ()
     {
-      foreach (IRelationEndPointModification modification in GetModificationSteps ())
-        modification.End ();
+      foreach (var modificationStep in GetModificationSteps ())
+        modificationStep.End ();
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      foreach (IRelationEndPointModification modification in GetModificationSteps ())
-        modification.NotifyClientTransactionOfBegin ();
+      foreach (var modificationStep in GetModificationSteps ())
+        modificationStep.NotifyClientTransactionOfBegin ();
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      foreach (IRelationEndPointModification modification in GetModificationSteps ())
-        modification.NotifyClientTransactionOfEnd ();
+      foreach (var modificationStep in GetModificationSteps ())
+        modificationStep.NotifyClientTransactionOfEnd ();
     }
 
     public override void ExecuteAllSteps ()
     {
       NotifyClientTransactionOfBegin();
       Begin();
+
       Perform();
+
       NotifyClientTransactionOfEnd();
       End();
     }
