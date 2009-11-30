@@ -23,6 +23,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -57,6 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       return repository.StrictMock<ObjectEndPointSetSameModification> (endPoint);
     }
 
+    [Test]
     public override void Begin ()
     {
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
@@ -70,6 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
     }
 
+    [Test]
     public override void End ()
     {
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
@@ -84,6 +87,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      var listenerMock = MockRepository.StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      MockRepository.ReplayAll ();
+      Modification.NotifyClientTransactionOfBegin ();
+      MockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      var listenerMock = MockRepository.StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      MockRepository.ReplayAll ();
+      Modification.NotifyClientTransactionOfEnd ();
+      MockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void CreateBidirectionalModification_SetSame_Unidirectional ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
@@ -94,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
-      var bidirectionalModification = setSameModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setSameModification.CreateRelationModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
       var steps = bidirectionalModification.GetModificationSteps ();
@@ -118,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
               bidirectionalEndPoint.OppositeEndPointDefinition);
       var setSameModification = new ObjectEndPointSetSameModification (bidirectionalEndPoint);
 
-      var bidirectionalModification = setSameModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setSameModification.CreateRelationModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
       var steps = bidirectionalModification.GetModificationSteps ();

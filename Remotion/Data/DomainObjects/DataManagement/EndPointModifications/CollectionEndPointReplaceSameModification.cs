@@ -21,15 +21,15 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
-  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="CreateBidirectionalModification"/>
+  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="CreateRelationModification"/>
   /// results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise any events.
   /// </summary>
-  public class CollectionEndPointSelfReplaceModification : RelationEndPointModification
+  public class CollectionEndPointReplaceSameModification : RelationEndPointModification
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointSelfReplaceModification (
+    public CollectionEndPointReplaceSameModification (
         CollectionEndPoint modifiedEndPoint, DomainObject selfReplacedObject, IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
@@ -68,8 +68,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do not issue any change notifications, a self-replacement is not a change
     }
 
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
     /// <summary>
-    /// Creates all modifications needed to perform a bidirectional self-replace operation within this collection end point.
+    /// Creates all modifications needed to perform a self-replace operation within this collection end point.
     /// </summary>
     /// <remarks>
     /// A self-replace operation of the form "customer.Orders[index] = customer.Orders[index]" needs two steps:
@@ -79,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </list>
     /// No change notifications are sent for this operation.
     /// </remarks>
-    public override CompositeRelationModification CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateRelationModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
 

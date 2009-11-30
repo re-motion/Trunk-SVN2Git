@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
       var modification = oppositeDomainObjects.CreateAssociationModification (this);
-      var bidirectionalModification = modification.CreateBidirectionalModification ();
+      var bidirectionalModification = modification.CreateRelationModification ();
       bidirectionalModification.ExecuteAllSteps ();
     }
 
@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointSelfReplaceModification (this, replacedObject, _dataStore);
+        return new CollectionEndPointReplaceSameModification (this, replacedObject, _dataStore);
       else
         return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, _dataStore);
     }

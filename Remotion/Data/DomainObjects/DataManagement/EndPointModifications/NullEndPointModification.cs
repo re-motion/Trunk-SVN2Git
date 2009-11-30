@@ -18,7 +18,6 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  // TODO 1782: check for usages 
   public class NullEndPointModification : RelationEndPointModification
   {
     public NullEndPointModification (RelationEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
@@ -51,7 +50,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do nothing
     }
 
-    public override CompositeRelationModification CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateRelationModification ()
     {
       throw new NotSupportedException ("Null end points cannot be the starting point for a bidirectional modification.");
     }

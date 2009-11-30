@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.Touch());
       _collectionEndPointMock.Replay();
 
-      _modificationStub.Stub (stub => stub.CreateBidirectionalModification()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.CreateRelationModification()).Return (_compositeModificationMock);
 
       _compositeModificationMock.Expect (mock => mock.ExecuteAllSteps ()).Repeat.Times (3);
       _compositeModificationMock.Replay ();
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateInsertModification (_orderItem1, 17)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
 
       _data.Insert (17, _orderItem1);
 
@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
 
       var result = _data.Remove (_orderItem1);
 
@@ -254,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
 
       var result = _data.Remove (_orderItem1.ID);
 
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateReplaceModification (17, _orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateBidirectionalModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
 
       _data.Replace (17, _orderItem1);
 

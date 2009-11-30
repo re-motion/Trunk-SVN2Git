@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders = newOrders.</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateRelationModification ()
     {
       var relationEndPointMap = base.ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();

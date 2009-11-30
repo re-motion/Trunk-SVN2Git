@@ -19,15 +19,16 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class CollectionEndPointSelfReplaceModificationTest : CollectionEndPointModificationTestBase
+  public class CollectionEndPointReplaceSameModificationTest : CollectionEndPointModificationTestBase
   {
-    private CollectionEndPointSelfReplaceModification _modification;
+    private CollectionEndPointReplaceSameModification _modification;
     private Order _replacedRelatedObject;
 
     public override void SetUp ()
@@ -36,8 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
 
-      _modification =
-          new CollectionEndPointSelfReplaceModification (CollectionEndPoint, _replacedRelatedObject, CollectionDataMock);
+      _modification = new CollectionEndPointReplaceSameModification (CollectionEndPoint, _replacedRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (RelationEndPointID.Definition);
-      new CollectionEndPointSelfReplaceModification (endPoint, _replacedRelatedObject, CollectionDataMock);
+      new CollectionEndPointReplaceSameModification (endPoint, _replacedRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -96,6 +96,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
+    public void NotifyClientTransactionOfBegin ()
+    {
+      var mockRepository = new MockRepository ();
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      mockRepository.ReplayAll ();
+      _modification.NotifyClientTransactionOfBegin ();
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfEnd ()
+    {
+      var mockRepository = new MockRepository ();
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      mockRepository.ReplayAll ();
+      _modification.NotifyClientTransactionOfEnd ();
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void Perform ()
     {
       bool relationChangingCalled = false;
@@ -125,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
-      var bidirectionalModification = _modification.CreateBidirectionalModification ();
+      var bidirectionalModification = _modification.CreateRelationModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (

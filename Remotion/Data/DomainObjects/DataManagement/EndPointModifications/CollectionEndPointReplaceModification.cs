@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the new order (if non-null).</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateRelationModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
 

@@ -221,7 +221,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNewRelatedObjectType (newRelatedObject);
       
       var setModification = CreateSetModification (newRelatedObject);
-      var bidirectionalModification = setModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setModification.CreateRelationModification ();
       bidirectionalModification.ExecuteAllSteps ();
     }
 

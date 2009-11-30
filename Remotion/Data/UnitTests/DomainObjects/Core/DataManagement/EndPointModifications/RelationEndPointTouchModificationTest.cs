@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [ExpectedException (typeof (NotSupportedException))]
     public void CreateBidirectionalModification ()
     {
-      _modification.CreateBidirectionalModification ();
+      _modification.CreateRelationModification ();
     }
   }
 }

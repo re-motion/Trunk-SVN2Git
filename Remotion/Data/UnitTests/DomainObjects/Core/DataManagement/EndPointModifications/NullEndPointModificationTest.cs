@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
@@ -125,24 +124,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _mockRepository.ReplayAll ();
 
       _modification.NotifyClientTransactionOfEnd ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void ExecuteAllSteps ()
-    {
-      NullEndPointModification modificationMock = _mockRepository.StrictMock<NullEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
-
-      modificationMock.NotifyClientTransactionOfBegin ();
-      modificationMock.Begin ();
-      modificationMock.Perform ();
-      modificationMock.NotifyClientTransactionOfEnd ();
-      modificationMock.End ();
-
-      _mockRepository.ReplayAll ();
-
-      modificationMock.ExecuteAllSteps ();
 
       _mockRepository.VerifyAll ();
     }

@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public virtual void NotifyClientTransactionOfBegin ()
     {
       _endPointMock.NotifyClientTransactionOfBeginRelationChange (OldRelatedObject, NewRelatedObject);
 
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public virtual void NotifyClientTransactionOfEnd ()
     {
       _endPointMock.NotifyClientTransactionOfEndRelationChange();
 
@@ -165,27 +165,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _mockRepository.VerifyAll();
     }
-
-    [Test]
-    public void ExecuteAllSteps ()
-    {
-      _endPointMock.Expect (mock => mock.IsNull).Return (false);
-      _endPointMock.Replay();
-
-      var modificationMock = CreateModificationMock (_mockRepository, _endPointMock, NewRelatedObject);
-
-      modificationMock.NotifyClientTransactionOfBegin();
-      modificationMock.Begin();
-      modificationMock.Perform();
-      modificationMock.NotifyClientTransactionOfEnd();
-      modificationMock.End();
-
-      _mockRepository.ReplayAll();
-
-      modificationMock.ExecuteAllSteps();
-
-      _mockRepository.VerifyAll();
-    }
-
   }
 }

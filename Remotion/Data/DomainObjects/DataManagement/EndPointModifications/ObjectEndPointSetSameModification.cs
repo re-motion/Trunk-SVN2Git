@@ -18,7 +18,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> to the same value as before. Calling 
-  /// <see cref="CreateBidirectionalModification"/> results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise
+  /// <see cref="CreateRelationModification"/> results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise
   /// any events.
   /// </summary>
   public class ObjectEndPointSetSameModification : ObjectEndPointSetModificationBase
@@ -38,6 +38,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do not issue any change notifications, a same-set is not a change
     }
 
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
     /// <summary>
     /// Creates all modification steps needed to perform a bidirectional set-same operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
     /// this modification, the other steps are the opposite modifications on the new/old related objects.
@@ -50,7 +60,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </list>
     /// No change notifications are sent for this operation.
     /// </remarks>
-    public override CompositeRelationModification CreateBidirectionalModification ()
+    public override CompositeRelationModification CreateRelationModification ()
     {
       var bidirectionalModification = new CompositeRelationModificationWithoutEvents (this);
       if (!ModifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)

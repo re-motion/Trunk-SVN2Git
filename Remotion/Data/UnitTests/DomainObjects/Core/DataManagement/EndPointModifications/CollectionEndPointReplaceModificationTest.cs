@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
-      var bidirectionalModification = _modification.CreateBidirectionalModification ();
+      var bidirectionalModification = _modification.CreateRelationModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       // DomainObject.Orders[indexof (_replacedRelatedObject)] = _replacementRelatedObject

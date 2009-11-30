@@ -162,7 +162,7 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointInsertModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceWholeCollectionModification.cs" />
-    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointSelfReplaceModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceSameModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\IRelationEndPointModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CompositeRelationModificationWithoutEvents.cs" />
     <Compile Include="DataManagement\EndPointModifications\CompositeRelationModificationWithEvents.cs" />

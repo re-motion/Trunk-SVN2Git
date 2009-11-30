@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var newClient = Client.NewObject ();
 
       var setDifferentModification = new ObjectEndPointSetUnidirectionalModification (unidirectionalEndPoint, newClient);
-      var bidirectionalModification = setDifferentModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setDifferentModification.CreateRelationModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       var steps = bidirectionalModification.GetModificationSteps ();

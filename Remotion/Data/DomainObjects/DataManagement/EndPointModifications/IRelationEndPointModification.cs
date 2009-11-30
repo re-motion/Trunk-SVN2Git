@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
   /// Provides a common interface for classes representing a modification to a <see cref="RelationEndPoint"/>. Implementations of this interface
-  /// represent modifications involving exactly one end point; use <see cref="CreateBidirectionalModification"/> to extend that modification
+  /// represent modifications involving exactly one end point; use <see cref="CreateRelationModification"/> to extend that modification
   /// to all involved end points.
   /// </summary>
   public interface IRelationEndPointModification
@@ -34,16 +34,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     void End ();
     void NotifyClientTransactionOfBegin ();
     void NotifyClientTransactionOfEnd ();
-    void ExecuteAllSteps ();
 
     /// <summary>
-    /// Creates all modification steps needed to perform a bidirectional operation. One of the steps is this modification, the other 
-    /// steps are the opposite modifications on the new/old related objects.
+    /// Extends this <see cref="IRelationEndPointModification"/> with modifications of other end points involved in the same relation and creates
+    /// a <see cref="CompositeRelationModification"/> from all these modification modification steps. 
     /// </summary>
     /// <remarks>
-    /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
-    /// <see cref="RelationEndPointModification.CreateBidirectionalModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
+    /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the <see cref="CompositeRelationModification"/> 
+    /// returned by  <see cref="RelationEndPointModification.CreateRelationModification"/> only contains this 
+    /// <see cref="RelationEndPointModification"/>,  no other steps. If it is performed on a bidirectional relation, the 
+    /// <see cref="CompositeRelationModification"/> contains steps for the old/new opposite end points as well as for end points indirectly modified.
     /// </remarks>
-    CompositeRelationModification CreateBidirectionalModification ();
+    CompositeRelationModification CreateRelationModification ();
   }
 }
