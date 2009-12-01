@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetOppositeObject ()
     {
       var oppositeObject = _endPoint.GetOppositeObject (true);
-      Assert.That (oppositeObject, Is.SameAs (Order.GetObject (_endPoint.OppositeObjectID)));
+      Assert.That (Order.GetObject (_endPoint.OppositeObjectID), Is.SameAs (oppositeObject));
     }
 
     [Test]
@@ -133,6 +133,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
 
       _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject ()
+    {
+      var originalOppositeObject = _endPoint.GetOppositeObject (true);
+      _endPoint.SetOppositeObjectAndNotify (Order.NewObject ());
+
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
+    }
+
+    [Test]
+    public void GetOriginalOppositeObject_Deleted ()
+    {
+      var originalOppositeObject = (Order) _endPoint.GetOppositeObject (true);
+      _endPoint.SetOppositeObjectAndNotify (Order.NewObject ());
+
+      originalOppositeObject.Delete ();
+      Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));
+
+      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
     }
 
     [Test]

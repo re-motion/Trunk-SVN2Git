@@ -82,13 +82,72 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    protected internal override void TakeOverCommittedData (RelationEndPoint source)
+    public ObjectID OppositeObjectID
     {
-      var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
-      Assertion.IsTrue (Definition == sourceObjectEndPoint.Definition);
+      get { return _oppositeObjectID; }
+      set
+      {
+        _oppositeObjectID = value;
+        _hasBeenTouched = true;
 
-      _oppositeObjectID = sourceObjectEndPoint._oppositeObjectID;
-      _hasBeenTouched |= sourceObjectEndPoint._hasBeenTouched || HasChanged; // true if: we have been touched/source has been touched/we have changed
+        SetForeignKeyProperty ();
+      }
+    }
+
+    public ObjectID OriginalOppositeObjectID
+    {
+      get { return _originalOppositeObjectID; }
+    }
+
+    public override bool HasChanged
+    {
+      get { return !Equals (_oppositeObjectID, _originalOppositeObjectID); }
+    }
+
+    public override bool HasBeenTouched
+    {
+      get { return _hasBeenTouched; }
+    }
+
+    public DomainObject GetOppositeObject (bool includeDeleted)
+    {
+      if (OppositeObjectID == null)
+        return null;
+      else if (includeDeleted && ClientTransaction.DataManager.IsDiscarded (OppositeObjectID))
+        return ClientTransaction.DataManager.GetDiscardedDataContainer (OppositeObjectID).DomainObject;
+      else
+        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
+    }
+
+    public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
+    {
+      RelationEndPointValueChecker.CheckClientTransaction (
+          this,
+          newRelatedObject,
+          "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
+
+      RelationEndPointValueChecker.CheckNotDeleted (this, newRelatedObject);
+      RelationEndPointValueChecker.CheckNotDeleted (this, GetDomainObject ());
+
+      CheckNewRelatedObjectType (newRelatedObject);
+
+      var setModification = CreateSetModification (newRelatedObject);
+      var bidirectionalModification = setModification.CreateRelationModification ();
+      bidirectionalModification.ExecuteAllSteps ();
+    }
+
+    public DomainObject GetOriginalOppositeObject ()
+    {
+      if (OriginalOppositeObjectID == null)
+        return null;
+
+      return ClientTransaction.GetObject (OriginalOppositeObjectID, true);
+    }
+
+    public override void Touch ()
+    {
+      _hasBeenTouched = true;
+      SetForeignKeyProperty (); // set foreign key property to the same value in order to touch it
     }
 
     public override void Commit ()
@@ -107,22 +166,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _oppositeObjectID = _originalOppositeObjectID;
         _hasBeenTouched = false;
       }
-    }
-
-    public override bool HasChanged
-    {
-      get { return !Equals (_oppositeObjectID, _originalOppositeObjectID); }
-    }
-
-    public override bool HasBeenTouched
-    {
-      get { return _hasBeenTouched; }
-    }
-
-    public override void Touch ()
-    {
-      _hasBeenTouched = true;
-      SetForeignKeyProperty (); // set foreign key property to the same value in order to touch it
     }
 
     public override void CheckMandatory ()
@@ -191,48 +234,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       OppositeObjectID = null;
     }
 
-    public ObjectID OriginalOppositeObjectID
+    protected internal override void TakeOverCommittedData (RelationEndPoint source)
     {
-      get { return _originalOppositeObjectID; }
-    }
+      var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
+      Assertion.IsTrue (Definition == sourceObjectEndPoint.Definition);
 
-    public ObjectID OppositeObjectID
-    {
-      get { return _oppositeObjectID; }
-      set
-      {
-        _oppositeObjectID = value;
-        _hasBeenTouched = true;
-
-        SetForeignKeyProperty();
-      }
-    }
-
-    public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
-    {
-      RelationEndPointValueChecker.CheckClientTransaction (
-          this, 
-          newRelatedObject, 
-          "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
-
-      RelationEndPointValueChecker.CheckNotDeleted (this, newRelatedObject);
-      RelationEndPointValueChecker.CheckNotDeleted (this, GetDomainObject ());
-
-      CheckNewRelatedObjectType (newRelatedObject);
-      
-      var setModification = CreateSetModification (newRelatedObject);
-      var bidirectionalModification = setModification.CreateRelationModification ();
-      bidirectionalModification.ExecuteAllSteps ();
-    }
-
-    public DomainObject GetOppositeObject (bool includeDeleted)
-    {
-      if (OppositeObjectID == null)
-        return null;
-      else if (includeDeleted && ClientTransaction.DataManager.IsDiscarded (OppositeObjectID))
-        return ClientTransaction.DataManager.GetDiscardedDataContainer (OppositeObjectID).DomainObject;
-      else
-        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
+      _oppositeObjectID = sourceObjectEndPoint._oppositeObjectID;
+      _hasBeenTouched |= sourceObjectEndPoint._hasBeenTouched || HasChanged; // true if: we have been touched/source has been touched/we have changed
     }
 
     protected virtual void SetForeignKeyProperty ()
