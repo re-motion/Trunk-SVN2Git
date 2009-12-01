@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -614,23 +615,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetOppositeCollection ()
+    public void OppositeDomainObjects_Set ()
     {
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
-      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOppositeCollection));
     }
 
     [Test]
-    public void SetOppositeCollection_TouchesEndPoint ()
+    public void OppositeDomainObjects_Set_TouchesEndPoint ()
     {
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new OrderCollection (delegatingData);
 
-      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
@@ -638,25 +639,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead."
-        + "\r\nParameter name: oppositeDomainObjects")]
-    public void SetOppositeCollection_NotAssociated ()
+        + "\r\nParameter name: value")]
+    public void OppositeDomainObjects_Set_NotAssociated ()
     {
       var newOppositeCollection = new OrderCollection { _order1 };
 
-      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The new opposite collection must have the same type as the old collection "
-        + "('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection'), but its type is 'Remotion.Data.DomainObjects.DomainObjectCollection'."
-        + "\r\nParameter name: oppositeDomainObjects")]
-    public void SetOppositeCollection_OtherType ()
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+        "Argument value has type Remotion.Data.DomainObjects.DomainObjectCollection when type "
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection was expected.\r\nParameter name: value")]
+    public void OppositeDomainObjects_Set_OtherType ()
     {
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
       var newOppositeCollection = new DomainObjectCollection (delegatingData);
 
-      _customerEndPoint.SetOppositeCollection (newOppositeCollection);
+      _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
     }
   }
 }

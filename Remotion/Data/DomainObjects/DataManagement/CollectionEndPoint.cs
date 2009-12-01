@@ -64,6 +64,35 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
+    public DomainObjectCollection OppositeDomainObjects
+    {
+      get { return _oppositeDomainObjects; }
+      set
+      {
+        ArgumentUtility.CheckNotNullAndType ("value", value, _oppositeDomainObjects.GetType ());
+
+        if (value.AssociatedEndPoint != this)
+        {
+          throw new ArgumentException (
+              "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead.",
+              "value");
+        }
+
+        _oppositeDomainObjects = value;
+        Touch ();
+      }
+    }
+
+    public DomainObjectCollection OriginalOppositeDomainObjectsContents
+    {
+      get { return _originalOppositeDomainObjectsContents; }
+    }
+
+    public DomainObjectCollection OriginalOppositeDomainObjectsReference
+    {
+      get { return _originalOppositeDomainObjectsReference; }
+    }
+
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
     {
       get { return _changeDetectionStrategy; }
@@ -77,45 +106,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override bool HasBeenTouched
     {
       get { return _hasBeenTouched; }
-    }
-
-    public DomainObjectCollection OriginalOppositeDomainObjectsContents
-    {
-      get { return _originalOppositeDomainObjectsContents; }
-    }
-
-    public DomainObjectCollection OriginalOppositeDomainObjectsReference
-    {
-      get { return _originalOppositeDomainObjectsReference; }
-    }
-
-    public DomainObjectCollection OppositeDomainObjects
-    {
-      get { return _oppositeDomainObjects; }
-    }
-
-    public void SetOppositeCollection (DomainObjectCollection oppositeDomainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-
-      if (oppositeDomainObjects.AssociatedEndPoint != this)
-      {
-        throw new ArgumentException (
-            "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead.",
-            "oppositeDomainObjects");
-      }
-
-      if (oppositeDomainObjects.GetType () != _oppositeDomainObjects.GetType ())
-      {
-        string message = string.Format (
-            "The new opposite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.",
-            _oppositeDomainObjects.GetType (),
-            oppositeDomainObjects.GetType ());
-        throw new ArgumentException (message, "oppositeDomainObjects");
-      }
-
-      _oppositeDomainObjects = oppositeDomainObjects;
-      Touch ();
     }
 
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)

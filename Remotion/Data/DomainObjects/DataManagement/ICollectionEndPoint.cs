@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface ICollectionEndPoint : IEndPoint
   {
-    DomainObjectCollection OppositeDomainObjects { get; }
+    DomainObjectCollection OppositeDomainObjects { get; set; }
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
     DomainObjectCollection OriginalOppositeDomainObjectsReference { get; }
 
@@ -36,6 +36,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
-    void SetOppositeCollection (DomainObjectCollection oppositeDomainObjects);
   }
 }

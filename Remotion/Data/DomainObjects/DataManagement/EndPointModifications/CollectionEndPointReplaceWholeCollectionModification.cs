@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
 
       // now make end point refer to the new collection by reference, too
-      ModifiedEndPoint.SetOppositeCollection (NewOppositeCollection); // this also touches the end point
+      ModifiedEndPoint.OppositeDomainObjects = NewOppositeCollection; // this also touches the end point
     }
 
     /// <summary>
