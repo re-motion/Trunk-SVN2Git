@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -26,7 +27,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_List = Rhino.Mocks.Constraints.List;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       OrderItem newOrderItem1 = OrderItem.NewObject();
       OrderItem newOrderItem2 = OrderItem.NewObject();
 
-      MockRepository mockRepository = new MockRepository();
+      var mockRepository = new MockRepository();
 
       DomainObjectCollection newCustomer1Orders = newCustomer1.Orders;
       DomainObjectCollection newCustomer2Orders = newCustomer2.Orders;
@@ -77,28 +77,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       DomainObjectCollection newOrder1OrderItems = newOrder1.OrderItems;
       DomainObjectCollection newOrder2OrderItems = newOrder2.OrderItems;
 
-      DomainObjectMockEventReceiver newCustomer1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCustomer1);
-      DomainObjectMockEventReceiver newCustomer2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCustomer2);
-      DomainObjectMockEventReceiver official2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (official2);
-      DomainObjectMockEventReceiver newCeo1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCeo1);
-      DomainObjectMockEventReceiver newCeo2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCeo2);
-      DomainObjectMockEventReceiver newOrder1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrder1);
-      DomainObjectMockEventReceiver newOrder2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrder2);
-      DomainObjectMockEventReceiver newOrderItem1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderItem1);
-      DomainObjectMockEventReceiver newOrderItem2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderItem2);
+      var newCustomer1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCustomer1);
+      var newCustomer2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCustomer2);
+      var official2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (official2);
+      var newCeo1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCeo1);
+      var newCeo2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newCeo2);
+      var newOrder1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrder1);
+      var newOrder2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrder2);
+      var newOrderItem1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderItem1);
+      var newOrderItem2EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderItem2);
 
-      DomainObjectCollectionMockEventReceiver newCustomer1OrdersEventReceiver =
+      var newCustomer1OrdersEventReceiver =
           mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (newCustomer1.Orders);
-      DomainObjectCollectionMockEventReceiver newCustomer2OrdersEventReceiver =
+      var newCustomer2OrdersEventReceiver =
           mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (newCustomer2.Orders);
-      DomainObjectCollectionMockEventReceiver official2OrdersEventReceiver =
+      var official2OrdersEventReceiver =
           mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (official2.Orders);
-      DomainObjectCollectionMockEventReceiver newOrder1OrderItemsEventReceiver =
+      var newOrder1OrderItemsEventReceiver =
           mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (newOrder1.OrderItems);
-      DomainObjectCollectionMockEventReceiver newOrder2OrderItemsEventReceiver =
+      var newOrder2OrderItemsEventReceiver =
           mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (newOrder2.OrderItems);
 
-      IClientTransactionExtension extension = mockRepository.StrictMock<IClientTransactionExtension>();
+      var extension = mockRepository.StrictMock<IClientTransactionExtension>();
 
       using (mockRepository.Ordered())
       {
@@ -179,13 +179,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         //5
         //newCustomer1.Orders.Add (newOrder1);
         extension.RelationReading (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", ValueAccess.Current);
-        extension.RelationRead (null, null, null, (DomainObjectCollection) null, ValueAccess.Current);
-        LastCall.Constraints (
-            Mocks_Is.Same (ClientTransactionScope.CurrentTransaction), 
-            Mocks_Is.Same (newCustomer1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
-            Mocks_Property.Value ("Count", 0),
-            Mocks_Is.Equal (ValueAccess.Current));
+        extension.Expect (mock => mock.RelationRead (
+            Arg.Is (ClientTransactionScope.CurrentTransaction),
+            Arg.Is (newCustomer1),
+            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (data => data.Count == 0),
+            Arg.Is (ValueAccess.Current)));
 
         extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
         extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder1);
@@ -209,13 +208,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         //6
         //newCustomer1.Orders.Add (newOrder2);
         extension.RelationReading (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", ValueAccess.Current);
-        extension.RelationRead (null, null, null, (DomainObjectCollection) null, ValueAccess.Current);
-        LastCall.Constraints (
-            Mocks_Is.Same (ClientTransactionScope.CurrentTransaction), 
-            Mocks_Is.Same (newCustomer1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
-            Mocks_Property.Value ("Count", 1) & Mocks_List.IsIn (newOrder1),
-            Mocks_Is.Equal (ValueAccess.Current));
+        extension.Expect (mock => mock.RelationRead (
+            Arg.Is (ClientTransactionScope.CurrentTransaction),
+            Arg.Is (newCustomer1),
+            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (data => data.Count == 1 && data.Contains (newOrder1)),
+            Arg.Is (ValueAccess.Current)));
 
         extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
         extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, newOrder2);
@@ -239,13 +237,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         //7
         //newCustomer1.Orders.Remove (newOrder2);
         extension.RelationReading (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", ValueAccess.Current);
-        extension.RelationRead (null, null, null, (DomainObjectCollection) null, ValueAccess.Current);
-        LastCall.Constraints (
-            Mocks_Is.Same (ClientTransactionScope.CurrentTransaction), 
-            Mocks_Is.Same (newCustomer1),
-            Mocks_Is.Equal ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
-            Mocks_Property.Value ("Count", 2) & Mocks_List.IsIn (newOrder1) & Mocks_List.IsIn (newOrder2),
-            Mocks_Is.Equal (ValueAccess.Current));
+        extension.Expect (mock => mock.RelationRead (
+            Arg.Is (ClientTransactionScope.CurrentTransaction), 
+            Arg.Is (newCustomer1), 
+            Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (data => data.Count == 2 && data.Contains (newOrder1) && data.Contains (newOrder2)),
+            Arg.Is (ValueAccess.Current)));
 
         extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, null);
         extension.RelationChanging (ClientTransactionMock, newCustomer1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", newOrder2, null);
@@ -439,7 +436,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           newOrder1OrderItemsEventReceiver,
           newOrder2OrderItemsEventReceiver);
 
-      DomainObjectMockEventReceiver newOrderTicket1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderTicket1);
+      var newOrderTicket1EventReceiver = mockRepository.StrictMock<DomainObjectMockEventReceiver> (newOrderTicket1);
 
       using (mockRepository.Ordered())
       {

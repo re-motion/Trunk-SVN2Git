@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
@@ -166,7 +167,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ObjectsLoaded (ClientTransaction clientTransaction, DomainObjectCollection loadedDomainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> loadedDomainObjects)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("loadedDomainObjects", loadedDomainObjects);
 
@@ -257,7 +258,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -299,7 +300,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void Committing (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
 
@@ -308,7 +309,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void Committed (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
 
@@ -317,7 +318,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void RollingBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public void RollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
 
@@ -326,7 +327,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void RolledBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public void RolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
 

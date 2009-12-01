@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
@@ -62,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("ObjectGotID: {0}", id);
     }
 
-    public void ObjectsLoaded (DomainObjectCollection domainObjects)
+    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectsLoaded: {0}", GetDomainObjectsString (domainObjects));
@@ -116,7 +117,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("RelationRead: {0}=={1} ({2}, {3})", propertyName, GetDomainObjectString (relatedObject), valueAccess, GetDomainObjectString (domainObject));
     }
 
-    public void RelationRead (DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("RelationRead: {0} ({1}, {2}): {3}", propertyName, valueAccess, domainObject.ID, GetDomainObjectsString (relatedObjects));
@@ -154,25 +155,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public void TransactionCommitting (DomainObjectCollection domainObjects)
+    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionCommitting: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionCommitted (DomainObjectCollection domainObjects)
+    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionCommitted: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionRollingBack (DomainObjectCollection domainObjects)
+    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionRollingBack: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void TransactionRolledBack (DomainObjectCollection domainObjects)
+    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("TransactionRolledBack: {0}", GetDomainObjectsString (domainObjects));

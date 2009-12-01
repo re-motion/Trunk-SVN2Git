@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -913,7 +915,7 @@ public abstract class ClientTransaction
         foreach (DataContainer additionalDataContainer in additionalDataContainers)
           additionalDataContainer.RegisterLoadedDataContainer (this);
 
-        var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject), null).AsReadOnly();
+        var loadedDomainObjects = additionalDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList().AsReadOnly();
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
         for (int i = 0; i < objectIDs.Length; i++)
@@ -1024,8 +1026,9 @@ public abstract class ClientTransaction
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
       TransactionEventSink.RelationReading (domainObject, relationEndPointID.PropertyName, ValueAccess.Current);
-      DomainObjectCollection relatedObjects = _dataManager.RelationEndPointMap.GetRelatedObjects (relationEndPointID);
-      TransactionEventSink.RelationRead (domainObject, relationEndPointID.PropertyName, relatedObjects.Clone (true), ValueAccess.Current);
+      var relatedObjects = _dataManager.RelationEndPointMap.GetRelatedObjects (relationEndPointID);
+      var readOnlyRelatedObjects = relatedObjects.Cast<DomainObject>().ToList().AsReadOnly();
+      TransactionEventSink.RelationRead (domainObject, relationEndPointID.PropertyName, readOnlyRelatedObjects, ValueAccess.Current);
 
       return relatedObjects;
     }
@@ -1047,7 +1050,8 @@ public abstract class ClientTransaction
 
       TransactionEventSink.RelationReading (domainObject, relationEndPointID.PropertyName, ValueAccess.Original);
       DomainObjectCollection relatedObjects = _dataManager.RelationEndPointMap.GetOriginalRelatedObjects (relationEndPointID);
-      TransactionEventSink.RelationRead (domainObject, relationEndPointID.PropertyName, relatedObjects, ValueAccess.Original);
+      var readOnlyRelatedObjects = relatedObjects.Cast<DomainObject> ().ToList ().AsReadOnly ();
+      TransactionEventSink.RelationRead (domainObject, relationEndPointID.PropertyName, readOnlyRelatedObjects, ValueAccess.Original);
 
       return relatedObjects;
     }
@@ -1096,7 +1100,7 @@ public abstract class ClientTransaction
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
       Assertion.IsTrue (DataManager.DataContainerMap[id] == dataContainer);
 
-      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, null).AsReadOnly();
+      var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { dataContainer.DomainObject });
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
       return dataContainer.DomainObject;
@@ -1137,7 +1141,7 @@ public abstract class ClientTransaction
       {
         relatedDataContainer.RegisterLoadedDataContainer (this);
 
-        var loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, null).AsReadOnly();
+        var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { relatedDataContainer.DomainObject });
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
         return relatedDataContainer.DomainObject;
@@ -1185,7 +1189,7 @@ public abstract class ClientTransaction
 
       var domainObjects = _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, mergedObjects);
 
-      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject), null).AsReadOnly();
+      var newLoadedDomainObjects = newLoadedDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList().AsReadOnly();
       OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
       return domainObjects;
@@ -1238,7 +1242,7 @@ public abstract class ClientTransaction
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
       Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] == dataContainer);
 
-      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, null).AsReadOnly();
+      var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { dataContainer.DomainObject });
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
     }
   }
@@ -1434,7 +1438,7 @@ public abstract class ClientTransaction
 
       clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised);
       
-      OnCommitting (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionCommittingEventNotRaised, null).AsReadOnly()));
+      OnCommitting (new ClientTransactionEventArgs (clientTransactionCommittingEventNotRaised.ToList().AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1451,7 +1455,7 @@ public abstract class ClientTransaction
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnCommitted (EventArgs.Empty);
 
-    OnCommitted (new ClientTransactionEventArgs (changedDomainObjects.Clone (true)));
+    OnCommitted (new ClientTransactionEventArgs (changedDomainObjects.Cast<DomainObject>().ToList().AsReadOnly()));
   }
 
   private void BeginRollback ()
@@ -1496,7 +1500,7 @@ public abstract class ClientTransaction
 
       clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
 
-      OnRollingBack (new ClientTransactionEventArgs (new DomainObjectCollection (clientTransactionRollingBackEventNotRaised, null).AsReadOnly()));
+      OnRollingBack (new ClientTransactionEventArgs (clientTransactionRollingBackEventNotRaised.ToList().AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1513,7 +1517,7 @@ public abstract class ClientTransaction
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnRolledBack (EventArgs.Empty);
 
-    OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects.Clone (true)));
+    OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects.Cast<DomainObject>().ToList().AsReadOnly()));
   }
 
   public virtual ITransaction ToITransation ()

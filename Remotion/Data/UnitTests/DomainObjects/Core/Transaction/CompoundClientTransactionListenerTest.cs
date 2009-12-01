@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -84,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("NewObjectCreating"), new object[] {typeof (string), null});
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectLoading"), new object[] { order.ID });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] {new DomainObjectCollection()});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] { new ReadOnlyCollection<DomainObject>(new DomainObject[0]) });
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectGotID"), new object[] { order, order.ID });
 
@@ -136,12 +137,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
               new[]
                   {
                       typeof (DomainObject), typeof (string),
-                      typeof (DomainObjectCollection), typeof (ValueAccess)
+                      typeof (ReadOnlyCollection<DomainObject>), typeof (ValueAccess)
                   }),
           new object[]
               {
                   order, "FooBar",
-                  new DomainObjectCollection(), ValueAccess.Original
+                  new ReadOnlyCollection<DomainObject>(new DomainObject[0]), ValueAccess.Original
               });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationReading"), new object[] {order, "Whatever", ValueAccess.Current});
 

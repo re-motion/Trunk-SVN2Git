@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -66,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject domainObject1 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (domainObject1, domainObjects[0]);
       _eventReceiver.Clear ();
@@ -86,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject domainObject1 = ClientTransactionMock.GetObject (id1);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (domainObject1, domainObjects[0]);
       _eventReceiver.Clear ();
@@ -94,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject domainObject2 = ClientTransactionMock.GetObject (id2);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (domainObject2, domainObjects[0]);
 
@@ -129,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (order, domainObjects[0]);
     }
@@ -147,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (DomainObjectIDs.OrderTicket1, orderTicket.ID);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (orderTicket, domainObjects[0]);
     }
@@ -251,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (typeof (OrderCollection), orders.GetType (), "Type of collection");
       Assert.AreEqual (2, orders.Count);
 
-      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (2, domainObjects.Count);
     }
 
@@ -270,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.IsTrue (ReferenceEquals (orders1, orders2));
 
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
-      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (2, domainObjects.Count);
     }
 
@@ -370,7 +371,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order2));
       listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.OrderItem1));
 
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.List.Equal (objects)));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (objects)));
     }
 
     [Test]
@@ -399,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
     }
 
     [Test]
@@ -423,7 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
     }
 
     [Test]

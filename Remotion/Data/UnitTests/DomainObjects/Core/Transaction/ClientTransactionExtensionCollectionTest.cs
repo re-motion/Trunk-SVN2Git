@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -301,16 +301,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void Committing ()
     {
-      DomainObjectCollection domainObjectCollection = new DomainObjectCollection ();
+      var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Committing (ClientTransactionMock, domainObjectCollection);
-        _extension2.Committing (ClientTransactionMock, domainObjectCollection);
+        _extension1.Committing (ClientTransactionMock, data);
+        _extension2.Committing (ClientTransactionMock, data);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.Committing (ClientTransactionMock, domainObjectCollection);
+      _collectionWithExtensions.Committing (ClientTransactionMock, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -318,16 +318,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void Committed ()
     {
-      DomainObjectCollection domainObjectCollection = new DomainObjectCollection ();
+      var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Committed (ClientTransactionMock, domainObjectCollection);
-        _extension2.Committed (ClientTransactionMock, domainObjectCollection);
+        _extension1.Committed (ClientTransactionMock, data);
+        _extension2.Committed (ClientTransactionMock, data);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.Committed (ClientTransactionMock, domainObjectCollection);
+      _collectionWithExtensions.Committed (ClientTransactionMock, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -335,16 +335,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RollingBack ()
     {
-      DomainObjectCollection domainObjectCollection = new DomainObjectCollection ();
+      var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.RollingBack (ClientTransactionMock, domainObjectCollection);
-        _extension2.RollingBack (ClientTransactionMock, domainObjectCollection);
+        _extension1.RollingBack (ClientTransactionMock, data);
+        _extension2.RollingBack (ClientTransactionMock, data);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RollingBack (ClientTransactionMock, domainObjectCollection);
+      _collectionWithExtensions.RollingBack (ClientTransactionMock, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -352,16 +352,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RolledBack ()
     {
-      DomainObjectCollection domainObjectCollection = new DomainObjectCollection ();
+      var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.RolledBack (ClientTransactionMock, domainObjectCollection);
-        _extension2.RolledBack (ClientTransactionMock, domainObjectCollection);
+        _extension1.RolledBack (ClientTransactionMock, data);
+        _extension2.RolledBack (ClientTransactionMock, data);
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RolledBack (ClientTransactionMock, domainObjectCollection);
+      _collectionWithExtensions.RolledBack (ClientTransactionMock, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -369,8 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ObjectsLoaded ()
     {
-      DomainObjectCollection loadedDomainObjects = new DomainObjectCollection ();
-      loadedDomainObjects.Add (_order);
+      var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { _order });
 
       using (_mockRepository.Ordered ())
       {
@@ -458,7 +457,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RelationReadWithOneToManyRelation ()
     {
-      DomainObjectCollection orderItems = _order.OrderItems;
+      var orderItems = _order.OrderItems.Cast<DomainObject> ().ToList().AsReadOnly();
 
       using (_mockRepository.Ordered ())
       {

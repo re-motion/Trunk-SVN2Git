@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
@@ -51,8 +52,8 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class ValueChangeEventArgs : EventArgs
   {
-    private object _oldValue;
-    private object _newValue;
+    private readonly object _oldValue;
+    private readonly object _newValue;
 
     /// <summary>
     /// Initializes a new instance of the <b>ValueChangingEventArgs</b>.
@@ -88,7 +89,7 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class PropertyChangeEventArgs : ValueChangeEventArgs
   {
-    private PropertyValue _propertyValue;
+    private readonly PropertyValue _propertyValue;
 
     /// <summary>
     /// Initializes a new instance of the <b>ValueChangingEventArgs</b> class.
@@ -119,9 +120,9 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class RelationChangingEventArgs : EventArgs
   {
-    private string _propertyName;
-    private DomainObject _oldRelatedObject;
-    private DomainObject _newRelatedObject;
+    private readonly string _propertyName;
+    private readonly DomainObject _oldRelatedObject;
+    private readonly DomainObject _newRelatedObject;
 
     /// <summary>
     /// Initializes a new instance of the <b>RelationChangingEventArgs</b> class.
@@ -173,7 +174,7 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class RelationChangedEventArgs : EventArgs
   {
-    private string _propertyName;
+    private readonly string _propertyName;
 
     /// <summary>
     /// Initializes a new instance of the <b>RelationChangingEventArgs</b> class.
@@ -202,14 +203,14 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class ClientTransactionEventArgs : EventArgs
   {
-    private DomainObjectCollection _domainObjects;
+    private readonly ReadOnlyCollection<DomainObject> _domainObjects;
 
     /// <summary>
     /// Initializes a new instance of the <b>ClientTransactionEventArgs</b> class.
     /// </summary>
     /// <param name="domainObjects">The <see cref="DomainObject"/>s affected by the <see cref="ClientTransaction"/> operation. Must not be <see langword="null"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    public ClientTransactionEventArgs (DomainObjectCollection domainObjects)
+    public ClientTransactionEventArgs (ReadOnlyCollection<DomainObject> domainObjects)
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
       _domainObjects = domainObjects;
@@ -218,7 +219,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the <see cref="DomainObject"/>s affected by the <see cref="ClientTransaction.Commit"/> operation.
     /// </summary>
-    public DomainObjectCollection DomainObjects
+    public ReadOnlyCollection<DomainObject> DomainObjects
     {
       get { return _domainObjects; }
     }

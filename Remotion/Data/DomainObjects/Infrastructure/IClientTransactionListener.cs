@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -40,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void NewObjectCreating (Type type, DomainObject instance);
 
     void ObjectLoading (ObjectID id);
-    void ObjectsLoaded (DomainObjectCollection domainObjects);
+    void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects);
 
     void ObjectGotID (DomainObject instance, ObjectID id);
 
@@ -54,17 +55,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess);
     void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
-    void RelationRead (DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess);
+    void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess);
     
     void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
     void RelationChanged (DomainObject domainObject, string propertyName);
 
     QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject;
 
-    void TransactionCommitting (DomainObjectCollection domainObjects);
-    void TransactionCommitted (DomainObjectCollection domainObjects);
-    void TransactionRollingBack (DomainObjectCollection domainObjects);
-    void TransactionRolledBack (DomainObjectCollection domainObjects);
+    void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects);
+    void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects);
 
     void RelationEndPointMapRegistering (RelationEndPoint endPoint);
     void RelationEndPointMapUnregistering (RelationEndPointID endPointID);

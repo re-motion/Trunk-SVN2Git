@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -53,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void ObjectsLoaded (DomainObjectCollection domainObjects)
+    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
@@ -98,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void RelationRead (DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       throw CreateException();
     }
@@ -118,22 +119,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void TransactionCommitting (DomainObjectCollection domainObjects)
+    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
 
-    public void TransactionCommitted (DomainObjectCollection domainObjects)
+    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
 
-    public void TransactionRollingBack (DomainObjectCollection domainObjects)
+    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }
 
-    public void TransactionRolledBack (DomainObjectCollection domainObjects)
+    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }

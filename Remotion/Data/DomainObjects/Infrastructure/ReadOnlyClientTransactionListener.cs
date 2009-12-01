@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable ("ObjectGotID");
     }
 
-    public virtual void ObjectsLoaded (DomainObjectCollection domainObjects)
+    public virtual void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationRead (DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public virtual void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
     }
 
@@ -133,22 +133,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public virtual void TransactionCommitting (DomainObjectCollection domainObjects)
+    public virtual void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable ("TransactionCommitting");
     }
 
-    public virtual void TransactionCommitted (DomainObjectCollection domainObjects)
+    public virtual void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void TransactionRollingBack (DomainObjectCollection domainObjects)
+    public virtual void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable ("TransactionRollingBack");
     }
 
-    public virtual void TransactionRolledBack (DomainObjectCollection domainObjects)
+    public virtual void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }

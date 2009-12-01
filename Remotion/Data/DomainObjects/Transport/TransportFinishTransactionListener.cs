@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
@@ -36,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Transport
       _filter = filter;
     }
 
-    public void TransactionCommitting (DomainObjectCollection domainObjects)
+    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsTrue (ClientTransaction.Current == _transaction);
       foreach (DomainObject domainObject in domainObjects)
@@ -71,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
-    public void ObjectsLoaded (DomainObjectCollection domainObjects)
+    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       // not handled by this listener
     }
@@ -116,7 +117,7 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
-    public void RelationRead (DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       // not handled by this listener
     }
@@ -137,17 +138,17 @@ namespace Remotion.Data.DomainObjects.Transport
       return queryResult;
     }
 
-    public void TransactionCommitted (DomainObjectCollection domainObjects)
+    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
     {
       // not handled by this listener
     }
 
-    public void TransactionRollingBack (DomainObjectCollection domainObjects)
+    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       // not handled by this listener
     }
 
-    public void TransactionRolledBack (DomainObjectCollection domainObjects)
+    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       // not handled by this listener
     }

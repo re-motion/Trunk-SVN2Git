@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
@@ -47,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Security
     }
 
 
-    void IClientTransactionExtension.ObjectsLoaded (ClientTransaction clientTransaction, DomainObjectCollection loadedDomainObjects)
+    void IClientTransactionExtension.ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> loadedDomainObjects)
     {
     }
 
@@ -67,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Security
     {
     }
 
-    void IClientTransactionExtension.RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    void IClientTransactionExtension.RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
     }
 
@@ -75,19 +76,19 @@ namespace Remotion.Data.DomainObjects.Security
     {
     }
 
-    void IClientTransactionExtension.Committing (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    void IClientTransactionExtension.Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 
-    void IClientTransactionExtension.Committed (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    void IClientTransactionExtension.Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 
-    void IClientTransactionExtension.RollingBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    void IClientTransactionExtension.RollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 
-    void IClientTransactionExtension.RolledBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    void IClientTransactionExtension.RolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 

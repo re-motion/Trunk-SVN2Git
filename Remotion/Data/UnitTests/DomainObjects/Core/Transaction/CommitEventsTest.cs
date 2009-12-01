@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -29,13 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     public override void TestFixtureSetUp ()
     {
-      base.TestFixtureSetUp ();
-      SetDatabaseModifyable ();
+      base.TestFixtureSetUp();
+      SetDatabaseModifyable();
     }
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _customer = Customer.GetObject (DomainObjectIDs.Customer1);
     }
@@ -45,10 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       _customer.Name = "New name";
 
-      DomainObjectEventReceiver domainObjectEventReceiver = new DomainObjectEventReceiver (_customer);
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var domainObjectEventReceiver = new DomainObjectEventReceiver (_customer);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.IsTrue (domainObjectEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (domainObjectEventReceiver.HasCommittedEventBeenCalled);
@@ -56,8 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (1, committingDomainObjects.Count);
       Assert.AreEqual (1, committedDomainObjects.Count);
@@ -70,14 +71,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ModifyOtherObjectInDomainObjectCommitting ()
     {
       _customer.Name = "New name";
-      _customer.Committing += new EventHandler (Customer_CommittingForModifyOtherObjectInDomainObjectCommitting);
+      _customer.Committing += Customer_CommittingForModifyOtherObjectInDomainObjectCommitting;
 
       Ceo ceo = _customer.Ceo;
 
-      DomainObjectEventReceiver ceoEventReceiver = new DomainObjectEventReceiver (ceo);
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var ceoEventReceiver = new DomainObjectEventReceiver (ceo);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.IsTrue (ceoEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (ceoEventReceiver.HasCommittedEventBeenCalled);
@@ -85,31 +86,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (2, committingDomainObjects.Count);
       Assert.AreEqual (2, committedDomainObjects.Count);
 
-      Assert.IsTrue (committingDomainObjects.ContainsObject (_customer));
-      Assert.IsTrue (committedDomainObjects.ContainsObject (_customer));
+      Assert.IsTrue (committingDomainObjects.Contains (_customer));
+      Assert.IsTrue (committedDomainObjects.Contains (_customer));
 
-      Assert.IsTrue (committingDomainObjects.ContainsObject (ceo));
-      Assert.IsTrue (committedDomainObjects.ContainsObject (ceo));
+      Assert.IsTrue (committingDomainObjects.Contains (ceo));
+      Assert.IsTrue (committedDomainObjects.Contains (ceo));
     }
 
     [Test]
     public void ModifyOtherObjectInClientTransactionCommitting ()
     {
       _customer.Name = "New name";
-      ClientTransactionMock.Committing += new ClientTransactionEventHandler (ClientTransaction_CommittingForModifyOtherObjectInClientTransactionCommitting);
+      ClientTransactionMock.Committing += ClientTransaction_CommittingForModifyOtherObjectInClientTransactionCommitting;
 
       Ceo ceo = _customer.Ceo;
 
-      DomainObjectEventReceiver ceoEventReceiver = new DomainObjectEventReceiver (ceo);
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var ceoEventReceiver = new DomainObjectEventReceiver (ceo);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.IsTrue (ceoEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (ceoEventReceiver.HasCommittedEventBeenCalled);
@@ -117,22 +118,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (2, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjectsForFirstCommitEvent = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committingDomainObjectsForSecondCommit = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[1];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjectsForFirstCommitEvent = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committingDomainObjectsForSecondCommit = clientTransactionEventReceiver.CommittingDomainObjects[1];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (1, committingDomainObjectsForFirstCommitEvent.Count);
       Assert.AreEqual (1, committingDomainObjectsForSecondCommit.Count);
       Assert.AreEqual (2, committedDomainObjects.Count);
 
-      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.ContainsObject (_customer));
-      Assert.IsFalse (committingDomainObjectsForFirstCommitEvent.ContainsObject (ceo));
+      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.Contains (_customer));
+      Assert.IsFalse (committingDomainObjectsForFirstCommitEvent.Contains (ceo));
 
-      Assert.IsFalse (committingDomainObjectsForSecondCommit.ContainsObject (_customer));
-      Assert.IsTrue (committingDomainObjectsForSecondCommit.ContainsObject (ceo));
+      Assert.IsFalse (committingDomainObjectsForSecondCommit.Contains (_customer));
+      Assert.IsTrue (committingDomainObjectsForSecondCommit.Contains (ceo));
 
-      Assert.IsTrue (committedDomainObjects.ContainsObject (_customer));
-      Assert.IsTrue (committedDomainObjects.ContainsObject (ceo));
+      Assert.IsTrue (committedDomainObjects.Contains (_customer));
+      Assert.IsTrue (committedDomainObjects.Contains (ceo));
     }
 
     [Test]
@@ -146,16 +147,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = _customer.Orders[DomainObjectIDs.Order1];
       IndustrialSector industrialSector = _customer.IndustrialSector;
 
-      DomainObjectEventReceiver ceoEventReceiver = new DomainObjectEventReceiver (ceo);
-      DomainObjectEventReceiver customerEventReceiver = new DomainObjectEventReceiver (_customer);
-      DomainObjectEventReceiver orderEventReceiver = new DomainObjectEventReceiver (order);
-      DomainObjectEventReceiver industrialSectorEventReceiver = new DomainObjectEventReceiver (industrialSector);
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var ceoEventReceiver = new DomainObjectEventReceiver (ceo);
+      var customerEventReceiver = new DomainObjectEventReceiver (_customer);
+      var orderEventReceiver = new DomainObjectEventReceiver (order);
+      var industrialSectorEventReceiver = new DomainObjectEventReceiver (industrialSector);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
 
-      _customer.Committing += new EventHandler (Customer_CommittingForModifyOtherObjects);
-      ClientTransactionMock.Committing += new ClientTransactionEventHandler (ClientTransactionMock_CommittingForModifyOtherObjects);
+      _customer.Committing += Customer_CommittingForModifyOtherObjects;
+      ClientTransactionMock.Committing += ClientTransactionMock_CommittingForModifyOtherObjects;
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.IsTrue (ceoEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (ceoEventReceiver.HasCommittedEventBeenCalled);
@@ -172,38 +173,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (2, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjectsForFirstCommitEvent = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committingDomainObjectsForSecondCommit = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[1];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjectsForFirstCommitEvent = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committingDomainObjectsForSecondCommit = clientTransactionEventReceiver.CommittingDomainObjects[1];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (3, committingDomainObjectsForFirstCommitEvent.Count);
       Assert.AreEqual (1, committingDomainObjectsForSecondCommit.Count);
       Assert.AreEqual (4, committedDomainObjects.Count);
 
-      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.ContainsObject (_customer));
-      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.ContainsObject (ceo));
-      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.ContainsObject (order));
+      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.Contains (_customer));
+      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.Contains (ceo));
+      Assert.IsTrue (committingDomainObjectsForFirstCommitEvent.Contains (order));
 
-      Assert.IsTrue (committingDomainObjectsForSecondCommit.ContainsObject (industrialSector));
+      Assert.IsTrue (committingDomainObjectsForSecondCommit.Contains (industrialSector));
 
-      Assert.IsTrue (committedDomainObjects.ContainsObject (_customer));
-      Assert.IsTrue (committedDomainObjects.ContainsObject (ceo));
-      Assert.IsTrue (committedDomainObjects.ContainsObject (order));
-      Assert.IsTrue (committedDomainObjects.ContainsObject (industrialSector));
+      Assert.IsTrue (committedDomainObjects.Contains (_customer));
+      Assert.IsTrue (committedDomainObjects.Contains (ceo));
+      Assert.IsTrue (committedDomainObjects.Contains (order));
+      Assert.IsTrue (committedDomainObjects.Contains (industrialSector));
     }
 
     [Test]
     public void CommitWithoutChanges ()
     {
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (0, committingDomainObjects.Count);
       Assert.AreEqual (0, committedDomainObjects.Count);
@@ -212,25 +213,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CommitWithExistingObjectDeleted ()
     {
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       ObjectID classWithAllDataTypesID = classWithAllDataTypes.ID;
 
-      classWithAllDataTypes.Delete ();
+      classWithAllDataTypes.Delete();
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (1, committingDomainObjects.Count);
       Assert.AreEqual (0, committedDomainObjects.Count);
 
-      Assert.IsTrue (committingDomainObjects.Contains (classWithAllDataTypesID));
+      Assert.IsTrue (committingDomainObjects.Any (obj => obj.ID == classWithAllDataTypesID));
     }
 
     [Test]
@@ -238,11 +239,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       _customer.Name = "New name";
 
-      DomainObjectEventReceiver customerEventReceiver = new DomainObjectEventReceiver (_customer);
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
-      _customer.Committing += new EventHandler (Customer_CommittingForCommittedEventForObjectChangedBackToOriginal);
+      var customerEventReceiver = new DomainObjectEventReceiver (_customer);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      _customer.Committing += Customer_CommittingForCommittedEventForObjectChangedBackToOriginal;
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.IsTrue (customerEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsFalse (customerEventReceiver.HasCommittedEventBeenCalled);
@@ -250,8 +251,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (0, committingDomainObjects.Count);
       Assert.AreEqual (0, committedDomainObjects.Count);
@@ -260,13 +261,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CommittedEventForMarkAsChanged ()
     {
-      _customer.MarkAsChanged ();
+      _customer.MarkAsChanged();
 
-      DomainObjectEventReceiver customerEventReceiver = new DomainObjectEventReceiver (_customer);
-      ClientTransactionEventReceiver clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
-      _customer.Committing += new EventHandler (Customer_CommittingForCommittedEventForObjectChangedBackToOriginal);
+      var customerEventReceiver = new DomainObjectEventReceiver (_customer);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      _customer.Committing += Customer_CommittingForCommittedEventForObjectChangedBackToOriginal;
 
-      ClientTransactionMock.Commit ();
+      ClientTransactionMock.Commit();
 
       Assert.IsTrue (customerEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (customerEventReceiver.HasCommittedEventBeenCalled);
@@ -274,8 +275,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
 
-      DomainObjectCollection committingDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittingDomainObjects[0];
-      DomainObjectCollection committedDomainObjects = (DomainObjectCollection) clientTransactionEventReceiver.CommittedDomainObjects[0];
+      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjects[0];
+      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjects[0];
 
       Assert.AreEqual (1, committingDomainObjects.Count);
       Assert.AreEqual (1, committedDomainObjects.Count);
@@ -286,27 +287,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     private void Customer_CommittingForModifyOtherObjectInDomainObjectCommitting (object sender, EventArgs e)
     {
-      Customer customer = (Customer) sender;
+      var customer = (Customer) sender;
       customer.Ceo.Name = "New CEO name";
     }
 
     private void ClientTransaction_CommittingForModifyOtherObjectInClientTransactionCommitting (object sender, ClientTransactionEventArgs args)
     {
-      Customer customer = args.DomainObjects[0] as Customer;
+      var customer = args.DomainObjects[0] as Customer;
       if (customer != null)
         customer.Ceo.Name = "New CEO name";
     }
 
     private void Customer_CommittingForModifyOtherObjects (object sender, EventArgs e)
     {
-      Customer customer = (Customer) sender;
+      var customer = (Customer) sender;
       Order order = customer.Orders[DomainObjectIDs.Order1];
       order.OrderNumber = 1000;
     }
 
     private void ClientTransactionMock_CommittingForModifyOtherObjects (object sender, ClientTransactionEventArgs args)
     {
-      Customer customer = (Customer) args.DomainObjects[DomainObjectIDs.Customer1];
+      var customer = (Customer) args.DomainObjects.SingleOrDefault (obj => obj.ID == DomainObjectIDs.Customer1);
       if (customer != null)
         customer.IndustrialSector.Name = "New industrial sector name";
     }

@@ -16,7 +16,8 @@
 // 
 using System;
 using System.Collections;
-using NUnit.Framework;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
@@ -29,39 +30,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // member fields
 
-    private ClientTransaction _clientTransaction;
-    private ArrayList _loadedDomainObjects;
-    private ArrayList _committingDomainObjects;
-    private ArrayList _committedDomainObjects;
+    private readonly ClientTransaction _clientTransaction;
+    private List<ReadOnlyCollection<DomainObject>> _loadedDomainObjects;
+    private List<ReadOnlyCollection<DomainObject>> _committingDomainObjects;
+    private List<ReadOnlyCollection<DomainObject>> _committedDomainObjects;
 
     // construction and disposing
 
     public ClientTransactionEventReceiver (ClientTransaction clientTransaction)
     {
-      _loadedDomainObjects = new ArrayList ();
-      _committingDomainObjects = new ArrayList ();
-      _committedDomainObjects = new ArrayList ();
+      _loadedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
+      _committingDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
+      _committedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
       _clientTransaction = clientTransaction;
 
-      _clientTransaction.Loaded += new ClientTransactionEventHandler (ClientTransaction_Loaded);
-      _clientTransaction.Committing += new ClientTransactionEventHandler (ClientTransaction_Committing);
-      _clientTransaction.Committed += new ClientTransactionEventHandler (ClientTransaction_Committed);
+      _clientTransaction.Loaded += ClientTransaction_Loaded;
+      _clientTransaction.Committing += ClientTransaction_Committing;
+      _clientTransaction.Committed += ClientTransaction_Committed;
     }
 
     // methods and properties
 
     public void Clear ()
     {
-      _loadedDomainObjects = new ArrayList ();
-      _committingDomainObjects = new ArrayList ();
-      _committedDomainObjects = new ArrayList ();
+      _loadedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
+      _committingDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
+      _committedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
     }
 
     public void Unregister ()
     {
-      _clientTransaction.Loaded -= new ClientTransactionEventHandler (ClientTransaction_Loaded);
-      _clientTransaction.Committing -= new ClientTransactionEventHandler (ClientTransaction_Committing);
-      _clientTransaction.Committed -= new ClientTransactionEventHandler (ClientTransaction_Committed);
+      _clientTransaction.Loaded -= ClientTransaction_Loaded;
+      _clientTransaction.Committing -= ClientTransaction_Committing;
+      _clientTransaction.Committed -= ClientTransaction_Committed;
     }
 
     private void ClientTransaction_Loaded (object sender, ClientTransactionEventArgs args)
@@ -71,29 +72,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     private void ClientTransaction_Committing (object sender, ClientTransactionEventArgs args)
     {
-      Assert.IsTrue (args.DomainObjects.IsReadOnly);
-
       _committingDomainObjects.Add (args.DomainObjects);
     }
 
     private void ClientTransaction_Committed (object sender, ClientTransactionEventArgs args)
     {
-      Assert.IsTrue (args.DomainObjects.IsReadOnly);
-
       _committedDomainObjects.Add (args.DomainObjects);
     }
 
-    public ArrayList LoadedDomainObjects
+    public List<ReadOnlyCollection<DomainObject>> LoadedDomainObjects
     {
       get { return _loadedDomainObjects; }
     }
 
-    public ArrayList CommittingDomainObjects
+    public List<ReadOnlyCollection<DomainObject>> CommittingDomainObjects
     {
       get { return _committingDomainObjects; }
     }
 
-    public ArrayList CommittedDomainObjects
+    public List<ReadOnlyCollection<DomainObject>> CommittedDomainObjects
     {
       get { return _committedDomainObjects; }
     }

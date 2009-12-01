@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
@@ -44,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
-    public virtual void ObjectsLoaded (ClientTransaction clientTransaction, DomainObjectCollection loadedDomainObjects)
+    public virtual void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> loadedDomainObjects)
     {
     }
 
@@ -80,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
-    public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public virtual void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
     }
 
@@ -103,19 +104,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       return queryResult;
     }
 
-    public virtual void Committing (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public virtual void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 
-    public virtual void Committed (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public virtual void Committed (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 
-    public virtual void RollingBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public virtual void RollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
 
-    public virtual void RolledBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    public virtual void RolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
     }
   }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -67,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectGotID (instance, id);
     }
 
-    public void ObjectsLoaded (DomainObjectCollection domainObjects)
+    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.ObjectsLoaded (domainObjects);
@@ -121,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationRead (domainObject, propertyName, relatedObject, valueAccess);
     }
 
-    public void RelationRead (DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.RelationRead (domainObject, propertyName, relatedObjects, valueAccess);
@@ -146,25 +147,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
-    public void TransactionCommitting (DomainObjectCollection domainObjects)
+    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.TransactionCommitting (domainObjects);
     }
 
-    public void TransactionCommitted (DomainObjectCollection domainObjects)
+    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.TransactionCommitted (domainObjects);
     }
 
-    public void TransactionRollingBack (DomainObjectCollection domainObjects)
+    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.TransactionRollingBack (domainObjects);
     }
 
-    public void TransactionRolledBack (DomainObjectCollection domainObjects)
+    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (IClientTransactionListener listener in _listeners)
         listener.TransactionRolledBack (domainObjects);
