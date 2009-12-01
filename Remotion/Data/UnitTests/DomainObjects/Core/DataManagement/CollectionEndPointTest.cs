@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -259,37 +258,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (0));
     }
 
-    private void CheckIfRelationEndPointsAreEqual (CollectionEndPoint expected, CollectionEndPoint actual)
-    {
-      ArgumentUtility.CheckNotNull ("expected", expected);
-      ArgumentUtility.CheckNotNull ("actual", actual);
-
-      Assert.That (actual, Is.Not.SameAs (expected));
-
-      Assert.That (actual.ClientTransaction, Is.SameAs (expected.ClientTransaction));
-      Assert.That (actual.Definition, Is.SameAs (expected.Definition));
-      Assert.That (actual.GetDomainObject (), Is.SameAs (expected.GetDomainObject ()));
-      Assert.That (actual.HasChanged, Is.EqualTo (expected.HasChanged));
-      Assert.That (actual.HasBeenTouched, Is.EqualTo (expected.HasBeenTouched));
-      Assert.That (actual.ID, Is.EqualTo (expected.ID));
-      Assert.That (actual.ObjectID, Is.EqualTo (expected.ObjectID));
-
-      Assert.That (actual.OppositeDomainObjects, Is.Not.Null);
-      Assert.That (actual.OppositeDomainObjects, Is.Not.SameAs (expected.OppositeDomainObjects));
-
-      Assert.That (actual.OppositeDomainObjects.Count, Is.EqualTo (expected.OppositeDomainObjects.Count));
-      for (int i = 0; i < expected.OppositeDomainObjects.Count; ++i)
-        Assert.That (actual.OppositeDomainObjects[i], Is.SameAs (expected.OppositeDomainObjects[i]));
-
-      Assert.That (actual.OriginalOppositeDomainObjectsContents, Is.Not.Null);
-      Assert.That (actual.OriginalOppositeDomainObjectsContents, Is.Not.SameAs (expected.OriginalOppositeDomainObjectsContents));
-      Assert.That (actual.OriginalOppositeDomainObjectsContents.IsReadOnly, Is.EqualTo (expected.OriginalOppositeDomainObjectsContents.IsReadOnly));
-
-      Assert.That (actual.OriginalOppositeDomainObjectsContents.Count, Is.EqualTo (expected.OriginalOppositeDomainObjectsContents.Count));
-      for (int i = 0; i < expected.OriginalOppositeDomainObjectsContents.Count; ++i)
-        Assert.That (actual.OriginalOppositeDomainObjectsContents[i], Is.SameAs (expected.OriginalOppositeDomainObjectsContents[i]));
-    }
-
     [Test]
     public void ReplaceOppositeCollection ()
     {
@@ -320,6 +288,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var otherEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new DomainObject[0]);
       _customerEndPoint.ReplaceOppositeCollection (otherEndPoint.OppositeDomainObjects);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void ReplaceOppositeCollection_ObjectDeleted ()
+    {
+      ((Customer) _customerEndPoint.GetDomainObject ()).Delete ();
+      _customerEndPoint.ReplaceOppositeCollection (new OrderCollection ());
     }
 
     [Test]

@@ -125,6 +125,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (oppositeDomainObjects.AssociatedEndPoint != null && oppositeDomainObjects.AssociatedEndPoint != this)
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
+      RelationEndPointValueChecker.CheckNotDeleted (this, GetDomainObject ());
+
       var modification = oppositeDomainObjects.CreateAssociationModification (this);
       var bidirectionalModification = modification.CreateRelationModification ();
       bidirectionalModification.ExecuteAllSteps ();
