@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void HasChanged_True_ReferenceChanged ()
     {
-      _customerEndPoint.ReplaceOppositeCollection (_customerEndPoint.OppositeDomainObjects.Clone ());
+      _customerEndPoint.SetOppositeCollectionAndNotify (_customerEndPoint.OppositeDomainObjects.Clone ());
       Assert.That (_strategy.HasChanged (_customerEndPoint), Is.True);
     }
 

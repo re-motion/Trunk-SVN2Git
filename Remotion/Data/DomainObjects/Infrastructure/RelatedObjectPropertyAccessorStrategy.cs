@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var endPointID = CreateRelationEndPointID (propertyAccessor);
       var endPoint = (ObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
-      endPoint.SetOppositeObjectWithNotifications ((DomainObject) value);
+      endPoint.SetOppositeObjectAndNotify ((DomainObject) value);
     }
 
     public object GetOriginalValueWithoutTypeCheck (PropertyAccessor propertyAccessor, ClientTransaction transaction)

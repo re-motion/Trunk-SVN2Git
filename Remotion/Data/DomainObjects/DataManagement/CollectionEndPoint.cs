@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (oppositeDomainObjects.AssociatedEndPoint != this)
       {
         throw new ArgumentException (
-            "The new opposite collection must have been prepared to delegate to this end point. Use ReplaceOppositeCollection instead.",
+            "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead.",
             "oppositeDomainObjects");
       }
 
@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Touch ();
     }
 
-    public void ReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
+    public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
 

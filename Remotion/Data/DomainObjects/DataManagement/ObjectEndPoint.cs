@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public void SetOppositeObjectWithNotifications (DomainObject newRelatedObject)
+    public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
     {
       RelationEndPointValueChecker.CheckClientTransaction (
           this, 

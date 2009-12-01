@@ -594,29 +594,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' of DomainObject "
         + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be set to DomainObject "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. The objects do not belong to the same ClientTransaction.")]
-    public void SetOppositeObjectWithNotifications_WithOtherClientTransaction ()
+    public void SetOppositeObjectAndNotify_WithOtherClientTransaction ()
     {
       var orderFromOtherTransaction = new ClientTransactionMock ().GetObject (DomainObjectIDs.Order1);
-      _endPoint.SetOppositeObjectWithNotifications (orderFromOtherTransaction);
+      _endPoint.SetOppositeObjectAndNotify (orderFromOtherTransaction);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
-    public void SetOppositeObjectWithNotifications_WithInvalidType ()
+    public void SetOppositeObjectAndNotify_WithInvalidType ()
     {
       DomainObject customer = ClientTransactionMock.GetObject (DomainObjectIDs.Customer1);
-      _endPoint.SetOppositeObjectWithNotifications (customer);
+      _endPoint.SetOppositeObjectAndNotify (customer);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
-    public void SetOppositeObjectWithNotifications_WithInvalidBaseType ()
+    public void SetOppositeObjectAndNotify_WithInvalidBaseType ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Person1, "AssociatedPartnerCompany");
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (endPointID, DomainObjectIDs.Partner1);
 
       var nonPartnerCompany = Company.GetObject (DomainObjectIDs.Company1);
-      endPoint.SetOppositeObjectWithNotifications (nonPartnerCompany);
+      endPoint.SetOppositeObjectAndNotify (nonPartnerCompany);
     }
   }
 }
