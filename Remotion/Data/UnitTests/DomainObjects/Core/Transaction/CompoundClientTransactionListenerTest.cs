@@ -151,16 +151,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("TransactionCommitting"),
-          new object[] {new DomainObjectCollection()});
+          new object[] { new ReadOnlyCollection<DomainObject>(new DomainObject[0]) });
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("TransactionCommitted"),
-          new object[] {new DomainObjectCollection()});
+          new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("TransactionRollingBack"),
-          new object[] {new DomainObjectCollection()});
+          new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("TransactionRolledBack"),
-          new object[] {new DomainObjectCollection()});
+          new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
 
       RelationEndPoint endPoint = RelationEndPoint.CreateNullRelationEndPoint (
           new RelationEndPointDefinition (order.ID.ClassDefinition, typeof(Order).FullName + ".Customer", true));
