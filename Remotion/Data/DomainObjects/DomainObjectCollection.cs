@@ -507,7 +507,6 @@ namespace Remotion.Data.DomainObjects
 
       _dataStrategy.Insert (index, domainObject);
     }
-
    
     /// <inheritdoc />
     public void CopyTo (Array array, int index)

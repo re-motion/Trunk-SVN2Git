@@ -16,16 +16,16 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
   public class DomainObjectCollectionsWithDifferentClientTransactionsTest : ClientTransactionBaseTest
   {
     private Customer _customer1;
-    private Customer _customer2;
 
     private ClientTransaction _secondClientTransaction;
     private DomainObjectCollection _secondCollection;
@@ -36,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       base.SetUp ();
 
       _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
-      _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
 
       _secondClientTransaction = ClientTransaction.CreateRootTransaction();
       _secondCollection = new DomainObjectCollection ();
@@ -49,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.")]
-    public void ReplaceObjectWithDifferentClientTransaction ()
+    public void Item_Set_WithDifferentClientTransaction ()
     {
       _secondCollection.Add (_secondCustomer1);
 
@@ -60,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.\r\n"
         + "Parameter name: domainObject")]
-    public void AddSameObjectWithDifferentClientTransaction ()
+    public void Add_SameObject_WithDifferentClientTransaction ()
     {
       _secondCollection.Add (_secondCustomer1);
 
@@ -71,11 +70,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "The collection already contains an object with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'.\r\n"
         + "Parameter name: domainObject")]
-    public void InsertSameObjectWithDifferentClientTransaction ()
+    public void Insert_SameObject_WithDifferentClientTransaction ()
     {
       _secondCollection.Add (_secondCustomer1);
 
       _secondCollection.Insert (0, _customer1);
     }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The object to be removed has the same ID as an object in this collection, but "
+                                                                      + "is a different object reference.\r\nParameter name: domainObject")]
+    public void Remove_ObjectFromOtherTransaction_WhoseIDIsInCollection ()
+    {
+      var collection = new DomainObjectCollection (typeof (Customer));
+      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      collection.Add (customer);
+
+      Customer customerInOtherTx;
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        customerInOtherTx = Customer.GetObject (customer.ID);
+      }
+
+      collection.Remove (customerInOtherTx);
+
+      Assert.That (collection.ContainsObject (customer), Is.True);
+    }
+
   }
 }

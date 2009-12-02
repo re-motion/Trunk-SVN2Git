@@ -261,7 +261,10 @@
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithMissingDataCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\OppositeObject.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectCollectionDataTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.EventRaiser.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionTest.cs" />
@@ -975,7 +978,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DeleteNewDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.cs">
@@ -1487,6 +1490,7 @@
     <Compile Include="DomainObjects\Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
     <TestDomain Include="DomainObjects\Core\Design\DelaySignAssembly\PublicKey.snk" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.IList.cs" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\TestDomain.cd" />
     <None Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystem.cd" />
