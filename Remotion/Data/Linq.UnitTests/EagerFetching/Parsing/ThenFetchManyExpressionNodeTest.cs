@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.Linq.Parsing;

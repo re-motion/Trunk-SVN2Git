@@ -587,7 +587,9 @@
         <include name="prereq/Assemblies/**" />
         <include name="Remotion/Core/Core/**" />
         <include name="Remotion/Core/Interfaces/**" />
+        <include name="Remotion/Development/Core/**" />
         <include name="Remotion/Data/Linq/**" />
+        <include name="Remotion/Data/Linq.UnitTests/**" />
         <include name="Remotion/license/**/*"/>
 
         <exclude name="Remotion/**/obj/**" />

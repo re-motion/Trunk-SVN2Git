@@ -187,7 +187,7 @@
   <target name="all-test" depends="prereq, Remotion.License, Dms.License, SecurityManager.License,
       Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, 
       Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
-      Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests,       
+      Data.Linq.UnitTests, Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests,       
       Security.UnitTests.TestDomain, Security.UnitTests, Dms.UnitTests, SecurityManager.Core.UnitTests">
     <echo message="Target has executed."/>
   </target>
@@ -564,8 +564,16 @@
     <call target="buildtest" />
   </target>
 
+  <target name="Data.Linq.UnitTests" depdends="Core.Core, Data.Linq, Development.Core">
+    <property name="project.name" value="Data.Linq.UnitTests" />
+    <property name="project.dir" value="Remotion/Data/Linq.UnitTests" />
+    <property name="project.output" value="Remotion.Data.Linq.UnitTests" />
+    <property name="project.extension" value="dll" />
+    <call target="buildtest" />
+  </target>
+
   <target name="Data.UnitTests" depdends="
-          Core.Core, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security
+          Core.Core, Data.Linq, Data.Linq.UnitTests, Data.DomainObjects, Data.DomainObjects.Security
           Development.Core, Development.Data, Development.Web, Security.Interfaces, Security">
     <property name="project.name" value="Data.UnitTests" />
     <property name="project.dir" value="Remotion/Data/UnitTests" />
