@@ -66,51 +66,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public RelationEndPointCollection GetOppositeRelationEndPoints (DomainObject domainObject)
-    {
-      RelationEndPointCollection oppositeEndPoints = new RelationEndPointCollection (_clientTransaction);
-
-      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).AssociatedRelationEndPointIDs)
-        oppositeEndPoints.Combine (GetOppositeRelationEndPoints (this[endPointID]));
-
-      return oppositeEndPoints;
-    }
-
-    public RelationEndPointCollection GetOppositeRelationEndPoints (RelationEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      RelationEndPointCollection oppositeEndPoints = new RelationEndPointCollection (_clientTransaction);
-
-      if (endPoint.OppositeEndPointDefinition.IsAnonymous)
-        return oppositeEndPoints;
-
-      if (endPoint.Definition.Cardinality == CardinalityType.One)
-      {
-        ObjectEndPoint objectEndPoint = (ObjectEndPoint) endPoint;
-        if (objectEndPoint.OppositeObjectID != null)
-        {
-          RelationEndPointID oppositeEndPointID = new RelationEndPointID (
-              objectEndPoint.OppositeObjectID, objectEndPoint.OppositeEndPointDefinition);
-
-          oppositeEndPoints.Add (this[oppositeEndPointID]);
-        }
-      }
-      else
-      {
-        CollectionEndPoint collectionEndPoint = (CollectionEndPoint) endPoint;
-        foreach (DomainObject oppositeDomainObject in collectionEndPoint.OppositeDomainObjects)
-        {
-          RelationEndPointID oppositeEndPointID = new RelationEndPointID (
-              oppositeDomainObject.ID, collectionEndPoint.OppositeEndPointDefinition);
-
-          oppositeEndPoints.Add (this[oppositeEndPointID]);
-        }
-      }
-
-      return oppositeEndPoints;
-    }
-
     #region Standard implementation for collections
 
     public bool Contains (RelationEndPoint endPoint)

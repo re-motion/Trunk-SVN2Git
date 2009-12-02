@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -136,14 +137,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 
-      RelationEndPointCollection allAffectedRelationEndPoints = GetAllRelationEndPointsWithLazyLoad (deletedObject);
-      RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (deletedObject);
-
-      var modifications = new CompositeRelationModificationWithEvents ();
-      foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
-        modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (deletedObject));
-
-      return modifications;
+      var allOppositeRelationEndPoints = OppositeRelationEndPointFinder.GetOppositeRelationEndPoints (this, deletedObject);
+      var modifications = from oppositeEndPoint in allOppositeRelationEndPoints
+                          select oppositeEndPoint.CreateRemoveModification (deletedObject);
+      return new CompositeRelationModificationWithEvents (modifications);
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)
@@ -247,34 +244,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
         }
       }
-    }
-
-    public RelationEndPointCollection GetAllRelationEndPointsWithLazyLoad (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      var allRelationEndPoints = new RelationEndPointCollection (_clientTransaction);
-
-      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).AssociatedRelationEndPointIDs)
-      {
-        RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
-
-        if (endPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.Many && !endPoint.OppositeEndPointDefinition.IsAnonymous)
-        {
-          var objectEndPoint = (ObjectEndPoint) endPoint;
-          if (objectEndPoint.OppositeObjectID != null)
-          {
-            var oppositeEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, objectEndPoint.OppositeEndPointDefinition);
-            GetRelatedObjects (oppositeEndPointID);
-          }
-        }
-
-        allRelationEndPoints.Add (endPoint);
-
-        allRelationEndPoints.Combine (_relationEndPoints.GetOppositeRelationEndPoints (endPoint));
-      }
-
-      return allRelationEndPoints;
     }
 
     public void CheckMandatoryRelations (DomainObject domainObject)
@@ -412,5 +381,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     #endregion
+
+    
   }
 }

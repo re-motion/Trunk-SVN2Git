@@ -173,12 +173,10 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Delete (DomainObject domainObject)
   {
-    //TODO later: Start here when implementing oldRelatedObject and NewRelatedObject on IClientTransactionExtension.RelationChanged () 
-    //      and RelationChanged events of ClientTransaction and DomainObject
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     CheckClientTransactionForDeletion (domainObject);
 
-    if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
+    if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted) // TODO 1914: | Discarded?
       return;
 
     CompositeRelationModificationWithEvents oppositeEndPointModifications =
