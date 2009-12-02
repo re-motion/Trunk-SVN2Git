@@ -81,6 +81,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Interfaces", "Remotion
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq", "Remotion\Data\Linq\Data.Linq.csproj", "{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.UnitTests", "Remotion\Data\Linq.UnitTests\Data.Linq.UnitTests.csproj", "{1D56FFB7-8118-463A-81EA-37A8668BCD31}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.UnitTests", "Remotion\Data\UnitTests\Data.UnitTests.csproj", "{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.Core", "Remotion\Development\Core\Development.Core.csproj", "{B719A305-0493-4C72-88FE-9A2FC6964578}"
@@ -197,8 +199,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.DocumentEventMonitor", "Dms\DocumentEventMonitor\Dms.DocumentEventMonitor.csproj", "{D8878C01-CE48-4CAE-BCCE-096A70744F65}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Data.IntegrationTests.VB", "Remotion\Data\IntegrationTests.VB\Data.IntegrationTests.VB.vbproj", "{CC698D05-D96D-4FFF-B87A-263AB22B0EB1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.UnitTests", "Remotion\Data\Linq.UnitTests\Data.Linq.UnitTests.csproj", "{1D56FFB7-8118-463A-81EA-37A8668BCD31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

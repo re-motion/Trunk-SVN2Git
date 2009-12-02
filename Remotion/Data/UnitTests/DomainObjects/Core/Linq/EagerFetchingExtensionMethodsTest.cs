@@ -19,8 +19,8 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.UnitTests.Linq;
-using Remotion.Data.UnitTests.Linq.TestDomain;
+using Remotion.Data.Linq.UnitTests;
+using Remotion.Data.Linq.UnitTests.TestDomain;
 using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
