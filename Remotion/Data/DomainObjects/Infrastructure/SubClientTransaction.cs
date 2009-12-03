@@ -317,19 +317,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DataContainer parentDataContainer = GetParentDataContainerWithoutLoading (dataContainer.ID);
       Assertion.IsNotNull (
           parentDataContainer,
-          "a deleted DataContainer must have been loaded through ParentTransaction, so the "
-          + "ParentTransaction must know it");
+          "a deleted DataContainer must have been loaded through ParentTransaction, so the ParentTransaction must know it");
 
       Assertion.IsTrue (
           !parentDataContainer.IsDiscarded && parentDataContainer.State != StateType.Deleted,
-          "deleted DataContainers cannot "
-          + "be discarded or deleted in the ParentTransaction");
+          "deleted DataContainers cannot be discarded or deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
       DomainObject domainObject = dataContainer.DomainObject;
+      
+      // TODO 1914: Check whether this should be unified with DataManager.PerformDelete again
+      
       // do not pass any opposite end point modifications to PerformDelete - this method only persists changes made directly to the deleted object
       var emptyOppositeBidirectionalEndPointModification = new CompositeRelationModificationWithEvents ();
-      ParentTransaction.DataManager.PerformDelete (domainObject, emptyOppositeBidirectionalEndPointModification);
+      ParentTransaction.DataManager.RelationEndPointMap.PerformDelete (domainObject, emptyOppositeBidirectionalEndPointModification);
+      ParentTransaction.DataManager.DataContainerMap.PerformDelete (parentDataContainer);
+    
+      parentDataContainer.Delete ();
     }
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)

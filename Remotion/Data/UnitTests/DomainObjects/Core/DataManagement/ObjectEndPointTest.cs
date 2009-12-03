@@ -57,8 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithInvalidRelationEndPointID ()
     {
-      ObjectID id = new ObjectID ("Order", Guid.NewGuid ());
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (null, id);
+      var id = new ObjectID ("Order", Guid.NewGuid ());
+      RelationEndPointObjectMother.CreateObjectEndPoint (null, id);
     }
 
     [Test]
@@ -355,27 +355,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreEqual (DomainObjectIDs.OrderItem1, _endPoint.ID.ObjectID);
     }
 
-    private void CheckIfRelationEndPointsAreEqual (ObjectEndPoint expected, ObjectEndPoint actual)
-    {
-      ArgumentUtility.CheckNotNull ("expected", expected);
-      ArgumentUtility.CheckNotNull ("actual", actual);
-
-      Assert.AreNotSame (expected, actual);
-
-      Assert.AreSame (expected.ClientTransaction, actual.ClientTransaction);
-      Assert.AreSame (expected.Definition, actual.Definition);
-      Assert.AreEqual (expected.HasChanged, actual.HasChanged);
-      Assert.AreEqual (expected.HasBeenTouched, actual.HasBeenTouched);
-      Assert.AreEqual (expected.ID, actual.ID);
-      Assert.AreEqual (expected.ObjectID, actual.ObjectID);
-      Assert.AreEqual (expected.OppositeObjectID, actual.OppositeObjectID);
-      Assert.AreEqual (expected.OriginalOppositeObjectID, actual.OriginalOppositeObjectID);
-    }
-
     [Test]
     public void Commit ()
     {
-      ObjectID newOppositeID = new ObjectID ("Order", Guid.NewGuid ());
+      var newOppositeID = new ObjectID ("Order", Guid.NewGuid ());
       _endPoint.OppositeObjectID = newOppositeID;
 
       Assert.IsTrue (_endPoint.HasBeenTouched);
@@ -394,7 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Rollback ()
     {
-      ObjectID newOppositeID = new ObjectID ("Order", Guid.NewGuid ());
+      var newOppositeID = new ObjectID ("Order", Guid.NewGuid ());
       _endPoint.OppositeObjectID = newOppositeID;
 
       Assert.IsTrue (_endPoint.HasBeenTouched);
@@ -587,27 +570,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var order = Order.GetObject (DomainObjectIDs.Order4);
       _endPoint.CreateRemoveModification (order);
-    }
-
-    [Test]
-    public void CreateSelfReplaceModification ()
-    {
-      var order = Order.GetObject (_endPoint.OppositeObjectID);
-      var modification = _endPoint.CreateSelfReplaceModification (order);
-      Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetSameModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (order));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot replace "
-        + "'Order|90e26c86-611f-4735-8d1b-e1d0918515c2|System.Guid' from object end point "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - it currently holds object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
-    public void CreateSelfReplaceModification_InvalidID ()
-    {
-      var order = Order.GetObject (DomainObjectIDs.Order4);
-      _endPoint.CreateSelfReplaceModification (order);
     }
 
     [Test]

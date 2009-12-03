@@ -445,7 +445,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       CheckDiscarded();
 
-      if (_state == DataContainerStateType.New)
+      if (_state == DataContainerStateType.New)  // TODO 1914: Move this if block to DataManager.DeleteDataContainer
         Discard();
 
       _state = DataContainerStateType.Deleted;
@@ -465,7 +465,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenMarkedChanged = false;
       _hasBeenChanged = false;
 
-      if (_state == DataContainerStateType.Deleted)
+      if (_state == DataContainerStateType.Deleted) // TODO 1914: Move this if block to DataManager.CommitDataContainer
         Discard();
       else
       {
@@ -483,7 +483,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenMarkedChanged = false;
       _hasBeenChanged = false;
 
-      if (_state == DataContainerStateType.New)
+      if (_state == DataContainerStateType.New) // TODO 1914: Move this if block to DataManager.CommitDataContainer
         Discard();
       else
       {
@@ -628,7 +628,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_domainObject == null)
         throw new InvalidOperationException ("A DataContainer cannot be discarded while it doesn't have an associated DomainObject.");
 
-      _clientTransaction.DataManager.MarkDiscarded (this);
+      _clientTransaction.DataManager.MarkDiscarded (this); // TODO 1914: Move to DataManager.DeleteDataContainer
 
       _propertyValues.Discard();
       _clientTransaction = null;

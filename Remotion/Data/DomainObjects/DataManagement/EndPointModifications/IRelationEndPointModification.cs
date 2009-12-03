@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// represent modifications involving exactly one end point; use <see cref="CreateRelationModification"/> to extend that modification
   /// to all involved end points.
   /// </summary>
+  // TODO 1914: Extract to IDataManagementCommand, move to outer namespace
   public interface IRelationEndPointModification
   {
     RelationEndPoint ModifiedEndPoint { get; }
@@ -45,6 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// <see cref="RelationEndPointModification"/>,  no other steps. If it is performed on a bidirectional relation, the 
     /// <see cref="CompositeRelationModification"/> contains steps for the old/new opposite end points as well as for end points indirectly modified.
     /// </remarks>
+    // TODO 1914: Rename to ExtendToRelatedObjects
     CompositeRelationModification CreateRelationModification ();
   }
 }

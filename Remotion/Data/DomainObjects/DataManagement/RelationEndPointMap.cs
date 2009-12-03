@@ -104,36 +104,37 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // TODO 1034: This is only one step in the process of deletion, the other parts are done by DataManager.
-    public void PerformDelete (DomainObject domainObject, CompositeRelationModificationWithEvents oppositeEndPointModifications)
+    // TODO 1914: Called by DeleteDomainObjectCommand
+    public void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
+      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
+      ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
 
-      if (!domainObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
+      if (!deletedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
       {
         var message = String.Format ("Cannot remove DomainObject '{0}' from RelationEndPointMap, because it belongs to a different ClientTransaction.", 
-            domainObject.ID);
+            deletedObject.ID);
         throw new ClientTransactionsDifferException(message);
       }
 
-      RelationEndPointID[] relationEndPointIDs = ClientTransaction.GetDataContainer (domainObject).AssociatedRelationEndPointIDs;
+      var relationEndPointIDs = ClientTransaction.GetDataContainer (deletedObject).AssociatedRelationEndPointIDs;
       _transactionEventSink.RelationEndPointMapPerformingDelete (relationEndPointIDs);
 
-      oppositeEndPointModifications.Perform ();
+      oppositeEndPointRemoveModifications.Perform (); // remove all back-references to the deleted object
       foreach (RelationEndPointID endPointID in relationEndPointIDs)
       {
         RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
-        // TODO 1034: Check why it is not necessary to call modification Begin/End methods for these relation end points.
+        
+        // this triggers a Begin/EndDelete notification on CollectionEndPoint and clears the end point's data
         endPoint.PerformDelete ();
 
-        if (domainObject.TransactionContext[ClientTransaction].State == StateType.New)
+        if (deletedObject.TransactionContext[ClientTransaction].State == StateType.New)
           Remove (endPointID);
       }
     }
 
-    // TODO: Refactor in COMMONS-1034
-    public CompositeRelationModificationWithEvents GetOppositeEndPointModificationsForDelete (DomainObject deletedObject)
+    // TODO 1914: Integrated into DeleteDomainObjectCommand
+    public CompositeRelationModificationWithEvents GetRemoveModificationsForOppositeEndPoints (DomainObject deletedObject)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 

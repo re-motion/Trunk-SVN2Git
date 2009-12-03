@@ -43,6 +43,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do not issue any change notifications, a same-set is not a change
     }
 
+    // TODO 1914: Override NotifyClientTransaction not to do anything
+
     public override CompositeRelationModification CreateRelationModification ()
     {
       throw new NotSupportedException ("Cannot create a bidirectional operation from a touch modification.");

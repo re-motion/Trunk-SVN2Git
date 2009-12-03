@@ -31,6 +31,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// <see cref="CompositeRelationModification"/> aggregate these  modification steps and allow executing them all at once, with events being raised 
   /// before and after the full operation.
   /// </remarks>
+  // TODO 1914: Refactor to CompositeDataManagementCommand, move to outer namespace
+  // TODO 1914: should implement IDataManagementCommand; should get two versions of ExecuteAllSteps (WithEvents/WithoutEvents)
+  // TODO 1914: in CollectionEndPointReplaceSameModification and ObjectEndPointSetSameModification, there is no need to have a WithoutEvents object, those modifications don't send any notifications anyway
   public abstract class CompositeRelationModification
   {
     private readonly List<IRelationEndPointModification> _modificationSteps;

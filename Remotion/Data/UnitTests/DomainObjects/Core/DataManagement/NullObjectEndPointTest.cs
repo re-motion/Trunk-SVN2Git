@@ -63,16 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateSelfReplaceModification ()
-    {
-      var newRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = _realEndPoint.CreateSelfReplaceModification (newRelatedObject);
-      Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (newRelatedObject));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (newRelatedObject));
-    }
-
-    [Test]
     public void CreateSetModification ()
     {
       var newRelatedObject = Order.GetObject (DomainObjectIDs.Order3);

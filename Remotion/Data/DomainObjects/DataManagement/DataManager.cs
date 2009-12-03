@@ -171,53 +171,51 @@ public class DataManager : ISerializable, IDeserializationCallback
     get { return _relationEndPointMap; }
   }
 
-  public void Delete (DomainObject domainObject)
+  public void Delete (DomainObject deletedObject)
   {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    CheckClientTransactionForDeletion (domainObject);
+    ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
+    CheckClientTransactionForDeletion (deletedObject);
 
-    if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted) // TODO 1914: | Discarded?
+    if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted) // TODO 1914: | Discarded?
       return;
 
-    CompositeRelationModificationWithEvents oppositeEndPointModifications =
-        _relationEndPointMap.GetOppositeEndPointModificationsForDelete (domainObject);
+    var oppositeEndPointRemoveModifications = _relationEndPointMap.GetRemoveModificationsForOppositeEndPoints (deletedObject);
 
-    BeginDelete (domainObject, oppositeEndPointModifications);
-    PerformDelete (domainObject, oppositeEndPointModifications);
-    EndDelete (domainObject, oppositeEndPointModifications);
+    BeginDelete (deletedObject, oppositeEndPointRemoveModifications);
+    PerformDelete (deletedObject, oppositeEndPointRemoveModifications);
+    EndDelete (deletedObject, oppositeEndPointRemoveModifications);
   }
 
-  internal void PerformDelete (DomainObject domainObject, CompositeRelationModificationWithEvents oppositeEndPointModifications)
+  private void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
   {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
+    ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
+    ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
 
-    DataContainer dataContainer = _clientTransaction.GetDataContainer(domainObject);  // rescue dataContainer before the map deletes is
-    if (dataContainer.State == StateType.Deleted)
-      return;
+    var dataContainer = _clientTransaction.GetDataContainer (deletedObject);  // rescue dataContainer before the map deletes is
+    Assertion.IsFalse (dataContainer.State == StateType.Deleted);
 
-    _relationEndPointMap.PerformDelete (domainObject, oppositeEndPointModifications);
+    _relationEndPointMap.PerformDelete (deletedObject, oppositeEndPointRemoveModifications);
     _dataContainerMap.PerformDelete (dataContainer);
     
     dataContainer.Delete ();
   }
 
-  private void BeginDelete (DomainObject domainObject, CompositeRelationModificationWithEvents oppositeEndPointModifications)
+  private void BeginDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
   {
-    _transactionEventSink.ObjectDeleting (domainObject);
-    oppositeEndPointModifications.NotifyClientTransactionOfBegin();
+    _transactionEventSink.ObjectDeleting (deletedObject);
+    oppositeEndPointRemoveModifications.NotifyClientTransactionOfBegin();
 
-    domainObject.OnDeleting (EventArgs.Empty);
-    oppositeEndPointModifications.Begin();
+    deletedObject.OnDeleting (EventArgs.Empty);
+    oppositeEndPointRemoveModifications.Begin();
   }
 
-  private void EndDelete (DomainObject domainObject, CompositeRelationModificationWithEvents oppositeEndPointModifications)
+  private void EndDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
   {
-    oppositeEndPointModifications.NotifyClientTransactionOfEnd();
-    _transactionEventSink.ObjectDeleted (domainObject);
+    oppositeEndPointRemoveModifications.NotifyClientTransactionOfEnd();
+    _transactionEventSink.ObjectDeleted (deletedObject);
 
-    oppositeEndPointModifications.End ();
-    domainObject.OnDeleted (EventArgs.Empty);
+    oppositeEndPointRemoveModifications.End();
+    deletedObject.OnDeleted (EventArgs.Empty);
   }
 
   private void CheckClientTransactionForDeletion (DomainObject domainObject)
