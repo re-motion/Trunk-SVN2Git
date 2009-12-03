@@ -21,7 +21,8 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
-	[TestFixture]
+  //Remotion.Data.Linq.UnitTests.Utilities.ArgumentUtilityTests.CheckTypeIsAssignableFrom
+  [TestFixture]
 	public class CheckTypeIsAssignableFrom
 	{
     [Test]

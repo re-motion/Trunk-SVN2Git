@@ -25,6 +25,7 @@ namespace Remotion.Data.Linq.EagerFetching
   /// </summary>
   /// <typeparam name="TQueried">The type of the objects returned by the query.</typeparam>
   /// <typeparam name="TFetch">The type of object from which the recursive fetch operation should be made.</typeparam>
+  //TODO: Tests were movede to re-store. Add separate tests in re-linq.
   public class FluentFetchRequest<TQueried, TFetch> : QueryableBase<TQueried>
   {
     public FluentFetchRequest (QueryProviderBase provider, Expression expression)

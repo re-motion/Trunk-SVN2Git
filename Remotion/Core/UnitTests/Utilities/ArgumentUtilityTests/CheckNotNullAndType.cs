@@ -20,7 +20,8 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
-	[TestFixture]
+  //Remotion.Data.Linq.UnitTests.Utilities.ArgumentUtilityTests.CheckNotNullAndType
+  [TestFixture]
 	public class CheckNotNullAndType
 	{
     // test names have the format {Succeed|Fail}_ExpectedType[_ActualTypeOrNull]

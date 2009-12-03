@@ -49,6 +49,7 @@ namespace Remotion.Utilities
   /// </remarks>
   public static class ArgumentUtility
   {
+    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
     public static T CheckNotNull<T> (string argumentName, T actualValue)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
@@ -59,6 +60,7 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
+    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
     public static string CheckNotNullOrEmpty (string argumentName, string actualValue)
     {
       CheckNotNull (argumentName, actualValue);
@@ -182,6 +184,7 @@ namespace Remotion.Utilities
     /// <typeparam name="TExpected"> The type that <paramref name="actualValue"/> must have. </typeparam>
     /// <exception cref="ArgumentNullException">The <paramref name="actualValue"/> is a <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualValue"/> is an instance of another type.</exception>
+    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
     public static TExpected CheckNotNullAndType<TExpected> (string argumentName, object actualValue)
         // where TExpected: struct
     {
@@ -251,6 +254,7 @@ namespace Remotion.Utilities
 
     /// <summary>Checks whether <paramref name="actualType"/> can be assigned to <paramref name="expectedType"/>.</summary>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
+    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
     public static Type CheckTypeIsAssignableFrom (string argumentName, Type actualType, Type expectedType)
     {
       CheckNotNull ("expectedType", expectedType);
