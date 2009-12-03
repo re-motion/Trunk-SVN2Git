@@ -17,10 +17,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
+using Remotion.Data.Linq.Collections;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.UnitTests.Collections
+namespace Remotion.Data.Linq.UnitTests.Collections
 {
   [TestFixture]
   public class ChangeResistantObservableCollectionEnumeratorTest

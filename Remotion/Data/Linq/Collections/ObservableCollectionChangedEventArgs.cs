@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Collections
+namespace Remotion.Data.Linq.Collections
 {
   /// <summary>
   /// Provides event data for <see cref="ObservableCollection{T}"/>'s events.

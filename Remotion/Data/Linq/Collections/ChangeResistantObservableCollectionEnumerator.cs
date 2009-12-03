@@ -19,7 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Collections
+namespace Remotion.Data.Linq.Collections
 {
   /// <summary>
   /// Provides a way to enumerate an <see cref="ObservableCollection{T}"/> while items are inserted, removed, or cleared in a consistent fashion.

@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
+using Remotion.Data.Linq.Collections;
 
-namespace Remotion.UnitTests.Collections
+namespace Remotion.Data.Linq.UnitTests.Collections
 {
   [TestFixture]
   public class ObservableCollectionTest

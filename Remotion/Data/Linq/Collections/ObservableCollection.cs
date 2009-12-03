@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Utilities;
 
-namespace Remotion.Collections
+namespace Remotion.Data.Linq.Collections
 {
   /// <summary>
   /// Extends <see cref="Collection{T}"/> with events that indicate when the collection was changed.
