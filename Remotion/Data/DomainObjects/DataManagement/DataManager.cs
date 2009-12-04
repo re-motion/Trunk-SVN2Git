@@ -176,6 +176,8 @@ public class DataManager : ISerializable, IDeserializationCallback
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
     CheckClientTransactionForDeletion (deletedObject);
 
+    // TODO: The next line implicitly loads the data container of the object before deleting it. This is necessary, but too implicit.
+    // Explicitly ensure that the object has actually been loaded.
     if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted) // TODO 1914: | Discarded?
       return;
 
