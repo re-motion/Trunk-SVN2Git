@@ -398,10 +398,15 @@
     <delete file="${sourcezipfile.name}" />
     <zip zipfile="${sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
+        <include name="*.*" />
         <include name="build/*.xml" />
         <include name="prereq/**" />
         <include name="Remotion/**" />
-        
+
+        <exclude name="*.log" />
+        <exclude name="*.snk" />
+        <exclude name="*.suo" />
+        <exclude name="*.user" />
         <exclude name="Remotion/**/obj/**" />
         <exclude name="Remotion/**/bin/**" />
         <exclude name="Remotion/**/*.zip" />
@@ -462,9 +467,14 @@
     <delete file="${securityManager-sourcezipfile.name}"/>
     <zip zipfile="${securityManager-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
+        <include name="*.*" />
         <include name="prereq/**" />
         <include name="SecurityManager/**" />
-      
+
+        <exclude name="*.log" />
+        <exclude name="*.snk" />
+        <exclude name="*.suo" />
+        <exclude name="*.user" />
         <exclude name="SecurityManager/**/obj/**" />
         <exclude name="SecurityManager/**/bin/**" />
         <exclude name="SecurityManager/**/*.zip" />
@@ -526,14 +536,19 @@
     <delete file="${dms-sourcezipfile.name}"/>
     <zip zipfile="${dms-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
+        <include name="*.*" />
         <include name="prereq/**" />
         <include name="Dms/**" />
-        
+
         <exclude name="Dms/**/obj/**" />
         <exclude name="Dms/**/bin/**" />
         <exclude name="Dms/**/*.zip" />
         <exclude name="Dms/**/*.dll" />
         <exclude name="Dms/**/*.exe" />
+        <exclude name="*.log" />
+        <exclude name="*.snk" />
+        <exclude name="*.suo" />
+        <exclude name="*.user" />
         <exclude name="Dms/**/*.pdb" />
       </fileset>
     </zip>
@@ -584,6 +599,7 @@
     <delete file="${relinq-sourcezipfile.name}"/>
     <zip zipfile="${relinq-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
+        <include name="Remotion.sln" />
         <include name="prereq/Assemblies/**" />
         <include name="Remotion/Core/Core/**" />
         <include name="Remotion/Core/Interfaces/**" />
@@ -592,6 +608,10 @@
         <include name="Remotion/Data/Linq.UnitTests/**" />
         <include name="Remotion/license/**/*"/>
 
+        <exclude name="*.log" />
+        <exclude name="*.snk" />
+        <exclude name="*.suo" />
+        <exclude name="*.user" />
         <exclude name="Remotion/**/obj/**" />
         <exclude name="Remotion/**/bin/**" />
         <exclude name="Remotion/**/*.zip" />
