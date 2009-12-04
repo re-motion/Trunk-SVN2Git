@@ -25,7 +25,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public abstract class RdbmsProvider: StorageProvider
+  public abstract class RdbmsProvider : StorageProvider
   {
     // types
 
@@ -76,13 +76,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public abstract string GetParameterName (string name);
 
-    protected abstract IDbConnection CreateConnection();
+    protected abstract IDbConnection CreateConnection ();
 
     public abstract string GetColumnsFromSortExpression (string sortExpression);
 
     // methods and properties
 
-    public virtual void Connect()
+    public virtual void Connect ()
     {
       CheckDisposed();
 
@@ -91,8 +91,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         try
         {
           _connection = CreateConnection();
-          if (_connection.ConnectionString == null || _connection.ConnectionString == string.Empty)
-            _connection.ConnectionString = this.Definition.ConnectionString;
+          if (string.IsNullOrEmpty (_connection.ConnectionString))
+            _connection.ConnectionString = Definition.ConnectionString;
 
           _connection.Open();
         }
@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public virtual void Disconnect()
+    public virtual void Disconnect ()
     {
       Dispose();
     }
@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public override void BeginTransaction()
+    public override void BeginTransaction ()
     {
       CheckDisposed();
 
@@ -143,15 +143,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return IsolationLevel.Serializable; }
     }
 
-    public override void Commit()
+    public override void Commit ()
     {
       CheckDisposed();
 
       if (_transaction == null)
-      {
-        throw new InvalidOperationException (
-            "Commit cannot be called without calling BeginTransaction first.");
-      }
+        throw new InvalidOperationException ("Commit cannot be called without calling BeginTransaction first.");
 
       try
       {
@@ -167,15 +164,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public override void Rollback()
+    public override void Rollback ()
     {
       CheckDisposed();
 
       if (_transaction == null)
-      {
-        throw new InvalidOperationException (
-            "Rollback cannot be called without calling BeginTransaction first.");
-      }
+        throw new InvalidOperationException ("Rollback cannot be called without calling BeginTransaction first.");
 
       try
       {
@@ -227,30 +221,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public override DataContainer LoadDataContainer (ObjectID id)
     {
-      CheckDisposed ();
+      CheckDisposed();
       ArgumentUtility.CheckNotNull ("id", id);
       CheckStorageProviderID (id, "id");
 
-      Connect ();
+      Connect();
 
       return _dataContainerLoader.LoadDataContainerFromID (id);
     }
 
     public override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids)
     {
-      CheckDisposed ();
+      CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
       foreach (ObjectID id in ids)
         CheckStorageProviderID (id, "ids");
 
-      Connect ();
+      Connect();
 
       return _dataContainerLoader.LoadDataContainersFromIDs (ids);
     }
 
     protected internal virtual DataContainer[] LoadDataContainers (CommandBuilder commandBuilder, bool allowNulls)
     {
-      CheckDisposed ();
+      CheckDisposed();
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
       return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder, allowNulls);
@@ -360,9 +354,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw CreateArgumentException ("dataContainer", "Timestamp cannot be set for a deleted DataContainer.");
 
       SelectCommandBuilder commandBuilder = SelectCommandBuilder.CreateForIDLookup (
-          this, 
-          DelimitIdentifier ("Timestamp"), 
-          dataContainer.ClassDefinition.GetEntityName(), 
+          this,
+          DelimitIdentifier ("Timestamp"),
+          dataContainer.ClassDefinition.GetEntityName(),
           new[] { dataContainer.ID });
 
       using (IDbCommand command = commandBuilder.Create())
@@ -390,7 +384,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         if (command == null)
           return;
 
-        int recordsAffected = 0;
+        int recordsAffected;
         try
         {
           recordsAffected = command.ExecuteNonQuery();
@@ -401,10 +395,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         }
 
         if (recordsAffected != 1)
-        {
-          throw CreateConcurrencyViolationException (
-              "Concurrency violation encountered. Object '{0}' has already been changed by someone else.", id);
-        }
+          throw CreateConcurrencyViolationException ("Concurrency violation encountered. Object '{0}' has already been changed by someone else.", id);
       }
     }
 
@@ -417,7 +408,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    protected internal virtual IDbCommand CreateDbCommand()
+    protected internal virtual IDbCommand CreateDbCommand ()
     {
       CheckDisposed();
 
@@ -437,38 +428,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return command;
     }
 
-    protected internal RdbmsProviderException CreateRdbmsProviderException (
-        string formatString,
-        params object[] args)
+    protected internal RdbmsProviderException CreateRdbmsProviderException (string formatString, params object[] args)
     {
       return CreateRdbmsProviderException (null, formatString, args);
     }
 
-    protected internal RdbmsProviderException CreateRdbmsProviderException (
-        Exception innerException,
-        string formatString,
-        params object[] args)
+    protected internal RdbmsProviderException CreateRdbmsProviderException (Exception innerException, string formatString, params object[] args)
     {
       return new RdbmsProviderException (string.Format (formatString, args), innerException);
     }
 
-
-    protected ConcurrencyViolationException CreateConcurrencyViolationException (
-        string formatString,
-        params object[] args)
+    protected ConcurrencyViolationException CreateConcurrencyViolationException (string formatString, params object[] args)
     {
       return CreateConcurrencyViolationException (null, formatString, args);
     }
 
-    protected ConcurrencyViolationException CreateConcurrencyViolationException (
-        Exception innerException,
-        string formatString,
-        params object[] args)
+    protected ConcurrencyViolationException CreateConcurrencyViolationException (Exception innerException, string formatString, params object[] args)
     {
       return new ConcurrencyViolationException (string.Format (formatString, args), innerException);
     }
 
-    private void DisposeTransaction()
+    private void DisposeTransaction ()
     {
       if (_transaction != null)
         _transaction.Dispose();
@@ -476,7 +456,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _transaction = null;
     }
 
-    private void DisposeConnection()
+    private void DisposeConnection ()
     {
       if (_connection != null)
         _connection.Close();
