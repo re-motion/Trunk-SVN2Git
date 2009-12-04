@@ -204,30 +204,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       ClassDefinition classDefinition = dataContainer.ClassDefinition;
 
-      foreach (RelationDefinition relationDefinition in classDefinition.GetRelationDefinitions())
+      var realObjectEndPoints = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions()
+                                where !endPointDefinition.IsVirtual
+                                let oppositeObjectID = (ObjectID) dataContainer.GetFieldValue (endPointDefinition.PropertyName, ValueAccess.Current)
+                                select new ObjectEndPoint (dataContainer.ClientTransaction, dataContainer.ID, endPointDefinition, oppositeObjectID);
+      
+      foreach (var realObjectEndPoint in realObjectEndPoints)
       {
-        foreach (IRelationEndPointDefinition endPointDefinition in relationDefinition.EndPointDefinitions)
+        Add (realObjectEndPoint);
+
+        if (realObjectEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
         {
-          if (!endPointDefinition.IsVirtual)
-          {
-            if (classDefinition.IsRelationEndPoint (endPointDefinition))
-            {
-              var oppositeObjectID = (ObjectID) dataContainer.GetFieldValue (endPointDefinition.PropertyName, ValueAccess.Current);
-              var endPoint = new ObjectEndPoint (dataContainer.ClientTransaction, dataContainer.ID, endPointDefinition, oppositeObjectID);
-              Add (endPoint);
+          var oppositeEndPoint = new ObjectEndPoint (
+              _clientTransaction,
+              realObjectEndPoint.OppositeObjectID,
+              realObjectEndPoint.OppositeEndPointDefinition,
+              realObjectEndPoint.ObjectID);
 
-              if (endPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One && endPoint.OppositeObjectID != null)
-              {
-                var oppositeEndPoint = new ObjectEndPoint (
-                    _clientTransaction,
-                    endPoint.OppositeObjectID,
-                    endPoint.OppositeEndPointDefinition,
-                    endPoint.ObjectID);
-
-                Add (oppositeEndPoint);
-              }
-            }
-          }
+          Add (oppositeEndPoint);
         }
       }
     }
