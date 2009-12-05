@@ -86,6 +86,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
+    <Reference Include="HibernatingRhinos.Profiler.Appender, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0774796e73ebf640, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\prototypes\UberProf\LinqToSql.Profiler\HibernatingRhinos.Profiler.Appender.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -242,11 +246,14 @@
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
     <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
+    <Compile Include="Persistence\PersistenceProfiler.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoader.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoaderHelper.cs" />
     <Compile Include="Persistence\Rdbms\IDataContainerLoaderHelper.cs" />
     <Compile Include="Persistence\Rdbms\ObjectIDLoader.cs" />
     <Compile Include="Persistence\Rdbms\OppositeClassDefinitionRetriever.cs" />
+    <Compile Include="Tracing\TracingDataReader.cs" />
+    <Compile Include="Tracing\TracingDbCommand.cs" />
     <Compile Include="Queries\EagerFetcher.cs" />
     <Compile Include="Queries\EagerFetchQueryCollection.cs" />
     <Compile Include="Queries\UnexpectedQueryResultException.cs" />

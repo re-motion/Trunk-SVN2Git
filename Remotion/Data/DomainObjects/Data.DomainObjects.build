@@ -51,6 +51,7 @@
         <include name="Properties/**/*.cs" />
         <include name="Queries/**/*.cs"/>
         <include name="Schemas/**/*.cs"/>
+        <include name="Tracing/**/*.cs"/>
         <include name="Transport/**/*.cs"/>
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
