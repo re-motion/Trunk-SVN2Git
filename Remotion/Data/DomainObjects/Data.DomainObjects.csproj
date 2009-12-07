@@ -246,7 +246,7 @@
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
     <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
-    <Compile Include="Persistence\PersistenceProfiler.cs" />
+    <Compile Include="Persistence\IPersistenceProfiler.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoader.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoaderHelper.cs" />
     <Compile Include="Persistence\Rdbms\IDataContainerLoaderHelper.cs" />
