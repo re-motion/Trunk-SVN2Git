@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Data;
+using System.Diagnostics;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.Linq.Utilities;
 
@@ -185,16 +186,19 @@ namespace Remotion.Data.DomainObjects.Tracing
     private readonly IPersistenceProfiler _persistenceProfiler;
     private readonly Guid _connectionID;
     private readonly Guid _queryID;
+    private readonly Stopwatch _stopwatch;
     private int _rowCount;
 
     public TracingDataReader (IDataReader dataReader, IPersistenceProfiler persistenceProfiler, Guid connectionID, Guid queryID)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("persistenceProfiler", persistenceProfiler);
+
       _dataReader = dataReader;
       _persistenceProfiler = persistenceProfiler;
       _connectionID = connectionID;
       _queryID = queryID;
+      _stopwatch = Stopwatch.StartNew();
     }
 
     public IDataReader WrappedInstance
@@ -219,14 +223,14 @@ namespace Remotion.Data.DomainObjects.Tracing
 
     public void Dispose ()
     {
-      _persistenceProfiler.QueryCompleted (_connectionID, _queryID, _rowCount);
-      _dataReader.Dispose();
+      TraceQueryCompleted();
+      _dataReader.Dispose ();
     }
 
     public void Close ()
     {
-      _persistenceProfiler.QueryCompleted (_connectionID, _queryID, _rowCount);
-      _dataReader.Close();
+      TraceQueryCompleted ();
+      _dataReader.Close ();
     }
 
     public bool Read ()
@@ -235,6 +239,15 @@ namespace Remotion.Data.DomainObjects.Tracing
       if (hasRecord)
         _rowCount++;
       return hasRecord;
+    }
+
+    private void TraceQueryCompleted ()
+    {
+      if (_stopwatch.IsRunning)
+      {
+        _persistenceProfiler.TraceQueryCompleted (_connectionID, _queryID, _stopwatch.Elapsed, _rowCount);
+        _stopwatch.Stop ();
+      }
     }
   }
 }

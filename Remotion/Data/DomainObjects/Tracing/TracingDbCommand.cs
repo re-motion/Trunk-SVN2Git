@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Data;
+using System.Diagnostics;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.Linq.Utilities;
+using Remotion.Utilities;
+using ArgumentUtility=Remotion.Data.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
@@ -111,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     public int ExecuteNonQuery ()
     {
       int numberOfRowsAffected = ExecuteWithProfiler (() => _command.ExecuteNonQuery());
-      _persistenceProfiler.QueryCompleted (_connectionID, _queryID, numberOfRowsAffected);
+      _persistenceProfiler.TraceQueryCompleted (_connectionID, _queryID, TimeSpan.Zero, numberOfRowsAffected);
 
       return numberOfRowsAffected;
     }
@@ -133,23 +135,24 @@ namespace Remotion.Data.DomainObjects.Tracing
     public object ExecuteScalar ()
     {
       object result = ExecuteWithProfiler (() => _command.ExecuteScalar());
-      _persistenceProfiler.QueryCompleted (_connectionID, _queryID, 1);
+      _persistenceProfiler.TraceQueryCompleted (_connectionID, _queryID, TimeSpan.Zero, 1);
 
       return result;
     }
 
     private T ExecuteWithProfiler<T> (Func<T> operation)
     {
+      Stopwatch stopWatch = Stopwatch.StartNew ();
       try
       {
-        _persistenceProfiler.QueryExecuting (_connectionID, _queryID, _command.CommandText);
-        T result = operation();
-        _persistenceProfiler.QueryExecuted (_connectionID, _queryID);
+        _persistenceProfiler.TraceQueryExecuting (_connectionID, _queryID, _command.CommandText);
+        T result = operation ();
+        _persistenceProfiler.TraceQueryExecuted (_connectionID, _queryID, stopWatch.Elapsed);
         return result;
       }
       catch (Exception ex)
       {
-        _persistenceProfiler.QueryError (_connectionID, _queryID, ex);
+        _persistenceProfiler.TraceQueryError (_connectionID, _queryID, ex);
         throw;
       }
     }

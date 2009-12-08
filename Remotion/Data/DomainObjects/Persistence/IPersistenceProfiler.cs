@@ -25,58 +25,58 @@ namespace Remotion.Data.DomainObjects.Persistence
     {
     }
 
-    public void ConnectionOpened (Guid connectionID)
+    public void TraceConnectionOpened (Guid connectionID)
     {
     }
 
-    public void ConnectionClosed (Guid connectionID)
+    public void TraceConnectionClosed (Guid connectionID)
     {
     }
 
-    public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
+    public void TraceTransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
     {
     }
 
-    public void TransactionCommitted (Guid connectionID)
+    public void TraceTransactionCommitted (Guid connectionID)
     {
     }
 
-    public void TransactionRolledback (Guid connectionID)
+    public void TraceTransactionRolledback (Guid connectionID)
     {
     }
 
-    public void TransactionDisposed (Guid connectionID)
+    public void TraceTransactionDisposed (Guid connectionID)
     {
     }
 
-    public void QueryExecuting (Guid connectionID, Guid queryID, string commandText)
+    public void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText)
     {
     }
 
-    public void QueryExecuted (Guid connectionID, Guid queryID)
+    public void TraceQueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
     {
     }
 
-    public void QueryCompleted (Guid connectionID, Guid queryID, int rowCount)
+    public void TraceQueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
     {
     }
 
-    public void QueryError (Guid connectionID, Guid queryID, Exception e)
+    public void TraceQueryError (Guid connectionID, Guid queryID, Exception e)
     {
     }
   }
 
   public interface IPersistenceProfiler
   {
-    void ConnectionOpened (Guid connectionID);
-    void ConnectionClosed (Guid connectionID);
-    void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel);
-    void TransactionCommitted (Guid connectionID);
-    void TransactionRolledback (Guid connectionID);
-    void TransactionDisposed (Guid connectionID);
-    void QueryExecuting (Guid connectionID, Guid queryID, string commandText);
-    void QueryExecuted (Guid connectionID, Guid queryID);
-    void QueryCompleted (Guid connectionID, Guid queryID, int rowCount);
-    void QueryError (Guid connectionID, Guid queryID, Exception e);
+    void TraceConnectionOpened (Guid connectionID);
+    void TraceConnectionClosed (Guid connectionID);
+    void TraceTransactionBegan (Guid connectionID, IsolationLevel isolationLevel);
+    void TraceTransactionCommitted (Guid connectionID);
+    void TraceTransactionRolledback (Guid connectionID);
+    void TraceTransactionDisposed (Guid connectionID);
+    void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText);
+    void TraceQueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution);
+    void TraceQueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount);
+    void TraceQueryError (Guid connectionID, Guid queryID, Exception e);
   }
 }
