@@ -18,7 +18,6 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
 
@@ -30,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     private MockRepository _mockRepository;
     private TracingDbCommand _command;
     private IDbCommand _innerCommandMock;
-    private IPersistenceProfiler _profilerMock;
+    private IPersistenceTracer _tracerMock;
     private Guid _connectionID;
 
     [SetUp]
@@ -38,10 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       _mockRepository = new MockRepository();
       _innerCommandMock = _mockRepository.StrictMock<IDbCommand>();
-      _profilerMock = _mockRepository.StrictMock<IPersistenceProfiler>();
+      _tracerMock = _mockRepository.StrictMock<IPersistenceTracer>();
       _connectionID = Guid.NewGuid();
 
-      _command = new TracingDbCommand (_innerCommandMock, _profilerMock, _connectionID);
+      _command = new TracingDbCommand (_innerCommandMock, _tracerMock, _connectionID);
     }
 
     [Test]
@@ -116,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerCommandMock.Expect (mock => mock.Connection = connectionStub);
       _mockRepository.ReplayAll ();
 
-      _command.SetInnerConnection (new TracingDbConnection (connectionStub, MockRepository.GenerateStub<IPersistenceProfiler>()));
+      _command.SetInnerConnection (new TracingDbConnection (connectionStub, MockRepository.GenerateStub<IPersistenceTracer>()));
 
       _mockRepository.VerifyAll ();
     }
@@ -161,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerCommandMock.Expect (mock => mock.Transaction = transactionStub);
       _mockRepository.ReplayAll();
 
-      _command.SetInnerTransaction (new TracingDbTransaction (transactionStub, MockRepository.GenerateStub<IPersistenceProfiler>(), Guid.NewGuid()));
+      _command.SetInnerTransaction (new TracingDbTransaction (transactionStub, MockRepository.GenerateStub<IPersistenceTracer>(), Guid.NewGuid()));
 
       _mockRepository.VerifyAll();
     }
@@ -269,10 +268,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
      // using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteNonQuery()).Return (100);
-        _profilerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
-        _profilerMock.TraceQueryCompleted (_connectionID, _command.QueryID, TimeSpan.Zero, 100);
+        _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
+        _tracerMock.TraceQueryCompleted (_connectionID, _command.QueryID, TimeSpan.Zero, 100);
       }
       _mockRepository.ReplayAll();
 
@@ -289,9 +288,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteNonQuery()).Throw (exception);
-        _profilerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
+        _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
 
@@ -314,9 +313,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteReader()).Return (readerStub);
-        _profilerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
+        _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
       }
       _mockRepository.ReplayAll();
 
@@ -325,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       Assert.That (((TracingDataReader) actualReader).WrappedInstance, Is.SameAs (readerStub));
       Assert.That (((TracingDataReader) actualReader).ConnectionID, Is.EqualTo (_connectionID));
       Assert.That (((TracingDataReader) actualReader).QueryID, Is.EqualTo (_command.QueryID));
-      Assert.That (((TracingDataReader) actualReader).PersistenceProfiler, Is.SameAs (_profilerMock));
+      Assert.That (((TracingDataReader) actualReader).PersistenceTracer, Is.SameAs (_tracerMock));
 
       _mockRepository.VerifyAll();
     }
@@ -338,9 +337,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteReader()).Throw (exception);
-        _profilerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
+        _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
 
@@ -363,9 +362,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteReader (CommandBehavior.SchemaOnly)).Return (readerStub);
-        _profilerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
+        _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
       }
       _mockRepository.ReplayAll();
 
@@ -374,7 +373,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       Assert.That (((TracingDataReader) actualReader).WrappedInstance, Is.SameAs (readerStub));
       Assert.That (((TracingDataReader) actualReader).ConnectionID, Is.EqualTo (_connectionID));
       Assert.That (((TracingDataReader) actualReader).QueryID, Is.EqualTo (_command.QueryID));
-      Assert.That (((TracingDataReader) actualReader).PersistenceProfiler, Is.SameAs (_profilerMock));
+      Assert.That (((TracingDataReader) actualReader).PersistenceTracer, Is.SameAs (_tracerMock));
 
       _mockRepository.VerifyAll();
     }
@@ -387,9 +386,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteReader (CommandBehavior.SchemaOnly)).Throw (exception);
-        _profilerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
+        _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
 
@@ -411,10 +410,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteScalar()).Return (30);
-        _profilerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
-        _profilerMock.TraceQueryCompleted (_connectionID, _command.QueryID, TimeSpan.Zero, 1);
+        _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
+        _tracerMock.TraceQueryCompleted (_connectionID, _command.QueryID, TimeSpan.Zero, 1);
       }
       _mockRepository.ReplayAll();
 
@@ -431,9 +430,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       using (_mockRepository.Ordered())
       {
-        _profilerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
         _innerCommandMock.Expect (mock => mock.ExecuteScalar()).Throw (exception);
-        _profilerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
+        _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
 

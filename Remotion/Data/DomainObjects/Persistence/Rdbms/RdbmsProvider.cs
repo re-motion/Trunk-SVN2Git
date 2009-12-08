@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -41,8 +42,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
-    private IDbConnection _connection;
-    private IDbTransaction _transaction;
+    private TracingDbConnection _connection;
+    private TracingDbTransaction _transaction;
     private readonly DataContainerLoader _dataContainerLoader;
 
     // construction and disposing
@@ -76,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public abstract string GetParameterName (string name);
 
-    protected abstract IDbConnection CreateConnection ();
+    protected abstract TracingDbConnection CreateConnection ();
 
     public abstract string GetColumnsFromSortExpression (string sortExpression);
 
@@ -313,7 +314,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public IDbConnection Connection
+    public TracingDbConnection Connection
     {
       get
       {
@@ -322,7 +323,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public IDbTransaction Transaction
+    public TracingDbTransaction Transaction
     {
       get
       {
@@ -408,16 +409,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    protected internal virtual IDbCommand CreateDbCommand ()
+    protected internal virtual TracingDbCommand CreateDbCommand ()
     {
       CheckDisposed();
 
-      IDbCommand command = _connection.CreateCommand();
+      TracingDbCommand command = _connection.CreateCommand();
 
       try
       {
-        command.Connection = _connection;
-        command.Transaction = _transaction;
+        command.SetInnerConnection (_connection);
+        command.SetInnerTransaction (_transaction);
       }
       catch (Exception)
       {

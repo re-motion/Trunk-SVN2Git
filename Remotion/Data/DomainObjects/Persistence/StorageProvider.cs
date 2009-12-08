@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
@@ -139,6 +140,13 @@ namespace Remotion.Data.DomainObjects.Persistence
     public TypeConversionProvider TypeConversionProvider
     {
       get { return _definition.TypeConversionProvider; }
+    }
+
+    private IPersistenceTracer _persistenceTracer;
+    public IPersistenceTracer PersistenceTracer
+    {
+      get { return _persistenceTracer ?? new PersistenceTracer (Guid.Empty); }
+      set { _persistenceTracer = value; }
     }
 
     protected void CheckDisposed ()

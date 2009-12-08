@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
@@ -80,11 +81,11 @@ public class SqlProvider : RdbmsProvider
       return "@" + name;
   }
 
-  protected override IDbConnection CreateConnection ()
+  protected override TracingDbConnection CreateConnection ()
   {
     CheckDisposed ();
     
-    return new SqlConnection ();
+    return new TracingDbConnection  (new SqlConnection (), PersistenceTracer);
   }
   
   public new SqlConnection Connection
@@ -92,7 +93,7 @@ public class SqlProvider : RdbmsProvider
     get
     {
       CheckDisposed ();
-      return (SqlConnection) base.Connection;
+      return (SqlConnection) (base.Connection == null ? null : base.Connection.WrappedInstance);
     }
   }
 
@@ -101,7 +102,7 @@ public class SqlProvider : RdbmsProvider
     get
     {
       CheckDisposed ();
-      return (SqlTransaction) base.Transaction;
+      return (SqlTransaction) (base.Transaction == null ? null : base.Transaction.WrappedInstance);
     }
   }
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
@@ -49,6 +50,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public static void Main (string[] args)
     {
       LogManager.Initialize ();
+
+      ServiceLocator.SetLocatorProvider (() => null);
 
       //LoadObjectsTest test1 = new LoadObjectsTest();
       //test1.TestFixtureSetUp();

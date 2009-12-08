@@ -45,6 +45,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private readonly Dictionary<ObjectID, DomainObject> _enlistedObjects;
     [NonSerialized]
     private RootQueryManager _queryManager;
+    private readonly Guid _id = Guid.NewGuid();
 
     /// <summary>
     /// Initializes a new instance of the <b>RootClientTransaction</b> class.
@@ -132,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (changedDataContainers.Count > 0)
       {
-        using (var persistenceManager = new PersistenceManager())
+        using (var persistenceManager = new PersistenceManager (_id))
         {
           persistenceManager.Save (changedDataContainers);
         }
@@ -144,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       ObjectID newObjectID;
-      using (var persistenceManager = new PersistenceManager())
+      using (var persistenceManager = new PersistenceManager (_id))
       {
         newObjectID = persistenceManager.CreateNewObjectID (classDefinition);
       }
@@ -155,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      using (var persistenceManager = new PersistenceManager ())
+      using (var persistenceManager = new PersistenceManager (_id))
       {
         var dataContainer = persistenceManager.LoadDataContainer (id);
         TransactionEventSink.ObjectLoading (dataContainer.ID);
@@ -173,7 +174,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           throw new ObjectDiscardedException (id);
       }
 
-      using (var persistenceManager = new PersistenceManager ())
+      using (var persistenceManager = new PersistenceManager (_id))
       {
         DataContainerCollection newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
         foreach (DataContainer dataContainer in newLoadedDataContainers)
@@ -200,7 +201,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, false);
       DataContainer relatedDataContainer;
-      using (var persistenceManager = new PersistenceManager())
+      using (var persistenceManager = new PersistenceManager (_id))
       {
         relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer (domainObject), relationEndPointID);
         
@@ -220,7 +221,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
       DataContainerCollection relatedDataContainers;
-      using (var persistenceManager = new PersistenceManager())
+      using (var persistenceManager = new PersistenceManager (_id))
       {
         relatedDataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
       }

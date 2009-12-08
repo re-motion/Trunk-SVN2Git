@@ -20,6 +20,7 @@ using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
@@ -40,6 +41,11 @@ namespace Remotion.Data.DomainObjects.Persistence
     public PersistenceManager ()
     {
       _storageProviderManager = new StorageProviderManager ();
+    }
+
+    public PersistenceManager (Guid clientTransactionID)
+    {
+      _storageProviderManager = new StorageProviderManager (new PersistenceTracer (clientTransactionID));
     }
 
     #region IDisposable Members

@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Data.SqlClient;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -33,6 +33,8 @@ namespace Remotion.Data.UnitTests.DomainObjects
     [SetUp]
     public void SetUp ()
     {
+      ServiceLocator.SetLocatorProvider (() => null);
+
       StandardConfiguration.Initialize();
 
       SqlConnection.ClearAllPools();

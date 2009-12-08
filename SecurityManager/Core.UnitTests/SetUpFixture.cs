@@ -19,6 +19,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.IO;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
@@ -49,6 +50,8 @@ namespace Remotion.SecurityManager.UnitTests
     {
       try
       {
+        ServiceLocator.SetLocatorProvider (() => null);
+
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
         providers.Add (new RdbmsProviderDefinition ("SecurityManager", typeof (SecurityManagerSqlProvider), c_testDomainConnectionString));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);

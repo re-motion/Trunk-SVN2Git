@@ -15,6 +15,7 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+using Microsoft.Practices.ServiceLocation;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.Utilities.ConsoleApplication;
 
@@ -25,7 +26,8 @@ namespace Remotion.SecurityManager.AclTools.Expander
   {
     public static int Main (string[] args)
     {
-      var consoleApplication = new ConsoleApplication<AclExpanderApplication, AclExpanderApplicationSettings>();
+      ServiceLocator.SetLocatorProvider (() => null);
+      var consoleApplication = new ConsoleApplication<AclExpanderApplication, AclExpanderApplicationSettings> ();
       return consoleApplication.Main (args);
     }
   }

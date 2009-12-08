@@ -17,6 +17,7 @@
 // 
 using System;
 using System.ComponentModel.Design;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
@@ -80,6 +81,8 @@ namespace Remotion.SecurityManager.Metadata.Importer
     {
       try
       {
+        ServiceLocator.SetLocatorProvider (() => null);
+
         var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
         var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (BaseSecurityManagerObject).Assembly, true));
         var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);

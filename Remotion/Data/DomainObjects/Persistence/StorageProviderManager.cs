@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Mixins;
 using Remotion.Utilities;
 
@@ -32,12 +33,20 @@ public class StorageProviderManager : IDisposable
 
   private bool _disposed = false;
   private StorageProviderCollection _storageProviders;
+  private readonly IPersistenceTracer _persistenceTracer;
 
   // construction and disposing
 
   public StorageProviderManager ()
+    :this (new PersistenceTracer (Guid.Empty))
   {
+  }
+
+  public StorageProviderManager (IPersistenceTracer persistenceTracer)
+  {
+    ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
     _storageProviders = new StorageProviderCollection ();
+    _persistenceTracer = persistenceTracer;
   }
 
   #region IDisposable Members
@@ -91,6 +100,7 @@ public class StorageProviderManager : IDisposable
       Type concreteStorageProviderType = TypeFactory.GetConcreteType (providerDefinition.StorageProviderType);
       StorageProvider provider = (StorageProvider) ReflectionUtility.CreateObject (
           concreteStorageProviderType, providerDefinition);
+      provider.PersistenceTracer = _persistenceTracer;
 
       _storageProviders.Add (provider);
 

@@ -16,14 +16,13 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
   /// Provides a wrapper for implementations of <see cref="IDbConnection"/>. The lifetime of the connection is traced using the
-  /// <see cref="IPersistenceProfiler"/> passed during the instantiation.
+  /// <see cref="IPersistenceTracer"/> passed during the instantiation.
   /// </summary>
   public class TracingDbConnection : IDbConnection
   {
@@ -73,17 +72,17 @@ namespace Remotion.Data.DomainObjects.Tracing
     #endregion
 
     private readonly IDbConnection _connection;
-    private readonly IPersistenceProfiler _persistenceProfiler;
+    private readonly IPersistenceTracer _persistenceTracer;
     private readonly Guid _connectionID;
     private bool _isConnectionClosed;
 
-    public TracingDbConnection (IDbConnection connection, IPersistenceProfiler persistenceProfiler)
+    public TracingDbConnection (IDbConnection connection, IPersistenceTracer persistenceTracer)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
-      ArgumentUtility.CheckNotNull ("persistenceProfiler", persistenceProfiler);
+      ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
 
       _connection = connection;
-      _persistenceProfiler = persistenceProfiler;
+      _persistenceTracer = persistenceTracer;
       _connectionID = Guid.NewGuid();
     }
 
@@ -97,15 +96,15 @@ namespace Remotion.Data.DomainObjects.Tracing
       get { return _connectionID; }
     }
 
-    public IPersistenceProfiler PersistenceProfiler
+    public IPersistenceTracer PersistenceTracer
     {
-      get { return _persistenceProfiler; }
+      get { return _persistenceTracer; }
     }
 
     public void Open ()
     {
       _connection.Open();
-      PersistenceProfiler.TraceConnectionOpened (_connectionID);
+      PersistenceTracer.TraceConnectionOpened (_connectionID);
     }
 
     public void Close ()
@@ -125,14 +124,14 @@ namespace Remotion.Data.DomainObjects.Tracing
     public TracingDbTransaction BeginTransaction ()
     {
       var transaction = _connection.BeginTransaction();
-      PersistenceProfiler.TraceTransactionBegan (_connectionID, transaction.IsolationLevel);
+      PersistenceTracer.TraceTransactionBegan (_connectionID, transaction.IsolationLevel);
       return CreateTracingTransaction (transaction);
     }
 
     public TracingDbTransaction BeginTransaction (IsolationLevel isolationLevel)
     {
       var transaction = _connection.BeginTransaction (isolationLevel);
-      PersistenceProfiler.TraceTransactionBegan (_connectionID, isolationLevel);
+      PersistenceTracer.TraceTransactionBegan (_connectionID, isolationLevel);
       return CreateTracingTransaction (transaction);
     }
 
@@ -143,19 +142,19 @@ namespace Remotion.Data.DomainObjects.Tracing
 
     private TracingDbTransaction CreateTracingTransaction (IDbTransaction transaction)
     {
-      return new TracingDbTransaction (transaction, _persistenceProfiler, _connectionID);
+      return new TracingDbTransaction (transaction, _persistenceTracer, _connectionID);
     }
 
     private TracingDbCommand CreateTracingCommand (IDbCommand command)
     {
-      return new TracingDbCommand (command, _persistenceProfiler, _connectionID);
+      return new TracingDbCommand (command, _persistenceTracer, _connectionID);
     }
 
     private void TraceConnectionClosed ()
     {
       if (!_isConnectionClosed)
       {
-        PersistenceProfiler.TraceConnectionClosed (_connectionID);
+        PersistenceTracer.TraceConnectionClosed (_connectionID);
         _isConnectionClosed = true;
       }
     }

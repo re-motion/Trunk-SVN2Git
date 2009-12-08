@@ -51,6 +51,7 @@
         <include name="${build.test.outputdir}/Remotion.Security.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.SecurityManager.dll" />
         <include name="${build.test.outputdir}/log4net.dll" />
+        <include name="${build.test.outputdir}/Microsoft.Practices.ServiceLocation.dll" />
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
         <include asis="true" name="System.dll"/>

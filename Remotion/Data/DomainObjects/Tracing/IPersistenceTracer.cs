@@ -17,56 +17,9 @@
 using System;
 using System.Data;
 
-namespace Remotion.Data.DomainObjects.Persistence
+namespace Remotion.Data.DomainObjects.Tracing
 {
-  public class NullPersistenceProfiler : IPersistenceProfiler
-  {
-    public NullPersistenceProfiler ()
-    {
-    }
-
-    public void TraceConnectionOpened (Guid connectionID)
-    {
-    }
-
-    public void TraceConnectionClosed (Guid connectionID)
-    {
-    }
-
-    public void TraceTransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
-    {
-    }
-
-    public void TraceTransactionCommitted (Guid connectionID)
-    {
-    }
-
-    public void TraceTransactionRolledback (Guid connectionID)
-    {
-    }
-
-    public void TraceTransactionDisposed (Guid connectionID)
-    {
-    }
-
-    public void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText)
-    {
-    }
-
-    public void TraceQueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
-    {
-    }
-
-    public void TraceQueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
-    {
-    }
-
-    public void TraceQueryError (Guid connectionID, Guid queryID, Exception e)
-    {
-    }
-  }
-
-  public interface IPersistenceProfiler
+  public interface IPersistenceTracer
   {
     void TraceConnectionOpened (Guid connectionID);
     void TraceConnectionClosed (Guid connectionID);

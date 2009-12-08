@@ -86,6 +86,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -242,7 +246,11 @@
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
     <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
-    <Compile Include="Persistence\IPersistenceProfiler.cs" />
+    <Compile Include="Tracing\IPersistenceTracer.cs" />
+    <Compile Include="Tracing\IPersistenceTraceListener.cs" />
+    <Compile Include="Tracing\PersistenceTracer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Persistence\Rdbms\DataContainerLoader.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoaderHelper.cs" />
     <Compile Include="Persistence\Rdbms\IDataContainerLoaderHelper.cs" />

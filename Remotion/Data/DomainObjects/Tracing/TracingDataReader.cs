@@ -17,14 +17,13 @@
 using System;
 using System.Data;
 using System.Diagnostics;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
   /// Provides a wrapper for implementations of <see cref="IDataReader"/>. The number of records read and the lifetime of the reader 
-  /// are traced using <see cref="IPersistenceProfiler"/> passed during the instantiation.
+  /// are traced using <see cref="IPersistenceTracer"/> passed during the instantiation.
   /// </summary>
   public class TracingDataReader : IDataReader
   {
@@ -187,19 +186,19 @@ namespace Remotion.Data.DomainObjects.Tracing
     #endregion
 
     private readonly IDataReader _dataReader;
-    private readonly IPersistenceProfiler _persistenceProfiler;
+    private readonly IPersistenceTracer _persistenceTracer;
     private readonly Guid _connectionID;
     private readonly Guid _queryID;
     private readonly Stopwatch _stopwatch;
     private int _rowCount;
 
-    public TracingDataReader (IDataReader dataReader, IPersistenceProfiler persistenceProfiler, Guid connectionID, Guid queryID)
+    public TracingDataReader (IDataReader dataReader, IPersistenceTracer persistenceTracer, Guid connectionID, Guid queryID)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("persistenceProfiler", persistenceProfiler);
+      ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
 
       _dataReader = dataReader;
-      _persistenceProfiler = persistenceProfiler;
+      _persistenceTracer = persistenceTracer;
       _connectionID = connectionID;
       _queryID = queryID;
       _stopwatch = Stopwatch.StartNew();
@@ -220,9 +219,9 @@ namespace Remotion.Data.DomainObjects.Tracing
       get { return _queryID; }
     }
 
-    public IPersistenceProfiler PersistenceProfiler
+    public IPersistenceTracer PersistenceTracer
     {
-      get { return _persistenceProfiler; }
+      get { return _persistenceTracer; }
     }
 
     public void Dispose ()
@@ -249,7 +248,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       if (_stopwatch.IsRunning)
       {
-        _persistenceProfiler.TraceQueryCompleted (_connectionID, _queryID, _stopwatch.Elapsed, _rowCount);
+        _persistenceTracer.TraceQueryCompleted (_connectionID, _queryID, _stopwatch.Elapsed, _rowCount);
         _stopwatch.Stop ();
       }
     }
