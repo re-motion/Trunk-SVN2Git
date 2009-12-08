@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
@@ -71,10 +72,13 @@ namespace Remotion.Data.DomainObjects.Tracing
         listener.TraceTransactionDisposed (_clientTransactionID, connectionID);
     }
 
-    public void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText)
+    public void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters)
     {
+      ArgumentUtility.CheckNotNull ("commandText", commandText);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
+
       foreach (var listener in _listeners)
-        listener.TraceQueryExecuting (_clientTransactionID, connectionID, queryID, commandText);
+        listener.TraceQueryExecuting (_clientTransactionID, connectionID, queryID, commandText, parameters);
     }
 
     public void TraceQueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)

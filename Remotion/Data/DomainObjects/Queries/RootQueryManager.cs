@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Collection)
         throw new ArgumentException ("A collection query cannot be used with GetScalar.", "query");
 
-      using (var storageProviderManager = new StorageProviderManager())
+      using (var storageProviderManager = new StorageProviderManager(_clientTransaction.ID))
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         return provider.ExecuteScalarQuery (query);
@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Queries
     private T[] ExecuteCollectionAndMergeResult<T> (IQuery query) where T: DomainObject
     {
       T[] resultArray;
-      using (var storageProviderManager = new StorageProviderManager ())
+      using (var storageProviderManager = new StorageProviderManager (_clientTransaction.ID))
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         var dataContainers = provider.ExecuteCollectionQuery (query);

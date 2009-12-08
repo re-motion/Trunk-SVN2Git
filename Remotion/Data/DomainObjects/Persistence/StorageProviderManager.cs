@@ -38,15 +38,14 @@ public class StorageProviderManager : IDisposable
   // construction and disposing
 
   public StorageProviderManager ()
-    :this (new PersistenceTracer (Guid.Empty))
+    :this (Guid.Empty)
   {
   }
 
-  public StorageProviderManager (IPersistenceTracer persistenceTracer)
+  public StorageProviderManager (Guid clientTransactionID)
   {
-    ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
     _storageProviders = new StorageProviderCollection ();
-    _persistenceTracer = persistenceTracer;
+    _persistenceTracer = new PersistenceTracer (clientTransactionID);
   }
 
   #region IDisposable Members

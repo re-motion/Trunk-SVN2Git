@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     public PersistenceManager (Guid clientTransactionID)
     {
-      _storageProviderManager = new StorageProviderManager (new PersistenceTracer (clientTransactionID));
+      _storageProviderManager = new StorageProviderManager (clientTransactionID);
     }
 
     #region IDisposable Members

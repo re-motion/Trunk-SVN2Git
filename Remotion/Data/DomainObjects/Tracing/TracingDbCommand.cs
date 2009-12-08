@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using Remotion.Utilities;
@@ -171,11 +172,11 @@ namespace Remotion.Data.DomainObjects.Tracing
 
     private T ExecuteWithProfiler<T> (Func<T> operation)
     {
-      Stopwatch stopWatch = Stopwatch.StartNew ();
+      Stopwatch stopWatch = Stopwatch.StartNew();
       try
       {
-        _persistenceTracer.TraceQueryExecuting (_connectionID, _queryID, _command.CommandText);
-        T result = operation ();
+        _persistenceTracer.TraceQueryExecuting (_connectionID, _queryID, _command.CommandText, ConvertToDictionary (_command.Parameters));
+        T result = operation();
         _persistenceTracer.TraceQueryExecuted (_connectionID, _queryID, stopWatch.Elapsed);
         return result;
       }
@@ -185,5 +186,13 @@ namespace Remotion.Data.DomainObjects.Tracing
         throw;
       }
     }
+
+    private IDictionary<string, object> ConvertToDictionary (IDataParameterCollection parameters)
+    {
+      var dictionary = new Dictionary<string, object>();
+      foreach (IDbDataParameter parameter in parameters)
+        dictionary.Add (parameter.ParameterName, parameter.Value);
+      return dictionary;
+    }
   }
-}
+} 

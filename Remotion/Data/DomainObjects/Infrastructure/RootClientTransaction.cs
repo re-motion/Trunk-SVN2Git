@@ -66,6 +66,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return this; }
     }
 
+    public Guid ID
+    {
+      get { return _id; }
+    }
+
     /// <summary>Initializes a new instance of this transaction.</summary>
     public override ClientTransaction CreateEmptyTransactionOfSameType ()
     {

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Remotion.Data.DomainObjects.Tracing
@@ -27,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     void TraceTransactionCommitted (Guid connectionID);
     void TraceTransactionRolledback (Guid connectionID);
     void TraceTransactionDisposed (Guid connectionID);
-    void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText);
+    void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters);
     void TraceQueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution);
     void TraceQueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount);
     void TraceQueryError (Guid connectionID, Guid queryID, Exception e);
