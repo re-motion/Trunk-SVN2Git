@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Tracing;
@@ -266,9 +269,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void ExecuteNonQuery ()
     {
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
-     // using (_mockRepository.Ordered())
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection());
+      using (_mockRepository.Ordered())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (Arg.Is(_connectionID),Arg.Is( _command.QueryID), Arg.Is("commandText"), Arg<IDictionary<string,object>>.Is.NotNull);
         _innerCommandMock.Expect (mock => mock.ExecuteNonQuery()).Return (100);
         _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
         _tracerMock.TraceQueryCompleted (_connectionID, _command.QueryID, TimeSpan.Zero, 100);
@@ -277,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
 
       Assert.That (_command.ExecuteNonQuery(), Is.EqualTo (100));
 
-    //  _mockRepository.VerifyAll();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -285,11 +289,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       Exception exception = new Exception ("TestException");
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
 
       using (_mockRepository.Ordered())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
-        _innerCommandMock.Expect (mock => mock.ExecuteNonQuery()).Throw (exception);
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
+        _innerCommandMock.Expect (mock => mock.ExecuteNonQuery ()).Throw (exception);
         _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
@@ -311,10 +316,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       IDataReader readerStub = MockRepository.GenerateStub<IDataReader>();
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
-      using (_mockRepository.Ordered())
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
+      
+      using (_mockRepository.Ordered ())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
-        _innerCommandMock.Expect (mock => mock.ExecuteReader()).Return (readerStub);
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
+        _innerCommandMock.Expect (mock => mock.ExecuteReader ()).Return (readerStub);
         _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
       }
       _mockRepository.ReplayAll();
@@ -334,11 +341,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       Exception exception = new Exception ("TestException");
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
 
       using (_mockRepository.Ordered())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
-        _innerCommandMock.Expect (mock => mock.ExecuteReader()).Throw (exception);
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
+        _innerCommandMock.Expect (mock => mock.ExecuteReader ()).Throw (exception);
         _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
@@ -360,9 +368,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       IDataReader readerStub = MockRepository.GenerateStub<IDataReader>();
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
-      using (_mockRepository.Ordered())
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
+      
+      using (_mockRepository.Ordered ())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
         _innerCommandMock.Expect (mock => mock.ExecuteReader (CommandBehavior.SchemaOnly)).Return (readerStub);
         _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
       }
@@ -383,10 +393,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       Exception exception = new Exception ("TestException");
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
 
       using (_mockRepository.Ordered())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
         _innerCommandMock.Expect (mock => mock.ExecuteReader (CommandBehavior.SchemaOnly)).Throw (exception);
         _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
@@ -408,10 +419,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     public void ExecuteScalar ()
     {
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
-      using (_mockRepository.Ordered())
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
+      
+      using (_mockRepository.Ordered ())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
-        _innerCommandMock.Expect (mock => mock.ExecuteScalar()).Return (30);
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
+        _innerCommandMock.Expect (mock => mock.ExecuteScalar ()).Return (30);
         _tracerMock.TraceQueryExecuted (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg<TimeSpan>.Is.GreaterThan (TimeSpan.Zero));
         _tracerMock.TraceQueryCompleted (_connectionID, _command.QueryID, TimeSpan.Zero, 1);
       }
@@ -427,11 +440,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
     {
       Exception exception = new Exception ("TestException");
       _innerCommandMock.Stub (mock => mock.CommandText).Return ("commandText");
+      _innerCommandMock.Stub (mock => mock.Parameters).Return (CreateParameterCollection ());
 
       using (_mockRepository.Ordered())
       {
-        _tracerMock.TraceQueryExecuting (_connectionID, _command.QueryID, "commandText");
-        _innerCommandMock.Expect (mock => mock.ExecuteScalar()).Throw (exception);
+        _tracerMock.TraceQueryExecuting (Arg.Is (_connectionID), Arg.Is (_command.QueryID), Arg.Is ("commandText"), CreateParametersArgumentExpectation());
+        _innerCommandMock.Expect (mock => mock.ExecuteScalar ()).Throw (exception);
         _tracerMock.TraceQueryError (_connectionID, _command.QueryID, exception);
       }
       _mockRepository.ReplayAll();
@@ -446,6 +460,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Tracing
         Assert.That (ex, Is.SameAs (exception));
       }
       _mockRepository.VerifyAll();
+    }
+
+    private IDataParameterCollection CreateParameterCollection ()
+    {
+      var command = new SqlCommand ();
+      return command.Parameters;
+    }
+
+    private IDictionary<string, object> CreateParametersArgumentExpectation ()
+    {
+      return Arg<IDictionary<string, object>>.Is.NotNull;
     }
   }
 }
