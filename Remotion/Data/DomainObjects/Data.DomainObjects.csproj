@@ -262,6 +262,8 @@
     <Compile Include="Queries\QueryCache.cs" />
     <Compile Include="Queries\QueryFactory.cs" />
     <Compile Include="SimpleDomainObject.cs" />
+    <Compile Include="Tracing\TracingDbConnection.cs" />
+    <Compile Include="Tracing\TracingDbTransaction.cs" />
     <Compile Include="Transport\BinaryExportStrategy.cs" />
     <Compile Include="Transport\DomainObjectImporter.cs" />
     <Compile Include="Transport\DomainObjectTransporter.cs" />

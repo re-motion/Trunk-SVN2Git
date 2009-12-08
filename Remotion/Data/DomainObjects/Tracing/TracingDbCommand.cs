@@ -51,13 +51,13 @@ namespace Remotion.Data.DomainObjects.Tracing
       return _command.CreateParameter();
     }
 
-    public IDbConnection Connection
+    IDbConnection IDbCommand.Connection
     {
       get { return _command.Connection; }
       set { _command.Connection = value; }
     }
 
-    public IDbTransaction Transaction
+    IDbTransaction IDbCommand.Transaction
     {
       get { return _command.Transaction; }
       set { _command.Transaction = value; }
@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     private readonly Guid _connectionID;
     private readonly Guid _queryID;
 
-    public TracingDbCommand (IDbCommand command, IPersistenceProfiler persistenceProfiler, Guid connectionID, Guid queryID)
+    public TracingDbCommand (IDbCommand command, IPersistenceProfiler persistenceProfiler, Guid connectionID)
     {
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("persistenceProfiler", persistenceProfiler);
@@ -107,7 +107,27 @@ namespace Remotion.Data.DomainObjects.Tracing
       _command = command;
       _persistenceProfiler = persistenceProfiler;
       _connectionID = connectionID;
-      _queryID = queryID;
+      _queryID = Guid.NewGuid();
+    }
+
+    public IDbCommand WrappedInstance
+    {
+      get { return _command; }
+    }
+
+    public Guid ConnectionID
+    {
+      get { return _connectionID; }
+    }
+
+    public Guid QueryID
+    {
+      get { return _queryID; }
+    }
+
+    public IPersistenceProfiler PersistenceProfiler
+    {
+      get { return _persistenceProfiler; }
     }
 
     public int ExecuteNonQuery ()
@@ -138,6 +158,16 @@ namespace Remotion.Data.DomainObjects.Tracing
       _persistenceProfiler.TraceQueryCompleted (_connectionID, _queryID, TimeSpan.Zero, 1);
 
       return result;
+    }
+
+    public void SetInnerConnection (TracingDbConnection connection)
+    {
+      _command.Connection = connection == null ? null : connection.WrappedInstance;
+    }
+
+    public void SetInnerTransaction (TracingDbTransaction transaction)
+    {
+      _command.Transaction = transaction == null ? null : transaction.WrappedInstance;
     }
 
     private T ExecuteWithProfiler<T> (Func<T> operation)

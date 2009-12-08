@@ -22,6 +22,10 @@ using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
+  /// <summary>
+  /// Provides a wrapper for implementations of <see cref="IDataReader"/>. The number of records read and the lifetime of the reader 
+  /// are traced using <see cref="IPersistenceProfiler"/> passed during the instantiation.
+  /// </summary>
   public class TracingDataReader : IDataReader
   {
     #region IDataRecord implementation
