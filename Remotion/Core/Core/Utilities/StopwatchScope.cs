@@ -25,7 +25,7 @@ namespace Remotion.Utilities
   /// Provides a simple way of timing a piece of code wrapped into a <c>using</c> block. At the end of the block or at a checkpoint, an action is 
   /// performed or a log message written.
   /// </summary>
-  public struct StopwatchScope : IDisposable
+  public class StopwatchScope : IDisposable
   {
     /// <summary>
     /// Defines an action to be called whenever a checkpoint is reached or the <see cref="StopwatchScope"/> is disposed.
