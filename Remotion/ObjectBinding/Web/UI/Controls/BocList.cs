@@ -1742,31 +1742,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    /// <summary> Handles the click to a WXE function command. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemWxeFunctionCommandClick/*' />
-    protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
-    {
-      if (menuItem != null && menuItem.Command != null)
-      {
-        if (menuItem is BocMenuItem)
-        {
-          BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
-          if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows(), GetSelectedBusinessObjects());
-          //else
-          //  command.ExecuteWxeFunction (Page, GetSelectedRows(), GetSelectedBusinessObjects());
-        }
-        else
-        {
-          Command command = menuItem.Command;
-          if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, null);
-          //else
-          //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
-        }
-      }
-    }
-
     /// <summary> 
     ///   Event handler for the <see cref="MenuBase.EventCommandClick"/> of the <b>RowMenu</b>.
     /// </summary>
@@ -3410,12 +3385,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         BocMenuItemCommand command = (BocMenuItemCommand) e.Command;
         if (Page is IWxePage)
           command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows(), GetSelectedBusinessObjects());
+        //else
+        //  command.ExecuteWxeFunction (Page, GetSelectedRows(), GetSelectedBusinessObjects());
       }
       else
       {
         Command command = menuItem.Command;
         if (Page is IWxePage)
           command.ExecuteWxeFunction ((IWxePage) Page, null);
+        //else
+        //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
       }
     }
 
