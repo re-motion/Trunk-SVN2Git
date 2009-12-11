@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects
   public partial class DomainObjectCollection
   {
     [Obsolete (
-    "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+    "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory. (1.13.37)",
     true)]
     public static DomainObjectCollection Create (Type collectionType)
     {
@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory. (1.13.37)",
         true)]
     public static DomainObjectCollection Create (Type collectionType, Type requiredItemType)
     {
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory. (1.13.37)",
         true)]
     public static DomainObjectCollection Create (Type collectionType, IEnumerable<DomainObject> contents)
     {
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     [Obsolete (
-        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory.",
+        "This method is obsolete. Directly call the constructor DomainObjectCollection (IEnumerable<DomainObject>, Type) or use DomainObjectCollectionFactory. (1.13.37)",
         true)]
     public static DomainObjectCollection Create (
         Type collectionType,
@@ -56,14 +56,14 @@ namespace Remotion.Data.DomainObjects
       throw new NotImplementedException ();
     }
 
-    [Obsolete ("This method has been renamed and moved. Use UnionWith (extension method declared on DomainObjectCollectionExtensions) instead.", true)]
+    [Obsolete ("This method has been renamed and moved. Use UnionWith (extension method declared on DomainObjectCollectionExtensions) instead. (1.13.37)", true)]
     public void Combine (DomainObjectCollection domainObjects)
     {
       throw new NotImplementedException ();
     }
 
     [Obsolete (
-        "This method has been renamed and moved. Use GetItemsExcept (extension method declared on DomainObjectCollectionExtensions) instead."
+        "This method has been renamed and moved. Use GetItemsExcept (extension method declared on DomainObjectCollectionExtensions) instead. (1.13.37)"
         + "Note that the comparison is now based on IDs and that the order of arguments has been reversed for clarity.", true)]
     public DomainObjectCollection GetItemsNotInCollection (DomainObjectCollection domainObjects)
     {
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects
     // ReSharper disable UnusedParameter.Local
     [Obsolete (
        "This constructor has been removed. Use the constructor taking IEnumerable<DomainObject> (or Clone) to copy a collection, use AsReadOnly to "
-       + "get a read-only version of a collection.", true)]
+       + "get a read-only version of a collection. (1.13.37)", true)]
     public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
     {
       throw new NotImplementedException ();
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects
 
     [Obsolete (
         "This constructor has been removed. Use the constructor taking IEnumerable<DomainObject> (or Clone) to copy a collection, use AsReadOnly to "
-        + "get a read-only version of a collection.", true)]
+        + "get a read-only version of a collection. (1.13.37)", true)]
     public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, Type requiredItemType, bool makeCollectionReadOnly)
     {
       throw new NotImplementedException ();
@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects
 
     [Obsolete (
     "This method has been removed. Use SequenceEqual (extension method defined on DomainObjectCollectionExtensions) instead. Note that that "
-    + "method does not handle null arguments.", true)]
+    + "method does not handle null arguments. (1.13.37)", true)]
     public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2)
     {
       throw new NotImplementedException ();
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects
 
     [Obsolete (
         "This method has been removed. Use SequenceEqual or SetEquals (extension methods defined on DomainObjectCollectionExtensions) instead. "
-        + "Note that those methods do not handle null arguments.", true)]
+        + "Note that those methods do not handle null arguments. (1.13.37)", true)]
     public static bool Compare (DomainObjectCollection collection1, DomainObjectCollection collection2, bool ignoreItemOrder)
     {
       throw new NotImplementedException ();
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects
 
     [Obsolete (
         "This method has been removed. GetNonNotifyingData in conjunction with DomainObjectCollectionDataExtensions.ReplaceContents to replace the "
-        + "contents of a collection without raising events. To hook commit or rollback events, override Commit or Rollback.", true)]
+        + "contents of a collection without raising events. To hook commit or rollback events, override Commit or Rollback. (1.13.37)", true)]
     protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
     }
