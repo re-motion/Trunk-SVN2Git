@@ -457,6 +457,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void SetValueFrom_HasBeenTouched_FalseIfNothingHappened ()
+    {
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject> ());
+
+      _customerEndPoint.SetValueFrom (source);
+
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "Cannot set this end point's value from "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'; the end points "

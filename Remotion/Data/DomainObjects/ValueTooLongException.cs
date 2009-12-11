@@ -16,13 +16,14 @@
 // 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
 {
 /// <summary>
-/// The exception that is thrown when a <see cref="PropertyValue"/> is set with a value that is exceeds the <see cref="PropertyValue.MaxLength"/> of the property.
+/// The exception that is thrown when a domain object property is set with a value that is exceeds the <see cref="PropertyDefinition.MaxLength"/> of 
+/// the property.
 /// </summary>
 [Serializable]
 public class ValueTooLongException : DomainObjectException
@@ -33,8 +34,8 @@ public class ValueTooLongException : DomainObjectException
 
   // member fields
 
-  private string _propertyName;
-  private int _maxLength;
+  private readonly string _propertyName;
+  private readonly int _maxLength;
 
   // construction and disposing
 

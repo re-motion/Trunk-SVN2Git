@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
       {
-        if (propertyValue.Definition.StorageClass == StorageClass.Persistent && propertyValue.PropertyType != typeof (ObjectID))
+        if (propertyValue.Definition.StorageClass == StorageClass.Persistent && propertyValue.Definition.PropertyType != typeof (ObjectID))
         {
           AppendColumn (columnBuilder, valueBuilder, propertyValue.Definition.StorageSpecificName, propertyValue.Definition.StorageSpecificName);
           AddCommandParameter (command, propertyValue.Definition.StorageSpecificName, propertyValue);

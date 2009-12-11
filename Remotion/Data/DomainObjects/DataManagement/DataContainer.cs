@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -52,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      DataContainer newDataContainer = new DataContainer (id);
+      var newDataContainer = new DataContainer (id);
       newDataContainer._state = DataContainerStateType.New;
 
       InitializeDefaultPropertyValues (newDataContainer);
@@ -77,7 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      DataContainer dataContainer = new DataContainer (id, timestamp);
+      var dataContainer = new DataContainer (id, timestamp);
       dataContainer._state = DataContainerStateType.Existing;
 
       foreach (PropertyDefinition propertyDefinition in dataContainer.ClassDefinition.GetPropertyDefinitions ())
@@ -117,6 +118,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <see cref="StorageProvider"/> implementations.
     /// </para>
     /// </remarks>
+    // TODO: Remove
     public static DataContainer CreateAndCopyState (ObjectID id, DataContainer stateSource)
     {
       ArgumentUtility.CheckNotNull ("id", id);
@@ -204,14 +206,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get
       {
         ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-        CheckDiscarded();
+        CheckNotDiscarded();
 
         return _propertyValues[propertyName].Value;
       }
       set
       {
         ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-        CheckDiscarded();
+        CheckNotDiscarded();
 
         _propertyValues[propertyName].Value = value;
       }
@@ -234,7 +236,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public object GetValue (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      CheckDiscarded();
+      CheckNotDiscarded();
 
       return this[propertyName];
     }
@@ -251,7 +253,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void SetValue (string propertyName, object value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      CheckDiscarded();
+      CheckNotDiscarded();
 
       this[propertyName] = value;
     }
@@ -265,7 +267,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded();
+        CheckNotDiscarded();
 
         if (_clientTransaction == null)
           throw new DomainObjectException ("Internal error: ClientTransaction of DataContainer is not set.");
@@ -311,7 +313,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded();
+        CheckNotDiscarded();
         return _id.ClassDefinition;
       }
     }
@@ -324,7 +326,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded();
+        CheckNotDiscarded();
         return _id.ClassDefinition.ClassType;
       }
     }
@@ -338,7 +340,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded();
+        CheckNotDiscarded();
         return _propertyValues;
       }
     }
@@ -372,7 +374,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
     public void MarkAsChanged ()
     {
-      CheckDiscarded();
+      CheckNotDiscarded();
       if (_state != DataContainerStateType.Existing)
         throw new InvalidOperationException ("Only existing DataContainers can be marked as changed.");
       _hasBeenMarkedChanged = true;
@@ -386,7 +388,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded();
+        CheckNotDiscarded();
         return _timestamp;
       }
     }
@@ -443,7 +445,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void Delete ()
     {
-      CheckDiscarded();
+      CheckNotDiscarded();
 
       if (_state == DataContainerStateType.New)  // TODO 1914: Move this if block to DataManager.DeleteDataContainer
         Discard();
@@ -451,16 +453,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _state = DataContainerStateType.Deleted;
     }
 
-    internal void SetTimestamp (object timestamp)
+    public void SetTimestamp (object timestamp)
     {
-      ArgumentUtility.CheckNotNull ("timestamp", timestamp);
-
       _timestamp = timestamp;
     }
 
     internal void Commit ()
     {
-      CheckDiscarded();
+      CheckNotDiscarded();
 
       _hasBeenMarkedChanged = false;
       _hasBeenChanged = false;
@@ -478,7 +478,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void Rollback ()
     {
-      CheckDiscarded ();
+      CheckNotDiscarded ();
 
       _hasBeenMarkedChanged = false;
       _hasBeenChanged = false;
@@ -492,6 +492,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         _state = DataContainerStateType.Existing;
       }
+    }
+
+    public void SetPropertyValuesFrom (DataContainer source)
+    {
+      ArgumentUtility.CheckNotNull ("source", source);
+
+      CheckNotDiscarded ();
+      source.CheckNotDiscarded ();
+
+      if (source.ClassDefinition != ClassDefinition)
+      {
+        var message = string.Format (
+            "Cannot set this data container's property values from '{0}'; the data containers do not have the same class definition.",
+            source.ID);
+        throw new ArgumentException (message, "source");
+      }
+
+      for (int i = 0; i < _propertyValues.Count; ++i)
+        _propertyValues[i].SetValueFrom (source._propertyValues[i]);
+
+      _hasBeenChanged = HasPropertyValueChanged ();
     }
 
     public void SetDomainObject (DomainObject domainObject)
@@ -547,7 +568,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_clientTransaction != null)
         _clientTransaction.TransactionEventSink.PropertyValueChanging (this, args.PropertyValue, args.OldValue, args.NewValue);
 
-      if (args.PropertyValue.PropertyType != typeof (ObjectID))
+      if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
       {
         // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
         // Therefore notification of DomainObject when changing property values is not organized through events.
@@ -562,7 +583,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       UpdateStateAfterPropertyValueChanged(args);
 
-      if (args.PropertyValue.PropertyType != typeof (ObjectID))
+      if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
       {
         OnPropertyChanged (args);
 
@@ -581,21 +602,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void UpdateStateAfterPropertyValueChanged (PropertyChangeEventArgs args)
     {
       if (_hasBeenChanged && !args.PropertyValue.HasChanged) // maybe we need to reset this DataContainer's state to unchanged?
-      {
-        _hasBeenChanged = false;
-        foreach (PropertyValue propertyValue in _propertyValues)
-        {
-          if (propertyValue.HasChanged)
-          {
-            _hasBeenChanged = true;
-            break;
-          }
-        }
-      }
+        _hasBeenChanged = HasPropertyValueChanged();
       else
-      {
         _hasBeenChanged = true;
-      }
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
@@ -623,7 +632,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void Discard ()
     {
-      CheckDiscarded();
+      CheckNotDiscarded();
 
       if (_domainObject == null)
         throw new InvalidOperationException ("A DataContainer cannot be discarded while it doesn't have an associated DomainObject.");
@@ -636,7 +645,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _isDiscarded = true;
     }
 
-    private void CheckDiscarded ()
+    private void CheckNotDiscarded ()
     {
       if (_isDiscarded)
         throw new ObjectDiscardedException (_id);
@@ -648,9 +657,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <returns>A copy of this data container with the same <see cref="ObjectID"/> and the same property values. The copy's
     /// <see cref="ClientTransaction"/> member is not set, so the returned <see cref="DataContainer"/> cannot be used until it is registered with a
     /// <see cref="ClientTransaction"/>.</returns>
+    // TODO: Remove
     public DataContainer Clone ()
     {
-      CheckDiscarded();
+      CheckNotDiscarded();
 
       DataContainer clone = CreateAndCopyState (_id, this);
       Assertion.IsNull (clone._clientTransaction);
@@ -696,11 +706,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _associatedRelationEndPointIDs = null; // reinitialize on next use
 
       for (int i = 0; i < _propertyValues.Count; ++i)
-        _propertyValues[i].TakeOverCommittedData (sourceContainer._propertyValues[i]);
+        _propertyValues[i].SetValueFrom (sourceContainer._propertyValues[i]);
+    }
+
+    private bool HasPropertyValueChanged ()
+    {
+      return _propertyValues.Cast<PropertyValue> ().Any (pv => pv.HasChanged);
     }
 
     #region Serialization
 
+// ReSharper disable UnusedMember.Local
     private DataContainer (FlattenedDeserializationInfo info)
         : this (info.GetValueForHandle<ObjectID> (), info.GetValue<object> (), new PropertyValueCollection())
     {
@@ -718,6 +734,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenMarkedChanged = info.GetBoolValue ();
       _hasBeenChanged = info.GetBoolValue();
     }
+// ReSharper restore UnusedMember.Local
 
     private void RestorePropertyValuesFromData (FlattenedDeserializationInfo info)
     {
@@ -725,7 +742,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       int numberOfProperties = _propertyValues.Count;
       for (int i = 0; i < numberOfProperties; ++i)
       {
-        string propertyName = info.GetValueForHandle<string>();
+        var propertyName = info.GetValueForHandle<string>();
         _propertyValues[propertyName].DeserializeFromFlatStructure (info);
       }
     }

@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
       {
-        if (propertyValue.PropertyType == typeof (ObjectID))
+        if (propertyValue.Definition.PropertyType == typeof (ObjectID))
           return false;
       }
 

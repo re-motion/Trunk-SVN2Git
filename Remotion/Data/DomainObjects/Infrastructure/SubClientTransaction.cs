@@ -239,8 +239,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       Assertion.IsFalse (DataManager.IsDiscarded (parentDataContainer.ID));
 
-      DataContainer thisDataContainer = parentDataContainer.Clone();
+      var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
+
+      thisDataContainer.SetPropertyValuesFrom (parentDataContainer);
+      thisDataContainer.SetTimestamp (parentDataContainer.Timestamp);
+      thisDataContainer.SetDomainObject (parentDataContainer.DomainObject);
       thisDataContainer.Commit(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
+
       return thisDataContainer;
     }
 
@@ -284,11 +289,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void PersistNewDataContainer (DataContainer dataContainer)
     {
-      DataContainer parentDataContainer = GetParentDataContainerWithoutLoading (dataContainer.ID);
-      Assertion.IsNull (parentDataContainer, "a new data container cannot be known to the parent");
+      Assertion.IsNull (GetParentDataContainerWithoutLoading (dataContainer.ID), "a new data container cannot be known to the parent");
+      Assertion.IsFalse (dataContainer.IsDiscarded);
 
-      parentDataContainer = CreateParentDataContainer (dataContainer);
-      ParentTransaction.DataManager.RegisterNewDataContainer (parentDataContainer);
+      var parentDataContainer = DataContainer.CreateNew (dataContainer.ID);
+      
+      parentDataContainer.SetPropertyValuesFrom (dataContainer);
+      if (dataContainer.HasBeenMarkedChanged)
+        parentDataContainer.MarkAsChanged();
+      parentDataContainer.SetTimestamp (dataContainer.Timestamp);
+      parentDataContainer.SetDomainObject (dataContainer.DomainObject);
+      
+      parentDataContainer.RegisterNewDataContainer (ParentTransaction);
 
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
     }
@@ -340,13 +352,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       Assertion.IsFalse (ParentTransaction.DataManager.IsDiscarded (id), "this method is not called in situations where the ID could be discarded");
       return ParentTransaction.DataManager.DataContainerMap[id];
-    }
-
-    private DataContainer CreateParentDataContainer (DataContainer dataContainer)
-    {
-      DataContainer parentDataContainer = dataContainer.Clone();
-      parentDataContainer.SetClientTransaction (ParentTransaction);
-      return parentDataContainer;
     }
 
     private void PersistRelationEndPoints (IEnumerable<RelationEndPoint> changedEndPoints)

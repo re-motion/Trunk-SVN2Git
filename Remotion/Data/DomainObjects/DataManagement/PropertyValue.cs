@@ -110,7 +110,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get 
       {
-        CheckDiscarded ();
         return _definition; 
       }
     }
@@ -123,21 +122,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get 
       {
-        CheckDiscarded ();
         return _definition.PropertyName; 
-      }
-    }
-
-    /// <summary>
-    /// Gets the <see cref="Type"/> of the <see cref="Value"/> of a <see cref="PropertyValue"/>.
-    /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
-    public Type PropertyType
-    {
-      get 
-      {
-        CheckDiscarded ();
-        return _definition.PropertyType; 
       }
     }
 
@@ -151,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded ();
+        CheckNotDiscarded ();
 
         // Note: A ClientTransaction extension could possibly raise an exception during BeginValueGet.
         //       If another ClientTransaction extension only wants to be notified on success it should use EndValueGet.
@@ -162,11 +147,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
       set
       {
-        CheckDiscarded ();
+        CheckNotDiscarded ();
         CheckForRelationProperty ();
 
         SetValueInternal (value);
       }
+    }
+
+    public void Touch ()
+    {
+      _hasBeenTouched = true;
     }
 
     private void SetValueInternal (object value)
@@ -180,12 +170,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
         object oldValue = _value;
         _value = value;
 
-        _hasBeenTouched = true;
+        Touch ();
 
         EndValueSet (oldValue);
       }
       else
-        _hasBeenTouched = true;
+      {
+        Touch();
+      }
     }
 
     /// <summary>
@@ -196,7 +188,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get 
       { 
-        CheckDiscarded ();
+        CheckNotDiscarded ();
 
         // Note: A ClientTransaction extension could possibly raise an exception during BeginOriginalValueGet.
         //       If another ClientTransaction extension only wants to be notified on success it should use EndOriginalValueGet.
@@ -208,32 +200,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     /// <summary>
-    /// Indicates whether the <see cref="PropertyValue"/> may contain <see langword="null"/> as a value.
-    /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
-    public bool IsNullable
-    {
-      get 
-      {
-        CheckDiscarded ();
-        return _definition.IsNullable; 
-      }
-    }
-
-    /// <summary>
-    /// Gets the maximum length of the <see cref="Value"/> of the <see cref="PropertyValue"/>.
-    /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
-    public int? MaxLength 
-    {
-      get 
-      {
-        CheckDiscarded ();
-        return _definition.MaxLength; 
-      }
-    }
-
-    /// <summary>
     /// Indicates if the <see cref="Value"/> of the <see cref="PropertyValue"/> has changed since instantiation, loading, commit or rollback.
     /// </summary>
     /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
@@ -241,7 +207,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get 
       {
-        CheckDiscarded ();
+        CheckNotDiscarded ();
         return AreValuesDifferent (_value, _originalValue);
       }
     }
@@ -255,7 +221,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckDiscarded ();
+        CheckNotDiscarded ();
         return _hasBeenTouched;
       }
     }
@@ -268,16 +234,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
     public override bool Equals (object obj)
     {
-      CheckDiscarded ();
+      CheckNotDiscarded ();
 
-      PropertyValue propertyValue = obj as PropertyValue;
+      var propertyValue = obj as PropertyValue;
 
       if (propertyValue != null)
       {
-        return this._value.Equals (propertyValue._value)
-               && this._originalValue.Equals (propertyValue._originalValue)
-               && this.HasChanged.Equals (propertyValue.HasChanged)
-               && this.Definition.Equals (propertyValue.Definition);
+        return _value.Equals (propertyValue._value)
+               && _originalValue.Equals (propertyValue._originalValue)
+               && HasChanged.Equals (propertyValue.HasChanged)
+               && Definition.Equals (propertyValue.Definition);
       }
       else
       {
@@ -291,7 +257,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <returns>A 32-bit signed integer hash code.</returns>
     public override int GetHashCode()
     {
-      CheckDiscarded ();
+      CheckNotDiscarded ();
       return EqualityUtility.GetRotatedHashCode (_definition.PropertyName, _value, _originalValue, HasChanged);
     }
 
@@ -435,7 +401,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void BeginValueSet (object newValue)
     {
-      ValueChangeEventArgs changingArgs = new ValueChangeEventArgs (_value, newValue);
+      var changingArgs = new ValueChangeEventArgs (_value, newValue);
 
       // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
       // Therefore notification of PropertyValueCollection when changing property values is not organized through events.
@@ -445,7 +411,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void EndValueSet (object oldValue)
     {
-      ValueChangeEventArgs changedArgs = new ValueChangeEventArgs (oldValue, _value);
+      var changedArgs = new ValueChangeEventArgs (oldValue, _value);
 
       // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
       // Therefore notification of PropertyValueCollection when changing property values is not organized through events.
@@ -464,7 +430,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _definition.PropertyType == typeof (ObjectID); }
     }
 
-    private void CheckDiscarded ()
+    private void CheckNotDiscarded ()
     {
       if (_isDiscarded)
         throw new ObjectDiscardedException ();
@@ -479,12 +445,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = source._hasBeenTouched;
     }
 
-    internal void TakeOverCommittedData (PropertyValue source)
+    public void SetValueFrom (PropertyValue source)
     {
-      Assertion.IsTrue (_definition == source._definition);
+      ArgumentUtility.CheckNotNull ("source", source);
+      CheckNotDiscarded ();
+
+      if (source.Definition != Definition)
+      {
+        var message = string.Format (
+            "Cannot set this property's value from '{0}'; the properties do not have the same property definition.",
+            source.Definition);
+        throw new ArgumentException (message, "source");
+      }
+
       _value = source._value;
       _isDiscarded = source._isDiscarded;
-      _hasBeenTouched |= source._hasBeenTouched || HasChanged; // true if: we have been touched/source has been touched/we have changed
+
+      if (!_isDiscarded)
+      {
+        if (source.HasBeenTouched || HasChanged)
+          Touch();
+      }
     }
 
     #region Serialization

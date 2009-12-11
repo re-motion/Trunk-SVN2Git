@@ -261,46 +261,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
       Assert.IsNull (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
     }
-
-    private void CheckIfDataContainersAreEqual (DataContainer expected, DataContainer actual, bool checkID)
+    
+    [Test]
+    public void SetTimestamp ()
     {
-      ArgumentUtility.CheckNotNull ("expected", expected);
-      ArgumentUtility.CheckNotNull ("actual", actual);
-
-      Assert.AreNotSame (expected, actual);
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      dataContainer.SetTimestamp (10);
       
-      if (checkID)
-        Assert.AreEqual (expected.ID, actual.ID);
-
-      Assert.AreSame (expected.ClassDefinition, actual.ClassDefinition);
-      Assert.AreSame (expected.DomainObject, actual.DomainObject);
-      Assert.AreSame (expected.DomainObjectType, actual.DomainObjectType);
-      Assert.AreEqual (expected.IsDiscarded, actual.IsDiscarded);
-      Assert.AreEqual (expected.PropertyValues.Count, actual.PropertyValues.Count);
-
-      for (int i = 0; i < actual.PropertyValues.Count; ++i)
-      {
-        Assert.AreSame (expected.PropertyValues[i].Definition, actual.PropertyValues[i].Definition);
-        Assert.AreEqual (expected.PropertyValues[i].HasChanged, actual.PropertyValues[i].HasChanged);
-        Assert.AreEqual (expected.PropertyValues[i].HasBeenTouched, actual.PropertyValues[i].HasBeenTouched);
-        Assert.AreEqual (expected.PropertyValues[i].IsDiscarded, actual.PropertyValues[i].IsDiscarded);
-        Assert.AreEqual (expected.PropertyValues[i].OriginalValue, actual.PropertyValues[i].OriginalValue);
-        Assert.AreEqual (expected.PropertyValues[i].Value, actual.PropertyValues[i].Value);
-      }
-      
-      Assert.AreEqual (expected.State, actual.State);
-      Assert.AreSame (expected.Timestamp, actual.Timestamp);
+      Assert.That (dataContainer.Timestamp, Is.EqualTo (10));
     }
-
-    private void CheckIfClientTransactionIsNull (DataContainer dataContainer)
-    {
-      Assert.IsNull (PrivateInvoke.GetNonPublicField (dataContainer, "_clientTransaction"));
-    }
-
-    private void SetClientTransaction (DataContainer dataContainer, ClientTransaction transaction)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (dataContainer, "SetClientTransaction", transaction);
-    }
+    
 
     [Test]
     public void CloneLoadedUnchanged ()
@@ -452,6 +422,81 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer original = order.InternalDataContainer;
       ObjectID newID = new ObjectID (DomainObjectIDs.Official1.ClassDefinition, Guid.NewGuid ());
       DataContainer.CreateAndCopyState (newID, original);
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_SetsValues ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      Assert.That (newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value, Is.Not.EqualTo (1));
+
+      newDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+
+      Assert.That (newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_SetsForeignKeys ()
+    {
+      var sourceDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
+      var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket2);
+      Assert.That (newDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.Not.EqualTo (DomainObjectIDs.Order1));
+
+      newDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+
+      Assert.That (newDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.EqualTo (DomainObjectIDs.Order1));
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_SetsChangedFlag_IfChanged ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var existingDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
+      Assert.That (existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+
+      existingDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+
+      Assert.That (existingDataContainer.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_ResetsChangedFlag_IfUnchanged ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var targetDataContainer = sourceDataContainer.Clone();
+      targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
+      Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+
+      Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void SetPropertyValuesFrom_DoesntMarkAsChanged ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var targetDataContainer = sourceDataContainer.Clone ();
+      sourceDataContainer.MarkAsChanged();
+      Assert.That (sourceDataContainer.HasBeenMarkedChanged, Is.True);
+      Assert.That (targetDataContainer.HasBeenMarkedChanged, Is.False);
+
+      targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
+
+      Assert.That (targetDataContainer.HasBeenMarkedChanged, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Cannot set this data container's property values from 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'; the data containers do not "
+        + "have the same class definition.\r\nParameter name: source")]
+    public void SetPropertyValuesFrom_InvalidDefinition ()
+    {
+      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var targetDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
+
+      targetDataContainer.SetPropertyValuesFrom (sourceDataContainer);
     }
 
     [Test]
@@ -785,6 +830,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
+    }
+
+    private void CheckIfDataContainersAreEqual (DataContainer expected, DataContainer actual, bool checkID)
+    {
+      ArgumentUtility.CheckNotNull ("expected", expected);
+      ArgumentUtility.CheckNotNull ("actual", actual);
+
+      Assert.AreNotSame (expected, actual);
+
+      if (checkID)
+        Assert.AreEqual (expected.ID, actual.ID);
+
+      Assert.AreSame (expected.ClassDefinition, actual.ClassDefinition);
+      Assert.AreSame (expected.DomainObject, actual.DomainObject);
+      Assert.AreSame (expected.DomainObjectType, actual.DomainObjectType);
+      Assert.AreEqual (expected.IsDiscarded, actual.IsDiscarded);
+      Assert.AreEqual (expected.PropertyValues.Count, actual.PropertyValues.Count);
+
+      for (int i = 0; i < actual.PropertyValues.Count; ++i)
+      {
+        Assert.AreSame (expected.PropertyValues[i].Definition, actual.PropertyValues[i].Definition);
+        Assert.AreEqual (expected.PropertyValues[i].HasChanged, actual.PropertyValues[i].HasChanged);
+        Assert.AreEqual (expected.PropertyValues[i].HasBeenTouched, actual.PropertyValues[i].HasBeenTouched);
+        Assert.AreEqual (expected.PropertyValues[i].IsDiscarded, actual.PropertyValues[i].IsDiscarded);
+        Assert.AreEqual (expected.PropertyValues[i].OriginalValue, actual.PropertyValues[i].OriginalValue);
+        Assert.AreEqual (expected.PropertyValues[i].Value, actual.PropertyValues[i].Value);
+      }
+
+      Assert.AreEqual (expected.State, actual.State);
+      Assert.AreSame (expected.Timestamp, actual.Timestamp);
+    }
+
+    private void CheckIfClientTransactionIsNull (DataContainer dataContainer)
+    {
+      Assert.IsNull (PrivateInvoke.GetNonPublicField (dataContainer, "_clientTransaction"));
+    }
+
+    private void SetClientTransaction (DataContainer dataContainer, ClientTransaction transaction)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (dataContainer, "SetClientTransaction", transaction);
     }
   }
 }

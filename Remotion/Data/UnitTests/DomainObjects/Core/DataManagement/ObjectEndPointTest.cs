@@ -445,6 +445,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void SetValueFrom_HasBeenTouched_FalseIfNothingHappened ()
+    {
+      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
+
+      _endPoint.SetValueFrom (source);
+
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot set this end point's value from "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'; the end points "

@@ -97,13 +97,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
-      if (propertyValue.PropertyType != typeof (ObjectID))
+      if (propertyValue.Definition.PropertyType != typeof (ObjectID))
         Extensions.PropertyValueChanging (_clientTransaction, dataContainer, propertyValue, oldValue, newValue);
     }
 
     public void PropertyValueChanged (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
-      if (propertyValue.PropertyType != typeof (ObjectID))
+      if (propertyValue.Definition.PropertyType != typeof (ObjectID))
         Extensions.PropertyValueChanged (_clientTransaction, dataContainer, propertyValue, oldValue, newValue);
     }
 

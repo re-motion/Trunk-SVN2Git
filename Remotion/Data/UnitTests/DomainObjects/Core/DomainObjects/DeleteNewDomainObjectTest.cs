@@ -22,6 +22,8 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -361,30 +363,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
     public void PropertyValueDefinition ()
     {
       _newOrder.Delete ();
 
-      PropertyDefinition definition = _orderNumberValue.Definition;
+      Dev.Null = _orderNumberValue.Definition;
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
     public void PropertyValueName ()
     {
       _newOrder.Delete ();
 
-      string name = _orderNumberValue.Name;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void PropertyValuePropertyType ()
-    {
-      _newOrder.Delete ();
-
-      Type type = _orderNumberValue.PropertyType;
+      Dev.Null = _orderNumberValue.Name;
     }
 
     [Test]
@@ -412,24 +403,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _newOrder.Delete ();
 
       object originalValue = _orderNumberValue.OriginalValue;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void PropertyValueIsNullable ()
-    {
-      _newOrder.Delete ();
-
-      bool isNullable = _orderNumberValue.IsNullable;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void PropertyValueMaxLength ()
-    {
-      _newOrder.Delete ();
-
-      int? maxLength = _orderNumberValue.MaxLength;
     }
 
     [Test]
