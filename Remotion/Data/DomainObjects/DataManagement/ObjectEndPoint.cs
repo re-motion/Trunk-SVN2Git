@@ -217,13 +217,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
       OppositeObjectID = null;
     }
 
-    protected internal override void TakeOverCommittedData (RelationEndPoint source)
+    public override void SetValueFrom (RelationEndPoint source)
     {
       var sourceObjectEndPoint = ArgumentUtility.CheckNotNullAndType<ObjectEndPoint> ("source", source);
-      Assertion.IsTrue (Definition == sourceObjectEndPoint.Definition);
+
+      if (Definition != sourceObjectEndPoint.Definition)
+      {
+        var message = string.Format (
+            "Cannot set this end point's value from '{0}'; the end points do not have the same end point definition.",
+            source.ID);
+        throw new ArgumentException (message, "source");
+      }
 
       _oppositeObjectID = sourceObjectEndPoint._oppositeObjectID;
-      _hasBeenTouched |= sourceObjectEndPoint._hasBeenTouched || HasChanged; // true if: we have been touched/source has been touched/we have changed
+
+      if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
+        Touch ();
     }
 
     protected virtual void SetForeignKeyProperty ()

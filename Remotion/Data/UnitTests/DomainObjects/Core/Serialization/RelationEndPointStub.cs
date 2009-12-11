@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
     }
 
-    protected override void TakeOverCommittedData (RelationEndPoint source)
+    public override void SetValueFrom (RelationEndPoint source)
     {
       throw new NotImplementedException();
     }

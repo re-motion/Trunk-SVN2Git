@@ -367,7 +367,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         }
         else
         {
-          parentEndPoint.TakeOverCommittedData (endPoint);
+          parentEndPoint.SetValueFrom (endPoint);
         }
       }
     }

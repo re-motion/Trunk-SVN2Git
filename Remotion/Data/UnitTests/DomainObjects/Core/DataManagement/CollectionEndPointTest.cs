@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -23,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Utilities;
 
@@ -404,140 +404,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void TakeOverCommittedData_ChangedIntoUnchanged ()
+    public void SetValueFrom_SetsOppositeDomainObjects ()
     {
-      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
+      var originalOppositeCollectionReference = _customerEndPoint.OppositeDomainObjects;
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.Not.EqualTo (source.OppositeDomainObjects));
 
-      var newOrder = Order.NewObject ();
-      endPoint2.OppositeDomainObjects.Add (newOrder);
+      _customerEndPoint.SetValueFrom (source);
 
-      Assert.That (endPoint1.HasChanged, Is.False);
-      Assert.That (endPoint1.HasBeenTouched, Is.False);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _order1 }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      var collectionBefore = endPoint1.OppositeDomainObjects;
-      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjectsContents;
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
-
-      Assert.That (endPoint1.HasChanged, Is.True);
-      Assert.That (endPoint1.HasBeenTouched, Is.True);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _orderWithoutOrderItem, newOrder }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      Assert.That (endPoint1.OppositeDomainObjects, Is.SameAs (collectionBefore));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.SameAs (originalCollectionBefore));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (source.OppositeDomainObjects));
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (originalOppositeCollectionReference));
     }
 
     [Test]
-    public void TakeOverCommittedData_UnchangedIntoUnchanged ()
+    public void SetValueFrom_HasBeenTouched_TrueIfEndPointWasTouched ()
     {
-      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject>());
 
-      Assert.That (endPoint1.HasChanged, Is.False);
-      Assert.That (endPoint1.HasBeenTouched, Is.False);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _order1 }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
+      _customerEndPoint.Touch ();
+      _customerEndPoint.SetValueFrom (source);
 
-      var collectionBefore = endPoint1.OppositeDomainObjects;
-      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjectsContents;
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
-
-      Assert.That (endPoint1.HasChanged, Is.True);
-      Assert.That (endPoint1.HasBeenTouched, Is.True);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _orderWithoutOrderItem }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      Assert.That (endPoint1.OppositeDomainObjects, Is.SameAs (collectionBefore));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.SameAs (originalCollectionBefore));
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_ChangedIntoChanged ()
+    public void SetValueFrom_HasBeenTouched_TrueIfSourceWasTouched ()
     {
-      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, _customerEndPoint.OppositeDomainObjects.Cast<DomainObject> ());
 
-      var newOrder = Order.NewObject ();
-      endPoint2.OppositeDomainObjects.Add (newOrder);
+      source.Touch ();
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
 
-      endPoint1.OppositeDomainObjects.Clear ();
+      _customerEndPoint.SetValueFrom (source);
 
-      Assert.That (endPoint1.HasChanged, Is.True);
-      Assert.That (endPoint1.HasBeenTouched, Is.True);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new object[0]));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      var collectionBefore = endPoint1.OppositeDomainObjects;
-      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjectsContents;
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
-
-      Assert.That (endPoint1.HasChanged, Is.True);
-      Assert.That (endPoint1.HasBeenTouched, Is.True);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _orderWithoutOrderItem, newOrder }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      Assert.That (endPoint1.OppositeDomainObjects, Is.SameAs (collectionBefore));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.SameAs (originalCollectionBefore));
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_UnchangedIntoChanged ()
+    public void SetValueFrom_HasBeenTouched_TrueIfDataWasChanged ()
     {
-      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _orderWithoutOrderItem });
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order2 });
 
-      endPoint1.OppositeDomainObjects.Clear ();
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+      Assert.That (source.HasBeenTouched, Is.False);
 
-      Assert.That (endPoint1.HasChanged, Is.True);
-      Assert.That (endPoint1.HasBeenTouched, Is.True);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new object[0]));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
+      _customerEndPoint.SetValueFrom (source);
 
-      var collectionBefore = endPoint1.OppositeDomainObjects;
-      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjectsContents;
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
-
-      Assert.That (endPoint1.HasChanged, Is.True);
-      Assert.That (endPoint1.HasBeenTouched, Is.True);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _orderWithoutOrderItem }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      Assert.That (endPoint1.OppositeDomainObjects, Is.SameAs (collectionBefore));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.SameAs (originalCollectionBefore));
+      Assert.That (_customerEndPoint.HasChanged, Is.True);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_UnchangedIntoEqual ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Cannot set this end point's value from "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'; the end points "
+        + "do not have the same end point definition.\r\nParameter name: source")]
+    public void SetValueFrom_InvalidDefinition ()
     {
-      var endPoint1 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
-      var endPoint2 = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, new[] { _order1 });
+      var otherID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var source = RelationEndPointObjectMother.CreateCollectionEndPoint (otherID, new DomainObject[0]);
 
-      Assert.That (endPoint1.HasChanged, Is.False);
-      Assert.That (endPoint1.HasBeenTouched, Is.False);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _order1 }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      var collectionBefore = endPoint1.OppositeDomainObjects;
-      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjectsContents;
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
-
-      Assert.That (endPoint1.HasChanged, Is.False);
-      Assert.That (endPoint1.HasBeenTouched, Is.False);
-      Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new[] { _order1 }));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.EquivalentTo (new[] { _order1 }));
-
-      Assert.That (endPoint1.OppositeDomainObjects, Is.SameAs (collectionBefore));
-      Assert.That (endPoint1.OriginalOppositeDomainObjectsContents, Is.SameAs (originalCollectionBefore));
+      _customerEndPoint.SetValueFrom (source);
     }
-
+    
     [Test]
     public void CreateRemoveModification ()
     {

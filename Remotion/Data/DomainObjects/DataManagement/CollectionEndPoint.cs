@@ -122,13 +122,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
       bidirectionalModification.ExecuteAllSteps ();
     }
 
-    protected internal override void TakeOverCommittedData (RelationEndPoint source)
+    public override void SetValueFrom (RelationEndPoint source)
     {
       var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
-      Assertion.IsTrue (Definition == sourceCollectionEndPoint.Definition);
+      if (Definition != sourceCollectionEndPoint.Definition)
+      {
+        var message = string.Format (
+            "Cannot set this end point's value from '{0}'; the end points do not have the same end point definition.", 
+            source.ID);
+        throw new ArgumentException (message, "source");
+      }
 
       _dataStore.ReplaceContents (sourceCollectionEndPoint._dataStore);
-      _hasBeenTouched = _hasBeenTouched || sourceCollectionEndPoint._hasBeenTouched || HasChanged;
+
+      if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
+        Touch ();
     }
 
     public override void Commit ()

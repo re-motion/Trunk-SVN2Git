@@ -110,18 +110,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // abstract methods and properties
 
-    protected internal abstract void TakeOverCommittedData (RelationEndPoint source);
     public abstract bool HasChanged { get; }
     public abstract bool HasBeenTouched { get; }
+
     public abstract void Touch ();
+    
     public abstract void Commit ();
     public abstract void Rollback ();
+    public abstract void SetValueFrom (RelationEndPoint source);
+    
     public abstract void CheckMandatory ();
     public abstract void PerformDelete ();
     public abstract IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
 
     // methods and properties
-
 
     public virtual void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {

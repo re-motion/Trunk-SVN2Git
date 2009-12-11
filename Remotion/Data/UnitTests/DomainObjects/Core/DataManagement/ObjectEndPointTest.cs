@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -394,100 +393,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void TakeOverCommittedData_ChangedIntoUnchanged ()
+    public void SetValueFrom_SetsOppositeObjectID ()
     {
-      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
-      _endPoint.OppositeObjectID = DomainObjectIDs.Order4;
+      _endPoint.SetValueFrom (source);
 
-      Assert.IsFalse (endPoint2.HasChanged);
-      Assert.IsFalse (endPoint2.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint2, "TakeOverCommittedData", _endPoint);
-
-      Assert.IsTrue (endPoint2.HasChanged);
-      Assert.IsTrue (endPoint2.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Order4, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (_endPoint.HasChanged, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_UnchangedIntoUnchanged ()
+    public void SetValueFrom_HasBeenTouched_TrueIfEndPointWasTouched ()
     {
-      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
 
-      Assert.IsFalse (endPoint2.HasChanged);
-      Assert.IsFalse (endPoint2.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      _endPoint.Touch ();
+      _endPoint.SetValueFrom (source);
 
-      PrivateInvoke.InvokeNonPublicMethod (endPoint2, "TakeOverCommittedData", _endPoint);
-
-      Assert.IsTrue (endPoint2.HasChanged);
-      Assert.IsTrue (endPoint2.HasBeenTouched);
-      Assert.AreEqual (_oppositeObjectID, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      Assert.That (_endPoint.HasChanged, Is.False);
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_UnchangedIntoChanged ()
+    public void SetValueFrom_HasBeenTouched_TrueIfSourceWasTouched ()
     {
-      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
 
-      endPoint2.OppositeObjectID = DomainObjectIDs.Order3;
+      source.Touch ();
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
 
-      Assert.IsTrue (endPoint2.HasChanged);
-      Assert.IsTrue (endPoint2.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Order3, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      _endPoint.SetValueFrom (source);
 
-      PrivateInvoke.InvokeNonPublicMethod (endPoint2, "TakeOverCommittedData", _endPoint);
-
-      Assert.IsTrue (endPoint2.HasChanged);
-      Assert.IsTrue (endPoint2.HasBeenTouched);
-      Assert.AreEqual (_oppositeObjectID, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      Assert.That (_endPoint.HasChanged, Is.False);
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_ChangedIntoChanged ()
+    public void SetValueFrom_HasBeenTouched_TrueIfDataWasChanged ()
     {
-      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
 
-      _endPoint.OppositeObjectID = DomainObjectIDs.Order3;
-      endPoint2.OppositeObjectID = DomainObjectIDs.Order4;
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
+      Assert.That (source.HasBeenTouched, Is.False);
 
-      Assert.IsTrue (endPoint2.HasChanged);
-      Assert.IsTrue (endPoint2.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Order4, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      _endPoint.SetValueFrom (source);
 
-      PrivateInvoke.InvokeNonPublicMethod (endPoint2, "TakeOverCommittedData", _endPoint);
-
-      Assert.IsTrue (endPoint2.HasChanged);
-      Assert.IsTrue (endPoint2.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Order3, endPoint2.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Order2, endPoint2.OriginalOppositeObjectID);
+      Assert.That (_endPoint.HasChanged, Is.True);
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
-    public void TakeOverCommittedData_UnchangedIntoEqual ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Cannot set this end point's value from "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'; the end points "
+        + "do not have the same end point definition.\r\nParameter name: source")]
+    public void SetValueFrom_InvalidDefinition ()
     {
-      ObjectEndPoint endPoint2 = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _endPoint.OppositeObjectID);
+      var otherID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var source = RelationEndPointObjectMother.CreateObjectEndPoint (otherID, null);
 
-      Assert.IsFalse (endPoint2.HasChanged);
-      Assert.IsFalse (endPoint2.HasBeenTouched);
-      Assert.AreEqual (_endPoint.OppositeObjectID, endPoint2.OppositeObjectID);
-      Assert.AreEqual (_endPoint.OppositeObjectID, endPoint2.OriginalOppositeObjectID);
-
-      PrivateInvoke.InvokeNonPublicMethod (endPoint2, "TakeOverCommittedData", _endPoint);
-
-      Assert.IsFalse (endPoint2.HasChanged);
-      Assert.IsFalse (endPoint2.HasBeenTouched);
-      Assert.AreEqual (_endPoint.OppositeObjectID, endPoint2.OppositeObjectID);
-      Assert.AreEqual (_endPoint.OppositeObjectID, endPoint2.OriginalOppositeObjectID);
+      _endPoint.SetValueFrom (source);
     }
 
     [Test]
