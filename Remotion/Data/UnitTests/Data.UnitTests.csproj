@@ -272,6 +272,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.EventRaiser.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionWrapperTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />

@@ -156,5 +156,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Assert.That (_collection.SetEquals (new[] { _customer1, _customer2, _customer2, _customer1 }), Is.True);
     }
+
+    [Test]
+    public void AsList ()
+    {
+      var list = _collection.AsList<Customer> ();
+
+      Assert.That (list, Is.InstanceOfType (typeof (DomainObjectCollectionWrapper<Customer>)));
+      Assert.That (((DomainObjectCollectionWrapper<Customer>) list).WrappedCollection, Is.SameAs (_collection));
+    }
   }
 }

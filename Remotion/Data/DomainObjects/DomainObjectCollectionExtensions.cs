@@ -33,6 +33,9 @@ namespace Remotion.Data.DomainObjects
     /// <param name="message">The message the exception should have if one is thrown.</param>
     public static void CheckNotReadOnly (this DomainObjectCollection collection, string message)
     {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+      ArgumentUtility.CheckNotNullOrEmpty ("message", message);
+
       if (collection.IsReadOnly)
         throw new NotSupportedException (message);
     }
@@ -98,6 +101,9 @@ namespace Remotion.Data.DomainObjects
     /// <returns><see langword="true"/> if the collection contains the same items as the comparedCollection in the same order; otherwise, <see langword="false"/>.</returns>
     public static bool SequenceEqual (this DomainObjectCollection collection, IEnumerable<DomainObject> comparedSequence)
     {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+      ArgumentUtility.CheckNotNull ("comparedSequence", comparedSequence);
+
       return collection.Cast<DomainObject> ().SequenceEqual (comparedSequence);
     }
 
@@ -110,6 +116,9 @@ namespace Remotion.Data.DomainObjects
     /// <returns><see langword="true"/> if the collection contains the same items as the set in any order; otherwise, <see langword="false"/>.</returns>
     public static bool SetEquals (this DomainObjectCollection collection, IEnumerable<DomainObject> comparedSet)
     {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+      ArgumentUtility.CheckNotNull ("comparedSet", comparedSet);
+
       var setOfComparedObjects = new HashSet<DomainObject> (); // this is used to get rid of all duplicates to get a correct result
       foreach (var domainObject in comparedSet)
       {
@@ -120,6 +129,22 @@ namespace Remotion.Data.DomainObjects
       }
 
       return collection.Count == setOfComparedObjects.Count; // the collection must contain exactly the number of items in the comparedSet - without dups
+    }
+
+    /// <summary>
+    /// Adapts the given <see cref="DomainObjectCollection"/> as an <see cref="IList{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The desired item type. This must be assignable from the <see cref="DomainObjectCollection"/>'s 
+    /// <see cref="DomainObjectCollection.RequiredItemType"/>. If it is more general than the item type, the <see cref="DomainObjectCollection"/>'s
+    /// runtime checks will ensure that only compatible items are inserted into the list.</typeparam>
+    /// <param name="collection">The collection to be wrapped..</param>
+    /// <returns>An implementation of <see cref="IList{T}"/> that wraps the given <paramref name="collection"/>.</returns>
+    public static IList<T> AsList<T> (this DomainObjectCollection collection)
+        where T : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+
+      return new DomainObjectCollectionWrapper<T> (collection);
     }
   }
 }

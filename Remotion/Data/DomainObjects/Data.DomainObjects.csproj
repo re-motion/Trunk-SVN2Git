@@ -178,6 +178,7 @@
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointTouchModification.cs" />
     <Compile Include="DataManagement\ICollectionEndPoint.cs" />
     <Compile Include="DomainObjectCollectionExtensions.cs" />
+    <Compile Include="DomainObjectCollectionWrapper.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
     <Compile Include="Infrastructure\SubCollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializer.cs" />
