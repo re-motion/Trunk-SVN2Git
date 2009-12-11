@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was read.</param>
     /// <param name="propertyName">The name of the relation property that was read.</param>
     /// <param name="relatedObjects">
-    ///   A <see cref="ReadOnlyCollection{T}"/> containing the related <see cref="DomainObject"/>s of the relation property.
+    ///   A <see cref="ReadOnlyCollection{T}"/> wrapping the related object collection that is returned to the reader.
     /// </param>
     /// <param name="valueAccess">A value indicating whether the current or the original value was accessed.</param>
     /// <remarks>

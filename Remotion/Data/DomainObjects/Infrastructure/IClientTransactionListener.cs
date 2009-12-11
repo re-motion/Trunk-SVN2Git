@@ -55,6 +55,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess);
     void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
+    
+    /// <summary>
+    /// Indicates that a relation has been read.
+    /// </summary>
+    /// <param name="domainObject">The domain object owning the relation that has been read.</param>
+    /// <param name="propertyName">The name of the property that has been read.</param>
+    /// <param name="relatedObjects">A read-only wrapper of the related object collection that is returned to the reader.</param>
+    /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
     void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess);
     
     void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);

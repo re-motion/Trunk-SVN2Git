@@ -1027,7 +1027,7 @@ public abstract class ClientTransaction
 
       TransactionEventSink.RelationReading (domainObject, relationEndPointID.PropertyName, ValueAccess.Current);
       var relatedObjects = _dataManager.RelationEndPointMap.GetRelatedObjects (relationEndPointID);
-      var readOnlyRelatedObjects = relatedObjects.Cast<DomainObject>().ToList().AsReadOnly();
+      var readOnlyRelatedObjects = new ReadOnlyCollection<DomainObject> (relatedObjects.AsList<DomainObject>());
       TransactionEventSink.RelationRead (domainObject, relationEndPointID.PropertyName, readOnlyRelatedObjects, ValueAccess.Current);
 
       return relatedObjects;
@@ -1050,7 +1050,7 @@ public abstract class ClientTransaction
 
       TransactionEventSink.RelationReading (domainObject, relationEndPointID.PropertyName, ValueAccess.Original);
       DomainObjectCollection relatedObjects = _dataManager.RelationEndPointMap.GetOriginalRelatedObjects (relationEndPointID);
-      var readOnlyRelatedObjects = relatedObjects.Cast<DomainObject> ().ToList ().AsReadOnly ();
+      var readOnlyRelatedObjects = new ReadOnlyCollection<DomainObject> (relatedObjects.AsList<DomainObject> ());
       TransactionEventSink.RelationRead (domainObject, relationEndPointID.PropertyName, readOnlyRelatedObjects, ValueAccess.Original);
 
       return relatedObjects;
@@ -1175,7 +1175,7 @@ public abstract class ClientTransaction
     {
       DataContainerCollection relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
 
-      // TODO: Consider using LINQ query instead: relatedDataContainers.Where (dc => !_dataManager.DataContainerMap.Contains (dc.ID));
+      // TODO: Consider using LINQ query instead: relatedDataContainers.Where (dc => !_dataManager.DataContainerMap.Contains (dc.ID)).ToList();
       DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (relatedDataContainers);
       foreach (DataContainer dataContainer in newLoadedDataContainers)
         TransactionEventSink.ObjectLoading (dataContainer.ID);
@@ -1415,10 +1415,10 @@ public abstract class ClientTransaction
     var domainObjectComittingEventRaised = new DomainObjectCollection ();
     var clientTransactionCommittingEventRaised = new DomainObjectCollection ();
 
-    IEnumerable<DomainObject> clientTransactionCommittingEventNotRaised;
+    List<DomainObject> clientTransactionCommittingEventNotRaised;
     do
     {
-      var domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised);
+      var domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised).ToList();
       while (domainObjectCommittingEventNotRaised.Any())
       {
         foreach (DomainObject domainObject in domainObjectCommittingEventNotRaised)
@@ -1433,12 +1433,12 @@ public abstract class ClientTransaction
         }
 
         changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-        domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised);
+        domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised).ToList();
       }
 
-      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised);
+      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
       
-      OnCommitting (new ClientTransactionEventArgs (clientTransactionCommittingEventNotRaised.ToList().AsReadOnly()));
+      OnCommitting (new ClientTransactionEventArgs (clientTransactionCommittingEventNotRaised.AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1446,7 +1446,7 @@ public abstract class ClientTransaction
       }
 
       changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised);
+      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
     } while (clientTransactionCommittingEventNotRaised.Any());
   }
 
@@ -1455,7 +1455,7 @@ public abstract class ClientTransaction
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnCommitted (EventArgs.Empty);
 
-    OnCommitted (new ClientTransactionEventArgs (changedDomainObjects.Cast<DomainObject>().ToList().AsReadOnly()));
+    OnCommitted (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (changedDomainObjects.AsList<DomainObject>())));
   }
 
   private void BeginRollback ()
@@ -1500,7 +1500,7 @@ public abstract class ClientTransaction
 
       clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
 
-      OnRollingBack (new ClientTransactionEventArgs (clientTransactionRollingBackEventNotRaised.ToList().AsReadOnly()));
+      OnRollingBack (new ClientTransactionEventArgs (clientTransactionRollingBackEventNotRaised.AsReadOnly()));
       foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
       {
         if (!domainObject.IsDiscarded)
@@ -1517,7 +1517,7 @@ public abstract class ClientTransaction
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnRolledBack (EventArgs.Empty);
 
-    OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects.Cast<DomainObject>().ToList().AsReadOnly()));
+    OnRolledBack (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (changedDomainObjects.AsList<DomainObject> ())));
   }
 
   public virtual ITransaction ToITransation ()
