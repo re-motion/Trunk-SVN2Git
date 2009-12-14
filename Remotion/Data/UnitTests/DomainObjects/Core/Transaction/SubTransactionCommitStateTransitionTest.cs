@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -237,6 +238,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         ClientTransactionScope.CurrentTransaction.Commit();
       }
       Assert.IsNull (ClientTransactionMock.DataManager.DataContainerMap[obj.ID]);
+    }
+
+    [Test]
+    public void CommitRootChangedSubMakesUnchanged ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      ++order.OrderNumber;
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        --order.OrderNumber;
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
   }
 }

@@ -316,12 +316,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (parentDataContainer.State != StateType.Deleted, "a changed DataContainer cannot be deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
-      StateType previousState = parentDataContainer.State;
-      parentDataContainer.TakeOverCommittedData (dataContainer);
-
-      Assertion.IsTrue (
-          (previousState == StateType.New && parentDataContainer.State == StateType.New)
-          || (previousState != StateType.New && parentDataContainer.State == StateType.Changed));
+      parentDataContainer.SetTimestamp (dataContainer.Timestamp);
+      parentDataContainer.SetPropertyValuesFrom (dataContainer);
+      
+      if (dataContainer.HasBeenMarkedChanged)
+        parentDataContainer.MarkAsChanged ();
     }
 
     private void PersistDeletedDataContainer (DataContainer dataContainer)

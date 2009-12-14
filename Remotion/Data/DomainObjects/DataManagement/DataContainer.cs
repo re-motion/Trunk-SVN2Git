@@ -620,22 +620,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return clone;
     }
 
-    internal void TakeOverCommittedData (DataContainer sourceContainer)
-    {
-      Assertion.IsTrue (sourceContainer.ClassDefinition == ClassDefinition);
-      Assertion.IsTrue (sourceContainer._domainObject == _domainObject || _domainObject == null);
-
-      _isDiscarded = sourceContainer._isDiscarded;
-      _timestamp = sourceContainer._timestamp;
-      _hasBeenMarkedChanged |= sourceContainer._hasBeenMarkedChanged;
-      _hasBeenChanged |= sourceContainer._hasBeenChanged;
-      _domainObject = sourceContainer._domainObject;
-      _associatedRelationEndPointIDs = null; // reinitialize on next use
-
-      for (int i = 0; i < _propertyValues.Count; ++i)
-        _propertyValues[i].SetValueFrom (sourceContainer._propertyValues[i]);
-    }
-
     private bool HasPropertyValueChanged ()
     {
       return _propertyValues.Cast<PropertyValue> ().Any (pv => pv.HasChanged);
