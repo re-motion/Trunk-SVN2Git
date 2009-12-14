@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -27,7 +27,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -41,24 +40,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      Guid idValue = Guid.NewGuid ();
+      Guid idValue = Guid.NewGuid();
       ReflectionBasedClassDefinition orderClass =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
 
       _newDataContainer = DataContainer.CreateNew (new ObjectID ("Order", idValue));
-      _existingDataContainer = DataContainer.CreateForExisting (new ObjectID ("Order", idValue), null, delegate (PropertyDefinition propertyDefinition) { return propertyDefinition.DefaultValue; });
+      _existingDataContainer = DataContainer.CreateForExisting (
+          new ObjectID ("Order", idValue),
+          null,
+          propertyDefinition => propertyDefinition.DefaultValue);
 
       ClientTransactionMock.SetClientTransaction (_existingDataContainer);
       ClientTransactionMock.SetClientTransaction (_newDataContainer);
 
-      _nameDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderClass, "Name", "Name", typeof (string), 100);
+      _nameDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          orderClass, "Name", "Name", typeof (string), 100);
       _nameProperty = new PropertyValue (_nameDefinition, "Arthur Dent");
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping."
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping."
         + "ReflectionBasedClassDefinition: Order' of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current"
         + " mapping.\r\nParameter name: id")]
     public void ClassDefinitionNotInMapping ()
@@ -102,8 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _newDataContainer.PropertyValues.Add (_nameProperty);
 
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (
-          _newDataContainer, false);
+      var eventReceiver = new PropertyValueContainerEventReceiver (_newDataContainer, false);
 
       _newDataContainer["Name"] = "Zaphod Beeblebrox";
 
@@ -123,8 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _newDataContainer.PropertyValues.Add (_nameProperty);
 
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (
-          _newDataContainer, true);
+      var eventReceiver = new PropertyValueContainerEventReceiver (_newDataContainer, true);
 
       try
       {
@@ -147,8 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _existingDataContainer.PropertyValues.Add (_nameProperty);
 
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (
-          _existingDataContainer, false);
+      var eventReceiver = new PropertyValueContainerEventReceiver (_existingDataContainer, false);
 
       _existingDataContainer["Name"] = "Zaphod Beeblebrox";
 
@@ -169,8 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _existingDataContainer.PropertyValues.Add (_nameProperty);
 
-      PropertyValueContainerEventReceiver eventReceiver = new PropertyValueContainerEventReceiver (
-          _existingDataContainer, true);
+      var eventReceiver = new PropertyValueContainerEventReceiver (_existingDataContainer, true);
 
       try
       {
@@ -191,18 +191,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetObjectID ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
-      ObjectID id = (ObjectID) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
+      DataContainer dataContainer = TestDataContainerFactory.CreateOrder1DataContainer();
+      var id = (ObjectID) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
       Assert.IsNotNull (id);
     }
 
     [Test]
     public void GetNullObjectID ()
     {
-      ObjectID id = new ObjectID ("Official", 1);
+      var id = new ObjectID ("Official", 1);
       DataContainer container = DataContainer.CreateNew (id);
 
-      PropertyDefinition reportsToDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition((ReflectionBasedClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof (string), true, 100);
+      PropertyDefinition reportsToDefinition =
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              (ReflectionBasedClassDefinition) container.ClassDefinition, "ReportsTo", "ReportsTo", typeof (string), true, 100);
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
 
@@ -210,18 +212,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), 
+    [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "Property 'NonExistingPropertyName' does not exist.\r\nParameter name: propertyName")]
     public void GetObjectIDForNonExistingProperty ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer();
       container.GetValue ("NonExistingPropertyName");
     }
 
     [Test]
     public void ChangePropertyBackToOriginalValue ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
+      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer();
 
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
       Assert.AreEqual (StateType.Changed, container.State);
@@ -244,185 +246,132 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetBytes ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer();
 
-      ResourceManager.IsEqualToImage1 ((byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
+      ResourceManager.IsEqualToImage1 (
+          (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
       Assert.IsNull (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
     }
 
     [Test]
     public void SetBytes ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer();
 
       dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] = new byte[0];
-      ResourceManager.IsEmptyImage ((byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
+      ResourceManager.IsEmptyImage (
+          (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
 
       dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
       Assert.IsNull (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
     }
-    
+
     [Test]
     public void SetTimestamp ()
     {
-      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      DataContainer dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer();
       dataContainer.SetTimestamp (10);
-      
+
       Assert.That (dataContainer.Timestamp, Is.EqualTo (10));
     }
-    
 
     [Test]
-    public void CloneLoadedUnchanged ()
+    public void Clone_SetsID ()
     {
-      DataContainer original = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      Assert.IsNotNull (original);
-      Assert.AreEqual (DomainObjectIDs.Order1, original.ID);
-      Assert.IsNotNull (original.ClassDefinition);
-      Assert.AreSame (ClientTransactionMock, original.ClientTransaction);
-      Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), original.DomainObject);
-      Assert.AreSame (typeof (Order), original.DomainObjectType);
-      Assert.IsFalse (original.IsDiscarded);
-      Assert.AreEqual (4, original.PropertyValues.Count);
-      Assert.IsNotNull (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Definition);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].HasChanged);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].HasBeenTouched);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].IsDiscarded);
-      Assert.AreEqual (1, original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue);
-      Assert.AreEqual (1, original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Value);
-      Assert.AreEqual (StateType.Unchanged, original.State);
-      Assert.IsNotNull (original.Timestamp);
+      var original = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
 
-      DataContainer clone = original.Clone ();
-
-      Assert.IsNotNull (clone);
-      CheckIfClientTransactionIsNull (clone);
-      SetClientTransaction (clone, original.ClientTransaction);
-
-      CheckIfDataContainersAreEqual (original, clone, true);
+      var clone = original.Clone (DomainObjectIDs.Order2);
+      Assert.That (clone.ID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
-    public void CloneLoadedChanged ()
+    public void Clone_CopiesState ()
     {
-      DataContainer original = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Value = 75;
+      var originalNew = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      Assert.That (originalNew.State, Is.EqualTo (StateType.New));
 
-      Assert.IsNotNull (original);
-      Assert.AreEqual (DomainObjectIDs.Order1, original.ID);
-      Assert.IsNotNull (original.ClassDefinition);
-      Assert.AreSame (ClientTransactionMock, original.ClientTransaction);
-      Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), original.DomainObject);
-      Assert.AreSame (typeof (Order), original.DomainObjectType);
-      Assert.IsFalse (original.IsDiscarded);
-      Assert.AreEqual (4, original.PropertyValues.Count);
-      Assert.IsNotNull (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Definition);
-      Assert.IsTrue (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].HasChanged);
-      Assert.IsTrue (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].HasBeenTouched);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].IsDiscarded);
-      Assert.AreEqual (1, original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue);
-      Assert.AreEqual (75, original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Value);
-      Assert.AreEqual (StateType.Changed, original.State);
-      Assert.IsNotNull (original.Timestamp);
+      var originalExisting = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      Assert.That (originalExisting.State, Is.EqualTo (StateType.Unchanged));
 
-      DataContainer clone = original.Clone ();
+      var clonedNew = originalNew.Clone (DomainObjectIDs.Order3);
+      Assert.That (clonedNew.State, Is.EqualTo (StateType.New));
 
-      Assert.IsNotNull (clone);
-      CheckIfClientTransactionIsNull (clone);
-      SetClientTransaction (clone, original.ClientTransaction);
-
-      CheckIfDataContainersAreEqual (original, clone, true);
+      var clonedExisting = originalExisting.Clone (DomainObjectIDs.Order4);
+      Assert.That (clonedExisting.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void CloneNew ()
+    public void Clone_CopiesTimestamp ()
     {
-      Order order = Order.NewObject ();
-      DataContainer original = order.InternalDataContainer;
+      var original = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      original.SetTimestamp (12);
 
-      Assert.IsNotNull (original);
-      Assert.AreEqual (order.ID, original.ID);
-      Assert.IsNotNull (original.ClassDefinition);
-      Assert.AreSame (ClientTransactionMock, original.ClientTransaction);
-      Assert.AreSame (order, original.DomainObject);
-      Assert.AreSame (typeof (Order), original.DomainObjectType);
-      Assert.IsFalse (original.IsDiscarded);
-      Assert.AreEqual (4, original.PropertyValues.Count);
-      Assert.IsNotNull (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Definition);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].HasChanged);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].HasBeenTouched);
-      Assert.IsFalse (original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].IsDiscarded);
-      Assert.AreEqual (0, original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue);
-      Assert.AreEqual (0, original.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].Value);
-      Assert.AreEqual (StateType.New, original.State);
-      Assert.IsNull (original.Timestamp);
-
-      DataContainer clone = original.Clone ();
-
-      Assert.IsNotNull (clone);
-      CheckIfClientTransactionIsNull (clone);
-      SetClientTransaction (clone, original.ClientTransaction);
-
-      CheckIfDataContainersAreEqual (original, clone, true);
+      var clone = original.Clone (DomainObjectIDs.Order2);
+      Assert.That (clone.Timestamp, Is.EqualTo (12));
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDiscardedException), ExpectedMessage = "Object 'Order.*' is already discarded.", MatchType = MessageMatch.Regex)]
-    public void CloneDeleted ()
+    public void Clone_CopiesPropertyValues ()
     {
-      Order order = Order.NewObject ();
-      DataContainer original = order.InternalDataContainer;
-      order.Delete ();
+      var original = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
 
-      Assert.IsTrue (original.IsDiscarded);
+      var clone = original.Clone (DomainObjectIDs.Order2);
 
-      original.Clone ();
+      Assert.That (
+          clone.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Definition).ToArray(),
+          Is.EqualTo (original.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Definition).ToArray()));
+      Assert.That (
+          clone.PropertyValues.Cast<PropertyValue>().Select (pv => pv.OriginalValue).ToArray(),
+          Is.EqualTo (original.PropertyValues.Cast<PropertyValue>().Select (pv => pv.OriginalValue).ToArray()));
+      Assert.That (
+          clone.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Value).ToArray(),
+          Is.EqualTo (original.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Value).ToArray()));
     }
 
     [Test]
-    public void CloneDataContainerWithoutClientTransaction ()
+    public void Clone_CopiesHasBeenMarkedChanged ()
     {
-      Order order = Order.NewObject ();
-      DataContainer containerWithoutClientTransaction = order.InternalDataContainer.Clone ();
-      CheckIfClientTransactionIsNull (containerWithoutClientTransaction);
+      var original = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      original.MarkAsChanged();
+      Assert.That (original.HasBeenMarkedChanged, Is.True);
 
-      DataContainer clone = containerWithoutClientTransaction.Clone ();
-
-      Assert.IsNotNull (clone);
-      CheckIfClientTransactionIsNull (clone);
-      SetClientTransaction (clone, ClientTransactionScope.CurrentTransaction);
-
-      CheckIfDataContainersAreEqual (containerWithoutClientTransaction, clone, true);
+      var clone = original.Clone (DomainObjectIDs.Order2);
+      Assert.That (clone.HasBeenMarkedChanged, Is.True);
     }
 
     [Test]
-    public void CreateAndCopyState ()
+    public void Clone_CopiesHasBeenChangedFlag ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      DataContainer original = order.InternalDataContainer;
-      ObjectID newID = new ObjectID (order.ID.ClassDefinition, Guid.NewGuid());
+      var original = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      original.PropertyValues[typeof (Order) + ".OrderNumber"].Value = 10;
+      Assert.That (original.State, Is.EqualTo (StateType.Changed));
 
-      DataContainer cloneWithDifferentID = DataContainer.CreateAndCopyState (newID, original);
-      Assert.AreNotEqual (original.ID, cloneWithDifferentID.ID);
-      Assert.AreEqual (newID, cloneWithDifferentID.ID);
-
-      CheckIfClientTransactionIsNull (cloneWithDifferentID);
-      SetClientTransaction (cloneWithDifferentID, original.ClientTransaction);
-
-      CheckIfDataContainersAreEqual (original, cloneWithDifferentID, false);
+      var clone = original.Clone (DomainObjectIDs.Order2);
+      Assert.That (clone.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The ID parameter specifies class 'Remotion.Data.DomainObjects.Mapping."
-        + "ReflectionBasedClassDefinition: Official', but the state source is of class 'Remotion.Data.DomainObjects.Mapping."
-        + "ReflectionBasedClassDefinition: Order'.\r\nParameter name: stateSource")]
-    public void CreateAndCopyStateThrowsWhenWrongClassDefinition ()
+    public void Clone_DomainObjectEmpty ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      DataContainer original = order.InternalDataContainer;
-      ObjectID newID = new ObjectID (DomainObjectIDs.Official1.ClassDefinition, Guid.NewGuid ());
-      DataContainer.CreateAndCopyState (newID, original);
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var original = order.InternalDataContainer;
+      Assert.That (original.DomainObject, Is.SameAs (order));
+
+      var clone = original.Clone (DomainObjectIDs.Order1);
+      Assert.That (PrivateInvoke.GetNonPublicField (clone, "_domainObject"), Is.Null);
     }
+
+    [Test]
+    public void Clone_TransactionEmpty ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var original = order.InternalDataContainer;
+      Assert.That (original.ClientTransaction, Is.SameAs (ClientTransactionMock));
+
+      var clone = original.Clone (DomainObjectIDs.Order1);
+      Assert.That (PrivateInvoke.GetNonPublicField (clone, "_clientTransaction"), Is.Null);
+    }
+
 
     [Test]
     public void SetPropertyValuesFrom_SetsValues ()
@@ -464,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetPropertyValuesFrom_ResetsChangedFlag_IfUnchanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      var targetDataContainer = sourceDataContainer.Clone();
+      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
       targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
@@ -477,7 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetPropertyValuesFrom_DoesntMarkAsChanged ()
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      var targetDataContainer = sourceDataContainer.Clone ();
+      var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
       sourceDataContainer.MarkAsChanged();
       Assert.That (sourceDataContainer.HasBeenMarkedChanged, Is.True);
       Assert.That (targetDataContainer.HasBeenMarkedChanged, Is.False);
@@ -488,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot set this data container's property values from 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'; the data containers do not "
         + "have the same class definition.\r\nParameter name: source")]
     public void SetPropertyValuesFrom_InvalidDefinition ()
@@ -501,7 +450,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A DataContainer cannot be discarded while it doesn't have an "
-        + "associated DomainObject.")]
+                                                                              + "associated DomainObject.")]
     public void DiscardWithoutDomainObjectThrows ()
     {
       DataContainer dataContainerWithoutDomainObject = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -513,9 +462,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetIDEvenPossibleWhenDiscarded ()
     {
-      Order order = Order.NewObject ();
+      Order order = Order.NewObject();
       DataContainer dataContainer = order.InternalDataContainer;
-      order.Delete ();
+      order.Delete();
       Assert.IsTrue (dataContainer.IsDiscarded);
       Assert.AreEqual (order.ID, dataContainer.ID);
     }
@@ -523,9 +472,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDomainObjectEvenPossibleWhenDiscarded ()
     {
-      Order order = Order.NewObject ();
+      Order order = Order.NewObject();
       DataContainer dataContainer = order.InternalDataContainer;
-      order.Delete ();
+      order.Delete();
       Assert.IsTrue (dataContainer.IsDiscarded);
       Assert.AreSame (order, dataContainer.DomainObject);
     }
@@ -535,28 +484,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       DataContainer dataContainer = order.InternalDataContainer;
-      Assert.AreEqual(StateType.Unchanged, dataContainer.State);
-      dataContainer.MarkAsChanged ();
+      Assert.AreEqual (StateType.Unchanged, dataContainer.State);
+      dataContainer.MarkAsChanged();
       Assert.AreEqual (StateType.Changed, dataContainer.State);
 
-      ClientTransactionMock.Rollback ();
+      ClientTransactionMock.Rollback();
       Assert.AreEqual (StateType.Unchanged, dataContainer.State);
 
-      SetDatabaseModifyable ();
+      SetDatabaseModifyable();
 
-      dataContainer.MarkAsChanged ();
+      dataContainer.MarkAsChanged();
       Assert.AreEqual (StateType.Changed, dataContainer.State);
-      
-      ClientTransactionMock.Commit ();
+
+      ClientTransactionMock.Commit();
       Assert.AreEqual (StateType.Unchanged, dataContainer.State);
 
-      DataContainer clone = dataContainer.Clone ();
+      DataContainer clone = dataContainer.Clone (DomainObjectIDs.Order1);
       Assert.AreEqual (StateType.Unchanged, clone.State);
 
       dataContainer.MarkAsChanged();
       Assert.AreEqual (StateType.Changed, dataContainer.State);
 
-      clone = dataContainer.Clone ();
+      clone = dataContainer.Clone (DomainObjectIDs.Order1);
       Assert.AreEqual (StateType.Changed, clone.State);
     }
 
@@ -564,9 +513,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DataContainers can be marked as changed.")]
     public void MarkAsChangedThrowsWhenNew ()
     {
-      Order order = Order.NewObject ();
+      Order order = Order.NewObject();
       DataContainer dataContainer = order.InternalDataContainer;
-      dataContainer.MarkAsChanged ();
+      dataContainer.MarkAsChanged();
     }
 
     [Test]
@@ -574,9 +523,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MarkAsChangedThrowsWhenDeleted ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      order.Delete ();
+      order.Delete();
       DataContainer dataContainer = order.InternalDataContainer;
-      dataContainer.MarkAsChanged ();
+      dataContainer.MarkAsChanged();
     }
 
     [Test]
@@ -591,13 +540,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateNew_DoesNotIncludesStorageClassNoneProperties ()
     {
       DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName("None")), Is.False);
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("None")), Is.False);
     }
 
     [Test]
     public void CreateNew_IncludesStorageClassPersistentProperties ()
     {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
       Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].Value, Is.EqualTo (0));
       Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].OriginalValue, Is.EqualTo (0));
@@ -606,7 +555,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateNew_IncludesStorageClassTransactionProperties ()
     {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
       Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (0));
       Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (0));
@@ -615,10 +564,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateNew_HasSamePropertyOrderAsClassDefinition ()
     {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
 
       int index = 0;
-      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions ())
+      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions())
       {
         if (propertyDefinition.StorageClass != StorageClass.None)
         {
@@ -631,7 +580,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateForExisting_DoesNotIncludesStorageClassNoneProperties ()
     {
-      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1,
+      DataContainer dc = DataContainer.CreateForExisting (
+          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          1,
           delegate { return 2; });
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("None")), Is.False);
     }
@@ -639,7 +590,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateForExisting_IncludesStorageClassPersistentProperties_WithPersistentValue ()
     {
-      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1, 
+      DataContainer dc = DataContainer.CreateForExisting (
+          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          1,
           delegate { return 2; });
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
       Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].Value, Is.EqualTo (2));
@@ -649,7 +602,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateForExisting_IncludesStorageClassTransactionProperties ()
     {
-      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1,
+      DataContainer dc = DataContainer.CreateForExisting (
+          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          1,
           delegate { return 2; });
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
       Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (0));
@@ -659,11 +614,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateExisting_HasSamePropertyOrderAsClassDefinition ()
     {
-      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1,
+      DataContainer dc = DataContainer.CreateForExisting (
+          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          1,
           delegate { return 2; });
 
       int index = 0;
-      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions ())
+      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions())
       {
         if (propertyDefinition.StorageClass != StorageClass.None)
         {
@@ -693,8 +650,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given DomainObject has another ID than this DataContainer.\r\n" 
-        + "Parameter name: domainObject")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given DomainObject has another ID than this DataContainer.\r\n"
+                                                                      + "Parameter name: domainObject")]
     public void SetDomainObject_InvalidID ()
     {
       var domainObject = Order.GetObject (DomainObjectIDs.Order2);
@@ -737,7 +694,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID], Is.Null);
-      
+
       dc.RegisterNewDataContainer (ClientTransactionMock);
 
       Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
@@ -748,8 +705,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =  "This DataContainer has already been registered with a ClientTransaction.")]
-    public void RegisterNewDataContainer_Twice()
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "This DataContainer has already been registered with a ClientTransaction.")]
+    public void RegisterNewDataContainer_Twice ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.RegisterNewDataContainer (ClientTransactionMock);
@@ -779,7 +737,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has already been registered with a ClientTransaction.")]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "This DataContainer has already been registered with a ClientTransaction.")]
     public void RegisterLoadedDataContainer_Twice ()
     {
       var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
@@ -796,8 +755,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyChangingCalled = false;
       var propertyChangedCalled = false;
 
-      dc.PropertyChanging += delegate { propertyChangingCalled = true;  Assert.That (dc.State, Is.EqualTo (StateType.Unchanged)); };
-      dc.PropertyChanged += delegate { propertyChangedCalled = true; Assert.That (dc.State, Is.EqualTo (StateType.Changed)); };
+      dc.PropertyChanging += delegate
+      {
+        propertyChangingCalled = true;
+        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+      };
+      dc.PropertyChanged += delegate
+      {
+        propertyChangedCalled = true;
+        Assert.That (dc.State, Is.EqualTo (StateType.Changed));
+      };
 
       dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
 
@@ -816,9 +783,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyChangedCalled = false;
 
       // It is documented that the DataContainer's state has not been updated in PropertyValueCollection.PropertyChanged:
-      
-      dc.PropertyValues.PropertyChanging += delegate { propertyChangingCalled = true; Assert.That (dc.State, Is.EqualTo (StateType.Unchanged)); };
-      dc.PropertyValues.PropertyChanged += delegate { propertyChangedCalled = true; Assert.That (dc.State, Is.EqualTo (StateType.Unchanged)); };
+
+      dc.PropertyValues.PropertyChanging += delegate
+      {
+        propertyChangingCalled = true;
+        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+      };
+      dc.PropertyValues.PropertyChanged += delegate
+      {
+        propertyChangedCalled = true;
+        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+      };
 
       dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
 
@@ -830,46 +805,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
-    }
-
-    private void CheckIfDataContainersAreEqual (DataContainer expected, DataContainer actual, bool checkID)
-    {
-      ArgumentUtility.CheckNotNull ("expected", expected);
-      ArgumentUtility.CheckNotNull ("actual", actual);
-
-      Assert.AreNotSame (expected, actual);
-
-      if (checkID)
-        Assert.AreEqual (expected.ID, actual.ID);
-
-      Assert.AreSame (expected.ClassDefinition, actual.ClassDefinition);
-      Assert.AreSame (expected.DomainObject, actual.DomainObject);
-      Assert.AreSame (expected.DomainObjectType, actual.DomainObjectType);
-      Assert.AreEqual (expected.IsDiscarded, actual.IsDiscarded);
-      Assert.AreEqual (expected.PropertyValues.Count, actual.PropertyValues.Count);
-
-      for (int i = 0; i < actual.PropertyValues.Count; ++i)
-      {
-        Assert.AreSame (expected.PropertyValues[i].Definition, actual.PropertyValues[i].Definition);
-        Assert.AreEqual (expected.PropertyValues[i].HasChanged, actual.PropertyValues[i].HasChanged);
-        Assert.AreEqual (expected.PropertyValues[i].HasBeenTouched, actual.PropertyValues[i].HasBeenTouched);
-        Assert.AreEqual (expected.PropertyValues[i].IsDiscarded, actual.PropertyValues[i].IsDiscarded);
-        Assert.AreEqual (expected.PropertyValues[i].OriginalValue, actual.PropertyValues[i].OriginalValue);
-        Assert.AreEqual (expected.PropertyValues[i].Value, actual.PropertyValues[i].Value);
-      }
-
-      Assert.AreEqual (expected.State, actual.State);
-      Assert.AreSame (expected.Timestamp, actual.Timestamp);
-    }
-
-    private void CheckIfClientTransactionIsNull (DataContainer dataContainer)
-    {
-      Assert.IsNull (PrivateInvoke.GetNonPublicField (dataContainer, "_clientTransaction"));
-    }
-
-    private void SetClientTransaction (DataContainer dataContainer, ClientTransaction transaction)
-    {
-      PrivateInvoke.InvokeNonPublicMethod (dataContainer, "SetClientTransaction", transaction);
     }
   }
 }

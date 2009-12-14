@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -53,11 +53,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      var newDataContainer = new DataContainer (id);
-      newDataContainer._state = DataContainerStateType.New;
-
-      InitializeDefaultPropertyValues (newDataContainer);
-      return newDataContainer;
+      var propertyValues = GetDefaultPropertyValues(id);
+      return new DataContainer (id, DataContainerStateType.New, null, propertyValues);
     }
 
     /// <summary>
@@ -78,64 +75,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      var dataContainer = new DataContainer (id, timestamp);
-      dataContainer._state = DataContainerStateType.Existing;
+      var propertyValues = from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ().Cast<PropertyDefinition>()
+                           select propertyDefinition.StorageClass == StorageClass.Persistent 
+                              ? new PropertyValue (propertyDefinition, persistentValueLookup (propertyDefinition)) 
+                              : new PropertyValue (propertyDefinition);
 
-      foreach (PropertyDefinition propertyDefinition in dataContainer.ClassDefinition.GetPropertyDefinitions ())
-      {
-        if (propertyDefinition.StorageClass == StorageClass.Persistent)
-        {
-          object value = persistentValueLookup (propertyDefinition);
-          dataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition, value));
-        }
-        else
-          dataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
-      }
-
-      return dataContainer;
+      return new DataContainer (id, DataContainerStateType.Existing, timestamp, propertyValues);
     }
 
-    private static void InitializeDefaultPropertyValues (DataContainer newDataContainer)
+    private static IEnumerable<PropertyValue> GetDefaultPropertyValues (ObjectID id)
     {
-      foreach (PropertyDefinition propertyDefinition in newDataContainer.ClassDefinition.GetPropertyDefinitions ())
-        newDataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
-    }
-
-    /// <summary>
-    /// Creates a <see cref="DataContainer"/> for the given <paramref name="id"/>, assuming the same state as another <see cref="DataContainer"/>.
-    /// </summary>
-    /// <param name="id">The <see cref="ObjectID"/> of the new <see cref="DataContainer"/>. Must not be <see langword="null"/>.</param>
-    /// <param name="stateSource">The <see cref="DataContainer"/> whose state to copy to the new container. Must not be <see langword="null"/> and must
-    /// match the <see cref="ClassDefinition"/> of <paramref name="id"/>.</param>
-    /// <returns>A <see cref="DataContainer"/> with exactly the same state as <paramref name="stateSource"/> and the given <paramref name="id"/>.</returns>
-    /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <see cref="ClassDefinition"/> specified in the given <paramref name="id"/> does not match the
-    /// <see cref="ClassDefinition"/> of <paramref name="stateSource"/>.</exception>
-    /// <remarks>
-    /// <para>
-    /// This is identical to a <see cref="Clone"/> operation on the object passed as <paramref name="stateSource"/>, but it allows the
-    /// new <see cref="DataContainer"/> to assume a different <see cref="ObjectID"/> than <paramref name="stateSource"/>. It is meant mainly for
-    /// <see cref="StorageProvider"/> implementations.
-    /// </para>
-    /// </remarks>
-    // TODO: Remove
-    public static DataContainer CreateAndCopyState (ObjectID id, DataContainer stateSource)
-    {
-      ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckNotNull ("stateSource", stateSource);
-
-      if (!id.ClassDefinition.Equals (stateSource.ClassDefinition))
-      {
-        string message = string.Format (
-            "The ID parameter specifies class '{0}', but the state source is of class '{1}'.",
-            id.ClassDefinition,
-            stateSource.ClassDefinition);
-        throw new ArgumentException (message, "stateSource");
-      }
-
-      DataContainer dataContainer = CreateNew (id);
-      dataContainer.AssumeSameState (stateSource);
-      return dataContainer;
+      return from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ().Cast<PropertyDefinition> ()
+             select new PropertyValue (propertyDefinition);
     }
 
     // member fields
@@ -164,20 +115,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // construction and disposing
 
-    private DataContainer (ObjectID id)
-        : this (id, null)
-    {
-    }
-
-    private DataContainer (ObjectID id, object timestamp)
-        : this (id, timestamp, new PropertyValueCollection())
-    {
-    }
-
-    private DataContainer (ObjectID id, object timestamp, PropertyValueCollection propertyValues)
+    private DataContainer (ObjectID id, DataContainerStateType state, object timestamp, IEnumerable<PropertyValue> propertyValues)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("propertyValues", propertyValues);
+
       if (id.ClassDefinition != MappingConfiguration.Current.ClassDefinitions.GetMandatory (id.ClassID))
       {
         string message = string.Format ("The ClassDefinition '{0}' of the ObjectID '{1}' is not part of the current mapping.", id.ClassDefinition, id);
@@ -186,8 +128,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _id = id;
       _timestamp = timestamp;
+      _state = state;
 
-      _propertyValues = propertyValues;
+      _propertyValues = new PropertyValueCollection ();
+      foreach (var propertyValue in propertyValues)
+        _propertyValues.Add (propertyValue);
+
       _propertyValues.RegisterForChangeNotification (this);
     }
 
@@ -554,7 +500,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       clientTransaction.DataManager.RegisterExistingDataContainer (this);
     }
 
-
     internal object GetFieldValue (string propertyName, ValueAccess valueAccess)
     {
       return _propertyValues[propertyName].GetFieldValue (valueAccess);
@@ -655,42 +600,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Creates a copy of this data container and its state.
     /// </summary>
     /// <returns>A copy of this data container with the same <see cref="ObjectID"/> and the same property values. The copy's
-    /// <see cref="ClientTransaction"/> member is not set, so the returned <see cref="DataContainer"/> cannot be used until it is registered with a
-    /// <see cref="ClientTransaction"/>.</returns>
-    // TODO: Remove
-    public DataContainer Clone ()
+    /// <see cref="ClientTransaction"/> and <see cref="DomainObject"/> are not set, so the returned <see cref="DataContainer"/> cannot be 
+    /// used until it is registered with a <see cref="DomainObjects.ClientTransaction"/>. Its <see cref="DomainObject"/> is set via the
+    /// <see cref="SetDomainObject"/> method.</returns>
+    public DataContainer Clone (ObjectID id)
     {
       CheckNotDiscarded();
 
-      DataContainer clone = CreateAndCopyState (_id, this);
+      var clonePropertyValues = from propertyValue in _propertyValues.Cast<PropertyValue>()
+                                select new PropertyValue (propertyValue.Definition, propertyValue.Value);
+
+      var clone = new DataContainer (id, _state, _timestamp, clonePropertyValues);
+
+      clone._hasBeenMarkedChanged = _hasBeenMarkedChanged;
+      clone._hasBeenChanged = _hasBeenChanged;
+
       Assertion.IsNull (clone._clientTransaction);
+      Assertion.IsNull (clone._domainObject);
       return clone;
-    }
-
-    private void AssumeSameState (DataContainer sourceContainer)
-    {
-      Assertion.IsTrue (sourceContainer.ClassDefinition == ClassDefinition);
-
-      _state = sourceContainer._state;
-      _timestamp = sourceContainer._timestamp;
-      _isDiscarded = sourceContainer._isDiscarded;
-      _hasBeenMarkedChanged = sourceContainer._hasBeenMarkedChanged;
-      _hasBeenChanged = sourceContainer._hasBeenChanged;
-
-      Assertion.IsTrue (
-          _domainObject == null || sourceContainer._domainObject == null || _domainObject == sourceContainer._domainObject,
-          "State should only be copied between DataContainers referring to the same DomainObjects");
-      _domainObject = sourceContainer._domainObject;
-
-      AssumeSamePropertyValues(sourceContainer);
-    }
-
-    private void AssumeSamePropertyValues (DataContainer sourceContainer)
-    {
-      _associatedRelationEndPointIDs = null; // reinitialize on next use
-
-      for (int i = 0; i < _propertyValues.Count; ++i)
-        _propertyValues[i].AssumeSameState (sourceContainer._propertyValues[i]);
     }
 
     internal void TakeOverCommittedData (DataContainer sourceContainer)
@@ -718,16 +645,25 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
 // ReSharper disable UnusedMember.Local
     private DataContainer (FlattenedDeserializationInfo info)
-        : this (info.GetValueForHandle<ObjectID> (), info.GetValue<object> (), new PropertyValueCollection())
     {
-      InitializeDefaultPropertyValues (this);
+      ArgumentUtility.CheckNotNull ("info", info);
 
+      _id = info.GetValueForHandle<ObjectID> ();
+      _timestamp = info.GetValue<object>();
       _isDiscarded = info.GetBoolValue ();
+
+      _propertyValues = new PropertyValueCollection ();
+      foreach (var propertyValue in GetDefaultPropertyValues (_id))
+        _propertyValues.Add (propertyValue);
+
       if (!_isDiscarded)
         RestorePropertyValuesFromData (info);
+      
+      _propertyValues.RegisterForChangeNotification (this);
 
       PropertyChanging += info.GetValue<PropertyChangeEventHandler>();
       PropertyChanged += info.GetValue<PropertyChangeEventHandler>();
+
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       _state = info.GetValue<DataContainerStateType> ();
       _domainObject = info.GetValueForHandle<DomainObject> ();
@@ -738,7 +674,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void RestorePropertyValuesFromData (FlattenedDeserializationInfo info)
     {
-      // TODO: wrap exceptions
       int numberOfProperties = _propertyValues.Count;
       for (int i = 0; i < numberOfProperties; ++i)
       {
@@ -771,5 +706,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     #endregion Serialization
+
+    #region Obsolete
+    [Obsolete ("This method is obsolete. Use Clone (ObjectID id) instead. (1.13.39)", true)]
+    public static DataContainer CreateAndCopyState (ObjectID id, DataContainer stateSource)
+    {
+      throw new NotImplementedException ();
+    }
+    #endregion
   }
 }

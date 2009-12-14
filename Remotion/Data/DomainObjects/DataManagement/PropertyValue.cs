@@ -436,15 +436,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectDiscardedException ();
     }
 
-    internal void AssumeSameState (PropertyValue source)
-    {
-      Assertion.IsTrue (_definition == source._definition);
-      _value = source._value;
-      _originalValue = source._originalValue;
-      _isDiscarded = source._isDiscarded;
-      _hasBeenTouched = source._hasBeenTouched;
-    }
-
     public void SetValueFrom (PropertyValue source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
