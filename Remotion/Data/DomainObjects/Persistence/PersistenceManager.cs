@@ -296,7 +296,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     private DataContainer GetOppositeDataContainerForEndPoint (DataContainer dataContainer, RelationEndPointID relationEndPointID)
     {
-      ObjectID oppositeID = (ObjectID) dataContainer.GetFieldValue (relationEndPointID.PropertyName, ValueAccess.Current);
+      var oppositeID = (ObjectID) dataContainer.PropertyValues[relationEndPointID.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
       if (oppositeID == null)
         return GetNullDataContainerWithRelationCheck (relationEndPointID);
 
@@ -320,7 +320,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointID relationEndPointID,
         DataContainer oppositeDataContainer)
     {
-      ObjectID objectID = (ObjectID) oppositeDataContainer.GetFieldValue (relationEndPointID.OppositeEndPointDefinition.PropertyName, ValueAccess.Current);
+      var objectID = (ObjectID) oppositeDataContainer.PropertyValues[relationEndPointID.OppositeEndPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
 
       if (relationEndPointID.ObjectID.ClassID != objectID.ClassID)
       {
@@ -339,7 +339,7 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointID relationEndPointID,
         DataContainer oppositeDataContainer)
     {
-      ObjectID id = (ObjectID) dataContainer.GetFieldValue (relationEndPointID.PropertyName, ValueAccess.Current);
+      var id = (ObjectID) dataContainer.PropertyValues[relationEndPointID.PropertyName].GetValueWithoutEvents(ValueAccess.Current);
       if (id.ClassID != oppositeDataContainer.ID.ClassID)
       {
         throw CreatePersistenceException (

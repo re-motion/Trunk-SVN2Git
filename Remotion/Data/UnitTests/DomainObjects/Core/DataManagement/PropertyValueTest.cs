@@ -20,12 +20,14 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
+using Remotion.ExtensibleEnums;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -37,16 +39,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _orderClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
+      _orderClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "Order", "Order", c_testDomainProviderID, typeof (Order), false);
       _orderNumberPropertyDefinition = CreatePropertyDefinition ("OrderNumber", typeof (int), null);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The property 'test' (declared on class 'Order') is invalid because its "
-        + "values cannot be copied. Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's "
-        + "type is 'System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]'.")]
+                                                                          +
+                                                                          "values cannot be copied. Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's "
+                                                                          +
+                                                                          "type is 'System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]'."
+        )]
     public void PropertyValue_WithReferenceType_NotAllowed ()
     {
       PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (List<object>), null);
@@ -84,13 +90,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyValue = new PropertyValue (propertyDefinition, null);
       Assert.That (propertyValue.Definition.PropertyType, Is.EqualTo (typeof (Color)));
     }
-    
+
     [Test]
     public void TestEquals ()
     {
       PropertyDefinition intDefinition = CreateIntPropertyDefinition ("test");
-      PropertyValue propertyValue1 = new PropertyValue (intDefinition, 5);
-      PropertyValue propertyValue2 = new PropertyValue (intDefinition, 5);
+      var propertyValue1 = new PropertyValue (intDefinition, 5);
+      var propertyValue2 = new PropertyValue (intDefinition, 5);
       Assert.IsTrue (propertyValue1.Equals (propertyValue2), "Initial values");
 
       propertyValue1.Value = 10;
@@ -113,27 +119,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       PropertyValue propertyValue1 = CreateIntPropertyValue ("test", 5);
       PropertyValue propertyValue2 = CreateIntPropertyValue ("test", 5);
-      Assert.IsTrue (propertyValue1.GetHashCode () == propertyValue2.GetHashCode (), "Initial values");
+      Assert.IsTrue (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "Initial values");
 
       propertyValue1.Value = 10;
-      Assert.IsFalse (propertyValue1.GetHashCode () == propertyValue2.GetHashCode (), "After changing first value.");
+      Assert.IsFalse (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "After changing first value.");
 
       propertyValue1.Value = 5;
-      Assert.IsTrue (propertyValue1.GetHashCode () == propertyValue2.GetHashCode (), "After changing first value back to initial value.");
+      Assert.IsTrue (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "After changing first value back to initial value.");
 
       propertyValue1.Value = 10;
       propertyValue2.Value = 10;
-      Assert.IsTrue (propertyValue1.GetHashCode () == propertyValue2.GetHashCode (), "After changing both values.");
+      Assert.IsTrue (propertyValue1.GetHashCode() == propertyValue2.GetHashCode(), "After changing both values.");
 
       PropertyValue propertyValue3 = CreateIntPropertyValue ("test", 10);
-      Assert.IsFalse (propertyValue1.GetHashCode () == propertyValue3.GetHashCode (), "Different original values.");
+      Assert.IsFalse (propertyValue1.GetHashCode() == propertyValue3.GetHashCode(), "Different original values.");
     }
 
     [Test]
     public void IsRelationProperty_False ()
     {
       PropertyDefinition intDefinition = CreateIntPropertyDefinition ("test");
-      PropertyValue propertyValue1 = new PropertyValue (intDefinition, 5);
+      var propertyValue1 = new PropertyValue (intDefinition, 5);
       Assert.IsFalse (propertyValue1.IsRelationProperty);
     }
 
@@ -141,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void IsRelationProperty_True ()
     {
       PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (ObjectID), null);
-      PropertyValue propertyValue1 = new PropertyValue (propertyDefinition, null);
+      var propertyValue1 = new PropertyValue (propertyDefinition, null);
       Assert.IsTrue (propertyValue1.IsRelationProperty);
     }
 
@@ -265,8 +271,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheck ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (string), 10);
-      PropertyValue propertyValue = new PropertyValue (definition, "12345");
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (string), 10);
+      var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
     }
 
@@ -274,7 +281,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException))]
     public void MaxLengthCheckInConstructor ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (string), 10);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (string), 10);
       new PropertyValue (definition, "12345678901");
     }
 
@@ -282,7 +290,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheckInConstructor ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (string), 10);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (string), 10);
       new PropertyValue (definition, 123);
     }
 
@@ -290,8 +299,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheck ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (string), 10);
-      PropertyValue propertyValue = new PropertyValue (definition, "123");
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (string), 10);
+      var propertyValue = new PropertyValue (definition, "123");
       propertyValue.Value = 123;
     }
 
@@ -299,8 +309,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableStringToNull ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (string), false, 10);
-      PropertyValue propertyValue = new PropertyValue (definition, string.Empty);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (string), false, 10);
+      var propertyValue = new PropertyValue (definition, string.Empty);
 
       propertyValue.Value = null;
     }
@@ -308,20 +319,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetNullableBinary ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (byte[]), true);
-      PropertyValue propertyValue = new PropertyValue (definition, null);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (byte[]), true);
+      var propertyValue = new PropertyValue (definition, null);
       Assert.IsNull (propertyValue.Value);
     }
 
     [Test]
     public void SetNotNullableBinary ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (byte[]), false);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (byte[]), false);
 
-      PropertyValue propertyValue = new PropertyValue (definition, new byte[0]);
+      var propertyValue = new PropertyValue (definition, new byte[0]);
       ResourceManager.IsEmptyImage ((byte[]) propertyValue.Value);
 
-      propertyValue.Value = ResourceManager.GetImage1 ();
+      propertyValue.Value = ResourceManager.GetImage1();
       ResourceManager.IsEqualToImage1 ((byte[]) propertyValue.Value);
     }
 
@@ -329,7 +342,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidTypeException))]
     public void SetBinaryWithInvalidType ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (byte[]), false);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (byte[]), false);
       new PropertyValue (definition, new int[0]);
     }
 
@@ -337,7 +351,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableBinaryToNullViaConstructor ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (byte[]), false);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (byte[]), false);
       new PropertyValue (definition, null);
     }
 
@@ -345,8 +360,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableBinaryToNullViaProperty ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (byte[]), false);
-      PropertyValue propertyValue = new PropertyValue (definition, ResourceManager.GetImage1 ());
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (byte[]), false);
+      var propertyValue = new PropertyValue (definition, ResourceManager.GetImage1());
       propertyValue.Value = null;
     }
 
@@ -354,10 +370,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNullableExtensibleEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          _orderClassDefinition, 
-          "test", 
-          "test", 
-          typeof (Color), 
+          _orderClassDefinition,
+          "test",
+          "test",
+          typeof (Color),
           true);
 
       var propertyValue = new PropertyValue (definition, null);
@@ -368,14 +384,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableExtensibleEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          _orderClassDefinition, 
-          "test", 
-          "test", 
-          typeof (Color), 
+          _orderClassDefinition,
+          "test",
+          "test",
+          typeof (Color),
           false);
 
-      var propertyValue = new PropertyValue (definition, Color.Values.Red());
-      Assert.AreEqual (Color.Values.Red (), propertyValue.Value);
+      var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
+      Assert.AreEqual (ExtensibleEnum<Color>.Values.Red(), propertyValue.Value);
     }
 
     [Test]
@@ -383,10 +399,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetExtensibleEnumWithInvalidType ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          _orderClassDefinition, 
-          "test", 
-          "test", 
-          typeof (Color), 
+          _orderClassDefinition,
+          "test",
+          "test",
+          typeof (Color),
           false);
       new PropertyValue (definition, 12);
     }
@@ -396,10 +412,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableExtensibleEnumToNullViaConstructor ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          _orderClassDefinition, 
-          "test", 
-          "test", 
-          typeof (Color), 
+          _orderClassDefinition,
+          "test",
+          "test",
+          typeof (Color),
           false);
       new PropertyValue (definition, null);
     }
@@ -409,12 +425,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetNotNullableExtensibleEnumToNullViaProperty ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          _orderClassDefinition, 
-          "test", 
-          "test", 
-          typeof (Color), 
+          _orderClassDefinition,
+          "test",
+          "test",
+          typeof (Color),
           false);
-      var propertyValue = new PropertyValue (definition, Color.Values.Red());
+      var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
       propertyValue.Value = null;
     }
 
@@ -422,9 +438,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ValueTooLongException), ExpectedMessage = "Value for property 'test' is too large. Maximum size: 1000000.")]
     public void SetBinaryLargerThanMaxLength ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (byte[]), true, 1000000);
-      PropertyValue propertyValue = new PropertyValue (definition, new byte[0]);
-      propertyValue.Value = ResourceManager.GetImageLarger1MB ();
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (byte[]), true, 1000000);
+      var propertyValue = new PropertyValue (definition, new byte[0]);
+      propertyValue.Value = ResourceManager.GetImageLarger1MB();
     }
 
     [Test]
@@ -443,16 +460,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
-        + "'System.DayOfWeek'.")]
+                                                                              + "'System.DayOfWeek'.")]
     public void EnumCheck_InvalidNonFlagsEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
-          _orderClassDefinition, 
-          "test", 
-          "test", 
+          _orderClassDefinition,
+          "test",
+          "test",
           typeof (DayOfWeek));
 
-      PropertyValue propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
+      var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
       propertyValue.Value = (DayOfWeek) 17420;
     }
 
@@ -465,14 +482,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "test",
           typeof (AttributeTargets));
 
-      PropertyValue propertyValue = new PropertyValue (definition, AttributeTargets.Method);
+      var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
       propertyValue.Value = AttributeTargets.Field | AttributeTargets.Method;
       Assert.That (propertyValue.Value, Is.EqualTo (AttributeTargets.Field | AttributeTargets.Method));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '-1' for property 'test' is not defined by enum type "
-        + "'System.AttributeTargets'.")]
+                                                                              + "'System.AttributeTargets'.")]
     public void EnumCheck_InvalidFlagsEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
@@ -503,7 +520,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
-        + "'System.DayOfWeek'.")]
+                                                                              + "'System.DayOfWeek'.")]
     public void EnumCheck_InvalidNullEnum ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
@@ -532,7 +549,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
-        + "'System.DayOfWeek'.")]
+                                                                              + "'System.DayOfWeek'.")]
     public void EnumCheckInConstructor ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
@@ -548,7 +565,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The relation property 'test' cannot be set directly.")]
     public void SetRelationPropertyDirectly ()
     {
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_orderClassDefinition, "test", "test", typeof (ObjectID), true);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, "test", "test", typeof (ObjectID), true);
       var propertyValue = new PropertyValue (definition, null);
 
       propertyValue.Value = DomainObjectIDs.Customer1;
@@ -621,7 +639,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 1);
 
-      target.Touch ();
+      target.Touch();
       Assert.That (source.HasBeenTouched, Is.False);
       Assert.That (target.HasBeenTouched, Is.True);
 
@@ -637,7 +655,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (_orderNumberPropertyDefinition, 1);
 
-      source.Touch ();
+      source.Touch();
       Assert.That (source.HasBeenTouched, Is.True);
       Assert.That (target.HasBeenTouched, Is.False);
 
@@ -678,7 +696,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot set this property's value from 'Remotion.Data.DomainObjects.Mapping.ReflectionBasedPropertyDefinition: OrderNumber'; the properties "
         + "do not have the same property definition.\r\nParameter name: source")]
     public void SetValueFrom_InvalidDefinition ()
@@ -694,8 +712,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void BinaryDataBug ()
     {
       PropertyDefinition definition = CreatePropertyDefinition ("testProperty2", typeof (byte[]), null);
-      var propertyValue = new PropertyValue (definition, new byte[] {1, 2, 3});
-      
+      var propertyValue = new PropertyValue (definition, new byte[] { 1, 2, 3 });
+
       ((byte[]) propertyValue.Value)[0] = 7;
       Assert.That (propertyValue.HasChanged, Is.True);
       Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
@@ -722,7 +740,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (propertyValue.Value, Is.EqualTo (definition.DefaultValue));
       Assert.That (propertyValue.OriginalValue, Is.EqualTo (definition.DefaultValue));
     }
-    
+
+    [Test]
+    public void GetValueWithoutEvents_Current ()
+    {
+      var propertyValue = new PropertyValue (_orderNumberPropertyDefinition, 11);
+
+      propertyValue.Value = 10;
+      Assert.That (propertyValue.GetValueWithoutEvents (ValueAccess.Current), Is.EqualTo (10));
+    }
+
+    [Test]
+    public void GetValueWithoutEvents_Original ()
+    {
+      var propertyValue = new PropertyValue (_orderNumberPropertyDefinition, 11);
+
+      propertyValue.Value = 10;
+      Assert.That (propertyValue.GetValueWithoutEvents (ValueAccess.Original), Is.EqualTo (11));
+    }
+
+    [Test]
+    public void GetValueWithoutEvents_NoEvents ()
+    {
+      var clientTransactionMock = new ClientTransactionMock();
+      using (clientTransactionMock.EnterDiscardingScope())
+      {
+        PropertyValue propertyValue = Order.NewObject().InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+
+        var listenerMock = new MockRepository().StrictMock<IClientTransactionListener>();
+        clientTransactionMock.AddListener (listenerMock);
+        listenerMock.Replay();
+
+        Dev.Null = propertyValue.GetValueWithoutEvents (ValueAccess.Current);
+
+        listenerMock.AssertWasNotCalled (
+            mock => mock.PropertyValueReading (
+                        Arg<DataContainer>.Is.Anything,
+                        Arg<PropertyValue>.Is.Anything,
+                        Arg<ValueAccess>.Is.Anything));
+        listenerMock.AssertWasNotCalled (
+            mock => mock.PropertyValueRead (
+                        Arg<DataContainer>.Is.Anything,
+                        Arg<PropertyValue>.Is.Anything,
+                        Arg<object>.Is.Anything,
+                        Arg<ValueAccess>.Is.Anything));
+      }
+    }
+
     private PropertyValue CreateIntPropertyValue (string name, int intValue)
     {
       return CreatePropertyValue (name, typeof (int), null, intValue);
@@ -748,7 +812,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       int? maxLength = (propertyType == typeof (string)) ? (int?) 100 : null;
 
-      return ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_orderClassDefinition, name, name, propertyType, isNullable, maxLength, StorageClass.Persistent);
+      return ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _orderClassDefinition, name, name, propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
 
     private PropertyValue CreatePropertyValue (string name, Type propertyType, bool? isNullable, object value)

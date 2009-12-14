@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
       ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
 
-      return dataContainer.GetFieldValue (propertyName, valueAccess);
+      return dataContainer.PropertyValues[propertyName].GetValueWithoutEvents (valueAccess);
     }
 
     protected bool IsDisposed

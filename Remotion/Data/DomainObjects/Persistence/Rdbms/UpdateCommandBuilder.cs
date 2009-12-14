@@ -114,9 +114,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       ClassDefinition relatedClassDefinition;
       object relatedIDValue;
-      if (propertyValue.GetFieldValue (ValueAccess.Current) != null)
+      if (propertyValue.GetValueWithoutEvents (ValueAccess.Current) != null)
       {
-        var relatedID = (ObjectID) propertyValue.GetFieldValue (ValueAccess.Current);
+        var relatedID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current);
         relatedClassDefinition = relatedID.ClassDefinition;
         relatedIDValue = GetObjectIDValueForParameter (relatedID);
       }
@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         AppendColumn (updateSetBuilder, classIDColumnName, classIDColumnName);
 
         string classID = null;
-        if (propertyValue.GetFieldValue (ValueAccess.Current) != null)
+        if (propertyValue.GetValueWithoutEvents (ValueAccess.Current) != null)
           classID = relatedClassDefinition.ID;
 
         AddCommandParameter (command, classIDColumnName, classID);

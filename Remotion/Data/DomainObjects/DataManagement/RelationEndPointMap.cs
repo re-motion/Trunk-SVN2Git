@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var realObjectEndPoints = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions()
                                 where !endPointDefinition.IsVirtual
-                                let oppositeObjectID = (ObjectID) dataContainer.GetFieldValue (endPointDefinition.PropertyName, ValueAccess.Current)
+                                let oppositeObjectID = (ObjectID) dataContainer.PropertyValues[endPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current)
                                 select new ObjectEndPoint (dataContainer.ClientTransaction, dataContainer.ID, endPointDefinition, oppositeObjectID);
       
       foreach (var realObjectEndPoint in realObjectEndPoints)

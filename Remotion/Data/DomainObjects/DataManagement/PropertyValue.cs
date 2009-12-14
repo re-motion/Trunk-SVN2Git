@@ -272,8 +272,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _isDiscarded; }
     }
 
-    internal object GetFieldValue (ValueAccess valueAccess)
+    public object GetValueWithoutEvents (ValueAccess valueAccess)
     {
+      CheckNotDiscarded ();
+
       if (valueAccess == ValueAccess.Current)
         return _value;
       else

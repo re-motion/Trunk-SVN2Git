@@ -500,11 +500,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       clientTransaction.DataManager.RegisterExistingDataContainer (this);
     }
 
-    internal object GetFieldValue (string propertyName, ValueAccess valueAccess)
-    {
-      return _propertyValues[propertyName].GetFieldValue (valueAccess);
-    }
-
     internal void PropertyValueChanging (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
     {
       if (_state == DataContainerStateType.Deleted)
