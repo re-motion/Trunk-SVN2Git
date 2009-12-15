@@ -121,10 +121,10 @@ namespace Remotion.Data.DomainObjects.Queries
           + "has {5} related objects.",
           fetchQuery.ID,
           fetchQuery.Statement,
-          relationEndPointID.PropertyName,
+          relationEndPointID.Definition.PropertyName,
           relatedObjects.Count(),
           relationEndPointID.ObjectID,
-          ((CollectionEndPoint) _relationEndPointMap[relationEndPointID]).OppositeDomainObjects.Count);
+          ((ICollectionEndPoint) _relationEndPointMap[relationEndPointID]).OppositeDomainObjects.Count);
     }
 
     private void LogNullRelatedObject (IQuery fetchQuery, IRelationEndPointDefinition relationEndPointDefinition)

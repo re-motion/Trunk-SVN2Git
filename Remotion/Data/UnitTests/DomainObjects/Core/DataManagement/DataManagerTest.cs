@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer orderTicket2 = CreateOrderTicket2DataContainer();
       DataContainer orderWithoutOrderItemDataContainer = CreateOrderWithoutOrderItemDataContainer ();
 
-      RelationEndPointID order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectAndNotify (orderTicket2.DomainObject);
 
       _dataManager.Commit ();

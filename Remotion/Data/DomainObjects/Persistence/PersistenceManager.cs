@@ -213,27 +213,26 @@ namespace Remotion.Data.DomainObjects.Persistence
       CheckDisposed ();
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      if (!relationEndPointID.IsVirtual)
+      if (!relationEndPointID.Definition.IsVirtual)
       {
         throw CreatePersistenceException (
             "A DataContainerCollection cannot be loaded for a relation with a non-virtual end point,"
             + " relation: '{0}', property: '{1}'. Check your mapping configuration.",
-            relationEndPointID.RelationDefinition.ID, relationEndPointID.PropertyName);
+            relationEndPointID.Definition.RelationDefinition.ID, relationEndPointID.Definition.PropertyName);
       }
 
       if (relationEndPointID.Definition.Cardinality == CardinalityType.One)
       {
         throw CreatePersistenceException (
             "Cannot load multiple related data containers for one-to-one relation '{0}'.",
-            relationEndPointID.RelationDefinition.ID);
+            relationEndPointID.Definition.RelationDefinition.ID);
       }
 
-      IRelationEndPointDefinition oppositeEndPointDefinition = relationEndPointID.OppositeEndPointDefinition;
+      var oppositeEndPointDefinition = relationEndPointID.Definition.GetOppositeEndPointDefinition();
 
-      StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (
-          oppositeEndPointDefinition.ClassDefinition.StorageProviderID);
+      var oppositeProvider = _storageProviderManager.GetMandatory (oppositeEndPointDefinition.ClassDefinition.StorageProviderID);
 
-      DataContainerCollection oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
+      var oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
           oppositeEndPointDefinition.ClassDefinition,
           oppositeEndPointDefinition.PropertyName,
           relationEndPointID.ObjectID);
@@ -242,7 +241,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       {
         throw CreatePersistenceException (
             "Collection for mandatory relation '{0}' (property: '{1}', object: '{2}') contains no items.",
-            relationEndPointID.RelationDefinition.ID, relationEndPointID.PropertyName, relationEndPointID.ObjectID);
+            relationEndPointID.Definition.RelationDefinition.ID, relationEndPointID.Definition.PropertyName, relationEndPointID.ObjectID);
       }
 
       foreach (DataContainer oppositeDataContainer in oppositeDataContainers)
@@ -257,7 +256,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      if (!relationEndPointID.IsVirtual)
+      if (!relationEndPointID.Definition.IsVirtual)
         return GetOppositeDataContainerForEndPoint (dataContainer, relationEndPointID);
 
       return GetOppositeDataContainerForVirtualEndPoint (relationEndPointID);
@@ -269,22 +268,22 @@ namespace Remotion.Data.DomainObjects.Persistence
       {
         throw CreatePersistenceException (
             "Cannot load a single related data container for one-to-many relation '{0}'.",
-            relationEndPointID.RelationDefinition.ID);
+            relationEndPointID.Definition.RelationDefinition.ID);
       }
 
       StorageProvider oppositeProvider = _storageProviderManager.GetMandatory (
-          relationEndPointID.OppositeEndPointDefinition.ClassDefinition.StorageProviderID);
+          relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition.StorageProviderID);
 
       DataContainerCollection oppositeDataContainers = oppositeProvider.LoadDataContainersByRelatedID (
-          relationEndPointID.OppositeEndPointDefinition.ClassDefinition,
-          relationEndPointID.OppositeEndPointDefinition.PropertyName,
+          relationEndPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition,
+          relationEndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName,
           relationEndPointID.ObjectID);
 
       if (oppositeDataContainers.Count > 1)
       {
         throw CreatePersistenceException (
             "Multiple related DataContainers where found for property '{0}' of DataContainer '{1}'.",
-            relationEndPointID.PropertyName, relationEndPointID.ObjectID);      
+            relationEndPointID.Definition.PropertyName, relationEndPointID.ObjectID);      
       }
 
       if (oppositeDataContainers.Count == 0)
@@ -296,7 +295,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
     private DataContainer GetOppositeDataContainerForEndPoint (DataContainer dataContainer, RelationEndPointID relationEndPointID)
     {
-      var oppositeID = (ObjectID) dataContainer.PropertyValues[relationEndPointID.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
+      var oppositeID = (ObjectID) dataContainer.PropertyValues[relationEndPointID.Definition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
       if (oppositeID == null)
         return GetNullDataContainerWithRelationCheck (relationEndPointID);
 
@@ -310,7 +309,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       {
         throw CreatePersistenceException (
             "Property '{0}' of object '{1}' refers to non-existing object '{2}'.",
-            relationEndPointID.PropertyName, relationEndPointID.ObjectID, oppositeID);
+            relationEndPointID.Definition.PropertyName, relationEndPointID.ObjectID, oppositeID);
       }
 
       return oppositeDataContainer;
@@ -320,14 +319,14 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointID relationEndPointID,
         DataContainer oppositeDataContainer)
     {
-      var objectID = (ObjectID) oppositeDataContainer.PropertyValues[relationEndPointID.OppositeEndPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current);
+      var objectID = (ObjectID) oppositeDataContainer.PropertyValues[relationEndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName].GetValueWithoutEvents (ValueAccess.Current);
 
       if (relationEndPointID.ObjectID.ClassID != objectID.ClassID)
       {
         throw CreatePersistenceException (
             "The property '{0}' of the loaded DataContainer '{1}'"
             + " refers to ClassID '{2}', but the actual ClassID is '{3}'.",
-            relationEndPointID.OppositeEndPointDefinition.PropertyName,
+            relationEndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName,
             oppositeDataContainer.ID,
             objectID.ClassID,
             relationEndPointID.ObjectID.ClassID);
@@ -339,13 +338,13 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointID relationEndPointID,
         DataContainer oppositeDataContainer)
     {
-      var id = (ObjectID) dataContainer.PropertyValues[relationEndPointID.PropertyName].GetValueWithoutEvents(ValueAccess.Current);
+      var id = (ObjectID) dataContainer.PropertyValues[relationEndPointID.Definition.PropertyName].GetValueWithoutEvents(ValueAccess.Current);
       if (id.ClassID != oppositeDataContainer.ID.ClassID)
       {
         throw CreatePersistenceException (
             "The property '{0}' of the provided DataContainer '{1}'"
             + " refers to ClassID '{2}', but the ClassID of the loaded DataContainer is '{3}'.",
-            relationEndPointID.PropertyName,
+            relationEndPointID.Definition.PropertyName,
             dataContainer.ID,
             id.ClassID,
             oppositeDataContainer.ID.ClassID);
@@ -358,7 +357,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       {
         throw CreatePersistenceException (
             "Cannot load related DataContainer of object '{0}' over mandatory relation '{1}'.",
-            relationEndPointID.ObjectID, relationEndPointID.RelationDefinition.ID);
+            relationEndPointID.ObjectID, relationEndPointID.Definition.RelationDefinition.ID);
       }
 
       return null;

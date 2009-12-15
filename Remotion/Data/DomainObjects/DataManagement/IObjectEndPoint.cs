@@ -14,26 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using System;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Represents an <see cref="IEndPoint"/> holding a collection of <see cref="DomainObject"/> instances, i.e. the "many" side of a relation.
+  /// Represents an <see cref="IEndPoint"/> holding the <see cref="ObjectID"/> of a <see cref="DomainObject"/> instance, i.e. the "one" side of a 
+  /// relation.
   /// </summary>
-  public interface ICollectionEndPoint : IEndPoint
+  public interface IObjectEndPoint : IEndPoint
   {
-    DomainObjectCollection OppositeDomainObjects { get; set; }
-    DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
-    DomainObjectCollection OriginalOppositeDomainObjectsReference { get; }
+    ObjectID OppositeObjectID { get; set; }
+    ObjectID OriginalOppositeObjectID { get; }
 
-    void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects);
+    void SetOppositeObjectAndNotify (DomainObject newRelatedObject);
 
-    IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index);
-    IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject);
-    IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject);
-
-    IDomainObjectCollectionData CreateDelegatingCollectionData ();
+    IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject);
   }
 }

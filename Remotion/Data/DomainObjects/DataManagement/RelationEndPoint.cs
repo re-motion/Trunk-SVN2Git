@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // static members and constants
 
-    public static RelationEndPoint CreateNullRelationEndPoint (IRelationEndPointDefinition definition)
+    public static IEndPoint CreateNullRelationEndPoint (IRelationEndPointDefinition definition)
     {
       if (definition.Cardinality == CardinalityType.One)
         return new NullObjectEndPoint (definition);
@@ -152,12 +152,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IRelationEndPointDefinition OppositeEndPointDefinition
     {
-      get { return _definition.ClassDefinition.GetMandatoryOppositeEndPointDefinition (PropertyName); }
+      get { return _definition.GetOppositeEndPointDefinition(); }
     }
 
     public RelationDefinition RelationDefinition
     {
-      get { return _definition.ClassDefinition.GetMandatoryRelationDefinition (PropertyName); }
+      get { return _definition.RelationDefinition; }
     }
 
     public bool IsVirtual

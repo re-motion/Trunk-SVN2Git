@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
@@ -23,10 +24,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class ObjectEndPointSetUnidirectionalModification : ObjectEndPointSetModificationBase
   {
-    public ObjectEndPointSetUnidirectionalModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    public ObjectEndPointSetUnidirectionalModification (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
-      if (!modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      if (!modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {
         var message = string.Format ("EndPoint '{0}' is from a bidirectional relation - use a ObjectEndPointSetOneOneModification or ObjectEndPointSetOneManyModification instead.",
             modifiedEndPoint.Definition.PropertyName);

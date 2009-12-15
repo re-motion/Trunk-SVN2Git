@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ID ()
     {
       Assert.IsNotNull (_endPoint.ID);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _endPoint.ID.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _endPoint.ID.Definition.PropertyName);
       Assert.AreEqual (DomainObjectIDs.OrderItem1, _endPoint.ID.ObjectID);
     }
 

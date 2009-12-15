@@ -23,9 +23,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public abstract class ObjectEndPointSetModificationBase : RelationEndPointModification
   {
-    private readonly ObjectEndPoint _modifiedEndPoint;
+    private readonly IObjectEndPoint _modifiedEndPoint;
 
-    protected ObjectEndPointSetModificationBase (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    protected ObjectEndPointSetModificationBase (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
       : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
     {
       if (modifiedEndPoint.IsNull)

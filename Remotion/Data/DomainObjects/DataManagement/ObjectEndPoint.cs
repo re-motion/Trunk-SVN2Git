@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class ObjectEndPoint : RelationEndPoint
+  public class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
     // types
 
@@ -109,16 +109,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
-    public DomainObject GetOppositeObject (bool includeDeleted)
-    {
-      if (OppositeObjectID == null)
-        return null;
-      else if (includeDeleted && ClientTransaction.DataManager.IsDiscarded (OppositeObjectID))
-        return ClientTransaction.DataManager.GetDiscardedDataContainer (OppositeObjectID).DomainObject;
-      else
-        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
-    }
-
     public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
     {
       RelationEndPointValueChecker.CheckClientTransaction (
@@ -134,14 +124,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var setModification = CreateSetModification (newRelatedObject);
       var bidirectionalModification = setModification.CreateRelationModification ();
       bidirectionalModification.ExecuteAllSteps ();
-    }
-
-    public DomainObject GetOriginalOppositeObject ()
-    {
-      if (OriginalOppositeObjectID == null)
-        return null;
-
-      return ClientTransaction.GetObject (OriginalOppositeObjectID, true);
     }
 
     public override void Touch ()
@@ -185,7 +167,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      var currentRelatedObject = GetOppositeObject (true);
+      var currentRelatedObject = this.GetOppositeObject (true);
       if (removedRelatedObject != currentRelatedObject)
       {
         string removedID = removedRelatedObject.ID.ToString ();

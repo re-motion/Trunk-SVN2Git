@@ -24,17 +24,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class ObjectEndPointSetOneManyModification : ObjectEndPointSetModificationBase
   {
-    public ObjectEndPointSetOneManyModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    public ObjectEndPointSetOneManyModification (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
-      if (modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {
         var message = string.Format("EndPoint '{0}' is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalModification instead.", 
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
-      if (modifiedEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One)
+      if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().Cardinality == CardinalityType.One)
       {
         var message = string.Format ("EndPoint '{0}' is from a 1:1 relation - use a ObjectEndPointSetOneOneModification instead.",
             modifiedEndPoint.Definition.PropertyName);
@@ -63,9 +63,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      var newRelatedEndPoint = (CollectionEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
-      var oldRelatedEndPoint = (CollectionEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, newRelatedEndPoint.Definition);
+      var oppositeEndPointDefinition = ModifiedEndPoint.Definition.GetOppositeEndPointDefinition ();
+
+      var newRelatedEndPoint = GetEndPoint<ICollectionEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
+      var oldRelatedEndPoint = GetEndPoint<ICollectionEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
 
       var bidirectionalModification = new CompositeRelationModificationWithEvents (
         // => order.Customer = newCustomer

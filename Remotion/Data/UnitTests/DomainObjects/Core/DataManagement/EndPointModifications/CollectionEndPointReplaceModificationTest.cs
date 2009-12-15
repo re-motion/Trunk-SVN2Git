@@ -152,14 +152,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // DomainObject.Orders[...].Customer = null
       Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
-      Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (steps[0].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacedRelatedObject.ID));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
       Assert.That (steps[0].NewRelatedObject, Is.Null);
 
       // _replacementRelatedObject.Customer = DomainObject
       Assert.That (steps[1], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
-      Assert.That (steps[1].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (steps[1].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[1].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacementRelatedObject.ID));
       Assert.That (steps[1].OldRelatedObject, Is.SameAs (oldCustomer));
       Assert.That (steps[1].NewRelatedObject, Is.SameAs (DomainObject));
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // oldCustomer.Orders.Remove (_replacementRelatedObject)
       Assert.That (steps[3], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
-      Assert.That (steps[3].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
+      Assert.That (steps[3].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (steps[3].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
       Assert.That (steps[3].OldRelatedObject, Is.SameAs (_replacementRelatedObject));
     }

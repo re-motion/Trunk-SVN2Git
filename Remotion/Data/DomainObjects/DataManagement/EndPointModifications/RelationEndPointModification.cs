@@ -30,11 +30,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public abstract class RelationEndPointModification : IRelationEndPointModification
   {
-    private readonly RelationEndPoint _modifiedEndPoint;
+    private readonly IEndPoint _modifiedEndPoint;
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
-    protected RelationEndPointModification (RelationEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    protected RelationEndPointModification (IEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified);
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       _newRelatedObject = newRelatedObject;
     }
 
-    public RelationEndPoint ModifiedEndPoint
+    public IEndPoint ModifiedEndPoint
     {
       get { return _modifiedEndPoint; }
     }
@@ -58,18 +58,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       get { return _newRelatedObject; }
     }
 
+    /// <summary>
+    /// Performs this modification without raising any events and without performing any bidirectional modifications.
+    /// </summary>
     public abstract void Perform ();
+    
+    /// <summary>
+    /// Creates all modification steps needed to perform a bidirectional operation. One of the steps is this modification, the other 
+    /// steps are the opposite modifications on the new/old related objects.
+    /// </summary>
+    /// <remarks>
+    /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
+    /// <see cref="CreateRelationModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
+    /// </remarks>
+    public abstract CompositeRelationModification CreateRelationModification ();
 
     public virtual void Begin ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject();
-      domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.PropertyName, _oldRelatedObject, _newRelatedObject));
+      domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, _oldRelatedObject, _newRelatedObject));
     }
 
     public virtual void End ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
-      domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.PropertyName));
+      domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
     }
 
     public virtual void NotifyClientTransactionOfBegin ()
@@ -82,30 +95,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       _modifiedEndPoint.NotifyClientTransactionOfEndRelationChange ();
     }
 
-    /// <summary>
-    /// Creates all modification steps needed to perform a bidirectional operation. One of the steps is this modification, the other 
-    /// steps are the opposite modifications on the new/old related objects.
-    /// </summary>
-    /// <remarks>
-    /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
-    /// <see cref="CreateRelationModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
-    /// </remarks>
-    public abstract CompositeRelationModification CreateRelationModification ();
-
-    protected ObjectEndPoint GetOppositeEndPoint (DomainObject domainObject)
-    {
-      return (ObjectEndPoint) GetEndPoint (domainObject, ModifiedEndPoint.OppositeEndPointDefinition);
-    }
-
-    protected CollectionEndPoint GetEquivalentEndPoint (DomainObject domainObject)
-    {
-      return (CollectionEndPoint) GetEndPoint (domainObject, ModifiedEndPoint.Definition);
-    }
-
-    private RelationEndPoint GetEndPoint (DomainObject domainObject, IRelationEndPointDefinition endPointDefinition)
+    protected T GetEndPoint<T> (DomainObject domainObject, IRelationEndPointDefinition endPointDefinition) where T : IEndPoint
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      return relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPointDefinition);
+      return (T) relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPointDefinition);
     }
   }
 }

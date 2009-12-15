@@ -40,19 +40,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (endPoint.Definition.Cardinality == CardinalityType.One)
       {
-        var objectEndPoint = (ObjectEndPoint) endPoint;
+        var objectEndPoint = (IObjectEndPoint) endPoint;
 
         RelationEndPoint oppositeEndPoint = GetOppositeRelationEndPoint (relationEndPointMap, objectEndPoint);
         return oppositeEndPoint == null ? Enumerable.Empty<RelationEndPoint> () : Enumerable.Repeat (oppositeEndPoint, 1);
       }
       else
       {
-        var collectionEndPoint = (CollectionEndPoint) endPoint;
+        var collectionEndPoint = (ICollectionEndPoint) endPoint;
         return GetOppositeRelationEndPoints (relationEndPointMap, collectionEndPoint);
       }
     }
 
-    public static RelationEndPoint GetOppositeRelationEndPoint (RelationEndPointMap relationEndPointMap, ObjectEndPoint objectEndPoint)
+    public static RelationEndPoint GetOppositeRelationEndPoint (RelationEndPointMap relationEndPointMap, IObjectEndPoint objectEndPoint)
     {
       if (objectEndPoint.OppositeObjectID == null)
       {
@@ -60,15 +60,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
       else
       {
-        var oppositeEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, objectEndPoint.OppositeEndPointDefinition);
+        var oppositeEndPointID = new RelationEndPointID (objectEndPoint.OppositeObjectID, objectEndPoint.Definition.GetOppositeEndPointDefinition());
         return relationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       }
     }
 
-    public static IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (RelationEndPointMap relationEndPointMap, CollectionEndPoint collectionEndPoint)
+    public static IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (RelationEndPointMap relationEndPointMap, ICollectionEndPoint collectionEndPoint)
     {
       return from oppositeDomainObject in collectionEndPoint.OppositeDomainObjects.Cast<DomainObject> ()
-             let oppositeEndPointID = new RelationEndPointID (oppositeDomainObject.ID, collectionEndPoint.OppositeEndPointDefinition)
+             let oppositeEndPointID = new RelationEndPointID (oppositeDomainObject.ID, collectionEndPoint.Definition.GetOppositeEndPointDefinition())
              let oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID)
              select oppositeEndPoint;
     }

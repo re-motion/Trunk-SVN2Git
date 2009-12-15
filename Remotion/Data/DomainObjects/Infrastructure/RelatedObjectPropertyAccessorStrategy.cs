@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       transaction.GetObject (propertyAccessor.DomainObject.ID, true); // ensure that the object is actually loaded before accessing the end-point
 
       var endPointID = CreateRelationEndPointID (propertyAccessor);
-      var endPoint = (ObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (IObjectEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
       endPoint.SetOppositeObjectAndNotify ((DomainObject) value);
     }
 

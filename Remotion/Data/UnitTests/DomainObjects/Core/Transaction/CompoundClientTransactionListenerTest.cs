@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           typeof (IClientTransactionListener).GetMethod ("TransactionRolledBack"),
           new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
 
-      RelationEndPoint endPoint = RelationEndPoint.CreateNullRelationEndPoint (
+      var endPoint = RelationEndPoint.CreateNullRelationEndPoint (
           new RelationEndPointDefinition (order.ID.ClassDefinition, typeof(Order).FullName + ".Customer", true));
 
       CheckNotification (

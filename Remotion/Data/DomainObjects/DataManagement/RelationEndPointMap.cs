@@ -149,7 +149,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.One, "GetRelatedObject", "endPointID");
 
-      var objectEndPoint = (ObjectEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
+      var objectEndPoint = (IObjectEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
       return objectEndPoint.GetOppositeObject (includeDeleted);
     }
 
@@ -158,7 +158,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.One, "GetOriginalRelatedObject", "endPointID");
 
-      var objectEndPoint = (ObjectEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
+      var objectEndPoint = (IObjectEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
       return objectEndPoint.GetOriginalOppositeObject ();
     }
 
@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.Many, "GetRelatedObjects", "endPointID");
 
-      var collectionEndPoint = (CollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
+      var collectionEndPoint = (ICollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
       return collectionEndPoint.OppositeDomainObjects;
     }
 
@@ -176,7 +176,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       CheckCardinality (endPointID, CardinalityType.Many, "GetOriginalRelatedObjects", "endPointID");
 
-      var collectionEndPoint = (CollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
+      var collectionEndPoint = (ICollectionEndPoint) GetRelationEndPointWithLazyLoad (endPointID);
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
@@ -296,7 +296,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return loadedEndPoint;
     }
 
-    public RelationEndPoint GetRelationEndPointWithLazyLoad (DomainObject domainObject, IRelationEndPointDefinition definition)
+    public IEndPoint GetRelationEndPointWithLazyLoad (DomainObject domainObject, IRelationEndPointDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 

@@ -24,17 +24,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class ObjectEndPointSetOneOneModification : ObjectEndPointSetModificationBase
   {
-    public ObjectEndPointSetOneOneModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    public ObjectEndPointSetOneOneModification (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
-      if (modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {
         var message = string.Format ("EndPoint '{0}' is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalModification instead.",
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
-      if (modifiedEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.Many)
+      if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().Cardinality == CardinalityType.Many)
       {
         var message = string.Format ("EndPoint '{0}' is from a 1:n relation - use a ObjectEndPointSetOneManyModification instead.",
             modifiedEndPoint.Definition.PropertyName);
@@ -64,12 +64,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      var newRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
-      var oldRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, newRelatedEndPoint.Definition);
+      var modifiedEndPointDefinition = ModifiedEndPoint.Definition;
+      var oppositeEndPointDefinition = modifiedEndPointDefinition.GetOppositeEndPointDefinition ();
 
-      var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : relationEndPointMap.GetRelatedObject (newRelatedEndPoint.ID, true);
-      var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewRelatedObject, ModifiedEndPoint.Definition);
+      var newRelatedEndPoint = GetEndPoint<IObjectEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
+      var oldRelatedEndPoint = GetEndPoint<IObjectEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
+
+      var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject (true);
+      var oldRelatedEndPointOfNewRelatedEndPoint = GetEndPoint<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject, modifiedEndPointDefinition);
 
       var bidirectionalModification = new CompositeRelationModificationWithEvents (
         // => order.OrderTicket = newTicket

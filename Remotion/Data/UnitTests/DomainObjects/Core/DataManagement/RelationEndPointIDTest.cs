@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize ()
     {
-      Assert.AreEqual (_propertyName, _endPointID.PropertyName);
+      Assert.AreEqual (_propertyName, _endPointID.Definition.PropertyName);
       Assert.AreEqual (_objectID, _endPointID.ObjectID);
     }
 
@@ -138,10 +138,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreSame (existingDataContainer.ID, endPointIDs[1].ObjectID);
       Assert.AreSame (existingDataContainer.ID, endPointIDs[2].ObjectID);
       Assert.AreSame (existingDataContainer.ID, endPointIDs[3].ObjectID);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[0].PropertyName) >= 0);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[1].PropertyName) >= 0);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[2].PropertyName) >= 0);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[3].PropertyName) >= 0);
+      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[0].Definition.PropertyName) >= 0);
+      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[1].Definition.PropertyName) >= 0);
+      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[2].Definition.PropertyName) >= 0);
+      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[3].Definition.PropertyName) >= 0);
     }
 
     [Test]

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Data.DomainObjects.Mapping;
+
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
@@ -23,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class ObjectEndPointSetSameModification : ObjectEndPointSetModificationBase
   {
-    public ObjectEndPointSetSameModification (ObjectEndPoint modifiedEndPoint)
+    public ObjectEndPointSetSameModification (IObjectEndPoint modifiedEndPoint)
         : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true))
     {
     }
@@ -62,11 +64,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
+      var oppositeEndPointDefinition = ModifiedEndPoint.Definition.GetOppositeEndPointDefinition ();
+
       var bidirectionalModification = new CompositeRelationModificationWithoutEvents (this);
-      if (!ModifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      if (!oppositeEndPointDefinition.IsAnonymous)
       {
-        var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-        var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+        var oppositeEndPoint = GetEndPoint<IEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
         bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
       }
       return bidirectionalModification;

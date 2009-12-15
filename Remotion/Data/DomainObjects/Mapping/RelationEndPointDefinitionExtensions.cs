@@ -19,6 +19,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  /// <summary>
+  /// Provides extension methods for <see cref="IRelationEndPointDefinition"/>.
+  /// </summary>
   public static class RelationEndPointDefinitionExtensions
   {
     public static IRelationEndPointDefinition GetOppositeEndPointDefinition (this IRelationEndPointDefinition relationEndPointDefinition)

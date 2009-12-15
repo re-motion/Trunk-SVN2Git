@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   // TODO 1914: Extract to IDataManagementCommand, move to outer namespace
   public interface IRelationEndPointModification
   {
-    RelationEndPoint ModifiedEndPoint { get; }
+    IEndPoint ModifiedEndPoint { get; }
     DomainObject OldRelatedObject { get; }
     DomainObject NewRelatedObject { get; }
 

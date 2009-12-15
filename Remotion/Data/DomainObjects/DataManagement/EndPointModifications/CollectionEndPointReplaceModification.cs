@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
@@ -30,8 +31,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     private readonly DomainObjectCollection _modifiedCollection;
 
     public CollectionEndPointReplaceModification (
-        CollectionEndPoint modifiedEndPoint, DomainObject replacedObject, int index, DomainObject replacementObject, IDomainObjectCollectionData collectionData)
-        : base (
+        ICollectionEndPoint modifiedEndPoint, 
+        DomainObject replacedObject, 
+        int index, 
+        DomainObject replacementObject, 
+        IDomainObjectCollectionData collectionData)
+      : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             ArgumentUtility.CheckNotNull ("replacedObject", replacedObject),
             ArgumentUtility.CheckNotNull ("replacementObject", replacementObject))
@@ -88,20 +93,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-
+      var modifiedEndPointDefinition = ModifiedEndPoint.Definition;
+      var oppositeEndPointDefinition = modifiedEndPointDefinition.GetOppositeEndPointDefinition (); // Order.Customer
+      
       // the end point that will be linked to the collection end point after the operation
-      var endPointOfNewObject =
-          (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      var endPointOfNewObject = GetEndPoint<IObjectEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
       // the end point that was linked to the collection end point before the operation
-      var endPointOfOldObject =
-          (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      var endPointOfOldObject = GetEndPoint<IObjectEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
       // the object that was linked to the new related object before the operation
-      var oldRelatedObjectOfNewObject = relationEndPointMap.GetRelatedObject (endPointOfNewObject.ID, false);
+      var oldRelatedObjectOfNewObject = endPointOfNewObject.GetOppositeObject (false);
       // the end point that was linked to the new related object before the operation
-      var oldRelatedEndPointOfNewObject =
-          (CollectionEndPoint)
-          relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewObject, endPointOfNewObject.OppositeEndPointDefinition);
+      var oldRelatedEndPointOfNewObject = GetEndPoint<ICollectionEndPoint> (oldRelatedObjectOfNewObject, modifiedEndPointDefinition);
 
       return new CompositeRelationModificationWithEvents (
           // customer.Order[index].Customer = null

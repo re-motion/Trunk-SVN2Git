@@ -144,6 +144,8 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
+    <Compile Include="DataManagement\IObjectEndPoint.cs" />
+    <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
     <Compile Include="DataManagement\OppositeRelationEndPointFinder.cs" />
     <Compile Include="DataManagement\EndPointExtensions.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />

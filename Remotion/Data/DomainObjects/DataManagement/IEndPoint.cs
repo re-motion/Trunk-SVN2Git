@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -37,5 +38,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void Touch ();
     void Commit ();
     void Rollback ();
+
+    IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
+
+    void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject);
+    void NotifyClientTransactionOfEndRelationChange ();
   }
 }

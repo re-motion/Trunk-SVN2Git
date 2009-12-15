@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -27,24 +28,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class RelationEndPointMapTest : ClientTransactionBaseTest
   {
-    private RelationEndPointMap _map;
+    #region Setup/Teardown
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _map = ClientTransactionMock.DataManager.RelationEndPointMap;
     }
 
-    [Test]
-    public void DeleteNew ()
-    {
-      Order newOrder = Order.NewObject ();
-      Assert.IsTrue (_map.Count > 0);
+    #endregion
 
-      _map.PerformDelete (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
-      Assert.AreEqual (0, _map.Count);
-    }
+    private RelationEndPointMap _map;
 
     [Test]
     public void CommitForDeletedObject ()
@@ -52,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
       Assert.IsTrue (_map.Count > 0);
 
-      computer.Delete ();
+      computer.Delete();
 
-      DomainObjectCollection deletedDomainObjects = new DomainObjectCollection ();
+      var deletedDomainObjects = new DomainObjectCollection();
       deletedDomainObjects.Add (computer);
 
       _map.Commit (deletedDomainObjects);
@@ -63,10 +58,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void DeleteNew ()
+    {
+      Order newOrder = Order.NewObject();
+      Assert.IsTrue (_map.Count > 0);
+
+      _map.PerformDelete (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
+      Assert.AreEqual (0, _map.Count);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "GetOriginalRelatedObjects can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
+    public void GetOriginalRelatedObjectsWithEndPointIDOfWrongCardinality ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      _map.GetOriginalRelatedObjects (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+    }
+
+    [Test]
+    public void GetOriginalRelatedObjectsWithLazyLoad ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
+      DomainObjectCollection originalOrderItems = _map.GetOriginalRelatedObjects (endPointID);
+      DomainObjectCollection orderItems = _map.GetRelatedObjects (endPointID);
+
+      Assert.IsFalse (ReferenceEquals (originalOrderItems, orderItems));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "GetOriginalRelatedObject can only be called for end points with a cardinality of 'One'.\r\nParameter name: endPointID")]
+    public void GetOriginalRelatedObjectWithEndPointIDOfWrongCardinality ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      _map.GetOriginalRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+    }
+
+    [Test]
+    public void GetOriginalRelatedObjectWithLazyLoad ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      DomainObject originalOrderTicket = _map.GetOriginalRelatedObject (endPointID);
+      DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
+
+      Assert.IsTrue (ReferenceEquals (originalOrderTicket, orderTicket));
+    }
+
+    [Test]
     public void GetRelatedObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      RelationEndPointID endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
       Assert.IsNotNull (orderTicket);
@@ -80,9 +125,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);
 
-      location.Client.Delete ();
+      location.Client.Delete();
 
-      RelationEndPointID endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       _map.GetRelatedObject (endPointID, false);
     }
 
@@ -91,68 +136,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);
 
-      location.Client.Delete ();
+      location.Client.Delete();
 
-      RelationEndPointID endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
       Assert.IsNotNull (client);
       Assert.AreEqual (DomainObjectIDs.Client1, client.ID);
       Assert.AreEqual (StateType.Deleted, client.State);
-    }
-
-    [Test]
-    public void GetRelatedObjectWithDiscarded ()
-    {
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Client newClient = Client.NewObject ();
-      location.Client = newClient;
-      location.Client.Delete ();
-
-      RelationEndPointID endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
-      DomainObject client = _map.GetRelatedObject (endPointID, true);
-      Assert.IsNotNull (client);
-      Assert.AreSame (newClient, client);
-      Assert.IsTrue (client.IsDiscarded);
-    }
-
-    [Test]
-    public void GetOriginalRelatedObjectsWithLazyLoad ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      RelationEndPointID endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
-      DomainObjectCollection originalOrderItems = _map.GetOriginalRelatedObjects (endPointID);
-      DomainObjectCollection orderItems = _map.GetRelatedObjects (endPointID);
-
-      Assert.IsFalse (ReferenceEquals (originalOrderItems, orderItems));
-    }
-
-    [Test]
-    public void GetOriginalRelatedObjectWithLazyLoad ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      RelationEndPointID endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      DomainObject originalOrderTicket = _map.GetOriginalRelatedObject (endPointID);
-      DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
-
-      Assert.IsTrue (ReferenceEquals (originalOrderTicket, orderTicket));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "GetRelatedObject can only be called for end points with a cardinality of 'One'.\r\nParameter name: endPointID")]
-    public void GetRelatedObjectWithEndPointIDOfWrongCardinality ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "GetOriginalRelatedObject can only be called for end points with a cardinality of 'One'.\r\nParameter name: endPointID")]
-    public void GetOriginalRelatedObjectWithEndPointIDOfWrongCardinality ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetOriginalRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
     }
 
     [Test]
@@ -165,17 +155,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetRelatedObjectWithDiscarded ()
+    {
+      Location location = Location.GetObject (DomainObjectIDs.Location1);
+      Client newClient = Client.NewObject();
+      location.Client = newClient;
+      location.Client.Delete();
+
+      var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
+      DomainObject client = _map.GetRelatedObject (endPointID, true);
+      Assert.IsNotNull (client);
+      Assert.AreSame (newClient, client);
+      Assert.IsTrue (client.IsDiscarded);
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "GetOriginalRelatedObjects can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
-    public void GetOriginalRelatedObjectsWithEndPointIDOfWrongCardinality ()
+        ExpectedMessage = "GetRelatedObject can only be called for end points with a cardinality of 'One'.\r\nParameter name: endPointID")]
+    public void GetRelatedObjectWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      _map.GetOriginalRelatedObjects (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
+      _map.GetRelatedObject (new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"), false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot get a RelationEndPoint for an anonymous end point definition. "
+                                                                              +
+                                                                              "There are no end points for the non-existing side of unidirectional relations."
+        )]
+    public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
+    {
+      Client client = Client.GetObject (DomainObjectIDs.Client2);
+      IRelationEndPointDefinition parentClientEndPointDefinition =
+          client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
+      IEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+
+      Client parentClient = client.ParentClient;
+      Assert.That (parentClient, SyntaxHelper.Not.Null);
+
+      _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot lazily load the real part of a relation. RegisterExistingDataContainer or RegisterNewDataContainer must be called before any "
+        + "non-virtual end points are retrieved.")]
+    public void GetRelationEndPointWithLazyLoad_DoesNotSupportRealEndPoints_OfObjectsNotYetRegistered ()
+    {
+      IRelationEndPointDefinition locationEndPointDefinition =
+          DomainObjectIDs.Location1.ClassDefinition.GetRelationEndPointDefinition (typeof (Location) + ".Client");
+      var locationEndPointID = new RelationEndPointID (DomainObjectIDs.Location1, locationEndPointDefinition);
+      _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
     }
 
     [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException),
-       ExpectedMessage = "Cannot remove DomainObject '.*' from RelationEndPointMap, because it belongs to a different ClientTransaction.",
+        ExpectedMessage = "Cannot remove DomainObject '.*' from RelationEndPointMap, because it belongs to a different ClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void PerformDeletionWithOtherClientTransaction ()
     {
@@ -189,35 +224,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot get a RelationEndPoint for an anonymous end point definition. " 
-        + "There are no end points for the non-existing side of unidirectional relations.")]
-    public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
-    {
-      var client = Client.GetObject (DomainObjectIDs.Client2);
-      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
-      var unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
-
-      var parentClient = client.ParentClient;
-      Assert.That (parentClient, Is.Not.Null);
-
-      _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.OppositeEndPointDefinition);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "Cannot lazily load the real part of a relation. RegisterExistingDataContainer or RegisterNewDataContainer must be called before any "
-        + "non-virtual end points are retrieved.")]
-    public void GetRelationEndPointWithLazyLoad_DoesNotSupportRealEndPoints_OfObjectsNotYetRegistered ()
-    {
-      var locationEndPointDefinition = DomainObjectIDs.Location1.ClassDefinition.GetRelationEndPointDefinition (typeof (Location) + ".Client");
-      var locationEndPointID = new RelationEndPointID (DomainObjectIDs.Location1, locationEndPointDefinition);
-      _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
-    }
-
-    [Test]
     public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
       var endPoint = (CollectionEndPoint) _map[endPointID];

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
@@ -29,7 +30,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     private readonly DomainObjectCollection _modifiedCollection;
     private readonly int _index;
 
-    public CollectionEndPointRemoveModification (CollectionEndPoint modifiedEndPoint, DomainObject removedObject, IDomainObjectCollectionData collectionData)
+    public CollectionEndPointRemoveModification (
+        ICollectionEndPoint modifiedEndPoint, 
+        DomainObject removedObject, 
+        IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             ArgumentUtility.CheckNotNull ("removedObject", removedObject),
@@ -84,8 +88,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      var removedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      var oppositeEndPointDefinition = ModifiedEndPoint.Definition.GetOppositeEndPointDefinition ();
+
+      var removedEndPoint = GetEndPoint<IObjectEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
       return new CompositeRelationModificationWithEvents (removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), this);
     }
   }

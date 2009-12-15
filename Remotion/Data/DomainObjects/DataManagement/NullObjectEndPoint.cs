@@ -47,7 +47,7 @@ public class NullObjectEndPoint : ObjectEndPoint
 
   public override IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
   {
-    return new NullEndPointModification (this, GetOppositeObject(true), newRelatedObject);
+    return new NullEndPointModification (this, this.GetOppositeObject (true), newRelatedObject);
   }
 
   public override void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)

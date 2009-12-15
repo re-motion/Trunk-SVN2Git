@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class RelationEndPointTouchModification : RelationEndPointModification
   {
-    public RelationEndPointTouchModification (RelationEndPoint endPointBeingModified)
+    public RelationEndPointTouchModification (IEndPoint endPointBeingModified)
         : base (endPointBeingModified, null, null)
     {
     }

@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // _insertedRelatedObject.Customer = DomainObject (previously oldCustomer)
       Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
-      Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (steps[0].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_insertedRelatedObject.ID));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (oldCustomer));
       Assert.That (steps[0].NewRelatedObject, Is.SameAs (DomainObject));
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // oldCustomer.Orders.Remove (_insertedRelatedObject)
       Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
-      Assert.That (steps[2].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
+      Assert.That (steps[2].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
       Assert.That (steps[2].OldRelatedObject, Is.SameAs (_insertedRelatedObject));
     }

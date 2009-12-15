@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
       RelationEndPointID id = CreateRelationEndPointID (propertyAccessor);
-      var endPoint = (CollectionEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+      var endPoint = (ICollectionEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       endPoint.SetOppositeCollectionAndNotify ((DomainObjectCollection) value);
     }
 
