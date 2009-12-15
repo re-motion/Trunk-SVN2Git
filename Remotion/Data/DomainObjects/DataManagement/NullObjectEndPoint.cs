@@ -83,11 +83,6 @@ public class NullObjectEndPoint : ObjectEndPoint
     get { return false; }
   }
 
-  public override DomainObject GetDomainObject ()
-  {
-    return null;
-  }
-
   public override ObjectID ObjectID
   {
     get { return null; }

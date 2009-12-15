@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (oppositeDomainObjects.AssociatedEndPoint != null && oppositeDomainObjects.AssociatedEndPoint != this)
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
-      RelationEndPointValueChecker.CheckNotDeleted (this, GetDomainObject ());
+      RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
 
       var modification = oppositeDomainObjects.CreateAssociationModification (this);
       var bidirectionalModification = modification.CreateRelationModification ();
@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_oppositeDomainObjects.Count == 0)
       {
         throw CreateMandatoryRelationNotSetException (
-            GetDomainObject(),
+            this.GetDomainObject(),
             PropertyName,
             "Mandatory relation property '{0}' of domain object '{1}' contains no items.",
             PropertyName,
@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
-      var requiredItemType = ID.OppositeEndPointDefinition.ClassDefinition.ClassType;
+      var requiredItemType = OppositeEndPointDefinition.ClassDefinition.ClassType;
       var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataStore));
 
       return dataStrategy;

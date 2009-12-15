@@ -28,8 +28,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
     DomainObjectCollection OriginalOppositeDomainObjectsReference { get; }
 
-    void Touch ();
-    
     IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
     IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index);
     IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject);

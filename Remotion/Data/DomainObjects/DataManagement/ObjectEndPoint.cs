@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
           "Property '{1}' of DomainObject '{2}' cannot be set to DomainObject '{0}'.");
 
       RelationEndPointValueChecker.CheckNotDeleted (this, newRelatedObject);
-      RelationEndPointValueChecker.CheckNotDeleted (this, GetDomainObject ());
+      RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
 
       CheckNewRelatedObjectType (newRelatedObject);
 
@@ -173,7 +173,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_oppositeObjectID == null)
       {
         throw CreateMandatoryRelationNotSetException (
-            GetDomainObject(),
+            this.GetDomainObject(),
             PropertyName,
             "Mandatory relation property '{0}' of domain object '{1}' cannot be null.",
             PropertyName,
@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (!IsVirtual)
       {
-        var dataContainer = ClientTransaction.GetDataContainer (GetDomainObject ());
+        var dataContainer = ClientTransaction.GetDataContainer (this.GetDomainObject ());
         var foreignKeyProperty = dataContainer.PropertyValues[PropertyName];
         foreignKeyProperty.SetRelationValue (_oppositeObjectID);
       }

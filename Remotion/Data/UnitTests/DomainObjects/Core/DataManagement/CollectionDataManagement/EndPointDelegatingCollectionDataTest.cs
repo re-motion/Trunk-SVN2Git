@@ -324,7 +324,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var relationEndPointDefinition = owningOrder.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       endPointStub.Stub (mock => mock.ObjectID).Return (owningOrder.ID);
       endPointStub.Stub (mock => mock.Definition).Return (relationEndPointDefinition);
-      endPointStub.Stub (mock => mock.GetDomainObject ()).Return (owningOrder);
     }
 
     private void CheckClientTransactionDiffersException (Action<EndPointDelegatingCollectionData, DomainObject> action)

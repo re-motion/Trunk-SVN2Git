@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      Expect.Call (_endPointMock.GetDomainObject()).Return (domainObject);
+      _endPointMock.Expect (mock => mock.ObjectID).Return (domainObject.ID).Repeat.Any ();
 
       _mockRepository.ReplayAll();
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      Expect.Call (_endPointMock.GetDomainObject()).Return (domainObject);
+      _endPointMock.Expect (mock => mock.ObjectID).Return (domainObject.ID).Repeat.Any();
 
       _mockRepository.ReplayAll();
 

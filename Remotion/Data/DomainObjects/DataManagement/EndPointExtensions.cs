@@ -14,28 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Provides a common interface for objects replacing an "end point", i.e. one side of a relation between <see cref="DomainObject"/> instances.
+  /// Provides extension methods for <see cref="IEndPoint"/>.
   /// </summary>
-  public interface IEndPoint : INullObject
+  public static class EndPointExtensions
   {
-    RelationEndPointID ID { get; }
-    ClientTransaction ClientTransaction { get; }
+    public static DomainObject GetDomainObject (this IEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-    ObjectID ObjectID { get; }
-    IRelationEndPointDefinition Definition { get; }
-    RelationDefinition RelationDefinition { get; }
+      if (endPoint.ObjectID == null)
+        return null;
 
-    bool HasChanged { get; }
-    bool HasBeenTouched { get; }
+      return endPoint.ClientTransaction.GetObject (endPoint.ObjectID, true);
+    }
 
-    void Touch ();
-    void Commit ();
-    void Rollback ();
+    
   }
 }

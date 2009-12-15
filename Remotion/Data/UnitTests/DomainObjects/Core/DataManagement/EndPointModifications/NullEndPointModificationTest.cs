@@ -50,10 +50,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
 
       _oldEndPointStub = _mockRepository.Stub<IEndPoint> ();
-      _newEndPointStub = _mockRepository.Stub<IEndPoint> ();
-      _oldEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_oldRelatedObject);
-      _newEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_newRelatedObject);
+      _oldEndPointStub.Stub (stub => stub.ObjectID).Return (_oldRelatedObject.ID);
+      _oldEndPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
       _oldEndPointStub.Replay ();
+
+      _newEndPointStub = _mockRepository.Stub<IEndPoint> ();
+      _newEndPointStub.Stub (stub => stub.ObjectID).Return (_newRelatedObject.ID);
+      _newEndPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
       _newEndPointStub.Replay ();
 
       _modification = new NullEndPointModification (_endPointMock, _oldRelatedObject, _newRelatedObject);

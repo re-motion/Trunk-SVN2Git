@@ -261,6 +261,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointValueCheckerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithProtectedCtor.cs" />

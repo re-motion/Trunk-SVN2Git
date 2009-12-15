@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // member fields
 
-    private ClientTransaction _clientTransaction;
+    private readonly ClientTransaction _clientTransaction;
     private readonly IRelationEndPointDefinition _definition;
     private readonly RelationEndPointID _id;
 
@@ -127,17 +127,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      _clientTransaction.TransactionEventSink.RelationChanging (GetDomainObject(), _definition.PropertyName, oldRelatedObject, newRelatedObject);
+      _clientTransaction.TransactionEventSink.RelationChanging (this.GetDomainObject(), _definition.PropertyName, oldRelatedObject, newRelatedObject);
     }
 
     public virtual void NotifyClientTransactionOfEndRelationChange ()
     {
-      _clientTransaction.TransactionEventSink.RelationChanged (GetDomainObject(), _definition.PropertyName);
-    }
-
-    public virtual DomainObject GetDomainObject ()
-    {
-      return _clientTransaction.GetObject (ObjectID, true);
+      _clientTransaction.TransactionEventSink.RelationChanged (this.GetDomainObject(), _definition.PropertyName);
     }
 
     public virtual ObjectID ObjectID
@@ -189,24 +184,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new MandatoryRelationNotSetException (domainObject, propertyName, string.Format (formatString, args));
     }
 
-    #region INullObject Members
-
+    // TODO: Make explicit implementation
     public virtual bool IsNull
     {
       get { return false; }
     }
-
-    #endregion
 
     #region Serialization
 
     protected RelationEndPoint (FlattenedDeserializationInfo info)
     {
       _clientTransaction = info.GetValueForHandle<ClientTransaction>();
-      string classDefinitionID = info.GetValueForHandle<string>();
-      string propertyName = info.GetValueForHandle<string>();
+      
+      var classDefinitionID = info.GetValueForHandle<string>();
+      var propertyName = info.GetValueForHandle<string>();
       _definition =
           MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
+      
       _id = info.GetValue<RelationEndPointID>();
     }
 

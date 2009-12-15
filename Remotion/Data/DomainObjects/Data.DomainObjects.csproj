@@ -145,6 +145,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
     <Compile Include="DataManagement\OppositeRelationEndPointFinder.cs" />
+    <Compile Include="DataManagement\EndPointExtensions.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />
     <Compile Include="DomainObjectCollection.Transformer.cs" />
