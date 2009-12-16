@@ -66,12 +66,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ObjectID OppositeObjectID
     {
       get { return null; }
-      set { throw new InvalidOperationException ("It is not allowed to set the opposite object ID of a NullObjectEndPoint."); }
+      set { throw new InvalidOperationException ("It is not possible to set the OppositeObjectID of a NullObjectEndPoint."); }
     }
 
     public ObjectID OriginalOppositeObjectID
     {
-      get { return null; }
+      get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeObjectID from a NullObjectEndPoint."); }
     }
 
     public bool HasChanged
@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
     {
-      throw new InvalidOperationException ("It is not allowed to set the opposite object of a NullObjectEndPoint.");
+      throw new InvalidOperationException ("It is not possible to set the OppositeObjectID of a NullObjectEndPoint.");
     }
 
     public void Touch ()

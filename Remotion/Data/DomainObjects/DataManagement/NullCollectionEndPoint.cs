@@ -15,103 +15,144 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Represents a collection end point (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
+  /// Represents an <see cref="ICollectionEndPoint"/> (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
+  /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
+  /// object, this end point (or <see cref="NullObjectEndPoint"/>) is used to represent the object's part in the relation, and a 
+  /// <see cref="NullEndPointModification"/> is used to represent the modification. The end point is created by 
+  /// <see cref="RelationEndPointMap.GetRelationEndPointWithLazyLoad(Remotion.Data.DomainObjects.DomainObject,Remotion.Data.DomainObjects.Mapping.IRelationEndPointDefinition)"/> 
+  /// and is usually discarded after executing the modification.
   /// </summary>
-  public class NullCollectionEndPoint : CollectionEndPoint
+  public class NullCollectionEndPoint : ICollectionEndPoint
   {
-    // types
+    private readonly ClientTransaction _clientTransaction;
+    private readonly IRelationEndPointDefinition _definition;
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    public NullCollectionEndPoint (IRelationEndPointDefinition definition)
-        : base (definition)
+    public NullCollectionEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
+      _clientTransaction = clientTransaction;
+      _definition = definition;
     }
 
-    // methods and properties
-
-    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public RelationEndPointID ID
     {
-      return new NullEndPointModification (this, removedRelatedObject, null);
+      get { return new RelationEndPointID (null, Definition); }
     }
 
-    public override IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public ClientTransaction ClientTransaction
     {
-      return new NullEndPointModification (this, null, insertedRelatedObject);
+      get { return _clientTransaction; }
     }
 
-    public override IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    public ObjectID ObjectID
     {
-      return new NullEndPointModification (this, null, addedRelatedObject);
+      get { return null; }
     }
 
-    public override IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
-    { 
-      return new NullEndPointModification (this, null, replacementObject);
-    }
-
-    public override void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public IRelationEndPointDefinition Definition
     {
+      get { return _definition; }
     }
 
-    public override void NotifyClientTransactionOfEndRelationChange ()
+    public RelationDefinition RelationDefinition
     {
+      get { return Definition.RelationDefinition; }
     }
 
-    public override void PerformDelete ()
-    {
-      throw new InvalidOperationException ("PerformDelete cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public override void CheckMandatory ()
-    {
-      throw new InvalidOperationException ("CheckMandatory cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public override void Commit ()
-    {
-      throw new InvalidOperationException ("Commit cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public override void Rollback ()
-    {
-      throw new InvalidOperationException ("Rollback cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public override bool HasChanged
+    public bool HasChanged
     {
       get { return false; }
     }
 
-    public override ObjectID ObjectID
+    public bool HasBeenTouched
     {
-      get { return null; }
+      get { return false; }
     }
-
-    public override RelationEndPointID ID
-    {
-      get { return null; }
-    }
-
-    public override bool IsNull
+    
+    public bool IsNull
     {
       get { return true; }
     }
 
-    protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    public IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
-      throw new InvalidOperationException ("SerializeIntoFlatStructure cannot be called on a NullCollectionEndPoint.");
+      return new NullEndPointModification (this, removedRelatedObject, null);
+    }
+
+    public DomainObjectCollection OppositeDomainObjects
+    {
+      get { return new DomainObjectCollection (); }
+      set { throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint."); }
+    }
+
+    public DomainObjectCollection OriginalOppositeDomainObjectsContents
+    {
+      get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsContents from a NullCollectionEndPoint."); }
+    }
+
+    public DomainObjectCollection OriginalOppositeDomainObjectsReference
+    {
+      get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsReference from a NullCollectionEndPoint."); }
+    }
+
+    public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)
+    {
+      throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint.");
+    }
+
+    public IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    {
+      return new NullEndPointModification (this, null, insertedRelatedObject);
+    }
+
+    public IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    {
+      return new NullEndPointModification (this, null, addedRelatedObject);
+    }
+
+    public IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
+    { 
+      return new NullEndPointModification (this, null, replacementObject);
+    }
+
+    public IDomainObjectCollectionData CreateDelegatingCollectionData ()
+    {
+      throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      // do nothing
+    }
+
+    public void NotifyClientTransactionOfEndRelationChange ()
+    {
+      // do nothing
+    }
+
+    public void Touch ()
+    {
+      // do nothing
+    }
+
+    public void Commit ()
+    {
+      throw new InvalidOperationException ("Commit cannot be called on a NullCollectionEndPoint.");
+    }
+
+    public void Rollback ()
+    {
+      throw new InvalidOperationException ("Rollback cannot be called on a NullCollectionEndPoint.");
     }
   }
 }

@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (RelationEndPointID.Definition);
+      var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
       new CollectionEndPointReplaceWholeCollectionModification (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock, CollectionDataMock);
     }
 

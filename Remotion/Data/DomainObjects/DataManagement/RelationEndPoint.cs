@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (definition.Cardinality == CardinalityType.One)
         return new NullObjectEndPoint (clientTransaction, definition);
       else
-        return new NullCollectionEndPoint (definition);
+        return new NullCollectionEndPoint (clientTransaction, definition);
     }
 
     // member fields

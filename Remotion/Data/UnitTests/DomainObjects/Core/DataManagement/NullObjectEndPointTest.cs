@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -30,20 +31,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class NullObjectEndPointTest : ClientTransactionBaseTest
   {
-    private IRelationEndPointDefinition _realEndPointDefinition;
+    private IRelationEndPointDefinition _definition;
     private NullObjectEndPoint _nullEndPoint;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _realEndPointDefinition = DomainObjectIDs.OrderTicket1.ClassDefinition.GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      _nullEndPoint = new NullObjectEndPoint (ClientTransactionMock, _realEndPointDefinition);
+      _definition = DomainObjectIDs.OrderTicket1.ClassDefinition.GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+      _nullEndPoint = new NullObjectEndPoint (ClientTransactionMock, _definition);
     }
 
     [Test]
     public void Definition ()
     {
-      Assert.That (_nullEndPoint.Definition, Is.SameAs (_realEndPointDefinition));
+      Assert.That (_nullEndPoint.Definition, Is.SameAs (_definition));
     }
 
     [Test]
@@ -56,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ID ()
     {
       var id = _nullEndPoint.ID;
-      Assert.That (id.Definition, Is.SameAs (_realEndPointDefinition));
+      Assert.That (id.Definition, Is.SameAs (_definition));
       Assert.That (id.ObjectID, Is.Null);
     }
 
@@ -74,9 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void OrigionalOppositeObjectID_Get ()
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void OriginalOppositeObjectID_Get ()
     {
-      Assert.That (_nullEndPoint.OriginalOppositeObjectID, Is.Null);
+      Dev.Null = _nullEndPoint.OriginalOppositeObjectID;
     }
 
     [Test]
@@ -131,8 +133,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.OldRelatedObject, Is.Null);
       Assert.That (modification.NewRelatedObject, Is.SameAs (newRelatedObject));
     }
-
-    
 
     [Test]
     public void NotifyClientTransactionOfBeginRelationChange ()
