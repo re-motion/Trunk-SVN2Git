@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using System.Reflection;
 
@@ -183,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
-      var requiredItemType = OppositeEndPointDefinition.ClassDefinition.ClassType;
+      var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
       var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _dataStore));
 
       return dataStrategy;

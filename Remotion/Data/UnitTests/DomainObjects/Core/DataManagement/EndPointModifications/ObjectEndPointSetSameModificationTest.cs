@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var unidirectionalEndPointID = new RelationEndPointID (client.ID, parentClientEndPointDefinition);
       var unidirectionalEndPoint = 
           (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
-      Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
+      Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
       var bidirectionalModification = setSameModification.CreateRelationModification ();
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       var oppositeEndPointID = new RelationEndPointID (
           bidirectionalEndPoint.GetOppositeObject (true).ID, 
-          bidirectionalEndPoint.OppositeEndPointDefinition);
+          bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
 
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       var setSameModification = new ObjectEndPointSetSameModification (bidirectionalEndPoint);

@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var bidirectionalModification = _modification.CreateRelationModification ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
-      var relationEndPointID = new RelationEndPointID (_replacedRelatedObject.ID, CollectionEndPoint.OppositeEndPointDefinition);
+      var relationEndPointID = new RelationEndPointID (_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
       var steps = bidirectionalModification.GetModificationSteps ();

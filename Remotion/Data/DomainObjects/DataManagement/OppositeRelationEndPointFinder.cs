@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public static IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (RelationEndPointMap relationEndPointMap, RelationEndPoint endPoint)
     {
-      if (endPoint.OppositeEndPointDefinition.IsAnonymous)
+      if (endPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
         return Enumerable.Empty<RelationEndPoint> ();
 
       if (endPoint.Definition.Cardinality == CardinalityType.One)

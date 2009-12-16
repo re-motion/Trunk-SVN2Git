@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       // oldOrderTicket.Order = null;
 
       var orderOfOldOrderTicketEndPointID = 
-          new RelationEndPointID (bidirectionalEndPoint.GetOppositeObject (true).ID, bidirectionalEndPoint.OppositeEndPointDefinition);
+          new RelationEndPointID (bidirectionalEndPoint.GetOppositeObject (true).ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
       var orderOfOldOrderTicketEndPoint = 
           ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderOfOldOrderTicketEndPointID);
 
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // newOrderTicket.Order = order;
 
-      var orderOfNewOrderTicketEndPointID = new RelationEndPointID (newOrderTicket.ID, bidirectionalEndPoint.OppositeEndPointDefinition);
+      var orderOfNewOrderTicketEndPointID = new RelationEndPointID (newOrderTicket.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
       var orderOfNewOrderTicketEndPoint = 
           ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderOfNewOrderTicketEndPointID);
 

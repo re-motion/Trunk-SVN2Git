@@ -88,11 +88,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return Definition.PropertyName; }
     }
 
-    public IRelationEndPointDefinition OppositeEndPointDefinition
-    {
-      get { return Definition.GetOppositeEndPointDefinition(); }
-    }
-
     public RelationDefinition RelationDefinition
     {
       get { return Definition.RelationDefinition; }

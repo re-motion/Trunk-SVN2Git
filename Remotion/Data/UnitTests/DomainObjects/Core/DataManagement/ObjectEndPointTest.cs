@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetOppositeEndPointDefinition ()
     {
-      IRelationEndPointDefinition oppositeEndPointDefinition = _endPoint.OppositeEndPointDefinition;
+      IRelationEndPointDefinition oppositeEndPointDefinition = _endPoint.Definition.GetOppositeEndPointDefinition();
       Assert.IsNotNull (oppositeEndPointDefinition);
 
       Assert.AreSame (
@@ -486,7 +486,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var relationEndPointID = new RelationEndPointID (client.ID, parentClientEndPointDefinition);
       var unidirectionalEndPoint = 
           (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
+      Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
       var newClient = Client.NewObject ();
 
       var modification = unidirectionalEndPoint.CreateSetModification (newClient);

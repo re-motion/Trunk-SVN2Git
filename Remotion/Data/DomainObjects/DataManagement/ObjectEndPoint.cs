@@ -148,15 +148,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
     {
+      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
+
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (_oppositeObjectID == newRelatedObjectID)
         return new ObjectEndPointSetSameModification (this);
-      else if (OppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalModification (this, newRelatedObject);
-      else if (OppositeEndPointDefinition.Cardinality == CardinalityType.One)
-        return new ObjectEndPointSetOneOneModification (this, newRelatedObject);
-      else 
-        return new ObjectEndPointSetOneManyModification (this, newRelatedObject);
+      else if (oppositeEndPointDefinition.IsAnonymous)
+          return new ObjectEndPointSetUnidirectionalModification (this, newRelatedObject);
+        else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
+          return new ObjectEndPointSetOneOneModification (this, newRelatedObject);
+        else 
+          return new ObjectEndPointSetOneManyModification (this, newRelatedObject);
     }
 
     public override void PerformDelete ()
@@ -187,7 +189,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (newRelatedObject == null)
         return;
 
-      if (!OppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
+      if (!Definition.GetOppositeEndPointDefinition().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
       {
         var message = string.Format (
             "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
@@ -198,7 +200,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentTypeException (
             message, 
             "newRelatedObject", 
-            OppositeEndPointDefinition.ClassDefinition.ClassType, 
+            Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType, 
             newRelatedObject.ID.ClassDefinition.ClassType);
       }
     }

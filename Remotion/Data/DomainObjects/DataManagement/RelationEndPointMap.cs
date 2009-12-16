@@ -214,9 +214,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         Add (realObjectEndPoint);
 
-        if (realObjectEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
+        var oppositeEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition();
+        if (oppositeEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
         {
-          var oppositeEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, realObjectEndPoint.OppositeEndPointDefinition);
+          var oppositeEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeEndPointDefinition);
           var oppositeEndPoint = new ObjectEndPoint (_clientTransaction, oppositeEndPointID, realObjectEndPoint.ObjectID);
           Add (oppositeEndPoint);
         }

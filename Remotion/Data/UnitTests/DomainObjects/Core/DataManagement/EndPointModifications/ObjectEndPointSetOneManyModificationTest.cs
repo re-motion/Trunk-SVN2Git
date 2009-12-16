@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // newOrder.OrderItems.Add (orderItem);
 
-      var orderItemsOfNewOrderEndPointID = new RelationEndPointID (newOrder.ID, bidirectionalEndPoint.OppositeEndPointDefinition);
+      var orderItemsOfNewOrderEndPointID = new RelationEndPointID (newOrder.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
       var orderItemsOfNewOrderEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderItemsOfNewOrderEndPointID);
 
       Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // oldOrder.OrderItems.Remove (orderItem)
 
-      var orderItemsOfOldOrderEndPointID = new RelationEndPointID (orderItem.Order.ID, bidirectionalEndPoint.OppositeEndPointDefinition);
+      var orderItemsOfOldOrderEndPointID = new RelationEndPointID (orderItem.Order.ID, bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
       var orderItemsOfOldOrderEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderItemsOfOldOrderEndPointID);
 
       Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
