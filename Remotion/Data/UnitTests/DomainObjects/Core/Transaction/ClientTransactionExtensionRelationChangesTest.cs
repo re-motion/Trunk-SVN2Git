@@ -652,5 +652,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.VerifyAll();
     }
+
+    [Test]
+    public void ReplaceWholeCollectionInOneToManyRelation ()
+    {
+      var oldCollection = _order1.OrderItems;
+      var removedOrderItem = oldCollection[0];
+      var stayingOrderItem = oldCollection[1];
+      var addedOrderItem = OrderItem.NewObject ();
+
+      var newCollection = new ObjectList<OrderItem> { stayingOrderItem, addedOrderItem };
+
+      _mockRepository.BackToRecord (_extension);
+      var removedOrderItemEventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (removedOrderItem);
+      _mockRepository.StrictMock<DomainObjectMockEventReceiver> (stayingOrderItem);
+      var addedOrderItemEventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (addedOrderItem);
+
+      using (_mockRepository.Ordered ())
+      {
+        _extension.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, removedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null));
+        _extension.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, addedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, _order1));
+        _extension.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", removedOrderItem, null));
+        _extension.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, addedOrderItem));
+
+        removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (
+            removedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null));
+        addedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (
+            addedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, _order1));
+        _order1EventReceiver.Expect (mock => mock.RelationChanging (
+            _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", removedOrderItem, null));
+        _order1EventReceiver.Expect (mock => mock.RelationChanging (
+            _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, addedOrderItem));
+
+        _extension.Expect (mock => mock.RelationChanged (
+            ClientTransactionMock, removedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
+        _extension.Expect (mock => mock.RelationChanged (
+            ClientTransactionMock, addedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
+        _extension.Expect (mock => mock.RelationChanged (
+            ClientTransactionMock, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+
+        removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanged (
+            removedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
+        addedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanged (
+            addedOrderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"));
+        _order1EventReceiver.Expect (mock => mock.RelationChanged (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _order1.OrderItems = newCollection;
+
+      _mockRepository.VerifyAll ();
+    }
   }
 }

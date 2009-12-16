@@ -256,12 +256,17 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// This method is invoked before a relation is changed.
     /// The operation may be cancelled at this point.
+    /// This method is invoked once per involved operation and thus might be raised more often than <see cref="RelationChanged"/>. For example,
+    /// when a whole related object collection is replaced in one go, this method is invoked once for each old object that is not in the new collection
+    /// and once for each new object not in the old collection.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property is being changed.</param>
     /// <param name="propertyName">The name of the relation property.</param>
-    /// <param name="oldRelatedObject">The current related object.</param>
-    /// <param name="newRelatedObject">The new related object to be assigned.</param>
+    /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
+    /// replacing an old one.</param>
+    /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
+    /// being replaced by a new one.</param>
     /// <remarks>
     ///   <para>Use this method to cancel the operation, whereas <see cref="RelationChanged"/> should be used to perform actions on its successful execution.</para>
     ///   <para>The following table lists the values of <paramref name="oldRelatedObject"/> and <paramref name="newRelatedObject"/> for operations on 1:n relations:
@@ -282,6 +287,12 @@ namespace Remotion.Data.DomainObjects
     ///         <term>Remove</term>
     ///         <description><paramref name="oldRelatedObject"/> is not <see langword="null"/>, <paramref name="newRelatedObject"/> is <see langword="null"/>.</description>
     ///       </item>
+    ///       <item>
+    ///         <term>Replacement of whole collection</term>
+    ///         <description>For each new object, <paramref name="oldRelatedObject"/> is <see langword="null"/> and <paramref name="newRelatedObject"/> 
+    ///         is not <see langword="null"/>. For each object no longer part of the relation, <paramref name="oldRelatedObject"/> is not 
+    ///         <see langword="null"/> and <paramref name="newRelatedObject"/>  is <see langword="null"/></description>
+    ///       </item>
     ///     </list>
     ///   </para>
     ///   <para>
@@ -296,6 +307,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// This method is invoked after a relation was changed.
+    /// This method is only invoked once per relation change and thus might be invoked less often than <see cref="RelationChanging"/>.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was changed.</param>

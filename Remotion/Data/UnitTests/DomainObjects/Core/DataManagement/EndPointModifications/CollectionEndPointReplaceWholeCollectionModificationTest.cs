@@ -21,9 +21,11 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
@@ -87,17 +89,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Begin ()
     {
-      bool relationChangingCalled = false;
+      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
+      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+
+      _newCollection.Add (_order1); // same as existing
+      _newCollection.Add (_order2); // new
+
+      var relationChangingEventArgs = new List<RelationChangingEventArgs> ();
       bool relationChangedCalled = false;
 
-      DomainObject.RelationChanging += (sender, args) =>
-      {
-        relationChangingCalled = true;
+      CollectionEventReceiver.Reset();
 
-        Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
-        Assert.That (args.NewRelatedObject, Is.Null);
-        Assert.That (args.OldRelatedObject, Is.Null);
-      };
+      DomainObject.RelationChanging += (sender, args) => relationChangingEventArgs.Add (args);
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
       _modification.Begin ();
@@ -105,8 +108,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty);
       Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null);
 
-      Assert.That (relationChangingCalled, Is.True); // operation was started
+      Assert.That (relationChangingEventArgs.Count, Is.EqualTo (2)); // operation was started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
+
+      Assert.That (relationChangingEventArgs[0].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangingEventArgs[0].OldRelatedObject, Is.SameAs (_orderWithoutOrderItem));
+      Assert.That (relationChangingEventArgs[0].NewRelatedObject, Is.Null);
+
+      Assert.That (relationChangingEventArgs[1].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+      Assert.That (relationChangingEventArgs[1].OldRelatedObject, Is.Null);
+      Assert.That (relationChangingEventArgs[1].NewRelatedObject, Is.SameAs (_order2));
     }
 
     [Test]
@@ -128,6 +139,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (relationChangedCalled, Is.True); // operation was finished
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty);
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null);
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfBegin ()
+    {
+      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
+      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+      
+      _newCollection.Add (_order1); // same as existing
+      _newCollection.Add (_order2); // new
+      
+      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
+      listenerMock.Expect (mock => mock.RelationChanging (DomainObject, CollectionEndPoint.PropertyName, _orderWithoutOrderItem, null));
+      listenerMock.Expect (mock => mock.RelationChanging (DomainObject, CollectionEndPoint.PropertyName, null, _order2));
+      listenerMock.Replay ();
+
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _modification.NotifyClientTransactionOfBegin ();
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfEnd ()
+    {
+      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
+      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+
+      _newCollection.Add (_order1); // same as existing
+      _newCollection.Add (_order2); // new
+
+      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
+      listenerMock.Expect (mock => mock.RelationChanged (DomainObject, CollectionEndPoint.PropertyName));
+      listenerMock.Replay ();
+
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _modification.NotifyClientTransactionOfEnd ();
+
+      listenerMock.VerifyAllExpectations ();
     }
 
     [Test]

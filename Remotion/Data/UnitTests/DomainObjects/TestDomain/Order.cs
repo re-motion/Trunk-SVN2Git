@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     [Mandatory]
     [DBBidirectionalRelation ("Order")]
-    public abstract ObjectList<OrderItem> OrderItems { get; }
+    public virtual ObjectList<OrderItem> OrderItems { get; set; }
 
     public void PreparePropertyAccess (string propertyName)
     {

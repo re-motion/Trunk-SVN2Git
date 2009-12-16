@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 using System.Linq;
@@ -27,6 +28,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class CollectionEndPointReplaceWholeCollectionModification : RelationEndPointModification
   {
+    private readonly ICollectionEndPoint _modifiedEndPoint;
+    private readonly DomainObjectCollection _newOppositeCollection;
+
+    private readonly IDomainObjectCollectionTransformer _oldOppositeCollectionTransformer;
+    private readonly IDomainObjectCollectionTransformer _newOppositeCollectionTransformer;
+    private readonly IDomainObjectCollectionData _modifiedEndPointDataStore;
+
+    private DomainObject[] _removedObjects;
+    private DomainObject[] _addedObjects;
+
     public CollectionEndPointReplaceWholeCollectionModification (
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newOppositeCollection,
@@ -43,21 +54,82 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
 
-      ModifiedEndPoint = modifiedEndPoint;
-      NewOppositeCollection = newOppositeCollection;
-      OldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
-      NewOppositeCollectionTransformer = newOppositeCollectionTransformer;
-      ModifiedEndPointDataStore = modifiedEndPointDataStore;
+      _modifiedEndPoint = modifiedEndPoint;
+      _newOppositeCollection = newOppositeCollection;
+
+      _oldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
+      _newOppositeCollectionTransformer = newOppositeCollectionTransformer;
+      _modifiedEndPointDataStore = modifiedEndPointDataStore;
     }
 
-    public new ICollectionEndPoint ModifiedEndPoint { get; private set; }
-    public IDomainObjectCollectionData ModifiedEndPointDataStore { get; private set; }
+    public new ICollectionEndPoint ModifiedEndPoint
+    {
+      get { return _modifiedEndPoint; }
+    }
 
-    public DomainObjectCollection NewOppositeCollection { get; private set; }
+    public IDomainObjectCollectionData ModifiedEndPointDataStore
+    {
+      get { return _modifiedEndPointDataStore; }
+    }
 
-    public IDomainObjectCollectionTransformer OldOppositeCollectionTransformer { get; private set; }
-    public IDomainObjectCollectionTransformer NewOppositeCollectionTransformer { get; private set; }
-    
+    public DomainObjectCollection NewOppositeCollection
+    {
+      get { return _newOppositeCollection; }
+    }
+
+    public IDomainObjectCollectionTransformer OldOppositeCollectionTransformer
+    {
+      get { return _oldOppositeCollectionTransformer; }
+    }
+
+    public IDomainObjectCollectionTransformer NewOppositeCollectionTransformer
+    {
+      get { return _newOppositeCollectionTransformer; }
+    }
+
+    public DomainObject[] RemovedObjects
+    {
+      get
+      {
+        if (_removedObjects == null)
+        {
+          var oldOppositeObjects = ModifiedEndPoint.OppositeDomainObjects.Cast<DomainObject> ();
+          _removedObjects = oldOppositeObjects.Where (oldObject => !NewOppositeCollection.ContainsObject (oldObject)).ToArray();
+        }
+        return _removedObjects;
+      }
+    }
+
+    public DomainObject[] AddedObjects
+    {
+      get
+      {
+        if (_addedObjects == null)
+        {
+          var newOppositeObjects = NewOppositeCollection.Cast<DomainObject> ();
+          _addedObjects = newOppositeObjects.Where (newObject => !ModifiedEndPoint.OppositeDomainObjects.ContainsObject (newObject)).ToArray();
+        }
+        return _addedObjects;
+      }
+    }
+
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      foreach (var removedObject in RemovedObjects)
+        _modifiedEndPoint.NotifyClientTransactionOfBeginRelationChange (removedObject, null);
+      foreach (var addedObject in AddedObjects)
+        _modifiedEndPoint.NotifyClientTransactionOfBeginRelationChange (null, addedObject);
+    }
+
+    public override void Begin ()
+    {
+      DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
+
+      foreach (var removedObject in RemovedObjects)
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, removedObject, null));
+      foreach (var addedObject in AddedObjects)
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, null, addedObject));
+    }
 
     public override void Perform ()
     {
@@ -92,24 +164,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
 
-      var modificationsOfOldNotInNew = from oldObject in ModifiedEndPoint.OppositeDomainObjects.Cast<DomainObject> ()
-                                       where !NewOppositeCollection.ContainsObject (oldObject)
-                                       let endPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldObject)
-                                       select endPoint.CreateRemoveModification (domainObjectOfCollectionEndPoint); // oldOrder.Customer = null
+      var modificationsOfRemoved = from oldObject in RemovedObjects
+                                   let endPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldObject)
+                                   select endPoint.CreateRemoveModification (domainObjectOfCollectionEndPoint); // oldOrder.Customer = null
       
-      var modificationsOfNewNotInOld = from newObject in NewOppositeCollection.Cast<DomainObject> ()
-                                       where !ModifiedEndPoint.OppositeDomainObjects.ContainsObject (newObject)
-                                       let endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (newObject) // newOrder.Customer
-                                       let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject (false) // newOrder.Customer
-                                       let endPointOfOldRelatedOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedOfNewObject) // newOrder.Customer.Orders
-                                       let removeModification = endPointOfOldRelatedOfNewObject.CreateRemoveModification (newObject) // newOrder.Customer.Orders.Remove (newOrder)
-                                       let setModification = endPointOfNewObject.CreateSetModification (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
-                                       from modification in new[] { removeModification, setModification }
-                                       select modification;
+      var modificationsOfAdded = from newObject in AddedObjects
+                                 let endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (newObject) // newOrder.Customer
+                                 let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject (false) // newOrder.Customer
+                                 let endPointOfOldRelatedOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedOfNewObject) // newOrder.Customer.Orders
+                                 let removeModification = endPointOfOldRelatedOfNewObject.CreateRemoveModification (newObject) // newOrder.Customer.Orders.Remove (newOrder)
+                                 let setModification = endPointOfNewObject.CreateSetModification (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
+                                 from modification in new[] { removeModification, setModification }
+                                 select modification;
 
       var allModificationSteps =
-          modificationsOfOldNotInNew
-          .Concat (modificationsOfNewNotInOld)
+          modificationsOfRemoved
+          .Concat (modificationsOfAdded)
           .Concat (new IRelationEndPointModification[] { this }); // customer.Orders = newOrders
       return new CompositeRelationModificationWithEvents (allModificationSteps);
     }

@@ -54,13 +54,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       collection.Adding += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Adding);
       collection.Added += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Added);
 
-      _removingDomainObjects = new DomainObjectCollection ();
-      _removedDomainObjects = new DomainObjectCollection ();
       collection.Removing += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Removing);
       collection.Removed += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Removed);
+
+      Reset ();
     }
 
     // methods and properties
+
+    public void Reset ()
+    {
+      _addingDomainObject = null;
+      _addedDomainObject = null;
+      _hasAddingEventBeenCalled = false;
+      _hasAddedEventBeenCalled = false;
+
+      _removingDomainObjects = new DomainObjectCollection ();
+      _removedDomainObjects = new DomainObjectCollection ();
+      _hasRemovingEventBeenCalled = false;
+      _hasRemovedEventBeenCalled = false;
+    }
 
     public bool Cancel
     {
