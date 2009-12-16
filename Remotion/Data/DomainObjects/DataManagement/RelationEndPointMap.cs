@@ -310,7 +310,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (domainObject != null)
         return GetRelationEndPointWithLazyLoad (new RelationEndPointID (domainObject.ID, definition));
       else
-        return RelationEndPoint.CreateNullRelationEndPoint (definition);
+        return RelationEndPoint.CreateNullRelationEndPoint (ClientTransaction, definition);
     }
 
     private void Add (RelationEndPoint endPoint)

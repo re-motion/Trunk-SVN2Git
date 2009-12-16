@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class NullEndPointModification : RelationEndPointModification
   {
-    public NullEndPointModification (RelationEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public NullEndPointModification (IEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
         : base (affectedEndPoint, oldRelatedObject, newRelatedObject)
     {
     }

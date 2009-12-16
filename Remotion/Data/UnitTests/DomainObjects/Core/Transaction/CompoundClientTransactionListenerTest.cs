@@ -22,7 +22,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -162,8 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           typeof (IClientTransactionListener).GetMethod ("TransactionRolledBack"),
           new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
 
-      var endPoint = RelationEndPoint.CreateNullRelationEndPoint (
-          new RelationEndPointDefinition (order.ID.ClassDefinition, typeof(Order).FullName + ".Customer", true));
+      var endPoint = new ObjectEndPoint (ClientTransactionMock, order.ID, typeof(Order).FullName + ".Customer", null);
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapRegistering"),

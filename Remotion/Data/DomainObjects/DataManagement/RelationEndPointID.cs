@@ -23,29 +23,61 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public sealed class RelationEndPointID : IFlattenedSerializable
   {
-    // types
+    public static RelationEndPointID[] GetAllRelationEndPointIDs (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-    // static members and constants
+      IRelationEndPointDefinition[] endPointDefinitions = dataContainer.ClassDefinition.GetRelationEndPointDefinitions ();
 
-    // member fields
+      var relationEndPointIDs = new RelationEndPointID[endPointDefinitions.Length];
+
+      for (int i = 0; i < endPointDefinitions.Length; i++)
+        relationEndPointIDs[i] = new RelationEndPointID (dataContainer.ID, endPointDefinitions[i].PropertyName);
+
+      return relationEndPointIDs;
+    }
+
+    public static bool operator == (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
+    {
+      return Equals (endPointID1, endPointID2);
+    }
+
+    public static bool operator != (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
+    {
+      return !Equals (endPointID1, endPointID2);
+    }
+
+    public static bool Equals (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
+    {
+      if (ReferenceEquals (endPointID1, endPointID2))
+        return true;
+      if (ReferenceEquals (endPointID1, null))
+        return false;
+
+      return endPointID1.Equals (endPointID2);
+    }
+
+    private static IRelationEndPointDefinition GetRelationEndPointDefinition (ObjectID objectID, string propertyName)
+    {
+      return objectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
+    }
 
     private readonly IRelationEndPointDefinition _definition;
     private readonly ObjectID _objectID;
 
-    // construction and disposing
-
     public RelationEndPointID (ObjectID objectID, IRelationEndPointDefinition definition)
-        : this (objectID, definition.PropertyName)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
+      _objectID = objectID;
+      _definition = definition;
     }
 
     public RelationEndPointID (ObjectID objectID, string propertyName)
+        : this (
+            ArgumentUtility.CheckNotNull ("objectID", objectID),
+            GetRelationEndPointDefinition (objectID, ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName)))
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      _definition = objectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
-      _objectID = objectID;
     }
 
     public IRelationEndPointDefinition Definition
@@ -80,45 +112,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     #endregion
 
-    public static RelationEndPointID[] GetAllRelationEndPointIDs (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      IRelationEndPointDefinition[] endPointDefinitions = dataContainer.ClassDefinition.GetRelationEndPointDefinitions();
-
-      var relationEndPointIDs = new RelationEndPointID[endPointDefinitions.Length];
-
-      for (int i = 0; i < endPointDefinitions.Length; i++)
-        relationEndPointIDs[i] = new RelationEndPointID (dataContainer.ID, endPointDefinitions[i].PropertyName);
-
-      return relationEndPointIDs;
-    }
-
-    public static bool operator == (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
-    {
-      return Equals (endPointID1, endPointID2);
-    }
-
-    public static bool operator != (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
-    {
-      return !Equals (endPointID1, endPointID2);
-    }
-
-    public static bool Equals (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
-    {
-      if (ReferenceEquals (endPointID1, endPointID2))
-        return true;
-      if (ReferenceEquals (endPointID1, null))
-        return false;
-
-      return endPointID1.Equals (endPointID2);
-    }
-
-    // methods and properties
 
     public override int GetHashCode ()
     {
-      return _objectID.GetHashCode() ^ Definition.PropertyName.GetHashCode();
+      var objectIDHashCode = _objectID != null ? _objectID.GetHashCode() : 0;
+      return objectIDHashCode ^ Definition.PropertyName.GetHashCode();
     }
 
     public override bool Equals (object obj)

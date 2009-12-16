@@ -17,95 +17,121 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
-using FlattenedSerializationInfo=Remotion.Data.DomainObjects.Infrastructure.Serialization.FlattenedSerializationInfo;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Represents an object end point (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
+  /// Represents an <see cref="IObjectEndPoint"/> (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
+  /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
+  /// object, this end point (or <see cref="NullCollectionEndPoint"/>) is used to represent the object's part in the relation, and a 
+  /// <see cref="NullEndPointModification"/> is used to represent the modification. The end point is created by 
+  /// <see cref="RelationEndPointMap.GetRelationEndPointWithLazyLoad(Remotion.Data.DomainObjects.DomainObject,Remotion.Data.DomainObjects.Mapping.IRelationEndPointDefinition)"/> 
+  /// and is usually discarded after executing the modification.
   /// </summary>
-public class NullObjectEndPoint : ObjectEndPoint
-{
-  // types
-
-  // static members and constants
-
-  // member fields
-
-  // construction and disposing
-
-  public NullObjectEndPoint (IRelationEndPointDefinition definition) : base (definition)
+  public class NullObjectEndPoint : IObjectEndPoint
   {
-  }
+    private readonly ClientTransaction _clientTransaction;
+    private readonly IRelationEndPointDefinition _definition;
 
-  // methods and properties
+    public NullObjectEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("definition", definition);
 
-  public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
-  {
-    return new NullEndPointModification (this, removedRelatedObject, null);
-  }
+      _clientTransaction = clientTransaction;
+      _definition = definition;
+    }
 
-  public override IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
-  {
-    return new NullEndPointModification (this, this.GetOppositeObject (true), newRelatedObject);
-  }
+    public IRelationEndPointDefinition Definition
+    {
+      get { return _definition; }
+    }
 
-  public override void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
-  {
-  }
+    public ObjectID ObjectID
+    {
+      get { return null; }
+    }
 
-  public override void NotifyClientTransactionOfEndRelationChange ()
-  {
-  }
+    public RelationEndPointID ID
+    {
+      get { return new RelationEndPointID (null, Definition); }
+    }
 
-  public override void PerformDelete ()
-  {
-    throw new InvalidOperationException ("PerformDelete cannot be called on a NullObjectEndPoint.");    
-  }
+    public RelationDefinition RelationDefinition
+    {
+      get { return Definition.RelationDefinition; }
+    }
 
-  public override void CheckMandatory ()
-  {
-    throw new InvalidOperationException ("CheckMandatory cannot be called on a NullObjectEndPoint.");    
-  }
+    public ObjectID OppositeObjectID
+    {
+      get { return null; }
+      set { throw new InvalidOperationException ("It is not allowed to set the opposite object ID of a NullObjectEndPoint."); }
+    }
 
-  public override void Commit ()
-  {
-    throw new InvalidOperationException ("Commit cannot be called on a NullObjectEndPoint.");    
-  }
+    public ObjectID OriginalOppositeObjectID
+    {
+      get { return null; }
+    }
 
-  public override void Rollback ()
-  {
-    throw new InvalidOperationException ("Rollback cannot be called on a NullObjectEndPoint.");
-  }
+    public bool HasChanged
+    {
+      get { return false; }
+    }
 
-  public override bool HasChanged
-  {
-    get { return false; }
-  }
+    public bool HasBeenTouched
+    {
+      get { return false; }
+    }
 
-  public override ObjectID ObjectID
-  {
-    get { return null; }
-  }
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
 
-  public override RelationEndPointID ID
-  {
-    get { return null; }
-  }
+    public bool IsNull
+    {
+      get { return true; }
+    }
 
-  public override bool IsNull
-  {
-    get { return true; }
-  }
+    public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
+    {
+      throw new InvalidOperationException ("It is not allowed to set the opposite object of a NullObjectEndPoint.");
+    }
 
-  protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
-  {
-    throw new InvalidOperationException ("Rollback cannot be called on a NullCollectionEndPoint.");
-  }
+    public void Touch ()
+    {
+      // do nothing
+    }
 
-  protected override void SetForeignKeyProperty ()
-  {
-    // do nothing, null objects have no foreign key properties...
+    public void Commit ()
+    {
+      throw new InvalidOperationException ("Commit cannot be called on a NullObjectEndPoint.");
+    }
+
+    public void Rollback ()
+    {
+      throw new InvalidOperationException ("Rollback cannot be called on a NullObjectEndPoint.");
+    }
+ 
+    public IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    {
+      return new NullEndPointModification (this, removedRelatedObject, null);
+    }
+
+    public IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
+    {
+      return new NullEndPointModification (this, this.GetOppositeObject (true), newRelatedObject);
+    }
+
+    public void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      // do nothing
+    }
+
+    public void NotifyClientTransactionOfEndRelationChange ()
+    {
+      // do nothing
+    }
   }
-}
 }

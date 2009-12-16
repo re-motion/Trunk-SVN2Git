@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
     protected abstract RelationEndPointID GetRelationEndPointID ();
 
-    protected abstract ObjectEndPointSetModificationBase CreateModification (ObjectEndPoint endPoint, DomainObject newRelatedObject);
+    protected abstract ObjectEndPointSetModificationBase CreateModification (IObjectEndPoint endPoint, DomainObject newRelatedObject);
     protected abstract ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject);
 
     public MockRepository MockRepository
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullObjectEndPoint (GetRelationEndPointID().Definition);
+      var endPoint = new NullObjectEndPoint (ClientTransactionMock, GetRelationEndPointID().Definition);
       CreateModification (endPoint, NewRelatedObject);
     }
 

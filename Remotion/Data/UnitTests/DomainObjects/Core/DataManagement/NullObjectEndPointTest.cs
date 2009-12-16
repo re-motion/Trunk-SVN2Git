@@ -17,10 +17,13 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -28,35 +31,92 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   public class NullObjectEndPointTest : ClientTransactionBaseTest
   {
     private IRelationEndPointDefinition _realEndPointDefinition;
-    private NullObjectEndPoint _realEndPoint;
+    private NullObjectEndPoint _nullEndPoint;
 
     public override void SetUp ()
     {
       base.SetUp();
       _realEndPointDefinition = DomainObjectIDs.OrderTicket1.ClassDefinition.GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      _realEndPoint = new NullObjectEndPoint (_realEndPointDefinition);
+      _nullEndPoint = new NullObjectEndPoint (ClientTransactionMock, _realEndPointDefinition);
+    }
+
+    [Test]
+    public void Definition ()
+    {
+      Assert.That (_nullEndPoint.Definition, Is.SameAs (_realEndPointDefinition));
+    }
+
+    [Test]
+    public void ObjectID ()
+    {
+      Assert.That (_nullEndPoint.ObjectID, Is.Null);
+    }
+
+    [Test]
+    public void ID ()
+    {
+      var id = _nullEndPoint.ID;
+      Assert.That (id.Definition, Is.SameAs (_realEndPointDefinition));
+      Assert.That (id.ObjectID, Is.Null);
+    }
+
+    [Test]
+    public void OppositeObjectID_Get ()
+    {
+      Assert.That (_nullEndPoint.OppositeObjectID, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void OppositeObjectID_Set ()
+    {
+      _nullEndPoint.OppositeObjectID = DomainObjectIDs.Order3;
+    }
+
+    [Test]
+    public void OrigionalOppositeObjectID_Get ()
+    {
+      Assert.That (_nullEndPoint.OriginalOppositeObjectID, Is.Null);
+    }
+
+    [Test]
+    public void HasChanged ()
+    {
+      Assert.That (_nullEndPoint.HasChanged, Is.False);
+    }
+
+    [Test]
+    public void HasBeenTouched ()
+    {
+      Assert.That (_nullEndPoint.HasBeenTouched, Is.False);
+    }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (_nullEndPoint.IsNull, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void SetOppositeDomainObjectAndNotify ()
+    {
+      _nullEndPoint.SetOppositeObjectAndNotify (Order.NewObject ());
     }
 
     [Test]
     public void Touch ()
     {
-      _realEndPoint.Touch();
-      Assert.That (_realEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
-    public void SetOppositeObjectID ()
-    {
-      Assert.That (_realEndPoint.OppositeObjectID, Is.Null);
-      _realEndPoint.OppositeObjectID = DomainObjectIDs.Order3;
-      Assert.That (_realEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order3));
+      Assert.That (_nullEndPoint.HasBeenTouched, Is.False);
+      _nullEndPoint.Touch ();
+      Assert.That (_nullEndPoint.HasBeenTouched, Is.False);
     }
 
     [Test]
     public void CreateRemoveModification ()
     {
       var removedRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = _realEndPoint.CreateRemoveModification (removedRelatedObject);
+      var modification = _nullEndPoint.CreateRemoveModification (removedRelatedObject);
       Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
       Assert.That (modification.OldRelatedObject, Is.SameAs (removedRelatedObject));
       Assert.That (modification.NewRelatedObject, Is.Null);
@@ -66,10 +126,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateSetModification ()
     {
       var newRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = _realEndPoint.CreateSetModification (newRelatedObject);
+      var modification = _nullEndPoint.CreateSetModification (newRelatedObject);
       Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
       Assert.That (modification.OldRelatedObject, Is.Null);
       Assert.That (modification.NewRelatedObject, Is.SameAs (newRelatedObject));
+    }
+
+    
+
+    [Test]
+    public void NotifyClientTransactionOfBeginRelationChange ()
+    {
+      var order = Order.NewObject ();
+
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      listenerMock.Replay ();
+
+      _nullEndPoint.NotifyClientTransactionOfBeginRelationChange (order, order);
+
+      listenerMock.AssertWasNotCalled (
+          mock => mock.RelationChanging (
+              Arg<DomainObject>.Is.Anything, 
+              Arg<string>.Is.Anything, 
+              Arg<DomainObject>.Is.Anything, 
+              Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfEndRelationChange ()
+    {
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      listenerMock.Replay ();
+
+      _nullEndPoint.NotifyClientTransactionOfEndRelationChange ();
+
+      listenerMock.AssertWasNotCalled (
+          mock => mock.RelationChanged (
+              Arg<DomainObject>.Is.Anything,
+              Arg<string>.Is.Anything));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void Commit ()
+    {
+      _nullEndPoint.Commit ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void Rollback ()
+    {
+      _nullEndPoint.Commit ();
     }
   }
 }

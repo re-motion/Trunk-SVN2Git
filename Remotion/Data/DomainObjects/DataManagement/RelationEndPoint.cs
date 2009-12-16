@@ -28,10 +28,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // static members and constants
 
-    public static IEndPoint CreateNullRelationEndPoint (IRelationEndPointDefinition definition)
+    public static IEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       if (definition.Cardinality == CardinalityType.One)
-        return new NullObjectEndPoint (definition);
+        return new NullObjectEndPoint (clientTransaction, definition);
       else
         return new NullCollectionEndPoint (definition);
     }
