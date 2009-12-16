@@ -207,7 +207,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var realObjectEndPoints = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions()
                                 where !endPointDefinition.IsVirtual
                                 let oppositeObjectID = (ObjectID) dataContainer.PropertyValues[endPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current)
-                                select new ObjectEndPoint (dataContainer.ClientTransaction, dataContainer.ID, endPointDefinition, oppositeObjectID);
+                                let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
+                                select new ObjectEndPoint (dataContainer.ClientTransaction, endPointID, oppositeObjectID);
       
       foreach (var realObjectEndPoint in realObjectEndPoints)
       {
@@ -215,12 +216,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         if (realObjectEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
         {
-          var oppositeEndPoint = new ObjectEndPoint (
-              _clientTransaction,
-              realObjectEndPoint.OppositeObjectID,
-              realObjectEndPoint.OppositeEndPointDefinition,
-              realObjectEndPoint.ObjectID);
-
+          var oppositeEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, realObjectEndPoint.OppositeEndPointDefinition);
+          var oppositeEndPoint = new ObjectEndPoint (_clientTransaction, oppositeEndPointID, realObjectEndPoint.ObjectID);
           Add (oppositeEndPoint);
         }
       }
@@ -316,10 +313,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void Add (RelationEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      _transactionEventSink.RelationEndPointMapRegistering (endPoint);
-      if (endPoint.IsNull)
-        throw new ArgumentNullException ("endPoint", "A NullRelationEndPoint cannot be added to a RelationEndPointMap.");
 
+      _transactionEventSink.RelationEndPointMapRegistering (endPoint);
       _relationEndPoints.Add (endPoint);
     }
 

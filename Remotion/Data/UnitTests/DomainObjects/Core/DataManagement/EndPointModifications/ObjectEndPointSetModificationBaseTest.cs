@@ -20,29 +20,24 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using System.Diagnostics;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   public abstract class ObjectEndPointSetModificationBaseTest : ClientTransactionBaseTest
   {
-    private MockRepository _mockRepository;
-    private ObjectEndPoint _endPointMock;
+    private ObjectEndPoint _endPoint;
     private ObjectEndPointSetModificationBase _modification;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _mockRepository = new MockRepository();
 
-      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, GetRelationEndPointID(), OldRelatedObject.ID);
-
-      _endPointMock.Expect (mock => mock.IsNull).Return (false);
-      _endPointMock.Replay();
-      _modification = CreateModification(_endPointMock, NewRelatedObject);
-      _endPointMock.BackToRecord();
+      _endPoint = new ObjectEndPoint (ClientTransactionMock, GetRelationEndPointID(), OldRelatedObject.ID);
+      _modification = CreateModification (_endPoint, NewRelatedObject);
     }
 
     protected abstract DomainObject OldRelatedObject { get; }
@@ -53,25 +48,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     protected abstract ObjectEndPointSetModificationBase CreateModification (IObjectEndPoint endPoint, DomainObject newRelatedObject);
     protected abstract ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject);
 
-    public MockRepository MockRepository
-    {
-      get { return _mockRepository; }
-    }
-
-    public ObjectEndPoint EndPointMock
-    {
-      get { return _endPointMock; }
-    }
-
     public ObjectEndPointSetModificationBase Modification
     {
       get { return _modification; }
     }
 
+    public ObjectEndPoint EndPoint
+    {
+      get { return _endPoint; }
+    }
+
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPointMock, _modification.ModifiedEndPoint);
+      Assert.AreSame (_endPoint, _modification.ModifiedEndPoint);
       Assert.AreSame (OldRelatedObject, _modification.OldRelatedObject);
       Assert.AreSame (NewRelatedObject, _modification.NewRelatedObject);
     }
@@ -88,16 +78,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public virtual void Begin ()
     {
-      DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObject domainObject = EndPoint.GetDomainObject ();
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      _endPointMock.Expect (mock => mock.ObjectID).Return (domainObject.ID).Repeat.Any ();
-
-      _mockRepository.ReplayAll();
-
       _modification.Begin();
-
-      _mockRepository.VerifyAll();
 
       Assert.IsTrue (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -106,9 +90,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Perform_InvokesPerformRelationChange ()
     {
-      Assert.That (_endPointMock.OppositeObjectID, Is.EqualTo (OldRelatedObject.ID));
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (OldRelatedObject.ID));
       _modification.Perform();
-      Assert.That (_endPointMock.OppositeObjectID, Is.EqualTo (NewRelatedObject.ID));
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (NewRelatedObject.ID));
     }
 
     [Test]
@@ -127,16 +111,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public virtual void End ()
     {
-      DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObject domainObject = EndPoint.GetDomainObject ();
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      _endPointMock.Expect (mock => mock.ObjectID).Return (domainObject.ID).Repeat.Any();
-
-      _mockRepository.ReplayAll();
-
       _modification.End();
-
-      _mockRepository.VerifyAll();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsTrue (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -145,25 +123,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public virtual void NotifyClientTransactionOfBegin ()
     {
-      _endPointMock.NotifyClientTransactionOfBeginRelationChange (OldRelatedObject, NewRelatedObject);
-
-      _mockRepository.ReplayAll();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
 
       _modification.NotifyClientTransactionOfBegin();
 
-      _mockRepository.VerifyAll();
+      listenerMock.AssertWasCalled(mock => mock.RelationChanging (
+          _endPoint.GetDomainObject (), 
+          _endPoint.PropertyName, 
+          OldRelatedObject, 
+          NewRelatedObject));
     }
 
     [Test]
     public virtual void NotifyClientTransactionOfEnd ()
     {
-      _endPointMock.NotifyClientTransactionOfEndRelationChange();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
 
-      _mockRepository.ReplayAll();
+      _modification.NotifyClientTransactionOfEnd ();
 
-      _modification.NotifyClientTransactionOfEnd();
-
-      _mockRepository.VerifyAll();
+      listenerMock.AssertWasCalled (mock => mock.RelationChanged (_endPoint.GetDomainObject (), _endPoint.PropertyName));
     }
   }
 }

@@ -64,9 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      MockRepository.ReplayAll ();
       Modification.Begin ();
-      MockRepository.VerifyAll ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -78,9 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      MockRepository.ReplayAll ();
       Modification.End ();
-      MockRepository.VerifyAll ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -89,23 +85,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public override void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = MockRepository.StrictMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      MockRepository.ReplayAll ();
       Modification.NotifyClientTransactionOfBegin ();
-      MockRepository.VerifyAll ();
+
+      listenerMock.AssertWasNotCalled (mock => mock.RelationChanging (
+          EndPoint.GetDomainObject (), 
+          EndPoint.PropertyName, 
+          OldRelatedObject, 
+          NewRelatedObject));
     }
 
     [Test]
     public override void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = MockRepository.StrictMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      MockRepository.ReplayAll ();
-      Modification.NotifyClientTransactionOfEnd ();
-      MockRepository.VerifyAll ();
+      Modification.NotifyClientTransactionOfBegin ();
+
+      listenerMock.AssertWasNotCalled (mock => mock.RelationChanged (EndPoint.GetDomainObject (), EndPoint.PropertyName));
     }
 
     [Test]

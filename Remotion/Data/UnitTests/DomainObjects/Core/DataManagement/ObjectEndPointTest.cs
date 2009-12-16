@@ -335,7 +335,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void IsVirtual ()
     {
       DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
-      RelationEndPoint orderEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (orderContainer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", DomainObjectIDs.OrderTicket1);
+      RelationEndPoint orderEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (
+          orderContainer.ID, 
+          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", 
+          DomainObjectIDs.OrderTicket1);
 
       Assert.AreEqual (true, orderEndPoint.IsVirtual);
     }

@@ -18,39 +18,33 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
   public class RelationEndPointTouchModificationTest : ClientTransactionBaseTest
   {
-    private RelationEndPoint _endPointMock;
-    private DomainObject _domainObjectOfEndPoint;
+    private RelationEndPoint _endPoint;
     private RelationEndPointTouchModification _modification;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _domainObjectOfEndPoint = Customer.GetObject (DomainObjectIDs.Customer1);
-      _endPointMock = MockRepository.GenerateMock<RelationEndPoint> (
-          ClientTransactionMock, 
-          _domainObjectOfEndPoint.ID, 
-          typeof (Customer).FullName + ".Orders");
+      var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      _endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
 
-      _modification = new RelationEndPointTouchModification (_endPointMock);
+      _modification = new RelationEndPointTouchModification (_endPoint);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_modification.ModifiedEndPoint, Is.SameAs (_endPointMock));
+      Assert.That (_modification.ModifiedEndPoint, Is.SameAs (_endPoint));
       Assert.That (_modification.OldRelatedObject, Is.Null);
       Assert.That (_modification.NewRelatedObject, Is.Null);
     }
@@ -58,11 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Begin ()
     {
-      var eventReceiver = new DomainObjectEventReceiver (_domainObjectOfEndPoint);
-
-      _endPointMock.Replay ();
+      var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject());
       _modification.Begin ();
-      _endPointMock.VerifyAllExpectations ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -71,11 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void End ()
     {
-      var eventReceiver = new DomainObjectEventReceiver (_domainObjectOfEndPoint);
+      var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject ());
 
-      _endPointMock.Replay ();
       _modification.End ();
-      _endPointMock.VerifyAllExpectations ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -84,12 +73,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Perform ()
     {
-      _endPointMock.Expect (mock => mock.Touch ());
-      _endPointMock.Replay ();
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
 
       _modification.Perform ();
 
-      _endPointMock.VerifyAllExpectations ();
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]

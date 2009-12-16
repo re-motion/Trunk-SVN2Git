@@ -24,63 +24,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private ObjectID _originalOppositeObjectID;
     private ObjectID _oppositeObjectID;
     private bool _hasBeenTouched;
 
-    // construction and disposing
-
-    public ObjectEndPoint (
-        ClientTransaction clientTransaction,
-        ObjectID objectID,
-        IRelationEndPointDefinition definition,
-        ObjectID oppositeObjectID)
-        : this (clientTransaction, objectID, definition.PropertyName, oppositeObjectID)
-    {
-    }
-
-    public ObjectEndPoint (
-        ClientTransaction clientTransaction,
-        ObjectID objectID,
-        string propertyName,
-        ObjectID oppositeObjectID)
-        : this (clientTransaction, new RelationEndPointID (objectID, propertyName), oppositeObjectID)
-    {
-    }
-
     public ObjectEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         ObjectID oppositeObjectID)
-        : this (clientTransaction, id, oppositeObjectID, oppositeObjectID)
-    {
-    }
-
-    private ObjectEndPoint (
-        ClientTransaction clientTransaction,
-        RelationEndPointID id,
-        ObjectID oppositeObjectID,
-        ObjectID originalOppositeObjectID)
         : base (clientTransaction, id)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("id", id);
+
       _oppositeObjectID = oppositeObjectID;
-      _originalOppositeObjectID = originalOppositeObjectID;
+      _originalOppositeObjectID = oppositeObjectID;
       _hasBeenTouched = false;
     }
-
-    protected ObjectEndPoint (IRelationEndPointDefinition definition)
-        : base (definition)
-    {
-      _hasBeenTouched = false;
-    }
-
-    // methods and properties
 
     public ObjectID OppositeObjectID
     {
@@ -90,7 +50,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _oppositeObjectID = value;
         _hasBeenTouched = true;
 
-        SetForeignKeyProperty ();
+        if (!IsVirtual)
+        {
+          var dataContainer = ClientTransaction.GetDataContainer (this.GetDomainObject ());
+          var foreignKeyProperty = dataContainer.PropertyValues[PropertyName];
+          foreignKeyProperty.SetRelationValue (_oppositeObjectID);
+        }
       }
     }
 
@@ -128,8 +93,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Touch ()
     {
-      _hasBeenTouched = true;
-      SetForeignKeyProperty (); // set foreign key property to the same value in order to touch it
+      OppositeObjectID = OppositeObjectID;
+      Assertion.IsTrue (HasBeenTouched);
     }
 
     public override void Commit ()
@@ -215,16 +180,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
         Touch ();
-    }
-
-    protected virtual void SetForeignKeyProperty ()
-    {
-      if (!IsVirtual)
-      {
-        var dataContainer = ClientTransaction.GetDataContainer (this.GetDomainObject ());
-        var foreignKeyProperty = dataContainer.PropertyValues[PropertyName];
-        foreignKeyProperty.SetRelationValue (_oppositeObjectID);
-      }
     }
 
     private void CheckNewRelatedObjectType (DomainObject newRelatedObject)

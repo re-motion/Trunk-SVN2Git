@@ -22,12 +22,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  /// <summary>
+  /// Provides an abstract base implementation of non-transient relation end points that can be stored in the <see cref="RelationEndPointMap"/>.
+  /// </summary>
   public abstract class RelationEndPoint : IEndPoint, IFlattenedSerializable
   {
-    // types
-
-    // static members and constants
-
     public static IEndPoint CreateNullRelationEndPoint (ClientTransaction clientTransaction, IRelationEndPointDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -39,61 +38,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new NullCollectionEndPoint (clientTransaction, definition);
     }
 
-    // member fields
-
     private readonly ClientTransaction _clientTransaction;
-    private readonly IRelationEndPointDefinition _definition;
     private readonly RelationEndPointID _id;
-
-    // construction and disposing
-
-    protected RelationEndPoint (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
-        IRelationEndPointDefinition definition)
-        : this (clientTransaction, domainObject.ID, definition)
-    {
-    }
-
-    protected RelationEndPoint (
-        ClientTransaction clientTransaction,
-        DataContainer dataContainer,
-        IRelationEndPointDefinition definition)
-        : this (clientTransaction, dataContainer.ID, definition.PropertyName)
-    {
-    }
-
-    protected RelationEndPoint (
-        ClientTransaction clientTransaction,
-        DomainObject domainObject,
-        string propertyName)
-        : this (clientTransaction, domainObject.ID, propertyName)
-    {
-    }
-
-    protected RelationEndPoint (
-        ClientTransaction clientTransaction,
-        DataContainer dataContainer,
-        string propertyName)
-        : this (clientTransaction, dataContainer.ID, propertyName)
-    {
-    }
-
-    protected RelationEndPoint (
-        ClientTransaction clientTransaction,
-        ObjectID objectID,
-        IRelationEndPointDefinition definition)
-        : this (clientTransaction, objectID, definition.PropertyName)
-    {
-    }
-
-    protected RelationEndPoint (
-        ClientTransaction clientTransaction,
-        ObjectID objectID,
-        string propertyName)
-        : this (clientTransaction, new RelationEndPointID (objectID, propertyName))
-    {
-    }
 
     protected RelationEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
     {
@@ -102,80 +48,74 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _clientTransaction = clientTransaction;
       _id = id;
-      _definition = _id.Definition;
     }
-
-    protected RelationEndPoint (IRelationEndPointDefinition definition)
-    {
-      ArgumentUtility.CheckNotNull ("definition", definition);
-      _definition = definition;
-    }
-
-    // abstract methods and properties
 
     public abstract bool HasChanged { get; }
     public abstract bool HasBeenTouched { get; }
 
     public abstract void Touch ();
-    
+
     public abstract void Commit ();
     public abstract void Rollback ();
     public abstract void SetValueFrom (RelationEndPoint source);
-    
+
     public abstract void CheckMandatory ();
     public abstract void PerformDelete ();
     public abstract IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
 
-    // methods and properties
-
-    public virtual void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public ClientTransaction ClientTransaction
     {
-      _clientTransaction.TransactionEventSink.RelationChanging (this.GetDomainObject(), _definition.PropertyName, oldRelatedObject, newRelatedObject);
+      get { return _clientTransaction; }
     }
 
-    public virtual void NotifyClientTransactionOfEndRelationChange ()
+    public RelationEndPointID ID
     {
-      _clientTransaction.TransactionEventSink.RelationChanged (this.GetDomainObject(), _definition.PropertyName);
+      get { return _id; }
     }
 
-    public virtual ObjectID ObjectID
+    public ObjectID ObjectID
     {
       get { return _id.ObjectID; }
     }
 
     public IRelationEndPointDefinition Definition
     {
-      get { return _definition; }
+      get { return ID.Definition; }
     }
 
     public string PropertyName
     {
-      get { return _definition.PropertyName; }
+      get { return Definition.PropertyName; }
     }
 
     public IRelationEndPointDefinition OppositeEndPointDefinition
     {
-      get { return _definition.GetOppositeEndPointDefinition(); }
+      get { return Definition.GetOppositeEndPointDefinition(); }
     }
 
     public RelationDefinition RelationDefinition
     {
-      get { return _definition.RelationDefinition; }
+      get { return Definition.RelationDefinition; }
     }
 
     public bool IsVirtual
     {
-      get { return _definition.IsVirtual; }
+      get { return Definition.IsVirtual; }
     }
 
-    public virtual RelationEndPointID ID
+    bool INullObject.IsNull
     {
-      get { return _id; }
+      get { return false; }
     }
 
-    public ClientTransaction ClientTransaction
+    public virtual void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      get { return _clientTransaction; }
+      _clientTransaction.TransactionEventSink.RelationChanging (this.GetDomainObject(), PropertyName, oldRelatedObject, newRelatedObject);
+    }
+
+    public virtual void NotifyClientTransactionOfEndRelationChange ()
+    {
+      _clientTransaction.TransactionEventSink.RelationChanged (this.GetDomainObject(), PropertyName);
     }
 
     protected MandatoryRelationNotSetException CreateMandatoryRelationNotSetException (
@@ -187,23 +127,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new MandatoryRelationNotSetException (domainObject, propertyName, string.Format (formatString, args));
     }
 
-    // TODO: Make explicit implementation
-    public virtual bool IsNull
-    {
-      get { return false; }
-    }
-
     #region Serialization
 
     protected RelationEndPoint (FlattenedDeserializationInfo info)
     {
       _clientTransaction = info.GetValueForHandle<ClientTransaction>();
-      
-      var classDefinitionID = info.GetValueForHandle<string>();
-      var propertyName = info.GetValueForHandle<string>();
-      _definition =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
-      
       _id = info.GetValue<RelationEndPointID>();
     }
 
@@ -212,8 +140,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       info.AddHandle (_clientTransaction);
-      info.AddHandle (_definition.ClassDefinition.ID);
-      info.AddHandle (_definition.PropertyName);
       info.AddValue (_id);
 
       SerializeIntoFlatStructure (info);

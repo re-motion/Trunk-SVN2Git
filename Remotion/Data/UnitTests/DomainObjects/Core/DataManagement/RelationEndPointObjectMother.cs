@@ -48,15 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static ObjectEndPoint CreateObjectEndPoint (ObjectID objectID, string propertyName, ObjectID oppositeObjectID)
     {
-      return new ObjectEndPoint (ClientTransaction.Current, objectID, propertyName, oppositeObjectID);
-    }
-
-    public static ObjectEndPoint CreateObjectEndPoint (
-        DataContainer dataContainer,
-        string propertyName,
-        ObjectID oppositeObjectID)
-    {
-      return new ObjectEndPoint (dataContainer.ClientTransaction, dataContainer.ID, propertyName, oppositeObjectID);
+      var id = new RelationEndPointID (objectID, propertyName);
+      return new ObjectEndPoint (ClientTransaction.Current, id, oppositeObjectID);
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (
