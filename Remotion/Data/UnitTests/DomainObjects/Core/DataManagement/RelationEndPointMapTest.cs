@@ -185,15 +185,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         )]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
     {
-      Client client = Client.GetObject (DomainObjectIDs.Client2);
-      IRelationEndPointDefinition parentClientEndPointDefinition =
-          client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
-      IEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
+      IEndPoint unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (new RelationEndPointID (client.ID, parentClientEndPointDefinition));
 
       Client parentClient = client.ParentClient;
-      Assert.That (parentClient, SyntaxHelper.Not.Null);
+      Assert.That (parentClient, Is.Not.Null);
 
-      _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
+      var anonymousEndPointDefinition = unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition();
+      _map.GetRelationEndPointWithLazyLoad (new RelationEndPointID (parentClient.ID, anonymousEndPointDefinition));
     }
 
     [Test]

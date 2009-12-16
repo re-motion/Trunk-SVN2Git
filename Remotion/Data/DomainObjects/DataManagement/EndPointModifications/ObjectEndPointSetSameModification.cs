@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var bidirectionalModification = new CompositeRelationModificationWithoutEvents (this);
       if (!oppositeEndPointDefinition.IsAnonymous)
       {
-        var oppositeEndPoint = GetEndPoint<IEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
+        var oppositeEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IEndPoint> (NewRelatedObject);
         bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
       }
       return bidirectionalModification;

@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void TestEquals ()
+    public void Equals ()
     {
       var endPointID2 = new RelationEndPointID (_objectID, _propertyName);
 
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void TestEqualsForObjectID ()
+    public void EqualsForObjectID ()
     {
       var endPointID2 = new RelationEndPointID (ObjectID.Parse (_objectID.ToString()), _propertyName);
       var endPointID3 = new RelationEndPointID (DomainObjectIDs.Order2, _propertyName);
@@ -108,22 +108,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void TestEqualsWithOtherType ()
+    public void EqualsWithOtherType ()
     {
       Assert.IsFalse (_endPointID.Equals (new RelationEndPointIDTest()));
     }
 
     [Test]
-    public void TestEqualsWithNull ()
+    public void EqualsWithNull ()
     {
       Assert.IsFalse (_endPointID.Equals (null));
     }
 
     [Test]
-    public void TestToString ()
+    public new void ToString ()
     {
       string expected = _objectID + "/" + _propertyName;
       Assert.AreEqual (expected, _endPointID.ToString());
+    }
+
+    [Test]
+    public void ToString_WithNull ()
+    {
+      string expected = "null/" + _propertyName;
+      Assert.AreEqual (expected, _nullEndPointID.ToString ());
     }
 
     [Test]

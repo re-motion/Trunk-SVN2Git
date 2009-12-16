@@ -94,11 +94,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       _modifiedEndPoint.NotifyClientTransactionOfEndRelationChange ();
     }
-
-    protected T GetEndPoint<T> (DomainObject domainObject, IRelationEndPointDefinition endPointDefinition) where T : IEndPoint
-    {
-      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      return (T) relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPointDefinition);
-    }
   }
 }

@@ -18,7 +18,6 @@ using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
@@ -93,19 +92,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
 
-      var modifiedEndPointDefinition = ModifiedEndPoint.Definition;
-      var oppositeEndPointDefinition = modifiedEndPointDefinition.GetOppositeEndPointDefinition (); // Order.Customer
-      
       var modificationsOfOldNotInNew = from oldObject in ModifiedEndPoint.OppositeDomainObjects.Cast<DomainObject> ()
                                        where !NewOppositeCollection.ContainsObject (oldObject)
-                                       let endPoint = GetEndPoint<IObjectEndPoint> (oldObject, oppositeEndPointDefinition)
+                                       let endPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldObject)
                                        select endPoint.CreateRemoveModification (domainObjectOfCollectionEndPoint); // oldOrder.Customer = null
       
       var modificationsOfNewNotInOld = from newObject in NewOppositeCollection.Cast<DomainObject> ()
                                        where !ModifiedEndPoint.OppositeDomainObjects.ContainsObject (newObject)
-                                       let endPointOfNewObject = GetEndPoint<IObjectEndPoint> (newObject, oppositeEndPointDefinition) // newOrder.Customer
+                                       let endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (newObject) // newOrder.Customer
                                        let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject (false) // newOrder.Customer
-                                       let endPointOfOldRelatedOfNewObject = GetEndPoint<ICollectionEndPoint> (oldRelatedOfNewObject, modifiedEndPointDefinition) // newOrder.Customer.Orders
+                                       let endPointOfOldRelatedOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedOfNewObject) // newOrder.Customer.Orders
                                        let removeModification = endPointOfOldRelatedOfNewObject.CreateRemoveModification (newObject) // newOrder.Customer.Orders.Remove (newOrder)
                                        let setModification = endPointOfNewObject.CreateSetModification (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
                                        from modification in new[] { removeModification, setModification }

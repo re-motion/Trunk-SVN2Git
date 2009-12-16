@@ -271,6 +271,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
+      if (endPointID.Definition.IsAnonymous)
+      {
+        throw new InvalidOperationException (
+            "Cannot get a RelationEndPoint for an anonymous end point definition. There are no end points for the non-existing side of unidirectional "
+            + "relations.");
+      }
+
       var existingEndPoint = _relationEndPoints[endPointID];
       if (existingEndPoint != null)
         return _relationEndPoints[endPointID];
@@ -291,23 +298,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsNotNull (loadedEndPoint);
 
       return loadedEndPoint;
-    }
-
-    public IEndPoint GetRelationEndPointWithLazyLoad (DomainObject domainObject, IRelationEndPointDefinition definition)
-    {
-      ArgumentUtility.CheckNotNull ("definition", definition);
-
-      if (definition.IsAnonymous)
-      {
-        throw new InvalidOperationException (
-            "Cannot get a RelationEndPoint for an anonymous end point definition. There are no end points for the non-existing side of unidirectional "
-            + "relations.");
-      }
-
-      if (domainObject != null)
-        return GetRelationEndPointWithLazyLoad (new RelationEndPointID (domainObject.ID, definition));
-      else
-        return RelationEndPoint.CreateNullRelationEndPoint (ClientTransaction, definition);
     }
 
     private void Add (RelationEndPoint endPoint)
@@ -371,7 +361,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     #endregion
-
-    
   }
 }

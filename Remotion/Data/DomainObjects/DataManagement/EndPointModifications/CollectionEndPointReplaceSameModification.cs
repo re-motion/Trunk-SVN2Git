@@ -94,8 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var oppositeEndPointDefinition = ModifiedEndPoint.Definition.GetOppositeEndPointDefinition();
-      var endPointOfRelatedObject = GetEndPoint<IObjectEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
+      var endPointOfRelatedObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
 
       return new CompositeRelationModificationWithoutEvents (
           this,

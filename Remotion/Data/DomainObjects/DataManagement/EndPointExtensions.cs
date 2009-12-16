@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -33,6 +35,33 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint.ClientTransaction.GetObject (endPoint.ObjectID, true);
     }
 
-    
+    public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, DomainObject domainObject) where T : IEndPoint
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      var oppositeDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
+
+      IEndPoint oppositeEndPoint;
+      if (domainObject == null)
+        oppositeEndPoint = RelationEndPoint.CreateNullRelationEndPoint (endPoint.ClientTransaction, oppositeDefinition);
+      else
+      {
+        var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointMap;
+        var id = new RelationEndPointID (domainObject.ID, oppositeDefinition);
+        oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+      }
+
+      if (!(oppositeEndPoint is T))
+      {
+        var message = string.Format (
+            "The opposite end point '{0}' is of type '{1}', not of type '{2}'.", 
+            oppositeEndPoint.ID, 
+            oppositeEndPoint.GetType(), 
+            typeof (T));
+        throw new InvalidOperationException (message);
+      }
+
+      return (T) oppositeEndPoint;
+    }
   }
 }

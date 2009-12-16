@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -66,6 +67,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var domainObject = endPointStub.GetDomainObject ();
 
       Assert.That (domainObject, Is.SameAs (order1));
+    }
+
+    [Test]
+    public void GetEndPointWithOppositeDefinition ()
+    {
+      var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (customer);
+
+      var oppositeID = new RelationEndPointID (customer.ID, endPoint.Definition.GetOppositeEndPointDefinition());
+      Assert.That (oppositeEndPoint, Is.SameAs (ClientTransactionMock.DataManager.RelationEndPointMap[oppositeID]));
+    }
+
+    [Test]
+    public void GetEndPointWithOppositeDefinition_NullObject ()
+    {
+      var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+
+      var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (null);
+
+      var oppositeID = new RelationEndPointID (null, endPoint.Definition.GetOppositeEndPointDefinition ());
+      Assert.That (oppositeEndPoint, Is.InstanceOfType (typeof (NullCollectionEndPoint)));
+      Assert.That (oppositeEndPoint.ID, Is.EqualTo (oppositeID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The opposite end point 'null/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' is of type "
+        + "'Remotion.Data.DomainObjects.DataManagement.NullCollectionEndPoint', not of type 'Remotion.Data.DomainObjects.DataManagement.IObjectEndPoint'.")]
+    public void GetEndPointWithOppositeDefinition_InvalidType ()
+    {
+      var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+
+      endPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (null);
     }
   }
 }

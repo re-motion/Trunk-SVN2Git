@@ -137,7 +137,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override string ToString ()
     {
-      return string.Format ("{0}/{1}", _objectID, Definition.PropertyName);
+      return string.Format ("{0}/{1}", _objectID != null ? _objectID.ToString() : "null", Definition.PropertyName);
     }
   }
 }

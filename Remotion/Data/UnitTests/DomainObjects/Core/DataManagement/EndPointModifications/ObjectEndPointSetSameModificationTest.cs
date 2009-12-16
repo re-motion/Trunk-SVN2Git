@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -113,9 +114,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var unidirectionalEndPoint = (ObjectEndPoint)
-                                   ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
-                                       client, parentClientEndPointDefinition);
+      var unidirectionalEndPointID = new RelationEndPointID (client.ID, parentClientEndPointDefinition);
+      var unidirectionalEndPoint = 
+          (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
@@ -133,14 +134,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
-      var bidirectionalEndPoint = (ObjectEndPoint)
-                                  ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
-                                      order, orderTicketEndPointDefinition);
+      var orderTicketEndPointID = new RelationEndPointID (order.ID, orderTicketEndPointDefinition);
+      var bidirectionalEndPoint = 
+          (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
 
-      var oppositeEndPoint =
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
-              bidirectionalEndPoint.GetOppositeObject (true),
-              bidirectionalEndPoint.OppositeEndPointDefinition);
+      var oppositeEndPointID = new RelationEndPointID (
+          bidirectionalEndPoint.GetOppositeObject (true).ID, 
+          bidirectionalEndPoint.OppositeEndPointDefinition);
+
+      var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       var setSameModification = new ObjectEndPointSetSameModification (bidirectionalEndPoint);
 
       var bidirectionalModification = setSameModification.CreateRelationModification ();

@@ -64,14 +64,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var modifiedEndPointDefinition = ModifiedEndPoint.Definition;
-      var oppositeEndPointDefinition = modifiedEndPointDefinition.GetOppositeEndPointDefinition ();
-
-      var newRelatedEndPoint = GetEndPoint<IObjectEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
-      var oldRelatedEndPoint = GetEndPoint<IObjectEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
+      var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
+      var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
 
       var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject (true);
-      var oldRelatedEndPointOfNewRelatedEndPoint = GetEndPoint<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject, modifiedEndPointDefinition);
+      var oldRelatedEndPointOfNewRelatedEndPoint = newRelatedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject);
 
       var bidirectionalModification = new CompositeRelationModificationWithEvents (
         // => order.OrderTicket = newTicket

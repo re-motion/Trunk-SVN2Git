@@ -93,17 +93,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override CompositeRelationModification CreateRelationModification ()
     {
-      var modifiedEndPointDefinition = ModifiedEndPoint.Definition;
-      var oppositeEndPointDefinition = modifiedEndPointDefinition.GetOppositeEndPointDefinition (); // Order.Customer
-      
       // the end point that will be linked to the collection end point after the operation
-      var endPointOfNewObject = GetEndPoint<IObjectEndPoint> (NewRelatedObject, oppositeEndPointDefinition);
+      var endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
       // the end point that was linked to the collection end point before the operation
-      var endPointOfOldObject = GetEndPoint<IObjectEndPoint> (OldRelatedObject, oppositeEndPointDefinition);
+      var endPointOfOldObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
       // the object that was linked to the new related object before the operation
       var oldRelatedObjectOfNewObject = endPointOfNewObject.GetOppositeObject (false);
       // the end point that was linked to the new related object before the operation
-      var oldRelatedEndPointOfNewObject = GetEndPoint<ICollectionEndPoint> (oldRelatedObjectOfNewObject, modifiedEndPointDefinition);
+      var oldRelatedEndPointOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedObjectOfNewObject);
 
       return new CompositeRelationModificationWithEvents (
           // customer.Order[index].Customer = null

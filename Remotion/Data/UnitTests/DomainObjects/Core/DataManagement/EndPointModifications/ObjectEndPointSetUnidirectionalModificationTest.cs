@@ -61,8 +61,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
-      var endPoint = (ObjectEndPoint)
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (OrderItem.GetObject (DomainObjectIDs.OrderItem1), definition);
+      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var id = new RelationEndPointID (orderItem.ID, definition);
+
+      var endPoint = (ObjectEndPoint)ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       new ObjectEndPointSetUnidirectionalModification (endPoint, Order.NewObject ());
     }
 
@@ -73,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderTicket))
           .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      var endPoint = (ObjectEndPoint)
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), definition);
+      var relationEndPointID = new RelationEndPointID (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).ID, definition);
+      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
       new ObjectEndPointSetUnidirectionalModification (endPoint, Order.NewObject ());
     }
 
@@ -93,9 +95,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var unidirectionalEndPoint = (ObjectEndPoint)
-                                   ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
-                                       client, parentClientEndPointDefinition);
+      var unidirectionalEndPointID = new RelationEndPointID (client.ID, parentClientEndPointDefinition);
+      var unidirectionalEndPoint = 
+          (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
       var newClient = Client.NewObject ();
 
