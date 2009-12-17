@@ -1247,17 +1247,6 @@ public abstract class ClientTransaction
     }
   }
 
-  /// <summary>
-  /// Sets the ClientTransaction property of a given <see cref="DataContainer"/>
-  /// </summary>
-  /// <param name="dataContainer">The <see cref="DataContainer"/> that should be set to the <b>ClientTransaction</b>. Must not be <see langword="null"/>.</param>
-  /// <exception cref="System.ArgumentNullException"><paramref name="dataContainer"/> is <see langword="null"/>.</exception>
-  protected void SetClientTransaction (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-    dataContainer.SetClientTransaction (this);
-  }
-
   protected internal void NotifyOfSubTransactionCreating ()
   {
     OnSubTransactionCreating ();

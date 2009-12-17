@@ -61,7 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -123,7 +122,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"], null);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -141,7 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -160,7 +157,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Distributor.NumberOfShops"), 10);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -179,7 +175,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"], _domainObjectIDs.Customer1);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -197,7 +192,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"], _domainObjectIDs.Customer3);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -215,7 +209,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"], _domainObjectIDs.Customer1);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -231,7 +224,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"], _domainObjectIDs.Order1);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -247,7 +239,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       persistentPropertyValues.Add (classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"], _domainObjectIDs.OrderWithoutOrderItem);
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }
@@ -259,7 +250,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
       DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
-      _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
     }

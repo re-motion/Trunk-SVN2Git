@@ -361,12 +361,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    internal void SetClientTransaction (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      _clientTransaction = clientTransaction;
-    }
-
 
     /// <summary>
     /// Raises the <see cref="PropertyChanging"/> event.
@@ -481,7 +475,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_clientTransaction != null)
         throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
 
-      SetClientTransaction (clientTransaction);
+      _clientTransaction = clientTransaction;
       clientTransaction.DataManager.RegisterNewDataContainer (this);
     }
 
@@ -492,7 +486,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_clientTransaction != null)
         throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
 
-      SetClientTransaction (clientTransaction);
+      _clientTransaction = clientTransaction;
 
       var domainObject = clientTransaction.GetObjectForDataContainer (this);
       SetDomainObject (domainObject);

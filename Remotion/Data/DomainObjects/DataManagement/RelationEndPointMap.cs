@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
                                 where !endPointDefinition.IsVirtual
                                 let oppositeObjectID = (ObjectID) dataContainer.PropertyValues[endPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current)
                                 let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
-                                select new ObjectEndPoint (dataContainer.ClientTransaction, endPointID, oppositeObjectID);
+                                select new ObjectEndPoint (ClientTransaction, endPointID, oppositeObjectID);
       
       foreach (var realObjectEndPoint in realObjectEndPoints)
       {
@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (oppositeEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
         {
           var oppositeEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeEndPointDefinition);
-          var oppositeEndPoint = new ObjectEndPoint (_clientTransaction, oppositeEndPointID, realObjectEndPoint.ObjectID);
+          var oppositeEndPoint = new ObjectEndPoint (ClientTransaction, oppositeEndPointID, realObjectEndPoint.ObjectID);
           Add (oppositeEndPoint);
         }
       }

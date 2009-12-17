@@ -95,6 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void DataContainerWithOneToManyRelation ()
     {
       DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+
       _endPoints.RegisterExistingDataContainer (orderContainer);
 
       Assert.AreEqual (2, _endPoints.Count, "Count");

@@ -834,7 +834,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionMock.SetClientTransaction (dataContainer);
+      dataContainer.RegisterNewDataContainer (ClientTransactionMock);
+      
       var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
     }
@@ -843,7 +844,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionMock.SetClientTransaction (dataContainer);
+
+      dataContainer.RegisterNewDataContainer (ClientTransactionMock);
+      
       var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
       PrivateInvoke.InvokeNonPublicMethod (order, typeof (DomainObject), "OnLoaded");
@@ -864,7 +867,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionMock.SetClientTransaction (dataContainer);
+
+      dataContainer.RegisterNewDataContainer (ClientTransactionMock);
+      
       var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
@@ -886,7 +891,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.ClassWithAllDataTypes1);
-      ClientTransactionMock.SetClientTransaction (dataContainer);
+
+      dataContainer.RegisterNewDataContainer (ClientTransactionMock);
+      
       var classWithAllDataTypes = (ClassWithAllDataTypes) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);

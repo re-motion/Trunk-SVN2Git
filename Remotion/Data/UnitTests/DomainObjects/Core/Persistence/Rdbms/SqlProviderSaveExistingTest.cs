@@ -41,7 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private DataContainer LoadDataContainer (SqlProvider sqlProvider, ObjectID id)
     {
       DataContainer dataContainer = sqlProvider.LoadDataContainer (id);
-      ClientTransactionMock.SetClientTransaction (dataContainer);
       return dataContainer;
     }
 
@@ -221,10 +220,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         DataContainer classWithAllDataTypes2 = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
-        DomainObject domainObject = ClientTransactionMock.GetObjectForDataContainer (classWithAllDataTypes1);
-        classWithAllDataTypes1.SetDomainObject (domainObject);
-        classWithAllDataTypes2.SetDomainObject (domainObject); // make sure only one DomainObjectReference exists for the current ClientTransaction
-        
         Assert.AreEqual (true, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
         Assert.AreEqual ((byte) 78, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
         Assert.AreEqual (new DateTime (2005, 2, 1), classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
@@ -336,10 +331,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         DataContainer orderContainer1 = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
         DataContainer orderContainer2 = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
-
-        DomainObject domainObject = ClientTransactionMock.GetObjectForDataContainer (orderContainer1);
-        orderContainer1.SetDomainObject (domainObject);
-        orderContainer2.SetDomainObject (domainObject); // need to make sure only one DomainObjectReference exists for the current ClientTransaction
 
         orderContainer1["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
         orderContainer2["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 11;
@@ -533,7 +524,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
             TestMappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)],
             "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order",
             DomainObjectIDs.Order1);
-        ClientTransactionMock.SetClientTransaction (orderTicketContainers[0]);
+
+        orderTicketContainers[0].RegisterLoadedDataContainer (ClientTransactionMock);
 
         orderTicketContainers[0]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = "C:\newFile.jpg";
 

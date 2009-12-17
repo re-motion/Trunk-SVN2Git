@@ -39,14 +39,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private DataContainer CreateNewDataContainer (ClassDefinition classDefinition)
     {
       DataContainer dataContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (classDefinition));
-      ClientTransactionMock.SetClientTransaction (dataContainer);
+      dataContainer.RegisterNewDataContainer (ClientTransactionMock);
+      
       return dataContainer;
     }
 
     private DataContainer LoadDataContainer (ObjectID id)
     {
       DataContainer dataContainer = Provider.LoadDataContainer (id);
-      ClientTransactionMock.SetClientTransaction (dataContainer);
+     
       return dataContainer;
     }
 
@@ -325,7 +326,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       using (SqlProvider sqlProvider = new SqlProvider (ProviderDefinition))
       {
         DataContainer dataContainer = sqlProvider.LoadDataContainer (newID);
-        ClientTransactionMock.SetClientTransaction (dataContainer);
         Assert.IsNull (dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
       }
     }
@@ -351,7 +351,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       using (SqlProvider sqlProvider = new SqlProvider (ProviderDefinition))
       {
         DataContainer dataContainer = sqlProvider.LoadDataContainer (newID);
-        ClientTransactionMock.SetClientTransaction (dataContainer);
         ResourceManager.IsEmptyImage ((byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
       }
     }
@@ -377,7 +376,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       using (SqlProvider sqlProvider = new SqlProvider (ProviderDefinition))
       {
         DataContainer dataContainer = sqlProvider.LoadDataContainer (newID);
-        ClientTransactionMock.SetClientTransaction (dataContainer);
         ResourceManager.IsEqualToImageLarger1MB ((byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
       }
     }

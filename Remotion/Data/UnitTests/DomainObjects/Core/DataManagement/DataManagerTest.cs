@@ -434,48 +434,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DataContainer CreateOrder1DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      dataContainer.RegisterLoadedDataContainer (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      _dataManager.RegisterExistingDataContainer (dataContainer);
+
       return dataContainer;
     }
 
     private DataContainer CreateOrderTicket1DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
+      dataContainer.RegisterLoadedDataContainer (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      _dataManager.RegisterExistingDataContainer (dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateOrderTicket2DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderTicket2DataContainer ();
+      dataContainer.RegisterLoadedDataContainer (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      _dataManager.RegisterExistingDataContainer (dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateOrder2DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrder2DataContainer ();
+      dataContainer.RegisterLoadedDataContainer (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      _dataManager.RegisterExistingDataContainer (dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateOrderWithoutOrderItemDataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
+      dataContainer.RegisterLoadedDataContainer (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      _dataManager.RegisterExistingDataContainer (dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateClassWithAllDataTypesDataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      dataContainer.RegisterLoadedDataContainer (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      _dataManager.RegisterExistingDataContainer (dataContainer);
       return dataContainer;
     }
   }

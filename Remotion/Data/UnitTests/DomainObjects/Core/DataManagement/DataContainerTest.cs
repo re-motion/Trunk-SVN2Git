@@ -52,9 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           null,
           propertyDefinition => propertyDefinition.DefaultValue);
 
-      ClientTransactionMock.SetClientTransaction (_existingDataContainer);
-      ClientTransactionMock.SetClientTransaction (_newDataContainer);
-
       _nameDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
           orderClass, "Name", "Name", typeof (string), 100);
       _nameProperty = new PropertyValue (_nameDefinition, "Arthur Dent");
@@ -454,7 +451,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void DiscardWithoutDomainObjectThrows ()
     {
       DataContainer dataContainerWithoutDomainObject = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      ClientTransactionMock.SetClientTransaction (dataContainerWithoutDomainObject);
+      dataContainerWithoutDomainObject.RegisterNewDataContainer (ClientTransactionMock);
+
       PrivateInvoke.InvokeNonPublicMethod (dataContainerWithoutDomainObject, "Delete");
       Assert.Fail ("Expected exception");
     }
