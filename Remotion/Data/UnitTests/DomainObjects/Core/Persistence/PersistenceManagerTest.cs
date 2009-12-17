@@ -372,9 +372,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer orderContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
       DataContainer officialContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Official1);
 
-      orderContainer.RegisterLoadedDataContainer (ClientTransactionMock);
-      officialContainer.RegisterLoadedDataContainer (ClientTransactionMock);
-      
+      orderContainer.RegisterWithTransaction (ClientTransactionMock);
+      officialContainer.RegisterWithTransaction (ClientTransactionMock);
+
       DataContainerCollection dataContainers = new DataContainerCollection ();
       dataContainers.Add (orderContainer);
       dataContainers.Add (officialContainer);
@@ -499,7 +499,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           });
 
 
-      dataContainer.RegisterLoadedDataContainer (ClientTransactionMock);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
 
       return dataContainer;
     }

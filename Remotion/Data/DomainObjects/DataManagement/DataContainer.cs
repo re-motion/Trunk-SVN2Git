@@ -481,18 +481,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _domainObject = domainObject;
     }
 
-    // TODO 1051: Use state to find out whether to register a new DC or an existing one?
-    public void RegisterNewDataContainer (ClientTransaction clientTransaction)
-    {
-      RegisterWithTransaction (clientTransaction);
-    }
-
-    public void RegisterLoadedDataContainer (ClientTransaction clientTransaction)
-    {
-      RegisterWithTransaction (clientTransaction);
-    }
-
-    private void RegisterWithTransaction (ClientTransaction clientTransaction)
+    public void RegisterWithTransaction (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 

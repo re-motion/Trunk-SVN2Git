@@ -188,7 +188,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
         foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
         {
-          newLoadedDataContainer.RegisterLoadedDataContainer (ClientTransaction);
+          newLoadedDataContainer.RegisterWithTransaction (ClientTransaction);
           newLoadedDataContainer.SetDomainObject (ClientTransaction.GetObjectForDataContainer (newLoadedDataContainer));
         }
         var newLoadedDomainObjects = newLoadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly();

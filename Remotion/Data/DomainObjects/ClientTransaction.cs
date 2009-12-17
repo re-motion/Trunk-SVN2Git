@@ -917,7 +917,7 @@ public abstract class ClientTransaction
         DataContainerCollection additionalDataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
         foreach (DataContainer additionalDataContainer in additionalDataContainers)
         {
-          additionalDataContainer.RegisterLoadedDataContainer (this);
+          additionalDataContainer.RegisterWithTransaction (this);
           additionalDataContainer.SetDomainObject (GetObjectForDataContainer (additionalDataContainer));
         }
 
@@ -953,7 +953,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer newDataContainer = DataContainer.CreateNew (id);
-      newDataContainer.RegisterNewDataContainer  (this);
+      newDataContainer.RegisterWithTransaction (this);
       return newDataContainer;
     }
   }
@@ -1100,7 +1100,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainer (id);
-      dataContainer.RegisterLoadedDataContainer (this);
+      dataContainer.RegisterWithTransaction (this);
       dataContainer.SetDomainObject (GetObjectForDataContainer (dataContainer));
 
       Assertion.IsTrue (dataContainer.DomainObject.ID == id);
@@ -1146,7 +1146,7 @@ public abstract class ClientTransaction
 
       if (relatedDataContainer != null)
       {
-        relatedDataContainer.RegisterLoadedDataContainer (this);
+        relatedDataContainer.RegisterWithTransaction (this);
         relatedDataContainer.SetDomainObject (GetObjectForDataContainer (relatedDataContainer));
 
 
@@ -1191,7 +1191,7 @@ public abstract class ClientTransaction
 
       foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
       {
-        newLoadedDataContainer.RegisterLoadedDataContainer (this);
+        newLoadedDataContainer.RegisterWithTransaction (this);
         newLoadedDataContainer.SetDomainObject (GetObjectForDataContainer (newLoadedDataContainer));
       }
 
@@ -1248,7 +1248,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainerForExistingObject (domainObject);
-      dataContainer.RegisterLoadedDataContainer (this);
+      dataContainer.RegisterWithTransaction (this);
       dataContainer.SetDomainObject (domainObject);
 
       Assertion.IsTrue (dataContainer.DomainObject == domainObject);

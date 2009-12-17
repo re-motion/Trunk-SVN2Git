@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionMock.EnlistDomainObject (enlisted);
 
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      dataContainer.RegisterLoadedDataContainer (ClientTransactionMock);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
 
       var retrieved = ClientTransactionMock.GetObjectForDataContainer (dataContainer);
       Assert.That (retrieved, Is.SameAs (enlisted));
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetObjectForDataContainer_NoEnlistedObject_CreatesNew ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      dataContainer.RegisterLoadedDataContainer (ClientTransactionMock);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
 
       var retrieved = ClientTransactionMock.GetObjectForDataContainer (dataContainer);
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetObjectForDataContainer_NoEnlistedObject_UsesCreator ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      dataContainer.RegisterLoadedDataContainer (ClientTransactionMock);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
 
       var retrieved = ClientTransactionMock.GetObjectForDataContainer (dataContainer);
 

@@ -451,7 +451,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void DiscardWithoutDomainObjectThrows ()
     {
       DataContainer dataContainerWithoutDomainObject = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainerWithoutDomainObject.RegisterNewDataContainer (ClientTransactionMock);
+      dataContainerWithoutDomainObject.RegisterWithTransaction (ClientTransactionMock);
 
       PrivateInvoke.InvokeNonPublicMethod (dataContainerWithoutDomainObject, "Delete");
       Assert.Fail ("Expected exception");
@@ -693,7 +693,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID], Is.Null);
 
-      dc.RegisterNewDataContainer (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
 
       Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
@@ -708,7 +708,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
 
-      dc.RegisterNewDataContainer (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
 
       Dev.Null = dc.DomainObject;
     }
@@ -720,8 +720,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterNewDataContainer_Twice ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dc.RegisterNewDataContainer (ClientTransactionMock);
-      dc.RegisterNewDataContainer (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
     }
 
     [Test]
@@ -735,7 +735,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID], Is.Null);
 
-      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
 
       Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
@@ -750,7 +750,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
 
-      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
 
       Dev.Null = dc.DomainObject;
     }
@@ -761,8 +761,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterLoadedDataContainer_Twice ()
     {
       var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      dc.RegisterLoadedDataContainer (ClientTransactionMock);
-      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
+      dc.RegisterWithTransaction (ClientTransactionMock);
     }
 
     [Test]

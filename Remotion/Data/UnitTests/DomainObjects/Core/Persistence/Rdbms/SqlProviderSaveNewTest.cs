@@ -39,8 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     private DataContainer CreateNewDataContainer (ClassDefinition classDefinition)
     {
       DataContainer dataContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (classDefinition));
-      dataContainer.RegisterNewDataContainer (ClientTransactionMock);
-      
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+
       return dataContainer;
     }
 

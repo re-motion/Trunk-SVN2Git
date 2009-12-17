@@ -525,7 +525,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
             "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order",
             DomainObjectIDs.Order1);
 
-        orderTicketContainers[0].RegisterLoadedDataContainer (ClientTransactionMock);
+        orderTicketContainers[0].RegisterWithTransaction (ClientTransactionMock);
 
         orderTicketContainers[0]["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = "C:\newFile.jpg";
 

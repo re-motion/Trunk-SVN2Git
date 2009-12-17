@@ -294,8 +294,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         parentDataContainer.MarkAsChanged();
       parentDataContainer.SetTimestamp (dataContainer.Timestamp);
       parentDataContainer.SetDomainObject (dataContainer.DomainObject);
-      
-      parentDataContainer.RegisterNewDataContainer (ParentTransaction);
+
+      parentDataContainer.RegisterWithTransaction (ParentTransaction);
 
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
     }
@@ -376,7 +376,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var newDiscardedContainer = DataContainer.CreateNew (objectToBeDiscarded.ID);
 
       newDiscardedContainer.SetDomainObject (objectToBeDiscarded);
-      newDiscardedContainer.RegisterNewDataContainer (this);
+      newDiscardedContainer.RegisterWithTransaction (this);
 
       DataManager.PerformDelete (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
 
