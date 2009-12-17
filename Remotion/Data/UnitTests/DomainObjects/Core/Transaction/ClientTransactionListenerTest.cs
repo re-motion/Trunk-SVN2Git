@@ -73,9 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1));
+        _strictListenerMock.Expect (mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Is.Anything));
         _strictListenerMock.Expect (
             mock => mock.ObjectGotID (Arg<DomainObject>.Matches (obj => obj.ID != null), Arg.Is (DomainObjectIDs.ClassWithAllDataTypes1)));
-        _strictListenerMock.Expect (mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Is.Anything));
         _strictListenerMock.Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Matches (doc => doc.Count == 1)));
       }
 
@@ -314,13 +314,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
-        _strictListenerMock.Expect (mock => mock.ObjectGotID (Arg<DomainObject>.Is.Anything, Arg<ObjectID>.Is.Anything));
         _strictListenerMock.Expect (mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Is.Anything));
-
         _strictListenerMock.Expect (
             mock => mock.RelationEndPointMapRegistering (
                         Arg<RelationEndPoint>.Matches (
                             rep => rep.PropertyName == typeof (Company).FullName + ".IndustrialSector" && rep.ObjectID == DomainObjectIDs.Customer1)));
+        _strictListenerMock.Expect (mock => mock.ObjectGotID (Arg<DomainObject>.Is.Anything, Arg<ObjectID>.Is.Anything));
+
 
         _strictListenerMock.Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       }
@@ -368,11 +368,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1));
-        _strictListenerMock.Expect (mock => mock.ObjectGotID (Arg<DomainObject>.Is.Anything, Arg.Is (DomainObjectIDs.ClassWithAllDataTypes1)));
-
         _strictListenerMock.Expect (
             mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Matches (dc => dc.ID == DomainObjectIDs.ClassWithAllDataTypes1)));
 
+        _strictListenerMock.Expect (mock => mock.ObjectGotID (Arg<DomainObject>.Is.Anything, Arg.Is (DomainObjectIDs.ClassWithAllDataTypes1)));
         _strictListenerMock.Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       }
 

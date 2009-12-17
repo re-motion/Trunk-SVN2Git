@@ -216,9 +216,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
         CheckNotDiscarded();
 
         if (_clientTransaction == null)
-          throw new DomainObjectException ("Internal error: ClientTransaction of DataContainer is not set.");
+          throw new InvalidOperationException ("DataContainer has not been registered with a transaction.");
 
         return _clientTransaction;
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance has been registered with a <see cref="ClientTransaction"/>.
+    /// </summary>
+    /// <value>
+    /// 	<see langword="true"/> if this instance has been registered; otherwise, <see langword="false"/>.
+    /// </value>
+    public bool IsRegistered
+    {
+      get 
+      {
+        return _clientTransaction != null;
       }
     }
 
@@ -470,16 +484,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // TODO 1051: Use state to find out whether to register a new DC or an existing one?
     public void RegisterNewDataContainer (ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      if (_clientTransaction != null)
-        throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
-
-      _clientTransaction = clientTransaction;
-      clientTransaction.DataManager.RegisterNewDataContainer (this);
+      RegisterWithTransaction (clientTransaction);
     }
 
     public void RegisterLoadedDataContainer (ClientTransaction clientTransaction)
+    {
+      RegisterWithTransaction (clientTransaction);
+    }
+
+    private void RegisterWithTransaction (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
@@ -488,10 +501,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _clientTransaction = clientTransaction;
 
-      var domainObject = clientTransaction.GetObjectForDataContainer (this);
-      SetDomainObject (domainObject);
-
-      clientTransaction.DataManager.RegisterExistingDataContainer (this);
+      if (_state == DataContainerStateType.New)
+        clientTransaction.DataManager.RegisterNewDataContainer (this);
+      else
+        clientTransaction.DataManager.RegisterExistingDataContainer (this);
     }
 
     internal void PropertyValueChanging (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)

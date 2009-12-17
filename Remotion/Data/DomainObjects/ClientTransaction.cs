@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -790,6 +789,10 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject GetObjectForDataContainer (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+    
+    if (!dataContainer.IsRegistered)
+      throw new InvalidOperationException("The data container must be registered with the ClientTransaction before an object is retrieved for it.");
+    
     DomainObject enlistedObject = GetEnlistedDomainObject (dataContainer.ID);
     if (enlistedObject != null)
       return enlistedObject;
@@ -913,7 +916,10 @@ public abstract class ClientTransaction
       {
         DataContainerCollection additionalDataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
         foreach (DataContainer additionalDataContainer in additionalDataContainers)
+        {
           additionalDataContainer.RegisterLoadedDataContainer (this);
+          additionalDataContainer.SetDomainObject (GetObjectForDataContainer (additionalDataContainer));
+        }
 
         var loadedDomainObjects = additionalDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList().AsReadOnly();
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
@@ -1095,6 +1101,7 @@ public abstract class ClientTransaction
     {
       DataContainer dataContainer = LoadDataContainer (id);
       dataContainer.RegisterLoadedDataContainer (this);
+      dataContainer.SetDomainObject (GetObjectForDataContainer (dataContainer));
 
       Assertion.IsTrue (dataContainer.DomainObject.ID == id);
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
@@ -1140,6 +1147,8 @@ public abstract class ClientTransaction
       if (relatedDataContainer != null)
       {
         relatedDataContainer.RegisterLoadedDataContainer (this);
+        relatedDataContainer.SetDomainObject (GetObjectForDataContainer (relatedDataContainer));
+
 
         var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { relatedDataContainer.DomainObject });
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
@@ -1181,7 +1190,10 @@ public abstract class ClientTransaction
         TransactionEventSink.ObjectLoading (dataContainer.ID);
 
       foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
+      {
         newLoadedDataContainer.RegisterLoadedDataContainer (this);
+        newLoadedDataContainer.SetDomainObject (GetObjectForDataContainer (newLoadedDataContainer));
+      }
 
       // TODO: Consider using LINQ query instead: relatedDataContainers.Select (dc => _dataManager[dc.ID].DomainObject);
       var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (relatedDataContainers);
@@ -1237,8 +1249,10 @@ public abstract class ClientTransaction
     {
       DataContainer dataContainer = LoadDataContainerForExistingObject (domainObject);
       dataContainer.RegisterLoadedDataContainer (this);
+      dataContainer.SetDomainObject (domainObject);
 
       Assertion.IsTrue (dataContainer.DomainObject == domainObject);
+      Assertion.IsTrue (IsEnlisted (domainObject));
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
       Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] == dataContainer);
 

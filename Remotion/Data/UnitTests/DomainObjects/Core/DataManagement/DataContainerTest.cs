@@ -527,7 +527,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (DomainObjectException), ExpectedMessage = "Internal error: ClientTransaction of DataContainer is not set.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "DataContainer has not been registered with a transaction.")]
     public void ErrorWhenNoClientTransaction ()
     {
       DataContainer dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -703,6 +703,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has not been associated with a DomainObject yet.")]
+    public void RegisterNewDataContainer_DoesNotSetDomainObject ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      dc.RegisterNewDataContainer (ClientTransactionMock);
+
+      Dev.Null = dc.DomainObject;
+    }
+
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "This DataContainer has already been registered with a ClientTransaction.")]
     public void RegisterNewDataContainer_Twice ()
@@ -726,12 +738,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dc.RegisterLoadedDataContainer (ClientTransactionMock);
 
       Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (dc.DomainObject, Is.Not.Null);
-      Assert.That (dc.DomainObject, Is.SameAs (ClientTransactionMock.GetObjectForDataContainer (dc)));
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
 
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has not been associated with a DomainObject yet.")]
+    public void RegisterLoadedDataContainer_DoesNotSetDomainObject ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+
+      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+
+      Dev.Null = dc.DomainObject;
     }
 
     [Test]
