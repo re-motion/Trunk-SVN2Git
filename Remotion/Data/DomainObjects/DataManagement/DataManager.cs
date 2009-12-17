@@ -188,7 +188,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     EndDelete (deletedObject, oppositeEndPointRemoveModifications);
   }
 
-  private void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+  internal void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
   {
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
@@ -265,32 +265,9 @@ public class DataManager : ISerializable, IDeserializationCallback
     get { return _discardedDataContainers.Count; }
   }
 
-  internal void CopyDiscardedDataContainers (DataManager source)
+  public IEnumerable<ObjectID> DiscardedObjectIDs
   {
-    ArgumentUtility.CheckNotNull ("source", source);
-
-    foreach (KeyValuePair<ObjectID, DataContainer> discardedItem in source._discardedDataContainers)
-    {
-      ObjectID discardedObjectID = discardedItem.Key;
-      DataContainer discardedDataContainer = discardedItem.Value;
-      CopyDiscardedDataContainer (discardedObjectID, discardedDataContainer);
-    }
-  }
-
-  internal void CopyDiscardedDataContainer (ObjectID discardedObjectID, DataContainer discardedDataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("discardedObjectID", discardedObjectID);
-
-    ArgumentUtility.CheckNotNull ("discardedDataContainer", discardedDataContainer);
-    DataContainer newDiscardedContainer = DataContainer.CreateNew (discardedObjectID);
-
-    newDiscardedContainer.SetClientTransaction (_clientTransaction);
-    newDiscardedContainer.SetDomainObject (discardedDataContainer.DomainObject);
-    newDiscardedContainer.Delete ();
-
-    Assertion.IsTrue (IsDiscarded (newDiscardedContainer.ID),
-        "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");
-    Assertion.IsTrue (GetDiscardedDataContainer (newDiscardedContainer.ID) == newDiscardedContainer);
+    get { return _discardedDataContainers.Keys; }
   }
 
   #region Serialization

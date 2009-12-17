@@ -58,21 +58,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       parentTransaction.NotifyOfSubTransactionCreating ();
       Assertion.IsTrue (parentTransaction.IsReadOnly);
+
       _parentTransaction = parentTransaction;
 
-      DataManager.CopyDiscardedDataContainers (_parentTransaction.DataManager);
-      DiscardDeletedDataContainers (_parentTransaction.DataManager.DataContainerMap);
+      var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
+          .Select (id => _parentTransaction.DataManager.GetDiscardedDataContainer (id).DomainObject);
+      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.GetByState (StateType.Deleted).Cast<DomainObject>();
+      foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
+        MarkAsDiscarded (objectToBeDiscarded);
 
       parentTransaction.NotifyOfSubTransactionCreated (this);
-    }
-
-    private void DiscardDeletedDataContainers (DataContainerMap source)
-    {
-      foreach (DataContainer dataContainer in source)
-      {
-        if (dataContainer.State == StateType.Deleted)
-          DataManager.CopyDiscardedDataContainer (dataContainer.ID, dataContainer);
-      }
     }
 
     public override ClientTransaction ParentTransaction
@@ -374,6 +369,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           parentEndPoint.SetValueFrom (endPoint);
         }
       }
+    }
+
+    private void MarkAsDiscarded (DomainObject objectToBeDiscarded)
+    {
+      var newDiscardedContainer = DataContainer.CreateNew (objectToBeDiscarded.ID);
+
+      newDiscardedContainer.SetDomainObject (objectToBeDiscarded);
+      newDiscardedContainer.RegisterNewDataContainer (this);
+
+      DataManager.PerformDelete (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
+
+      Assertion.IsTrue (DataManager.IsDiscarded (newDiscardedContainer.ID),
+          "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");
+      Assertion.IsTrue (DataManager.GetDiscardedDataContainer (newDiscardedContainer.ID) == newDiscardedContainer);
     }
   }
 }
