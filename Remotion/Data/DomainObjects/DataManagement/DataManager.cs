@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -151,7 +152,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Commit ()
   {
-    var deletedObjects = _dataContainerMap.GetByState (StateType.Deleted);
+    var deletedObjects = _dataContainerMap.GetByState (StateType.Deleted).ToList();
     foreach (var deletedObject in deletedObjects)
       Discard (deletedObject);
 
@@ -161,7 +162,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Rollback ()
   {
-    var newObjects = _dataContainerMap.GetByState (StateType.New);
+    var newObjects = _dataContainerMap.GetByState (StateType.New).ToList();
     foreach (var newObject in newObjects)
       Discard (newObject);
 
@@ -172,7 +173,10 @@ public class DataManager : ISerializable, IDeserializationCallback
   private void Discard (DataContainer dataContainer)
   {
     foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      _relationEndPointMap.Discard (endPointID);
+    {
+      if (_relationEndPointMap[endPointID] != null)
+        _relationEndPointMap.Discard (endPointID);
+    }
 
     _dataContainerMap.Discard (dataContainer.ID);
     MarkDiscarded (dataContainer);

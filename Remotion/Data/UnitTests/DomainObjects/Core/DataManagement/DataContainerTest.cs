@@ -1004,6 +1004,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (propertyChangedCalled, Is.True);
     }
 
+    [Test]
+    public void GetForeignKeyProperty_Virtual ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      var endPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
+      Assert.That (dc.GetForeignKeyProperty (endPointID), Is.Null);
+    }
+
+    [Test]
+    public void GetForeignKeyProperty_NonVirtual ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      var endPointID = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
+      Assert.That (dc.GetForeignKeyProperty (endPointID), Is.Not.Null);
+      Assert.That (dc.GetForeignKeyProperty (endPointID), Is.SameAs (dc.PropertyValues[typeof (OrderTicket) + ".Order"]));
+    }
+
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);

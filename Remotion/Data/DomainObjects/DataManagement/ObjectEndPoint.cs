@@ -24,6 +24,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
+    private PropertyValue _foreignKeyProperty;
+
     private ObjectID _originalOppositeObjectID;
     private ObjectID _oppositeObjectID;
     private bool _hasBeenTouched;
@@ -31,15 +33,35 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ObjectEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
+        PropertyValue foreignKeyProperty,
         ObjectID oppositeObjectID)
         : base (clientTransaction, id)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("id", id);
 
+      if (id.Definition.IsVirtual != (foreignKeyProperty == null))
+      {
+        throw new ArgumentException (
+            "Virtual end points cannot have a foreign key property, non-virtual properties must have a foreign key property.", 
+            "foreignKeyProperty");
+      }
+
+      if (foreignKeyProperty != null && foreignKeyProperty.Definition.PropertyType != typeof (ObjectID))
+      {
+        throw new ArgumentException ("The foreign key property must have a property type of ObjectID.", "foreignKeyProperty");
+      }
+
+      _foreignKeyProperty = foreignKeyProperty;
       _oppositeObjectID = oppositeObjectID;
+
       _originalOppositeObjectID = oppositeObjectID;
       _hasBeenTouched = false;
+    }
+
+    public PropertyValue ForeignKeyProperty
+    {
+      get { return _foreignKeyProperty; }
     }
 
     public ObjectID OppositeObjectID
@@ -50,12 +72,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _oppositeObjectID = value;
         _hasBeenTouched = true;
 
-        if (!IsVirtual)
-        {
-          var dataContainer = ClientTransaction.GetDataContainer (this.GetDomainObject ());
-          var foreignKeyProperty = dataContainer.PropertyValues[PropertyName];
-          foreignKeyProperty.SetRelationValue (_oppositeObjectID);
-        }
+        if (_foreignKeyProperty != null)
+          _foreignKeyProperty.SetRelationValue (_oppositeObjectID);
       }
     }
 
@@ -73,7 +91,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get { return _hasBeenTouched; }
     }
-
+    
     public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
     {
       RelationEndPointValueChecker.CheckClientTransaction (
@@ -213,6 +231,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = info.GetBoolValue ();
       _oppositeObjectID = info.GetValueForHandle<ObjectID>();
       _originalOppositeObjectID = _hasBeenTouched ? info.GetValueForHandle<ObjectID> () : _oppositeObjectID;
+
+      // TODO 1883: The next line should be removed when a better serialization mechanism is found, _foreignKeyProperty should again be readonly.
+      info.DeserializationFinished += (sender, args) => 
+          _foreignKeyProperty = Definition.IsVirtual 
+              ? null 
+              : ClientTransaction.DataManager.DataContainerMap[ObjectID].PropertyValues[PropertyName];
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)

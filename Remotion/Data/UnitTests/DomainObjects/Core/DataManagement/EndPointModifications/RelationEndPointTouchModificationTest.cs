@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       base.SetUp ();
 
       var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
-      _endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
       _modification = new RelationEndPointTouchModification (_endPoint);
     }

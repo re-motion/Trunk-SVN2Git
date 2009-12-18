@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
   public class NullEndPointModificationTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
-    private ObjectEndPoint _endPointMock;
+    private IEndPoint _endPointMock;
     private IEndPoint _oldEndPointStub;
     private IEndPoint _newEndPointStub;
     private Order _oldRelatedObject;
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
           DomainObjectIDs.Computer1,
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
-      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
+      _endPointMock = _mockRepository.StrictMock<IEndPoint> ();
 
       _oldRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
       _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);

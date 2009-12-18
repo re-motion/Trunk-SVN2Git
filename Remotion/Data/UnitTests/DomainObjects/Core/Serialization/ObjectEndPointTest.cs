@@ -17,11 +17,11 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
@@ -72,6 +72,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
       Assert.AreEqual (DomainObjectIDs.Employee1, _endPoint.OppositeObjectID);
       Assert.AreEqual (DomainObjectIDs.Employee3, _endPoint.OriginalOppositeObjectID);
+    }
+
+    [Test]
+    public void ForeignKeyProperty_Null ()
+    {
+      Order.GetObject (DomainObjectIDs.Order1);
+      var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
+      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+      Assert.That (endPoint.ForeignKeyProperty, Is.Null);
+
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
+    
+      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Null);
+    }
+
+    [Test]
+    public void ForeignKeyProperty_NotNull ()
+    {
+      OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var id = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
+      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+      Assert.That (endPoint.ForeignKeyProperty, Is.Not.Null);
+
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
+
+      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Not.Null);
+      var expectedForeignKeyProperty = ((ClientTransactionMock) deserializedEndPoint.ClientTransaction).DataManager
+          .DataContainerMap[DomainObjectIDs.OrderTicket1].PropertyValues[typeof (OrderTicket) + ".Order"];
+      Assert.That (deserializedEndPoint.ForeignKeyProperty,  Is.SameAs (expectedForeignKeyProperty));
     }
   }
 }

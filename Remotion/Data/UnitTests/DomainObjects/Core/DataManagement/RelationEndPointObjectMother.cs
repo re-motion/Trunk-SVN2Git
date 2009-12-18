@@ -48,15 +48,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static ObjectEndPoint CreateObjectEndPoint (ObjectID objectID, string propertyName, ObjectID oppositeObjectID)
     {
-      var id = new RelationEndPointID (objectID, propertyName);
-      return new ObjectEndPoint (ClientTransaction.Current, id, oppositeObjectID);
+      var endPointID = new RelationEndPointID (objectID, propertyName);
+      return CreateObjectEndPoint (endPointID, oppositeObjectID);
     }
 
-    public static ObjectEndPoint CreateObjectEndPoint (
-        RelationEndPointID endPointID,
-        ObjectID oppositeObjectID)
+    public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
-      return new ObjectEndPoint (ClientTransaction.Current, endPointID, oppositeObjectID);
+      PropertyValue foreignKeyProperty = null;
+      if (!endPointID.Definition.IsVirtual)
+      {
+        var propertyDefinition = endPointID.Definition.ClassDefinition.GetMandatoryPropertyDefinition (endPointID.Definition.PropertyName);
+        foreignKeyProperty = new PropertyValue (propertyDefinition);
+      }
+
+      //var foreignKeyProperty = domainObject.InternalDataContainer.GetForeignKeyProperty (endPointID);
+
+      return new ObjectEndPoint (ClientTransaction.Current, endPointID, foreignKeyProperty, oppositeObjectID);
     }
 
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)

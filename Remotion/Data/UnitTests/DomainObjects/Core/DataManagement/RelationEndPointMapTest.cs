@@ -222,12 +222,175 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterObjectEndPoint_CreatesObjectEndPoint ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var objectEndPoint = _map.RegisterObjectEndPoint (id, null, DomainObjectIDs.OrderTicket1);
+
+      Assert.That (objectEndPoint.ID, Is.EqualTo (id));
+      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+    }
+
+    [Test]
+    public void RegisterObjectEndPoint_RegistersEndPoint ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      var objectEndPoint = _map.RegisterObjectEndPoint (id, null, DomainObjectIDs.OrderTicket1);
+
+      Assert.That (_map[id], Is.SameAs (objectEndPoint));
+    }
+
+    [Test]
+    public void RegisterObjectEndPoint_WithoutForeignKeyProperty ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      Assert.That (id.Definition.IsVirtual, Is.True);
+
+      var objectEndPoint = _map.RegisterObjectEndPoint (id, null, DomainObjectIDs.OrderTicket1);
+
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.Null);
+    }
+
+    [Test]
+    public void RegisterObjectEndPoint_WithForeignKeyProperty ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      Assert.That (id.Definition.IsVirtual, Is.False);
+      var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
+
+      var objectEndPoint = _map.RegisterObjectEndPoint (id, foreignKeyProperty, DomainObjectIDs.OrderTicket1);
+
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
+    }
+
+    [Test]
     public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
       Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
+    }
+
+    [Test]
+    public void RegisterExistingDataContainer_RegistersRealObjectEndPoints ()
+    {
+      var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
+      var dataContainer = DataContainer.CreateForExisting (
+          DomainObjectIDs.OrderTicket1, 
+          null, 
+          pd => pd.PropertyName == foreignKeyPropertyName ? DomainObjectIDs.Order2 :  pd.DefaultValue);
+      var foreignKeyProperty = dataContainer.PropertyValues[foreignKeyPropertyName];
+
+      _map.RegisterExistingDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket) + ".Order");
+      var endPoint = (ObjectEndPoint) _map[expectedID];
+
+      Assert.That (endPoint, Is.Not.Null);
+      Assert.That (endPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
+      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+    }
+
+    [Test]
+    public void RegisterExistingDataContainer_RegistersVirtualObjectEndPoints ()
+    {
+      var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
+      var dataContainer = DataContainer.CreateForExisting (
+          DomainObjectIDs.OrderTicket1,
+          null,
+          pd => pd.PropertyName == foreignKeyPropertyName ? DomainObjectIDs.Order2 : pd.DefaultValue);
+
+      _map.RegisterExistingDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (DomainObjectIDs.Order2, typeof (Order) + ".OrderTicket");
+      var endPoint = (ObjectEndPoint) _map[expectedID];
+
+      Assert.That (endPoint, Is.Not.Null);
+      Assert.That (endPoint.ForeignKeyProperty, Is.Null);
+      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+    }
+
+    [Test]
+    public void RegisterExistingDataContainer_RegistersNoNullObjectEndPoints ()
+    {
+      var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
+      var dataContainer = DataContainer.CreateForExisting (
+          DomainObjectIDs.OrderTicket1,
+          null,
+          pd => pd.PropertyName == foreignKeyPropertyName ? null : pd.DefaultValue);
+
+      _map.RegisterExistingDataContainer (dataContainer);
+
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order) + ".OrderTicket");
+      var expectedID = new RelationEndPointID (null, endPointDefinition);
+
+      Assert.That (_map[expectedID], Is.Null);
+    }
+
+    [Test]
+    public void RegisterExistingDataContainer_RegistersNoCollectionEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+
+      _map.RegisterExistingDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderItems");
+
+      Assert.That (_map[expectedID], Is.Null);
+    }
+
+    [Test]
+    public void RegisterNewDataContainer_RegistersObjectEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      _map.RegisterNewDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
+      var objectEndPoint = (ObjectEndPoint) _map[expectedID];
+      Assert.That (objectEndPoint, Is.Not.Null);
+      Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
+    }
+
+    [Test]
+    public void RegisterNewDataContainer_RegistersObjectEndPoints_WithoutForeignKey ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      _map.RegisterNewDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
+      var objectEndPoint = (ObjectEndPoint) _map[expectedID];
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.Null);
+    }
+
+    [Test]
+    public void RegisterNewDataContainer_RegistersObjectEndPoints_WithForeignKey ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+
+      _map.RegisterNewDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
+      var objectEndPoint = (ObjectEndPoint) _map[expectedID];
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.Not.Null);
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (dataContainer.PropertyValues[typeof (OrderTicket) + ".Order"]));
+    }
+
+    [Test]
+    public void RegisterNewDataContainer_RegistersCollectionEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      _map.RegisterNewDataContainer (dataContainer);
+
+      var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderItems");
+      var collectionEndPoint = (CollectionEndPoint) _map[expectedID];
+      Assert.That (collectionEndPoint, Is.Not.Null);
+      Assert.That (collectionEndPoint.OppositeDomainObjects, Is.Empty);
     }
 
     [Test]

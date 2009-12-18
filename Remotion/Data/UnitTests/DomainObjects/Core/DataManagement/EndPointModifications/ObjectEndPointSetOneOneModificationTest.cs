@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
         + "instead.\r\nParameter name: newRelatedObject")]
     public void Initialization_Same ()
     {
-      var endPoint = new ObjectEndPoint (ClientTransactionMock, GetRelationEndPointID (), OldRelatedObject.ID);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
       new ObjectEndPointSetOneOneModification (endPoint, OldRelatedObject);
     }
 

@@ -56,8 +56,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithInvalidRelationEndPointID ()
     {
-      var id = new ObjectID ("Order", Guid.NewGuid ());
-      RelationEndPointObjectMother.CreateObjectEndPoint (null, id);
+      new ObjectEndPoint (ClientTransactionMock, null, null, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "Virtual end points cannot have a foreign key property, non-virtual properties must have a foreign key property.\r\n"
+        + "Parameter name: foreignKeyProperty")]
+    public void Initialize_NonVirtualEndPoint_NoForeignKeyProperty ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      new ObjectEndPoint (ClientTransactionMock, id, null, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Virtual end points cannot have a foreign key property, non-virtual properties must have a foreign key property.\r\n"
+        + "Parameter name: foreignKeyProperty")]
+    public void Initialize_VirtualEndPoint_WithForeignKeyProperty ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var pd = DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderTicket).FullName + ".Order");
+      new ObjectEndPoint (ClientTransactionMock, id, new PropertyValue (pd), null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The foreign key property must have a property type of ObjectID.\r\nParameter name: foreignKeyProperty")]
+    public void Initialize_ForeignKeyPropertyWithInvalidType ()
+    {
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var pd = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
+      new ObjectEndPoint (ClientTransactionMock, id, new PropertyValue (pd), null);
     }
 
     [Test]
@@ -70,15 +100,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ChangeOppositeObjectID ()
+    public void OppositeObjectID_Set ()
     {
       var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
       _endPoint.OppositeObjectID = newObjectID;
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newObjectID));
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (_oppositeObjectID));
-      Assert.That (((OrderItem)_endPoint.GetDomainObject()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].Value,
-          Is.EqualTo (newObjectID));
+    }
+
+    [Test]
+    public void OppositeObjectID_Set_WithForeignKeyProperty ()
+    {
+      var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
+      _endPoint.OppositeObjectID = newObjectID;
+
+      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (newObjectID));
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newObjectID));
+    }
+
+    [Test]
+    public void OppositeObjectID_Set_WithoutForeignKeyProperty ()
+    {
+      var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
+      var virtualEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket", null);
+      Assert.That (virtualEndPoint.ForeignKeyProperty, Is.Null);
+
+      virtualEndPoint.OppositeObjectID = newObjectID;
+      Assert.That (virtualEndPoint.OppositeObjectID, Is.EqualTo (newObjectID));
     }
 
     [Test]
@@ -266,11 +315,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.IsVirtual, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
-      Assert.That (((OrderItem)_endPoint.GetDomainObject()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.False);
+      Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.False);
 
       _endPoint.Touch();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
-      Assert.That (((OrderItem) _endPoint.GetDomainObject ()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.True);
+      Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.True);
     }
 
     [Test]

@@ -192,10 +192,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
-    public ObjectEndPoint RegisterObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    public ObjectEndPoint RegisterObjectEndPoint (RelationEndPointID endPointID, PropertyValue foreignKeyProperty, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      var objectEndPoint = new ObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID);
+
+      var objectEndPoint = new ObjectEndPoint (_clientTransaction, endPointID, foreignKeyProperty, oppositeObjectID);
       Add (objectEndPoint);
       return objectEndPoint;
     }
@@ -217,22 +218,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       ClassDefinition classDefinition = dataContainer.ClassDefinition;
 
-      var realObjectEndPoints = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions()
-                                where !endPointDefinition.IsVirtual
-                                let oppositeObjectID = (ObjectID) dataContainer.PropertyValues[endPointDefinition.PropertyName].GetValueWithoutEvents (ValueAccess.Current)
-                                let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
-                                select new ObjectEndPoint (ClientTransaction, endPointID, oppositeObjectID);
+      var realObjectEndPointParameters = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions ()
+                                         where !endPointDefinition.IsVirtual
+                                         let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
+                                         let foreignKeyProperty = dataContainer.PropertyValues[endPointDefinition.PropertyName]
+                                         let oppositeObjectID = (ObjectID) foreignKeyProperty.GetValueWithoutEvents (ValueAccess.Current)
+                                         select new { ID = endPointID, ForeignKeyProperty = foreignKeyProperty, OppositeObjectID = oppositeObjectID };
       
-      foreach (var realObjectEndPoint in realObjectEndPoints)
+      foreach (var parameterData in realObjectEndPointParameters)
       {
-        Add (realObjectEndPoint);
+        var realObjectEndPoint = RegisterObjectEndPoint (parameterData.ID, parameterData.ForeignKeyProperty, parameterData.OppositeObjectID);
+        
+        var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
+        Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
 
-        var oppositeEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition();
-        if (oppositeEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
+        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && parameterData.OppositeObjectID != null)
         {
-          var oppositeEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeEndPointDefinition);
-          var oppositeEndPoint = new ObjectEndPoint (ClientTransaction, oppositeEndPointID, realObjectEndPoint.ObjectID);
-          Add (oppositeEndPoint);
+          var oppositeVirtualEndPointID = new RelationEndPointID (parameterData.OppositeObjectID, oppositeVirtualEndPointDefinition);
+          RegisterObjectEndPoint (oppositeVirtualEndPointID, null, realObjectEndPoint.ObjectID);
         }
       }
     }
@@ -244,7 +247,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
       {
         if (endPointID.Definition.Cardinality == CardinalityType.One)
-          RegisterObjectEndPoint (endPointID, null);
+        {
+          var foreignKeyProperty = dataContainer.GetForeignKeyProperty (endPointID);
+          RegisterObjectEndPoint (endPointID, foreignKeyProperty, null);
+        }
         else
         {
           RegisterCollectionEndPoint (endPointID, new DomainObject[0]);

@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Rhino.Mocks;
-using System.Diagnostics;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
@@ -36,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       base.SetUp();
 
-      _endPoint = new ObjectEndPoint (ClientTransactionMock, GetRelationEndPointID(), OldRelatedObject.ID);
+      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
       _modification = CreateModification (_endPoint, NewRelatedObject);
     }
 
@@ -98,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Perform_TouchesEndPoint ()
     {
-      var endPoint = new ObjectEndPoint (ClientTransactionMock, GetRelationEndPointID(), OldRelatedObject.ID);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
       Assert.That (endPoint.HasBeenTouched, Is.False);
 
       var modification = CreateModification (endPoint, NewRelatedObject);

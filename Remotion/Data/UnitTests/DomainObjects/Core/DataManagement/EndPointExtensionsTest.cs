@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetEndPointWithOppositeDefinition ()
     {
       var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
-      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (customer);
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetEndPointWithOppositeDefinition_NullObject ()
     {
       var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
-      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
       var oppositeEndPoint = endPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (null);
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetEndPointWithOppositeDefinition_InvalidType ()
     {
       var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
-      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
       endPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (null);
     }

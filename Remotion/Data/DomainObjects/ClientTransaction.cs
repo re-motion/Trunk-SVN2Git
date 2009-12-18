@@ -1140,6 +1140,10 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+    if (!relationEndPointID.Definition.IsVirtual)
+      throw new ArgumentException ("LoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
+
     using (EnterNonDiscardingScope ())
     {
       DataContainer relatedDataContainer = LoadRelatedDataContainer (relationEndPointID);
@@ -1157,7 +1161,7 @@ public abstract class ClientTransaction
       }
       else
       {
-        DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null);
+        DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null, null);
         return null;
       }
     }

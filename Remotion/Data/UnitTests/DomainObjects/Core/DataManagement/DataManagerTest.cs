@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -429,6 +430,161 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
         Assert.IsTrue (_dataManager.IsDiscarded (orderItem1.ID));
       }
+    }
+
+    [Test]
+    public void Commit_CommitsRelationEndPointMap ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterNewDataContainer (dataContainer);
+
+      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      endPoint.OppositeObjectID = DomainObjectIDs.Order2;
+
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      _dataManager.Commit ();
+
+      Assert.That (endPoint.HasChanged, Is.False);
+      Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
+    }
+
+    [Test]
+    public void Commit_CommitsDataContainerMap ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterNewDataContainer (dataContainer);
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
+      
+      _dataManager.Commit ();
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Commit_DiscardsDeletedEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+
+      dataContainer.Delete ();
+
+      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      _dataManager.Commit ();
+
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void Commit_DiscardsDeletedDataContainers ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+
+      dataContainer.Delete ();
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (dataContainer.IsDiscarded, Is.False);
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Not.Null);
+
+      _dataManager.Commit ();
+
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+    }
+
+    [Test]
+    public void Commit_MarksDeletedDataContainersAsDiscarded ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+
+      dataContainer.Delete ();
+
+      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.False);
+
+      _dataManager.Commit ();
+
+      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.True);
+    }
+
+    [Test]
+    public void Rollback_RollsBackRelationEndPointMap ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+
+      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      endPoint.OppositeObjectID = DomainObjectIDs.Order2;
+
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      _dataManager.Rollback ();
+
+      Assert.That (endPoint.HasChanged, Is.False);
+      Assert.That (endPoint.OppositeObjectID, Is.Null);
+    }
+
+    [Test]
+    public void Rollback_RollsBackDataContainerMap ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+
+      dataContainer.Delete ();
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
+
+      _dataManager.Rollback ();
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Rollback_DiscardsNewEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterNewDataContainer (dataContainer);
+
+      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      _dataManager.Rollback ();
+
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void Rollback_DiscardsNewDataContainers ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterNewDataContainer (dataContainer);
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
+      Assert.That (dataContainer.IsDiscarded, Is.False);
+
+      _dataManager.Rollback ();
+
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+    }
+
+    [Test]
+    public void Rollback_MarksNewDataContainersAsDiscarded ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterNewDataContainer (dataContainer);
+
+      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.False);
+
+      _dataManager.Rollback ();
+
+      Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.True);
     }
 
     private DataContainer CreateOrder1DataContainer ()

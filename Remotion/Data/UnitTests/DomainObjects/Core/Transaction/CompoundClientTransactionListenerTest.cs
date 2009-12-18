@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
@@ -162,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
 
       var id = new RelationEndPointID (order.ID, typeof (Order).FullName + ".Customer");
-      var endPoint = new ObjectEndPoint (ClientTransactionMock, id, null);
+      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapRegistering"),
