@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections;
+using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
+using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -57,6 +59,25 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     get { return _dataContainers.Count; }
   }
 
+  public IEnumerable<DataContainer> GetByState (StateType state)
+  {
+    ArgumentUtility.CheckValidEnumValue ("state", state);
+
+    return _dataContainers.Cast<DataContainer> ().Where (dc => dc.State == state);
+  }
+
+  public void Commit ()
+  {
+    foreach (DataContainer dataContainer in _dataContainers)
+      dataContainer.Commit ();
+  }
+
+  public void Rollback ()
+  {
+    foreach (DataContainer dataContainer in _dataContainers)
+      dataContainer.Rollback();
+  }
+
   public DomainObject GetObjectWithoutLoading (ObjectID id, bool includeDeleted)
   {
     ArgumentUtility.CheckNotNull ("id", id);
@@ -80,16 +101,16 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     _dataContainers.Add (dataContainer);
   }
 
-  public void PerformDelete (DataContainer dataContainer)
+  public void PerformDelete2 (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
     CheckClientTransactionForDeletion (dataContainer);
 
     if (dataContainer.State == StateType.New)
-      Remove(dataContainer);    
+      Discard2(dataContainer);    
   }
 
-  private void Remove (DataContainer dataContainer)
+  private void Discard2 (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
     _transactionEventSink.DataContainerMapUnregistering (dataContainer);
@@ -97,38 +118,55 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     _dataContainers.Remove (dataContainer);
   }
 
-  public void Commit ()
+  public void Discard (ObjectID id)
+  {
+    ArgumentUtility.CheckNotNull ("id", id);
+    
+    var dataContainer = this[id];
+    if (dataContainer == null)
+    {
+      var message = string.Format ("Data container '{0}' is not part of this map.", id);
+      throw new ArgumentException (message, "id");
+    }
+
+    _transactionEventSink.DataContainerMapUnregistering (dataContainer);
+
+    _dataContainers.Remove (dataContainer);
+    dataContainer.Discard ();
+  }
+
+  public void Commit2 ()
   {
     for (int i = _dataContainers.Count - 1; i >= 0; i--)
     {
       DataContainer dataContainer = _dataContainers[i];
       
       if (dataContainer.State == StateType.Deleted)
-        Remove (dataContainer);
+        Discard2 (dataContainer);
 
-      dataContainer.Commit ();
+      dataContainer.Commit2 ();
     }
   }
 
-  public void Rollback ()
+  public void Rollback2 ()
   {
     for (int i = _dataContainers.Count - 1; i >= 0; i--)
     {
       DataContainer dataContainer = _dataContainers[i];
 
-      Rollback(dataContainer);
+      Rollback2(dataContainer);
     }
   }
 
-  public void Rollback (DataContainer dataContainer)
+  public void Rollback2 (DataContainer dataContainer)
   {
     if (dataContainer.State == StateType.New)
-      Remove (dataContainer);
+      Discard2 (dataContainer);
 
-    dataContainer.Rollback ();
+    dataContainer.Rollback2 ();
   }
 
-  public DomainObjectCollection GetByState (StateType state)
+  public DomainObjectCollection GetByState2 (StateType state)
   {
     ArgumentUtility.CheckValidEnumValue ("state", state);
 

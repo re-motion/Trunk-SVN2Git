@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
           .Select (id => _parentTransaction.DataManager.GetDiscardedDataContainer (id).DomainObject);
-      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.GetByState (StateType.Deleted).Cast<DomainObject>();
+      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.GetByState2 (StateType.Deleted).Cast<DomainObject>();
       foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
         MarkAsDiscarded (objectToBeDiscarded);
 
@@ -239,7 +239,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       thisDataContainer.SetPropertyValuesFrom (parentDataContainer);
       thisDataContainer.SetTimestamp (parentDataContainer.Timestamp);
       thisDataContainer.SetDomainObject (parentDataContainer.DomainObject);
-      thisDataContainer.Commit(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
+      thisDataContainer.Commit2(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
 
       return thisDataContainer;
     }
@@ -336,10 +336,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       
       // do not pass any opposite end point modifications to PerformDelete - this method only persists changes made directly to the deleted object
       var emptyOppositeBidirectionalEndPointModification = new CompositeRelationModificationWithEvents ();
-      ParentTransaction.DataManager.RelationEndPointMap.PerformDelete (domainObject, emptyOppositeBidirectionalEndPointModification);
-      ParentTransaction.DataManager.DataContainerMap.PerformDelete (parentDataContainer);
+      ParentTransaction.DataManager.RelationEndPointMap.PerformDelete2 (domainObject, emptyOppositeBidirectionalEndPointModification);
+      ParentTransaction.DataManager.DataContainerMap.PerformDelete2 (parentDataContainer);
     
-      parentDataContainer.Delete ();
+      parentDataContainer.Delete2 ();
     }
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
@@ -378,7 +378,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       newDiscardedContainer.SetDomainObject (objectToBeDiscarded);
       newDiscardedContainer.RegisterWithTransaction (this);
 
-      DataManager.PerformDelete (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
+      DataManager.PerformDelete2 (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
 
       Assertion.IsTrue (DataManager.IsDiscarded (newDiscardedContainer.ID),
           "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");

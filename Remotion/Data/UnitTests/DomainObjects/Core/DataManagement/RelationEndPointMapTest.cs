@@ -20,15 +20,17 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
   public class RelationEndPointMapTest : ClientTransactionBaseTest
   {
-    #region Setup/Teardown
+    private RelationEndPointMap _map;
 
     public override void SetUp ()
     {
@@ -37,34 +39,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map = ClientTransactionMock.DataManager.RelationEndPointMap;
     }
 
-    #endregion
-
-    private RelationEndPointMap _map;
-
     [Test]
     public void CommitForDeletedObject ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
-      Assert.IsTrue (_map.Count > 0);
+      Assert.That (_map.Count > 0, Is.True);
 
       computer.Delete();
 
       var deletedDomainObjects = new DomainObjectCollection();
       deletedDomainObjects.Add (computer);
 
-      _map.Commit (deletedDomainObjects);
+      _map.Commit2 (deletedDomainObjects);
 
-      Assert.AreEqual (0, _map.Count);
+      Assert.That (_map.Count, Is.EqualTo (0));
     }
 
     [Test]
     public void DeleteNew ()
     {
       Order newOrder = Order.NewObject();
-      Assert.IsTrue (_map.Count > 0);
+      Assert.That (_map.Count > 0, Is.True);
 
-      _map.PerformDelete (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
-      Assert.AreEqual (0, _map.Count);
+      _map.PerformDelete2 (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
+      Assert.That (_map.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -84,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObjectCollection originalOrderItems = _map.GetOriginalRelatedObjects (endPointID);
       DomainObjectCollection orderItems = _map.GetRelatedObjects (endPointID);
 
-      Assert.IsFalse (ReferenceEquals (originalOrderItems, orderItems));
+      Assert.That (ReferenceEquals (originalOrderItems, orderItems), Is.False);
     }
 
     [Test]
@@ -104,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObject originalOrderTicket = _map.GetOriginalRelatedObject (endPointID);
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
-      Assert.IsTrue (ReferenceEquals (originalOrderTicket, orderTicket));
+      Assert.That (ReferenceEquals (originalOrderTicket, orderTicket), Is.True);
     }
 
     [Test]
@@ -114,9 +112,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       DomainObject orderTicket = _map.GetRelatedObject (endPointID, false);
 
-      Assert.IsNotNull (orderTicket);
-      Assert.AreEqual (DomainObjectIDs.OrderTicket1, orderTicket.ID);
-      Assert.AreSame (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), orderTicket);
+      Assert.That (orderTicket, Is.Not.Null);
+      Assert.That (orderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (orderTicket, Is.SameAs (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1)));
     }
 
     [Test]
@@ -140,9 +138,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
-      Assert.IsNotNull (client);
-      Assert.AreEqual (DomainObjectIDs.Client1, client.ID);
-      Assert.AreEqual (StateType.Deleted, client.State);
+      Assert.That (client, Is.Not.Null);
+      Assert.That (client.ID, Is.EqualTo (DomainObjectIDs.Client1));
+      Assert.That (client.State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
@@ -164,9 +162,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPointID = new RelationEndPointID (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
       DomainObject client = _map.GetRelatedObject (endPointID, true);
-      Assert.IsNotNull (client);
-      Assert.AreSame (newClient, client);
-      Assert.IsTrue (client.IsDiscarded);
+      Assert.That (client, Is.Not.Null);
+      Assert.That (client, Is.SameAs (newClient));
+      Assert.That (client.IsDiscarded, Is.True);
     }
 
     [Test]
@@ -220,17 +218,89 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         order1 = Order.GetObject (DomainObjectIDs.Order1);
       }
 
-      _map.PerformDelete (order1, new CompositeRelationModificationWithEvents());
+      _map.PerformDelete2 (order1, new CompositeRelationModificationWithEvents());
     }
 
     [Test]
     public void RegisterCollectionEndPoint_UsesChangeDetectionStrategy ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
-      var endPoint = (CollectionEndPoint) _map[endPointID];
       Assert.That (endPoint.ChangeDetectionStrategy, Is.SameAs (_map.CollectionEndPointChangeDetectionStrategy));
+    }
+
+    [Test]
+    public void Commit_CommitsEndPoints ()
+    {
+      RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+
+      var addedObject = Order.NewObject ();
+      endPoint.OppositeDomainObjects.Add (addedObject);
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      _map.Commit ();
+
+      Assert.That (endPoint.HasChanged, Is.False);
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { addedObject }));
+    }
+
+    [Test]
+    public void Rollback_RollsBackEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+
+      var addedObject = Order.NewObject ();
+      endPoint.OppositeDomainObjects.Add (addedObject);
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      _map.Rollback ();
+
+      Assert.That (endPoint.HasChanged, Is.False);
+      Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
+    }
+
+    [Test]
+    public void Discard_RemovesEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      _map.Discard (endPointID);
+
+      Assert.That (_map[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void Discard_RaisesNotification_BeforeRemoving ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+      Assert.That (_map[endPointID], Is.Not.Null);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (endPointID))
+          .WhenCalled (mi => Assert.That (_map[endPointID], Is.Not.Null));
+      ClientTransactionMock.AddListener (listenerMock);
+
+      listenerMock.Replay ();
+
+      _map.Discard (endPointID);
+
+      listenerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "End point 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' is "
+        + "not part of this map.\r\nParameter name: endPointID")]
+    public void Discard_NonExistingEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _map.Discard (endPointID);
     }
   }
 }

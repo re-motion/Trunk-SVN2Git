@@ -76,7 +76,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _collectionEndPointChangeDetectionStrategy; }
     }
 
-    public void Commit (DomainObjectCollection deletedDomainObjects)
+    public void Commit ()
+    {
+      foreach (RelationEndPoint endPoint in _relationEndPoints)
+        endPoint.Commit ();
+    }
+
+    public void Rollback ()
+    {
+      foreach (RelationEndPoint endPoint in _relationEndPoints)
+        endPoint.Rollback ();
+    }
+
+    public void Commit2 (DomainObjectCollection deletedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("deletedDomainObjects", deletedDomainObjects);
 
@@ -86,11 +98,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (DomainObject deletedDomainObject in deletedDomainObjects)
       {
         foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).AssociatedRelationEndPointIDs)
-          Remove (endPointID);
+          Discard (endPointID);
       }
     }
 
-    public void Rollback (DomainObjectCollection newDomainObjects)
+    public void Rollback2 (DomainObjectCollection newDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("newDomainObjects", newDomainObjects);
 
@@ -100,12 +112,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (DomainObject newDomainObject in newDomainObjects)
       {
         foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).AssociatedRelationEndPointIDs)
-          Remove (endPointID);
+          Discard (endPointID);
       }
     }
 
     // TODO 1914: Called by DeleteDomainObjectCommand
-    public void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+    public void PerformDelete2 (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
@@ -129,7 +141,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoint.PerformDelete ();
 
         if (deletedObject.TransactionContext[ClientTransaction].State == StateType.New)
-          Remove (endPointID);
+          Discard (endPointID);
       }
     }
 
@@ -180,14 +192,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
-    public void RegisterObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    public ObjectEndPoint RegisterObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       var objectEndPoint = new ObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID);
       Add (objectEndPoint);
+      return objectEndPoint;
     }
 
-    public DomainObjectCollection RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContents)
+    public CollectionEndPoint RegisterCollectionEndPoint (RelationEndPointID endPointID, IEnumerable<DomainObject> initialContents)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("initialContents", initialContents);
@@ -195,7 +208,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, _collectionEndPointChangeDetectionStrategy, initialContents);
       Add (collectionEndPoint);
 
-      return collectionEndPoint.OppositeDomainObjects;
+      return collectionEndPoint;
     }
 
     public void RegisterExistingDataContainer (DataContainer dataContainer)
@@ -309,9 +322,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Add (endPoint);
     }
 
-    private void Remove (RelationEndPointID endPointID)
+    public void Discard (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      if (this[endPointID] == null)
+      {
+        var message = string.Format ("End point '{0}' is not part of this map.", endPointID);
+        throw new ArgumentException (message, "endPointID");
+      }
+
       _transactionEventSink.RelationEndPointMapUnregistering (endPointID);
       _relationEndPoints.Remove (endPointID);
     }

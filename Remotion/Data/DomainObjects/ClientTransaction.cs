@@ -759,7 +759,7 @@ public abstract class ClientTransaction
       DataContainerCollection changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
 
-      _dataManager.Commit();
+      _dataManager.Commit2();
       EndCommit (changedButNotDeletedDomainObjects);
     }
   }
@@ -774,7 +774,7 @@ public abstract class ClientTransaction
       BeginRollback();
       DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (new[] {StateType.Changed, StateType.Deleted});
 
-      _dataManager.Rollback();
+      _dataManager.Rollback2();
 
       EndRollback (changedButNotNewDomainObjects);
     }
@@ -1199,12 +1199,12 @@ public abstract class ClientTransaction
       var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (relatedDataContainers);
       var mergedObjects = mergedContainers.Cast<DataContainer>().Select (dc => dc.DomainObject);
 
-      var domainObjects = _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, mergedObjects);
+      var endPoint = _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, mergedObjects);
 
       var newLoadedDomainObjects = newLoadedDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList().AsReadOnly();
       OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
-      return domainObjects;
+      return endPoint.OppositeDomainObjects;
     }
   }
 

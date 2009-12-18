@@ -35,14 +35,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private PropertyDefinition _nameDefinition;
     private PropertyValue _nameProperty;
+
     private DataContainer _newDataContainer;
     private DataContainer _existingDataContainer;
+    private DataContainer _deletedDataContainer;
+    private DataContainer _discardedDataContainer;
+    private ObjectID _discardedObjectID;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      Guid idValue = Guid.NewGuid();
+      var idValue = Guid.NewGuid();
       ReflectionBasedClassDefinition orderClass =
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
 
@@ -51,6 +55,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           new ObjectID ("Order", idValue),
           null,
           propertyDefinition => propertyDefinition.DefaultValue);
+
+      _deletedDataContainer = DataContainer.CreateForExisting (
+          new ObjectID ("Order", idValue),
+          null,
+          propertyDefinition => propertyDefinition.DefaultValue);
+      _deletedDataContainer.Delete();
+
+      _discardedObjectID = new ObjectID ("Order", idValue);
+      _discardedDataContainer = DataContainer.CreateNew (_discardedObjectID);
+      _discardedDataContainer.Discard();
 
       _nameDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
           orderClass, "Name", "Name", typeof (string), 100);
@@ -66,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       ObjectID id = DomainObjectIDs.Order1;
       MappingConfiguration.SetCurrent (null);
-      Assert.AreNotSame (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)), id.ClassDefinition);
+      Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
       DataContainer.CreateNew (id);
     }
 
@@ -75,13 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _newDataContainer.PropertyValues.Add (_nameProperty);
 
-      Assert.AreEqual (StateType.New, _newDataContainer.State);
-      Assert.AreEqual ("Arthur Dent", _newDataContainer["Name"]);
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
+      Assert.That (_newDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
 
       _newDataContainer["Name"] = "Zaphod Beeblebrox";
 
-      Assert.AreEqual (StateType.New, _newDataContainer.State);
-      Assert.AreEqual ("Zaphod Beeblebrox", _newDataContainer["Name"]);
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
+      Assert.That (_newDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
@@ -89,13 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _existingDataContainer.PropertyValues.Add (_nameProperty);
 
-      Assert.AreEqual (StateType.Unchanged, _existingDataContainer.State);
-      Assert.AreEqual ("Arthur Dent", _existingDataContainer["Name"]);
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
 
       _existingDataContainer["Name"] = "Zaphod Beeblebrox";
 
-      Assert.AreEqual (StateType.Changed, _existingDataContainer.State);
-      Assert.AreEqual ("Zaphod Beeblebrox", _existingDataContainer["Name"]);
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
@@ -107,15 +121,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _newDataContainer["Name"] = "Zaphod Beeblebrox";
 
-      Assert.AreEqual (StateType.New, _newDataContainer.State);
-      Assert.AreEqual ("Zaphod Beeblebrox", _newDataContainer["Name"]);
-      Assert.AreSame (_nameProperty, eventReceiver.ChangingPropertyValue);
-      Assert.AreEqual ("Arthur Dent", eventReceiver.ChangingOldValue);
-      Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangingNewValue);
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
+      Assert.That (_newDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
+      Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
+      Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
+      Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
 
-      Assert.AreSame (_nameProperty, eventReceiver.ChangedPropertyValue);
-      Assert.AreEqual ("Arthur Dent", eventReceiver.ChangedOldValue);
-      Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangedNewValue);
+      Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (_nameProperty));
+      Assert.That (eventReceiver.ChangedOldValue, Is.EqualTo ("Arthur Dent"));
+      Assert.That (eventReceiver.ChangedNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
@@ -132,12 +146,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
       catch (EventReceiverCancelException)
       {
-        Assert.AreEqual (StateType.New, _newDataContainer.State);
-        Assert.AreEqual ("Arthur Dent", _newDataContainer["Name"]);
-        Assert.AreSame (_nameProperty, eventReceiver.ChangingPropertyValue);
-        Assert.AreEqual ("Arthur Dent", eventReceiver.ChangingOldValue);
-        Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangingNewValue);
-        Assert.AreSame (null, eventReceiver.ChangedPropertyValue);
+        Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
+        Assert.That (_newDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
+        Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
+        Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
+        Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
+        Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (null));
       }
     }
 
@@ -150,16 +164,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _existingDataContainer["Name"] = "Zaphod Beeblebrox";
 
-      Assert.AreEqual (StateType.Changed, _existingDataContainer.State);
-      Assert.AreEqual ("Zaphod Beeblebrox", _existingDataContainer["Name"]);
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
 
-      Assert.AreSame (_nameProperty, eventReceiver.ChangingPropertyValue);
-      Assert.AreEqual ("Arthur Dent", eventReceiver.ChangingOldValue);
-      Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangingNewValue);
+      Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
+      Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
+      Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
 
-      Assert.AreSame (_nameProperty, eventReceiver.ChangedPropertyValue);
-      Assert.AreEqual ("Arthur Dent", eventReceiver.ChangedOldValue);
-      Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangedNewValue);
+      Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (_nameProperty));
+      Assert.That (eventReceiver.ChangedOldValue, Is.EqualTo ("Arthur Dent"));
+      Assert.That (eventReceiver.ChangedNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
@@ -176,12 +190,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
       catch (EventReceiverCancelException)
       {
-        Assert.AreEqual (StateType.Unchanged, _existingDataContainer.State);
-        Assert.AreEqual ("Arthur Dent", _existingDataContainer["Name"]);
-        Assert.AreSame (_nameProperty, eventReceiver.ChangingPropertyValue);
-        Assert.AreEqual ("Arthur Dent", eventReceiver.ChangingOldValue);
-        Assert.AreEqual ("Zaphod Beeblebrox", eventReceiver.ChangingNewValue);
-        Assert.AreSame (null, eventReceiver.ChangedPropertyValue);
+        Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
+        Assert.That (eventReceiver.ChangingPropertyValue, Is.SameAs (_nameProperty));
+        Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Arthur Dent"));
+        Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("Zaphod Beeblebrox"));
+        Assert.That (eventReceiver.ChangedPropertyValue, Is.SameAs (null));
       }
     }
 
@@ -190,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       DataContainer dataContainer = TestDataContainerFactory.CreateOrder1DataContainer();
       var id = (ObjectID) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
-      Assert.IsNotNull (id);
+      Assert.That (id, Is.Not.Null);
     }
 
     [Test]
@@ -205,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       container.PropertyValues.Add (new PropertyValue (reportsToDefinition, null));
 
-      Assert.IsNull (container.GetValue ("ReportsTo"));
+      Assert.That (container.GetValue ("ReportsTo"), Is.Null);
     }
 
     [Test]
@@ -223,12 +237,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer();
 
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
-      Assert.AreEqual (StateType.Changed, container.State);
-      Assert.AreEqual (42, container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"));
+      Assert.That (container.State, Is.EqualTo (StateType.Changed));
+      Assert.That (container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.EqualTo (42));
 
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 1;
-      Assert.AreEqual (StateType.Unchanged, container.State);
-      Assert.AreEqual (1, container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"));
+      Assert.That (container.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.EqualTo (1));
     }
 
     [Test]
@@ -237,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _existingDataContainer.PropertyValues.Add (_nameProperty);
       _existingDataContainer.SetValue ("Name", "Zaphod Beeblebrox");
 
-      Assert.AreEqual ("Zaphod Beeblebrox", _existingDataContainer.GetValue ("Name"));
+      Assert.That (_existingDataContainer.GetValue ("Name"), Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
@@ -247,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       ResourceManager.IsEqualToImage1 (
           (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
-      Assert.IsNull (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
+      Assert.That (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"), Is.Null);
     }
 
     [Test]
@@ -260,7 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
 
       dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
-      Assert.IsNull (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
+      Assert.That (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"), Is.Null);
     }
 
     [Test]
@@ -369,6 +383,177 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (PrivateInvoke.GetNonPublicField (clone, "_clientTransaction"), Is.Null);
     }
 
+    [Test]
+    public void Commit_SetsStateToExisting ()
+    {
+      _newDataContainer.Commit ();
+
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Commit_CommitsPropertyValues ()
+    {
+      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+      propertyValue.Value = 10;
+
+      Assert.That (propertyValue.HasChanged, Is.True);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
+      Assert.That (propertyValue.Value, Is.EqualTo (10));
+
+      _existingDataContainer.Commit ();
+
+      Assert.That (propertyValue.HasChanged, Is.False);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (10));
+      Assert.That (propertyValue.Value, Is.EqualTo (10));
+    }
+
+    [Test]
+    public void Commit_ResetsChangedFlag ()
+    {
+      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+      propertyValue.Value = 10;
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.Commit ();
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Commit_ResetsMarkedChangedFlag ()
+    {
+      _existingDataContainer.MarkAsChanged ();
+      Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.True);
+
+      _existingDataContainer.Commit ();
+
+      Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void Commit_DiscardedDataContainer_Throws ()
+    {
+      _discardedDataContainer.Commit ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Deleted data containers cannot be committed, they have to be discarded.")]
+    public void Commit_DeletedDataContainer_Throws ()
+    {
+      _deletedDataContainer.Commit ();
+    }
+
+    [Test]
+    public void Rollback_SetsStateToExisting ()
+    {
+      _deletedDataContainer.Rollback ();
+
+      Assert.That (_deletedDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Rollback_RollsbackPropertyValues ()
+    {
+      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+      propertyValue.Value = 10;
+
+      Assert.That (propertyValue.HasChanged, Is.True);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
+      Assert.That (propertyValue.Value, Is.EqualTo (10));
+
+      _existingDataContainer.Rollback ();
+
+      Assert.That (propertyValue.HasChanged, Is.False);
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
+      Assert.That (propertyValue.Value, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void Rollback_ResetsChangedFlag ()
+    {
+      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+      propertyValue.Value = 10;
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.Rollback ();
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Rollback_ResetsMarkedChangedFlag ()
+    {
+      _existingDataContainer.MarkAsChanged ();
+      Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.True);
+
+      _existingDataContainer.Rollback ();
+
+      Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void Rollback_DiscardedDataContainer_Throws ()
+    {
+      _discardedDataContainer.Rollback ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "New data containers cannot be rolled back, they have to be discarded.")]
+    public void Rollback_NewDataContainer_Throws ()
+    {
+      _newDataContainer.Rollback ();
+    }
+
+    [Test]
+    public void Delete_SetsStateToDeleted ()
+    {
+      _existingDataContainer.Delete ();
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Deleted));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void Delete_DiscardedDataContainer_Throws ()
+    {
+      _discardedDataContainer.Delete ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "New data containers cannot be deleted, they have to be discarded.")]
+    public void Delete_NewDataContainer_Throws ()
+    {
+      _newDataContainer.Delete ();
+    }
+
+    [Test]
+    public void Discard_SetsDiscardedFlag ()
+    {
+      Assert.That (_newDataContainer.IsDiscarded, Is.False);
+
+      _newDataContainer.Discard ();
+
+      Assert.That (_newDataContainer.IsDiscarded, Is.True);
+    }
+
+    [Test]
+    public void Discard_DiscardsPropertyValues ()
+    {
+      var propertyValue = _newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+      Assert.That (propertyValue.IsDiscarded, Is.False);
+
+      _newDataContainer.Discard ();
+
+      Assert.That (propertyValue.IsDiscarded, Is.True);
+    }
 
     [Test]
     public void SetPropertyValuesFrom_SetsValues ()
@@ -453,28 +638,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer dataContainerWithoutDomainObject = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dataContainerWithoutDomainObject.RegisterWithTransaction (ClientTransactionMock);
 
-      PrivateInvoke.InvokeNonPublicMethod (dataContainerWithoutDomainObject, "Delete");
+      PrivateInvoke.InvokeNonPublicMethod (dataContainerWithoutDomainObject, "Delete2");
       Assert.Fail ("Expected exception");
     }
 
     [Test]
     public void GetIDEvenPossibleWhenDiscarded ()
     {
-      Order order = Order.NewObject();
-      DataContainer dataContainer = order.InternalDataContainer;
-      order.Delete();
-      Assert.IsTrue (dataContainer.IsDiscarded);
-      Assert.AreEqual (order.ID, dataContainer.ID);
+      Assert.That (_discardedDataContainer.IsDiscarded, Is.True);
+      Assert.That (_discardedDataContainer.ID, Is.EqualTo (_discardedObjectID));
     }
 
     [Test]
     public void GetDomainObjectEvenPossibleWhenDiscarded ()
     {
-      Order order = Order.NewObject();
-      DataContainer dataContainer = order.InternalDataContainer;
-      order.Delete();
-      Assert.IsTrue (dataContainer.IsDiscarded);
-      Assert.AreSame (order, dataContainer.DomainObject);
+      var domainObject = Order.NewObject ();
+      var dataContainerWithObject = domainObject.InternalDataContainer;
+      dataContainerWithObject.Discard ();
+
+      Assert.That (dataContainerWithObject.IsDiscarded, Is.True);
+      Assert.That (dataContainerWithObject.DomainObject, Is.SameAs (domainObject));
     }
 
     [Test]
@@ -482,29 +665,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       DataContainer dataContainer = order.InternalDataContainer;
-      Assert.AreEqual (StateType.Unchanged, dataContainer.State);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
       dataContainer.MarkAsChanged();
-      Assert.AreEqual (StateType.Changed, dataContainer.State);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Changed));
 
       ClientTransactionMock.Rollback();
-      Assert.AreEqual (StateType.Unchanged, dataContainer.State);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       SetDatabaseModifyable();
 
       dataContainer.MarkAsChanged();
-      Assert.AreEqual (StateType.Changed, dataContainer.State);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Changed));
 
       ClientTransactionMock.Commit();
-      Assert.AreEqual (StateType.Unchanged, dataContainer.State);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       DataContainer clone = dataContainer.Clone (DomainObjectIDs.Order1);
-      Assert.AreEqual (StateType.Unchanged, clone.State);
+      Assert.That (clone.State, Is.EqualTo (StateType.Unchanged));
 
       dataContainer.MarkAsChanged();
-      Assert.AreEqual (StateType.Changed, dataContainer.State);
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Changed));
 
       clone = dataContainer.Clone (DomainObjectIDs.Order1);
-      Assert.AreEqual (StateType.Changed, clone.State);
+      Assert.That (clone.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]

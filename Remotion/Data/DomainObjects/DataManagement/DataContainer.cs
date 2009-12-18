@@ -245,10 +245,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get
       {
         if (_domainObject == null)
-        {
-          Assertion.IsFalse (IsDiscarded, "DataContainers cannot be discarded when they don't have a DomainObject reference");
           throw new InvalidOperationException ("This DataContainer has not been associated with a DomainObject yet.");
-        }
 
         return _domainObject;
       }
@@ -397,12 +394,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
 
-    internal void Delete ()
+    internal void Delete2 ()
     {
       CheckNotDiscarded();
 
       if (_state == DataContainerStateType.New)  // TODO 1914: Move this if block to DataManager.DeleteDataContainer
-        Discard();
+        Discard2();
 
       _state = DataContainerStateType.Deleted;
     }
@@ -412,7 +409,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _timestamp = timestamp;
     }
 
-    internal void Commit ()
+    internal void Commit2 ()
     {
       CheckNotDiscarded();
 
@@ -420,7 +417,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenChanged = false;
 
       if (_state == DataContainerStateType.Deleted) // TODO 1914: Move this if block to DataManager.CommitDataContainer
-        Discard();
+        Discard2();
       else
       {
         foreach (PropertyValue propertyValue in _propertyValues)
@@ -430,7 +427,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    internal void Rollback ()
+    internal void Rollback2 ()
     {
       CheckNotDiscarded ();
 
@@ -438,7 +435,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenChanged = false;
 
       if (_state == DataContainerStateType.New) // TODO 1914: Move this if block to DataManager.CommitDataContainer
-        Discard();
+        Discard2();
       else
       {
         foreach (PropertyValue propertyValue in _propertyValues)
@@ -446,6 +443,58 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         _state = DataContainerStateType.Existing;
       }
+    }
+
+    public void Commit ()
+    {
+      CheckNotDiscarded ();
+
+      if (_state == DataContainerStateType.Deleted)
+        throw new InvalidOperationException ("Deleted data containers cannot be committed, they have to be discarded.");
+      
+      _hasBeenMarkedChanged = false;
+      _hasBeenChanged = false;
+
+      foreach (PropertyValue propertyValue in _propertyValues)
+        propertyValue.Commit ();
+
+      _state = DataContainerStateType.Existing;
+    }
+
+    public void Rollback ()
+    {
+      CheckNotDiscarded ();
+
+      if (_state == DataContainerStateType.New)
+        throw new InvalidOperationException ("New data containers cannot be rolled back, they have to be discarded.");
+
+      _hasBeenMarkedChanged = false;
+      _hasBeenChanged = false;
+
+      foreach (PropertyValue propertyValue in _propertyValues)
+        propertyValue.Rollback ();
+
+      _state = DataContainerStateType.Existing;
+    }
+
+    public void Delete ()
+    {
+      CheckNotDiscarded ();
+
+      if (_state == DataContainerStateType.New)
+        throw new InvalidOperationException ("New data containers cannot be deleted, they have to be discarded.");
+
+      _state = DataContainerStateType.Deleted;
+    }
+
+    public void Discard ()
+    {
+      CheckNotDiscarded ();
+
+      _propertyValues.Discard ();
+      _clientTransaction = null;
+
+      _isDiscarded = true;
     }
 
     public void SetPropertyValuesFrom (DataContainer source)
@@ -566,7 +615,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return StateType.Unchanged;
     }
 
-    private void Discard ()
+    private void Discard2 ()
     {
       CheckNotDiscarded();
 
