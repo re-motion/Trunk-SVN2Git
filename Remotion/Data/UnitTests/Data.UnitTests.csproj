@@ -351,7 +351,7 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Queries\SubQueryManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\Serialization\Copy of ObjectEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\Serialization\VirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
