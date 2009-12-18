@@ -263,6 +263,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointExtensionsTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RealObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointValueCheckerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithProtectedCtor.cs" />
@@ -350,6 +351,7 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Queries\SubQueryManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\Serialization\Copy of ObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
@@ -546,7 +548,7 @@
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointIDTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointStub.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointTest.cs" />
-    <Compile Include="DomainObjects\Core\Serialization\ObjectEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\Serialization\RealObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DataContainerMapTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DataContainerTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DataManagerTest.cs" />

@@ -53,44 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
-    public void InitializeWithInvalidRelationEndPointID ()
-    {
-      new ObjectEndPoint (ClientTransactionMock, null, null, null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "Virtual end points cannot have a foreign key property, non-virtual properties must have a foreign key property.\r\n"
-        + "Parameter name: foreignKeyProperty")]
-    public void Initialize_NonVirtualEndPoint_NoForeignKeyProperty ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new ObjectEndPoint (ClientTransactionMock, id, null, null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Virtual end points cannot have a foreign key property, non-virtual properties must have a foreign key property.\r\n"
-        + "Parameter name: foreignKeyProperty")]
-    public void Initialize_VirtualEndPoint_WithForeignKeyProperty ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var pd = DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryPropertyDefinition (typeof (OrderTicket).FullName + ".Order");
-      new ObjectEndPoint (ClientTransactionMock, id, new PropertyValue (pd), null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The foreign key property must have a property type of ObjectID.\r\nParameter name: foreignKeyProperty")]
-    public void Initialize_ForeignKeyPropertyWithInvalidType ()
-    {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var pd = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
-      new ObjectEndPoint (ClientTransactionMock, id, new PropertyValue (pd), null);
-    }
-
-    [Test]
     public void InitializeWithNullObjectID ()
     {
       ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);

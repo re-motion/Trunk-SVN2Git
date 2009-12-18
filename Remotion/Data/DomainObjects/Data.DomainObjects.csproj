@@ -148,7 +148,9 @@
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
     <Compile Include="DataManagement\OppositeRelationEndPointFinder.cs" />
     <Compile Include="DataManagement\EndPointExtensions.cs" />
+    <Compile Include="DataManagement\RealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />
+    <Compile Include="DataManagement\VirtualObjectEndPoint.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />
     <Compile Include="DomainObjectCollection.Transformer.cs" />
     <Compile Include="DataManagement\ICollectionEndPointChangeDetectionStrategy.cs" />

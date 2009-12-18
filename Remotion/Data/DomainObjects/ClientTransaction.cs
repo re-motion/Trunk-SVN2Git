@@ -1161,7 +1161,7 @@ public abstract class ClientTransaction
       }
       else
       {
-        DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null, null);
+        DataManager.RelationEndPointMap.RegisterVirtualObjectEndPoint (relationEndPointID, null);
         return null;
       }
     }

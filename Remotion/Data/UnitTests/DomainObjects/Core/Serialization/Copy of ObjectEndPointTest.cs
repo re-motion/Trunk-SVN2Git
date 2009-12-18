@@ -26,9 +26,9 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
   [TestFixture]
-  public class ObjectEndPointTest : ClientTransactionBaseTest
+  public class VirtualObjectEndPointTest : ClientTransactionBaseTest
   {
-    private ObjectEndPoint _endPoint;
+    private VirtualObjectEndPoint _endPoint;
 
     [SetUp]
     public override void SetUp ()
@@ -36,42 +36,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       base.SetUp();
 
       Computer.GetObject (DomainObjectIDs.Computer1);
-      _endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-          new RelationEndPointID (DomainObjectIDs.Computer1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"))];
+      _endPoint = (VirtualObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
+          new RelationEndPointID (DomainObjectIDs.Employee3, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Employee), "Computer"))];
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.ObjectEndPoint' in Assembly "
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.VirtualObjectEndPoint' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
-    public void ObjectEndPointIsNotSerializable ()
+    public void VirtualObjectEndPoint_IsNotSerializable ()
     {
       Serializer.SerializeAndDeserialize (_endPoint);
     }
 
     [Test]
-    public void ObjectEndPointIsFlattenedSerializable ()
+    public void VirtualObjectEndPoint_IsFlattenedSerializable ()
     {
-      ObjectEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.IsNotNull (deserializedEndPoint);
       Assert.AreNotSame (_endPoint, deserializedEndPoint);
     }
 
     [Test]
-    public void ObjectEndPoint_Untouched_Content ()
+    public void UntouchedContent ()
     {
-      ObjectEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.IsFalse (deserializedEndPoint.HasBeenTouched);
     }
 
     [Test]
-    public void ObjectEndPoint_Touched_Content ()
+    public void TouchedContent ()
     {
-      _endPoint.OppositeObjectID = DomainObjectIDs.Employee1;
+      _endPoint.OppositeObjectID = DomainObjectIDs.Computer2;
       ObjectEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
-      Assert.AreEqual (DomainObjectIDs.Employee1, _endPoint.OppositeObjectID);
-      Assert.AreEqual (DomainObjectIDs.Employee3, _endPoint.OriginalOppositeObjectID);
+      Assert.AreEqual (DomainObjectIDs.Computer2, _endPoint.OppositeObjectID);
+      Assert.AreEqual (DomainObjectIDs.Computer1, _endPoint.OriginalOppositeObjectID);
     }
 
     [Test]
@@ -85,22 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
     
       Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Null);
-    }
-
-    [Test]
-    public void ForeignKeyProperty_NotNull ()
-    {
-      OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      var id = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
-      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
-      Assert.That (endPoint.ForeignKeyProperty, Is.Not.Null);
-
-      var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
-
-      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Not.Null);
-      var expectedForeignKeyProperty = ((ClientTransactionMock) deserializedEndPoint.ClientTransaction).DataManager
-          .DataContainerMap[DomainObjectIDs.OrderTicket1].PropertyValues[typeof (OrderTicket) + ".Order"];
-      Assert.That (deserializedEndPoint.ForeignKeyProperty,  Is.SameAs (expectedForeignKeyProperty));
     }
   }
 }

@@ -222,47 +222,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterObjectEndPoint_CreatesObjectEndPoint ()
+    public void RegisterVirtualObjectEndPoint_CreatesVirtualObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var objectEndPoint = _map.RegisterObjectEndPoint (id, null, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
 
       Assert.That (objectEndPoint.ID, Is.EqualTo (id));
+      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
 
     [Test]
-    public void RegisterObjectEndPoint_RegistersEndPoint ()
+    public void RegisterVirtualObjectEndPoint_RegistersEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var objectEndPoint = _map.RegisterObjectEndPoint (id, null, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterVirtualObjectEndPoint (id, DomainObjectIDs.OrderTicket1);
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
 
     [Test]
-    public void RegisterObjectEndPoint_WithoutForeignKeyProperty ()
+    public void RegisterRealObjectEndPoint_CreatesRealObjectEndPoint ()
     {
-      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      Assert.That (id.Definition.IsVirtual, Is.True);
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
 
-      var objectEndPoint = _map.RegisterObjectEndPoint (id, null, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty, DomainObjectIDs.OrderTicket1);
 
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.Null);
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
     }
 
     [Test]
-    public void RegisterObjectEndPoint_WithForeignKeyProperty ()
+    public void RegisterRealObjectEndPoint_RegistersEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      Assert.That (id.Definition.IsVirtual, Is.False);
       var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
 
-      var objectEndPoint = _map.RegisterObjectEndPoint (id, foreignKeyProperty, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty, DomainObjectIDs.OrderTicket1);
 
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
+      Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
 
     [Test]

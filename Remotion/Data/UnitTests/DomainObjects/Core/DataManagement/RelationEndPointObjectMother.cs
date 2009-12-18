@@ -54,16 +54,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
-      PropertyValue foreignKeyProperty = null;
-      if (!endPointID.Definition.IsVirtual)
+      if (endPointID.Definition.IsVirtual)
+      {
+        return new VirtualObjectEndPoint (ClientTransaction.Current, endPointID, oppositeObjectID);
+      }
+      else
       {
         var propertyDefinition = endPointID.Definition.ClassDefinition.GetMandatoryPropertyDefinition (endPointID.Definition.PropertyName);
-        foreignKeyProperty = new PropertyValue (propertyDefinition);
+        var foreignKeyProperty = new PropertyValue (propertyDefinition);
+        return new RealObjectEndPoint (ClientTransaction.Current, endPointID, foreignKeyProperty, oppositeObjectID);
       }
-
-      //var foreignKeyProperty = domainObject.InternalDataContainer.GetForeignKeyProperty (endPointID);
-
-      return new ObjectEndPoint (ClientTransaction.Current, endPointID, foreignKeyProperty, oppositeObjectID);
     }
 
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)

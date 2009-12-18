@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
+  public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
     private PropertyValue _foreignKeyProperty;
 
@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private ObjectID _oppositeObjectID;
     private bool _hasBeenTouched;
 
-    public ObjectEndPoint (
+    protected ObjectEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         PropertyValue foreignKeyProperty,

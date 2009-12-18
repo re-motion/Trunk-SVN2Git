@@ -192,12 +192,31 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
-    public ObjectEndPoint RegisterObjectEndPoint (RelationEndPointID endPointID, PropertyValue foreignKeyProperty, ObjectID oppositeObjectID)
+    public RealObjectEndPoint RegisterRealObjectEndPoint (RelationEndPointID endPointID, PropertyValue foreignKeyProperty, ObjectID oppositeObjectID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.One, "RegisterRealObjectEndPoint", "endPointID");
 
-      var objectEndPoint = new ObjectEndPoint (_clientTransaction, endPointID, foreignKeyProperty, oppositeObjectID);
+      if (endPointID.Definition.IsVirtual)
+        throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "endPointID");
+
+      var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyProperty, oppositeObjectID);
       Add (objectEndPoint);
+
+      return objectEndPoint;
+    }
+
+    public VirtualObjectEndPoint RegisterVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckCardinality (endPointID, CardinalityType.One, "RegisterVirtualObjectEndPoint", "endPointID");
+
+      if (!endPointID.Definition.IsVirtual)
+        throw new ArgumentException ("End point ID must refer to a virtual end point.", "endPointID");
+
+      var objectEndPoint = new VirtualObjectEndPoint (_clientTransaction, endPointID, oppositeObjectID);
+      Add (objectEndPoint);
+
       return objectEndPoint;
     }
 
@@ -205,6 +224,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("initialContents", initialContents);
+      CheckCardinality (endPointID, CardinalityType.Many, "RegisterCollectionEndPoint", "endPointID");
 
       var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, _collectionEndPointChangeDetectionStrategy, initialContents);
       Add (collectionEndPoint);
@@ -227,7 +247,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       
       foreach (var parameterData in realObjectEndPointParameters)
       {
-        var realObjectEndPoint = RegisterObjectEndPoint (parameterData.ID, parameterData.ForeignKeyProperty, parameterData.OppositeObjectID);
+        var realObjectEndPoint = RegisterRealObjectEndPoint (parameterData.ID, parameterData.ForeignKeyProperty, parameterData.OppositeObjectID);
         
         var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
         Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
@@ -235,7 +255,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && parameterData.OppositeObjectID != null)
         {
           var oppositeVirtualEndPointID = new RelationEndPointID (parameterData.OppositeObjectID, oppositeVirtualEndPointDefinition);
-          RegisterObjectEndPoint (oppositeVirtualEndPointID, null, realObjectEndPoint.ObjectID);
+          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
         }
       }
     }
@@ -246,14 +266,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
       {
-        if (endPointID.Definition.Cardinality == CardinalityType.One)
-        {
-          var foreignKeyProperty = dataContainer.GetForeignKeyProperty (endPointID);
-          RegisterObjectEndPoint (endPointID, foreignKeyProperty, null);
-        }
+        if (endPointID.Definition.Cardinality == CardinalityType.Many)
+          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+        else if (endPointID.Definition.IsVirtual)
+          RegisterVirtualObjectEndPoint (endPointID, null);
         else
         {
-          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+          var foreignKeyProperty = dataContainer.GetForeignKeyProperty (endPointID);
+          RegisterRealObjectEndPoint (endPointID, foreignKeyProperty, null);
         }
       }
     }
