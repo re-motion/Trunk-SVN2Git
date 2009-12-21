@@ -233,45 +233,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint;
     }
 
-    public void RegisterExistingDataContainer (DataContainer dataContainer)
+    public void RegisterEndPointsForDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
-
-      var realObjectEndPointIDs = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions ()
-                                         where !endPointDefinition.IsVirtual
-                                         let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
-                                         select endPointID;
-      
-      foreach (var realEndPointID in realObjectEndPointIDs)
-      {
-        var realObjectEndPoint = RegisterRealObjectEndPoint (realEndPointID, dataContainer);
-        
-        var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
-        Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
-
-        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
-        {
-          var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
-          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
-        }
-      }
-    }
-
-    public void RegisterNewDataContainer (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      {
-        if (endPointID.Definition.Cardinality == CardinalityType.Many)
-          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
-        else if (endPointID.Definition.IsVirtual)
-          RegisterVirtualObjectEndPoint (endPointID, null);
-        else
-          RegisterRealObjectEndPoint (endPointID, dataContainer);
-      }
+      if (dataContainer.State == StateType.New)
+        RegisterNewDataContainer (dataContainer);
+      else
+        RegisterExistingDataContainer (dataContainer);
     }
 
     public void CheckMandatoryRelations (DomainObject domainObject)
@@ -361,6 +330,41 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IEnumerator GetEnumerator ()
     {
       return _relationEndPoints.GetEnumerator();
+    }
+
+    private void RegisterNewDataContainer (DataContainer dataContainer)
+    {
+      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
+      {
+        if (endPointID.Definition.Cardinality == CardinalityType.Many)
+          RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
+        else if (endPointID.Definition.IsVirtual)
+          RegisterVirtualObjectEndPoint (endPointID, null);
+        else
+          RegisterRealObjectEndPoint (endPointID, dataContainer);
+      }
+    }
+
+    private void RegisterExistingDataContainer (DataContainer dataContainer)
+    {
+      var realObjectEndPointIDs = from endPointDefinition in dataContainer.ClassDefinition.GetRelationEndPointDefinitions ()
+                                  where !endPointDefinition.IsVirtual
+                                  let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
+                                  select endPointID;
+
+      foreach (var realEndPointID in realObjectEndPointIDs)
+      {
+        var realObjectEndPoint = RegisterRealObjectEndPoint (realEndPointID, dataContainer);
+
+        var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
+        Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
+
+        if (oppositeVirtualEndPointDefinition.Cardinality == CardinalityType.One && realObjectEndPoint.OppositeObjectID != null)
+        {
+          var oppositeVirtualEndPointID = new RelationEndPointID (realObjectEndPoint.OppositeObjectID, oppositeVirtualEndPointDefinition);
+          RegisterVirtualObjectEndPoint (oppositeVirtualEndPointID, realObjectEndPoint.ObjectID);
+        }
+      }
     }
 
     private void CheckCardinality (

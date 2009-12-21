@@ -219,6 +219,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void RegisterDataContainer_RegistersDataContainerInMap ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
+    }
+
+    [Test]
+    public void RegisterDataContainer_RegistersEndPointsInMap ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+    }
+
+    [Test]
     public void Commit ()
     {
       DataContainer container = CreateOrder1DataContainer();
@@ -436,7 +459,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      _dataManager.RegisterNewDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -454,7 +477,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_CommitsDataContainerMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterNewDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
       
@@ -467,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_DiscardsDeletedEndPoints ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterExistingDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
 
@@ -483,7 +506,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_DiscardsDeletedDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterExistingDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
 
@@ -501,7 +524,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_MarksDeletedDataContainersAsDiscarded ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterExistingDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
 
@@ -516,7 +539,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RollsBackRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterExistingDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
@@ -534,7 +557,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RollsBackDataContainerMap ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
-      _dataManager.RegisterExistingDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
 
@@ -549,7 +572,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_DiscardsNewEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      _dataManager.RegisterNewDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
@@ -563,7 +586,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_DiscardsNewDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterNewDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
       Assert.That (dataContainer.IsDiscarded, Is.False);
@@ -578,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_MarksNewDataContainersAsDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _dataManager.RegisterNewDataContainer (dataContainer);
+      _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.False);
 

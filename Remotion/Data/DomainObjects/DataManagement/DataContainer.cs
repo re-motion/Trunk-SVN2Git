@@ -540,9 +540,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = clientTransaction;
 
       if (_state == DataContainerStateType.New)
-        clientTransaction.DataManager.RegisterNewDataContainer (this);
+      {
+        clientTransaction.DataManager.RegisterDataContainer (this);
+      }
       else
-        clientTransaction.DataManager.RegisterExistingDataContainer (this);
+      {
+        clientTransaction.DataManager.RegisterDataContainer (this);
+      }
     }
 
     internal void PropertyValueChanging (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)

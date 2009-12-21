@@ -134,20 +134,12 @@ public class DataManager : ISerializable, IDeserializationCallback
     return (Array.IndexOf (states, state) >= 0);
   }
 
-  public void RegisterExistingDataContainer (DataContainer dataContainer)
+  public void RegisterDataContainer (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
     _dataContainerMap.Register (dataContainer);
-    _relationEndPointMap.RegisterExistingDataContainer (dataContainer);
-  }
-
-  public void RegisterNewDataContainer (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-    _dataContainerMap.Register (dataContainer);
-    _relationEndPointMap.RegisterNewDataContainer (dataContainer);
+    _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
   }
 
   public void Commit ()

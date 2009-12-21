@@ -275,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterExistingDataContainer_RegistersRealObjectEndPoints ()
+    public void RegisterEndPointsForDataContainer_Existing_RegistersRealObjectEndPoints ()
     {
       var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
       var dataContainer = DataContainer.CreateForExisting (
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           pd => pd.PropertyName == foreignKeyPropertyName ? DomainObjectIDs.Order2 :  pd.DefaultValue);
       var foreignKeyProperty = dataContainer.PropertyValues[foreignKeyPropertyName];
 
-      _map.RegisterExistingDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket) + ".Order");
       var endPoint = (RealObjectEndPoint) _map[expectedID];
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterExistingDataContainer_RegistersVirtualObjectEndPoints ()
+    public void RegisterEndPointsForDataContainer_Existing_RegistersVirtualObjectEndPoints ()
     {
       var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
       var dataContainer = DataContainer.CreateForExisting (
@@ -303,7 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           null,
           pd => pd.PropertyName == foreignKeyPropertyName ? DomainObjectIDs.Order2 : pd.DefaultValue);
 
-      _map.RegisterExistingDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.Order2, typeof (Order) + ".OrderTicket");
       var endPoint = (VirtualObjectEndPoint) _map[expectedID];
@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterExistingDataContainer_RegistersNoNullObjectEndPoints ()
+    public void RegisterEndPointsForDataContainer_Existing_RegistersNoNullObjectEndPoints ()
     {
       var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
       var dataContainer = DataContainer.CreateForExisting (
@@ -321,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           null,
           pd => pd.PropertyName == foreignKeyPropertyName ? null : pd.DefaultValue);
 
-      _map.RegisterExistingDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order) + ".OrderTicket");
       var expectedID = new RelationEndPointID (null, endPointDefinition);
@@ -330,11 +330,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterExistingDataContainer_RegistersNoCollectionEndPoints ()
+    public void RegisterEndPointsForDataContainer_Existing_RegistersNoCollectionEndPoints ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
 
-      _map.RegisterExistingDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderItems");
 
@@ -342,11 +342,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterNewDataContainer_RegistersVirtualObjectEndPoints ()
+    public void RegisterEndPointsForDataContainer_New_RegistersVirtualObjectEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
 
-      _map.RegisterNewDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
       var objectEndPoint = (VirtualObjectEndPoint) _map[expectedID];
@@ -355,11 +355,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterNewDataContainer_RegistersRealObjectEndPoints ()
+    public void RegisterEndPointsForDataContainer_New_RegistersRealObjectEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
 
-      _map.RegisterNewDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
       var objectEndPoint = (RealObjectEndPoint) _map[expectedID];
@@ -368,11 +368,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterNewDataContainer_RegistersCollectionEndPoints ()
+    public void RegisterEndPointsForDataContainer_New_RegistersCollectionEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
 
-      _map.RegisterNewDataContainer (dataContainer);
+      _map.RegisterEndPointsForDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderItems");
       var collectionEndPoint = (CollectionEndPoint) _map[expectedID];

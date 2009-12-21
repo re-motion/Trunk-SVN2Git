@@ -692,7 +692,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\PropertyValueTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DataManagement\RegisterInRelationEndPointMapTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\RegisterInRelationEndPointMapTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointCollectionTest.cs">
