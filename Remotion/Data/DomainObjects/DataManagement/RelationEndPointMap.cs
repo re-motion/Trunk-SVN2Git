@@ -192,15 +192,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return collectionEndPoint.OriginalOppositeDomainObjectsContents;
     }
 
-    public RealObjectEndPoint RegisterRealObjectEndPoint (RelationEndPointID endPointID, PropertyValue foreignKeyProperty)
+    public RealObjectEndPoint RegisterRealObjectEndPoint (RelationEndPointID endPointID, DataContainer foreignKeyDataContainer)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
       CheckCardinality (endPointID, CardinalityType.One, "RegisterRealObjectEndPoint", "endPointID");
 
       if (endPointID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "endPointID");
 
-      var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyProperty);
+      var objectEndPoint = new RealObjectEndPoint (_clientTransaction, endPointID, foreignKeyDataContainer);
       Add (objectEndPoint);
 
       return objectEndPoint;
@@ -238,15 +239,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       ClassDefinition classDefinition = dataContainer.ClassDefinition;
 
-      var realObjectEndPointParameters = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions ()
+      var realObjectEndPointIDs = from endPointDefinition in classDefinition.GetRelationEndPointDefinitions ()
                                          where !endPointDefinition.IsVirtual
                                          let endPointID = new RelationEndPointID (dataContainer.ID, endPointDefinition)
-                                         let foreignKeyProperty = dataContainer.PropertyValues[endPointDefinition.PropertyName]
-                                         select new { ID = endPointID, ForeignKeyProperty = foreignKeyProperty };
+                                         select endPointID;
       
-      foreach (var parameterData in realObjectEndPointParameters)
+      foreach (var realEndPointID in realObjectEndPointIDs)
       {
-        var realObjectEndPoint = RegisterRealObjectEndPoint (parameterData.ID, parameterData.ForeignKeyProperty);
+        var realObjectEndPoint = RegisterRealObjectEndPoint (realEndPointID, dataContainer);
         
         var oppositeVirtualEndPointDefinition = realObjectEndPoint.Definition.GetOppositeEndPointDefinition ();
         Assertion.IsTrue (oppositeVirtualEndPointDefinition.IsVirtual);
@@ -270,10 +270,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         else if (endPointID.Definition.IsVirtual)
           RegisterVirtualObjectEndPoint (endPointID, null);
         else
-        {
-          var foreignKeyProperty = dataContainer.GetForeignKeyProperty (endPointID);
-          RegisterRealObjectEndPoint (endPointID, foreignKeyProperty);
-        }
+          RegisterRealObjectEndPoint (endPointID, dataContainer);
       }
     }
 

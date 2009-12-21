@@ -221,17 +221,18 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
   protected DataContainerMap (FlattenedDeserializationInfo info)
       : this (info.GetValueForHandle<ClientTransaction>())
   {
-    DataContainer[] dataContainers = info.GetArray<DataContainer>();
-    foreach (DataContainer dataContainer in dataContainers)
-      _dataContainers.Add (dataContainer);
+    var dataContainerCount = info.GetValue<int> ();
+    for (int i = 0; i < dataContainerCount; ++i)
+      _dataContainers.Add (info.GetValueForHandle<DataContainer> ());
   }
 
   void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
   {
     info.AddHandle (_clientTransaction);
-    DataContainer[] dataContainers = new DataContainer[_dataContainers.Count];
-    _dataContainers.CopyTo (dataContainers, 0);
-    info.AddArray (dataContainers);
+    
+    info.AddValue (_dataContainers.Count);
+    foreach (DataContainer dataContainer in _dataContainers)
+      info.AddHandle (dataContainer);
   }
   #endregion
 }

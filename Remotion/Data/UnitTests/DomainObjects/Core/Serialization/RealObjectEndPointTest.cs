@@ -84,10 +84,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
 
+      Assert.That (deserializedEndPoint.ForeignKeyDataContainer, Is.Not.Null);
       Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Not.Null);
-      var expectedForeignKeyProperty = ((ClientTransactionMock) deserializedEndPoint.ClientTransaction).DataManager
-          .DataContainerMap[DomainObjectIDs.OrderTicket1].PropertyValues[typeof (OrderTicket) + ".Order"];
+      var expectedForeignKeyProperty = deserializedEndPoint.ForeignKeyDataContainer.PropertyValues[typeof (OrderTicket) + ".Order"];
       Assert.That (deserializedEndPoint.ForeignKeyProperty,  Is.SameAs (expectedForeignKeyProperty));
+    }
+
+    [Test]
+    public void ForeignKeyProperty_IntegrationWithDataManager ()
+    {
+      OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var id = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
+
+      var deserializedDataManager = Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager);
+
+      var deserializedEndPoint = (RealObjectEndPoint) deserializedDataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+
+      Assert.That (deserializedEndPoint.ForeignKeyDataContainer, Is.Not.Null);
+      Assert.That (deserializedEndPoint.ForeignKeyDataContainer, Is.SameAs (deserializedDataManager.DataContainerMap[DomainObjectIDs.OrderTicket1]));
+      
+      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Not.Null);
+      var expectedForeignKeyProperty = deserializedEndPoint.ForeignKeyDataContainer.PropertyValues[typeof (OrderTicket) + ".Order"];
+      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.SameAs (expectedForeignKeyProperty));
     }
   }
 }

@@ -247,20 +247,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void RegisterRealObjectEndPoint_CreatesRealObjectEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
+      var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
 
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty);
+      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
+      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"]));
     }
 
     [Test]
     public void RegisterRealObjectEndPoint_RegistersEndPoint ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
+      var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
 
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty);
+      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyDataContainer);
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }

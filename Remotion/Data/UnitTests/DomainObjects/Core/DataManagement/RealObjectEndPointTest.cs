@@ -20,7 +20,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -45,18 +44,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialize_VirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var pd = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
-      new RealObjectEndPoint (ClientTransactionMock, id, new PropertyValue (pd));
+      var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The foreign key property must have a property type of ObjectID.\r\nParameter name: foreignKeyProperty")]
-    public void Initialize_ForeignKeyPropertyWithInvalidType ()
+        "The foreign key data container must be compatible with the end point definition.\r\nParameter name: foreignKeyDataContainer")]
+    public void Initialize_InvalidDataContainer ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      var pd = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryPropertyDefinition (typeof (Order).FullName + ".OrderNumber");
-      new RealObjectEndPoint (ClientTransactionMock, id, new PropertyValue (pd));
+      var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      new RealObjectEndPoint (ClientTransactionMock, id, foreignKeyDataContainer);
     }
 
     [Test]

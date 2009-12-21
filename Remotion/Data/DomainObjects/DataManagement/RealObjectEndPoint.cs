@@ -26,25 +26,47 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public class RealObjectEndPoint : ObjectEndPoint
   {
-    private PropertyValue _foreignKeyProperty;
+    private static PropertyValue GetForeignKeyProperty (DataContainer foreignKeyDataContainer, string propertyName)
+    {
+      PropertyValue foreignKeyProperty;
+      try
+      {
+        foreignKeyProperty = foreignKeyDataContainer.PropertyValues[propertyName];
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException ("The foreign key data container must be compatible with the end point definition.", "foreignKeyDataContainer", ex);
+      }
+
+      Assertion.IsTrue (
+          foreignKeyProperty.Definition.PropertyType == typeof (ObjectID),
+          "The foreign key property must have a property type of ObjectID.");
+      return foreignKeyProperty;
+    }
+
+    private readonly DataContainer _foreignKeyDataContainer;
+    private readonly PropertyValue _foreignKeyProperty;
 
     public RealObjectEndPoint (
         ClientTransaction clientTransaction, 
         RelationEndPointID id, 
-        PropertyValue foreignKeyProperty)
+        DataContainer foreignKeyDataContainer)
       : base (
           ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
           ArgumentUtility.CheckNotNull ("id", id))
     {
-      ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
+      ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
 
       if (ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "id");
 
-      if (foreignKeyProperty.Definition.PropertyType != typeof (ObjectID))
-        throw new ArgumentException ("The foreign key property must have a property type of ObjectID.", "foreignKeyProperty");
-      
-      _foreignKeyProperty = foreignKeyProperty;
+      _foreignKeyDataContainer = foreignKeyDataContainer;
+      _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+    }
+
+    public DataContainer ForeignKeyDataContainer
+    {
+      get { return _foreignKeyDataContainer; }
     }
 
     public PropertyValue ForeignKeyProperty
@@ -97,11 +119,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected RealObjectEndPoint (FlattenedDeserializationInfo info)
       : base (info)
     {
-      // TODO 1883: The next line should be removed when a better serialization mechanism is found, _foreignKeyProperty should again be readonly.
-      info.DeserializationFinished += (sender, args) =>
-          _foreignKeyProperty = Definition.IsVirtual
-              ? null
-              : ClientTransaction.DataManager.DataContainerMap[ObjectID].PropertyValues[PropertyName];
+      _foreignKeyDataContainer = info.GetValueForHandle<DataContainer> ();
+      _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+    }
+
+    protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      base.SerializeIntoFlatStructure (info);
+      info.AddHandle (_foreignKeyDataContainer);
     }
     #endregion
 

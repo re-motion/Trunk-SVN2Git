@@ -545,12 +545,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         clientTransaction.DataManager.RegisterExistingDataContainer (this);
     }
 
-    public PropertyValue GetForeignKeyProperty (RelationEndPointID endPointID)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      return endPointID.Definition.IsVirtual ? null : PropertyValues[endPointID.Definition.PropertyName];
-    }
-
     internal void PropertyValueChanging (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
     {
       if (_state == DataContainerStateType.Deleted)

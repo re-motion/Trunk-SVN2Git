@@ -57,8 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
     {
-      var foreignKeyProperty = dataContainer.PropertyValues[endPointID.Definition.PropertyName];
-      return new RealObjectEndPoint (ClientTransaction.Current, endPointID, foreignKeyProperty);
+      return new RealObjectEndPoint (ClientTransaction.Current, endPointID, dataContainer);
     }
 
     public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
