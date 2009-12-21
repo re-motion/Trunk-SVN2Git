@@ -759,7 +759,7 @@ public abstract class ClientTransaction
       DataContainerCollection changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
 
-      _dataManager.Commit2();
+      _dataManager.Commit ();
       EndCommit (changedButNotDeletedDomainObjects);
     }
   }
@@ -774,7 +774,7 @@ public abstract class ClientTransaction
       BeginRollback();
       DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (new[] {StateType.Changed, StateType.Deleted});
 
-      _dataManager.Rollback2();
+      _dataManager.Rollback ();
 
       EndRollback (changedButNotNewDomainObjects);
     }

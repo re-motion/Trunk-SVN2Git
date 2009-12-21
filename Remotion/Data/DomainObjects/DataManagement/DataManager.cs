@@ -174,18 +174,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     MarkDiscarded (dataContainer);
   }
 
-  public void Commit2 ()
-  {
-    _relationEndPointMap.Commit2 (_dataContainerMap.GetByState2 (StateType.Deleted));
-    _dataContainerMap.Commit2 ();
-  }
-
-  public void Rollback2 ()
-  {
-    _relationEndPointMap.Rollback2 (_dataContainerMap.GetByState2 (StateType.New));
-    _dataContainerMap.Rollback2 ();
-  }
-
   public DataContainerMap DataContainerMap
   {
     get { return _dataContainerMap; }
@@ -224,20 +212,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     _relationEndPointMap.PerformDelete2 (deletedObject, oppositeEndPointRemoveModifications);
     _dataContainerMap.PerformDelete2 (dataContainer);
     
-    dataContainer.Delete2 ();
-  }
-
-  internal void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
-  {
-    ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-    ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
-
-    var dataContainer = _clientTransaction.GetDataContainer (deletedObject);  // rescue dataContainer before the map deletes is
-    Assertion.IsFalse (dataContainer.State == StateType.Deleted);
-
-    _relationEndPointMap.PerformDelete2 (deletedObject, oppositeEndPointRemoveModifications);
-    _dataContainerMap.PerformDelete2 (dataContainer);
-
     dataContainer.Delete2 ();
   }
 

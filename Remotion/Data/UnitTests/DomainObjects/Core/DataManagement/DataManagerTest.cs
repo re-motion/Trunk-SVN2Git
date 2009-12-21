@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container = CreateOrder1DataContainer();
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
 
-      _dataManager.Commit2 ();
+      _dataManager.Commit ();
 
       Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
       Assert.AreEqual (42, container.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue);
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectAndNotify (orderTicket2.DomainObject);
 
-      _dataManager.Commit2 ();
+      _dataManager.Commit ();
 
       Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
       Assert.AreSame (orderTicket2.DomainObject, ClientTransactionMock.GetRelatedObject (order1EndPointID));
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order order1 = Order.GetObject (DomainObjectIDs.Order1);
       customer1.Orders.Clear ();
 
-      _dataManager.Commit2 ();
+      _dataManager.Commit ();
 
       Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
       Assert.IsNull (order1.Customer);
@@ -302,7 +302,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
 			Assert.AreSame (computer.InternalDataContainer, _dataManager.DataContainerMap[id]);
 
-      _dataManager.Rollback2 ();
+      _dataManager.Rollback ();
 
       Assert.IsNull (_dataManager.DataContainerMap[id]);
     }
@@ -324,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreSame (computer.ID, employeeEndPoint.OppositeObjectID);
       Assert.AreSame (employee.ID, computerEndPoint.OppositeObjectID);
 
-      _dataManager.Rollback2 ();
+      _dataManager.Rollback ();
 
       Assert.IsNull (_dataManager.RelationEndPointMap[employeeEndPointID]);
       Assert.IsNull (_dataManager.RelationEndPointMap[computerEndPointID]);
@@ -349,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreEqual (1, orderEndPoint.OppositeDomainObjects.Count);
       Assert.IsNotNull (orderEndPoint.OppositeDomainObjects[orderItem.ID]);
 
-      _dataManager.Rollback2 ();
+      _dataManager.Rollback ();
 
       orderItemEndPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[orderItemEndPointID];
       orderEndPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[orderEndPointID];
