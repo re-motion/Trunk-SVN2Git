@@ -144,9 +144,9 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Commit ()
   {
-    var deletedObjects = _dataContainerMap.GetByState (StateType.Deleted).ToList();
-    foreach (var deletedObject in deletedObjects)
-      Discard (deletedObject);
+    var deletedDataContainers = _dataContainerMap.GetByState (StateType.Deleted).ToList();
+    foreach (var deletedDataContainer in deletedDataContainers)
+      Discard (deletedDataContainer);
 
     _relationEndPointMap.Commit ();
     _dataContainerMap.Commit ();
@@ -154,9 +154,9 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Rollback ()
   {
-    var newObjects = _dataContainerMap.GetByState (StateType.New).ToList();
-    foreach (var newObject in newObjects)
-      Discard (newObject);
+    var newDataContainers = _dataContainerMap.GetByState (StateType.New).ToList();
+    foreach (var newDataContainer in newDataContainers)
+      Discard (newDataContainer);
 
     _relationEndPointMap.Rollback ();
     _dataContainerMap.Rollback ();
@@ -167,10 +167,10 @@ public class DataManager : ISerializable, IDeserializationCallback
     foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
     {
       if (_relationEndPointMap[endPointID] != null)
-        _relationEndPointMap.Discard (endPointID);
+        _relationEndPointMap.RemoveEndPointsForDataContainer (endPointID);
     }
-
-    _dataContainerMap.Discard (dataContainer.ID);
+    _dataContainerMap.Remove (dataContainer.ID);
+    dataContainer.Discard ();
     MarkDiscarded (dataContainer);
   }
 
@@ -201,6 +201,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     EndDelete (deletedObject, oppositeEndPointRemoveModifications);
   }
 
+  // TODO: This will be rewritten as a command.
   internal void PerformDelete2 (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
   {
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);

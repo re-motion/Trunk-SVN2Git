@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (DomainObject deletedDomainObject in deletedDomainObjects)
       {
         foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).AssociatedRelationEndPointIDs)
-          Discard (endPointID);
+          RemoveEndPointsForDataContainer (endPointID);
       }
     }
 
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (DomainObject newDomainObject in newDomainObjects)
       {
         foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).AssociatedRelationEndPointIDs)
-          Discard (endPointID);
+          RemoveEndPointsForDataContainer (endPointID);
       }
     }
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoint.PerformDelete ();
 
         if (deletedObject.TransactionContext[ClientTransaction].State == StateType.New)
-          Discard (endPointID);
+          RemoveEndPointsForDataContainer (endPointID);
       }
     }
 
@@ -238,9 +238,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
       if (dataContainer.State == StateType.New)
-        RegisterNewDataContainer (dataContainer);
+        RegisterEndPointsForNewDataContainer (dataContainer);
       else
-        RegisterExistingDataContainer (dataContainer);
+        RegisterEndPointsForExistingDataContainer (dataContainer);
     }
 
     public void CheckMandatoryRelations (DomainObject domainObject)
@@ -290,12 +290,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (!endPointID.Definition.IsVirtual)
       {
         throw new InvalidOperationException (
-            "Cannot lazily load the real part of a relation. RegisterExistingDataContainer or RegisterNewDataContainer must be called before any "
+            "Cannot lazily load the real part of a relation. RegisterEndPointsForDataContainer must be called before any "
             + "non-virtual end points are retrieved.");
       }
 
       if (endPointID.Definition.Cardinality == CardinalityType.One)
-        _clientTransaction.LoadRelatedObject (endPointID); // indirectly calls RegisterExistingDataContainer, which registers the loaded end point
+        _clientTransaction.LoadRelatedObject (endPointID); // indirectly calls RegisterEndPointsForExistingDataContainer, which registers the loaded end point
       else
         _clientTransaction.LoadRelatedObjects (endPointID); // calls RegisterCollectionEndPoint, which registers the loaded end point
 
@@ -313,7 +313,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Add (endPoint);
     }
 
-    public void Discard (RelationEndPointID endPointID)
+    public void RemoveEndPointsForDataContainer (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
@@ -332,7 +332,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPoints.GetEnumerator();
     }
 
-    private void RegisterNewDataContainer (DataContainer dataContainer)
+    private void RegisterEndPointsForNewDataContainer (DataContainer dataContainer)
     {
       foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
       {
@@ -345,7 +345,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void RegisterExistingDataContainer (DataContainer dataContainer)
+    private void RegisterEndPointsForExistingDataContainer (DataContainer dataContainer)
     {
       var realObjectEndPointIDs = from endPointDefinition in dataContainer.ClassDefinition.GetRelationEndPointDefinitions ()
                                   where !endPointDefinition.IsVirtual

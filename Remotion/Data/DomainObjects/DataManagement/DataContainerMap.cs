@@ -107,18 +107,10 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     CheckClientTransactionForDeletion (dataContainer);
 
     if (dataContainer.State == StateType.New)
-      Discard2(dataContainer);    
+      Remove (dataContainer.ID);    
   }
 
-  private void Discard2 (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-    _transactionEventSink.DataContainerMapUnregistering (dataContainer);
-
-    _dataContainers.Remove (dataContainer);
-  }
-
-  public void Discard (ObjectID id)
+  public void Remove (ObjectID id)
   {
     ArgumentUtility.CheckNotNull ("id", id);
     
@@ -130,38 +122,13 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     }
 
     _transactionEventSink.DataContainerMapUnregistering (dataContainer);
-
     _dataContainers.Remove (dataContainer);
-    dataContainer.Discard ();
-  }
-
-  public void Commit2 ()
-  {
-    for (int i = _dataContainers.Count - 1; i >= 0; i--)
-    {
-      DataContainer dataContainer = _dataContainers[i];
-      
-      if (dataContainer.State == StateType.Deleted)
-        Discard2 (dataContainer);
-
-      dataContainer.Commit2 ();
-    }
-  }
-
-  public void Rollback2 ()
-  {
-    for (int i = _dataContainers.Count - 1; i >= 0; i--)
-    {
-      DataContainer dataContainer = _dataContainers[i];
-
-      Rollback2(dataContainer);
-    }
   }
 
   public void Rollback2 (DataContainer dataContainer)
   {
     if (dataContainer.State == StateType.New)
-      Discard2 (dataContainer);
+      Remove (dataContainer.ID);
 
     dataContainer.Rollback2 ();
   }

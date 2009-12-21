@@ -53,67 +53,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RemoveDeletedDataContainerInCommit ()
-    {
-      _map.Register (_existingOrder);
-      Assert.That (_map.Count, Is.EqualTo (1));
-
-      Order order = (Order) _existingOrder.DomainObject;
-      order.Delete();
-      _map.Commit2();
-
-      Assert.That (_map.Count, Is.EqualTo (0));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void AccessDeletedDataContainerAfterCommit ()
-    {
-      _map.Register (_existingOrder);
-      Assert.That (_map.Count, Is.EqualTo (1));
-
-      Order order = (Order) _existingOrder.DomainObject;
-      order.Delete();
-      _map.Commit2();
-
-      Dev.Null = _existingOrder.Timestamp;
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException))]
     public void GetByInvalidState ()
     {
       _map.GetByState2 ((StateType) 1000);
-    }
-
-    [Test]
-    public void RollbackForDeletedObject ()
-    {
-      using (ClientTransactionMock.EnterDiscardingScope())
-      {
-        _map.Register (_existingOrder);
-
-        Order order = (Order) _existingOrder.DomainObject;
-        order.Delete();
-        Assert.That (_existingOrder.State, Is.EqualTo (StateType.Deleted));
-
-        _map.Rollback2();
-
-        _existingOrder = _map[_existingOrder.ID];
-        Assert.That (_existingOrder, Is.Not.Null);
-        Assert.That (_existingOrder.State, Is.EqualTo (StateType.Unchanged));
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void RollbackForNewObject ()
-    {
-      _map.Register (_newOrder);
-
-      _map.Rollback2();
-
-      Dev.Null = _newOrder.Timestamp;
     }
 
     [Test]
@@ -228,31 +171,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_DiscardsDataContainer ()
-    {
-      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      _map.Register (dataContainer);
-      Assert.That (dataContainer.IsDiscarded, Is.False);
-
-      _map.Discard (dataContainer.ID);
-
-      Assert.That (dataContainer.IsDiscarded, Is.True);
-    }
-
-    [Test]
-    public void Discard_RemovesDataContainer ()
+    public void Removes_RemovesDataContainer ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _map.Register (dataContainer);
       Assert.That (_map[DomainObjectIDs.Order1], Is.Not.Null);
 
-      _map.Discard (dataContainer.ID);
+      _map.Remove (dataContainer.ID);
 
       Assert.That (_map[DomainObjectIDs.Order1], Is.Null);
     }
 
     [Test]
-    public void Discard_RaisesNotification_BeforeRemoving ()
+    public void Removes_RaisesNotification_BeforeRemoving ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _map.Register (dataContainer);
@@ -266,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       listenerMock.Replay ();
 
-      _map.Discard (dataContainer.ID);
+      _map.Remove (dataContainer.ID);
 
       listenerMock.VerifyAllExpectations ();
     }
@@ -274,9 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "Data container 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of this map.\r\nParameter name: id")]
-    public void Discard_NonExistingDataContainer ()
+    public void Removes_NonExistingDataContainer ()
     {
-      _map.Discard (DomainObjectIDs.Order1);
+      _map.Remove (DomainObjectIDs.Order1);
     }
   }
 }

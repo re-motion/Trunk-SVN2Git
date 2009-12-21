@@ -242,123 +242,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit ()
-    {
-      DataContainer container = CreateOrder1DataContainer();
-      container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
-
-      _dataManager.Commit ();
-
-      Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
-      Assert.AreEqual (42, container.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue);
-      Assert.AreEqual (42, container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"]);
-      Assert.AreEqual (StateType.Unchanged, container.State);
-    }
-
-    [Test]
-    public void CommitOneToOneRelationChange ()
-    {
-      DataContainer order1 = CreateOrder1DataContainer ();
-      DataContainer orderTicket1 = CreateOrderTicket1DataContainer();
-      DataContainer orderTicket2 = CreateOrderTicket2DataContainer();
-      DataContainer orderWithoutOrderItemDataContainer = CreateOrderWithoutOrderItemDataContainer ();
-
-      var order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectAndNotify (orderTicket2.DomainObject);
-
-      _dataManager.Commit ();
-
-      Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
-      Assert.AreSame (orderTicket2.DomainObject, ClientTransactionMock.GetRelatedObject (order1EndPointID));
-      Assert.AreSame (order1.DomainObject, ClientTransactionMock.GetRelatedObject (new RelationEndPointID (orderTicket2.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order")));
-      Assert.IsNull (ClientTransactionMock.GetRelatedObject (new RelationEndPointID (orderTicket1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order")));
-      Assert.IsNull (ClientTransactionMock.GetRelatedObject (new RelationEndPointID (orderWithoutOrderItemDataContainer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket")));
-      Assert.IsFalse (_dataManager.RelationEndPointMap.HasRelationChanged (order1));
-      Assert.IsFalse (_dataManager.RelationEndPointMap.HasRelationChanged (orderWithoutOrderItemDataContainer));
-      Assert.IsFalse (_dataManager.RelationEndPointMap.HasRelationChanged (orderTicket1));
-      Assert.IsFalse (_dataManager.RelationEndPointMap.HasRelationChanged (orderTicket2));
-    }
-
-    [Test]
-    public void CommitOneToManyRelationChange ()
-    {
-      Customer customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      customer1.Orders.Clear ();
-
-      _dataManager.Commit ();
-
-      Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
-      Assert.IsNull (order1.Customer);
-      Assert.AreEqual (0, ClientTransactionMock.GetOriginalRelatedObjects (new RelationEndPointID (customer1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders")).Count);
-      Assert.AreEqual (0, customer1.Orders.Count);
-    }
-
-    [Test]
-    public void RollbackDataContainerMap ()
-    {
-      Computer computer = Computer.NewObject ();
-      ObjectID id = computer.ID;
-
-			Assert.AreSame (computer.InternalDataContainer, _dataManager.DataContainerMap[id]);
-
-      _dataManager.Rollback ();
-
-      Assert.IsNull (_dataManager.DataContainerMap[id]);
-    }
-
-    [Test]
-    public void RollbackObjectEndPoint ()
-    {
-      Computer computer = Computer.NewObject ();
-      Employee employee = Employee.NewObject ();
-
-      computer.Employee = employee;
-
-      RelationEndPointID employeeEndPointID = new RelationEndPointID (employee.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer");
-      RelationEndPointID computerEndPointID = new RelationEndPointID (computer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee");
-
-      ObjectEndPoint employeeEndPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[employeeEndPointID];
-      ObjectEndPoint computerEndPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[computerEndPointID];
-
-      Assert.AreSame (computer.ID, employeeEndPoint.OppositeObjectID);
-      Assert.AreSame (employee.ID, computerEndPoint.OppositeObjectID);
-
-      _dataManager.Rollback ();
-
-      Assert.IsNull (_dataManager.RelationEndPointMap[employeeEndPointID]);
-      Assert.IsNull (_dataManager.RelationEndPointMap[computerEndPointID]);
-    }
-
-    [Test]
-    public void RollbackCollectionEndPoint ()
-    {
-      Order order = Order.NewObject ();
-      OrderItem orderItem = OrderItem.NewObject ();
-
-      orderItem.Order = order;
-
-      RelationEndPointID orderEndPointID = new RelationEndPointID (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
-      RelationEndPointID orderItemEndPointID = new RelationEndPointID (orderItem.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
-
-      ObjectEndPoint orderItemEndPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[orderItemEndPointID];
-      Assert.AreEqual (order.ID, orderItemEndPoint.OppositeObjectID);
-
-      CollectionEndPoint orderEndPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[orderEndPointID];
-
-      Assert.AreEqual (1, orderEndPoint.OppositeDomainObjects.Count);
-      Assert.IsNotNull (orderEndPoint.OppositeDomainObjects[orderItem.ID]);
-
-      _dataManager.Rollback ();
-
-      orderItemEndPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[orderItemEndPointID];
-      orderEndPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[orderEndPointID];
-
-      Assert.IsNull (orderEndPoint);
-      Assert.IsNull (orderItemEndPoint);
-    }
-
-    [Test]
     public void GetChangedDataContainersForCommitWithDeletedObject ()
     {
       OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -423,39 +306,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void DeleteLoadedDiscardsOnCommit ()
-    {
-      using (ClientTransactionMock.EnterDiscardingScope ())
-      {
-        SetDatabaseModifyable();
-
-        OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-        orderItem1.Delete();
-
-        Assert.IsFalse (_dataManager.IsDiscarded (orderItem1.ID));
-
-        ClientTransactionMock.Commit();
-
-        Assert.IsTrue (_dataManager.IsDiscarded (orderItem1.ID));
-      }
-    }
-
-    [Test]
-    public void DeleteNewDiscardsImmediatelyOnCommit ()
-    {
-      using (ClientTransactionMock.EnterDiscardingScope ())
-      {
-        OrderItem orderItem1 = OrderItem.NewObject();
-
-        Assert.IsFalse (_dataManager.IsDiscarded (orderItem1.ID));
-
-        orderItem1.Delete();
-
-        Assert.IsTrue (_dataManager.IsDiscarded (orderItem1.ID));
-      }
-    }
-
-    [Test]
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
@@ -487,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit_DiscardsDeletedEndPoints ()
+    public void Commit_RemovesDeletedEndPoints ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
       _dataManager.RegisterDataContainer (dataContainer);
@@ -503,6 +353,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Commit_RemovesDeletedDataContainers ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      dataContainer.Delete ();
+
+      Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Not.Null);
+
+      _dataManager.Commit ();
+
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+    }
+
+    [Test]
     public void Commit_DiscardsDeletedDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
@@ -512,12 +379,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
       Assert.That (dataContainer.IsDiscarded, Is.False);
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Not.Null);
 
       _dataManager.Commit ();
 
       Assert.That (dataContainer.IsDiscarded, Is.True);
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
     }
 
     [Test]
@@ -569,7 +434,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_DiscardsNewEndPoints ()
+    public void Rollback_RemovesNewEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       _dataManager.RegisterDataContainer (dataContainer);
@@ -583,18 +448,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_DiscardsNewDataContainers ()
+    public void Rollback_RemovesNewDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
+
+      _dataManager.Rollback ();
+
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+    }
+
+    [Test]
+    public void Rollback_DiscardsNewDataContainers ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
       Assert.That (dataContainer.IsDiscarded, Is.False);
 
       _dataManager.Rollback ();
 
       Assert.That (dataContainer.IsDiscarded, Is.True);
-      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
     }
 
     [Test]

@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot lazily load the real part of a relation. RegisterExistingDataContainer or RegisterNewDataContainer must be called before any "
+        "Cannot lazily load the real part of a relation. RegisterEndPointsForDataContainer must be called before any "
         + "non-virtual end points are retrieved.")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportRealEndPoints_OfObjectsNotYetRegistered ()
     {
@@ -413,19 +413,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_RemovesEndPoint ()
+    public void RemoveEndPointsForDataContainer_RemovesEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
       Assert.That (_map[endPointID], Is.Not.Null);
 
-      _map.Discard (endPointID);
+      _map.RemoveEndPointsForDataContainer (endPointID);
 
       Assert.That (_map[endPointID], Is.Null);
     }
 
     [Test]
-    public void Discard_RaisesNotification_BeforeRemoving ()
+    public void RemoveEndPointsForDataContainer_RaisesNotification_BeforeRemoving ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
@@ -438,7 +438,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       listenerMock.Replay ();
 
-      _map.Discard (endPointID);
+      _map.RemoveEndPointsForDataContainer (endPointID);
 
       listenerMock.VerifyAllExpectations();
     }
@@ -447,10 +447,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "End point 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' is "
         + "not part of this map.\r\nParameter name: endPointID")]
-    public void Discard_NonExistingEndPoint ()
+    public void RemoveEndPointsForDataContainer_NonExistingEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.Discard (endPointID);
+      _map.RemoveEndPointsForDataContainer (endPointID);
     }
   }
 }
