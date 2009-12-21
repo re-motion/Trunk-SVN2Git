@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       var id = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
-      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
+      var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       Assert.That (endPoint.ForeignKeyProperty, Is.Not.Null);
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);

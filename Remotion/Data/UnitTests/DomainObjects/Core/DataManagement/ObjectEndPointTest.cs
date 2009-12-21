@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 
@@ -32,273 +31,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private RelationEndPointID _endPointID;
     private ObjectEndPoint _endPoint;
-    private ObjectID _oppositeObjectID;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _endPointID = new RelationEndPointID (DomainObjectIDs.OrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
-      _oppositeObjectID = DomainObjectIDs.Order1;
-
-      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oppositeObjectID);
+      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
     }
-
-    [Test]
-    public void Initialize ()
-    {
-      Assert.AreEqual (_endPointID, _endPoint.ID);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OriginalOppositeObjectID);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OppositeObjectID);
-    }
-
-    [Test]
-    public void InitializeWithNullObjectID ()
-    {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
-
-      Assert.IsNull (endPoint.OriginalOppositeObjectID);
-      Assert.IsNull (endPoint.OppositeObjectID);
-    }
-
-    [Test]
-    public void OppositeObjectID_Set ()
-    {
-      var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
-      _endPoint.OppositeObjectID = newObjectID;
-
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newObjectID));
-      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (_oppositeObjectID));
-    }
-
-    [Test]
-    public void OppositeObjectID_Set_WithForeignKeyProperty ()
-    {
-      var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
-      _endPoint.OppositeObjectID = newObjectID;
-
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (newObjectID));
-      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newObjectID));
-    }
-
-    [Test]
-    public void OppositeObjectID_Set_WithoutForeignKeyProperty ()
-    {
-      var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
-      var virtualEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket", null);
-      Assert.That (virtualEndPoint.ForeignKeyProperty, Is.Null);
-
-      virtualEndPoint.OppositeObjectID = newObjectID;
-      Assert.That (virtualEndPoint.OppositeObjectID, Is.EqualTo (newObjectID));
-    }
-
-    [Test]
-    public void GetOppositeObject ()
-    {
-      var oppositeObject = _endPoint.GetOppositeObject (true);
-      Assert.That (Order.GetObject (_endPoint.OppositeObjectID), Is.SameAs (oppositeObject));
-    }
-
-    [Test]
-    public void GetOppositeObject_Deleted ()
-    {
-      var oppositeObject = (Order) _endPoint.GetOppositeObject (true);
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Deleted));
-
-      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void GetOppositeObject_Deleted_NoDeleted ()
-    {
-      var oppositeObject = (Order) _endPoint.GetOppositeObject (true);
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Deleted));
-
-      _endPoint.GetOppositeObject (false);
-    }
-
-    [Test]
-    public void GetOppositeObject_Discarded ()
-    {
-      var oppositeObject = Order.NewObject ();
-      _endPoint.OppositeObjectID = oppositeObject.ID;
-
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
-
-      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
-    public void GetOppositeObject_Discarded_NoDeleted ()
-    {
-      var oppositeObject = Order.NewObject ();
-      _endPoint.OppositeObjectID = oppositeObject.ID;
-
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
-
-      _endPoint.GetOppositeObject (false);
-    }
-
-    [Test]
-    public void GetOriginalOppositeObject ()
-    {
-      var originalOppositeObject = _endPoint.GetOppositeObject (true);
-      _endPoint.SetOppositeObjectAndNotify (Order.NewObject ());
-
-      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
-    }
-
-    [Test]
-    public void GetOriginalOppositeObject_Deleted ()
-    {
-      var originalOppositeObject = (Order) _endPoint.GetOppositeObject (true);
-      _endPoint.SetOppositeObjectAndNotify (Order.NewObject ());
-
-      originalOppositeObject.Delete ();
-      Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));
-
-      Assert.That (_endPoint.GetOriginalOppositeObject (), Is.SameAs (originalOppositeObject));
-    }
-
-    [Test]
-    public void GetOppositeObject_Null ()
-    {
-      _endPoint.OppositeObjectID = null;
-      var oppositeObject = _endPoint.GetOppositeObject (false);
-      Assert.That (oppositeObject, Is.Null);
-    }
-
-    [Test]
-    public void HasChanged ()
-    {
-      Assert.IsFalse (_endPoint.HasChanged);
-
-      _endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
-      Assert.IsTrue (_endPoint.HasChanged);
-
-      _endPoint.OppositeObjectID = _oppositeObjectID;
-      Assert.IsFalse (_endPoint.HasChanged);
-    }
-
-    [Test]
-    public void HasChangedWithInitializedWithNull ()
-    {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
-
-      Assert.IsFalse (endPoint.HasChanged);
-    }
-
-    [Test]
-    public void HasChangedWithOldNullValue ()
-    {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
-      endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
-
-      Assert.IsTrue (endPoint.HasChanged);
-    }
-
-    [Test]
-    public void HasChangedWithNewNullValue ()
-    {
-      _endPoint.OppositeObjectID = null;
-
-      Assert.IsTrue (_endPoint.HasChanged);
-    }
-
-    [Test]
-    public void HasChangedWithSameValueSet ()
-    {
-      Assert.IsFalse (_endPoint.HasChanged);
-      _endPoint.OppositeObjectID = _oppositeObjectID;
-      Assert.IsFalse (_endPoint.HasChanged);
-    }
-
-    [Test]
-    public void HasBeenTouched ()
-    {
-      Assert.IsFalse (_endPoint.HasBeenTouched);
-
-      _endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-
-      _endPoint.OppositeObjectID = _oppositeObjectID;
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-    }
-
-    [Test]
-    public void HasBeenTouchedWithInitializedWithNull ()
-    {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
-      Assert.IsFalse (endPoint.HasBeenTouched);
-    }
-
-    [Test]
-    public void HasBeenTouchedWithOldNullValue ()
-    {
-      ObjectEndPoint endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, null);
-      endPoint.OppositeObjectID = new ObjectID ("Order", Guid.NewGuid ());
-
-      Assert.IsTrue (endPoint.HasBeenTouched);
-    }
-
-    [Test]
-    public void HasBeenTouchedWithNewNullValue ()
-    {
-      _endPoint.OppositeObjectID = null;
-
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-    }
-
-    [Test]
-    public void HasBeenTouchedWithSameValueSet ()
-    {
-      Assert.IsFalse (_endPoint.HasBeenTouched);
-      _endPoint.OppositeObjectID = _oppositeObjectID;
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-    }
-
-    [Test]
-    public void HasBeenTouchedWithPerformRelationChange ()
-    {
-      var removedRelatedObject = _endPoint.GetOppositeObject (false);
-      Assert.IsFalse (_endPoint.HasBeenTouched);
-      _endPoint.CreateRemoveModification (removedRelatedObject).Perform ();
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-    }
-
-    [Test]
-    public void Touch_AlsoTouchesForeignKey ()
-    {
-      Assert.That (_endPoint.IsVirtual, Is.False);
-      Assert.That (_endPoint.HasBeenTouched, Is.False);
-      Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.False);
-
-      _endPoint.Touch();
-      Assert.That (_endPoint.HasBeenTouched, Is.True);
-      Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.True);
-    }
-
-    [Test]
-    public void Touch_WorksIfNoForeignKey ()
-    {
-      var virtualEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      var oppositeID = DomainObjectIDs.OrderTicket1;
-      var virtualEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (virtualEndPointID, oppositeID);
-
-      Assert.That (virtualEndPoint.IsVirtual, Is.True);
-      Assert.That (virtualEndPoint.HasBeenTouched, Is.False);
-      Assert.That (((Order) virtualEndPoint.GetDomainObject ()).InternalDataContainer.PropertyValues.Contains (virtualEndPoint.PropertyName), Is.False);
-
-      virtualEndPoint.Touch();
-      Assert.That (virtualEndPoint.HasBeenTouched, Is.True);
-    }
-
+    
     [Test]
     public void PerformWithoutBegin ()
     {
@@ -309,107 +50,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetEndPointDefinition ()
-    {
-      IRelationEndPointDefinition endPointDefinition = _endPoint.Definition;
-      Assert.IsNotNull (endPointDefinition);
-
-      Assert.AreSame (
-        MappingConfiguration.Current.ClassDefinitions["OrderItem"],
-        endPointDefinition.ClassDefinition);
-
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", endPointDefinition.PropertyName);
-    }
-
-    [Test]
-    public void GetOppositeEndPointDefinition ()
-    {
-      IRelationEndPointDefinition oppositeEndPointDefinition = _endPoint.Definition.GetOppositeEndPointDefinition();
-      Assert.IsNotNull (oppositeEndPointDefinition);
-
-      Assert.AreSame (
-        MappingConfiguration.Current.ClassDefinitions["Order"],
-        oppositeEndPointDefinition.ClassDefinition);
-
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", oppositeEndPointDefinition.PropertyName);
-    }
-
-    [Test]
-    public void GetRelationDefinition ()
-    {
-      RelationDefinition relationDefinition = _endPoint.RelationDefinition;
-      Assert.IsNotNull (relationDefinition);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", relationDefinition.ID);
-    }
-
-    [Test]
-    public void IsVirtual ()
-    {
-      DataContainer orderContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
-      RelationEndPoint orderEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (
-          orderContainer.ID, 
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", 
-          DomainObjectIDs.OrderTicket1);
-
-      Assert.AreEqual (true, orderEndPoint.IsVirtual);
-    }
-
-    [Test]
-    public void IsNotVirtual ()
-    {
-      Assert.AreEqual (false, _endPoint.IsVirtual);
-    }
-
-    [Test]
-    public void ID ()
-    {
-      Assert.IsNotNull (_endPoint.ID);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _endPoint.ID.Definition.PropertyName);
-      Assert.AreEqual (DomainObjectIDs.OrderItem1, _endPoint.ID.ObjectID);
-    }
-
-    [Test]
-    public void Commit ()
-    {
-      var newOppositeID = new ObjectID ("Order", Guid.NewGuid ());
-      _endPoint.OppositeObjectID = newOppositeID;
-
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-      Assert.IsTrue (_endPoint.HasChanged);
-      Assert.AreEqual (newOppositeID, _endPoint.OppositeObjectID);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OriginalOppositeObjectID);
-
-      _endPoint.Commit ();
-
-      Assert.IsFalse (_endPoint.HasBeenTouched);
-      Assert.IsFalse (_endPoint.HasChanged);
-      Assert.AreEqual (newOppositeID, _endPoint.OppositeObjectID);
-      Assert.AreEqual (newOppositeID, _endPoint.OriginalOppositeObjectID);
-    }
-
-    [Test]
-    public void Rollback ()
-    {
-      var newOppositeID = new ObjectID ("Order", Guid.NewGuid ());
-      _endPoint.OppositeObjectID = newOppositeID;
-
-      Assert.IsTrue (_endPoint.HasBeenTouched);
-      Assert.IsTrue (_endPoint.HasChanged);
-      Assert.AreEqual (newOppositeID, _endPoint.OppositeObjectID);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OriginalOppositeObjectID);
-
-      _endPoint.Rollback ();
-
-      Assert.IsFalse (_endPoint.HasBeenTouched);
-      Assert.IsFalse (_endPoint.HasChanged);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OppositeObjectID);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OriginalOppositeObjectID);
-    }
-
-    [Test]
     public void SetValueFrom_SetsOppositeObjectID ()
     {
-      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      var sourceID = new RelationEndPointID (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.Order2);
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
       _endPoint.SetValueFrom (source);
@@ -421,7 +65,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetValueFrom_HasBeenTouched_TrueIfEndPointWasTouched ()
     {
-      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
+      var sourceID = new RelationEndPointID (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, _endPoint.OppositeObjectID);
 
       _endPoint.Touch ();
       _endPoint.SetValueFrom (source);
@@ -433,7 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetValueFrom_HasBeenTouched_TrueIfSourceWasTouched ()
     {
-      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
+      var sourceID = new RelationEndPointID (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, _endPoint.OppositeObjectID);
 
       source.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
@@ -447,7 +93,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetValueFrom_HasBeenTouched_TrueIfDataWasChanged ()
     {
-      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order2);
+      var sourceID = new RelationEndPointID (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.Order2);
+      Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
       Assert.That (source.HasBeenTouched, Is.False);
@@ -461,7 +109,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetValueFrom_HasBeenTouched_FalseIfNothingHappened ()
     {
-      var source = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
+      var sourceID = new RelationEndPointID (DomainObjectIDs.OrderItem2, _endPointID.Definition);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, _endPoint.OppositeObjectID);
 
       _endPoint.SetValueFrom (source);
 
@@ -476,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetValueFrom_InvalidDefinition ()
     {
       var otherID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
-      var source = RelationEndPointObjectMother.CreateObjectEndPoint (otherID, null);
+      ObjectEndPoint source = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (otherID, null);
 
       _endPoint.SetValueFrom (source);
     }
@@ -587,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetOppositeObjectAndNotify_WithInvalidBaseType ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Person1, "AssociatedPartnerCompany");
-      var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (endPointID, DomainObjectIDs.Partner1);
+      var endPoint = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (endPointID, DomainObjectIDs.Partner1);
 
       var nonPartnerCompany = Company.GetObject (DomainObjectIDs.Company1);
       endPoint.SetOppositeObjectAndNotify (nonPartnerCompany);

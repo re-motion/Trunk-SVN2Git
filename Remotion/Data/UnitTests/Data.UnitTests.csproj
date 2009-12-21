@@ -197,6 +197,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyReflectorTests\ExtensibleEnumProperty.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationEndPointDefinitionExtensionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PersistentMixinFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
@@ -241,6 +242,9 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\IndirectDomainObjectCollectionEventRaiserTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointExtensionsTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\VirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DomainObjectCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EndPointDelegatingCollectionDataTest.cs" />

@@ -30,7 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _orderTicketEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", DomainObjectIDs.Order1);
+      var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      
+      _orderTicketEndPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, DomainObjectIDs.Order1);
+
       _endPoints = new RelationEndPointCollection (ClientTransactionMock);
     }
 
@@ -80,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ContainsRelationEndPointFalse ()
     {
       _endPoints.Add (_orderTicketEndPoint);
-      ObjectEndPoint copy = RelationEndPointObjectMother.CreateObjectEndPoint (_orderTicketEndPoint.ID, ((ObjectEndPoint) _orderTicketEndPoint).OppositeObjectID);
+      ObjectEndPoint copy = RelationEndPointObjectMother.CreateRealObjectEndPoint (_orderTicketEndPoint.ID);
 
       Assert.IsFalse (_endPoints.Contains (copy));
     }
@@ -97,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _endPoints.Add (_orderTicketEndPoint);
 
-      RelationEndPointCollection copiedCollection = new RelationEndPointCollection (_endPoints, false);
+      var copiedCollection = new RelationEndPointCollection (_endPoints, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_orderTicketEndPoint, copiedCollection[0]);
@@ -161,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void MergeForItemAlreadyInCollection ()
     {
       _endPoints.Add (_orderTicketEndPoint);
-      RelationEndPointCollection secondEndPoints = new RelationEndPointCollection (_endPoints, false);
+      var secondEndPoints = new RelationEndPointCollection (_endPoints, false);
 
       _endPoints.Combine (secondEndPoints);
 

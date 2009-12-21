@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -46,25 +48,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return newCollectionEndPoint;
     }
 
-    public static ObjectEndPoint CreateObjectEndPoint (ObjectID objectID, string propertyName, ObjectID oppositeObjectID)
+    public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID)
     {
-      var endPointID = new RelationEndPointID (objectID, propertyName);
-      return CreateObjectEndPoint (endPointID, oppositeObjectID);
+      var domainObject = RepositoryAccessor.GetObject (endPointID.ObjectID, true);
+      var dataContainer = (DataContainer) PrivateInvoke.InvokeNonPublicMethod (ClientTransaction.Current, "GetDataContainer", domainObject);
+      return CreateRealObjectEndPoint (endPointID, dataContainer);
+    }
+
+    public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
+    {
+      var foreignKeyProperty = dataContainer.PropertyValues[endPointID.Definition.PropertyName];
+      return new RealObjectEndPoint (ClientTransaction.Current, endPointID, foreignKeyProperty);
+    }
+
+    public static VirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
+    {
+      return new VirtualObjectEndPoint (ClientTransaction.Current, endPointID, oppositeObjectID);
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)
     {
       if (endPointID.Definition.IsVirtual)
-      {
-        return new VirtualObjectEndPoint (ClientTransaction.Current, endPointID, oppositeObjectID);
-      }
+        return CreateVirtualObjectEndPoint (endPointID, oppositeObjectID);
       else
       {
-        var propertyDefinition = endPointID.Definition.ClassDefinition.GetMandatoryPropertyDefinition (endPointID.Definition.PropertyName);
-        var foreignKeyProperty = new PropertyValue (propertyDefinition);
-        return new RealObjectEndPoint (ClientTransaction.Current, endPointID, foreignKeyProperty, oppositeObjectID);
+        var endPoint = CreateRealObjectEndPoint (endPointID);
+        endPoint.OppositeObjectID = oppositeObjectID;
+        endPoint.Commit ();
+        return endPoint;
       }
     }
+
 
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
     {
@@ -76,5 +90,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var customerEndPointID = CreateRelationEndPointID (new DomainObjectIDs().Customer1, "Orders");
       return CreateCollectionEndPoint (customerEndPointID, initialContents);
     }
+
   }
 }

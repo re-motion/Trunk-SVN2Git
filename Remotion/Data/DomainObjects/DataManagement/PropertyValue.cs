@@ -291,19 +291,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
     internal void Commit ()
     {
       if (HasChanged)
-      {
         _originalValue = _value;
-        _hasBeenTouched = false;
-      }
+
+      _hasBeenTouched = false;
     }
 
     internal void Rollback ()
     {
       if (HasChanged)
-      {
         _value = _originalValue;
-        _hasBeenTouched = false;
-      }
+
+      _hasBeenTouched = false;
     }
 
     internal void SetRelationValue (ObjectID id)

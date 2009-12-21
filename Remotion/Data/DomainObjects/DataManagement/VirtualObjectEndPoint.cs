@@ -14,20 +14,101 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  /// <summary>
+  /// Represents an <see cref="ObjectEndPoint"/> that does not hold the foreign key in a relation. The <see cref="VirtualObjectEndPoint"/> is
+  /// constructed by the <see cref="RelationEndPointMap"/> as an in-memory representation of the opposite of the <see cref="RealObjectEndPoint"/> 
+  /// holding the foreign key.
+  /// </summary>
   public class VirtualObjectEndPoint : ObjectEndPoint
   {
+    private ObjectID _originalOppositeObjectID;
+    private ObjectID _oppositeObjectID;
+    private bool _hasBeenTouched;
+
     public VirtualObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, ObjectID oppositeObjectID)
-        : base (clientTransaction, id, null, oppositeObjectID)
+      : base (
+          ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
+          ArgumentUtility.CheckNotNull ("id", id))
     {
+      if (!ID.Definition.IsVirtual)
+        throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
+
+      _oppositeObjectID = oppositeObjectID;
+      _originalOppositeObjectID = oppositeObjectID;
+      _hasBeenTouched = false;
     }
 
-    public VirtualObjectEndPoint (FlattenedDeserializationInfo info)
-        : base (info)
+    public override ObjectID OppositeObjectID
     {
+      get { return _oppositeObjectID; }
+      set
+      {
+        _oppositeObjectID = value;
+        _hasBeenTouched = true;
+      }
     }
+
+    public override ObjectID OriginalOppositeObjectID
+    {
+      get { return _originalOppositeObjectID; }
+    }
+
+    public override bool HasChanged
+    {
+      get { return !Equals (_oppositeObjectID, _originalOppositeObjectID); }
+    }
+
+    public override bool HasBeenTouched
+    {
+      get { return _hasBeenTouched; }
+    }
+
+    public override void Touch ()
+    {
+      _hasBeenTouched = true;
+    }
+
+    public override void Commit ()
+    {
+      if (HasChanged)
+        _originalOppositeObjectID = _oppositeObjectID;
+
+      _hasBeenTouched = false;
+    }
+
+    public override void Rollback ()
+    {
+      if (HasChanged)
+        _oppositeObjectID = _originalOppositeObjectID;
+
+      _hasBeenTouched = false;
+    }
+
+    #region Serialization
+    protected VirtualObjectEndPoint (FlattenedDeserializationInfo info)
+      : base (info)
+    {
+      _hasBeenTouched = info.GetBoolValue ();
+      _oppositeObjectID = info.GetValueForHandle<ObjectID> ();
+      _originalOppositeObjectID = _hasBeenTouched ? info.GetValueForHandle<ObjectID> () : _oppositeObjectID;
+    }
+
+    protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      base.SerializeIntoFlatStructure (info);
+
+      info.AddBoolValue (_hasBeenTouched);
+      info.AddHandle (_oppositeObjectID);
+      if (_hasBeenTouched)
+        info.AddHandle (_originalOppositeObjectID);
+    }
+    #endregion
+
   }
 }

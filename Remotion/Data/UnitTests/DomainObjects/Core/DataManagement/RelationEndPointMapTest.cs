@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
 
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty);
 
       Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
     }
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyProperty = new PropertyValue (id.Definition.ClassDefinition.GetMandatoryPropertyDefinition (id.Definition.PropertyName));
 
-      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty, DomainObjectIDs.OrderTicket1);
+      var objectEndPoint = _map.RegisterRealObjectEndPoint (id, foreignKeyProperty);
 
       Assert.That (_map[id], Is.SameAs (objectEndPoint));
     }
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RegisterExistingDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket) + ".Order");
-      var endPoint = (ObjectEndPoint) _map[expectedID];
+      var endPoint = (RealObjectEndPoint) _map[expectedID];
 
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (endPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
@@ -306,10 +306,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RegisterExistingDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.Order2, typeof (Order) + ".OrderTicket");
-      var endPoint = (ObjectEndPoint) _map[expectedID];
+      var endPoint = (VirtualObjectEndPoint) _map[expectedID];
 
       Assert.That (endPoint, Is.Not.Null);
-      Assert.That (endPoint.ForeignKeyProperty, Is.Null);
       Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
 
@@ -343,39 +342,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void RegisterNewDataContainer_RegistersObjectEndPoints ()
+    public void RegisterNewDataContainer_RegistersVirtualObjectEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
 
       _map.RegisterNewDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
-      var objectEndPoint = (ObjectEndPoint) _map[expectedID];
+      var objectEndPoint = (VirtualObjectEndPoint) _map[expectedID];
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
     }
 
     [Test]
-    public void RegisterNewDataContainer_RegistersObjectEndPoints_WithoutForeignKey ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-
-      _map.RegisterNewDataContainer (dataContainer);
-
-      var expectedID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order) + ".OrderTicket");
-      var objectEndPoint = (ObjectEndPoint) _map[expectedID];
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.Null);
-    }
-
-    [Test]
-    public void RegisterNewDataContainer_RegistersObjectEndPoints_WithForeignKey ()
+    public void RegisterNewDataContainer_RegistersRealObjectEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
 
       _map.RegisterNewDataContainer (dataContainer);
 
       var expectedID = new RelationEndPointID (DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
-      var objectEndPoint = (ObjectEndPoint) _map[expectedID];
+      var objectEndPoint = (RealObjectEndPoint) _map[expectedID];
       Assert.That (objectEndPoint.ForeignKeyProperty, Is.Not.Null);
       Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (dataContainer.PropertyValues[typeof (OrderTicket) + ".Order"]));
     }
