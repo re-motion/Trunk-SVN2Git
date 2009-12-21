@@ -61,8 +61,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
 
   public IEnumerable<DataContainer> GetByState (StateType state)
   {
-    ArgumentUtility.CheckValidEnumValue ("state", state);
-
     return _dataContainers.Cast<DataContainer> ().Where (dc => dc.State == state);
   }
 
@@ -131,19 +129,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
       Remove (dataContainer.ID);
 
     dataContainer.Rollback2 ();
-  }
-
-  public DomainObjectCollection GetByState2 (StateType state)
-  {
-    ArgumentUtility.CheckValidEnumValue ("state", state);
-
-    DomainObjectCollection domainObjects = new DomainObjectCollection ();
-
-    DataContainerCollection dataContainers = _dataContainers.GetByState (state);
-    foreach (DataContainer dataContainer in dataContainers)
-      domainObjects.Add (dataContainer.DomainObject);
-
-    return domainObjects;
   }
 
   public DataContainerCollection MergeWithRegisteredDataContainers (DataContainerCollection dataContainers)

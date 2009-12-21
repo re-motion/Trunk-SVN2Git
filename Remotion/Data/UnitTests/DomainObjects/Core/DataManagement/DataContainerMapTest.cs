@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -30,33 +31,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   public class DataContainerMapTest : ClientTransactionBaseTest
   {
     private DataContainerMap _map;
-    private DataContainer _newOrder;
-    private DataContainer _existingOrder;
+    private DataContainer _newOrderDataContainer;
+    private DataContainer _existingOrderDataContainer;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _map = new DataContainerMap (ClientTransactionMock);
-      _newOrder = CreateNewOrderDataContainer();
-      _existingOrder = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      _newOrderDataContainer = CreateNewOrderDataContainer();
+      _existingOrderDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+    }
+
+    [Test]
+    public void GetByState ()
+    {
+      var newDataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var newDataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      var changedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem1, null, pd => pd.DefaultValue);
+      changedDataContainer.MarkAsChanged ();
+      var unchangedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem2, null, pd => pd.DefaultValue);
+      var deletedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem3, null, pd => pd.DefaultValue);
+      deletedDataContainer.Delete ();
+      var discardedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem4, null, pd => pd.DefaultValue);
+      discardedDataContainer.Discard ();
+
+      var map = new DataContainerMap (ClientTransactionMock);
+      map.Register (newDataContainer1);
+      map.Register (newDataContainer2);
+      map.Register (changedDataContainer);
+      map.Register (unchangedDataContainer);
+      map.Register (deletedDataContainer);
+      map.Register (discardedDataContainer);
+
+      Assert.That (map.GetByState (StateType.New).ToArray (), Is.EquivalentTo (new[] { newDataContainer1, newDataContainer2 }));
+      Assert.That (map.GetByState (StateType.Changed).ToArray (), Is.EquivalentTo (new[] { changedDataContainer }));
+      Assert.That (map.GetByState (StateType.Unchanged).ToArray (), Is.EquivalentTo (new[] { unchangedDataContainer }));
+      Assert.That (map.GetByState (StateType.Deleted).ToArray (), Is.EquivalentTo (new[] { deletedDataContainer }));
+      Assert.That (map.GetByState (StateType.Discarded).ToArray (), Is.EquivalentTo (new[] { discardedDataContainer }));
     }
 
     [Test]
     public void DeleteNewDataContainer ()
     {
-      _map.Register (_newOrder);
+      _map.Register (_newOrderDataContainer);
       Assert.That (_map.Count, Is.EqualTo (1));
 
-      _map.PerformDelete2 (_newOrder);
+      _map.PerformDelete2 (_newOrderDataContainer);
       Assert.That (_map.Count, Is.EqualTo (0));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentOutOfRangeException))]
-    public void GetByInvalidState ()
-    {
-      _map.GetByState2 ((StateType) 1000);
     }
 
     [Test]
@@ -64,17 +86,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       using (ClientTransactionMock.EnterDiscardingScope())
       {
-        _map.Register (_existingOrder);
+        _map.Register (_existingOrderDataContainer);
 
-        Order order = (Order) _existingOrder.DomainObject;
+        var order = (Order) _existingOrderDataContainer.DomainObject;
         order.Delete();
-        Assert.That (_existingOrder.State, Is.EqualTo (StateType.Deleted));
+        Assert.That (_existingOrderDataContainer.State, Is.EqualTo (StateType.Deleted));
 
-        _map.Rollback2 (_existingOrder);
+        _map.Rollback2 (_existingOrderDataContainer);
 
-        _existingOrder = _map[_existingOrder.ID];
-        Assert.That (_existingOrder, Is.Not.Null);
-        Assert.That (_existingOrder.State, Is.EqualTo (StateType.Unchanged));
+        _existingOrderDataContainer = _map[_existingOrderDataContainer.ID];
+        Assert.That (_existingOrderDataContainer, Is.Not.Null);
+        Assert.That (_existingOrderDataContainer.State, Is.EqualTo (StateType.Unchanged));
       }
     }
 
@@ -82,11 +104,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ObjectDiscardedException))]
     public void Rollback_SingleNewObject ()
     {
-      _map.Register (_newOrder);
+      _map.Register (_newOrderDataContainer);
 
-      _map.Rollback2 (_newOrder);
+      _map.Rollback2 (_newOrderDataContainer);
 
-      Dev.Null = _newOrder.Timestamp;
+      Dev.Null = _newOrderDataContainer.Timestamp;
     }
 
     [Test]

@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
           .Select (id => _parentTransaction.DataManager.GetDiscardedDataContainer (id).DomainObject);
-      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.GetByState2 (StateType.Deleted).Cast<DomainObject>();
+      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.GetByState (StateType.Deleted).Select (dc => dc.DomainObject);
       foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
         MarkAsDiscarded (objectToBeDiscarded);
 
