@@ -381,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit_CommitsEndPoints ()
+    public void CommitAllEndPoints_CommitsEndPoints ()
     {
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
@@ -390,14 +390,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPoint.OppositeDomainObjects.Add (addedObject);
       Assert.That (endPoint.HasChanged, Is.True);
 
-      _map.Commit ();
+      _map.CommitAllEndPoints ();
 
       Assert.That (endPoint.HasChanged, Is.False);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { addedObject }));
     }
 
     [Test]
-    public void Rollback_RollsBackEndPoints ()
+    public void RollbackAllEndPoints_RollsBackEndPoints ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
@@ -406,26 +406,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPoint.OppositeDomainObjects.Add (addedObject);
       Assert.That (endPoint.HasChanged, Is.True);
 
-      _map.Rollback ();
+      _map.RollbackAllEndPoints ();
 
       Assert.That (endPoint.HasChanged, Is.False);
       Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
     }
 
     [Test]
-    public void RemoveEndPointsForDataContainer_RemovesEndPoint ()
+    public void RemoveEndPoint_RemovesEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
       Assert.That (_map[endPointID], Is.Not.Null);
 
-      _map.RemoveEndPointsForDataContainer (endPointID);
+      _map.RemoveEndPoint (endPointID);
 
       Assert.That (_map[endPointID], Is.Null);
     }
 
     [Test]
-    public void RemoveEndPointsForDataContainer_RaisesNotification_BeforeRemoving ()
+    public void RemoveEndPoint_RaisesNotification_BeforeRemoving ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
@@ -438,7 +438,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       listenerMock.Replay ();
 
-      _map.RemoveEndPointsForDataContainer (endPointID);
+      _map.RemoveEndPoint (endPointID);
 
       listenerMock.VerifyAllExpectations();
     }
@@ -447,10 +447,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "End point 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' is "
         + "not part of this map.\r\nParameter name: endPointID")]
-    public void RemoveEndPointsForDataContainer_NonExistingEndPoint ()
+    public void RemoveEndPoint_NonExistingEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _map.RemoveEndPointsForDataContainer (endPointID);
+      _map.RemoveEndPoint (endPointID);
     }
   }
 }

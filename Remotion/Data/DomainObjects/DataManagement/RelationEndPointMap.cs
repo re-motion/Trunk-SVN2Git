@@ -76,13 +76,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _collectionEndPointChangeDetectionStrategy; }
     }
 
-    public void Commit ()
+    public void CommitAllEndPoints ()
     {
       foreach (RelationEndPoint endPoint in _relationEndPoints)
         endPoint.Commit ();
     }
 
-    public void Rollback ()
+    public void RollbackAllEndPoints ()
     {
       foreach (RelationEndPoint endPoint in _relationEndPoints)
         endPoint.Rollback ();
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (DomainObject deletedDomainObject in deletedDomainObjects)
       {
         foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).AssociatedRelationEndPointIDs)
-          RemoveEndPointsForDataContainer (endPointID);
+          RemoveEndPoint (endPointID);
       }
     }
 
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       foreach (DomainObject newDomainObject in newDomainObjects)
       {
         foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).AssociatedRelationEndPointIDs)
-          RemoveEndPointsForDataContainer (endPointID);
+          RemoveEndPoint (endPointID);
       }
     }
 
@@ -141,7 +141,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoint.PerformDelete ();
 
         if (deletedObject.TransactionContext[ClientTransaction].State == StateType.New)
-          RemoveEndPointsForDataContainer (endPointID);
+          RemoveEndPoint (endPointID);
       }
     }
 
@@ -313,7 +313,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Add (endPoint);
     }
 
-    public void RemoveEndPointsForDataContainer (RelationEndPointID endPointID)
+    public void RemoveEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 

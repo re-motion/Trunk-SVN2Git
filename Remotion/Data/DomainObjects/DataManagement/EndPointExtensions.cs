@@ -35,19 +35,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return endPoint.ClientTransaction.GetObject (endPoint.ObjectID, true);
     }
 
-    public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, DomainObject domainObject) where T : IEndPoint
+    public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, DomainObject oppositeObject) where T : IEndPoint
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      var oppositeObjectID = oppositeObject != null ? oppositeObject.ID : null;
+      return endPoint.GetEndPointWithOppositeDefinition<T> (oppositeObjectID);
+    }
+
+    public static T GetEndPointWithOppositeDefinition<T> (this IEndPoint endPoint, ObjectID oppositeObjectID) where T : IEndPoint
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
       var oppositeDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
       IEndPoint oppositeEndPoint;
-      if (domainObject == null)
+      if (oppositeObjectID == null)
         oppositeEndPoint = RelationEndPoint.CreateNullRelationEndPoint (endPoint.ClientTransaction, oppositeDefinition);
       else
       {
         var relationEndPointMap = endPoint.ClientTransaction.DataManager.RelationEndPointMap;
-        var id = new RelationEndPointID (domainObject.ID, oppositeDefinition);
+        var id = new RelationEndPointID (oppositeObjectID, oppositeDefinition);
         oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       }
 

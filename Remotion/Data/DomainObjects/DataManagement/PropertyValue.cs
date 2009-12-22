@@ -288,7 +288,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _accessObservers.Add (propertyValueCollection);
     }
 
-    internal void Commit ()
+    internal void CommitState ()
     {
       if (HasChanged)
         _originalValue = _value;
@@ -296,7 +296,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
-    internal void Rollback ()
+    internal void RollbackState ()
     {
       if (HasChanged)
         _value = _originalValue;

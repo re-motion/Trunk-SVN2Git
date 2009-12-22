@@ -64,16 +64,16 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     return _dataContainers.Cast<DataContainer> ().Where (dc => dc.State == state);
   }
 
-  public void Commit ()
+  public void CommitAllDataContainers ()
   {
     foreach (DataContainer dataContainer in _dataContainers)
-      dataContainer.Commit ();
+      dataContainer.CommitState ();
   }
 
-  public void Rollback ()
+  public void RollbackAllDataContainers ()
   {
     foreach (DataContainer dataContainer in _dataContainers)
-      dataContainer.Rollback();
+      dataContainer.RollbackState();
   }
 
   public DomainObject GetObjectWithoutLoading (ObjectID id, bool includeDeleted)

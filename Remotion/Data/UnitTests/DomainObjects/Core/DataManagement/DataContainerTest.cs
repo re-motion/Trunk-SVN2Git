@@ -384,15 +384,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit_SetsStateToExisting ()
+    public void CommitState_SetsStateToExisting ()
     {
-      _newDataContainer.Commit ();
+      _newDataContainer.CommitState ();
 
       Assert.That (_newDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void Commit_CommitsPropertyValues ()
+    public void CommitState_CommitsPropertyValues ()
     {
       var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
       propertyValue.Value = 10;
@@ -401,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
       Assert.That (propertyValue.Value, Is.EqualTo (10));
 
-      _existingDataContainer.Commit ();
+      _existingDataContainer.CommitState ();
 
       Assert.That (propertyValue.HasChanged, Is.False);
       Assert.That (propertyValue.OriginalValue, Is.EqualTo (10));
@@ -409,54 +409,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit_ResetsChangedFlag ()
+    public void CommitState_ResetsChangedFlag ()
     {
       var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
       propertyValue.Value = 10;
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
 
-      _existingDataContainer.Commit ();
+      _existingDataContainer.CommitState ();
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void Commit_ResetsMarkedChangedFlag ()
+    public void CommitState_ResetsMarkedChangedFlag ()
     {
       _existingDataContainer.MarkAsChanged ();
       Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.True);
 
-      _existingDataContainer.Commit ();
+      _existingDataContainer.CommitState ();
 
       Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDiscardedException))]
-    public void Commit_DiscardedDataContainer_Throws ()
+    public void CommitState_DiscardedDataContainer_Throws ()
     {
-      _discardedDataContainer.Commit ();
+      _discardedDataContainer.CommitState ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Deleted data containers cannot be committed, they have to be discarded.")]
-    public void Commit_DeletedDataContainer_Throws ()
+    public void CommitState_DeletedDataContainer_Throws ()
     {
-      _deletedDataContainer.Commit ();
+      _deletedDataContainer.CommitState ();
     }
 
     [Test]
-    public void Rollback_SetsStateToExisting ()
+    public void RollbackState_SetsStateToExisting ()
     {
-      _deletedDataContainer.Rollback ();
+      _deletedDataContainer.RollbackState ();
 
       Assert.That (_deletedDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void Rollback_RollsbackPropertyValues ()
+    public void RollbackState_RollsbackPropertyValues ()
     {
       var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
       propertyValue.Value = 10;
@@ -465,7 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
       Assert.That (propertyValue.Value, Is.EqualTo (10));
 
-      _existingDataContainer.Rollback ();
+      _existingDataContainer.RollbackState ();
 
       Assert.That (propertyValue.HasChanged, Is.False);
       Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
@@ -473,42 +473,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_ResetsChangedFlag ()
+    public void RollbackState_ResetsChangedFlag ()
     {
       var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
       propertyValue.Value = 10;
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
 
-      _existingDataContainer.Rollback ();
+      _existingDataContainer.RollbackState ();
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void Rollback_ResetsMarkedChangedFlag ()
+    public void RollbackState_ResetsMarkedChangedFlag ()
     {
       _existingDataContainer.MarkAsChanged ();
       Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.True);
 
-      _existingDataContainer.Rollback ();
+      _existingDataContainer.RollbackState ();
 
       Assert.That (_existingDataContainer.HasBeenMarkedChanged, Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDiscardedException))]
-    public void Rollback_DiscardedDataContainer_Throws ()
+    public void RollbackState_DiscardedDataContainer_Throws ()
     {
-      _discardedDataContainer.Rollback ();
+      _discardedDataContainer.RollbackState ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "New data containers cannot be rolled back, they have to be discarded.")]
-    public void Rollback_NewDataContainer_Throws ()
+    public void RollbackState_NewDataContainer_Throws ()
     {
-      _newDataContainer.Rollback ();
+      _newDataContainer.RollbackState ();
     }
 
     [Test]

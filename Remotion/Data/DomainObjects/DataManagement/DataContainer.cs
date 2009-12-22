@@ -421,7 +421,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
       {
         foreach (PropertyValue propertyValue in _propertyValues)
-          propertyValue.Commit();
+          propertyValue.CommitState();
 
         _state = DataContainerStateType.Existing;
       }
@@ -439,13 +439,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
       {
         foreach (PropertyValue propertyValue in _propertyValues)
-          propertyValue.Rollback();
+          propertyValue.RollbackState();
 
         _state = DataContainerStateType.Existing;
       }
     }
 
-    public void Commit ()
+    public void CommitState ()
     {
       CheckNotDiscarded ();
 
@@ -456,12 +456,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenChanged = false;
 
       foreach (PropertyValue propertyValue in _propertyValues)
-        propertyValue.Commit ();
+        propertyValue.CommitState ();
 
       _state = DataContainerStateType.Existing;
     }
 
-    public void Rollback ()
+    public void RollbackState ()
     {
       CheckNotDiscarded ();
 
@@ -472,7 +472,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenChanged = false;
 
       foreach (PropertyValue propertyValue in _propertyValues)
-        propertyValue.Rollback ();
+        propertyValue.RollbackState ();
 
       _state = DataContainerStateType.Existing;
     }

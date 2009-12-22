@@ -168,32 +168,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Commit_CommitsDataContainers ()
+    public void CommitAllDataContainers_CommitsDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       _map.Register (dataContainer);
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
 
-      _map.Commit();
+      _map.CommitAllDataContainers();
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void Rollback_RollsbackDataContainers ()
+    public void RollbackAllDataContainers_RollsbackDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       dataContainer.Delete();
       _map.Register (dataContainer);
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Deleted));
 
-      _map.Rollback();
+      _map.RollbackAllDataContainers();
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void Removes_RemovesDataContainer ()
+    public void Remove_RemovesDataContainer ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _map.Register (dataContainer);
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Removes_RaisesNotification_BeforeRemoving ()
+    public void Remove_RaisesNotification_BeforeRemoving ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _map.Register (dataContainer);
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "Data container 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of this map.\r\nParameter name: id")]
-    public void Removes_NonExistingDataContainer ()
+    public void Remove_NonExistingDataContainer ()
     {
       _map.Remove (DomainObjectIDs.Order1);
     }

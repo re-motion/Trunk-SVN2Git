@@ -103,14 +103,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Commit ()
     {
-      ForeignKeyProperty.Commit ();
+      ForeignKeyProperty.CommitState ();
       Assertion.IsFalse (HasBeenTouched);
       Assertion.IsFalse (HasChanged);
     }
 
     public override void Rollback ()
     {
-      ForeignKeyProperty.Rollback ();
+      ForeignKeyProperty.RollbackState ();
       Assertion.IsFalse (HasBeenTouched);
       Assertion.IsFalse (HasChanged);
     }

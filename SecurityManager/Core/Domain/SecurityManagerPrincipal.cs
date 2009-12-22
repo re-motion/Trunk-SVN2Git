@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.Domain
   /// <para>
   /// The domain objects held by a <see cref="SecurityManagerPrincipal"/> instance are stored in a dedicated <see cref="BindingClientTransaction"/>.
   /// Changes made to those objects are only saved when that transaction is committed, eg. via 
-  /// <code>SecurityManagerPrincipal.Current.User.BindingTransaction.Commit()</code>.
+  /// <code>SecurityManagerPrincipal.Current.User.BindingTransaction.CommitAllEndPoints()</code>.
   /// </para>
   /// </remarks>
   [Serializable]

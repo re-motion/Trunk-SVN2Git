@@ -19,9 +19,11 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -145,31 +147,48 @@ public class DataManager : ISerializable, IDeserializationCallback
   public void Commit ()
   {
     var deletedDataContainers = _dataContainerMap.GetByState (StateType.Deleted).ToList();
+
+    _relationEndPointMap.CommitAllEndPoints ();
+    
     foreach (var deletedDataContainer in deletedDataContainers)
       Discard (deletedDataContainer);
 
-    _relationEndPointMap.Commit ();
-    _dataContainerMap.Commit ();
+    _dataContainerMap.CommitAllDataContainers ();
   }
 
   public void Rollback ()
   {
     var newDataContainers = _dataContainerMap.GetByState (StateType.New).ToList();
+
+    // roll back end point state before discarding objects because Discard checks that no dangling end points are created
+    _relationEndPointMap.RollbackAllEndPoints ();
+
+    // discard new data containers before rolling back data container state - new data containers cannot be rolled back
     foreach (var newDataContainer in newDataContainers)
       Discard (newDataContainer);
 
-    _relationEndPointMap.Rollback ();
-    _dataContainerMap.Rollback ();
+    _dataContainerMap.RollbackAllDataContainers ();
   }
 
+  // This method might leave dangling end points, so it must only be used from scenarios where it is guaranteed that nothing points back to the
+  // discarded object.
   private void Discard (DataContainer dataContainer)
   {
     foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
     {
-      if (_relationEndPointMap[endPointID] != null)
-        _relationEndPointMap.RemoveEndPointsForDataContainer (endPointID);
+      var endPoint = _relationEndPointMap[endPointID];
+      if (endPoint != null)
+      {
+        Assertion.IsTrue (
+            (endPoint.Definition.Cardinality == CardinalityType.One && ((ObjectEndPoint) endPoint).OppositeObjectID == null)
+            || (endPoint.Definition.Cardinality == CardinalityType.Many && ((CollectionEndPoint) endPoint).OppositeDomainObjects.Count == 0),
+            "Discard can only be used from scenarios where no dangling end points would be created.");
+        _relationEndPointMap.RemoveEndPoint (endPointID);
+      }
     }
+
     _dataContainerMap.Remove (dataContainer.ID);
+
     dataContainer.Discard ();
     MarkDiscarded (dataContainer);
   }

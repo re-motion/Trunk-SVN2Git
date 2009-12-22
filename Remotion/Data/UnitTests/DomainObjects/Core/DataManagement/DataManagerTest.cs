@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -63,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       DataContainer container = CreateOrder1DataContainer ();
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Unchanged });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container.DomainObject, domainObjects[0]);
@@ -79,12 +80,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
           (int) container1.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber") + 1);
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Changed });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Changed });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container1.DomainObject, domainObjects[0]);
 
-      domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Unchanged });
+      domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container2.DomainObject, domainObjects[0]);    
@@ -98,12 +99,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.Delete (container1.DomainObject);
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Deleted });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Deleted });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container1.DomainObject, domainObjects[0]);
 
-      domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Unchanged });
+      domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container2.DomainObject, domainObjects[0]);
@@ -115,12 +116,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 			DataContainer container1 = Order.NewObject ().InternalDataContainer;
       DataContainer container2 = CreateOrder2DataContainer ();
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.New });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.New });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container1.DomainObject, domainObjects[0]);
 
-      domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Unchanged });
+      domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
       Assert.IsNotNull (domainObjects);
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (container2.DomainObject, domainObjects[0]);
@@ -175,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetChangedRelationEndPoints ()
     {
       Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      Order order2 = Order.GetObject (DomainObjectIDs.Order2);
+      Dev.Null = Order.GetObject (DomainObjectIDs.Order2);
 
       OrderItem orderItem1 = order1.OrderItems[0];
       OrderTicket orderTicket = order1.OrderTicket;
@@ -184,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Employee employee = computer.Employee;
 
       Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Client client = location.Client;
+      Dev.Null = location.Client;
 
       Assert.IsEmpty (new List<RelationEndPoint> (_dataManager.GetChangedRelationEndPoints ()));
 
@@ -196,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       location.Client = Client.NewObject (); // 1 endpoint
 
-      List<RelationEndPoint> changedEndPoints = new List<RelationEndPoint> (_dataManager.GetChangedRelationEndPoints ());
+      var changedEndPoints = new List<RelationEndPoint> (_dataManager.GetChangedRelationEndPoints ());
 
       Assert.AreEqual (8, changedEndPoints.Count);
 
@@ -401,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_RollsBackRelationEndPointMap ()
+    public void Rollback_RollsBackRelationEndPointStates ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
       _dataManager.RegisterDataContainer (dataContainer);
@@ -419,7 +420,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Rollback_RollsBackDataContainerMap ()
+    public void Rollback_RollsBackDataContainerStates ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
       _dataManager.RegisterDataContainer (dataContainer);
@@ -519,12 +520,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return dataContainer;
     }
 
-    private DataContainer CreateOrderWithoutOrderItemDataContainer ()
+    private void CreateOrderWithoutOrderItemDataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
       dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-      return dataContainer;
     }
 
     private DataContainer CreateClassWithAllDataTypesDataContainer ()
