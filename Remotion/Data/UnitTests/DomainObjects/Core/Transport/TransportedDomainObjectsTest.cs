@@ -20,6 +20,7 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -38,8 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       ClientTransaction dataTransaction = ClientTransaction.CreateRootTransaction();
       var transportedObjects = new TransportedDomainObjects (dataTransaction, new List<DomainObject>());
 
-      Assert.IsNotNull (transportedObjects.DataTransaction);
-      Assert.AreSame (dataTransaction, transportedObjects.DataTransaction);
+      Assert.That (transportedObjects.DataTransaction, Is.Not.Null);
+      Assert.That (transportedObjects.DataTransaction, Is.SameAs (dataTransaction));
       Assert.IsEmpty (GetTransportedObjects (transportedObjects));
     }
 
@@ -72,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
       var transportedObjects = new TransportedDomainObjects (newTransaction, transportedObjectList);
 
-      Assert.IsNotNull (transportedObjects.DataTransaction);
+      Assert.That (transportedObjects.DataTransaction, Is.Not.Null);
       Assert.IsNotEmpty (GetTransportedObjects (transportedObjects));
       List<ObjectID> ids = GetTransportedObjects (transportedObjects).ConvertAll (obj => obj.ID);
       Assert.That (ids, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Company1 }));
@@ -98,19 +99,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       transportedObjects.FinishTransport();
 
       mockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void FinishTransport_DiscardsTransaction ()
-    {
-      TransportedDomainObjects transportedObjects = TransportAndDeleteObjects (
-          DomainObjectIDs.ClassWithAllDataTypes1,
-          DomainObjectIDs.ClassWithAllDataTypes2);
-
-      var transaction = transportedObjects.DataTransaction;
-      transportedObjects.FinishTransport ();
-
-      Assert.That (transaction.IsDiscarded, Is.True);
     }
 
     [Test]
@@ -150,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     }
 
     [Test]
-    public void FinishTransport_All ()
+    public void FinishTransport_WithoutFilter ()
     {
       TransportedDomainObjects transportedObjects = TransportAndDeleteObjects (
           DomainObjectIDs.ClassWithAllDataTypes1,
@@ -163,19 +151,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
         ClassWithAllDataTypes c3 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
         ClassWithAllDataTypes c4 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
 
-        Assert.AreEqual (2147483647, c3.Int32Property);
-        Assert.AreEqual (-2147483647, c4.Int32Property);
+        Assert.That (c3.Int32Property, Is.EqualTo (2147483647));
+        Assert.That (c4.Int32Property, Is.EqualTo (-2147483647));
       }
     }
 
     [Test]
-    public void FinishTransport_Some ()
+    public void FinishTransport_FilterNew ()
     {
       TransportedDomainObjects transportedObjects = TransportAndDeleteObjects (
           DomainObjectIDs.ClassWithAllDataTypes1,
           DomainObjectIDs.ClassWithAllDataTypes2);
 
-      transportedObjects.FinishTransport (transportedObject => ((ClassWithAllDataTypes) transportedObject).Int32Property < 0);
+      transportedObjects.FinishTransport (transportedObject => 
+          { 
+            Assert.That (transportedObject.State == StateType.New); 
+            return ((ClassWithAllDataTypes) transportedObject).Int32Property < 0; 
+          });
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -189,8 +181,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           // ok
         }
 
-        ClassWithAllDataTypes c4 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
-        Assert.AreEqual (-2147483647, c4.Int32Property);
+        ClassWithAllDataTypes c2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+        Assert.That (c2.Int32Property, Is.EqualTo (-2147483647));
+      }
+    }
+
+    [Test]
+    public void FinishTransport_FilterExisting ()
+    {
+
+      TransportedDomainObjects transportedObjects = TransportAndChangeObjects (
+          typeof (ClassWithAllDataTypes).FullName + ".Int32Property",
+          42,
+          DomainObjectIDs.ClassWithAllDataTypes1,
+          DomainObjectIDs.ClassWithAllDataTypes2);
+
+      transportedObjects.FinishTransport (transportedObject =>
+      {
+        Assert.That (transportedObject.State == StateType.Changed);
+        return ((ClassWithAllDataTypes) transportedObject).BooleanProperty;
+      });
+
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var c1 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        Assert.That (c1.Int32Property, Is.EqualTo (42));
+
+        var c2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+        Assert.That (c2.Int32Property, Is.Not.EqualTo (42));
       }
     }
 
@@ -202,8 +220,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           DomainObjectIDs.ClassWithAllDataTypes2);
 
       transportedObjects.FinishTransport (delegate { return false; });
-      Assert.IsNull (transportedObjects.DataTransaction);
-      Assert.IsNull (transportedObjects.TransportedObjects);
+      Assert.That (transportedObjects.DataTransaction, Is.Null);
+      Assert.That (transportedObjects.TransportedObjects, Is.Null);
+    }
+
+    [Test]
+    public void FinishTransport_DiscardsTransaction ()
+    {
+      TransportedDomainObjects transportedObjects = TransportAndDeleteObjects (
+          DomainObjectIDs.ClassWithAllDataTypes1,
+          DomainObjectIDs.ClassWithAllDataTypes2);
+
+      var transaction = transportedObjects.DataTransaction;
+      transportedObjects.FinishTransport ();
+
+      Assert.That (transaction.IsDiscarded, Is.True);
     }
 
     [Test]
@@ -227,14 +258,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       ModifyDatabase (
           delegate
           {
-            ClassWithAllDataTypes c1 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-            ClassWithAllDataTypes c2 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
+            foreach (var id in objectsToLoadAndDelete)
+            {
+              var domainObject = RepositoryAccessor.GetObject (id, false);
+              RepositoryAccessor.DeleteObject (domainObject);
+            }
+          });
 
-            Assert.AreEqual (2147483647, c1.Int32Property);
-            Assert.AreEqual (-2147483647, c2.Int32Property);
+      return Transport (transporter);
+    }
 
-            c1.Delete();
-            c2.Delete();
+    private TransportedDomainObjects TransportAndChangeObjects (string propertyName, object newValue, params ObjectID[] objectsToLoadAndDelete)
+    {
+      var transporter = new DomainObjectTransporter ();
+      foreach (ObjectID id in objectsToLoadAndDelete)
+        transporter.Load (id);
+
+      ModifyDatabase (
+          delegate
+          {
+            foreach (var id in objectsToLoadAndDelete)
+            {
+              var domainObject = RepositoryAccessor.GetObject (id, false);
+              new PropertyIndexer (domainObject)[propertyName].SetValueWithoutTypeCheck (newValue);
+            }
           });
 
       return Transport (transporter);

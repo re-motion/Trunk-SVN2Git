@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -40,10 +41,25 @@ namespace Remotion.Data.DomainObjects.Transport
     public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsTrue (ClientTransaction.Current == _transaction);
-      foreach (DomainObject domainObject in domainObjects)
+
+      foreach (var domainObject in domainObjects)
       {
         if (!_filter (domainObject))
-          _transaction.DataManager.DataContainerMap.Rollback2 (_transaction.GetDataContainer(domainObject));
+        {
+          // Note that we do not roll back any end points - this will cause us to create dangling end points. Doesn't matter, though, the transaction
+          // is discarded after transport anyway.
+
+          var dataContainer = _transaction.GetDataContainer (domainObject);
+          if (dataContainer.State == StateType.New)
+          {
+            _transaction.DataManager.PerformDelete2 (domainObject, new CompositeRelationModificationWithEvents ());
+            Assertion.IsTrue (dataContainer.IsDiscarded);
+          }
+          else
+          {
+            dataContainer.RollbackState();
+          }
+        }
       }
     }
 
