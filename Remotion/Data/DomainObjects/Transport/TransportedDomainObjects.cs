@@ -70,7 +70,8 @@ namespace Remotion.Data.DomainObjects.Transport
     /// Finishes the transport by committing the <see cref="DataTransaction"/> to the database.
     /// </summary>
     /// <remarks>This method invalidated the <see cref="TransportedDomainObjects"/> object, setting <see cref="DataTransaction"/> and
-    /// <see cref="TransportedObjects"/> to <see langword="null"/>.</remarks>
+    /// <see cref="TransportedObjects"/> to <see langword="null"/>. The transported object references
+    /// cannot be used any longer after calling this method.</remarks>
     public void FinishTransport ()
     {
       FinishTransport (delegate { return true; });
@@ -83,7 +84,8 @@ namespace Remotion.Data.DomainObjects.Transport
     /// <param name="filter">A filter delegate called for each object that would be committed to the database. Return true to include the
     /// object in the commit, or false to leave its state in the database as is.</param>
     /// <remarks>This method invalidated the <see cref="TransportedDomainObjects"/> object, setting <see cref="DataTransaction"/> and
-    /// <see cref="TransportedObjects"/> to <see langword="null"/>.</remarks>
+    /// <see cref="TransportedObjects"/> to <see langword="null"/> and discarding <see cref="DataTransaction"/>. The transported object references
+    /// cannot be used any longer after calling this method.</remarks>
     public void FinishTransport (Func<DomainObject, bool> filter)
     {
       ArgumentUtility.CheckNotNull ("filter", filter);
@@ -93,6 +95,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
       DataTransaction.AddListener (new TransportFinishTransactionListener (DataTransaction, filter));
       DataTransaction.Commit ();
+      DataTransaction.Discard ();
 
       _dataTransaction = null;
       _transportedObjects = null;

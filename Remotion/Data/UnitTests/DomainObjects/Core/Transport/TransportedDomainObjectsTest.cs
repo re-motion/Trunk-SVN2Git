@@ -101,6 +101,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     }
 
     [Test]
+    public void FinishTransport_DiscardsTransaction ()
+    {
+      TransportedDomainObjects transportedObjects = TransportAndDeleteObjects (
+          DomainObjectIDs.ClassWithAllDataTypes1,
+          DomainObjectIDs.ClassWithAllDataTypes2);
+
+      var transaction = transportedObjects.DataTransaction;
+      transportedObjects.FinishTransport ();
+
+      Assert.That (transaction.IsDiscarded, Is.True);
+    }
+
+    [Test]
     public void FinishTransport_FilterCalledForEachChangedObject ()
     {
       var transporter = new DomainObjectTransporter();
