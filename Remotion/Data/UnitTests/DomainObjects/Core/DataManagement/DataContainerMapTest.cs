@@ -77,38 +77,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.Register (_newOrderDataContainer);
       Assert.That (_map.Count, Is.EqualTo (1));
 
-      _map.PerformDelete2 (_newOrderDataContainer);
+      _map.PerformDelete (_newOrderDataContainer);
       Assert.That (_map.Count, Is.EqualTo (0));
-    }
-
-    [Test]
-    public void Rollback_SingleDeletedObject ()
-    {
-      using (ClientTransactionMock.EnterDiscardingScope())
-      {
-        _map.Register (_existingOrderDataContainer);
-
-        var order = (Order) _existingOrderDataContainer.DomainObject;
-        order.Delete();
-        Assert.That (_existingOrderDataContainer.State, Is.EqualTo (StateType.Deleted));
-
-        _map.Rollback2 (_existingOrderDataContainer);
-
-        _existingOrderDataContainer = _map[_existingOrderDataContainer.ID];
-        Assert.That (_existingOrderDataContainer, Is.Not.Null);
-        Assert.That (_existingOrderDataContainer.State, Is.EqualTo (StateType.Unchanged));
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void Rollback_SingleNewObject ()
-    {
-      _map.Register (_newOrderDataContainer);
-
-      _map.Rollback2 (_newOrderDataContainer);
-
-      Dev.Null = _newOrderDataContainer.Timestamp;
     }
 
     [Test]
@@ -121,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       {
         Order order1 = Order.GetObject (DomainObjectIDs.Order1);
 
-        _map.PerformDelete2 (order1.InternalDataContainer);
+        _map.PerformDelete (order1.InternalDataContainer);
       }
     }
 

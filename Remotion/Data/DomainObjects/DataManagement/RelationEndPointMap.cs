@@ -88,36 +88,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoint.Rollback ();
     }
 
-    public void Commit2 (DomainObjectCollection deletedDomainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("deletedDomainObjects", deletedDomainObjects);
-
-      foreach (RelationEndPoint endPoint in _relationEndPoints)
-        endPoint.Commit();
-
-      foreach (DomainObject deletedDomainObject in deletedDomainObjects)
-      {
-        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).AssociatedRelationEndPointIDs)
-          RemoveEndPoint (endPointID);
-      }
-    }
-
-    public void Rollback2 (DomainObjectCollection newDomainObjects)
-    {
-      ArgumentUtility.CheckNotNull ("newDomainObjects", newDomainObjects);
-
-      foreach (RelationEndPoint endPoint in _relationEndPoints)
-        endPoint.Rollback();
-
-      foreach (DomainObject newDomainObject in newDomainObjects)
-      {
-        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).AssociatedRelationEndPointIDs)
-          RemoveEndPoint (endPointID);
-      }
-    }
-
     // TODO 1914: Called by DeleteDomainObjectCommand
-    public void PerformDelete2 (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+    public void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);

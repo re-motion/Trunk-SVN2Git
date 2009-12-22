@@ -40,28 +40,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CommitForDeletedObject ()
-    {
-      Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
-      Assert.That (_map.Count > 0, Is.True);
-
-      computer.Delete();
-
-      var deletedDomainObjects = new DomainObjectCollection();
-      deletedDomainObjects.Add (computer);
-
-      _map.Commit2 (deletedDomainObjects);
-
-      Assert.That (_map.Count, Is.EqualTo (0));
-    }
-
-    [Test]
     public void DeleteNew ()
     {
       Order newOrder = Order.NewObject();
       Assert.That (_map.Count > 0, Is.True);
 
-      _map.PerformDelete2 (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
+      _map.PerformDelete (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
       Assert.That (_map.Count, Is.EqualTo (0));
     }
 
@@ -218,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         order1 = Order.GetObject (DomainObjectIDs.Order1);
       }
 
-      _map.PerformDelete2 (order1, new CompositeRelationModificationWithEvents());
+      _map.PerformDelete (order1, new CompositeRelationModificationWithEvents());
     }
 
     [Test]

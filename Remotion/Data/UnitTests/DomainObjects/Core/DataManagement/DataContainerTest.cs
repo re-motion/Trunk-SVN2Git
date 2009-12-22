@@ -631,18 +631,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A DataContainer cannot be discarded while it doesn't have an "
-                                                                              + "associated DomainObject.")]
-    public void DiscardWithoutDomainObjectThrows ()
-    {
-      DataContainer dataContainerWithoutDomainObject = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainerWithoutDomainObject.RegisterWithTransaction (ClientTransactionMock);
-
-      PrivateInvoke.InvokeNonPublicMethod (dataContainerWithoutDomainObject, "Delete2");
-      Assert.Fail ("Expected exception");
-    }
-
-    [Test]
     public void GetIDEvenPossibleWhenDiscarded ()
     {
       Assert.That (_discardedDataContainer.IsDiscarded, Is.True);

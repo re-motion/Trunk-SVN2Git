@@ -393,17 +393,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         PropertyChanged (this, args);
     }
 
-
-    internal void Delete2 ()
-    {
-      CheckNotDiscarded();
-
-      if (_state == DataContainerStateType.New)  // TODO 1914: Move this if block to DataManager.DeleteDataContainer
-        Discard2();
-
-      _state = DataContainerStateType.Deleted;
-    }
-
     public void SetTimestamp (object timestamp)
     {
       _timestamp = timestamp;

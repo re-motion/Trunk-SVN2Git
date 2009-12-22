@@ -326,20 +326,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           "a deleted DataContainer must have been loaded through ParentTransaction, so the ParentTransaction must know it");
 
       Assertion.IsTrue (
-          !parentDataContainer.IsDiscarded && parentDataContainer.State != StateType.Deleted,
+          parentDataContainer.State != StateType.Discarded && parentDataContainer.State != StateType.Deleted,
           "deleted DataContainers cannot be discarded or deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
-      DomainObject domainObject = dataContainer.DomainObject;
-      
-      // TODO 1914: Check whether this should be unified with DataManager.PerformDelete again
-      
-      // do not pass any opposite end point modifications to PerformDelete - this method only persists changes made directly to the deleted object
-      var emptyOppositeBidirectionalEndPointModification = new CompositeRelationModificationWithEvents ();
-      ParentTransaction.DataManager.RelationEndPointMap.PerformDelete2 (domainObject, emptyOppositeBidirectionalEndPointModification);
-      ParentTransaction.DataManager.DataContainerMap.PerformDelete2 (parentDataContainer);
-    
-      parentDataContainer.Delete2 ();
+      ParentTransaction.DataManager.PerformDelete (dataContainer.DomainObject, new CompositeRelationModificationWithEvents ());
     }
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
@@ -378,7 +369,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       newDiscardedContainer.SetDomainObject (objectToBeDiscarded);
       newDiscardedContainer.RegisterWithTransaction (this);
 
-      DataManager.PerformDelete2 (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
+      DataManager.PerformDelete (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
 
       Assertion.IsTrue (DataManager.IsDiscarded (newDiscardedContainer.ID),
           "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");

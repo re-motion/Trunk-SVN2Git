@@ -216,23 +216,32 @@ public class DataManager : ISerializable, IDeserializationCallback
     var oppositeEndPointRemoveModifications = _relationEndPointMap.GetRemoveModificationsForOppositeEndPoints (deletedObject);
 
     BeginDelete (deletedObject, oppositeEndPointRemoveModifications);
-    PerformDelete2 (deletedObject, oppositeEndPointRemoveModifications);
+    PerformDelete (deletedObject, oppositeEndPointRemoveModifications);
     EndDelete (deletedObject, oppositeEndPointRemoveModifications);
   }
 
   // TODO: This will be rewritten as a command.
-  internal void PerformDelete2 (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+  internal void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
   {
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
 
     var dataContainer = _clientTransaction.GetDataContainer (deletedObject);  // rescue dataContainer before the map deletes is
     Assertion.IsFalse (dataContainer.State == StateType.Deleted);
+    Assertion.IsFalse (dataContainer.State == StateType.Discarded);
 
-    _relationEndPointMap.PerformDelete2 (deletedObject, oppositeEndPointRemoveModifications);
-    _dataContainerMap.PerformDelete2 (dataContainer);
-    
-    dataContainer.Delete2 ();
+    _relationEndPointMap.PerformDelete (deletedObject, oppositeEndPointRemoveModifications);
+    _dataContainerMap.PerformDelete (dataContainer);
+
+    if (dataContainer.State == StateType.New)
+    {
+      dataContainer.Discard ();
+      MarkDiscarded (dataContainer);
+    }
+    else
+    {
+      dataContainer.Delete();
+    }
   }
 
   private void BeginDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)

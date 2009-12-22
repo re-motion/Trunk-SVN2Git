@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Transport
           var dataContainer = _transaction.GetDataContainer (domainObject);
           if (dataContainer.State == StateType.New)
           {
-            _transaction.DataManager.PerformDelete2 (domainObject, new CompositeRelationModificationWithEvents ());
+            _transaction.DataManager.PerformDelete (domainObject, new CompositeRelationModificationWithEvents ());
             Assertion.IsTrue (dataContainer.IsDiscarded);
           }
           else

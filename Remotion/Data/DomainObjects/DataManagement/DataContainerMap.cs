@@ -99,7 +99,7 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     _dataContainers.Add (dataContainer);
   }
 
-  public void PerformDelete2 (DataContainer dataContainer)
+  public void PerformDelete (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
     CheckClientTransactionForDeletion (dataContainer);
@@ -121,14 +121,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
 
     _transactionEventSink.DataContainerMapUnregistering (dataContainer);
     _dataContainers.Remove (dataContainer);
-  }
-
-  public void Rollback2 (DataContainer dataContainer)
-  {
-    if (dataContainer.State == StateType.New)
-      Remove (dataContainer.ID);
-
-    dataContainer.Rollback2 ();
   }
 
   public DataContainerCollection MergeWithRegisteredDataContainers (DataContainerCollection dataContainers)
