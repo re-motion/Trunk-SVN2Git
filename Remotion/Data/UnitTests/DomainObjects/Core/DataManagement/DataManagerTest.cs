@@ -44,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetEmptyDomainObjectsFromStateTypeOverload ()
     {
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (0, domainObjects.Count);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -54,9 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container = CreateOrder1DataContainer ();
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container.DomainObject));
     }
 
     [Test]
@@ -65,9 +65,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container = CreateOrder1DataContainer ();
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container.DomainObject));
     }
 
     [Test]
@@ -81,14 +81,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           (int) container1.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber") + 1);
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Changed });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container1.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container1.DomainObject));
 
       domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container2.DomainObject, domainObjects[0]);    
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container2.DomainObject));    
     }
 
     [Test]
@@ -100,14 +100,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.Delete (container1.DomainObject);
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Deleted });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container1.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container1.DomainObject));
 
       domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container2.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container2.DomainObject));
     }
 
     [Test]
@@ -117,20 +117,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container2 = CreateOrder2DataContainer ();
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.New });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container1.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container1.DomainObject));
 
       domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
-      Assert.IsNotNull (domainObjects);
-      Assert.AreEqual (1, domainObjects.Count);
-      Assert.AreSame (container2.DomainObject, domainObjects[0]);
+      Assert.That (domainObjects, Is.Not.Null);
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (container2.DomainObject));
     }
 
     [Test]
     public void GetEmptyChangedDomainObjects ()
     {
-      Assert.AreEqual (0, _dataManager.GetChangedDomainObjects ().Count);
+      Assert.That (_dataManager.GetChangedDomainObjects ().Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -140,8 +140,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
 
       DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.AreEqual (1, changedObjects.Count);
-      Assert.AreEqual (container.ID, changedObjects[0].ID);
+      Assert.That (changedObjects.Count, Is.EqualTo (1));
+      Assert.That (changedObjects[0].ID, Is.EqualTo (container.ID));
     }
 
     [Test]
@@ -153,8 +153,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       container2["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = @"C:\NewFile.jpg";
 
       DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.AreEqual (1, changedObjects.Count);
-      Assert.AreEqual (container2.ID, changedObjects[0].ID);
+      Assert.That (changedObjects.Count, Is.EqualTo (1));
+      Assert.That (changedObjects[0].ID, Is.EqualTo (container2.ID));
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectAndNotify (orderTicket2.DomainObject);
 
       DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.AreEqual (4, changedObjects.Count);
+      Assert.That (changedObjects.Count, Is.EqualTo (4));
     }
 
     [Test]
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var changedEndPoints = new List<RelationEndPoint> (_dataManager.GetChangedRelationEndPoints ());
 
-      Assert.AreEqual (8, changedEndPoints.Count);
+      Assert.That (changedEndPoints.Count, Is.EqualTo (8));
 
       Assert.Contains (_dataManager.RelationEndPointMap[new RelationEndPointID (order1.ID, typeof (Order) + ".OrderItems")],
           changedEndPoints);
@@ -275,27 +275,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       {
         _dataManager.Delete (order1); // deletes in _dataManager's transaction, not in current transaction
       }
-      Assert.AreEqual (StateType.Deleted, Order.GetObject (DomainObjectIDs.Order1, true).State);
+      Assert.That (Order.GetObject (DomainObjectIDs.Order1, true).State, Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
     public void IsDiscarded ()
     {
-      OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      Assert.IsFalse (_dataManager.IsDiscarded (orderItem1.ID));
-      Assert.AreEqual (0, _dataManager.DiscardedObjectCount);
-      _dataManager.MarkDiscarded (orderItem1.InternalDataContainer);
-      Assert.IsTrue (_dataManager.IsDiscarded (orderItem1.ID));
-      Assert.AreEqual (1, _dataManager.DiscardedObjectCount);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.False);
+      Assert.That (_dataManager.DiscardedObjectCount, Is.EqualTo (0));
+
+      _dataManager.Rollback ();
+
+      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.True);
+      Assert.That (_dataManager.DiscardedObjectCount, Is.EqualTo (1));
     }
 
     [Test]
     public void GetDiscardedDataContainer ()
     {
-      OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      DataContainer dataContainer = orderItem1.InternalDataContainer;
-      _dataManager.MarkDiscarded (dataContainer);
-      Assert.AreSame (dataContainer, _dataManager.GetDiscardedDataContainer (orderItem1.ID));
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+      _dataManager.Rollback ();
+
+      Assert.That (_dataManager.GetDiscardedDataContainer (dataContainer.ID), Is.SameAs (dataContainer));
     }
 
     [Test]

@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -64,6 +63,33 @@ public class DataManager : ISerializable, IDeserializationCallback
   public ClientTransaction ClientTransaction
   {
     get { return _clientTransaction; }
+  }
+
+  public int DiscardedObjectCount
+  {
+    get { return _discardedDataContainers.Count; }
+  }
+
+  public IEnumerable<ObjectID> DiscardedObjectIDs
+  {
+    get { return _discardedDataContainers.Keys; }
+  }
+
+  public bool IsDiscarded (ObjectID id)
+  {
+    ArgumentUtility.CheckNotNull ("id", id);
+    return _discardedDataContainers.ContainsKey (id);
+  }
+
+  public DataContainer GetDiscardedDataContainer (ObjectID id)
+  {
+    ArgumentUtility.CheckNotNull ("id", id);
+
+    DataContainer discardedDataContainer;
+    if (!_discardedDataContainers.TryGetValue (id, out discardedDataContainer))
+      throw new ArgumentException (String.Format ("The object '{0}' has not been discarded.", id), "id");
+    else
+      return discardedDataContainer;
   }
 
   public DataContainerCollection GetChangedDataContainersForCommit ()
@@ -277,39 +303,10 @@ public class DataManager : ISerializable, IDeserializationCallback
     return new ClientTransactionsDifferException (String.Format (message, args));
   }
 
-  public void MarkDiscarded (DataContainer discardedDataContainer)
+  private void MarkDiscarded (DataContainer discardedDataContainer)
   {
-    ArgumentUtility.CheckNotNull ("discardedDataContainer", discardedDataContainer);
-    
     _transactionEventSink.DataManagerMarkingObjectDiscarded (discardedDataContainer.ID);
     _discardedDataContainers.Add (discardedDataContainer.ID, discardedDataContainer);
-  }
-
-  public bool IsDiscarded (ObjectID id)
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-    return _discardedDataContainers.ContainsKey (id);
-  }
-
-  public DataContainer GetDiscardedDataContainer (ObjectID id)
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-
-    DataContainer discardedDataContainer;
-    if (!_discardedDataContainers.TryGetValue (id, out discardedDataContainer))
-      throw new ArgumentException (String.Format ("The object '{0}' has not been discarded.", id), "id");
-    else
-      return discardedDataContainer;
-  }
-
-  public int DiscardedObjectCount
-  {
-    get { return _discardedDataContainers.Count; }
-  }
-
-  public IEnumerable<ObjectID> DiscardedObjectIDs
-  {
-    get { return _discardedDataContainers.Keys; }
   }
 
   #region Serialization
