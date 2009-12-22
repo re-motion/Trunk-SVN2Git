@@ -233,13 +233,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {
       Assertion.IsFalse (DataManager.IsDiscarded (parentDataContainer.ID));
+      Assertion.IsFalse (parentDataContainer.State == StateType.Deleted, "Implied by previous assertion");
 
       var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
 
       thisDataContainer.SetPropertyValuesFrom (parentDataContainer);
       thisDataContainer.SetTimestamp (parentDataContainer.Timestamp);
       thisDataContainer.SetDomainObject (parentDataContainer.DomainObject);
-      thisDataContainer.Commit2(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
+      thisDataContainer.CommitState(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
 
       return thisDataContainer;
     }

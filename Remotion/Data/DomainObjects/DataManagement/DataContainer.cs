@@ -398,42 +398,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _timestamp = timestamp;
     }
 
-    internal void Commit2 ()
-    {
-      CheckNotDiscarded();
-
-      _hasBeenMarkedChanged = false;
-      _hasBeenChanged = false;
-
-      if (_state == DataContainerStateType.Deleted) // TODO 1914: Move this if block to DataManager.CommitDataContainer
-        Discard2();
-      else
-      {
-        foreach (PropertyValue propertyValue in _propertyValues)
-          propertyValue.CommitState();
-
-        _state = DataContainerStateType.Existing;
-      }
-    }
-
-    internal void Rollback2 ()
-    {
-      CheckNotDiscarded ();
-
-      _hasBeenMarkedChanged = false;
-      _hasBeenChanged = false;
-
-      if (_state == DataContainerStateType.New) // TODO 1914: Move this if block to DataManager.CommitDataContainer
-        Discard2();
-      else
-      {
-        foreach (PropertyValue propertyValue in _propertyValues)
-          propertyValue.RollbackState();
-
-        _state = DataContainerStateType.Existing;
-      }
-    }
-
     public void CommitState ()
     {
       CheckNotDiscarded ();
@@ -606,21 +570,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return StateType.Changed;
       else
         return StateType.Unchanged;
-    }
-
-    private void Discard2 ()
-    {
-      CheckNotDiscarded();
-
-      if (_domainObject == null)
-        throw new InvalidOperationException ("A DataContainer cannot be discarded while it doesn't have an associated DomainObject.");
-
-      _clientTransaction.DataManager.MarkDiscarded (this); // TODO 1914: Move to DataManager.DeleteDataContainer
-
-      _propertyValues.Discard();
-      _clientTransaction = null;
-
-      _isDiscarded = true;
     }
 
     private void CheckNotDiscarded ()
