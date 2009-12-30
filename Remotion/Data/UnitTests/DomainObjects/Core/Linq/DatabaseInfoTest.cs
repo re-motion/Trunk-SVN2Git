@@ -19,7 +19,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq.Clauses;
@@ -106,30 +105,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void GetJoinColumns_FK_Right()
     {
-      Tuple<string, string> columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderItems"));
-      Assert.AreEqual ("ID", columns.A);
-      Assert.AreEqual ("OrderID", columns.B);
+      var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderItems"));
+      Assert.AreEqual ("ID", columns.Value.PrimaryKey);
+      Assert.AreEqual ("OrderID", columns.Value.ForeignKey);
     }
 
     [Test]
     public void GetJoinColumns_FK_Left ()
     {
-      Tuple<string, string> columns = _databaseInfo.GetJoinColumnNames (typeof (OrderItem).GetProperty ("Order"));
-      Assert.AreEqual ("OrderID", columns.A);
-      Assert.AreEqual ("ID", columns.B);
+      var columns = _databaseInfo.GetJoinColumnNames (typeof (OrderItem).GetProperty ("Order"));
+      Assert.AreEqual ("OrderID", columns.Value.PrimaryKey);
+      Assert.AreEqual ("ID", columns.Value.ForeignKey);
     }
 
     [Test]
     public void GetJoinColumns_NotInMapping ()
     {
-      Tuple<string, string> columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("NotInMapping"));
+      var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("NotInMapping"));
       Assert.IsNull (columns);
     }
 
     [Test]
     public void GetJoinColumns_NoRelationProperty ()
     {
-      Tuple<string, string> columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderNumber"));
+      var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderNumber"));
       Assert.IsNull (columns);
     }
 
