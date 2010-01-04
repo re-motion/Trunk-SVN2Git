@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.UnitTests.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;

@@ -20,22 +20,39 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
-using Remotion.Data.Linq.UnitTests;
-using Remotion.Data.Linq.UnitTests.Parsing.Structure.IntermediateModel;
+using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class ContainsObjectExpressionNodeTest : ExpressionNodeTestBase
+  public class ContainsObjectExpressionNodeTest 
   {
     private ContainsObjectExpressionNode _node;
 
-    public override void SetUp ()
+    [SetUp]
+    public void SetUp ()
     {
-      base.SetUp();
+      SourceNode = new MainSourceExpressionNode ("x", Expression.Constant (new[] { 1, 2, 3 }));
+      ClauseGenerationContext = new ClauseGenerationContext (
+          MethodCallExpressionNodeTypeRegistry.CreateDefault ());
+
+      QueryModel = SourceNode.Apply (null, ClauseGenerationContext);
+      SourceClause = QueryModel.MainFromClause;
+      SourceReference = (QuerySourceReferenceExpression) QueryModel.SelectClause.Selector;
+
       _node = new ContainsObjectExpressionNode (CreateParseInfo(), Expression.Constant ("test"));
     }
+
+    public MainSourceExpressionNode SourceNode { get; private set; }
+    public MainFromClause SourceClause { get; private set; }
+    public QuerySourceReferenceExpression SourceReference { get; private set; }
+    public ClauseGenerationContext ClauseGenerationContext { get; private set; }
+    public QueryModel QueryModel { get; private set; }
 
     [Test]
     public void SupportedMethods ()
@@ -55,6 +72,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Apply ()
     {
       TestApply (_node, typeof (ContainsResultOperator));
+    }
+
+    private void TestApply (ResultOperatorExpressionNodeBase node, Type expectedResultOperatorType)
+    {
+      var result = node.Apply (QueryModel, ClauseGenerationContext);
+      Assert.That (result, Is.SameAs (QueryModel));
+
+      Assert.That (QueryModel.ResultOperators.Count, Is.EqualTo (1));
+      Assert.That (QueryModel.ResultOperators[0], Is.InstanceOfType (expectedResultOperatorType));
+    }
+
+
+    private MethodCallExpressionParseInfo CreateParseInfo ()
+    {
+      return CreateParseInfo (SourceNode);
+    }
+
+
+    private MethodCallExpressionParseInfo CreateParseInfo (IExpressionNode source)
+    {
+      return CreateParseInfo (source, "x");
+    }
+
+    private MethodCallExpressionParseInfo CreateParseInfo (IExpressionNode source, string associatedIdentifier)
+    {
+      return new MethodCallExpressionParseInfo (associatedIdentifier, source, ExpressionHelper.CreateMethodCallExpression ());
     }
   }
 }

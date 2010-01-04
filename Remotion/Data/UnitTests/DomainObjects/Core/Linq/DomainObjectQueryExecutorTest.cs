@@ -28,7 +28,6 @@ using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.Linq.UnitTests;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using System.Collections.Generic;

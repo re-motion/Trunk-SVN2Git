@@ -165,10 +165,6 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Linq.UnitTests\Data.Linq.UnitTests.csproj">
-      <Project>{1D56FFB7-8118-463A-81EA-37A8668BCD31}</Project>
-      <Name>Data.Linq.UnitTests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Linq\Data.Linq.csproj">
       <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
       <Name>Data.Linq</Name>
@@ -310,6 +306,7 @@
     <Compile Include="DomainObjects\Core\Interception\TestDomain\DirectlyInstantiableDO.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SpecificDerivedDO.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectExpressionNodeTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExpressionHelper.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ConditionalExpressionWhereConditionParser.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\EagerFetchingIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ImplicitJoinIntegrationTest.cs" />
@@ -320,6 +317,12 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\SelectIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\SubQueryIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\WhereIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestDomain\IndustrialSector.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestDomain\StubDatabaseInfo.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestDomain\Student.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestDomain\TestQueryable.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
