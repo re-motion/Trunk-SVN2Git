@@ -306,19 +306,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the state of the <see cref="DataContainer"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
     public StateType State
     {
       get
       {
         if (_isDiscarded)
           return StateType.Discarded;
-        else if (_state == DataContainerStateType.Existing)
-          return GetStateForExistingDataContainer();
-        else if (_state == DataContainerStateType.New)
-          return StateType.New;
-        else
-          return StateType.Deleted;
+        
+        switch (_state)
+        {
+          case DataContainerStateType.New:
+            return StateType.New;
+          case DataContainerStateType.Deleted:
+            return StateType.Deleted;
+          default:
+            Assertion.IsTrue (_state == DataContainerStateType.Existing);
+
+            if (_hasBeenMarkedChanged || _hasBeenChanged)
+              return StateType.Changed;
+            else
+              return StateType.Unchanged;
+        }
       }
     }
 
@@ -559,17 +567,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (_clientTransaction != null)
         _clientTransaction.TransactionEventSink.PropertyValueRead (this, propertyValue, value, valueAccess);
-    }
-
-    private StateType GetStateForExistingDataContainer ()
-    {
-      Assertion.IsFalse (IsDiscarded);
-      Assertion.IsTrue (_state == DataContainerStateType.Existing);
-
-      if (_hasBeenMarkedChanged || _hasBeenChanged)
-        return StateType.Changed;
-      else
-        return StateType.Unchanged;
     }
 
     private void CheckNotDiscarded ()
