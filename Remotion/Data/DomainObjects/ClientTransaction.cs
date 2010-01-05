@@ -661,6 +661,26 @@ public abstract class ClientTransaction
   }
 
   /// <summary>
+  /// Ensures that the given <see cref="DomainObject"/>'s data has been loaded into this <see cref="ClientTransaction"/>. If it hasn't, this method
+  /// loads the object's data.
+  /// </summary>
+  /// <param name="domainObject">The domain object whose data must be loaded.</param>
+  /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null" />.</exception>
+  /// <exception cref="ClientTransactionsDifferException">The given <paramref name="domainObject"/> cannot be used in this 
+  /// <see cref="ClientTransaction"/>.</exception>
+  /// <exception cref="ObjectDiscardedException">The given <paramref name="domainObject"/> has already been discarded in this transaction.</exception>
+  /// <exception cref="ObjectNotFoundException">No data for the given <paramref name="domainObject"/> could be loaded because the object was not
+  /// found in the underlying data source.</exception>
+  public void EnsureDataAvailable (DomainObject domainObject)
+  {
+    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+    GetDataContainer (domainObject);
+    Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] != null);
+  }
+
+  // TODO 2072
+  /// <summary>
   /// Copies the event handlers defined on the given <see cref="DomainObject"/>'s collection properties from another transaction to this
   /// transaction.
   /// </summary>

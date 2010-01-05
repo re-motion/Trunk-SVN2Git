@@ -22,7 +22,9 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -77,6 +79,94 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       ClientTransactionMock.GetObjectForDataContainer (dataContainer);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_AlreadyLoaded ()
+    {
+      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      ClientTransactionMock.EnsureDataAvailable (domainObject);
+
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
+    }
+
+    [Test]
+    public void EnsureDataAvailable_NotLoadedYet ()
+    {
+      Order domainObject;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      }
+
+      ClientTransactionMock.EnlistDomainObject (domainObject);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Null);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      ClientTransactionMock.EnsureDataAvailable (domainObject);
+
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order1));
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void EnsureDataAvailable_Discarded ()
+    {
+      Order domainObject = Order.NewObject ();
+      domainObject.Delete ();
+
+      ClientTransactionMock.EnsureDataAvailable (domainObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectNotFoundException))]
+    public void EnsureDataAvailable_NotFound ()
+    {
+      Order domainObject;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        domainObject = Order.NewObject();
+      }
+
+      ClientTransactionMock.EnlistDomainObject (domainObject);
+      ClientTransactionMock.EnsureDataAvailable (domainObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
+    public void EnsureDataAvailable_NotEnlisted ()
+    {
+      Order domainObject;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      }
+
+      ClientTransactionMock.EnsureDataAvailable (domainObject);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_NotEnlisted_AutoEnlist ()
+    {
+      Order domainObject;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      }
+
+      ClientTransactionScope.ActiveScope.AutoEnlistDomainObjects = true;
+
+      ClientTransactionMock.EnsureDataAvailable (domainObject);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
+      
+      Assert.That (ClientTransactionMock.GetObject (domainObject.ID), Is.SameAs (domainObject));
     }
   }
 }
