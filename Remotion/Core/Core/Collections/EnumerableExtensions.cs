@@ -203,5 +203,24 @@ namespace Remotion.Collections
     {
       yield return source;
     }
+
+    /// <summary>
+    /// Determines whether two enumerable sequences contain the same set of elements without regarding the order or number of elements.
+    /// This method constructs a <see cref="HashSet{T}"/> from <paramref name="sequence1"/> and then calls <see cref="HashSet{T}.SetEquals"/>.
+    /// The <see cref="EqualityComparer{T}.Default"/> equality comparer is used to check elements for equality.
+    /// </summary>
+    /// <typeparam name="T">The element type of the compared sequences.</typeparam>
+    /// <param name="sequence1">The first sequence.</param>
+    /// <param name="sequence2">The second sequence.</param>
+    /// <returns><see langword="true" /> if all elements of <paramref name="sequence1"/> are present in <paramref name="sequence2"/> and all
+    /// elements of <paramref name="sequence2"/> are present in <paramref name="sequence1"/>. Order and number of elements are not compared.</returns>
+    /// <exception cref="ArgumentNullException">One of the sequences is <see langword="null" />.</exception>
+    public static bool SetEquals<T> (this IEnumerable<T> sequence1, IEnumerable<T> sequence2)
+    {
+      ArgumentUtility.CheckNotNull ("sequence1", sequence1);
+      ArgumentUtility.CheckNotNull ("sequence2", sequence2);
+
+      return new HashSet<T> (sequence1).SetEquals (sequence2);
+    }
   }
 }

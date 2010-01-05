@@ -227,5 +227,53 @@ namespace Remotion.UnitTests.Collections
       IEnumerable<int> actual = 0.ToEnumerable ();
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { 0 }));
     }
+
+    [Test]
+    public void SetEquals_True ()
+    {
+      IEnumerable<int> first = new[] { 1, 2, 3 };
+      IEnumerable<int> second = new[] { 1, 2, 3 };
+      Assert.That (first.SetEquals (second), Is.True);
+    }
+
+    [Test]
+    public void SetEquals_True_Empty ()
+    {
+      IEnumerable<int> first = Enumerable.Empty<int> ();
+      IEnumerable<int> second = Enumerable.Empty<int> ();
+      Assert.That (first.SetEquals (second), Is.True);
+    }
+
+    [Test]
+    public void SetEquals_True_DifferentOrder ()
+    {
+      IEnumerable<int> first = new[] { 1, 2, 3 };
+      IEnumerable<int> second = new[] { 3, 1, 2 };
+      Assert.That (first.SetEquals (second), Is.True);
+    }
+
+    [Test]
+    public void SetEquals_DifferentCount ()
+    {
+      IEnumerable<int> first = new[] { 1, 2, 3, 1, 2, 2 };
+      IEnumerable<int> second = new[] { 1, 2, 3 };
+      Assert.That (first.SetEquals (second), Is.True);
+    }
+
+    [Test]
+    public void SetEquals_False_FirstNotInSecond ()
+    {
+      IEnumerable<int> first = new[] { 1, 2, 3 };
+      IEnumerable<int> second = new[] { 1, 2 };
+      Assert.That (first.SetEquals (second), Is.False);
+    }
+
+    [Test]
+    public void SetEquals_False_SecondNotInFirst ()
+    {
+      IEnumerable<int> first = new[] { 1 };
+      IEnumerable<int> second = new[] { 1, 2 };
+      Assert.That (first.SetEquals (second), Is.False);
+    }
   }
 }
