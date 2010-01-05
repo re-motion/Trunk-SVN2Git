@@ -54,13 +54,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         if (AssociatedTransaction.IsEnlisted (DomainObject))
           return true;
-        else if (ClientTransactionScope.ActiveScope != null && ClientTransactionScope.ActiveScope.AutoEnlistDomainObjects)
+        
+        if (ClientTransactionScope.ActiveScope != null && ClientTransactionScope.ActiveScope.AutoEnlistDomainObjects)
         {
           AssociatedTransaction.EnlistDomainObject (DomainObject);
           return true;
         }
-        else
-          return false;
+        
+        return false;
       }
     }
 

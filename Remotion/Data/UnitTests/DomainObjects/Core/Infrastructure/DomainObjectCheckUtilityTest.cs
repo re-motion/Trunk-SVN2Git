@@ -62,7 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CheckIfObjectIsDiscarded_Valid ()
     {
       var order = Order.NewObject ();
-      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
+
+      var result = DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
+      Assert.That (result, Is.True);
     }
 
     [Test]
@@ -78,7 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CheckIfRightTransaction_Works ()
     {
       var order = Order.NewObject ();
-      DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
+
+      var result = DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
+      Assert.That (result, Is.True);
     }
 
     [Test]

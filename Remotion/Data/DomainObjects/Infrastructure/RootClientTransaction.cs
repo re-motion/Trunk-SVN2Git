@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (var persistenceManager = new PersistenceManager (_id))
       {
-        DataContainerCollection newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
+        var newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
         foreach (DataContainer dataContainer in newLoadedDataContainers)
           TransactionEventSink.ObjectLoading (dataContainer.ID);
         return newLoadedDataContainers;

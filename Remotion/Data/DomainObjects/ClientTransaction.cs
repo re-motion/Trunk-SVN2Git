@@ -275,8 +275,9 @@ public abstract class ClientTransaction
   /// </summary>
   /// <param name="objectIDs">The ids of the <see cref="DataContainer"/> objects to load.</param>
   /// <returns>A <see cref="DataContainerCollection"/> with the loaded containers in the same order as in <paramref name="objectIDs"/>.</returns>
-  /// <param name="throwOnNotFound">If true, this method should throw an <see cref="ObjectNotFoundException"/> if a data container cannot be found
-  /// for an <see cref="ObjectID"/>. If false, the method should proceed as if the invalid ID hadn't been given.</param>
+  /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="BulkLoadException"/> if a data container 
+  /// cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, the method should proceed as if the invalid ID hadn't been given.
+  /// </param>
   /// <remarks>
   /// <para>
   /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
@@ -574,7 +575,7 @@ public abstract class ClientTransaction
     if (domainObject.HasBindingTransaction && domainObject.GetBindingTransaction() != this)
     {
       string message = String.Format ("Cannot enlist the domain object '{0}' in this transaction, because it is already bound to another transaction.",
-          domainObject.ID);
+                                      domainObject.ID);
       throw new InvalidOperationException (message);
     }
     return DoEnlistDomainObject (domainObject);
@@ -669,14 +670,46 @@ public abstract class ClientTransaction
   /// <exception cref="ClientTransactionsDifferException">The given <paramref name="domainObject"/> cannot be used in this 
   /// <see cref="ClientTransaction"/>.</exception>
   /// <exception cref="ObjectDiscardedException">The given <paramref name="domainObject"/> has already been discarded in this transaction.</exception>
-  /// <exception cref="ObjectNotFoundException">No data for the given <paramref name="domainObject"/> could be loaded because the object was not
+  /// <exception cref="ObjectNotFoundException">No data could be loaded for the given <paramref name="domainObject"/> because the object was not
   /// found in the underlying data source.</exception>
   public void EnsureDataAvailable (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+    DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
 
-    GetDataContainer (domainObject);
+    if (GetDataContainerWithoutLoading (domainObject.ID) == null)
+    {
+      Assertion.IsTrue (IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction");
+      var loadedObject = LoadObject (domainObject.ID);
+      Assertion.IsTrue (loadedObject == domainObject, "Guaranteed because domainObject was enlisted");
+    }
+
     Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] != null);
+  }
+
+  /// <summary>
+  /// Ensures that the given <see cref="DomainObject"/>s' data has been loaded into this <see cref="ClientTransaction"/>. If it hasn't, this method
+  /// loads the objects' data, performing a bulk load operation.
+  /// </summary>
+  /// <param name="domainObjects">The domain objects whose data must be loaded.</param>
+  /// <exception cref="ArgumentNullException">The <paramref name="domainObjects"/> parameter is <see langword="null" />.</exception>
+  /// <exception cref="ClientTransactionsDifferException">One of the given <paramref name="domainObjects"/> cannot be used in this 
+  /// <see cref="ClientTransaction"/>.</exception>
+  /// <exception cref="ObjectDiscardedException">One of the given <paramref name="domainObjects"/> has already been discarded in this transaction.</exception>
+  /// <exception cref="ObjectNotFoundException">No data could be loaded for one of the given <paramref name="domainObjects"/> because the object was 
+  /// not found in the underlying data source.</exception>
+  public void EnsureDataAvailable (IEnumerable<DomainObject> domainObjects)
+  {
+    ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+    var idsToBeLoaded = from domainObject in domainObjects
+                        where DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this)
+                        where GetDataContainerWithoutLoading (domainObject.ID) == null
+                        select domainObject.ID;
+
+    // Because the call to CheckIfRightTransaction above guarantees that all objects have been enlisted, it is guaranteed that LoadObjects will
+    // reuse the instances passed in via the domainObjects parameter.
+    LoadObjects (idsToBeLoaded.ToList(), true);
   }
 
   // TODO 2072
@@ -934,23 +967,15 @@ public abstract class ClientTransaction
 
       if (idsToBeLoaded.Count > 0)
       {
-        DataContainerCollection additionalDataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-        foreach (DataContainer additionalDataContainer in additionalDataContainers)
-        {
-          additionalDataContainer.RegisterWithTransaction (this);
-          additionalDataContainer.SetDomainObject (GetObjectForDataContainer (additionalDataContainer));
-        }
+        var additionalObjects = LoadObjects (idsToBeLoaded, throwOnNotFound);
 
-        var loadedDomainObjects = additionalDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList().AsReadOnly();
-        OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
-
+        var additionalObjectIndex = 0;
         for (int i = 0; i < objectIDs.Length; i++)
         {
           if (loadedObjects[i] == null)
           {
-            DataContainer dataContainer = additionalDataContainers[objectIDs[i]];
-            if (dataContainer != null)
-              loadedObjects[i] = (T) dataContainer.DomainObject;
+            loadedObjects[i] = (T) additionalObjects[additionalObjectIndex];
+            ++additionalObjectIndex;
           }
         }
       }
@@ -1101,7 +1126,7 @@ public abstract class ClientTransaction
   }
 
   /// <summary>
-  /// Loads an object from the datasource.
+  /// Loads an object from the data source.
   /// </summary>
   /// <remarks>
   /// This method raises the <see cref="Loaded"/> event.
@@ -1117,20 +1142,57 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject LoadObject (ObjectID id)
   {
     ArgumentUtility.CheckNotNull ("id", id);
+
     using (EnterNonDiscardingScope ())
     {
-      DataContainer dataContainer = LoadDataContainer (id);
-      dataContainer.RegisterWithTransaction (this);
-      dataContainer.SetDomainObject (GetObjectForDataContainer (dataContainer));
+      var dataContainer = LoadDataContainer (id);
+      InitializeLoadedDataContainer (dataContainer);
 
-      Assertion.IsTrue (dataContainer.DomainObject.ID == id);
-      Assertion.IsTrue (dataContainer.ClientTransaction == this);
-      Assertion.IsTrue (DataManager.DataContainerMap[id] == dataContainer);
+      var loadedDomainObject = dataContainer.DomainObject;
+      OnLoaded (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject })));
 
-      var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { dataContainer.DomainObject });
-      OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
+      return loadedDomainObject;
+    }
+  }
 
-      return dataContainer.DomainObject;
+  /// <summary>
+  /// Loads several objects from the data source in a bulk load operation.
+  /// </summary>
+  /// <remarks>
+  /// This method raises the <see cref="Loaded"/> event.
+  /// </remarks>
+  /// <param name="idsToBeLoaded">An <see cref="ObjectID"/> object indicating which <see cref="DomainObject"/> instances to load. Must not be 
+  /// <see langword="null"/>.</param>
+  /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="BulkLoadException"/> if a data container 
+  /// cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, <see langword="null"/> is inserted in the result array for the 
+  /// invalid ID.
+  /// </param>
+  /// <returns>The <see cref="DomainObject"/> instances that were loaded.</returns>
+  /// <exception cref="System.ArgumentNullException"><paramref name="idsToBeLoaded"/> is <see langword="null"/>.</exception>
+  /// <exception cref="BulkLoadException">There was an error trying to load the object identified by one of the given 
+  /// <paramref name="idsToBeLoaded"/>.</exception>
+  /// <exception cref="Persistence.StorageProviderException">
+  ///   The Mapping does not contain a class definition for one of the given <paramref name="idsToBeLoaded"/>.<br /> -or- <br />
+  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
+  ///   An error occurred while accessing the datasource.
+  /// </exception>
+  protected internal virtual DomainObject[] LoadObjects (ICollection<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+  {
+    ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
+
+    using (EnterNonDiscardingScope ())
+    {
+      var dataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
+      foreach (DataContainer dataContainer in dataContainers)
+        InitializeLoadedDataContainer (dataContainer);
+
+      var loadedDomainObjectsWithoutNulls = dataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList();
+      OnLoaded (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (loadedDomainObjectsWithoutNulls)));
+
+      var loadedDomainObjectsInCorrectOrder = (from id in idsToBeLoaded
+                                               let dataContainer = dataContainers[id]
+                                               select dataContainer != null ? dataContainer.DomainObject : null).ToArray ();
+      return loadedDomainObjectsInCorrectOrder;
     }
   }
 
@@ -1170,9 +1232,7 @@ public abstract class ClientTransaction
 
       if (relatedDataContainer != null)
       {
-        relatedDataContainer.RegisterWithTransaction (this);
-        relatedDataContainer.SetDomainObject (GetObjectForDataContainer (relatedDataContainer));
-
+        InitializeLoadedDataContainer (relatedDataContainer);
 
         var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { relatedDataContainer.DomainObject });
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
@@ -1206,18 +1266,17 @@ public abstract class ClientTransaction
 
     using (EnterNonDiscardingScope ())
     {
-      DataContainerCollection relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
+      var relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
 
+      // TODO 2074: For symmetry with LoadObjects, the ObjectLoading event should be raised by LoadRelatedDataContainers. I'd suggest refactoring to
+      //            LoadRelatedIDs and perform the actual bulk load via LoadObjects. Would reverse the order of events, however.
       // TODO: Consider using LINQ query instead: relatedDataContainers.Where (dc => !_dataManager.DataContainerMap.Contains (dc.ID)).ToList();
-      DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (relatedDataContainers);
+      var newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (relatedDataContainers);
       foreach (DataContainer dataContainer in newLoadedDataContainers)
         TransactionEventSink.ObjectLoading (dataContainer.ID);
 
       foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
-      {
-        newLoadedDataContainer.RegisterWithTransaction (this);
-        newLoadedDataContainer.SetDomainObject (GetObjectForDataContainer (newLoadedDataContainer));
-      }
+        InitializeLoadedDataContainer (newLoadedDataContainer);
 
       // TODO: Consider using LINQ query instead: relatedDataContainers.Select (dc => _dataManager[dc.ID].DomainObject);
       var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (relatedDataContainers);
@@ -1254,35 +1313,18 @@ public abstract class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
 
-    if (DataManager.IsDiscarded (domainObject.ID))
-      throw new ObjectDiscardedException (domainObject.ID);
+    var dataContainer = GetDataContainerWithoutLoading (domainObject.ID);
+    Assertion.IsTrue (IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction.");
 
-    if (DataManager.DataContainerMap[domainObject.ID] == null)
-      LoadExistingObject (domainObject);
-    
-    DataContainer dataContainer = DataManager.DataContainerMap[domainObject.ID];
-    Assertion.IsNotNull (dataContainer);
-
-    return dataContainer;
-  }
-
-  private void LoadExistingObject (DomainObject domainObject)
-  {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    using (EnterNonDiscardingScope ())
+    if (dataContainer == null)
     {
-      DataContainer dataContainer = LoadDataContainerForExistingObject (domainObject);
-      dataContainer.RegisterWithTransaction (this);
-      dataContainer.SetDomainObject (domainObject);
-
-      Assertion.IsTrue (dataContainer.DomainObject == domainObject);
-      Assertion.IsTrue (IsEnlisted (domainObject));
-      Assertion.IsTrue (dataContainer.ClientTransaction == this);
-      Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] == dataContainer);
-
-      var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { dataContainer.DomainObject });
-      OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
+      var loadedObject = LoadObject (domainObject.ID);
+      dataContainer = DataManager.DataContainerMap[domainObject.ID];
+      Assertion.IsTrue (loadedObject == domainObject, "Because domainObject is enlisted, LoadObject is forced to reuse the domainObject reference.");
     }
+
+    Assertion.IsNotNull (dataContainer);
+    return dataContainer;
   }
 
   protected internal void NotifyOfSubTransactionCreating ()
@@ -1545,6 +1587,24 @@ public abstract class ClientTransaction
       changedDomainObject.OnRolledBack (EventArgs.Empty);
 
     OnRolledBack (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (changedDomainObjects.AsList<DomainObject> ())));
+  }
+
+  private void InitializeLoadedDataContainer (DataContainer dataContainer)
+  {
+    dataContainer.RegisterWithTransaction (this);
+    dataContainer.SetDomainObject (GetObjectForDataContainer (dataContainer));
+
+    Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
+    Assertion.IsTrue (dataContainer.ClientTransaction == this);
+    Assertion.IsTrue (DataManager.DataContainerMap[dataContainer.ID] == dataContainer);
+  }
+
+  private DataContainer GetDataContainerWithoutLoading (ObjectID id)
+  {
+    if (DataManager.IsDiscarded (id))
+      throw new ObjectDiscardedException (id);
+
+    return DataManager.DataContainerMap[id];
   }
 
   public virtual ITransaction ToITransation ()

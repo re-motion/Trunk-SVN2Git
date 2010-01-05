@@ -25,10 +25,12 @@ namespace Remotion.Data.DomainObjects
   public interface IDomainObjectTransactionContext
   {
     /// <summary>
-    /// Determines whether this instance can be used in the associated <see cref="ClientTransaction"/>.
+    /// Determines whether this instance can be used in the associated <see cref="ClientTransaction"/>, performing automatic enlisting if
+    /// required by the <see cref="ClientTransactionScope.ActiveScope"/>'s <see cref="ClientTransactionScope.AutoEnlistDomainObjects"/> flag.
     /// </summary>
-    /// <remarks>If this property returns false, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist the object
-    /// in the transaction.</remarks>
+    /// <remarks>If this property returns <see langword="false" />, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist the object
+    /// in the transaction. After it returned <see langword="true" />, <see cref="ClientTransaction.IsEnlisted"/> is guaranteed to return 
+    /// <see langword="true" /> as well.</remarks>
     bool CanBeUsedInTransaction { get; }
 
     /// <summary>
