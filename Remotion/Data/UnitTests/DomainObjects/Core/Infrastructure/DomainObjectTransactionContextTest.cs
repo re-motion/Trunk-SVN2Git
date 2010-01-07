@@ -28,39 +28,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   [TestFixture]
   public class DomainObjectTransactionContextTest : ClientTransactionBaseTest
   {
-    private Order _order1;
+    private Order _loadedOrder1;
+    private Order _notYetLoadedOrder2;
     private Order _newOrder;
     
-    private ClientTransaction _otherTransaction;
-    
-    private DomainObjectTransactionContext _order1Context;
+    private DomainObjectTransactionContext _loadedOrder1Context;
+    private DomainObjectTransactionContext _notYetLoadedOrder2Context;
     private DomainObjectTransactionContext _newOrderContext;
     private DomainObjectTransactionContext _invalidContext;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _otherTransaction = ClientTransaction.CreateRootTransaction ();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _otherTransaction.EnlistDomainObject (_order1);
+      _loadedOrder1 = Order.GetObject (DomainObjectIDs.Order1);
+      _notYetLoadedOrder2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
+      ClientTransactionMock.EnlistDomainObject (_notYetLoadedOrder2);
+      _newOrder = Order.NewObject();
 
-      using (_otherTransaction.EnterNonDiscardingScope ())
-      {
-        _newOrder = Order.NewObject();
-      }
+      _loadedOrder1Context = new DomainObjectTransactionContext (_loadedOrder1, ClientTransactionMock);
+      _notYetLoadedOrder2Context = new DomainObjectTransactionContext (_notYetLoadedOrder2, ClientTransactionMock);
+      _newOrderContext = new DomainObjectTransactionContext (_newOrder, ClientTransactionMock);
 
-      _order1Context = new DomainObjectTransactionContext (_order1, _otherTransaction);
-      _newOrderContext = new DomainObjectTransactionContext (_newOrder, _otherTransaction);
-
-      _invalidContext = new DomainObjectTransactionContext (_newOrder, ClientTransaction.Current);
+      _invalidContext = new DomainObjectTransactionContext (_newOrder, ClientTransaction.CreateRootTransaction());
     }
 
     [Test]
     public void Initialization()
     {
-      Assert.That (_order1Context.DomainObject, Is.SameAs (_order1));
-      Assert.That (_order1Context.ClientTransaction, Is.SameAs (_otherTransaction));
+      Assert.That (_loadedOrder1Context.DomainObject, Is.SameAs (_loadedOrder1));
+      Assert.That (_loadedOrder1Context.ClientTransaction, Is.SameAs (ClientTransactionMock));
     }
 
     [Test]
@@ -74,22 +71,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope())
       {
-        while (_order1.OrderItems.Count > 0)
-          _order1.OrderItems[0].Delete ();
-
-        _order1.OrderTicket.Delete ();
-        _order1.Delete ();
+        DeleteOrder(_loadedOrder1);
         ClientTransaction.Current.Commit ();
-        Assert.That (_order1.IsDiscarded, Is.True);
 
-        Assert.That (_order1Context.IsDiscarded, Is.False);
+        Assert.That (_loadedOrder1.IsDiscarded, Is.True);
+        Assert.That (_loadedOrder1Context.IsDiscarded, Is.False);
       }
     }
 
     [Test]
     public void IsDiscarded_True ()
     {
-      DeleteNewOrder ();
+      _newOrder.Delete ();
       Assert.That (_newOrderContext.IsDiscarded, Is.True);
     }
 
@@ -103,30 +96,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void State_IsDiscarded ()
     {
-      DeleteNewOrder();
+      _newOrder.Delete ();
       Assert.That (_newOrderContext.State, Is.EqualTo (StateType.Discarded));
+    }
+
+    [Test]
+    public void State_NotYetLoaded ()
+    {
+      Assert.That (_notYetLoadedOrder2Context.State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
     public void State_FromDataContainer ()
     {
       Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Unchanged));
-      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
-      {
-        _order1.OrderNumber = 2;
-      }
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Unchanged));
+
+      _loadedOrder1.OrderNumber = 2;
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void State_FromDataContainer_WithChangedRelation ()
     {
-      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
-      {
-        _order1.OrderItems.Clear();
-      }
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+      _loadedOrder1.OrderItems.Clear();
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -139,22 +135,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void MarkAsChanged_Unchanged()
     {
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Unchanged));
-      _order1Context.MarkAsChanged ();
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Unchanged));
+      _loadedOrder1Context.MarkAsChanged ();
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
     public void MarkAsChanged_Changed ()
     {
-      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
-      {
-        _order1.OrderNumber = 2;
-      }
+      _loadedOrder1.OrderNumber = 2;
 
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
-      _order1Context.MarkAsChanged ();
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
+      _loadedOrder1Context.MarkAsChanged ();
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -169,16 +162,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
     public void MarkAsChanged_Deleted ()
     {
-      DeleteOrder1 ();
-      Assert.That (_order1Context.State, Is.EqualTo (StateType.Deleted));
-      _order1Context.MarkAsChanged ();
+      DeleteOrder (_loadedOrder1);
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Deleted));
+      _loadedOrder1Context.MarkAsChanged ();
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDiscardedException))]
     public void MarkAsChanged_Discarded ()
     {
-      DeleteNewOrder ();
+      _newOrder.Delete ();
+
       _newOrderContext.MarkAsChanged ();
     }
 
@@ -192,9 +187,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void Timestamp_LoadedObject()
     {
-      var timestamp = _order1Context.Timestamp;
+      var timestamp = _loadedOrder1Context.Timestamp;
       Assert.That (timestamp, Is.Not.Null);
-      Assert.That (timestamp, Is.SameAs (_order1.GetInternalDataContainerForTransaction (_otherTransaction).Timestamp));
+      Assert.That (timestamp, Is.SameAs (_loadedOrder1.Timestamp));
     }
 
     [Test]
@@ -208,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [ExpectedException (typeof (ObjectDiscardedException))]
     public void Timestamp_Discarded ()
     {
-      DeleteNewOrder ();
+      _newOrder.Delete ();
       Dev.Null = _newOrderContext.Timestamp;
     }
 
@@ -219,20 +214,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Dev.Null = _invalidContext.Timestamp;
     }
 
-    private void DeleteNewOrder ()
+    private void DeleteOrder (Order order)
     {
-      using (_newOrderContext.ClientTransaction.EnterNonDiscardingScope ())
-      {
-        _newOrder.Delete ();
-      }
-    }
+      while (order.OrderItems.Count > 0)
+        order.OrderItems[0].Delete ();
 
-    private void DeleteOrder1 ()
-    {
-      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
-      {
-        _order1.Delete ();
-      }
+      order.OrderTicket.Delete ();
+      order.Delete ();
     }
   }
 }

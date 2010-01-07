@@ -46,7 +46,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Changed, obj.State);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
+        ClientTransactionScope.CurrentTransaction.Commit ();
+      }
+      Assert.AreEqual (StateType.Changed, obj.State);
+    }
+
+    [Test]
+    public void CommitRootChangedSubNotLoaded ()
+    {
+      Order obj = GetChangedThroughPropertyValue ();
+      Assert.AreEqual (StateType.Changed, obj.State);
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
       Assert.AreEqual (StateType.Changed, obj.State);
@@ -88,8 +102,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Unchanged, obj.State);
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
+      }
+      Assert.AreEqual (StateType.Unchanged, obj.State);
+    }
+
+    [Test]
+    public void CommitRootUnchangedSubNotLoaded ()
+    {
+      Order obj = GetUnchanged ();
+      Assert.AreEqual (StateType.Unchanged, obj.State);
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransactionScope.CurrentTransaction.Commit ();
       }
       Assert.AreEqual (StateType.Unchanged, obj.State);
     }
@@ -129,8 +157,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.New, obj.State);
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
+      }
+      Assert.AreEqual (StateType.New, obj.State);
+    }
+
+    [Test]
+    public void CommitRootNewSubNotLoaded ()
+    {
+      ClassWithAllDataTypes obj = GetNewUnchanged ();
+      Assert.AreEqual (StateType.New, obj.State);
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransactionScope.CurrentTransaction.Commit ();
       }
       Assert.AreEqual (StateType.New, obj.State);
     }

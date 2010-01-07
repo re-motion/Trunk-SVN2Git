@@ -31,6 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject obj = GetUnchanged ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.Unchanged, obj.State);
@@ -42,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order obj = GetChangedThroughPropertyValue ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.AreEqual (obj.OrderNumber, obj.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int> ());
         Assert.AreEqual (StateType.Unchanged, obj.State);
-        Assert.AreEqual (obj.OrderNumber,
-            obj.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int> ());
       }
       Assert.AreEqual (StateType.Changed, obj.State);
     }
@@ -55,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order obj = GetChangedThroughRelatedObjects ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.AreEqual (obj.OrderItems.Count, obj.Properties[typeof (Order) + ".OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ().Count);
         Assert.AreEqual (StateType.Unchanged, obj.State);
-        Assert.AreEqual (obj.OrderItems.Count,
-           obj.Properties[typeof (Order) + ".OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ().Count);
       }
       Assert.AreEqual (StateType.Changed, obj.State);
     }
@@ -68,9 +70,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Computer obj = GetChangedThroughRelatedObjectRealSide ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.AreEqual (obj.Employee, obj.Properties[typeof (Computer) + ".Employee"].GetOriginalValue<Employee> ());
         Assert.AreEqual (StateType.Unchanged, obj.State);
-        Assert.AreEqual (obj.Employee,
-            obj.Properties[typeof (Computer) + ".Employee"].GetOriginalValue<Employee> ());
       }
       Assert.AreEqual (StateType.Changed, obj.State);
     }
@@ -81,9 +83,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Employee obj = GetChangedThroughRelatedObjectVirtualSide ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        Assert.AreEqual (obj.Computer, obj.Properties[typeof (Employee) + ".Computer"].GetOriginalValue<Computer> ());
         Assert.AreEqual (StateType.Unchanged, obj.State);
-        Assert.AreEqual (obj.Computer,
-            obj.Properties[typeof (Employee) + ".Computer"].GetOriginalValue<Computer> ());
       }
       Assert.AreEqual (StateType.Changed, obj.State);
     }
@@ -94,6 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject obj = GetNewUnchanged ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.New, obj.State);
@@ -105,6 +109,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject obj = GetNewChanged ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.New, obj.State);
@@ -143,6 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Deleted, deleted.State);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
         Assert.IsTrue (deleted.IsDiscarded);
       }
@@ -168,6 +176,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Location obj = GetUnidirectionalWithDeletedNew ();
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.AreEqual (StateType.NotLoadedYet, obj.State);
+        ClientTransaction.Current.EnsureDataAvailable (obj);
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.Changed, obj.State);

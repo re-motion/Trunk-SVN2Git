@@ -57,7 +57,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         if (IsDiscarded)
           return StateType.Discarded;
 
-        var dataContainer = ClientTransaction.GetDataContainer(DomainObject);
+        var dataContainer = ClientTransaction.DataManager.DataContainerMap[DomainObject.ID];
+        if (dataContainer == null)
+          return StateType.NotLoadedYet;
+
         if (dataContainer.State == StateType.Unchanged)
           return ClientTransaction.HasRelationChanged (DomainObject) ? StateType.Changed : StateType.Unchanged;
 

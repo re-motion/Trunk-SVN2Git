@@ -69,10 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2054")]
     public void Matches_NotLoadedYet ()
     {
-      Assert.Fail ();
+      CheckMatch (StateType.NotLoadedYet, true, StateType.Unchanged, StateType.NotLoadedYet);
+      CheckMatch (StateType.NotLoadedYet, false, StateType.Unchanged, StateType.Deleted);
     }
 
     [Test]

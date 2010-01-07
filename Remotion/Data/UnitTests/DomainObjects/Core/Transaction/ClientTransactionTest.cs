@@ -625,6 +625,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void AccessDeleteObjectBeforeCommit ()
+    {
+      Client client = Client.GetObject (DomainObjectIDs.Client1);
+      Location location = Location.GetObject (DomainObjectIDs.Location1);
+      Assert.AreSame (client, location.Client);
+      client.Delete ();
+      Dev.Null = location.Client;
+    }
+
+    [Test]
     public void GetObjectByNewIndependentTransaction ()
     {
       ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
@@ -1036,6 +1047,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (innerTransaction.EnterDiscardingScope ())
       {
         innerTransaction.EnlistDomainObject (order);
+        innerTransaction.EnsureDataAvailable (order); // preload order, but not orderItems
+
         innerTransaction.AddListener (listenerMock);
         int loadedObjectsBefore = innerTransaction.DataManager.DataContainerMap.Count;
         innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);

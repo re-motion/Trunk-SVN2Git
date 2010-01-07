@@ -144,6 +144,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void EnsureDataAvailable_ID ()
+    {
+      var domainObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+
+      ClientTransactionMock.EnlistDomainObject (domainObject);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Null);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      ClientTransactionMock.EnsureDataAvailable (domainObject.ID);
+
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order1));
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID].DomainObject, Is.SameAs (domainObject));
+    }
+
+    [Test]
     public void EnsureDataAvailable_Many_AlreadyLoaded ()
     {
       var domainObject1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -241,6 +259,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var domainObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
       ClientTransactionMock.EnsureDataAvailable (new[] { domainObject });
+    }
+
+    [Test]
+    public void EnsureDataAvailable_Many_ID ()
+    {
+      var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
+
+      ClientTransactionMock.EnlistDomainObject (domainObject1);
+      ClientTransactionMock.EnlistDomainObject (domainObject2);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
+
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order1));
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order2));
     }
 
     [Test]

@@ -255,16 +255,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
             + "relations.");
       }
 
+      ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // lazily load the data before retrieving its 
+
       var existingEndPoint = _relationEndPoints[endPointID];
       if (existingEndPoint != null)
         return _relationEndPoints[endPointID];
 
-      if (!endPointID.Definition.IsVirtual)
-      {
-        throw new InvalidOperationException (
-            "Cannot lazily load the real part of a relation. RegisterEndPointsForDataContainer must be called before any "
-            + "non-virtual end points are retrieved.");
-      }
+      Assertion.IsTrue (endPointID.Definition.IsVirtual, 
+          "EnsureDataAvailable should guarantee that the DataContainer is registered, which in turn guarantees that all non-virtual end points are "
+          + "registered in the map");
 
       if (endPointID.Definition.Cardinality == CardinalityType.One)
         _clientTransaction.LoadRelatedObject (endPointID); // indirectly calls RegisterEndPointsForExistingDataContainer, which registers the loaded end point

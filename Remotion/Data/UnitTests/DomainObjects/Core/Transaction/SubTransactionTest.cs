@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void SubTransactionCanBeUsedToCreateAndLoadNewObjects ()
+    public void SubTransaction_CanBeUsedToCreateAndLoadNewObjects ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void DomainObjectsCreatedInParentCanBeUsedInSubTransactions ()
+    public void DomainObjects_CreatedInParent_CanBeUsedInSubTransactions ()
     {
       Order order = Order.NewObject();
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -172,7 +172,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void DomainObjectsCreatedInSubTransactionCanBeUsedInParent ()
+    public void DomainObjects_CreatedInParent_NotLoadedYetInSubTransaction ()
+    {
+      Order order = Order.NewObject ();
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      Assert.AreEqual (StateType.NotLoadedYet, order.TransactionContext[subTransaction].State);
+    }
+
+    [Test]
+    public void DomainObjects_CreatedInSubTransaction_CanBeUsedInParent ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
@@ -184,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void DomainObjectsLoadedInParentCanBeUsedInSubTransactions ()
+    public void DomainObjects_LoadedInParent_CanBeUsedInSubTransactions ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -193,7 +201,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void DomainObjectsLoadedInSubTransactionCanBeUsedInParent ()
+    public void DomainObjects_LoadedInParent_NotLoadedYetInSubTransaction ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      Assert.AreEqual (StateType.NotLoadedYet, order.TransactionContext[subTransaction].State);
+    }
+
+    [Test]
+    public void DomainObjects_LoadedInSubTransaction_CanBeUsedInParent ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
@@ -205,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void SubTransactionCanAccessObjectNewedInParent ()
+    public void SubTransaction_CanAccessObject_CreatedInParent ()
     {
       Order order = Order.NewObject();
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -218,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ObjectNotFoundException))]
-    public void ParentCannotAccessObjectNewedInSubTransaction ()
+    public void Parent_CannotAccessObject_CreatedInSubTransaction ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       Order order;
@@ -230,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void SubTransactionCanAccessObjectLoadedInParent ()
+    public void SubTransaction_CanAccessObject_LoadedInParent ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
@@ -243,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ParentCanAccessObjectLoadedInSubTransaction ()
+    public void Parent_CanAccessObject_LoadedInSubTransaction ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       Order order;
@@ -255,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ParentCanReloadObjectLoadedInSubTransactionAndGetTheSameReference ()
+    public void Parent_CanReloadObject_LoadedInSubTransaction_AndGetTheSameReference ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       Order order;
@@ -267,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ParentCanReloadRelatedObjectLoadedInSubTransactionAndGetTheSameReference ()
+    public void Parent_CanReloadRelatedObject_LoadedInSubTransaction_AndGetTheSameReference ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       Order order;
@@ -282,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ParentCanReloadNullRelatedObjectLoadedInSubTransaction ()
+    public void Parent_CanReloadNullRelatedObject_LoadedInSubTransaction ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       Computer computer;
@@ -301,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ParentCanReloadRelatedObjectCollectionLoadedInSubTransactionAndGetTheSameReferences ()
+    public void Parent_CanReloadRelatedObjectCollection_LoadedInSubTransaction_AndGetTheSameReferences ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       Order order;
@@ -318,19 +334,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void UnidirectionalDeleteInRootTransactionCausesThrowOnAccess ()
-    {
-      Client client = Client.GetObject (DomainObjectIDs.Client1);
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Assert.AreSame (client, location.Client);
-      client.Delete();
-      Dev.Null = location.Client;
-    }
-
-    [Test]
     [ExpectedException (typeof (ObjectNotFoundException))]
-    public void IndirectAccessToDeletedObjectInSubTransactionThrows ()
+    public void IndirectAccess_ToDeletedObject_InSubTransactionThrows ()
     {
       Client client = Client.GetObject (DomainObjectIDs.Client1);
       Location location = Location.GetObject (DomainObjectIDs.Location1);
@@ -346,7 +351,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ObjectNotFoundException))]
-    public void NewUnidirectionalDeleteInRootTransactionCausesThrowOnAccess ()
+    public void NewUnidirectionalDelete_InRootTransaction_CausesThrowOnAccess ()
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);
       location.Client = Client.NewObject();
@@ -357,7 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ObjectNotFoundException))]
-    public void IndirectAccessToDeletedNewObjectInSubTransactionThrows ()
+    public void IndirectAccess_ToDeletedNewObject_InSubTransactionThrows ()
     {
       Location location = Location.GetObject (DomainObjectIDs.Location1);
       location.Client = Client.NewObject();
@@ -442,8 +447,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (StateType.Unchanged, newOrder.State);
-
         newOrder.OrderNumber = 7;
 
         Assert.AreEqual (StateType.Changed, newOrder.State);

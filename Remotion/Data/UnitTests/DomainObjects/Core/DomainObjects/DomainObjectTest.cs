@@ -380,7 +380,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (customer);
-        Assert.That (customer.TransactionContext[ClientTransaction.Current].State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (customer.State, Is.EqualTo (StateType.NotLoadedYet));
+
+        ClientTransaction.Current.EnsureDataAvailable (customer);
+
+        Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
         Assert.That (customer.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Changed));
 
         using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())

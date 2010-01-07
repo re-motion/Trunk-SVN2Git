@@ -27,7 +27,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class MultiTransactionTest : ClientTransactionBaseTest
   {
     [Test]
-    public void NewObjectCanBeEnlistedAndUsedInTransactionWhenCommitted ()
+    public void EnlistedObjectState_NotLoadedYet ()
+    {
+      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+
+      ClientTransactionMock.EnlistDomainObject (order);
+
+      Assert.That (order.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void NewObject_CanBeEnlistedAndUsedInTransaction_WhenCommitted ()
     {
       SetDatabaseModifyable ();
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
@@ -54,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void EnlistedObjectCanBeUsedInTwoTransactions ()
+    public void EnlistedObject_CanBeUsedInTwoTransactions ()
     {
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -77,57 +87,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void DeletedObjectCanBeEnlistedInTransaction ()
-    {
-      var order = GetObjectDeleteCommit();
-
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
-      newTransaction.EnlistDomainObject (order);
-      Assert.That (newTransaction.IsEnlisted (order), Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage = 
-        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' could not be found.", 
-        MatchType = MessageMatch.Regex)]
-    public void DeletedObject_NotFoundOnFirstAccess ()
-    {
-      var order = GetObjectDeleteCommit ();
-
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-      newTransaction.EnlistDomainObject (order);
-
-      using (newTransaction.EnterDiscardingScope ())
-      {
-        ++order.OrderNumber;
-      }
-    }
-
-    [Test]
-    public void DeletedObjectCanBeEnlistedAndUsedInTransactionIfNotCommitted ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      int orderNumber = order.OrderNumber;
-      order.Delete ();
-      Assert.That (order.State, Is.EqualTo (StateType.Deleted));
-      
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
-      newTransaction.EnlistDomainObject (order);
-      using (newTransaction.EnterDiscardingScope ())
-      {
-        Assert.That (order.State, Is.Not.EqualTo (StateType.Deleted));
-        Assert.That (order.OrderNumber, Is.EqualTo (orderNumber));
-      }
-    }
-
-    [Test]
-    public void EnlistedObjectsAreLoadedOnFirstAccess ()
+    public void EnlistedObjects_AreLoadedOnFirstAccess ()
     {
       SetDatabaseModifyable ();
 
-      ClientTransaction newTransaction1 = ClientTransaction.CreateRootTransaction();
-      ClientTransaction newTransaction2 = ClientTransaction.CreateRootTransaction();
-      
+      ClientTransaction newTransaction1 = ClientTransaction.CreateRootTransaction ();
+      ClientTransaction newTransaction2 = ClientTransaction.CreateRootTransaction ();
+
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       newTransaction1.EnlistDomainObject (order);
 
@@ -162,7 +128,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void GetObjectAfterEnlistingReturnsEnlistedObject ()
+    public void DeletedObject_CanBeEnlistedInTransaction ()
+    {
+      var order = GetObjectDeleteCommit();
+
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
+      newTransaction.EnlistDomainObject (order);
+      Assert.That (newTransaction.IsEnlisted (order), Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage = 
+        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' could not be found.", 
+        MatchType = MessageMatch.Regex)]
+    public void DeletedObject_NotFoundOnFirstAccess ()
+    {
+      var order = GetObjectDeleteCommit ();
+
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
+      newTransaction.EnlistDomainObject (order);
+
+      using (newTransaction.EnterDiscardingScope ())
+      {
+        ++order.OrderNumber;
+      }
+    }
+
+    [Test]
+    public void DeletedObject_CanBeEnlistedAndUsedInTransaction_IfNotCommitted ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      int orderNumber = order.OrderNumber;
+      order.Delete ();
+      Assert.That (order.State, Is.EqualTo (StateType.Deleted));
+      
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
+      newTransaction.EnlistDomainObject (order);
+      using (newTransaction.EnterDiscardingScope ())
+      {
+        Assert.That (order.State, Is.Not.EqualTo (StateType.Deleted));
+        Assert.That (order.OrderNumber, Is.EqualTo (orderNumber));
+      }
+    }
+
+    [Test]
+    public void GetObject_AfterEnlistingReturnsEnlistedObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())

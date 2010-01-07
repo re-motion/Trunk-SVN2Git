@@ -179,15 +179,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot lazily load the real part of a relation. RegisterEndPointsForDataContainer must be called before any "
-        + "non-virtual end points are retrieved.")]
-    public void GetRelationEndPointWithLazyLoad_DoesNotSupportRealEndPoints_OfObjectsNotYetRegistered ()
+    public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsNotYetRegistered ()
     {
       IRelationEndPointDefinition locationEndPointDefinition =
           DomainObjectIDs.Location1.ClassDefinition.GetRelationEndPointDefinition (typeof (Location) + ".Client");
       var locationEndPointID = new RelationEndPointID (DomainObjectIDs.Location1, locationEndPointDefinition);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Location1], Is.Null);
+
       _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Location1], Is.Not.Null);
     }
 
     [Test]

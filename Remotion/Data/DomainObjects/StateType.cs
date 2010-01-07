@@ -18,30 +18,36 @@ using System;
 
 namespace Remotion.Data.DomainObjects
 {
-/// <summary>
-/// Indicates the state of a <see cref="DomainObject"/>.
-/// </summary>
-public enum StateType
-{
   /// <summary>
-  /// The <see cref="DomainObject"/> has not changed since it was loaded.
+  /// Indicates the state of a <see cref="DomainObject"/>.
   /// </summary>
-  Unchanged = 0,
-  /// <summary>
-  /// The <see cref="DomainObject"/> has been changed since it was loaded.
-  /// </summary>
-  Changed = 1,
-  /// <summary>
-  /// The <see cref="DomainObject"/> has been instanciated and has not been committed.
-  /// </summary>
-  New = 2,
-  /// <summary>
-  /// The <see cref="DomainObject"/> has been deleted.
-  /// </summary>
-  Deleted = 3,
-  /// <summary>
-  /// The <see cref="DomainObject"/> does not exist any longer.
-  /// </summary>
-  Discarded = 4
-}
+  public enum StateType
+  {
+    /// <summary>
+    /// The <see cref="DomainObject"/> has not changed since it was loaded.
+    /// </summary>
+    Unchanged = 0,
+    /// <summary>
+    /// The <see cref="DomainObject"/> has been changed since it was loaded.
+    /// </summary>
+    Changed = 1,
+    /// <summary>
+    /// The <see cref="DomainObject"/> has been instanciated and has not been committed.
+    /// </summary>
+    New = 2,
+    /// <summary>
+    /// The <see cref="DomainObject"/> has been deleted.
+    /// </summary>
+    Deleted = 3,
+    /// <summary>
+    /// The <see cref="DomainObject"/> does not exist any longer.
+    /// </summary>
+    Discarded = 4,
+    /// <summary>
+    /// The <see cref="DomainObject"/>'s data has not been loaded yet into the <see cref="ClientTransaction"/>. It will be loaded when needed,
+    /// e.g. when a property value or relation is accessed, or when 
+    /// <see cref="ClientTransaction.EnsureDataAvailable(Remotion.Data.DomainObjects.DomainObject)"/> is called for the <see cref="DomainObject"/>.
+    /// </summary>
+    NotLoadedYet = 5
+  }
 }

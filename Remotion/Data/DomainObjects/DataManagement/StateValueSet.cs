@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly bool _matchChanged;
     private readonly bool _matchUnchanged;
     private readonly bool _matchNew;
-#warning TODO 2054: private readonly bool _notLoadedYet;
+    private readonly bool _matchNotLoadedYet;
 
     public StateValueSet (params StateType[] stateValues) : this()
     {
@@ -52,6 +52,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
           case StateType.New:
             _matchNew = true;
             break;
+          case StateType.NotLoadedYet:
+            _matchNotLoadedYet = true;
+            break;
           default:
             throw new ArgumentOutOfRangeException ("stateValues", stateValue, "Invalid StateType value.");
         }
@@ -72,6 +75,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
           return _matchUnchanged;
         case StateType.New:
           return _matchNew;
+        case StateType.NotLoadedYet:
+          return _matchNotLoadedYet;
         default:
           throw new ArgumentOutOfRangeException ("stateValue", stateValue, "Invalid StateType value.");
       }
