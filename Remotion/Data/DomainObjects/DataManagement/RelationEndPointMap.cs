@@ -244,6 +244,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return false;
     }
     
+    // TODO: This method probably belongs to DataManager rather than RelationEndPointMap.
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
