@@ -600,54 +600,6 @@ public abstract class ClientTransaction
   }
 
   /// <summary>
-  /// Calls <see cref="EnlistDomainObject"/> for each <see cref="DomainObject"/> reference currently enlisted with the given
-  /// <paramref name="sourceTransaction"/>.
-  /// </summary>
-  /// <param name="sourceTransaction">The source transaction.</param>
-  /// <param name="copyCollectionEventHandlers">If true, <see cref="CopyCollectionEventHandlers"/> will be used to copy any event handlers registered
-  /// with <see cref="DomainObjectCollection"/> properties of the objects being enlisted. 
-  /// Note that setting this parameter to true causes the enlisted objects to be loaded (if they exist);
-  /// otherwise they will only be loaded on first access.</param>
-  /// <exception cref="ArgumentNullException">The <paramref name="sourceTransaction"/> parameter is <see langword="null"/>.</exception>
-  /// <exception cref="InvalidOperationException">A domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
-  /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
-  /// <remarks>
-  /// This method also enlists objects that do not exist in the database; accessing such an object in the context of this transaction will
-  /// result in an <see cref="ObjectNotFoundException"/>.</remarks>
-  public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
-  {
-    ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
-    var enlistedObjects = new Set<DomainObject> ();
-
-    foreach (var domainObject in sourceTransaction.GetEnlistedDomainObjects())
-    {
-      EnlistDomainObject (domainObject);
-      Assertion.IsTrue (_enlistedObjectManager.IsEnlisted (domainObject));
-      
-      enlistedObjects.Add (domainObject);
-    }
-
-    if (copyCollectionEventHandlers)
-    {
-      foreach (DomainObject domainObject in enlistedObjects)
-      {
-        try
-        {
-          CopyCollectionEventHandlers (domainObject, sourceTransaction);
-        }
-        catch (ObjectNotFoundException)
-        {
-          // ignore
-        }
-        catch (ObjectDiscardedException)
-        {
-          // ignore
-        }
-      }
-    }
-  }
-
-  /// <summary>
   /// Calls <see cref="EnlistDomainObject"/> for each <see cref="DomainObject"/> reference in the given collection.
   /// </summary>
   /// <param name="domainObjects">The domain objects to enlist.</param>
@@ -1629,6 +1581,13 @@ public abstract class ClientTransaction
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
+  }
+
+  [Obsolete ("This method has been removed. Please implement the desired behavior yourself, using GetEnlistedDomainObjects(), EnlistDomainObject(), "
+    + "and CopyCollectionEventHandlers(). (1.13.41)", false)]
+  public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
+  {
+    throw new NotImplementedException ();
   }
 }
 }

@@ -16,7 +16,10 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -159,11 +162,40 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       _wrappedInstance.Discard ();
 
-      ClientTransaction newTransaction = _wrappedInstance.CreateEmptyTransactionOfSameType();
-      newTransaction.EnlistSameDomainObjects (_wrappedInstance, true);
-      newTransaction.CopyTransactionEventHandlers (_wrappedInstance);
-
+      var oldTransaction = _wrappedInstance;
+      ClientTransaction newTransaction = oldTransaction.CreateEmptyTransactionOfSameType ();
       _wrappedInstance = newTransaction;
+
+      EnlistSameDomainObjects (oldTransaction);
+      newTransaction.CopyTransactionEventHandlers (oldTransaction);
+    }
+
+    private void EnlistSameDomainObjects (ClientTransaction sourceTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
+      var enlistedObjects = new HashSet<DomainObject> ();
+
+      foreach (var domainObject in sourceTransaction.GetEnlistedDomainObjects ())
+      {
+        _wrappedInstance.EnlistDomainObject (domainObject);
+        enlistedObjects.Add (domainObject);
+      }
+
+      foreach (DomainObject domainObject in enlistedObjects)
+      {
+        try
+        {
+          _wrappedInstance.CopyCollectionEventHandlers (domainObject, sourceTransaction);
+        }
+        catch (ObjectNotFoundException)
+        {
+          // ignore
+        }
+        catch (ObjectDiscardedException)
+        {
+          // ignore
+        }
+      }
     }
   }
 }
