@@ -27,7 +27,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using Remotion.Reflection;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -244,6 +244,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void GetEnlistedDomainObjects ()
+    {
+      var order1 = Order.NewObject ();
+      var order2 = Order.NewObject ();
+      Assert.That (ClientTransactionMock.GetEnlistedDomainObjects ().ToArray (), Is.EquivalentTo (new[] { order1, order2 }));
+    }
+
+    [Test]
+    public void EnlistedDomainObjectCount ()
+    {
+      Order.NewObject ();
+      Order.NewObject ();
+      Assert.That (ClientTransactionMock.EnlistedDomainObjectCount, Is.EqualTo (2));
+    }
+
+    [Test]
     public void IsEnlisted ()
     {
       var order = Order.NewObject ();
@@ -252,7 +268,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Enlist ()
+    public void GetEnlistedDomainObject ()
+    {
+      var order = Order.NewObject ();
+      Assert.That (ClientTransactionMock.GetEnlistedDomainObject (order.ID), Is.SameAs (order));
+    }
+
+    [Test]
+    public void EnlistDomainObject ()
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
@@ -263,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Enlist_DoesntLoad ()
+    public void EnlistDomainObject_DoesntLoad ()
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
@@ -277,29 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Enlist_Multiple ()
-    {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-
-      ClientTransactionMock.EnlistDomainObject (order);
-      ClientTransactionMock.EnlistDomainObject (order);
-
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A domain object instance for object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
-    public void Enlist_IDAlreadyEnlisted ()
-    {
-      Order.GetObject (DomainObjectIDs.Order1);
-
-      var orderToBeEnlisted = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      ClientTransactionMock.EnlistDomainObject (orderToBeEnlisted);
-    }
-
-    [Test]
-    public void Enlist_DiscardedObjects ()
+    public void EnlistDomainObject_DiscardedObjects ()
     {
       Order discardedObject = Order.NewObject ();
       discardedObject.Delete ();
