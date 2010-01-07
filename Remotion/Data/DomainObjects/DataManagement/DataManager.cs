@@ -290,7 +290,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   private void CheckClientTransactionForDeletion (DomainObject domainObject)
   {
-    if (!domainObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
+    if (!_clientTransaction.IsEnlisted (domainObject))
     {
       throw CreateClientTransactionsDifferException (
           "Cannot delete DomainObject '{0}', because it belongs to a different ClientTransaction.",

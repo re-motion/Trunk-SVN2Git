@@ -185,6 +185,9 @@
     <Compile Include="DomainObjectCollectionExtensions.cs" />
     <Compile Include="DomainObjectCollectionWrapper.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
+    <Compile Include="Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManager.cs" />
+    <Compile Include="Infrastructure\Enlistment\IEnlistedDomainObjectManager.cs" />
+    <Compile Include="Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManager.cs" />
     <Compile Include="Infrastructure\SubCollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializer.cs" />
     <Compile Include="Infrastructure\ObjectIDStringSerialization\StringObjectIDValueParser.cs" />

@@ -84,8 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
         Assert.IsTrue (results.Length > 0);
 
         var order = (Order) results[0];
-        Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
-        Assert.IsTrue (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
+        Assert.IsFalse (ClientTransactionMock.IsEnlisted (order));
+        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
       }
     }
 
@@ -102,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
         Assert.IsTrue (results.Length > 0);
 
         var order = (Order) results[0];
-        Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
-        Assert.IsTrue (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
+        Assert.IsFalse (ClientTransactionMock.IsEnlisted (order));
+        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
       }
     }
 
@@ -118,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
         Assert.IsTrue (results.Length > 0);
 
         var order = (Order) results[0];
-        Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
-        Assert.IsTrue (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
+        Assert.IsFalse (ClientTransactionMock.IsEnlisted (order));
+        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
       }
     }
 
@@ -140,8 +140,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       Assert.IsTrue (results.Length > 0);
 
       var order = (Order) results[0];
-      Assert.That (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction, Is.False);
-      Assert.That (order.TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);
+      Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
+      Assert.That (bindingTransaction.IsEnlisted (order), Is.True);
     }
 
     [Test]

@@ -399,18 +399,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Determines whether this instance can be used in the default transaction, ie. in its binding transaction or - if
-    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
-    /// </summary>
-    /// <value></value>
-    /// <remarks>If this property returns false, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist the object
-    /// in the transaction.</remarks>
-    public bool CanBeUsedInTransaction
-    {
-      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction(this)].CanBeUsedInTransaction; }
-    }
-
-    /// <summary>
     /// Ensures that <see cref="DomainObject"/> instances are not created via constructor checks.
     /// </summary>
     /// <remarks>

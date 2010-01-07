@@ -633,7 +633,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Order order = Order.GetObject (DomainObjectIDs.Order1);
 
         Assert.AreSame (clientTransaction, order.InternalDataContainer.ClientTransaction);
-        Assert.IsTrue (order.TransactionContext[clientTransaction].CanBeUsedInTransaction);
+        Assert.IsTrue (clientTransaction.IsEnlisted (order));
       }
     }
 
@@ -650,7 +650,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         order = Order.GetObject (DomainObjectIDs.Order1, true);
         Assert.AreEqual (StateType.Deleted, order.State);
         Assert.AreSame (clientTransaction, order.InternalDataContainer.ClientTransaction);
-        Assert.IsTrue (order.TransactionContext[clientTransaction].CanBeUsedInTransaction);
+        Assert.IsTrue (clientTransaction.IsEnlisted (order));
       }
     }
 
@@ -821,14 +821,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var clientTransactionMock = new ClientTransactionMock ();
       var order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      Assert.IsFalse (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction);
-      Assert.IsTrue (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
+      Assert.IsFalse (ClientTransactionScope.CurrentTransaction.IsEnlisted (order));
+      Assert.IsTrue (clientTransactionMock.IsEnlisted (order));
 
       using (clientTransactionMock.EnterDiscardingScope ())
       {
-        Assert.IsTrue (order.OrderTicket.TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
-        Assert.IsTrue (order.Official.TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
-        Assert.IsTrue (order.OrderItems[0].TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
+        Assert.IsTrue (clientTransactionMock.IsEnlisted (order.OrderTicket));
+        Assert.IsTrue (clientTransactionMock.IsEnlisted (order.Official));
+        Assert.IsTrue (clientTransactionMock.IsEnlisted (order.OrderItems[0]));
       }
     }
 

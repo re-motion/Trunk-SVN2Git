@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public static void CheckClientTransaction (IEndPoint endPoint, DomainObject domainObject, string exceptionFormatString)
     {
-      if (domainObject != null && !domainObject.TransactionContext[endPoint.ClientTransaction].CanBeUsedInTransaction)
+      if (domainObject != null && !endPoint.ClientTransaction.IsEnlisted (domainObject))
       {
         string transactionInfo = GetTransactionInfoForMismatchingClientTransactions (endPoint, domainObject);
 

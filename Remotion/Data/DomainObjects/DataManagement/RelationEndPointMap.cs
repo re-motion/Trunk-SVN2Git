@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
 
-      if (!deletedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
+      if (!ClientTransaction.IsEnlisted (deletedObject))
       {
         var message = String.Format ("Cannot remove DomainObject '{0}' from RelationEndPointMap, because it belongs to a different ClientTransaction.", 
             deletedObject.ID);

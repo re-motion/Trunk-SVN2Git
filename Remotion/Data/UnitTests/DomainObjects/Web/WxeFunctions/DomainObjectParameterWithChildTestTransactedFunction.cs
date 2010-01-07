@@ -53,14 +53,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     {
       Assert.AreSame (Transaction.GetNativeTransaction<ClientTransaction>(), ClientTransactionScope.CurrentTransaction);
 
-      DomainObjectParameterTestTransactedFunction childFunction = (DomainObjectParameterTestTransactedFunction) ChildFunction;
+      var childFunction = (DomainObjectParameterTestTransactedFunction) ChildFunction;
       ClassWithAllDataTypes outParameter = childFunction.OutParameter;
       ClassWithAllDataTypes[] outParameterArray = childFunction.OutParameterArray;
 
-      Assert.IsTrue (outParameter.CanBeUsedInTransaction);
+      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (outParameter));
       Assert.AreEqual (52, outParameter.Int32Property); // 47 + 5
 
-      Assert.IsTrue (outParameterArray[0].CanBeUsedInTransaction);
+      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (outParameterArray[0]));
       Assert.AreEqual (52, outParameterArray[0].Int32Property); // 48 + 5
     }
   }

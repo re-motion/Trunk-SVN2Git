@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -131,6 +132,7 @@ public abstract class ClientTransaction
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly CompoundClientTransactionListener _listeners;
   private readonly ClientTransactionExtensionCollection _extensions;
+  private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
 
   private bool _isDiscarded;
   
@@ -139,11 +141,13 @@ public abstract class ClientTransaction
   protected ClientTransaction (
       Dictionary<Enum, object> applicationData, 
       ClientTransactionExtensionCollection extensions, 
-      ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy)
+      ICollectionEndPointChangeDetectionStrategy collectionEndPointChangeDetectionStrategy,
+      IEnlistedDomainObjectManager enlistedObjectManager)
   {
     ArgumentUtility.CheckNotNull ("applicationData", applicationData);
     ArgumentUtility.CheckNotNull ("extensions", extensions);
     ArgumentUtility.CheckNotNull ("collectionEndPointChangeDetectionStrategy", collectionEndPointChangeDetectionStrategy);
+    ArgumentUtility.CheckNotNull ("enlistedObjectManager", enlistedObjectManager);
 
     IsReadOnly = false;
     _isDiscarded = false;
@@ -157,6 +161,7 @@ public abstract class ClientTransaction
 
     _applicationData = applicationData;
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
+    _enlistedObjectManager = enlistedObjectManager;
   }
 
   // abstract methods and properties
@@ -177,65 +182,6 @@ public abstract class ClientTransaction
 
   /// <summary>Initializes a new instance of this transaction.</summary>
   public abstract ClientTransaction CreateEmptyTransactionOfSameType ();
-
-  /// <summary>
-  /// Enlists the given domain object in the current transaction.
-  /// </summary>
-  /// <param name="domainObject">The domain object to be enlisted.</param>
-  /// <returns>True if the object was newly enlisted; false if it had already been enlisted before this method was called.</returns>
-  /// <exception cref="InvalidOperationException">Another <see cref="DomainObject"/> instance with the same <see cref="ObjectID"/> already exists
-  /// in the transaction.</exception>
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
-  /// <remarks>
-  /// Implementers of this method should add the given <paramref name="domainObject"/> to the data structure holding all <see cref="DomainObject"/>
-  /// instances currently registered in this transaction unless the <paramref name="domainObject"/> has already been enlisted. From within this
-  /// method, the object's <see cref="DataContainer"/> must not be accessed (directly or indirectly).
-  /// </remarks>
-  protected internal abstract bool DoEnlistDomainObject (DomainObject domainObject);
-
-  /// <summary>
-  /// Determines whether the specified <paramref name="domainObject"/> is enlisted in this transaction.
-  /// </summary>
-  /// <param name="domainObject">The domain object to be checked.</param>
-  /// <returns>
-  /// True if the specified domain object has been enlisted via <see cref="DoEnlistDomainObject"/>; otherwise, false.
-  /// </returns>
-  protected internal abstract bool IsEnlisted (DomainObject domainObject);
-
-  /// <summary>
-  /// Returns the <see cref="DomainObject"/> enlisted for the given <paramref name="objectID"/> in this transaction, or <see langword="null"/> if
-  /// none such object exists.
-  /// </summary>
-  /// <param name="objectID">The <see cref="ObjectID"/> for which to retrueve a <see cref="DomainObject"/>.</param>
-  /// <returns>
-  /// A <see cref="DomainObject"/> with the given <paramref name="objectID"/> previously enlisted via <see cref="DoEnlistDomainObject"/>,
-  /// or <see langword="null"/> if no such object exists.
-  /// </returns>
-  /// <remarks>
-  /// The <see cref="DataContainer"/> of the returned object might not have been loaded yet. In that case, it will be loaded on first
-  /// access of the object's properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
-  /// </remarks>
-  protected internal abstract DomainObject GetEnlistedDomainObject (ObjectID objectID);
-
-  /// <summary>
-  /// Gets all domain objects enlisted in this transaction.
-  /// </summary>
-  /// <value>The domain objects enlisted in this transaction via <see cref="DoEnlistDomainObject"/>.</value>
-  /// <remarks>
-  /// The <see cref="DataContainer"/>s of the returned objects might not have been loaded yet. In that case, they will be loaded on first
-  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
-  /// </remarks>
-  protected internal abstract IEnumerable<DomainObject> EnlistedDomainObjects { get; }
-
-  /// <summary>
-  /// Gets the number of domain objects enlisted in this transaction.
-  /// </summary>
-  /// <value>The number of elements in <see cref="EnlistedDomainObjects"/>.</value>
-  /// <remarks>
-  /// Note that the <see cref="DataContainer"/>s of the returned objects might not have been loaded yet. In that case, they will be loaded on first
-  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
-  /// </remarks>
-  protected internal abstract int EnlistedDomainObjectCount { get; }
 
   /// <summary>
   /// Persists changed data in the couse of a <see cref="Commit"/> operation.
@@ -539,6 +485,60 @@ public abstract class ClientTransaction
   }
 
   /// <summary>
+  /// Gets the number of domain objects enlisted in this <see cref="ClientTransaction"/>.
+  /// </summary>
+  /// <value>The number of domain objects enlisted in this <see cref="ClientTransaction"/>.</value>
+  public int EnlistedDomainObjectCount
+  {
+    get { return _enlistedObjectManager.EnlistedDomainObjectCount; }
+  }
+
+  /// <summary>
+  /// Gets all domain objects enlisted in this <see cref="ClientTransaction"/>.
+  /// </summary>
+  /// <value>The domain objects enlisted in this transaction.</value>
+  /// <remarks>
+  /// The <see cref="DataContainer"/>s of the returned objects might not have been loaded yet. In that case, they will be loaded on first
+  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// </remarks>
+  public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
+  {
+    return _enlistedObjectManager.GetEnlistedDomainObjects ();
+  }
+
+  /// <summary>
+  /// Returns the <see cref="DomainObject"/> enlisted for the given <paramref name="objectID"/> via <see cref="EnlistDomainObject"/>, or 
+  /// <see langword="null"/> if no such object exists.
+  /// </summary>
+  /// <param name="objectID">The <see cref="ObjectID"/> for which to retrieve a <see cref="DomainObject"/>.</param>
+  /// <returns>
+  /// A <see cref="DomainObject"/> with the given <paramref name="objectID"/> previously enlisted via <see cref="EnlistDomainObject"/>,
+  /// or <see langword="null"/> if no such object exists.
+  /// </returns>
+  /// <remarks>
+  /// The <see cref="DataContainer"/> of the returned object might not have been loaded yet. In that case, it will be loaded on first
+  /// access of the object's properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// </remarks>
+  public DomainObject GetEnlistedDomainObject (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+    return _enlistedObjectManager.GetEnlistedDomainObject (objectID);
+  }
+
+  /// <summary>
+  /// Determines whether the specified <paramref name="domainObject"/> is enlisted in this transaction.
+  /// </summary>
+  /// <param name="domainObject">The domain object to be checked.</param>
+  /// <returns>
+  /// <see langword="true" /> if the specified domain object can be used in the context of this transaction; otherwise, <see langword="false" />.
+  /// </returns>
+  public bool IsEnlisted (DomainObject domainObject)
+  {
+    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+    return _enlistedObjectManager.IsEnlisted (domainObject);
+  }
+
+  /// <summary>
   /// Allows the given <see cref="DomainObject"/> to be used in the context of this transaction without needing to explicitly reload it there.
   /// The <see cref="DomainObject"/> should be loadable into this transaction (i.e. it must be present in the underlying data store or the
   /// ParentTransaction), but this is not enforced until first access to the object.
@@ -556,7 +556,7 @@ public abstract class ClientTransaction
   /// Using a <see cref="DomainObject"/> in two different transactions at the same time will result in its <see cref="DomainObject.Properties"/>
   /// differing depending on which transaction is currently active.
   /// For example, if a property is changed (and even committed) in transaction A and the object
-  /// has been enlisted in transaction B before transaction's A commit, transaction B will never see the changes committed by transaction A.
+  /// has been enlisted in transaction B before transaction's A commit, transaction B will not see the changes committed by transaction A.
   /// </para>
   /// <para>
   /// If a certain <see cref="ObjectID"/> has already been associated with a certain <see cref="DomainObject"/> in this transaction, it is not
@@ -566,19 +566,37 @@ public abstract class ClientTransaction
   /// used in this transaction. If the object has been deleted from the underlying database, access to such an object will result in an
   /// <see cref="ObjectNotFoundException"/>.</para>
   /// </remarks>
-  /// <exception cref="InvalidOperationException">The domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
-  /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
+  /// <exception cref="InvalidOperationException">The domain object cannot be enlisted, e.g., because another <see cref="DomainObject"/> with the same
+  /// <see cref="ObjectID"/> has already been associated with this transaction..</exception>
   /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
   public bool EnlistDomainObject (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+    
+    CheckDomainObjectForEnlisting (domainObject);
+    return _enlistedObjectManager.EnlistDomainObject (domainObject);
+  }
+
+  /// <summary>
+  /// Checks whether the given <see cref="DomainObject"/> can be enlisted in this <see cref="ClientTransaction"/>, throwing an 
+  /// <see cref="InvalidOperationException"/> if it can't.
+  /// </summary>
+  /// <param name="domainObject">The domain object to check.</param>
+  /// <exception cref="InvalidOperationException">Thrown when the <paramref name="domainObject"/> cannot be enlisted in this transaction.</exception>
+  /// <remarks>
+  /// The default implementation of this method checks whether the <paramref name="domainObject"/> has already been bound to another transaction. Sub-
+  /// transactions can override this method to remove this check or perform additional checks.
+  /// </remarks>
+  protected virtual void CheckDomainObjectForEnlisting (DomainObject domainObject)
+  {
+    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
     if (domainObject.HasBindingTransaction && domainObject.GetBindingTransaction() != this)
     {
       string message = String.Format ("Cannot enlist the domain object '{0}' in this transaction, because it is already bound to another transaction.",
                                       domainObject.ID);
       throw new InvalidOperationException (message);
     }
-    return DoEnlistDomainObject (domainObject);
   }
 
   /// <summary>
@@ -587,8 +605,8 @@ public abstract class ClientTransaction
   /// </summary>
   /// <param name="sourceTransaction">The source transaction.</param>
   /// <param name="copyCollectionEventHandlers">If true, <see cref="CopyCollectionEventHandlers"/> will be used to copy any event handlers registered
-  /// with <see cref="DomainObjectCollection"/> properties of the objects being enlisted. Events are only copied for objects
-  /// that are newly enlisted by this method. Note that setting this parameter to true causes the enlisted objects to be loaded (if they exist);
+  /// with <see cref="DomainObjectCollection"/> properties of the objects being enlisted. 
+  /// Note that setting this parameter to true causes the enlisted objects to be loaded (if they exist);
   /// otherwise they will only be loaded on first access.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="sourceTransaction"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidOperationException">A domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
@@ -601,11 +619,12 @@ public abstract class ClientTransaction
     ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
     var enlistedObjects = new Set<DomainObject> ();
 
-    foreach (DomainObject domainObject in sourceTransaction.EnlistedDomainObjects)
+    foreach (var domainObject in sourceTransaction.GetEnlistedDomainObjects())
     {
-      bool enlisted = EnlistDomainObject (domainObject);
-      if (enlisted || IsEnlisted (domainObject))
-        enlistedObjects.Add (domainObject);
+      EnlistDomainObject (domainObject);
+      Assertion.IsTrue (_enlistedObjectManager.IsEnlisted (domainObject));
+      
+      enlistedObjects.Add (domainObject);
     }
 
     if (copyCollectionEventHandlers)
@@ -679,7 +698,7 @@ public abstract class ClientTransaction
 
     if (GetDataContainerWithoutLoading (domainObject.ID) == null)
     {
-      Assertion.IsTrue (IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction");
+      Assertion.IsTrue (_enlistedObjectManager.IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction");
       var loadedObject = LoadObject (domainObject.ID);
       Assertion.IsTrue (loadedObject == domainObject, "Guaranteed because domainObject was enlisted");
     }
@@ -846,7 +865,7 @@ public abstract class ClientTransaction
     if (!dataContainer.IsRegistered)
       throw new InvalidOperationException("The data container must be registered with the ClientTransaction before an object is retrieved for it.");
     
-    DomainObject enlistedObject = GetEnlistedDomainObject (dataContainer.ID);
+    DomainObject enlistedObject = _enlistedObjectManager.GetEnlistedDomainObject (dataContainer.ID);
     if (enlistedObject != null)
       return enlistedObject;
     else
@@ -1314,7 +1333,7 @@ public abstract class ClientTransaction
     DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
 
     var dataContainer = GetDataContainerWithoutLoading (domainObject.ID);
-    Assertion.IsTrue (IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction.");
+    Assertion.IsTrue (_enlistedObjectManager.IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction.");
 
     if (dataContainer == null)
     {

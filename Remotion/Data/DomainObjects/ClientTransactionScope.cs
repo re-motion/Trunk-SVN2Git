@@ -123,7 +123,6 @@ namespace Remotion.Data.DomainObjects
     private readonly ClientTransaction _scopedTransaction;
 
     private bool _hasBeenLeft = false;
-    private bool _autoEnlistDomainObjects;
     private AutoRollbackBehavior _autoRollbackBehavior;
 
     /// <summary>
@@ -145,8 +144,6 @@ namespace Remotion.Data.DomainObjects
 
       ClientTransactionScope.SetActiveScope (this);
       _scopedTransaction = scopedCurrentTransaction;
-
-      _autoEnlistDomainObjects = _previousScope != null ? _previousScope.AutoEnlistDomainObjects : false;
     }
 
     /// <summary>
@@ -187,16 +184,11 @@ namespace Remotion.Data.DomainObjects
       get { return ClientTransactionScope.ActiveScope == this; }
     }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether <see cref="DomainObject"/> instances are automatically enlisted in the current transaction within
-    /// this scope.
-    /// </summary>
-    /// <value>True if <see cref="DomainObject"/> instances are automatically enlisted in the current transaction when accessed;
-    /// otherwise, false.</value>
+    [Obsolete ("This property is obsolete. Manually enlist objects in transactions instead. (1.13.41)", true)]
     public bool AutoEnlistDomainObjects
     {
-      get { return _autoEnlistDomainObjects; }
-      set { _autoEnlistDomainObjects = value; }
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
     }
 
     /// <summary>

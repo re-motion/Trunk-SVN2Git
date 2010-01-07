@@ -734,8 +734,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
       }
-      Assert.That (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction, Is.True);
-      Assert.That (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction, Is.False);
+      Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
     }
 
     [Test]
@@ -753,8 +753,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         Assert.That (order.State, Is.EqualTo (StateType.Deleted));
       }
-      Assert.That (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction, Is.True);
-      Assert.That (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction, Is.False);
+      Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
     }
 
     [Test]
@@ -766,8 +766,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         order = Order.NewObject ();
       }
-      Assert.That (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction, Is.True);
-      Assert.That (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction, Is.False);
+      Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
     }
 
     [Test]
@@ -987,8 +987,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
       orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
 
+      Assert.That (ClientTransactionMock.IsEnlisted (orderItem));
       Assert.That (ClientTransactionMock.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (orderItem));
-      Assert.That (orderItem.CanBeUsedInTransaction);
     }
 
     [Test]

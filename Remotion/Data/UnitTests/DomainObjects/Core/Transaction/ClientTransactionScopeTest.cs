@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -205,8 +206,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       public TransactionEventCounter (ClientTransaction clientTransaction)
       {
-        clientTransaction.RolledBack += new ClientTransactionEventHandler (ClientTransaction_RolledBack);
-        clientTransaction.Committed += new ClientTransactionEventHandler (ClientTransaction_Committed);
+        clientTransaction.RolledBack += ClientTransaction_RolledBack;
+        clientTransaction.Committed += ClientTransaction_Committed;
       }
 
       private void ClientTransaction_RolledBack (object sender, ClientTransactionEventArgs args)
@@ -223,10 +224,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void NoAutoRollbackWhenNoneBehavior ()
     {
-      ClientTransactionMock mock = new ClientTransactionMock();
-      TransactionEventCounter eventCounter = new TransactionEventCounter (mock);
+      var mock = new ClientTransactionMock();
+      var eventCounter = new TransactionEventCounter (mock);
 
-      using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.None))
+      using (mock.EnterScope (AutoRollbackBehavior.None))
       {
         Order order = Order.GetObject (new DomainObjectIDs().Order1);
         order.OrderNumber = 0xbadf00d;
@@ -236,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       Assert.AreEqual (0, eventCounter.Rollbacks);
 
-      using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.None))
+      using (mock.EnterScope (AutoRollbackBehavior.None))
       {
       }
 
@@ -256,10 +257,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void AutoRollbackWhenRollbackBehavior ()
     {
-      ClientTransactionMock mock = new ClientTransactionMock();
-      TransactionEventCounter eventCounter = new TransactionEventCounter (mock);
+      var mock = new ClientTransactionMock();
+      var eventCounter = new TransactionEventCounter (mock);
 
-      using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
+      using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
         Order order = Order.GetObject (new DomainObjectIDs().Order1);
         order.OrderNumber = 0xbadf00d;
@@ -268,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, eventCounter.Rollbacks);
       eventCounter.Rollbacks = 0;
 
-      using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
+      using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
         Order order = Order.GetObject (new DomainObjectIDs().Order1);
         order.OrderTicket = OrderTicket.NewObject();
@@ -277,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, eventCounter.Rollbacks);
       eventCounter.Rollbacks = 0;
 
-      using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
+      using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
         Order order = Order.GetObject (new DomainObjectIDs().Order1);
         order.OrderItems.Add (OrderItem.NewObject());
@@ -286,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (1, eventCounter.Rollbacks);
       eventCounter.Rollbacks = 0;
 
-      using (ClientTransactionScope scope = mock.EnterScope (AutoRollbackBehavior.Rollback))
+      using (mock.EnterScope (AutoRollbackBehavior.Rollback))
       {
       }
 
@@ -318,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void CommitAndRollbackOnScope ()
     {
       ClientTransaction transaction = ClientTransaction.CreateRootTransaction();
-      TransactionEventCounter eventCounter = new TransactionEventCounter (transaction);
+      var eventCounter = new TransactionEventCounter (transaction);
       using (ClientTransactionScope scope = transaction.EnterNonDiscardingScope())
       {
         Assert.AreEqual (0, eventCounter.Commits);
@@ -366,79 +367,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void NoAutoEnlistingByDefault ()
+    public void NoAutoEnlisting ()
     {
       Order order = Order.GetObject (new DomainObjectIDs().Order1);
-      Assert.IsTrue (order.CanBeUsedInTransaction);
-      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.IsFalse (scope.AutoEnlistDomainObjects);
-        Assert.IsFalse (order.CanBeUsedInTransaction);
-      }
-    }
-
-    [Test]
-    public void AutoEnlistingIfRequested ()
-    {
-      Order order1 = Order.GetObject (new DomainObjectIDs().Order1);
-      Order order2 = Order.GetObject (new DomainObjectIDs().Order2);
-
-      Assert.IsTrue (order1.CanBeUsedInTransaction);
-      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
-
-      using (ClientTransactionScope scope = clientTransaction.EnterNonDiscardingScope())
-      {
-        scope.AutoEnlistDomainObjects = true;
-        Assert.IsTrue (order1.CanBeUsedInTransaction);
-        scope.AutoEnlistDomainObjects = false;
-        Assert.IsTrue (order1.CanBeUsedInTransaction);
-        Assert.IsFalse (order2.CanBeUsedInTransaction);
-      }
-
-      using (ClientTransactionScope scope = clientTransaction.EnterNonDiscardingScope())
-      {
-        Assert.IsFalse (scope.AutoEnlistDomainObjects);
-        Assert.IsFalse (order2.CanBeUsedInTransaction);
-        scope.AutoEnlistDomainObjects = true;
-        Assert.IsTrue (order2.CanBeUsedInTransaction);
-        scope.AutoEnlistDomainObjects = false;
-        Assert.IsTrue (order2.CanBeUsedInTransaction);
-      }
-    }
-
-    [Test]
-    public void InitialAutoEnlistValueIsInherited ()
-    {
-      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
-
-      using (ClientTransactionScope scope1 = clientTransaction.EnterNonDiscardingScope())
-      {
-        Assert.IsFalse (scope1.AutoEnlistDomainObjects);
-        scope1.AutoEnlistDomainObjects = true;
-        Assert.IsTrue (scope1.AutoEnlistDomainObjects);
-
-        using (ClientTransactionScope scope2 = clientTransaction.EnterNonDiscardingScope())
-        {
-          Assert.IsTrue (scope2.AutoEnlistDomainObjects);
-
-          scope1.AutoEnlistDomainObjects = false;
-          Assert.IsTrue (scope2.AutoEnlistDomainObjects);
-          scope1.AutoEnlistDomainObjects = true;
-          Assert.IsTrue (scope2.AutoEnlistDomainObjects);
-
-          scope2.AutoEnlistDomainObjects = false;
-          Assert.IsFalse (scope2.AutoEnlistDomainObjects);
-          Assert.IsTrue (scope1.AutoEnlistDomainObjects);
-        }
-
-        Assert.IsTrue (scope1.AutoEnlistDomainObjects);
+        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (order));
       }
     }
 
     [Test]
     public void ResetScope ()
     {
-      ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
+      ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
       Assert.IsNotNull (ClientTransactionScope.ActiveScope);
       Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
       ClientTransactionScope.ResetActiveScope();
@@ -449,12 +391,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void AutoDiscardBehavior ()
     {
-      MockRepository mockRepository = new MockRepository();
+      var mockRepository = new MockRepository();
 
       var transaction = mockRepository.StrictMock<ClientTransaction> (
           new Dictionary<Enum, object> (), 
           new ClientTransactionExtensionCollection (), 
-          new RootCollectionEndPointChangeDetectionStrategy ());
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          new DictionaryBasedEnlistedDomainObjectManager());
 
       Expect.Call (transaction.EnterScope (AutoRollbackBehavior.Discard))
           .Return (

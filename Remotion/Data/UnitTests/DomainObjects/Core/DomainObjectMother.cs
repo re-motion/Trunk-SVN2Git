@@ -15,30 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Reflection;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  public class PersistingSubTransaction : SubClientTransaction
+  public static class DomainObjectMother
   {
-    public PersistingSubTransaction (ClientTransaction parentTransaction)
-        : base (parentTransaction)
+    public static T CreateObjectInOtherTransaction<T> () where T : DomainObject
     {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.Empty);
+      }
     }
 
-    protected override void PersistData (DataContainerCollection changedDataContainers)
+    public static T GetObjectInOtherTransaction<T> (ObjectID objectID) where T : DomainObject
     {
-      if (changedDataContainers.Count > 0)
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        using (var persistenceManager = new PersistenceManager ())
-        {
-          persistenceManager.Save (changedDataContainers);
-        }
+        return (T) RepositoryAccessor.GetObject (objectID, true);
       }
-
-      base.PersistData (changedDataContainers);
     }
   }
 }

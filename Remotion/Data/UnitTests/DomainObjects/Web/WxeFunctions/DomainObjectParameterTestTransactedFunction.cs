@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
@@ -75,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     private void Step1 ()
     {
-      ClientTransaction clientTransaction = Transaction.GetNativeTransaction<ClientTransaction> ();
+      var clientTransaction = Transaction.GetNativeTransaction<ClientTransaction> ();
       Assert.IsTrue (clientTransaction == null || clientTransaction == ClientTransactionScope.CurrentTransaction);
-      Assert.IsTrue (InParameter.CanBeUsedInTransaction);
-      Assert.IsTrue (InParameterArray[0].CanBeUsedInTransaction);
+      Assert.IsTrue (ClientTransactionScope.CurrentTransaction.IsEnlisted (InParameter));
+      Assert.IsTrue (ClientTransactionScope.CurrentTransaction.IsEnlisted (InParameterArray[0]));
 
       OutParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes1);
       OutParameter.Int32Property = InParameter.Int32Property + 5;

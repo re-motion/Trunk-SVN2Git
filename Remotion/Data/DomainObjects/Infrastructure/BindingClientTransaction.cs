@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -36,8 +37,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw new InvalidOperationException ("Binding transactions cannot have subtransactions.");
     }
 
-    protected internal override bool DoEnlistDomainObject (DomainObject domainObject)
+    protected override void CheckDomainObjectForEnlisting (DomainObject domainObject)
     {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
       if (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction() != this)
       {
         string message =
@@ -46,7 +49,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
                 domainObject.ID);
         throw new InvalidOperationException (message);
       }
-      return base.DoEnlistDomainObject (domainObject);
+
+      base.CheckDomainObjectForEnlisting (domainObject);
     }
   }
 }

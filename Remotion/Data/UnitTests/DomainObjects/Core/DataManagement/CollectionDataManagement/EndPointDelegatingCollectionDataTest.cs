@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
-using Remotion.Development.UnitTesting;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
@@ -154,12 +153,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
 
-      using (_collectionEndPointMock.GetMockRepository ().Ordered ())
-      {
-        _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem3)).Return (_modificationStub);
-        _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem2)).Return (_modificationStub);
-        _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
-      }
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem3)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem2)).Return (_modificationStub);
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
+
       _collectionEndPointMock.Expect (mock => mock.Touch());
       _collectionEndPointMock.Replay();
 

@@ -751,8 +751,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _mockRepository.ReplayAll();
       using (_subTransaction.EnterDiscardingScope())
       {
-        ClientTransactionScope.ActiveScope.AutoEnlistDomainObjects = true;
-
         _order1.OrderNumber = newOrderNumber;
         Dev.Null = _order1.OrderNumber;
         Dev.Null =

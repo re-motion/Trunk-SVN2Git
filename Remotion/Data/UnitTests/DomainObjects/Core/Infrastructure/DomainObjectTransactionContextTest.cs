@@ -64,18 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CanBeUsedInTransaction_True ()
-    {
-      Assert.That (_order1Context.CanBeUsedInTransaction, Is.True);
-    }
-
-    [Test]
-    public void CanBeUsedInTransaction_False ()
-    {
-      Assert.That (_invalidContext.CanBeUsedInTransaction, Is.False);
-    }
-
-    [Test]
     public void IsDiscarded_False()
     {
       Assert.That (_newOrderContext.IsDiscarded, Is.False);

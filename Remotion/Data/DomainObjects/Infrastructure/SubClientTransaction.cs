@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -36,9 +37,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class SubClientTransaction : ClientTransaction
   {
     /// <summary>
-    /// Do not use this method, use <see>ClientTransaction.CreateBindingTransaction</see> instead.
+    /// Do not use this method, use <see cref="ClientTransaction.CreateBindingTransaction"/> instead.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Do not use this method, use <see cref="ClientTransaction.CreateBindingTransaction"/> instead.</returns>
     [Obsolete ("Use ClientTransaction.CreateBindingTransaction for clarity.")]
     public static new ClientTransaction CreateBindingTransaction ()
     {
@@ -54,7 +55,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         : base (
           ArgumentUtility.CheckNotNull("parentTransaction", parentTransaction).ApplicationData, 
           parentTransaction.Extensions, 
-          new SubCollectionEndPointChangeDetectionStrategy())
+          new SubCollectionEndPointChangeDetectionStrategy(),
+          new DelegatingEnlistedDomainObjectManager (parentTransaction))
     {
       parentTransaction.NotifyOfSubTransactionCreating ();
       Assertion.IsTrue (parentTransaction.IsReadOnly);
@@ -95,31 +97,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         return _queryManager;
       }
-    }
-
-    protected internal override bool DoEnlistDomainObject (DomainObject domainObject)
-    {
-      return ParentTransaction.DoEnlistDomainObject (domainObject);
-    }
-
-    protected internal override bool IsEnlisted (DomainObject domainObject)
-    {
-      return ParentTransaction.IsEnlisted (domainObject);
-    }
-
-    protected internal override DomainObject GetEnlistedDomainObject (ObjectID objectID)
-    {
-      return ParentTransaction.GetEnlistedDomainObject (objectID);
-    }
-
-    protected internal override IEnumerable<DomainObject> EnlistedDomainObjects
-    {
-      get { return ParentTransaction.EnlistedDomainObjects; }
-    }
-
-    protected internal override int EnlistedDomainObjectCount
-    {
-      get { return ParentTransaction.EnlistedDomainObjectCount; }
     }
 
     protected internal override ObjectID CreateNewObjectID (ClassDefinition classDefinition)

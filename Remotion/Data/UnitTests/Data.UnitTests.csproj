@@ -272,6 +272,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\CollectionWithMissingDataCtor.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\TestDomain\OppositeObject.cs" />
     <Compile Include="DomainObjects\Core\DomainObjectCollectionDataTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjectMother.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.EventRaiser.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
@@ -411,7 +412,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetModificationBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\MultiTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\MultiTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ObjectListTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyIndexerTest.cs" />

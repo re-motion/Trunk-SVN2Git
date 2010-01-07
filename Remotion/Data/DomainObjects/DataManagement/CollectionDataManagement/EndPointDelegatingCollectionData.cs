@@ -99,16 +99,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
 
-      // no need to check the inner objects for being deleted or for differing client transactions - we can rely on objects being part of an
-      // endpoint fitting this transaction and not being deleted
-      Assertion.DebugAssert (this.All (obj =>
-          obj.TransactionContext[AssociatedEndPoint.ClientTransaction].CanBeUsedInTransaction
-          && obj.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted));
-
       for (int i = Count - 1; i >= 0; --i)
       {
         var removedObject = GetObject (i);
 
+        Assertion.IsTrue (removedObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
         CreateAndExecuteRemoveModification (removedObject);
       }
 

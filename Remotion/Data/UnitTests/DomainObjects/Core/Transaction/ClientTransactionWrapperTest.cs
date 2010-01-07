@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -130,15 +129,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       var secondClientTransaction = ClientTransactionMock;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
-      Assert.That (domainObject1.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.False);
-      Assert.That (domainObject2.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.False);
+      Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.False);
+      Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.False);
 
       secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2, domainObject2 });
 
-      Assert.That (domainObject1.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.True);
+      Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.True);
       Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject1.ID, false), Is.Not.Null);
 
-      Assert.That (domainObject2.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.True);
+      Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.True);
       Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject2.ID, false), Is.Not.Null);
     }
 
@@ -195,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (clientTransactionAfter.EnterNonDiscardingScope())
       {
-        Assert.That (order.TransactionContext[clientTransactionAfter].CanBeUsedInTransaction, Is.True);
+        Assert.That (clientTransactionAfter.IsEnlisted (order), Is.True);
         Assert.That (order.OrderNumber, Is.EqualTo (1));
 
         Assert.That (addedCalled, Is.False);
@@ -243,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (clientTransactionAfter.EnterNonDiscardingScope())
       {
-        Assert.That (order.TransactionContext[clientTransactionAfter].CanBeUsedInTransaction, Is.True);
+        Assert.That (clientTransactionAfter.IsEnlisted (order), Is.True);
         Assert.That (order.OrderNumber, Is.EqualTo (1));
 
         Assert.That (addedCalled, Is.False);

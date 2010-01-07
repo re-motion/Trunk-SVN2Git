@@ -110,8 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       var transaction = ClientTransaction.CreateRootTransaction ();
       var result = _service.GetAllObjects (transaction, typeof (SampleBindableDomainObject));
-      Assert.That (((DomainObject) result[0]).TransactionContext[transaction].CanBeUsedInTransaction, Is.True);
-      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction, Is.False);
+      Assert.That (transaction.IsEnlisted ((DomainObject) result[0]), Is.True);
+      Assert.That (ClientTransaction.Current.IsEnlisted ((DomainObject) result[0]), Is.False);
     }
 
     [Test]
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var result = _service.Search (null, property, null);
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
-      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
+      Assert.That (ClientTransactionMock.Current.IsEnlisted ((DomainObject) result[0]), Is.True);
     }
 
     [Test]
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var result = _service.Search (new BindableNonDomainObjectReferencingDomainObject(), property, null);
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
-      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
+      Assert.That (ClientTransactionMock.Current.IsEnlisted (((DomainObject) result[0])), Is.True);
     }
 
     [Test]
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
-      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
+      Assert.That (ClientTransactionMock.Current.IsEnlisted ((DomainObject) result[0]), Is.True);
     }
 
     [Test]
@@ -199,10 +199,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
       Assert.That (((DomainObject) result[1]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
-      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.False);
-      Assert.That (((DomainObject) result[1]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.False);
-      Assert.That (((DomainObject) result[0]).TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);
-      Assert.That (((DomainObject) result[1]).TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);
+      Assert.That (ClientTransactionMock.Current.IsEnlisted ((DomainObject) result[0]), Is.False);
+      Assert.That (ClientTransactionMock.Current.IsEnlisted ((DomainObject) result[1]), Is.False);
+      Assert.That (bindingTransaction.IsEnlisted ((DomainObject) result[0]), Is.True);
+      Assert.That (bindingTransaction.IsEnlisted ((DomainObject) result[1]), Is.True);
     }
 
     [Test]

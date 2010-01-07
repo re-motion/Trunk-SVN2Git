@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
       Transaction.Reset ();
 
       Assert.AreNotEqual (transactionBefore, ClientTransactionScope.CurrentTransaction);
-      Assert.IsTrue (order.CanBeUsedInTransaction);
+      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
 
       Assert.AreEqual (1, order.OrderNumber);
 

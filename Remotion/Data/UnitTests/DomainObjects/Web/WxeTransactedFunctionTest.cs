@@ -194,10 +194,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClassWithAllDataTypes outParameter = function.OutParameter;
         ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
 
-        Assert.IsTrue (outParameter.CanBeUsedInTransaction);
+        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (outParameter));
         Assert.AreEqual (12, outParameter.Int32Property);
 
-        Assert.IsTrue (outParameterArray[0].CanBeUsedInTransaction);
+        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (outParameterArray[0]));
         Assert.AreEqual (13, outParameterArray[0].Int32Property);
       }
     }
@@ -231,8 +231,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClassWithAllDataTypes outParameter = function.OutParameter;
         ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
 
-        Assert.IsFalse (outParameter.CanBeUsedInTransaction);
-        Assert.IsFalse (outParameterArray[0].CanBeUsedInTransaction);
+        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (outParameter));
+        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (outParameterArray[0]));
       }
     }
 

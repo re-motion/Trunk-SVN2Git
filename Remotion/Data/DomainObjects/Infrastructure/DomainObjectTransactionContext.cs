@@ -48,23 +48,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _associatedTransaction; }
     }
 
-    public bool CanBeUsedInTransaction
-    {
-      get
-      {
-        if (AssociatedTransaction.IsEnlisted (DomainObject))
-          return true;
-        
-        if (ClientTransactionScope.ActiveScope != null && ClientTransactionScope.ActiveScope.AutoEnlistDomainObjects)
-        {
-          AssociatedTransaction.EnlistDomainObject (DomainObject);
-          return true;
-        }
-        
-        return false;
-      }
-    }
-
     public StateType State
     {
       get
@@ -73,19 +56,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         if (IsDiscarded)
           return StateType.Discarded;
-        else
-        {
-          DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
-          if (dataContainer.State == StateType.Unchanged)
-          {
-            if (AssociatedTransaction.HasRelationChanged (DomainObject))
-              return StateType.Changed;
-            else
-              return StateType.Unchanged;
-          }
 
-          return dataContainer.State;
-        }
+        var dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
+        if (dataContainer.State == StateType.Unchanged)
+          return AssociatedTransaction.HasRelationChanged (DomainObject) ? StateType.Changed : StateType.Unchanged;
+
+        return dataContainer.State;
       }
     }
 

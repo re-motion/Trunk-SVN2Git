@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -42,7 +43,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransaction.CreateBindingTransaction ();
     }
 
-    private readonly Dictionary<ObjectID, DomainObject> _enlistedObjects;
     [NonSerialized]
     private RootQueryManager _queryManager;
     private readonly Guid _id = Guid.NewGuid();
@@ -51,9 +51,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Initializes a new instance of the <b>RootClientTransaction</b> class.
     /// </summary>
     protected RootClientTransaction ()
-      : base (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection (), new RootCollectionEndPointChangeDetectionStrategy())
+      : base (
+        new Dictionary<Enum, object>(), 
+        new ClientTransactionExtensionCollection (), 
+        new RootCollectionEndPointChangeDetectionStrategy(),
+        new DictionaryBasedEnlistedDomainObjectManager())
     {
-      _enlistedObjects = new Dictionary<ObjectID, DomainObject>();
     }
 
     public override ClientTransaction ParentTransaction
@@ -86,50 +89,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         return _queryManager;
       }
-    }
-
-    protected internal override bool DoEnlistDomainObject (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      DomainObject alreadyEnlistedObject = GetEnlistedDomainObject (domainObject.ID);
-      if (alreadyEnlistedObject != null && alreadyEnlistedObject != domainObject)
-      {
-        string message = string.Format ("A domain object instance for object '{0}' already exists in this transaction.", domainObject.ID);
-        throw new InvalidOperationException (message);
-      }
-      else if (alreadyEnlistedObject == null)
-      {
-        _enlistedObjects.Add (domainObject.ID, domainObject);
-        return true;
-      }
-      else
-        return false;
-    }
-
-    protected internal override bool IsEnlisted (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      return GetEnlistedDomainObject (domainObject.ID) == domainObject;
-    }
-
-    protected internal override DomainObject GetEnlistedDomainObject (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      DomainObject domainObject;
-      _enlistedObjects.TryGetValue (objectID, out domainObject);
-      return domainObject;
-    }
-
-    protected internal override IEnumerable<DomainObject> EnlistedDomainObjects
-    {
-      get { return _enlistedObjects.Values; }
-    }
-
-    protected internal override int EnlistedDomainObjectCount
-    {
-      get { return _enlistedObjects.Count; }
     }
 
     protected override void PersistData (DataContainerCollection changedDataContainers)

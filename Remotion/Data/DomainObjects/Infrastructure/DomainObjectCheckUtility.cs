@@ -60,7 +60,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Checks if the given <see cref="DomainObject"/> can be used in the given transaction, and, if not, throws a <see cref="ClientTransactionsDifferException"/>.
+    /// Checks if the given <see cref="DomainObject"/> can be used in the given transaction, and, if not, throws a 
+    /// <see cref="ClientTransactionsDifferException"/>. If the method succeeds, <see cref="ClientTransaction.IsEnlisted"/> is guaranteed to be
+    /// <see langword="true" /> for the given <see cref="DomainObject"/>.
     /// </summary>
     /// <param name="domainObject">The domain object to check.</param>
     /// <param name="transaction">The transaction to check the object against.</param>
@@ -69,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     public static bool CheckIfRightTransaction (DomainObject domainObject, ClientTransaction transaction)
     {
-      if (!domainObject.TransactionContext[transaction].CanBeUsedInTransaction)
+      if (!transaction.IsEnlisted (domainObject))
       {
         string message = String.Format (
             "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "
