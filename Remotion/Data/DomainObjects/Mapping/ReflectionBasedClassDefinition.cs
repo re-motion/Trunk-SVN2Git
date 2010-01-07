@@ -26,6 +26,32 @@ namespace Remotion.Data.DomainObjects.Mapping
   [Serializable]
   public class ReflectionBasedClassDefinition: ClassDefinition
   {
+    private static void CheckBaseClass (ClassDefinition baseClass, string id, string storageProviderID, Type classType)
+    {
+      if (classType != null && baseClass.ClassType != null && !classType.IsSubclassOf (baseClass.ClassType))
+      {
+        throw CreateMappingException (
+            "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
+            classType.AssemblyQualifiedName,
+            id,
+            baseClass.ClassType.AssemblyQualifiedName,
+            baseClass.ID);
+      }
+
+      if (baseClass.StorageProviderID != storageProviderID)
+      {
+        throw CreateMappingException (
+            "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
+            id,
+            baseClass.ID);
+      }
+    }
+
+    private static MappingException CreateMappingException (string message, params object[] args)
+    {
+      return new MappingException (string.Format (message, args));
+    }
+
     [NonSerialized]
     private readonly bool _isAbstract;
     [NonSerialized]
@@ -33,29 +59,47 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
+    [NonSerialized]
+    private readonly ReflectionBasedClassDefinition _baseClass;
+    [NonSerialized]
+    private ClassDefinitionCollection _derivedClasses;
+
     public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, IPersistentMixinFinder persistentMixinFinder)
-        : base (id, entityName, storageProviderID, true)
+        : base (id, entityName, storageProviderID)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("persistentMixins", persistentMixinFinder);
       if (!classType.IsSubclassOf (typeof (DomainObject)))
         throw CreateMappingException ("Type '{0}' of class '{1}' is not derived from 'Remotion.Data.DomainObjects.DomainObject'.", classType, ID);
-     
+
       _classType = classType;
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
+      _derivedClasses = new ClassDefinitionCollection (new ClassDefinitionCollection (true), true);
+
       if (baseClass != null)
       {
-        // Note: CheckBasePropertyDefinitions does not have to be called, because member _propertyDefinitions is
-        //       initialized to an empty collection during construction.
-        SetBaseClass (baseClass);
+        CheckBaseClass (baseClass, id, storageProviderID, classType);
+
+        _baseClass = baseClass;
+        baseClass.AddDerivedClass (this);
       }
     }
 
-    public new ReflectionBasedClassDefinition BaseClass
+    public override ClassDefinition BaseClass
     {
-      get { return (ReflectionBasedClassDefinition) base.BaseClass; }
+      get { return _baseClass; }
+    }
+
+    public ReflectionBasedClassDefinition ReflectionBasedBaseClass
+    {
+      get { return _baseClass; }
+    }
+
+    public override ClassDefinitionCollection DerivedClasses
+    {
+      get { return _derivedClasses; }
     }
 
     public IPersistentMixinFinder PersistentMixinFinder
@@ -104,14 +148,16 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new ReflectionBasedClassDefinitionValidator (this);
     }
 
-    private MappingException CreateMappingException (string message, params object[] args)
-    {
-      return new MappingException (string.Format (message, args));
-    }
-
     public override IDomainObjectCreator GetDomainObjectCreator ()
     {
       return InterceptedDomainObjectCreator.Instance;
+    }
+
+    private void AddDerivedClass (ClassDefinition derivedClass)
+    {
+      var derivedClasses = new ClassDefinitionCollection (_derivedClasses, false);
+      derivedClasses.Add (derivedClass);
+      _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
     }
   }
 }

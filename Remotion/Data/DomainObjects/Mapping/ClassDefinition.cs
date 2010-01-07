@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -49,14 +48,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly RelationDefinitionCollection _relationDefinitions;
 
-    [NonSerialized]
-    private ClassDefinition _baseClass;
-    [NonSerialized]
-    private ClassDefinitionCollection _derivedClasses;
-
     // construction and disposing
 
-    protected ClassDefinition (string id, string entityName, string storageProviderID, bool areResolvedTypesRequired)
+    protected ClassDefinition (string id, string entityName, string storageProviderID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       if (entityName == string.Empty)
@@ -67,7 +61,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _entityName = entityName;
       _storageProviderID = storageProviderID;
 
-      _derivedClasses = new ClassDefinitionCollection (new ClassDefinitionCollection (areResolvedTypesRequired), true);
       _propertyDefinitions = new PropertyDefinitionCollection (this);
       _relationDefinitions = new RelationDefinitionCollection();
     }
@@ -96,9 +89,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     public string[] GetAllConcreteEntityNames()
     {
       if (GetEntityName() != null)
-        return new string[] {GetEntityName()};
+        return new[] {GetEntityName()};
 
-      List<string> allConcreteEntityNames = new List<string>();
+      var allConcreteEntityNames = new List<string>();
       FillAllConcreteEntityNames (allConcreteEntityNames);
 
       return allConcreteEntityNames.ToArray();
@@ -106,15 +99,15 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public ClassDefinitionCollection GetAllDerivedClasses()
     {
-      ClassDefinitionCollection allDerivedClasses = new ClassDefinitionCollection (IsClassTypeResolved);
+      var allDerivedClasses = new ClassDefinitionCollection (IsClassTypeResolved);
       FillAllDerivedClasses (allDerivedClasses);
       return allDerivedClasses;
     }
 
     public ClassDefinition GetInheritanceRootClass()
     {
-      if (_baseClass != null)
-        return _baseClass.GetInheritanceRootClass();
+      if (BaseClass != null)
+        return BaseClass.GetInheritanceRootClass();
 
       return this;
     }
@@ -124,10 +117,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (_entityName != null)
         return _entityName;
 
-      if (_baseClass == null)
+      if (BaseClass == null)
         return null;
 
-      return _baseClass.GetEntityName();
+      return BaseClass.GetEntityName();
     }
 
     public string GetViewName ()
@@ -166,12 +159,11 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public PropertyDefinitionCollection GetPropertyDefinitions()
     {
-      PropertyDefinitionCollection propertyDefinitions = new PropertyDefinitionCollection (
-          _propertyDefinitions, false);
+      var propertyDefinitions = new PropertyDefinitionCollection (_propertyDefinitions, false);
 
-      if (_baseClass != null)
+      if (BaseClass != null)
       {
-        foreach (PropertyDefinition basePropertyDefinition in _baseClass.GetPropertyDefinitions())
+        foreach (PropertyDefinition basePropertyDefinition in BaseClass.GetPropertyDefinitions())
           propertyDefinitions.Add (basePropertyDefinition);
       }
 
@@ -180,11 +172,11 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public RelationDefinitionCollection GetRelationDefinitions()
     {
-      RelationDefinitionCollection relations = new RelationDefinitionCollection (_relationDefinitions, false);
+      var relations = new RelationDefinitionCollection (_relationDefinitions, false);
 
-      if (_baseClass != null)
+      if (BaseClass != null)
       {
-        foreach (RelationDefinition baseRelation in _baseClass.GetRelationDefinitions())
+        foreach (RelationDefinition baseRelation in BaseClass.GetRelationDefinitions())
         {
           if (!relations.Contains (baseRelation))
             relations.Add (baseRelation);
@@ -196,14 +188,14 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public IRelationEndPointDefinition[] GetRelationEndPointDefinitions()
     {
-      ArrayList relationEndPointDefinitions = new ArrayList();
+      var relationEndPointDefinitions = new ArrayList();
 
       foreach (IRelationEndPointDefinition relationEndPointDefinition in GetMyRelationEndPointDefinitions())
         relationEndPointDefinitions.Add (relationEndPointDefinition);
 
-      if (_baseClass != null)
+      if (BaseClass != null)
       {
-        foreach (IRelationEndPointDefinition baseRelationEndPointDefinition in _baseClass.GetRelationEndPointDefinitions())
+        foreach (IRelationEndPointDefinition baseRelationEndPointDefinition in BaseClass.GetRelationEndPointDefinitions())
           relationEndPointDefinitions.Add (baseRelationEndPointDefinition);
       }
 
@@ -212,7 +204,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public IRelationEndPointDefinition[] GetMyRelationEndPointDefinitions()
     {
-      ArrayList relationEndPointDefinitions = new ArrayList();
+      var relationEndPointDefinitions = new ArrayList();
 
       foreach (RelationDefinition relationDefinition in _relationDefinitions)
       {
@@ -236,8 +228,8 @@ namespace Remotion.Data.DomainObjects.Mapping
           return relationDefinition;
       }
 
-      if (_baseClass != null)
-        return _baseClass.GetRelationDefinition (propertyName);
+      if (BaseClass != null)
+        return BaseClass.GetRelationDefinition (propertyName);
 
       return null;
     }
@@ -264,8 +256,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (oppositeClass != null)
         return oppositeClass;
 
-      if (_baseClass != null)
-        return _baseClass.GetOppositeClassDefinition (propertyName);
+      if (BaseClass != null)
+        return BaseClass.GetOppositeClassDefinition (propertyName);
 
       return null;
     }
@@ -291,8 +283,8 @@ namespace Remotion.Data.DomainObjects.Mapping
           return relationEndPointDefinition;
       }
 
-      if (_baseClass != null)
-        return _baseClass.GetRelationEndPointDefinition (propertyName);
+      if (BaseClass != null)
+        return BaseClass.GetRelationEndPointDefinition (propertyName);
 
       return null;
     }
@@ -323,8 +315,8 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (IsMyRelationEndPoint (relationEndPointDefinition))
         return true;
 
-      if (_baseClass != null)
-        return _baseClass.IsRelationEndPoint (relationEndPointDefinition);
+      if (BaseClass != null)
+        return BaseClass.IsRelationEndPoint (relationEndPointDefinition);
 
       return false;
     }
@@ -335,8 +327,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       PropertyDefinition propertyDefinition = _propertyDefinitions[propertyName];
 
-      if (propertyDefinition == null && _baseClass != null)
-        return _baseClass.GetPropertyDefinition (propertyName);
+      if (propertyDefinition == null && BaseClass != null)
+        return BaseClass.GetPropertyDefinition (propertyName);
 
       return propertyDefinition;
     }
@@ -373,20 +365,13 @@ namespace Remotion.Data.DomainObjects.Mapping
     public abstract Type ClassType { get; }
 
     public abstract bool IsClassTypeResolved { get; }
+    
+    public abstract ClassDefinition BaseClass { get; }
+    public abstract ClassDefinitionCollection DerivedClasses { get; }
 
     public string StorageProviderID
     {
       get { return _storageProviderID; }
-    }
-
-    public ClassDefinition BaseClass
-    {
-      get { return _baseClass; }
-    }
-
-    public ClassDefinitionCollection DerivedClasses
-    {
-      get { return _derivedClasses; }
     }
 
     public PropertyDefinitionCollection MyPropertyDefinitions
@@ -401,7 +386,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public bool IsPartOfInheritanceHierarchy
     {
-      get { return (_baseClass != null || _derivedClasses.Count > 0); }
+      get { return (BaseClass != null || DerivedClasses.Count > 0); }
     }
 
     public abstract bool IsAbstract { get; }
@@ -409,16 +394,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override string ToString ()
     {
       return GetType().FullName + ": " + _id;
-    }
-
-    [Obsolete ("Check after Refactoring. (Version 1.7.42")]
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public void SetBaseClass (ClassDefinition baseClass)
-    {
-      ArgumentUtility.CheckNotNull ("baseClass", baseClass);
-
-      CheckBaseClass (baseClass, _id, _storageProviderID, ClassType);
-      PerformSetBaseClass (baseClass);
     }
 
     public virtual ClassDefinitionValidator GetValidator ()
@@ -479,19 +454,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
     }
 
-    private void PerformSetBaseClass (ClassDefinition baseClass)
-    {
-      _baseClass = baseClass;
-      _baseClass.AddDerivedClass (this);
-    }
-
-    private void AddDerivedClass (ClassDefinition derivedClass)
-    {
-      ClassDefinitionCollection derivedClasses = new ClassDefinitionCollection (_derivedClasses, false);
-      derivedClasses.Add (derivedClass);
-      _derivedClasses = new ClassDefinitionCollection (derivedClasses, true);
-    }
-
     private MappingException CreateMappingException (string message, params object[] args)
     {
       return new MappingException (string.Format (message, args));
@@ -502,27 +464,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new InvalidOperationException (string.Format (message, args));
     }
 
-    private void CheckBaseClass (ClassDefinition baseClass, string id, string storageProviderID, Type classType)
-    {
-      if (classType != null && baseClass.ClassType != null && !classType.IsSubclassOf (baseClass.ClassType))
-      {
-        throw CreateMappingException (
-            "Type '{0}' of class '{1}' is not derived from type '{2}' of base class '{3}'.",
-            classType.AssemblyQualifiedName,
-            id,
-            baseClass.ClassType.AssemblyQualifiedName,
-            baseClass.ID);
-      }
-
-      if (baseClass.StorageProviderID != storageProviderID)
-      {
-        throw CreateMappingException (
-            "Cannot derive class '{0}' from base class '{1}' handled by different StorageProviders.",
-            id,
-            baseClass.ID);
-      }
-    }
-
     private void FillAllConcreteEntityNames (List<string> allConcreteEntityNames)
     {
       if (_entityName != null)
@@ -531,13 +472,13 @@ namespace Remotion.Data.DomainObjects.Mapping
         return;
       }
 
-      foreach (ClassDefinition derivedClass in _derivedClasses)
+      foreach (ClassDefinition derivedClass in DerivedClasses)
         derivedClass.FillAllConcreteEntityNames (allConcreteEntityNames);
     }
 
     private void FillAllDerivedClasses (ClassDefinitionCollection allDerivedClasses)
     {
-      foreach (ClassDefinition derivedClass in _derivedClasses)
+      foreach (ClassDefinition derivedClass in DerivedClasses)
       {
         allDerivedClasses.Add (derivedClass);
         derivedClass.FillAllDerivedClasses (allDerivedClasses);

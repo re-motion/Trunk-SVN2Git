@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     {
       ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
-      ReflectionBasedClassDefinition expectedBaseClass = expected.BaseClass;
+      var expectedBaseClass = expected.ReflectionBasedBaseClass;
       _classDefinitions.Add (expectedBaseClass);
       _classDefinitions.Add (expected);
 
