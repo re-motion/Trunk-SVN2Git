@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _domainObject; }
     }
 
-    public ClientTransaction AssociatedTransaction
+    public ClientTransaction ClientTransaction
     {
       get { return _associatedTransaction; }
     }
@@ -52,14 +52,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
+        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
 
         if (IsDiscarded)
           return StateType.Discarded;
 
-        var dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
+        var dataContainer = ClientTransaction.GetDataContainer(DomainObject);
         if (dataContainer.State == StateType.Unchanged)
-          return AssociatedTransaction.HasRelationChanged (DomainObject) ? StateType.Changed : StateType.Unchanged;
+          return ClientTransaction.HasRelationChanged (DomainObject) ? StateType.Changed : StateType.Unchanged;
 
         return dataContainer.State;
       }
@@ -69,8 +69,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
-        return AssociatedTransaction.DataManager.IsDiscarded (DomainObject.ID); 
+        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
+        return ClientTransaction.DataManager.IsDiscarded (DomainObject.ID); 
       }
     }
 
@@ -78,18 +78,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
-        return AssociatedTransaction.GetDataContainer (DomainObject).Timestamp;
+        DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, ClientTransaction);
+        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
+        return ClientTransaction.GetDataContainer (DomainObject).Timestamp;
       }
     }
 
     public void MarkAsChanged()
     {
-      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
-      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
+      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, ClientTransaction);
+      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
 
-      DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
+      DataContainer dataContainer = ClientTransaction.GetDataContainer(DomainObject);
       try
       {
         dataContainer.MarkAsChanged ();

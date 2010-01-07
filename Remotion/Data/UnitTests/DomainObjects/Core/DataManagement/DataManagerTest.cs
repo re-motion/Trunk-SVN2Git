@@ -20,8 +20,10 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -64,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       DataContainer container = CreateOrder1DataContainer ();
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container.DomainObject));
@@ -80,12 +82,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
           (int) container1.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber") + 1);
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Changed });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Changed);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container1.DomainObject));
 
-      domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
+      domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container2.DomainObject));    
@@ -99,12 +101,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.Delete (container1.DomainObject);
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Deleted });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Deleted);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container1.DomainObject));
 
-      domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
+      domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container2.DomainObject));
@@ -116,12 +118,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 			DataContainer container1 = Order.NewObject ().InternalDataContainer;
       DataContainer container2 = CreateOrder2DataContainer ();
 
-      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new[] { StateType.New });
+      DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.New);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container1.DomainObject));
 
-      domainObjects = _dataManager.GetDomainObjects (new[] { StateType.Unchanged });
+      domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
       Assert.That (domainObjects, Is.Not.Null);
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (container2.DomainObject));
@@ -490,6 +492,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.Rollback ();
 
       Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.True);
+    }
+
+    [Test]
+    public void Delete_DeletedObject ()
+    {
+      var deletedObject = Order.GetObject (DomainObjectIDs.Order1);
+      deletedObject.Delete ();
+      Assert.That (deletedObject.State, Is.EqualTo (StateType.Deleted));
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _dataManager.Delete (deletedObject);
+      Assert.That (deletedObject.State, Is.EqualTo (StateType.Deleted));
+
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectDeleting (deletedObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void Delete_DiscardedObject ()
+    {
+      var discardedObject = Order.NewObject ();
+      discardedObject.Delete ();
+      Assert.That (discardedObject.IsDiscarded, Is.True);
+
+      _dataManager.Delete (discardedObject);
     }
 
     private DataContainer CreateOrder1DataContainer ()

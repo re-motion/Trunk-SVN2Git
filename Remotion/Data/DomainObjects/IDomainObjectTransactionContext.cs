@@ -25,6 +25,12 @@ namespace Remotion.Data.DomainObjects
   public interface IDomainObjectTransactionContext
   {
     /// <summary>
+    /// Gets the <see cref="ClientTransaction"/> this context is associated with.
+    /// </summary>
+    /// <value>The client transaction.</value>
+    ClientTransaction ClientTransaction { get; }
+
+    /// <summary>
     /// Gets the current state of the <see cref="DomainObject"/> in the associated <see cref="ClientTransaction"/>.
     /// </summary>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>

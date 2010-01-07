@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       var referencedDomainObjectType = GetDomainObjectType (property);
       var referencingDomainObject = referencingObject as DomainObject;
       
-      var clientTransaction = referencingDomainObject != null ? DomainObjectCheckUtility.GetNonNullClientTransaction (referencingDomainObject) : ClientTransaction.Current;
+      var clientTransaction = referencingDomainObject != null ? referencingDomainObject.DefaultTransactionContext.ClientTransaction : ClientTransaction.Current;
       if (clientTransaction == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or the referencing object.");
 

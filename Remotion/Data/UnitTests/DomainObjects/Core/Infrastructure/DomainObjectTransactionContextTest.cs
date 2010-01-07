@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void Initialization()
     {
       Assert.That (_order1Context.DomainObject, Is.SameAs (_order1));
-      Assert.That (_order1Context.AssociatedTransaction, Is.SameAs (_otherTransaction));
+      Assert.That (_order1Context.ClientTransaction, Is.SameAs (_otherTransaction));
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
       Assert.That (_order1Context.State, Is.EqualTo (StateType.Unchanged));
-      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
       {
         _order1.OrderNumber = 2;
       }
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void State_FromDataContainer_WithChangedRelation ()
     {
-      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
       {
         _order1.OrderItems.Clear();
       }
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void MarkAsChanged_Changed ()
     {
-      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
       {
         _order1.OrderNumber = 2;
       }
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private void DeleteNewOrder ()
     {
-      using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_newOrderContext.ClientTransaction.EnterNonDiscardingScope ())
       {
         _newOrder.Delete ();
       }
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private void DeleteOrder1 ()
     {
-      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_order1Context.ClientTransaction.EnterNonDiscardingScope ())
       {
         _order1.Delete ();
       }

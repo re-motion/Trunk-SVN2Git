@@ -137,5 +137,10 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
       _queryManager = queryManager;
     }
+
+    public new void Delete (DomainObject domainObject)
+    {
+      base.Delete (domainObject);
+    }
   }
 }

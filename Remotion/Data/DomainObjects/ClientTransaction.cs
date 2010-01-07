@@ -778,7 +778,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       BeginCommit();
-      DomainObjectCollection changedButNotDeletedDomainObjects = _dataManager.GetDomainObjects (new[] {StateType.Changed, StateType.New});
+      DomainObjectCollection changedButNotDeletedDomainObjects = _dataManager.GetDomainObjects (StateType.Changed, StateType.New);
 
       DataContainerCollection changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
@@ -796,7 +796,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       BeginRollback();
-      DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (new[] {StateType.Changed, StateType.Deleted});
+      DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (StateType.Changed, StateType.Deleted);
 
       _dataManager.Rollback ();
 

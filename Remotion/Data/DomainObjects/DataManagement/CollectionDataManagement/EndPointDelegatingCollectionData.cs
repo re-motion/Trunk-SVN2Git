@@ -103,6 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       {
         var removedObject = GetObject (i);
 
+        // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
         Assertion.IsTrue (removedObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
         CreateAndExecuteRemoveModification (removedObject);
       }

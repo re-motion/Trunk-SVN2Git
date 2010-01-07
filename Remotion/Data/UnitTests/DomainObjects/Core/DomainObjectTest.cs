@@ -64,6 +64,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void DefaultTransactionContext_Current ()
+    {
+      var order = Order.NewObject ();
+      Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (ClientTransaction.Current));
+    }
+
+    [Test]
+    public void DefaultTransactionContext_Bound ()
+    {
+      Order order;
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      using (bindingTransaction.EnterNonDiscardingScope ())
+      {
+        order = Order.NewObject ();
+      }
+      Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (bindingTransaction));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
+    public void DefaultTransactionContext_Null ()
+    {
+      var order = Order.NewObject ();
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        Dev.Null = order.DefaultTransactionContext;
+      }
+    }
+
+    [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the given transaction "
         + "as it was loaded or created in another transaction. Enter a scope for the transaction, or enlist the object in "
         + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)",

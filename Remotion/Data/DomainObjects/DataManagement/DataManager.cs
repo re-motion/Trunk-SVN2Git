@@ -97,6 +97,8 @@ public class DataManager : ISerializable, IDeserializationCallback
     var changedDataContainers = new DataContainerCollection ();
     foreach (DomainObject domainObject in GetChangedDomainObjects ())
     {
+#warning TODO 2054: Assertion.IsTrue (domainObject.TransactionContext[_clientTransaction].State != StateType.NotLoadedYet);
+      
       if (domainObject.TransactionContext[_clientTransaction].State != StateType.Deleted)
         _relationEndPointMap.CheckMandatoryRelations (domainObject);
 
@@ -110,42 +112,20 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public DomainObjectCollection GetChangedDomainObjects ()
   {
-    return GetDomainObjects (new[] { StateType.Changed, StateType.Deleted, StateType.New });
+    return GetDomainObjects (StateType.Changed, StateType.Deleted, StateType.New);
   }
 
-  public DomainObjectCollection GetDomainObjects (StateType stateType)
+  // TODO: This only returns domain objects for which a DataContainer exists, not unloaded or discarded objects. This should be reflected in the name.
+  public DomainObjectCollection GetDomainObjects (params StateType[] states)
   {
-    ArgumentUtility.CheckValidEnumValue ("stateType", stateType);
+    var stateSet = new StateValueSet (states);
 
-    return GetDomainObjects (new[] { stateType });
-  }
-
-  public DomainObjectCollection GetDomainObjects (StateType[] states)
-  {
-    var domainObjects = new DomainObjectCollection ();
-
-    bool includeChanged = ContainsState (states, StateType.Changed);
-    bool includeDeleted = ContainsState (states, StateType.Deleted);
-    bool includeNew = ContainsState (states, StateType.New);
-    bool includeUnchanged = ContainsState (states, StateType.Unchanged);
-
-    foreach (DataContainer dataContainer in _dataContainerMap)
-    {
-      StateType domainObjectState = dataContainer.DomainObject.TransactionContext[_clientTransaction].State;
-      if (includeChanged && domainObjectState == StateType.Changed)
-        domainObjects.Add (dataContainer.DomainObject);
-
-      if (includeDeleted && domainObjectState == StateType.Deleted)
-        domainObjects.Add (dataContainer.DomainObject);
-
-      if (includeNew && domainObjectState == StateType.New)
-        domainObjects.Add (dataContainer.DomainObject);
-
-      if (includeUnchanged && domainObjectState == StateType.Unchanged)
-        domainObjects.Add (dataContainer.DomainObject);
-    }
-
-    return domainObjects;
+    var matchingObjects = from dataContainer in DataContainerMap.Cast<DataContainer>()
+                          let domainObject = dataContainer.DomainObject
+                          let state = domainObject.TransactionContext[_clientTransaction].State
+                          where stateSet.Matches (state)
+                          select domainObject;
+    return new DomainObjectCollection (matchingObjects, null);
   }
 
   public IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ()
@@ -155,11 +135,6 @@ public class DataManager : ISerializable, IDeserializationCallback
       if (endPoint.HasChanged)
         yield return endPoint;
     }
-  }
-
-  private bool ContainsState (StateType[] states, StateType state)
-  {
-    return (Array.IndexOf (states, state) >= 0);
   }
 
   public void RegisterDataContainer (DataContainer dataContainer)
@@ -234,9 +209,9 @@ public class DataManager : ISerializable, IDeserializationCallback
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
     CheckClientTransactionForDeletion (deletedObject);
 
-    // TODO: The next line implicitly loads the data container of the object before deleting it. This is necessary, but too implicit.
-    // Explicitly ensure that the object has actually been loaded.
-    if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted) // TODO 1914: | Discarded?
+    DomainObjectCheckUtility.CheckIfObjectIsDiscarded (deletedObject, ClientTransaction);
+
+    if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
       return;
 
     var oppositeEndPointRemoveModifications = _relationEndPointMap.GetRemoveModificationsForOppositeEndPoints (deletedObject);

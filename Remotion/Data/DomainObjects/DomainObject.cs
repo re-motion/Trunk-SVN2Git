@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   [Serializable]
   [DebuggerDisplay ("{GetPublicDomainObjectType().FullName}: {ID.ToString()}")]
-  public class DomainObject : IDomainObjectTransactionContext
+  public class DomainObject
   {
     // types
 
@@ -261,7 +261,9 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>Be sure to call this base constructor from the deserialization constructor of any concrete <see cref="DomainObject"/> type
     /// implementing the <see cref="ISerializable"/> interface.</remarks>
 #pragma warning disable 168
+// ReSharper disable UnusedParameter.Local
     protected DomainObject (SerializationInfo info, StreamingContext context)
+// ReSharper restore UnusedParameter.Local
 #pragma warning restore 168
     {
       ArgumentUtility.CheckNotNull ("info", info);
@@ -303,14 +305,6 @@ namespace Remotion.Data.DomainObjects
     public ObjectID ID
     {
       get { return _id; }
-    }
-
-    [Obsolete ("This property has been removed because its behavior is too unintuitive. Use either GetBindingTransaction() or ClientTransaction.Current "
-        + "instead, whichever appropriate. If you don't know which one to use, find out using HasBindingTransaction: "
-        + "'HasBindingTransaction ? GetBindingTransaction() : ClientTransaction.Current'. (Build 1.11.17, 1.11.29)", true)]
-    public ClientTransaction ClientTransaction
-    {
-      get { throw new NotImplementedException (); }
     }
 
     /// <summary>
@@ -360,9 +354,37 @@ namespace Remotion.Data.DomainObjects
       get { return _bindingTransaction != null; }
     }
 
+    /// <summary>
+    /// Gets a <see cref="DomainObjectTransactionContextIndexer"/> object that can be used to select an <see cref="IDomainObjectTransactionContext"/>
+    /// for a specific <see cref="DomainObjects.ClientTransaction"/>. To obtain the default context, use <see cref="DefaultTransactionContext"/>.
+    /// </summary>
+    /// <value>The transaction context.</value>
     public DomainObjectTransactionContextIndexer TransactionContext
     {
       get { return new DomainObjectTransactionContextIndexer (this); }
+    }
+
+    /// <summary>
+    /// Gets the default <see cref="IDomainObjectTransactionContext"/>, i.e. the transaction context that is used when this 
+    /// <see cref="DomainObject"/>'s properties are accessed without specifying a <see cref="DomainObjects.ClientTransaction"/>.
+    /// </summary>
+    /// <value>The default transaction context.</value>
+    /// <remarks>
+    /// When an object is bound to a <see cref="BindingClientTransaction"/>, the <see cref="DefaultTransactionContext"/> represents that transaction.
+    /// Otherwise, it represents the <see cref="DomainObjects.ClientTransaction.Current"/> transaction.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">No <see cref="DomainObjects.ClientTransaction"/> has been associated with the current thread or 
+    /// this <see cref="DomainObject"/>.</exception>
+    public IDomainObjectTransactionContext DefaultTransactionContext
+    {
+      get
+      {
+        var clientTransaction = HasBindingTransaction ? GetBindingTransaction() : ClientTransaction.Current;
+        if (clientTransaction == null)
+          throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
+
+        return TransactionContext[clientTransaction];
+      }
     }
 
     /// <summary>
@@ -370,7 +392,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public StateType State
     {
-      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction(this)].State; }
+      get { return DefaultTransactionContext.State; }
     }
 
     /// <summary>
@@ -383,7 +405,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     public bool IsDiscarded
     {
-      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].IsDiscarded; }
+      get { return DefaultTransactionContext.IsDiscarded; }
     }
 
     /// <summary>
@@ -395,7 +417,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
     public object Timestamp
     {
-      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].Timestamp; }
+      get { return DefaultTransactionContext.Timestamp; }
     }
 
     /// <summary>
@@ -523,7 +545,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     public void MarkAsChanged ()
     {
-      TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].MarkAsChanged ();
+      DefaultTransactionContext.MarkAsChanged ();
     }
 
     /// <summary>

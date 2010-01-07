@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         ArgumentUtility.CheckNotNull ("propertyName", propertyName);
         PropertyAccessorData data = _dataCache.GetOrCreateValue (propertyName, CreatePropertyAccessorData);
-        return new PropertyAccessor (_domainObject, data, GetDefaultTransaction());
+        return new PropertyAccessor (_domainObject, data, _domainObject.DefaultTransactionContext.ClientTransaction);
       }
     }
 
@@ -136,11 +136,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    private ClientTransaction GetDefaultTransaction ()
-    {
-      return DomainObjectCheckUtility.GetNonNullClientTransaction (_domainObject);
-    }
-
     private PropertyAccessorData CreatePropertyAccessorData (string propertyName)
     {
       try
@@ -182,14 +177,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     /// <summary>
     /// Returns an implementation of <see cref="IEnumerable{T}"/> that enumerates over all the properties indexed by this <see cref="PropertyIndexer"/>
-    /// in the <see cref="DomainObject"/>'s transaction. That is either the <see cref="ClientTransaction.Current"/> transaction or the object's
-    /// <see cref="BindingClientTransaction"/> (if any).
+    /// in the <see cref="DomainObject"/>'s <see cref="DomainObjects.DomainObject.DefaultTransactionContext"/>.
     /// </summary>
     /// <returns>A sequence containing <see cref="PropertyAccessor"/> objects for each property of this <see cref="PropertyIndexer"/>'s 
     /// <see cref="DomainObject"/>.</returns>
     public IEnumerable<PropertyAccessor> AsEnumerable ()
     {
-      return AsEnumerable (DomainObjectCheckUtility.GetNonNullClientTransaction(_domainObject));
+      return AsEnumerable (_domainObject.DefaultTransactionContext.ClientTransaction);
     }
 
     /// <summary>

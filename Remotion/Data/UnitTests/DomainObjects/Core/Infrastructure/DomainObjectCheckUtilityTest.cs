@@ -28,37 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class DomainObjectCheckUtilityTest : ClientTransactionBaseTest
   {
     [Test]
-    public void GetNonNullClientTransaction_Current()
-    {
-      var order = Order.NewObject();
-      Assert.That (DomainObjectCheckUtility.GetNonNullClientTransaction (order), Is.SameAs (ClientTransaction.Current));
-    }
-
-    [Test]
-    public void GetNonNullClientTransaction_Bound ()
-    {
-      Order order;
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      using (bindingTransaction.EnterNonDiscardingScope ())
-      {
-        order = Order.NewObject();
-      }
-      Assert.That (DomainObjectCheckUtility.GetNonNullClientTransaction (order), Is.SameAs (bindingTransaction));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-        ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
-    public void GetNonNullClientTransaction_Null ()
-    {
-      var order = Order.NewObject ();
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        DomainObjectCheckUtility.GetNonNullClientTransaction (order);
-      }
-    }
-
-    [Test]
     public void CheckIfObjectIsDiscarded_Valid ()
     {
       var order = Order.NewObject ();
