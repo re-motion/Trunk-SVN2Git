@@ -43,6 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinitionWrapper classDefinitionWrapper = new SecurableClassDefinitionWrapper (SecurableClassDefinition.NewObject ());
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
+          classDefinitionWrapper.SecurableClassDefinition.EnsureDataAvailable ();
           Assert.AreEqual (StateType.Unchanged, classDefinitionWrapper.SecurableClassDefinition.State);
 
           classDefinitionWrapper.SecurableClassDefinition.AddAccessType (accessType0);
@@ -358,6 +359,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
+          classDefinition.EnsureDataAvailable ();
           Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
           StatelessAccessControlList accessControlList = classDefinition.CreateStatelessAccessControlList ();
@@ -379,6 +381,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
+          classDefinition.EnsureDataAvailable ();
           Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
           classDefinition.CreateStatelessAccessControlList ();
@@ -395,6 +398,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
+          classDefinition.EnsureDataAvailable ();
           Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
           StatefulAccessControlList accessControlList = classDefinition.CreateStatefulAccessControlList ();
@@ -415,6 +419,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
+          classDefinition.EnsureDataAvailable ();
           Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
           StatefulAccessControlList acccessControlList0 = classDefinition.CreateStatefulAccessControlList ();
@@ -499,6 +504,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         classDefinition.Touch ();
 
         Assert.AreEqual (StateType.New, classDefinition.State);
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO 2085")]
+    public void Touch_InNotLoadedState ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          Assert.AreEqual (StateType.NotLoadedYet, classDefinition.State);
+
+          classDefinition.Touch();
+
+          Assert.AreEqual (StateType.Changed, classDefinition.State);
+        }
       }
     }
 

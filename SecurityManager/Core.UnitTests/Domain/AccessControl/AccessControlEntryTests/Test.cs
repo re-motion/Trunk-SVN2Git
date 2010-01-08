@@ -126,6 +126,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessTypeDefinition accessType1 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 1", 1);
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
+        ace.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, ace.State);
 
         ace.AttachAccessType (accessType0);
@@ -185,6 +186,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ace.Touch();
 
       Assert.AreEqual (StateType.New, ace.State);
+    }
+
+    [Test]
+    [Ignore ("TODO 2085")]
+    public void Touch_InNotLoadedState ()
+    {
+      AccessControlEntry ace = AccessControlEntry.NewObject ();
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.AreEqual (StateType.NotLoadedYet, ace.State);
+        ace.Touch ();
+        Assert.AreEqual (StateType.Changed, ace.State);
+      }
     }
 
     [Test]

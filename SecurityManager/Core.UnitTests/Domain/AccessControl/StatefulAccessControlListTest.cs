@@ -61,6 +61,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatefulAccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        classDefinition.EnsureDataAvailable ();
+        acl.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, classDefinition.State);
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
@@ -80,6 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatefulAccessControlList acl = _testHelper.CreateStatefulAcl (SecurableClassDefinition.NewObject ());
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        acl.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
         acl.StateCombinations.Add (StateCombination.NewObject ());
@@ -95,6 +98,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        acl.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
         StateCombination stateCombination0 = acl.CreateStateCombination ();

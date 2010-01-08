@@ -186,6 +186,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
+        acl.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
         AccessControlEntry entry = acl.CreateAccessControlEntry();
@@ -207,6 +208,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
+        acl.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
         AccessControlEntry ace0 = acl.CreateAccessControlEntry();
@@ -238,6 +240,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       acl.Touch();
 
       Assert.AreEqual (StateType.New, acl.State);
+    }
+
+    [Test]
+    [Ignore ("TODO 2085")]
+    public void Touch_InNotLoadedState ()
+    {
+      AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties ());
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        Assert.AreEqual (StateType.NotLoadedYet, acl.State);
+        acl.Touch();
+
+        Assert.AreEqual (StateType.Changed, acl.State);
+      }
     }
 
     [Test]

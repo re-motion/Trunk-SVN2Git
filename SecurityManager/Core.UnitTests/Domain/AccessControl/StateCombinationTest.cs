@@ -88,6 +88,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatePropertyDefinition property = _testHelper.CreateTestProperty();
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
+        classDefinition.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
         combination.AttachState (property["Test1"]);
