@@ -336,6 +336,26 @@
     <delete dir="${build.basedir}" includeemptydirs="true" />
   </target>
 
+  <!--======================= Release Notes =======================-->
+  <target name="release-notes-directory" depends="init-build-version" >
+    <property name="MajorVersion" value="${version::get-major (version::parse (build.version.noconfig))}"/>
+    <property name="MinorVersion" value="${version::get-minor (version::parse (build.version.noconfig))}"/>
+    <property name="BuildVersion" value="${version::get-build (version::parse (build.version.noconfig))}"/>
+    <property name="release-notes.directory" value="${publishing.base}\Framework\release-notes\${MajorVersion}.${MinorVersion}" />
+
+    <echo message="Release notes directory: ${release-notes.directory}"/>
+  </target>
+  
+  <target name="release-notes" depends="release-notes-directory">
+    <property name="release-notes.generator.directory" value="${publishing.base}\Framework\JiraReleaseNoteGenerator" />
+    <property name="release-notes.generator.exe" value="JiraReleaseNoteGenerator.exe" />
+
+    <exec program="${release-notes.generator.exe}" basedir="${release-notes.generator.directory}" workingdir="${release-notes.generator.directory}" failonerror="true">
+      <arg value="${MajorVersion}.${MinorVersion}.${BuildVersion}"/>
+      <arg value="${release-notes.directory}"/>
+    </exec>
+  </target>
+  
   <!--======================= Zip Targets =======================-->
   <target name="checkzip" depends="zipfilename">
     <property name="ToDir" value="${publishing.base}\Framework\build\"/>
@@ -390,6 +410,10 @@
       
       <fileset basedir="${solution.basedir}\Remotion">
         <include name="license/**/*"/>
+      </fileset>
+
+      <fileset basedir="${release-notes.directory}" prefix="release-notes">
+        <include name="**/*" unless="${release-notes.directory == 'none'}"/>
       </fileset>
     </zip>
   </target>

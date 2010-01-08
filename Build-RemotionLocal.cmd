@@ -16,7 +16,7 @@ if not %ERRORLEVEL%==0 goto build_failed
 echo Zipping up the build results...
 echo.
 
-%nant% "-f:Remotion.build" "-D:build.temp.root=\Temp\RemotionLocal" "-t:net-3.5" "-nologo" ^
+%nant% "-f:Remotion.build" "-D:build.temp.root=\Temp\RemotionLocal" "-D:release-notes.directory=none" "-t:net-3.5" "-nologo" ^
     cleantemp ^
     sourcezip zip ^
     relinq-sourcezip relinq-zip ^
