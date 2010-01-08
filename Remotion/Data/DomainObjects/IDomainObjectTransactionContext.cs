@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -62,5 +63,14 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     void MarkAsChanged ();
+
+    /// <summary>
+    /// Ensures that the <see cref="DomainObject"/>'s data has been loaded. If it hasn't, this method causes the object's data to be loaded.
+    /// </summary>
+    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
+    /// <exception cref="ObjectNotFoundException">No data could be loaded for the <see cref="DomainObject"/> because the object was not
+    /// found in the data source.</exception>
+    void EnsureDataAvailable ();
   }
 }

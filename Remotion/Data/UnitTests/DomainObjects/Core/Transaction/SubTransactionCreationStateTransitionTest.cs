@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.Unchanged, obj.State);
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.New, obj.State);
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.New, obj.State);
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
         Assert.IsTrue (deleted.IsDiscarded);
       }
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
       }
       Assert.AreEqual (StateType.Changed, obj.State);

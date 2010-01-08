@@ -61,9 +61,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _newTransaction = new ClientTransactionMock();
       _newTransaction.EnlistDomainObjects (_order1);
-      _newTransaction.EnsureDataAvailable (_order1); // preload
+      _order1.TransactionContext[_newTransaction].EnsureDataAvailable();
       _newTransaction.EnlistDomainObjects (_computerWithoutRelatedObjects);
-      _newTransaction.EnsureDataAvailable (_computerWithoutRelatedObjects); // preload
+      _computerWithoutRelatedObjects.TransactionContext[_newTransaction].EnsureDataAvailable ();
 
       _mockRepository = new MockRepository ();
       _extensionMock = _mockRepository.StrictMock<IClientTransactionExtension> ();

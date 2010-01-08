@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Changed, obj.State);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.Unchanged, obj.State);
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (StateType.New, obj.State);
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {
-        ClientTransaction.Current.EnsureDataAvailable (obj);
+        obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
       }

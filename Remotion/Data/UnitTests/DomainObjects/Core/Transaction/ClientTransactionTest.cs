@@ -1047,7 +1047,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (innerTransaction.EnterDiscardingScope ())
       {
         innerTransaction.EnlistDomainObject (order);
-        innerTransaction.EnsureDataAvailable (order); // preload order, but not orderItems
+        order.EnsureDataAvailable (); // preload order, but not orderItems
 
         innerTransaction.AddListener (listenerMock);
         int loadedObjectsBefore = innerTransaction.DataManager.DataContainerMap.Count;

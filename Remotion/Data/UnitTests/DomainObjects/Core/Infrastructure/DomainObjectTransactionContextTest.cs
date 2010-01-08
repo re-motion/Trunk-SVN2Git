@@ -214,6 +214,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Dev.Null = _invalidContext.Timestamp;
     }
 
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_notYetLoadedOrder2.ID], Is.Null);
+
+      _notYetLoadedOrder2Context.EnsureDataAvailable ();
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_notYetLoadedOrder2.ID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_notYetLoadedOrder2.ID].DomainObject, Is.SameAs (_notYetLoadedOrder2));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void EnsureDataAvailable_Discarded ()
+    {
+      _newOrder.Delete ();
+      _newOrderContext.EnsureDataAvailable ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
+    public void EnsureDataAvailable_InvalidTransaction ()
+    {
+      _invalidContext.EnsureDataAvailable();
+    }
+
     private void DeleteOrder (Order order)
     {
       while (order.OrderItems.Count > 0)

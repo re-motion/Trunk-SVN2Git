@@ -81,17 +81,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, ClientTransaction);
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
         return ClientTransaction.GetDataContainer (DomainObject).Timestamp;
       }
     }
 
     public void MarkAsChanged()
     {
-      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, ClientTransaction);
-      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-
       DataContainer dataContainer = ClientTransaction.GetDataContainer(DomainObject);
       try
       {
@@ -101,6 +96,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         throw new InvalidOperationException ("Only existing DomainObjects can be marked as changed.", ex);
       }
+    }
+
+    public void EnsureDataAvailable ()
+    {
+      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
+
+      ClientTransaction.EnsureDataAvailable (DomainObject.ID);
+
+      var dataContainer = ClientTransaction.DataManager.DataContainerMap[DomainObject.ID];
+      Assertion.IsNotNull (dataContainer);
+      Assertion.IsTrue (dataContainer.DomainObject == DomainObject, "Guaranteed because CheckIfRightTransaction ensures that domainObject is enlisted");
+
     }
   }
 }

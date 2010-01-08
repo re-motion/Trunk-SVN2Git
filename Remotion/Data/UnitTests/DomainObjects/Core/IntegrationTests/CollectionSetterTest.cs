@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope())
       {
-        ClientTransaction.Current.EnsureDataAvailable (_newIndustrialSector);
+        _newIndustrialSector.EnsureDataAvailable ();
 
         Assert.That (_newIndustrialSector.State, Is.EqualTo (StateType.Unchanged));
         var newCompanies = new ObjectList<Company> ();
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.EnsureDataAvailable (_newIndustrialSector);
+        _newIndustrialSector.EnsureDataAvailable ();
 
         Assert.That (_newIndustrialSector.State, Is.EqualTo (StateType.Unchanged));
         var oldCompanies = _newIndustrialSector.Companies;

@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -546,6 +547,19 @@ namespace Remotion.Data.DomainObjects
     public void MarkAsChanged ()
     {
       DefaultTransactionContext.MarkAsChanged ();
+    }
+
+    /// <summary>
+    /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
+    /// </summary>
+    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
+    /// <exception cref="ObjectNotFoundException">No data could be loaded for this <see cref="DomainObject"/> because the object was not
+    /// found in the data source.</exception>
+    public void EnsureDataAvailable ()
+    {
+      DefaultTransactionContext.EnsureDataAvailable ();
     }
 
     /// <summary>

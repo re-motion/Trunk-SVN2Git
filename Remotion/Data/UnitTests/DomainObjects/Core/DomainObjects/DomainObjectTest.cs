@@ -382,7 +382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ClientTransaction.Current.EnlistDomainObject (customer);
         Assert.That (customer.State, Is.EqualTo (StateType.NotLoadedYet));
 
-        ClientTransaction.Current.EnsureDataAvailable (customer);
+        customer.EnsureDataAvailable ();
 
         Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
         Assert.That (customer.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Changed));

@@ -131,7 +131,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       order.ProtectedLoaded += ((sender, e) => Assert.That (((Order) sender).OrderNumber, Is.EqualTo (1)));
 
       newTransaction.EnlistDomainObject (order);
-      newTransaction.EnsureDataAvailable (order);
+      order.TransactionContext[newTransaction].EnsureDataAvailable ();
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      ClientTransactionMock.EnlistDomainObject (order);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[order.ID], Is.Null);
+      
+      order.EnsureDataAvailable ();
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[order.ID], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[order.ID].DomainObject, Is.SameAs (order));
     }
   }
 }

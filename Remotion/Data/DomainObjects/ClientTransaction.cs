@@ -633,29 +633,6 @@ public abstract class ClientTransaction
   }
 
   /// <summary>
-  /// Ensures that the given <see cref="DomainObject"/>'s data has been loaded into this <see cref="ClientTransaction"/>. If it hasn't, this method
-  /// loads the object's data.
-  /// </summary>
-  /// <param name="domainObject">The domain object whose data must be loaded.</param>
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null" />.</exception>
-  /// <exception cref="ClientTransactionsDifferException">The given <paramref name="domainObject"/> cannot be used in this 
-  /// <see cref="ClientTransaction"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">The given <paramref name="domainObject"/> has already been discarded in this transaction.</exception>
-  /// <exception cref="ObjectNotFoundException">No data could be loaded for the given <paramref name="domainObject"/> because the object was not
-  /// found in the underlying data source.</exception>
-  public void EnsureDataAvailable (DomainObject domainObject)
-  {
-    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
-
-    EnsureDataAvailable (domainObject.ID);
-
-    var dataContainer = DataManager.DataContainerMap[domainObject.ID];
-    Assertion.IsNotNull (dataContainer);
-    Assertion.IsTrue (dataContainer.DomainObject == domainObject, "Guaranteed because CheckIfRightTransaction ensures that domainObject is enlisted");
-  }
-
-  /// <summary>
   /// Ensures that the data of the <see cref="DomainObject"/> with the given <see cref="ObjectID"/> has been loaded into this 
   /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the object's data.
   /// </summary>
@@ -672,30 +649,6 @@ public abstract class ClientTransaction
       LoadObject (objectID);
 
     Assertion.IsTrue (DataManager.DataContainerMap[objectID] != null);
-  }
-
-  /// <summary>
-  /// Ensures that the given <see cref="DomainObject"/>s' data has been loaded into this <see cref="ClientTransaction"/>. If it hasn't, this method
-  /// loads the objects' data, performing a bulk load operation.
-  /// </summary>
-  /// <param name="domainObjects">The domain objects whose data must be loaded.</param>
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObjects"/> parameter is <see langword="null" />.</exception>
-  /// <exception cref="ClientTransactionsDifferException">One of the given <paramref name="domainObjects"/> cannot be used in this 
-  /// <see cref="ClientTransaction"/>.</exception>
-  /// <exception cref="ObjectDiscardedException">One of the given <paramref name="domainObjects"/> has already been discarded in this transaction.</exception>
-  /// <exception cref="BulkLoadException">No data could be loaded for one or more of the given <paramref name="domainObjects"/> because the objects 
-  /// were not found in the underlying data source.</exception>
-  public void EnsureDataAvailable (IEnumerable<DomainObject> domainObjects)
-  {
-    ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
-
-    var objectIDs = from domainObject in domainObjects
-                    where DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this)
-                    select domainObject.ID;
-
-    // Because the call to CheckIfRightTransaction above guarantees that all objects have been enlisted, it is guaranteed that LoadObjects will
-    // reuse the instances passed in via the domainObjects parameter.
-    EnsureDataAvailable (objectIDs);
   }
 
   /// <summary>
