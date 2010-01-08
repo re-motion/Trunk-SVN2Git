@@ -240,32 +240,6 @@ public abstract class ClientTransaction
   protected abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
 
   /// <summary>
-  /// Loads a <see cref="DataContainer"/> from the datasource for an existing <see cref="DomainObject"/>.
-  /// </summary>
-  /// <remarks>
-  /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
-  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
-  /// </para>
-  /// <para>
-  /// This method should not 
-  ///   set the <see cref="ClientTransaction"/> of the loaded data container,
-  ///   register the container in the <see cref="DataContainerMap"/>,
-  ///   or set the  <see cref="DomainObject"/> of the container.
-  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
-  /// </para>
-  /// </remarks>
-  /// <param name="domainObject">The <see cref="DomainObject"/> to load the <see cref="DataContainer"/> for. Must not be <see langword="null"/>.</param>
-  /// <returns>The <see cref="DataContainer"/> that was loaded.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for the given <paramref name="domainObject"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
-  /// </exception>
-  protected internal abstract DataContainer LoadDataContainerForExistingObject (DomainObject domainObject);
-
-  /// <summary>
   /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
   /// </summary>
   /// <remarks>

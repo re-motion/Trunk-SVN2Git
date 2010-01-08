@@ -154,22 +154,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    internal protected override DataContainer LoadDataContainerForExistingObject (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      // ensure that parent transaction knows the given object, that way, LoadDataContainer will associate the child DataContainer with it
-      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
-      {
-        ParentTransaction.GetDataContainer(domainObject);
-      }
-
-      using (EnterNonDiscardingScope ())
-      {
-        return LoadDataContainer (domainObject.ID);
-      }
-    }
-
     protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       DomainObject parentRelatedObject;

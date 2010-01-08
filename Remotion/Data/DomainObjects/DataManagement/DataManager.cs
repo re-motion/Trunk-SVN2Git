@@ -97,7 +97,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     var changedDataContainers = new DataContainerCollection ();
     foreach (DomainObject domainObject in GetChangedDomainObjects ())
     {
-#warning TODO 2054: Assertion.IsTrue (domainObject.TransactionContext[_clientTransaction].State != StateType.NotLoadedYet);
+      Assertion.IsTrue (domainObject.TransactionContext[_clientTransaction].State != StateType.NotLoadedYet);
       
       if (domainObject.TransactionContext[_clientTransaction].State != StateType.Deleted)
         _relationEndPointMap.CheckMandatoryRelations (domainObject);

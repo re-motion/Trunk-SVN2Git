@@ -147,18 +147,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DataContainer LoadDataContainerForExistingObject (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      using (EnterNonDiscardingScope ())
-      {
-        // ensure that the transaction knows the given object, that way, LoadDataContainer will associate the new DataContainer with it
-        EnlistDomainObject (domainObject);
-        return LoadDataContainer (domainObject.ID);
-      }
-    }
-
     protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
