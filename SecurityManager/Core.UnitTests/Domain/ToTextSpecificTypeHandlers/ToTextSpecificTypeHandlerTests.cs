@@ -125,7 +125,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void AbstractRoleDefinitionTest ()
     {
       var x = TestHelper.CreateAbstractRoleDefinition ("xyz", 0);
-      //To.ConsoleLine.e (x);
       Assert.That (To.String.e (x).ToString(), NUnitText.Contains("xyz"));
     }
 
@@ -133,7 +132,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void AccessControlEntryTest ()
     {
       var x = TestHelper.CreateAceWithOwningTenant ();
-      //To.ConsoleLine.e (x);
       Assert.That (To.String.e (x).ToString (), NUnitText.Contains ("SelUser=None,SelGroup=None,SelTenant=OwningTenant"));
     }
 
@@ -141,7 +139,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void AccessControlEntryTest2 ()
     {
       var x = TestHelper.CreateAceWithAbstractRole ();
-      //To.ConsoleLine.e (x);
       Assert.That (To.String.e (x).ToString (), NUnitText.Contains ("abstr.role=[\"Test\"]"));
     }
 
@@ -150,7 +147,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var ace = TestHelper.CreateAceWithOwningGroup ();
       var acl = TestHelper.CreateStatefulAcl (ace);
-      //To.ConsoleLine.e (acl);
       // Note: test string is similar to AccessControlEntry test above, since rest of test would retest standard ToText sequence output functionality
       Assert.That (To.String.e (acl).ToString (), NUnitText.Contains ("SelUser=None,SelGroup=OwningGroup,SelTenant=None"));
     }
@@ -161,8 +157,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var x = TestHelper.CreateAccessType ("topsecret", 123);
       var basic = To.String.SetOutputComplexityToBasic().e (x).ToString();
       var complex = To.String.SetOutputComplexityToComplex().e (x).ToString();
-      //To.ConsoleLine.e (() => basic);
-      //To.ConsoleLine.e (() => complex);
       Assert.That (basic, NUnitText.Contains ("topsecret"));
       Assert.That (basic, NUnitText.Not.Contains ("123"));
       Assert.That (complex, NUnitText.Contains ("topsecret"));
@@ -174,7 +168,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void GroupTest ()
     {
       var x = TestHelper.CreateGroup ("DieGruppe", null, TestHelper.CreateTenant("DasAmt"));
-      //To.ConsoleLine.e (x);
       Assert.That (To.String.e (x).ToString (), NUnitText.Contains ("DieGruppe"));
     }
 
@@ -185,7 +178,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       x.AccessType = TestHelper.CreateAccessType ("topsecret", 123);
       x.Allowed = true;
       var result = To.String.e (x).ToString();
-      //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.Contains ("topsecret"));
       Assert.That (result, NUnitText.Contains ("True"));
     }
@@ -194,7 +186,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void PositionTest ()
     {
       var x = TestHelper.CreatePosition ("Praktikant");
-      //To.ConsoleLine.e (x);
       Assert.That (To.String.e (x).ToString (), NUnitText.Contains ("Praktikant"));
     }
 
@@ -202,7 +193,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
    public void RoleTest ()
     {
       var x = Role;
-      //To.ConsoleLine.e (x);
       var result = To.String.e (x).ToString ();
       Assert.That (result, NUnitText.Contains ("DaUs"));
       Assert.That (result, NUnitText.Contains ("Da Group"));
@@ -215,7 +205,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       Principal principal = new Principal (User.Tenant, User, User.Roles);
       var x = new SecurityToken (principal, Tenant, Group, User2, ListMother.New (TestHelper.CreateAbstractRoleDefinition("arole",456)));
       var result = To.String.e (x).ToString ();
-      //To.ConsoleLine.e (() => result);
       //Assert.That (result, NUnitText.Contains ("\"DaUs\"],tenant=[\"Da Tenant\"]," + Environment.NewLine + "roles={[\"DaUs\",\"Da Group\",\"Supreme Being\"]}],[\"Da Tenant\"],{[\"Da Group\"],[\"Anotha Group\"]},{[\"DaUs\",\"Da Group\",\"Supreme Being\"]},{[\"arole\"]}]"));
 
       Assert.That (result, NUnitText.Contains ("DaUs"));
@@ -229,7 +218,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void TenantTest ()
     {
       var x = TestHelper.CreateTenant ("Tenantative");
-      //To.ConsoleLine.e (x);
       Assert.That (To.String.e (x).ToString (), NUnitText.Contains ("Tenantative"));
     }
 
@@ -239,8 +227,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var x = User;
       var basic = To.String.SetOutputComplexityToBasic ().e (x).ToString ();
       var complex = To.String.SetOutputComplexityToComplex ().e (x).ToString ();
-      //To.ConsoleLine.e (() => basic);
-      //To.ConsoleLine.e (() => complex);
       Assert.That (basic, Is.EqualTo("[\"DaUs\"]"));
       Assert.That (complex, NUnitText.Contains ("Da Group"));
       Assert.That (complex, NUnitText.Contains ("Da Tenant"));

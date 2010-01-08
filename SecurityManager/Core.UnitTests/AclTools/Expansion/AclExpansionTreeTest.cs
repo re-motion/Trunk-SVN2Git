@@ -171,7 +171,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
         var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
         var result = To.String.e (aclExpansionTree).ToString();
-        To.ConsoleLine.e (result);
         var resultExpected =
         #region
  @"{

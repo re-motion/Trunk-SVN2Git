@@ -38,7 +38,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
       using (StreamWriter streamWriter = (StreamWriter) streamWriterFactory.CreateTextWriter (directory, fileName, extension))
       {
         var fileStream = (FileStream) streamWriter.BaseStream;
-        //To.ConsoleLine.e (fileStream.Name);
         string filePathExpected = Path.Combine (directory, fileName + "." + extension);
         Assert.That (fileStream.Name, Is.EqualTo (filePathExpected));
       }

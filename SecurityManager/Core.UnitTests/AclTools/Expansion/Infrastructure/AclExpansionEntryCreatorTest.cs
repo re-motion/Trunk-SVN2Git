@@ -42,9 +42,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
       var accessTypesResult = 
         aclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (Role2, ace)); //, out aclProbe, out accessTypeStatistics);
 
-      //To.ConsoleLine.e (accessInformation.AllowedAccessTypes);
-      //To.ConsoleLine.e (accessInformation.DeniedAccessTypes);
-
       Assert.That (accessTypesResult.AccessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
       Assert.That (accessTypesResult.AccessInformation.DeniedAccessTypes, Is.EquivalentTo (new[] { WriteAccessType }));
     }
@@ -56,7 +53,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
       //AclProbe aclProbe;
       //AccessTypeStatistics accessTypeStatistics;
       User.Roles.Add (Role2);
-      //To.ConsoleLine.e (User.Roles);
       var userRoleAclAceCombination = new UserRoleAclAceCombination (Role, Ace);
       var accessTypesResult = aclExpansionEntryCreator.GetAccessTypes (userRoleAclAceCombination); //, out aclProbe, out accessTypeStatistics);
       Assert.That (User.Roles, Is.EquivalentTo (new[] { Role, Role2 }));
