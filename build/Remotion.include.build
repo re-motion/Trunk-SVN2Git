@@ -581,10 +581,6 @@
       <fileset basedir="${build.basedir}">
         <include name="**/Castle.*" />
         <include name="**/log4net.*" />
-        <include name="**/Remotion.dll" />
-        <include name="**/Remotion.pdb" />
-        <include name="**/Remotion.xml" />
-        <include name="**/Remotion.Interfaces.*" />
         <include name="**/Remotion.Data.Linq.*" />
         <exclude name="*/bin/documentation/**" />
       </fileset>
@@ -601,9 +597,6 @@
       <fileset basedir="${solution.basedir}">
         <include name="Remotion.sln" />
         <include name="prereq/Assemblies/**" />
-        <include name="Remotion/Core/Core/**" />
-        <include name="Remotion/Core/Interfaces/**" />
-        <include name="Remotion/Development/Core/**" />
         <include name="Remotion/Data/Linq/**" />
         <include name="Remotion/Data/Linq.UnitTests/**" />
         <include name="Remotion/license/**/*"/>
