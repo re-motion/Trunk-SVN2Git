@@ -78,6 +78,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       get
       {
+        EnsureDataAvailable ();
         if (State != StateType.Unchanged)
           return false;
 
