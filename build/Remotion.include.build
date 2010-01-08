@@ -341,9 +341,9 @@
     <property name="MajorVersion" value="${version::get-major (version::parse (build.version.noconfig))}"/>
     <property name="MinorVersion" value="${version::get-minor (version::parse (build.version.noconfig))}"/>
     <property name="BuildVersion" value="${version::get-build (version::parse (build.version.noconfig))}"/>
-    <property name="release-notes.directory" value="${publishing.base}\Framework\release-notes\${MajorVersion}.${MinorVersion}" />
+    <property name="release-notes.directory.full" value="${release-notes.directory}\${MajorVersion}.${MinorVersion}" />
 
-    <echo message="Release notes directory: ${release-notes.directory}"/>
+    <echo message="Release notes directory: ${release-notes.directory.full}"/>
   </target>
   
   <target name="release-notes" depends="release-notes-directory">
@@ -351,8 +351,14 @@
 
     <exec program="${release-notes.generator.exe}" basedir="${release-notes.generator.directory}" workingdir="${release-notes.generator.directory}" failonerror="true">
       <arg value="${MajorVersion}.${MinorVersion}.${BuildVersion}"/>
-      <arg value="${release-notes.directory}"/>
+      <arg value="${release-notes.directory.full}"/>
     </exec>
+
+    <copy todir="${build.basedir}/release-notes">
+      <fileset basedir="${release-notes.directory.full}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
   </target>
   
   <!--======================= Zip Targets =======================-->
@@ -409,10 +415,6 @@
       
       <fileset basedir="${solution.basedir}\Remotion">
         <include name="license/**/*"/>
-      </fileset>
-
-      <fileset basedir="${release-notes.directory}" prefix="release-notes">
-        <include name="**/*" unless="${release-notes.directory == 'none'}"/>
       </fileset>
     </zip>
   </target>
