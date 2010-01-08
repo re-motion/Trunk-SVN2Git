@@ -189,7 +189,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    [Ignore ("TODO 2085")]
     public void Touch_InNotLoadedState ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject ();

@@ -78,8 +78,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public void Touch ()
     {
-      if (State == StateType.Unchanged)
-        MarkAsChanged();
+      if (State == StateType.Unchanged || State == StateType.NotLoadedYet)
+        MarkAsChanged ();
     }
 
     public abstract int Index { get; set; }

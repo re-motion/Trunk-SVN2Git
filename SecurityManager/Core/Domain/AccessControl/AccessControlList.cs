@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public void Touch ()
     {
-      if (State == StateType.Unchanged)
+      if (State == StateType.Unchanged || State == StateType.NotLoadedYet)
         MarkAsChanged ();
     }
 

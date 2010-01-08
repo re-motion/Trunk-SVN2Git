@@ -508,7 +508,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    [Ignore ("TODO 2085")]
     public void Touch_InNotLoadedState ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())

@@ -243,12 +243,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    [Ignore ("TODO 2085")]
     public void Touch_InNotLoadedState ()
     {
       AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties ());
 
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, acl.State);
         acl.Touch();
