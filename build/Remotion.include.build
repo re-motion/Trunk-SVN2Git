@@ -610,8 +610,6 @@
     <delete file="${relinq-zipfile.name}" />
     <zip zipfile="${relinq-zipfile.name}">
       <fileset basedir="${build.basedir}">
-        <include name="**/Castle.*" />
-        <include name="**/log4net.*" />
         <include name="**/Remotion.Data.Linq.*" />
         <exclude name="*/bin/documentation/**" />
       </fileset>
