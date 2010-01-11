@@ -151,7 +151,7 @@
 
   <target name="deploy">
     <call target="cleantemp" />
-    <call target="release-notes" />
+    <call target="release-notes" cascade="false" />
     <call target="zip" cascade="false" />
     <call target="sourcezip" cascade="false" />
     <call target="securityManager-zip" cascade="false" />

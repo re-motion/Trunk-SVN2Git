@@ -354,13 +354,19 @@
       <arg value="${release-notes.directory.full}"/>
     </exec>
 
-    <copy todir="${build.basedir}/release-notes">
-      <fileset basedir="${release-notes.directory.full}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
+    <call target="copy-release-notes" cascade="false"/>
   </target>
-  
+
+  <target name="copy-release-notes" depends="release-notes-directory">
+    <foreach item="File" in="${release-notes.directory.full}" property="copied-file">
+      <regex pattern="ReleaseNotes_v${MajorVersion}\.${MinorVersion}\.(?'currentbuildversion'\d+)\.html$" input="${copied-file}" />
+      <if test="${int::parse(currentbuildversion) &lt;= int::parse(BuildVersion)}">
+        <echo message="${copied-file}"/>
+        <copy todir="${build.basedir}/release-notes" file="${copied-file}" overwrite="true"/>
+      </if>
+    </foreach>
+  </target>
+
   <!--======================= Zip Targets =======================-->
   <target name="checkzip" depends="zipfilename">
     <property name="ToDir" value="${publishing.base}\Framework\build\"/>
