@@ -1204,7 +1204,8 @@ public abstract class ClientTransaction
       var relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
 
       // TODO 2074: For symmetry with LoadObjects, the ObjectLoading event should be raised by LoadRelatedDataContainers. I'd suggest refactoring to
-      //            LoadRelatedIDs and perform the actual bulk load via LoadObjects. Would reverse the order of events, however.
+      //            LoadRelatedIDs and perform the actual bulk load via LoadObjects. Would reverse the order of events, however. Also, it would
+      //            mean that we always need two queries for related collection loading; currently we only need one without table inheritance.
       // TODO: Consider using LINQ query instead: relatedDataContainers.Where (dc => !_dataManager.DataContainerMap.Contains (dc.ID)).ToList();
       var newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (relatedDataContainers);
       foreach (DataContainer dataContainer in newLoadedDataContainers)
