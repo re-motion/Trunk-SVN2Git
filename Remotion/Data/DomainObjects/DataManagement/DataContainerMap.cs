@@ -123,20 +123,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     _dataContainers.Remove (dataContainer);
   }
 
-  public DataContainerCollection MergeWithRegisteredDataContainers (DataContainerCollection dataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-
-    return dataContainers.Merge (_dataContainers);
-  }
-
-  public DataContainerCollection GetNotRegisteredDataContainers (DataContainerCollection dataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-
-    return dataContainers.GetDifference (_dataContainers);
-  }
-
   private void CheckClientTransactionForDeletion (DataContainer dataContainer)
   {
     if (dataContainer.ClientTransaction != _clientTransaction)
