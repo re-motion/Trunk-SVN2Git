@@ -94,7 +94,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetPropertyDefaultForNonMappingProperties ()
     {
-      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (BindableDomainObjectWithProperties), ParamList.Empty);
+      var businessObject = (IBusinessObject)
+          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
       Assert.IsNotNull (businessObject.GetProperty ("RequiredPropertyNotInMapping"));
       Assert.AreEqual (true, businessObject.GetProperty ("RequiredPropertyNotInMapping"));
     }

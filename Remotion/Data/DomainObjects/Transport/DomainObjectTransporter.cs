@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Transport
     {
       using (_transportTransaction.EnterNonDiscardingScope ())
       {
-        DomainObject domainObject = RepositoryAccessor.NewObject (type, constructorParameters);
+        DomainObject domainObject = RepositoryAccessor.NewObject (ClientTransaction.Current, type, constructorParameters);
         Load (domainObject.ID);
         return domainObject;
       }

@@ -652,7 +652,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       using (SqlProvider sqlProvider = new SqlProvider (ProviderDefinition))
       {
         Order order = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-        order.Official = (Official) ClientTransactionMock.GetObject (DomainObjectIDs.Official2);
+        order.Official = Official.GetObject (DomainObjectIDs.Official2);
 
         DataContainerCollection collection = new DataContainerCollection ();
 				collection.Add (order.InternalDataContainer);

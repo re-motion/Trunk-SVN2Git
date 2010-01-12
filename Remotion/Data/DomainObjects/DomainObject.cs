@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-      return (T) RepositoryAccessor.NewObject (typeof (T), constructorParameters);
+      return (T) RepositoryAccessor.NewObject (ClientTransaction.Current, typeof (T), constructorParameters);
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects
     protected static T GetObject<T> (ObjectID id, bool includeDeleted) where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      return (T) RepositoryAccessor.GetObject (id, includeDeleted);
+      return (T) RepositoryAccessor.GetObject (ClientTransaction.Current, id, includeDeleted);
     }
 
     #endregion
@@ -565,7 +565,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>To perform custom actions when a <see cref="DomainObject"/> is deleted <see cref="OnDeleting"/> and <see cref="OnDeleted"/> should be overridden.</remarks>
     protected void Delete ()
     {
-      RepositoryAccessor.DeleteObject (this);
+      RepositoryAccessor.DeleteObject (DefaultTransactionContext.ClientTransaction, this);
     }
 
     /// <summary>

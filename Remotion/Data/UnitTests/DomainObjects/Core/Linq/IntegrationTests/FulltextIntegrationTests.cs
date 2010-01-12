@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var query = QueryFactory.CreateQuery (queryDefinition);
 
       var orders = ClientTransactionMock.QueryManager.GetCollection<Ceo> (query).AsEnumerable();
-      IntegrationTestBase.CheckQueryResult (orders, DomainObjectIDs.Ceo4);
+      CheckQueryResult (orders, DomainObjectIDs.Ceo4);
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var ceos = from c in QueryFactory.CreateLinqQuery<Ceo>()
                  where c.Name.ContainsFulltext ("Fischer")
                  select c;
-      IntegrationTestBase.CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
+      CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
     }
 
     private void WaitForIndices ()

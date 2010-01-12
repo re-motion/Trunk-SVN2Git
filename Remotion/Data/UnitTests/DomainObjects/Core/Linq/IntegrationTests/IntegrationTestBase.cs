@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
   [TestFixture]
   public abstract class IntegrationTestBase : ClientTransactionBaseTest
   {
-    protected static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
+    protected void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : DomainObject
     {
       T[] results = query.ToArray ();
@@ -36,10 +36,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (results, Is.EquivalentTo (expected));
     }
 
-    protected static T[] GetExpectedObjects<T> (params ObjectID[] expectedObjectIDs)
+    protected T[] GetExpectedObjects<T> (params ObjectID[] expectedObjectIDs)
         where T: DomainObject
     {
-      return (from id in expectedObjectIDs select (id == null ? null : (T) RepositoryAccessor.GetObject (id, false))).ToArray();
+      return (from id in expectedObjectIDs 
+              select (id == null ? null : (T) RepositoryAccessor.GetObject (ClientTransactionMock, id, false))).ToArray ();
     }
 
     protected void CheckDataContainersRegistered (params ObjectID[] objectIDs)
@@ -60,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                                    new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
       Assert.That (collectionEndPoint, Is.Not.Null);
 
-      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => RepositoryAccessor.GetObject (id, false)).ToArray();
+      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => RepositoryAccessor.GetObject (ClientTransactionMock, id, false)).ToArray ();
       if (checkOrdering)
         Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (expectedRelatedObjects));
       else

@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Transport
               if (!targetProperty.PropertyData.RelationEndPointDefinition.IsVirtual)
               {
                 var relatedObjectID = (ObjectID) sourceProperty.Value;
-                DomainObject targetRelatedObject = relatedObjectID != null ? targetTransaction.GetObject (relatedObjectID) : null;
+                DomainObject targetRelatedObject = relatedObjectID != null ? targetTransaction.GetObject (relatedObjectID, false) : null;
                 targetProperty.SetValueWithoutTypeCheck (targetRelatedObject);
               }
               break;

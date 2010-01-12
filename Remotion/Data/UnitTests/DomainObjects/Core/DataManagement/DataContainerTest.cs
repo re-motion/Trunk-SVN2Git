@@ -834,7 +834,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetDomainObject_DomainObjectAlreadySet ()
     {
       var domainObject1 = Order.GetObject (DomainObjectIDs.Order1);
-      var domainObject2 = new ClientTransactionMock().GetObject (DomainObjectIDs.Order1);
+      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       dc.SetDomainObject (domainObject1);

@@ -51,13 +51,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       CheckDomainObjectSerializability (delegate { return StateDefinition.NewObject (); });
       CheckDomainObjectSerializability (delegate { return StatePropertyDefinition.NewObject (); });
       CheckDomainObjectSerializability (delegate { return StatePropertyReference.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return (Group) RepositoryAccessor.NewObject (typeof (Group), ParamList.Empty); });
-      CheckDomainObjectSerializability (delegate { return (GroupType) RepositoryAccessor.NewObject (typeof (GroupType), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (Group) RepositoryAccessor.NewObject (ClientTransaction.Current, typeof (Group), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (GroupType) RepositoryAccessor.NewObject (ClientTransaction.Current, typeof (GroupType), ParamList.Empty); });
       CheckDomainObjectSerializability (delegate { return GroupTypePosition.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return (Position) RepositoryAccessor.NewObject (typeof (Position), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (Position) RepositoryAccessor.NewObject (ClientTransaction.Current, typeof (Position), ParamList.Empty); });
       CheckDomainObjectSerializability (delegate { return Role.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return (Tenant) RepositoryAccessor.NewObject (typeof (Tenant), ParamList.Empty); });
-      CheckDomainObjectSerializability (delegate { return (User) RepositoryAccessor.NewObject (typeof (User), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (Tenant) RepositoryAccessor.NewObject (ClientTransaction.Current, typeof (Tenant), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (User) RepositoryAccessor.NewObject (ClientTransaction.Current, typeof (User), ParamList.Empty); });
     }
 
     private void CheckDomainObjectSerializability<T> (Func<T> creator)

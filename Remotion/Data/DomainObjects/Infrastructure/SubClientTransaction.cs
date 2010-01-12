@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         using (TransactionUnlocker.MakeWriteable (ParentTransaction))
         {
-          DomainObject parentObject = ParentTransaction.GetObject (id);
+          DomainObject parentObject = ParentTransaction.GetObject (id, false);
           DataContainer thisDataContainer = TransferParentObject (parentObject);
           return thisDataContainer;
         }

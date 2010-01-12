@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ContainsObject_False_SameID_DifferentReference ()
     {
-      var customer1InOtherTransaction = new ClientTransactionMock ().GetObject (_collection[0].ID);
+      var customer1InOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<Customer> (_collection[0].ID);
       Assert.That (_collection.ContainsObject (customer1InOtherTransaction), Is.False);
     }
 
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void IndexOf_Object_OtherTransaction ()
     {
-      var customer1InOtherTransaction = new ClientTransactionMock ().GetObject (_collection[0].ID);
+      var customer1InOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<Customer> (_collection[0].ID);
       Assert.That (_collection.IndexOf (customer1InOtherTransaction), Is.EqualTo (-1));
     }
 

@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -119,13 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
 
-      DomainObject domainObject1;
-      DomainObject domainObject2;
-      using (firstClientTransaction.EnterNonDiscardingScope())
-      {
-        domainObject1 = RepositoryAccessor.GetObject (DomainObjectIDs.ClassWithAllDataTypes2, false);
-        domainObject2 = RepositoryAccessor.GetObject (DomainObjectIDs.Partner1, false);
-      }
+      var domainObject1 = RepositoryAccessor.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
+      var domainObject2 = RepositoryAccessor.GetObject (firstClientTransaction, DomainObjectIDs.Partner1, false);
 
       var secondClientTransaction = ClientTransactionMock;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
@@ -149,13 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
 
-      DomainObject domainObject1;
-      DomainObject domainObject2;
-      using (firstClientTransaction.EnterNonDiscardingScope())
-      {
-        domainObject1 = RepositoryAccessor.GetObject (DomainObjectIDs.ClassWithAllDataTypes2, false);
-        domainObject2 = Partner.NewObject();
-      }
+      var domainObject1 = RepositoryAccessor.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
+      var domainObject2 = RepositoryAccessor.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
 
       var secondClientTransaction = ClientTransactionMock;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();

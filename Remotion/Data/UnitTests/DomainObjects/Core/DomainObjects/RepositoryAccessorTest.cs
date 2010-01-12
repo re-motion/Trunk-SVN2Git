@@ -35,13 +35,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'System.Object'.")]
     public void NewObject_InvalidType ()
     {
-      RepositoryAccessor.NewObject (typeof (object), ParamList.Empty);
+      RepositoryAccessor.NewObject (ClientTransactionMock, typeof (object), ParamList.Empty);
     }
 
     [Test]
     public void NewObject_NoCtorArgs ()
     {
-      var instance = (Order) RepositoryAccessor.NewObject (typeof (Order), ParamList.Empty);
+      var instance = (Order) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (Order), ParamList.Empty);
       Assert.IsNotNull (instance);
       Assert.IsTrue (instance.CtorCalled);
     }
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewObject_WithCtorArgs ()
     {
       var order = Order.NewObject();
-      var instance = (OrderItem) RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (order));
+      var instance = (OrderItem) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (order));
       Assert.IsNotNull (instance);
       Assert.AreSame (order, instance.Order);
     }
@@ -60,13 +60,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
     public void NewObject_WrongCtorArgs ()
     {
-      RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (0m));
+      RepositoryAccessor.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (0m));
     }
 
     [Test]
     public void NewObject_InitializesMixins ()
     {
-      var domainObject = RepositoryAccessor.NewObject (typeof (ClassWithAllDataTypes), ParamList.Empty);
+      var domainObject = RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithAllDataTypes), ParamList.Empty);
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (domainObject);
       Assert.That (mixin, Is.Not.Null);
 
@@ -74,19 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void NewObject_NoTransaction ()
-    {
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        RepositoryAccessor.NewObject (typeof (Order), ParamList.Empty);
-      }
-    }
-
-    [Test]
     public void GetObject ()
     {
-      Order order = RepositoryAccessor.GetObject (DomainObjectIDs.Order1, false) as Order;
+      var order = (Order) RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.IsFalse (order.CtorCalled);
@@ -97,27 +87,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetObject_IncludeDeleted_False ()
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete();
-      RepositoryAccessor.GetObject (DomainObjectIDs.Order1, false);
+      RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
     }
 
     [Test]
     public void GetObject_IncludeDeleted_True ()
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete ();
-      Order order = RepositoryAccessor.GetObject (DomainObjectIDs.Order1, true) as Order;
+      var order = (Order) RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, true);
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.AreEqual (StateType.Deleted, order.State);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void GetObject_NoTransaction ()
-    {
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        RepositoryAccessor.GetObject (DomainObjectIDs.Order1, false);
-      }
     }
 
     [Test]
@@ -125,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreNotEqual (StateType.Deleted, order.State);
-      RepositoryAccessor.DeleteObject (order);
+      RepositoryAccessor.DeleteObject (ClientTransactionMock, order);
       Assert.AreEqual (StateType.Deleted, order.State);
     }
 
@@ -133,19 +113,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void DeleteObject_Twice ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      RepositoryAccessor.DeleteObject (order);
-      RepositoryAccessor.DeleteObject (order);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
-    public void DeleteObject_NoTransaction ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        RepositoryAccessor.DeleteObject (order);
-      }
+      RepositoryAccessor.DeleteObject (ClientTransactionMock, order);
+      RepositoryAccessor.DeleteObject (ClientTransactionMock, order);
     }
   }
 }

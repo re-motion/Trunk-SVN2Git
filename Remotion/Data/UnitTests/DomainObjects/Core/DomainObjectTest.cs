@@ -95,18 +95,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the given transaction "
-        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or enlist the object in "
-        + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)",
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = 
+        @"Cannot delete DomainObject 'Order|.*|System\.Guid', because it belongs to a different ClientTransaction.",
         MatchType = MessageMatch.Regex)]
     public void Delete_ChecksTransaction ()
     {
-      Order order = Order.NewObject ();
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
-        order.Delete ();
-      }
+      var order = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
+      Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
+      order.Delete ();
     }
 
     [Test]

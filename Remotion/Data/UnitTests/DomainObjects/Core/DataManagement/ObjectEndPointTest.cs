@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. The objects do not belong to the same ClientTransaction.")]
     public void SetOppositeObjectAndNotify_WithOtherClientTransaction ()
     {
-      var orderFromOtherTransaction = new ClientTransactionMock ().GetObject (DomainObjectIDs.Order1);
+      var orderFromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       _endPoint.SetOppositeObjectAndNotify (orderFromOtherTransaction);
     }
 
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentTypeException))]
     public void SetOppositeObjectAndNotify_WithInvalidType ()
     {
-      DomainObject customer = ClientTransactionMock.GetObject (DomainObjectIDs.Customer1);
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       _endPoint.SetOppositeObjectAndNotify (customer);
     }
 

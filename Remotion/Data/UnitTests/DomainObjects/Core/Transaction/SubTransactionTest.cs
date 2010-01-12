@@ -704,7 +704,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction parent = ClientTransaction.CreateRootTransaction();
       ClientTransaction subTransaction = parent.CreateSubTransaction();
 
-      GetObjectInTransaction (DomainObjectIDs.ClassWithAllDataTypes1, subTransaction); // preload ClassWithAllDataTypes
+      RepositoryAccessor.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
 
       var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       parent.Extensions.Add ("mock", extensionMock);
@@ -728,7 +728,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction parent = ClientTransaction.CreateRootTransaction();
       ClientTransaction subTransaction = parent.CreateSubTransaction();
 
-      GetObjectInTransaction (DomainObjectIDs.ClassWithAllDataTypes1, subTransaction); // preload ClassWithAllDataTypes
+      RepositoryAccessor.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
 
       var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       parent.Extensions.Add ("mock", extensionMock);
@@ -958,14 +958,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         ClientTransactionMock.Loaded += delegate { subTransaction.GetObjects<Order> (DomainObjectIDs.Order1); };
         Order.GetObject (DomainObjectIDs.Order2);
-      }
-    }
-
-    private void GetObjectInTransaction (ObjectID objectID, ClientTransaction subTransaction)
-    {
-      using (subTransaction.EnterNonDiscardingScope())
-      {
-        RepositoryAccessor.GetObject (objectID, false);
       }
     }
   }

@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void InsertBoundObject_IntoCollectionOfBoundObject_InOtherTx ()
     {
       var order = NewBound<Order> ();
-      var orderItem = NewObject<OrderItem> (ClientTransaction.CreateBindingTransaction ());
+      var orderItem = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateBindingTransaction ());
       order.OrderItems.Add (orderItem);
     }
 
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RemoveBoundObject_FromCollectionOfBoundObject_InOtherTx ()
     {
       var order = GetBound<Order> (DomainObjectIDs.Order1);
-      var orderItem = GetObject<OrderItem> (order.OrderItems[0].ID, ClientTransaction.CreateBindingTransaction ());
+      var orderItem = DomainObjectMother.GetObjectInTransaction<OrderItem> (ClientTransaction.CreateBindingTransaction (), order.OrderItems[0].ID);
       order.OrderItems.Remove (orderItem);
     }
 
@@ -215,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         var orderItem = NewBound<OrderItem> ();
         var order = Order.NewObject ();
-        order.OrderItems.Add (NewObject<OrderItem> (ClientTransaction.Current));
+        order.OrderItems.Add (DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.Current));
         order.OrderItems[0] = orderItem;
       }
     }
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         var order = NewBound<Order> ();
-        order.OrderItems.Add (NewObject<OrderItem> (order.GetBindingTransaction()));
+        order.OrderItems.Add (DomainObjectMother.CreateObjectInTransaction<OrderItem> (order.GetBindingTransaction()));
         var orderItem = OrderItem.NewObject ();
         order.OrderItems[0] = orderItem;
       }
@@ -248,8 +248,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ReplaceBoundObject_IntoCollectionOfBoundObject_InOtherTx ()
     {
       var order = NewBound<Order> ();
-      order.OrderItems.Add (NewObject<OrderItem> (order.GetBindingTransaction()));
-      var orderItem = NewObject<OrderItem> (ClientTransaction.CreateBindingTransaction ());
+      order.OrderItems.Add (DomainObjectMother.CreateObjectInTransaction<OrderItem> (order.GetBindingTransaction()));
+      var orderItem = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateBindingTransaction ());
       order.OrderItems[0] = orderItem;
     }
 
@@ -294,39 +294,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         var official = NewBound<Official>();
-        var order = NewObject<Order> (ClientTransaction.CreateBindingTransaction());
+        var order = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransaction.CreateBindingTransaction());
         order.Official = official;
       }
     }
 
-    private T NewBound<T> (params object[] args)
+    private T NewBound<T> ()
         where T : DomainObject
     {
-      return NewObject<T> (_bindingTransaction, args);
-    }
-
-    private T NewObject<T> (ClientTransaction creatingTransaction, params object[] args)
-        where T : DomainObject
-    {
-      using (creatingTransaction.EnterNonDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.CreateDynamic (args));
-      }
+      return DomainObjectMother.CreateObjectInTransaction<T> (_bindingTransaction);
     }
 
     private T GetBound<T> (ObjectID id)
         where T : DomainObject
     {
-      return GetObject<T> (id, _bindingTransaction);
-    }
-
-    private T GetObject<T> (ObjectID id, ClientTransaction transaction)
-        where T : DomainObject
-    {
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.GetObject (id, true);
-      }
+      return DomainObjectMother.GetObjectInTransaction<T> (_bindingTransaction, id);
     }
   }
 }

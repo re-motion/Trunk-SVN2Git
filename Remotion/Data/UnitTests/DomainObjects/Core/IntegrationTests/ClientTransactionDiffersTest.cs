@@ -31,13 +31,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
        MatchType = MessageMatch.Regex)]
     public void PerformCollectionAddWithOtherClientTransaction ()
     {
-      var order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      OrderItem orderItem3;
-
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      }
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItem3 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem3);
 
       order1.OrderItems.Add (orderItem3);
     }
@@ -48,13 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         MatchType = MessageMatch.Regex)]
     public void PerformCollectionInsertWithOtherClientTransaction ()
     {
-      var order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      OrderItem orderItem3;
-
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      }
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItem3 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem3);
 
       order1.OrderItems.Insert (0, orderItem3);
     }
@@ -66,13 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         MatchType = MessageMatch.Regex)]
     public void PerformCollectionRemoveWithOtherClientTransaction ()
     {
-      var order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-
-      OrderItem orderItem1;
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      }
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItem1 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem1);
 
       var endPoint = (CollectionEndPoint) order1.OrderItems.AssociatedEndPoint;
       endPoint.OppositeDomainObjects.Remove (orderItem1);
@@ -81,13 +66,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void PerformCollectionReplaceWithOtherClientTransaction ()
     {
-      var order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-
-      OrderItem orderItem3;
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
-      }
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItem3 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem3);
 
       int index = order1.OrderItems.IndexOf (DomainObjectIDs.OrderItem1);
 

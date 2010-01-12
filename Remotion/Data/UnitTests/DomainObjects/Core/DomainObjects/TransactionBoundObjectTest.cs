@@ -36,24 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _bindingTransaction = ClientTransaction.CreateBindingTransaction ();
     }
 
-    private T NewBound<T> (params object[] args)
-        where T: DomainObject
-    {
-      using (_bindingTransaction.EnterNonDiscardingScope())
-      {
-        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.CreateDynamic (args));
-      }
-    }
-
-    private T GetBound<T> (ObjectID id)
-        where T: DomainObject
-    {
-      using (_bindingTransaction.EnterNonDiscardingScope())
-      {
-        return (T) RepositoryAccessor.GetObject (id, true);
-      }
-    }
-
     [Test]
     public void NewBoundObject ()
     {
@@ -228,6 +210,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       order.Delete();
       Assert.AreEqual (StateType.Deleted, order.State);
+    }
+
+    private T NewBound<T> (params object[] args)
+    where T : DomainObject
+    {
+      return (T) RepositoryAccessor.NewObject (_bindingTransaction, typeof (T), ParamList.CreateDynamic (args));
+    }
+
+    private T GetBound<T> (ObjectID id)
+        where T : DomainObject
+    {
+      return (T) RepositoryAccessor.GetObject (_bindingTransaction, id, true);
     }
   }
 }

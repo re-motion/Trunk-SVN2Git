@@ -155,20 +155,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expected = new Set<DomainObject> (
           order,
-          RepositoryAccessor.GetObject (DomainObjectIDs.OrderTicket1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.OrderItem1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.OrderItem2, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Customer1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Official1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.IndustrialSector1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Partner1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.PartnerWithoutCeo, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Supplier1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Person1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Person7, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Person3, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Person6, false));
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person7, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person3, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person6, false));
 
       Assert.That (graph, Is.EquivalentTo(expected));
     }
@@ -181,16 +181,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expected = new Set<DomainObject> (
           order,
-          RepositoryAccessor.GetObject (DomainObjectIDs.OrderTicket1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.OrderItem1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.OrderItem2, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Customer1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Official1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.IndustrialSector1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Partner1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.PartnerWithoutCeo, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Supplier1, false),
-          RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false));
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
+          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
 
       Assert.That (graph, Is.EquivalentTo (expected));
     }
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
 
-      var expected = new Set<DomainObject> (RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false));
+      var expected = new Set<DomainObject> (RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
 
       Assert.That (graph, Is.EquivalentTo (expected));
     }

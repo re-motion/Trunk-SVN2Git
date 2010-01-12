@@ -260,8 +260,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           {
             foreach (var id in objectsToLoadAndDelete)
             {
-              var domainObject = RepositoryAccessor.GetObject (id, false);
-              RepositoryAccessor.DeleteObject (domainObject);
+              var domainObject = RepositoryAccessor.GetObject (ClientTransaction.Current, id, false);
+              RepositoryAccessor.DeleteObject (ClientTransaction.Current, domainObject);
             }
           });
 
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           {
             foreach (var id in objectsToLoadAndDelete)
             {
-              var domainObject = RepositoryAccessor.GetObject (id, false);
+              var domainObject = RepositoryAccessor.GetObject (ClientTransaction.Current, id, false);
               new PropertyIndexer (domainObject)[propertyName].SetValueWithoutTypeCheck (newValue);
             }
           });

@@ -804,7 +804,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void MultiplePropertiesWithSameShortName ()
     {
-      var derivedClass = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+      var derivedClass = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
       ClassWithMixedProperties baseClass = derivedClass;
 
       derivedClass.String = "Derived";
@@ -992,7 +992,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
 
       Assert.That (ClientTransactionMock.IsEnlisted (orderItem));
-      Assert.That (ClientTransactionMock.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (orderItem));
+      Assert.That (ClientTransactionMock.GetObject (DomainObjectIDs.OrderItem1, false), Is.SameAs (orderItem));
     }
 
     [Test]

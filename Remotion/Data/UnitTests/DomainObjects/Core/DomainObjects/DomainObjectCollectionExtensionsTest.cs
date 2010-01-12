@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
       _customer2 = Customer.GetObject (DomainObjectIDs.Customer2);
       _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
-      _customer1FromOtherTransaction = new ClientTransactionMock ().GetObject (_customer1.ID);
+      _customer1FromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<Customer> (_customer1.ID);
 
       _collection = new DomainObjectCollection (typeof (Customer)) { _customer1, _customer2 };
     }

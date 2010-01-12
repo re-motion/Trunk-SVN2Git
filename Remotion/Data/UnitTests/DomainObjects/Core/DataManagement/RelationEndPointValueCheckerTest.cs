@@ -30,8 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CheckClientTransaction_MatchingTransactions ()
     {
-      var owningObject = CreateDomainObjectInTransaction<Order> (ClientTransactionMock);
-      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (ClientTransactionMock);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
+      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransactionMock);
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CheckClientTransaction_NullObject ()
     {
-      var owningObject = CreateDomainObjectInTransaction<Order> (ClientTransactionMock);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
 
@@ -55,8 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + @"to the same ClientTransaction.", MatchType = MessageMatch.Regex)]
     public void CheckClientTransaction_Differ_NoObjectInBindingTransaction ()
     {
-      var owningObject = CreateDomainObjectInTransaction<Order> (ClientTransactionMock);
-      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
+      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
 
@@ -72,8 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
 
-      var owningObject = CreateDomainObjectInTransaction<Order> (ClientTransactionMock);
-      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (bindingTransaction);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
+      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (bindingTransaction);
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, owningObject);
 
@@ -90,8 +90,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
 
-      var owningObject = CreateDomainObjectInTransaction<Order> (bindingTransaction);
-      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (bindingTransaction);
+      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
       var endPointStub = CreateCollectionEndPointStub (bindingTransaction, owningObject);
 
@@ -109,8 +109,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var bindingTransaction1 = ClientTransaction.CreateBindingTransaction ();
       var bindingTransaction2 = ClientTransaction.CreateBindingTransaction ();
-      var owningObject = CreateDomainObjectInTransaction<Order> (bindingTransaction1);
-      var relatedObject = CreateDomainObjectInTransaction<OrderItem> (bindingTransaction2);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (bindingTransaction1);
+      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (bindingTransaction2);
 
       var endPointStub = CreateCollectionEndPointStub (bindingTransaction1, owningObject);
 
@@ -156,14 +156,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           endPoint, 
           relatedObject, 
           "Cannot xx DomainObject '{0}' from/to collection of property '{1}' of DomainObject '{2}'.");
-    }
-
-    private T CreateDomainObjectInTransaction<T> (ClientTransaction transaction) where T : DomainObject
-    {
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.Empty);
-      }
     }
 
     private IEndPoint CreateCollectionEndPointStub (ClientTransaction transaction, Order owningObject)

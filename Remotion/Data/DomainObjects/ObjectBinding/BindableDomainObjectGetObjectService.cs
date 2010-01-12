@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNull ("classWithIdentity", classWithIdentity);
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      return (IBusinessObjectWithIdentity) RepositoryAccessor.GetObject (ObjectID.Parse (uniqueIdentifier), false);
+      return (IBusinessObjectWithIdentity) RepositoryAccessor.GetObject (ClientTransaction.Current, ObjectID.Parse (uniqueIdentifier), false);
     }
   }
 }

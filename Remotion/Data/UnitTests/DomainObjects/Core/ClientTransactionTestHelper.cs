@@ -43,13 +43,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "AddListener", listener);
     }
-
-    public static DomainObject GetObject (ClientTransaction clientTransaction, ObjectID objectID)
-    {
-      using (clientTransaction.EnterNonDiscardingScope ())
-      {
-        return RepositoryAccessor.GetObject (objectID, true);
-      }
-    }
   }
 }

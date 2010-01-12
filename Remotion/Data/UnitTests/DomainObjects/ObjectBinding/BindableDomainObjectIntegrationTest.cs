@@ -87,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void VerifyInterfaceImplementation ()
     {
-      IBusinessObjectWithIdentity businessObject =
-          (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName), ParamList.Empty);
+      IBusinessObjectWithIdentity businessObject = (SampleBindableDomainObjectWithOverriddenDisplayName) 
+          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (SampleBindableDomainObjectWithOverriddenDisplayName), ParamList.Empty);
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (businessObject, typeof (BindableDomainObject), "_implementation");
 
       Assert.That (businessObject.BusinessObjectClass, Is.SameAs (implementation.BusinessObjectClass));

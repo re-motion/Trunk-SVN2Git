@@ -795,22 +795,6 @@ public abstract class ClientTransaction
   /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the datasource.
   /// </summary>
   /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
-  /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
-  /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
-  /// <exception cref="Persistence.StorageProviderException">
-  ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
-  ///   An error occurred while accessing the datasource.
-  /// </exception>
-  protected internal virtual DomainObject GetObject (ObjectID id)
-  {
-    return GetObject (id, false);
-  }
-
-  /// <summary>
-  /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the datasource.
-  /// </summary>
-  /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
   /// <param name="includeDeleted">Indicates if the method should return <see cref="DomainObject"/>s that are already deleted.</param>
   /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
@@ -824,6 +808,22 @@ public abstract class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("id", id);
     return _dataManager.DataContainerMap.GetObjectWithoutLoading (id, includeDeleted) ?? LoadObject (id);
+  }
+  
+  protected internal virtual DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
+  {
+    ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+    ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
+
+    using (EnterNonDiscardingScope ())
+    {
+      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType).GetDomainObjectCreator ();
+      var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
+
+      var instance = (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
+      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
+      return instance;
+    }
   }
 
   /// <summary>
@@ -1054,6 +1054,7 @@ public abstract class ClientTransaction
   protected internal virtual void Delete (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
     using (EnterNonDiscardingScope ())
     {
       _dataManager.Delete (domainObject);
@@ -1224,7 +1225,8 @@ public abstract class ClientTransaction
 
       var relatedObjects = from DataContainer loadedDataContainer in relatedDataContainers
                            let relatedID = loadedDataContainer.ID
-                           select GetObject (relatedID, true);
+                           let registeredDataContainer = Assertion.IsNotNull (_dataManager.DataContainerMap[relatedID])
+                           select registeredDataContainer.DomainObject;
       return relatedObjects.ToArray();
     }
   }
@@ -1553,6 +1555,12 @@ public abstract class ClientTransaction
   [Obsolete ("This method has been removed. Please implement the desired behavior yourself, using GetEnlistedDomainObjects(), EnlistDomainObject(), "
     + "and CopyCollectionEventHandlers(). (1.13.41)", false)]
   public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
+  {
+    throw new NotImplementedException ();
+  }
+
+  [Obsolete ("This method is now obsolete, use GetObject (ObjectID, bool) instead. (1.13.42)", true)]
+  protected internal virtual DomainObject GetObject (ObjectID id)
   {
     throw new NotImplementedException ();
   }

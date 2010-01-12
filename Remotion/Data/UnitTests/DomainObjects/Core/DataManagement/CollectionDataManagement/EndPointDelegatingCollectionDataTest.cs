@@ -300,14 +300,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       CheckOwningObjectDeletedException ((data, relatedObject) => data.Replace (17, relatedObject));
     }
 
-    private T CreateDomainObjectInTransaction<T> (ClientTransaction transaction) where T : DomainObject
-    {
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.Empty);
-      }
-    }
-
     private ICollectionEndPoint CreateCollectionEndPointStub (ClientTransaction clientTransaction, Order owningOrder)
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
@@ -325,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     private void CheckClientTransactionDiffersException (Action<EndPointDelegatingCollectionData, DomainObject> action)
     {
-      var orderItemInOtherTransaction = CreateDomainObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
+      var orderItemInOtherTransaction = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
       try
       {
         action (_data, orderItemInOtherTransaction);

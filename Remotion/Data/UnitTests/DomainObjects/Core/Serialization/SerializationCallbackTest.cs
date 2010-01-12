@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -30,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void SerializationEvents ()
     {
-      ClassWithSerializationCallbacks instance =
-          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+      var instance =
+          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object)instance).GetType ());
 
@@ -42,8 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DeserializationEvents ()
     {
-      ClassWithSerializationCallbacks instance =
-          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+      var instance = (ClassWithSerializationCallbacks) 
+          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
 

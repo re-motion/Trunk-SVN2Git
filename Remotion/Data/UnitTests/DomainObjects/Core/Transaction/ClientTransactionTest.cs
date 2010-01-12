@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void DataContainerMapLookUp ()
     {
-      DomainObject domainObject1 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      DomainObject domainObject1 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
       var domainObjects = _eventReceiver.LoadedDomainObjects[0];
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreSame (domainObject1, domainObjects[0]);
       _eventReceiver.Clear ();
 
-      DomainObject domainObject2 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      DomainObject domainObject2 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
       Assert.AreEqual (0, _eventReceiver.LoadedDomainObjects.Count);
 
       Assert.AreSame (domainObject1, domainObject2);
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ObjectID id1 = DomainObjectIDs.ClassWithAllDataTypes1;
       ObjectID id2 = DomainObjectIDs.ClassWithAllDataTypes2;
 
-      DomainObject domainObject1 = ClientTransactionMock.GetObject (id1);
+      DomainObject domainObject1 = ClientTransactionMock.GetObject (id1, false);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
       var domainObjects = _eventReceiver.LoadedDomainObjects[0];
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreSame (domainObject1, domainObjects[0]);
       _eventReceiver.Clear ();
 
-      DomainObject domainObject2 = ClientTransactionMock.GetObject (id2);
+      DomainObject domainObject2 = ClientTransactionMock.GetObject (id2, false);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
       domainObjects = _eventReceiver.LoadedDomainObjects[0];
@@ -105,8 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetRelatedObjectForAlreadyLoadedObjects ()
     {
-      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1);
+      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
+      DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1, false);
 
       _eventReceiver.Clear ();
 
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetRelatedObjectWithLazyLoad ()
     {
-      DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1);
+      DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1, false);
       _eventReceiver.Clear ();
       DomainObject order = ClientTransactionMock.GetRelatedObject (new RelationEndPointID (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
 
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetRelatedObjectOverVirtualEndPoint ()
     {
-      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
+      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
       _eventReceiver.Clear ();
 
       DomainObject orderTicket = ClientTransactionMock.GetRelatedObject (
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
-      DomainObject classWithValidRelation = ClientTransactionMock.GetObject (id);
+      DomainObject classWithValidRelation = ClientTransactionMock.GetObject (id, false);
       _eventReceiver.Clear ();
 
       Assert.IsNull (ClientTransactionMock.GetRelatedObject (
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
-      DomainObject classWithGuidKey = ClientTransactionMock.GetObject (id);
+      DomainObject classWithGuidKey = ClientTransactionMock.GetObject (id, false);
       _eventReceiver.Clear ();
 
       Assert.IsNull (ClientTransactionMock.GetRelatedObject (
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       var clientTransactionMock = new ClientTransactionMock ();
 
-      DomainObject classWithValidRelation = clientTransactionMock.GetObject (id);
+      DomainObject classWithValidRelation = clientTransactionMock.GetObject (id, false);
       Assert.AreEqual (1, clientTransactionMock.NumberOfCallsToLoadDataContainer);
       Assert.AreEqual (0, clientTransactionMock.NumberOfCallsToLoadRelatedObject);
 
@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       var clientTransactionMock = new ClientTransactionMock ();
 
-      DomainObject classWithGuidKey = clientTransactionMock.GetObject (id);
+      DomainObject classWithGuidKey = clientTransactionMock.GetObject (id, false);
       Assert.AreEqual (1, clientTransactionMock.NumberOfCallsToLoadDataContainer);
       Assert.AreEqual (0, clientTransactionMock.NumberOfCallsToLoadRelatedObject);
 
@@ -232,8 +232,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetRelatedObjectWithInheritance ()
     {
-      DomainObject expectedCeo = ClientTransactionMock.GetObject (DomainObjectIDs.Ceo6);
-      DomainObject partner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner1);
+      DomainObject expectedCeo = ClientTransactionMock.GetObject (DomainObjectIDs.Ceo6, false);
+      DomainObject partner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner1, false);
 
       DomainObject actualCeo = ClientTransactionMock.GetRelatedObject (new RelationEndPointID (partner.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
       Assert.AreSame (expectedCeo, actualCeo);
@@ -330,8 +330,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetRelatedObjectsWithInheritance ()
     {
-      DomainObject industrialSector = ClientTransactionMock.GetObject (DomainObjectIDs.IndustrialSector2);
-      DomainObject expectedPartner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner2);
+      DomainObject industrialSector = ClientTransactionMock.GetObject (DomainObjectIDs.IndustrialSector2, false);
+      DomainObject expectedPartner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner2, false);
 
       DomainObjectCollection companies = ClientTransactionMock.GetRelatedObjects (
           new RelationEndPointID (industrialSector.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
@@ -831,7 +831,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ClientTransactionGetObjectIsIndependentOfCurrentTransaction ()
     {
       var clientTransactionMock = new ClientTransactionMock ();
-      var order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1);
+      var order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
       Assert.IsFalse (ClientTransactionScope.CurrentTransaction.IsEnlisted (order));
       Assert.IsTrue (clientTransactionMock.IsEnlisted (order));
 
@@ -857,7 +857,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 // ReSharper restore AccessToModifiedClosure
 
       Assert.AreEqual (0, events);
-      mock.GetObject (DomainObjectIDs.Order1);
+      mock.GetObject (DomainObjectIDs.Order1, false);
       Assert.AreEqual (1, events); // loaded
 
       events = 0;
@@ -896,7 +896,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransactionMock.Discard ();
       Assert.IsTrue (ClientTransactionMock.IsDiscarded);
-      ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
+      ClientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
     }
 
     [Test]

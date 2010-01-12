@@ -22,20 +22,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class DomainObjectMother
   {
+    public static T CreateObjectInTransaction<T> (ClientTransaction transaction) where T : DomainObject
+    {
+      return (T) RepositoryAccessor.NewObject (transaction, typeof (T), ParamList.Empty);
+    }
+
     public static T CreateObjectInOtherTransaction<T> () where T : DomainObject
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.Empty);
-      }
+      return CreateObjectInTransaction<T> (ClientTransaction.CreateRootTransaction());
     }
 
     public static T GetObjectInOtherTransaction<T> (ObjectID objectID) where T : DomainObject
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.GetObject (objectID, true);
-      }
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      return GetObjectInTransaction<T> (transaction, objectID);
+    }
+
+    public static T GetObjectInTransaction<T> (ClientTransaction transaction, ObjectID objectID) where T : DomainObject
+    {
+      return (T) RepositoryAccessor.GetObject (transaction, objectID, true);
     }
   }
 }
