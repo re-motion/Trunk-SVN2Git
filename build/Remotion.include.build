@@ -370,7 +370,8 @@
   <!--======================= Zip Targets =======================-->
   <target name="checkzip" depends="zipfilename">
     <property name="ToDir" value="${publishing.base}\Framework\build\"/>
-    <property name="ToDirWeb" value="${publishing.web}\"/> <!-- ${publishing.web} can be left empty -->
+    <!-- ${publishing.web} can be left empty -->
+    <property name="ToDirWeb" value="${publishing.web}\"/>
     <fail message="Zip file already exists" 
           if="${   file::exists(ToDir + zipfile.filename) 
                 or file::exists(ToDir + sourcezipfile.filename)}" />
@@ -587,14 +588,22 @@
 
   <target name="relinq-checkzip" depends="relinq-zipfilename">
     <property name="relinq-ToDir" value="${publishing.base}\Relinq\build\"/>
+    <!-- ${publishing.web} can be left empty -->
+    <property name="ToDirWeb" value="${publishing.web}\"/>
     <fail message="ZipFile existiert bereits"
           if="${   file::exists(relinq-ToDir + relinq-zipfile.filename) 
                 or file::exists(relinq-ToDir + relinq-sourcezipfile.filename)}" />
+    <fail message="Zip file already exists on the Web"
+          if="${    ToDirWeb != '\'
+                and (   file::exists(ToDirWeb + relinq-zipfile.filename) 
+                     or file::exists(ToDirWeb + relinq-sourcezipfile.filename))}" />
   </target>
 
   <target name="relinq-addzip" depends="relinq-checkzip">
     <copy file="${relinq-zipfile.name}" todir="${relinq-ToDir}" />
     <copy file="${relinq-sourcezipfile.name}" todir="${relinq-ToDir}" />
+    <copy file="${relinq-zipfile.name}" todir="${ToDirWeb}" if="${ToDirWeb != '\'}"/>
+    <copy file="${relinq-sourcezipfile.name}" todir="${ToDirWeb}" if="${ToDirWeb != '\'}" />
   </target>
 
   <target name="relinq-zipfilename" depends="init-build-version">
