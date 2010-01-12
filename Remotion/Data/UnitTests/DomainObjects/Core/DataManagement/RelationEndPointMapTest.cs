@@ -187,6 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[orderItemsEndPointID], Is.Null);
       
       var endPoint = _map.GetRelationEndPointWithLazyLoad (orderItemsEndPointID);
+      Assert.That (endPoint, Is.Not.Null);
       Assert.That (_map[orderItemsEndPointID], Is.SameAs (endPoint));
     }
 
@@ -199,6 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_map[orderTicketEndPointID], Is.Null);
 
       var endPoint = _map.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
+      Assert.That (endPoint, Is.Not.Null);
       Assert.That (_map[orderTicketEndPointID], Is.SameAs (endPoint));
     }
 

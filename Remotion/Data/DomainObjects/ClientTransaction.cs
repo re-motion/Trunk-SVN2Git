@@ -1195,7 +1195,7 @@ public abstract class ClientTransaction
   /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
   /// The StorageProvider for the related objects could not be initialized.
   /// </exception>
-  protected internal virtual DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID)
+  protected internal virtual DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
@@ -1206,24 +1206,26 @@ public abstract class ClientTransaction
       // TODO 2074: For symmetry with LoadObjects, the ObjectLoading event should be raised by LoadRelatedDataContainers. I'd suggest refactoring to
       //            LoadRelatedIDs and perform the actual bulk load via LoadObjects. Would reverse the order of events, however. Also, it would
       //            mean that we always need two queries for related collection loading; currently we only need one without table inheritance.
-      // TODO: Consider using LINQ query instead: relatedDataContainers.Where (dc => !_dataManager.DataContainerMap.Contains (dc.ID)).ToList();
-      var newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (relatedDataContainers);
-      foreach (DataContainer dataContainer in newLoadedDataContainers)
+
+      var newlyLoadedDataContainers = (from DataContainer dataContainer in relatedDataContainers
+                                       where _dataManager.DataContainerMap[dataContainer.ID] == null
+                                       select dataContainer).ToList();
+
+      // Signal all events before registering any containers
+      foreach (var dataContainer in newlyLoadedDataContainers)
         TransactionEventSink.ObjectLoading (dataContainer.ID);
 
-      foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
-        InitializeLoadedDataContainer (newLoadedDataContainer);
+      foreach (var dataContainer in newlyLoadedDataContainers)
+        InitializeLoadedDataContainer (dataContainer);
 
-      // TODO: Consider using LINQ query instead: relatedDataContainers.Select (dc => _dataManager[dc.ID].DomainObject);
-      var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (relatedDataContainers);
-      var mergedObjects = mergedContainers.Cast<DataContainer>().Select (dc => dc.DomainObject);
+      var newlyLoadedDomainObjects = from dataContainer in newlyLoadedDataContainers
+                                     select dataContainer.DomainObject;
+      OnLoaded (new ClientTransactionEventArgs (newlyLoadedDomainObjects.ToList ().AsReadOnly ()));
 
-      var endPoint = _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, mergedObjects);
-
-      var newLoadedDomainObjects = newLoadedDataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList().AsReadOnly();
-      OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
-
-      return endPoint.OppositeDomainObjects;
+      var relatedObjects = from DataContainer loadedDataContainer in relatedDataContainers
+                           let relatedID = loadedDataContainer.ID
+                           select GetObject (relatedID, true);
+      return relatedObjects.ToArray();
     }
   }
 

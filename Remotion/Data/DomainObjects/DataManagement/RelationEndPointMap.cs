@@ -267,9 +267,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
           + "registered in the map");
 
       if (endPointID.Definition.Cardinality == CardinalityType.One)
-        _clientTransaction.LoadRelatedObject (endPointID); // indirectly calls RegisterEndPointsForExistingDataContainer, which registers the loaded end point
+      {
+        // loading the related object will automatically register the related's real end points via RegisterEndPointsForExistingDataContainer, 
+        // which also registers the opposite virtual end point; see assertion below
+        _clientTransaction.LoadRelatedObject (endPointID);
+      }
       else
-        _clientTransaction.LoadRelatedObjects (endPointID); // calls RegisterCollectionEndPoint, which registers the loaded end point
+      {
+        var relatedObjects = _clientTransaction.LoadRelatedObjects (endPointID);
+        RegisterCollectionEndPoint (endPointID, relatedObjects);
+      }
 
       var loadedEndPoint = _relationEndPoints[endPointID];
       Assertion.IsNotNull (loadedEndPoint);
