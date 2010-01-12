@@ -179,6 +179,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetRelationEndPointWithLazyLoad_RegistersCollectionEndPoint ()
+    {
+      _map.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
+
+      var orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      Assert.That (_map[orderItemsEndPointID], Is.Null);
+      
+      var endPoint = _map.GetRelationEndPointWithLazyLoad (orderItemsEndPointID);
+      Assert.That (_map[orderItemsEndPointID], Is.SameAs (endPoint));
+    }
+
+    [Test]
+    public void GetRelationEndPointWithLazyLoad_RegistersVirtualObjectEndPoint ()
+    {
+      _map.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
+      
+      var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      Assert.That (_map[orderTicketEndPointID], Is.Null);
+
+      var endPoint = _map.GetRelationEndPointWithLazyLoad (orderTicketEndPointID);
+      Assert.That (_map[orderTicketEndPointID], Is.SameAs (endPoint));
+    }
+
+    [Test]
     public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsNotYetRegistered ()
     {
       IRelationEndPointDefinition locationEndPointDefinition =

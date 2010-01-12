@@ -25,7 +25,9 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -34,6 +36,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   [TestFixture]
   public class ClientTransactionTest : ClientTransactionBaseTest
   {
+    private RelationEndPointID _orderItemsEndPointID;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+    }
+
     [Test]
     public void GetObjectForDataContainer_EnlistedObject ()
     {
@@ -337,5 +348,160 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       }
     }
 
+    [Test]
+    public void LoadRelatedObjects_CallsLoadRelatedDataContainers ()
+    {
+      var clientTransactionPartialMock = ClientTransactionObjectMother.CreatePartialMock ();
+
+      clientTransactionPartialMock
+          .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedDataContainers(mock, _orderItemsEndPointID))
+          .Return (new DataContainerCollection ());
+
+      clientTransactionPartialMock.Replay ();
+      
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransactionPartialMock, _orderItemsEndPointID);
+
+      clientTransactionPartialMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void LoadRelatedObjects_SignalsOnLoading_ForNewlyLoadedObjects ()
+    {
+      var registeredDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, registeredDataContainer, newlyLoadedDataContainer);
+
+      registeredDataContainer.SetDomainObject (OrderItem.GetObject (registeredDataContainer.ID));
+      registeredDataContainer.RegisterWithTransaction (clientTransaction);
+
+      var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
+     
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      eventListenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.OrderItem2));
+      eventListenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (DomainObjectIDs.OrderItem1));
+    }
+
+    [Test]
+    public void LoadRelatedObjects_SignalsOnLoading_InScope ()
+    {
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, newlyLoadedDataContainer);
+
+      var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
+
+      eventListenerMock
+          .Expect (mock => mock.ObjectLoading (DomainObjectIDs.OrderItem2))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (clientTransaction)));
+      eventListenerMock.Replay ();
+
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      eventListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void LoadRelatedObjects_RegistersNewlyLoadedObjects ()
+    {
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, newlyLoadedDataContainer);
+
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      Assert.That (newlyLoadedDataContainer.ClientTransaction, Is.SameAs (clientTransaction));
+      Assert.That (newlyLoadedDataContainer.DomainObject, Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetDataManager (clientTransaction).DataContainerMap[newlyLoadedDataContainer.ID], 
+          Is.SameAs (newlyLoadedDataContainer));
+    }
+
+    [Test]
+    public void LoadRelatedObjects_SignalsOnLoaded_ForNewlyLoadedObjects ()
+    {
+      var registeredDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, registeredDataContainer, newlyLoadedDataContainer);
+
+      registeredDataContainer.SetDomainObject (OrderItem.GetObject (registeredDataContainer.ID));
+      registeredDataContainer.RegisterWithTransaction (clientTransaction);
+
+      var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
+
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      eventListenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { newlyLoadedDataContainer.DomainObject })));
+    }
+
+    [Test]
+    public void LoadRelatedObjects_SignalsOnLoaded_InScope ()
+    {
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, newlyLoadedDataContainer);
+
+      var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
+
+      eventListenerMock
+          .Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (clientTransaction)));
+      eventListenerMock.Replay ();
+
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      eventListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void LoadRelatedObjects_SignalsOnLoaded_AfterRegistration ()
+    {
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, newlyLoadedDataContainer);
+
+      var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
+
+      eventListenerMock
+          .Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything))
+          .WhenCalled (mi => Assert.That (newlyLoadedDataContainer.ClientTransaction, Is.SameAs (clientTransaction)));
+      eventListenerMock.Replay ();
+
+      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      eventListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void LoadRelatedObjects_Returns_RelatedObjects ()
+    {
+      var registeredDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);
+      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
+
+      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, registeredDataContainer, newlyLoadedDataContainer);
+
+      registeredDataContainer.SetDomainObject (OrderItem.GetObject (registeredDataContainer.ID));
+      registeredDataContainer.RegisterWithTransaction (clientTransaction);
+
+      var result = ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
+
+      Assert.That (result, Is.EquivalentTo (new[] { registeredDataContainer.DomainObject, newlyLoadedDataContainer.DomainObject }));
+    }
+
+    private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)
+    {
+      var clientTransactionPartialMock = ClientTransactionObjectMother.CreatePartialMock ();
+      clientTransactionPartialMock
+          .Stub (mock => ClientTransactionTestHelper.CallLoadRelatedDataContainers (mock, endPointID))
+          .Return (new DataContainerCollection (dataContainers, false));
+      clientTransactionPartialMock.Replay ();
+      return clientTransactionPartialMock;
+    }
   }
 }
