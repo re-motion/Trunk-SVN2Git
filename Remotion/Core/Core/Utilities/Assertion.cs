@@ -48,7 +48,7 @@ namespace Remotion.Utilities
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   This class contains methods that are conditional to the DEBUG and TRACE attributes (<see cref="DebugAssert"/> and <see cref="TraceAssert"/>). 
+  ///   This class contains methods that are conditional to the DEBUG and TRACE attributes (<see cref="DebugAssert(bool)"/> and <see cref="TraceAssert(bool)"/>). 
   ///   </para><para>
   ///   Note that assertion expressions passed to these methods are not evaluated (read: executed) if the respective symbol are not defined during
   ///   compilation, nor are the methods called. This increases performance for production builds, but make sure that your assertion expressions do
@@ -136,20 +136,24 @@ namespace Remotion.Utilities
     }
 
 
-    public static void IsNotNull (object obj, string message)
+    public static T IsNotNull<T> (T obj, string message)
     {
+// ReSharper disable CompareNonConstrainedGenericWithNull
       if (obj == null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
         throw new AssertionException (message);
+
+      return obj;
     }
 
-    public static void IsNotNull (object obj)
+    public static T IsNotNull<T> (T obj)
     {
-      IsNotNull (obj, c_msgIsNull);
+      return IsNotNull (obj, c_msgIsNull);
     }
 
-    public static void IsNotNull (object obj, string message, params object[] arguments)
+    public static T IsNotNull<T> (T obj, string message, params object[] arguments)
     {
-      IsNotNull (obj, string.Format (message, arguments));
+      return IsNotNull (obj, string.Format (message, arguments));
     }
 
 

@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Assertion=Remotion.Utilities.Assertion;
 using AssertionException=Remotion.Utilities.AssertionException;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.UnitTests.Utilities
 {
@@ -35,6 +36,73 @@ namespace Remotion.UnitTests.Utilities
     public void TestIsTrueFails ()
     {
       Assertion.IsTrue (false);
+    }
+
+    [Test]
+    public void IsNotNull_True ()
+    {
+      var instance = "x";
+
+      var result = Assertion.IsNotNull (instance);
+
+      Assert.That (result, Is.SameAs (instance));
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "Assertion failed: Expression evaluates to a null reference.")]
+    public void IsNotNull_False ()
+    {
+      Assertion.IsNotNull<object> (null);
+    }
+
+    [Test]
+    public void IsNotNull_ValueType_True ()
+    {
+      int? value = 5;
+      var result = Assertion.IsNotNull (value);
+      Assert.That (result, Is.EqualTo (value));
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "Assertion failed: Expression evaluates to a null reference.")]
+    public void IsNotNull_ValueType_False ()
+    {
+      int? value = null;
+      Assertion.IsNotNull (value);
+    }
+
+    [Test]
+    public void IsNotNull_Message_True ()
+    {
+      var instance = "x";
+
+      var result = Assertion.IsNotNull (instance, "a");
+
+      Assert.That (result, Is.SameAs (instance));
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "a")]
+    public void IsNotNull_Message_False ()
+    {
+      Assertion.IsNotNull<object> (null, "a");
+    }
+
+    [Test]
+    public void IsNotNull_Message_Args_True ()
+    {
+      var instance = "x";
+
+      var result = Assertion.IsNotNull (instance, "a{0}b", 5);
+
+      Assert.That (result, Is.SameAs (instance));
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "a5b")]
+    public void IsNotNull_Message_Args_False ()
+    {
+      Assertion.IsNotNull<object> (null, "a{0}b", 5);
     }
   }
 }
