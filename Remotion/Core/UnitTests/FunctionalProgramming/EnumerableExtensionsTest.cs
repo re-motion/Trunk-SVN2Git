@@ -19,9 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 
-namespace Remotion.UnitTests.Collections
+namespace Remotion.UnitTests.FunctionalProgramming
 {
   [TestFixture]
   public class EnumerableExtensionsTest

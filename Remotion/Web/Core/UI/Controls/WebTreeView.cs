@@ -22,7 +22,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;

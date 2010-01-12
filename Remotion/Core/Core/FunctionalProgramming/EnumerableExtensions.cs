@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Collections
+namespace Remotion.FunctionalProgramming
 {
   /// <summary>
   /// Provides a set of <see langword="static"/> methods for querying objects that implement <see cref="IEnumerable{T}"/>.

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
-using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting

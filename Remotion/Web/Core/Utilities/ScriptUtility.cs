@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;

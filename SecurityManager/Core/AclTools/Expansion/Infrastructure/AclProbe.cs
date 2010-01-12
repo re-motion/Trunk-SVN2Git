@@ -19,11 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Diagnostics.ToText;
+using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure

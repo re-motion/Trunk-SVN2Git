@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 

@@ -41,6 +41,7 @@
         <include name="Design/**/*.cs" />
         <include name="Diagnostics/**/*.cs" />
         <include name="ExtensibleEnums/**/*.cs" />
+        <include name="FunctionalProgramming/**/*.cs" />
         <include name="Globalization/**/*.cs" />
         <include name="Logging/**/*.cs" />
         <include name="Mixins/**/*.cs" />

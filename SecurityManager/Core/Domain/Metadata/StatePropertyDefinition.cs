@@ -17,8 +17,8 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 

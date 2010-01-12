@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using Remotion.Data.DomainObjects;
-using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;

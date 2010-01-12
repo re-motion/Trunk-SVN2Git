@@ -138,7 +138,7 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
-    <Compile Include="Collections\EnumerableExtensionsTest.cs" />
+    <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionarySpecificTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionaryTest.cs" />
     <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
