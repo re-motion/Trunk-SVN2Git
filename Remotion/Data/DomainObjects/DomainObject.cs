@@ -19,7 +19,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -100,11 +99,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T)).GetDomainObjectCreator ();
-      var info = creator.GetConstructorLookupInfo (typeof (T));
-      var domainObject = (T) constructorParameters.InvokeConstructor (info);
-      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (domainObject);
-      return domainObject;
+      return (T) RepositoryAccessor.NewObject (typeof (T), constructorParameters);
     }
 
     /// <summary>

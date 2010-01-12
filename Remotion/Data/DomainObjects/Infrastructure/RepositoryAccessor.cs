@@ -60,7 +60,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType).GetDomainObjectCreator ();
       var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
-      return (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
+
+      var instance = (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
+      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
+
+      return instance;
     }
 
     /// <summary>

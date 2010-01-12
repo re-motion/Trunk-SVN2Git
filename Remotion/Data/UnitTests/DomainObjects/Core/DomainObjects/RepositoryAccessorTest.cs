@@ -16,11 +16,14 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
@@ -38,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NewObject_NoCtorArgs ()
     {
-      Order instance = RepositoryAccessor.NewObject (typeof (Order), ParamList.Empty) as Order;
+      var instance = (Order) RepositoryAccessor.NewObject (typeof (Order), ParamList.Empty);
       Assert.IsNotNull (instance);
       Assert.IsTrue (instance.CtorCalled);
     }
@@ -46,8 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NewObject_WithCtorArgs ()
     {
-      Order order = Order.NewObject();
-      OrderItem instance = RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (order)) as OrderItem;
+      var order = Order.NewObject();
+      var instance = (OrderItem) RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (order));
       Assert.IsNotNull (instance);
       Assert.AreSame (order, instance.Order);
     }
@@ -58,6 +61,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewObject_WrongCtorArgs ()
     {
       RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (0m));
+    }
+
+    [Test]
+    public void NewObject_InitializesMixins ()
+    {
+      var domainObject = RepositoryAccessor.NewObject (typeof (ClassWithAllDataTypes), ParamList.Empty);
+      var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (domainObject);
+      Assert.That (mixin, Is.Not.Null);
+
+      Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
     }
 
     [Test]
