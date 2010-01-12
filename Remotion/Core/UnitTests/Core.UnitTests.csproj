@@ -175,6 +175,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColor.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
+    <Compile Include="FunctionalProgramming\MaybeTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
