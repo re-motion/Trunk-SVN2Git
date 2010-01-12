@@ -176,7 +176,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
 
     private HashSet<MixinDefinition>[] GetGroups (params MixinDefinition[] mixins)
     {
-      return EnumerableUtility.ToArray (_grouper.GroupMixins (mixins));
+      return _grouper.GroupMixins (mixins).ToArray ();
     }
   }
 }

@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
@@ -101,7 +103,7 @@ namespace Remotion.Globalization
 				where TAttribute: Attribute, IResourcesAttribute
 		{
 			ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
-      return EnumerableUtility.FirstOrDefault (resolver.GetResourceDefinitionStream (objectTypeToGetResourceFor, false)) != null;
+      return resolver.GetResourceDefinitionStream (objectTypeToGetResourceFor, false).FirstOrDefault () != null;
 		}
 	}
 }

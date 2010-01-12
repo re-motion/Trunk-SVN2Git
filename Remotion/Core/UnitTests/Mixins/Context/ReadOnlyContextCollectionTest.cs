@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.Context;
@@ -119,8 +120,7 @@ namespace Remotion.UnitTests.Mixins.Context
     public void GetEnumerator_NonGeneric ()
     {
       IEnumerable collectionAsEnumerable = _collection;
-      List<object> values = new List<object> (EnumerableUtility.Cast<object> (collectionAsEnumerable));
-      Assert.That (values, Is.EqualTo (new int[] { 1, 2, 3 }));
+      Assert.That (collectionAsEnumerable.Cast<object> ().ToArray (), Is.EqualTo (new[] { 1, 2, 3 }));
     }
 
     [Test]

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -236,7 +237,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
         Assert.That (definition.Mixins[typeof(MixinAddingBT1Attribute)].SuppressedAttributeIntroductions.ContainsKey (typeof (BT1Attribute)), Is.True);
 
         SuppressedAttributeIntroductionDefinition[] suppressedAttributes =
-            EnumerableUtility.ToArray (definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions[typeof (BT1Attribute)]);
+            definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions[typeof (BT1Attribute)].ToArray ();
         Assert.That (suppressedAttributes.Length, Is.EqualTo (1));
         Assert.That (suppressedAttributes[0].Attribute,
                      Is.SameAs (definition.Mixins[typeof (MixinAddingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (BT1Attribute))));
@@ -268,7 +269,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.Building
         Assert.That (definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions.ContainsKey (typeof (BT1Attribute)), Is.True);
 
         SuppressedAttributeIntroductionDefinition[] suppressedAttributes =
-            EnumerableUtility.ToArray (definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions[typeof (BT1Attribute)]);
+            definition.Mixins[typeof (MixinAddingBT1Attribute)].SuppressedAttributeIntroductions[typeof (BT1Attribute)].ToArray ();
         Assert.That (suppressedAttributes.Length, Is.EqualTo (1));
         Assert.That (suppressedAttributes[0].Attribute,
                      Is.SameAs (definition.Mixins[typeof (MixinAddingBT1Attribute)].CustomAttributes.GetFirstItem (typeof (BT1Attribute))));

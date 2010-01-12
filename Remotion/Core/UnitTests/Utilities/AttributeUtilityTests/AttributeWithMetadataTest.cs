@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes;
@@ -57,7 +59,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
           new AttributeWithMetadata(typeof (object), new DerivedInheritedAttribute("X")),
       };
 
-      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.IncludeAll (attributes, typeof (ICustomAttribute)));
+      AttributeWithMetadata[] filteredAttributes = AttributeWithMetadata.IncludeAll (attributes, typeof (ICustomAttribute)).ToArray ();
       Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
     }
 
@@ -75,7 +77,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
           new AttributeWithMetadata(typeof (object), new DerivedNonInheritedAttribute("X")),
       };
 
-      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.ExcludeAll (attributes, typeof (ICustomAttribute)));
+      AttributeWithMetadata[] filteredAttributes = AttributeWithMetadata.ExcludeAll (attributes, typeof (ICustomAttribute)).ToArray ();
       Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
     }
 
@@ -92,7 +94,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
           new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
       };
 
-      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      AttributeWithMetadata[] filteredAttributes = AttributeWithMetadata.Suppress (attributes, suppressAttributes).ToArray ();
       Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
     }
 
@@ -108,7 +110,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
       };
 
-      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      AttributeWithMetadata[] filteredAttributes = AttributeWithMetadata.Suppress (attributes, suppressAttributes).ToArray ();
       Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
     }
 
@@ -124,7 +126,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
       };
 
-      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      AttributeWithMetadata[] filteredAttributes = AttributeWithMetadata.Suppress (attributes, suppressAttributes).ToArray ();
       Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
     }
 
@@ -141,7 +143,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
           new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
       };
 
-      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      AttributeWithMetadata[] filteredAttributes = AttributeWithMetadata.Suppress (attributes, suppressAttributes).ToArray ();
       Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
     }
 
@@ -162,7 +164,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         attributes[3].AttributeInstance,
       };
 
-      object[] instances = EnumerableUtility.ToArray (AttributeWithMetadata.ExtractInstances (attributes));
+      object[] instances = AttributeWithMetadata.ExtractInstances (attributes).ToArray ();
       Assert.That (instances, Is.EqualTo (expectedInstances));
     }
   }

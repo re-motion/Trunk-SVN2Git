@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes;
@@ -29,7 +31,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void BaseClass_InheritedFalse ()
     {
       AttributeWithMetadata[] attributes = 
-        EnumerableUtility.ToArray (AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), false));
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), false).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
@@ -43,7 +45,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void BaseClass_InheritedTrue ()
     {
       AttributeWithMetadata[] attributes =
-        EnumerableUtility.ToArray (AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), true));
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (BaseClassWithAttribute), true).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
@@ -57,7 +59,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void DerivedClass_InheritedFalse ()
     {
       AttributeWithMetadata[] attributes =
-        EnumerableUtility.ToArray (AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), false));
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), false).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new BaseInheritedAttribute ("DerivedClass")), 
         new AttributeWithMetadata (typeof (DerivedClassWithAttribute), new DerivedInheritedAttribute ("DerivedClass")), 
@@ -72,7 +74,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void DerivedClass_InheritedTrue ()
     {
       AttributeWithMetadata[] attributes =
-        EnumerableUtility.ToArray (AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), true));
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (DerivedClassWithAttribute), true).ToArray ();
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new BaseInheritedAttribute ("BaseClass")), 
         new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedInheritedAttribute ("BaseClass")), 
@@ -90,7 +92,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void ObjectClass_InheritedFalse ()
     {
       AttributeWithMetadata[] attributes =
-        EnumerableUtility.ToArray (AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), false));
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), false).ToArray ();
       Assert.That (attributes.Length, Is.EqualTo (typeof (object).GetCustomAttributes (false).Length));
     }
 
@@ -98,7 +100,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void ObjectClass_InheritedTrue ()
     {
       AttributeWithMetadata[] attributes =
-        EnumerableUtility.ToArray (AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), true));
+        AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), true).ToArray ();
       Assert.That (attributes.Length, Is.EqualTo (typeof (object).GetCustomAttributes (false).Length));
     }
   }

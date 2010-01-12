@@ -194,17 +194,6 @@ namespace Remotion.FunctionalProgramming
     }
 
     /// <summary>
-    /// Creates an <see cref="IEnumerable{T}"/> containing the <paramref name="source"/> element.
-    /// </summary>
-    /// <typeparam name="TSource">The type of the <paramref name="source"/> element.</typeparam>
-    /// <param name="source">The object to be added to the sequence. </param>
-    /// <returns>A sequence of elments containing only the <paramref name="source"/> element.</returns>
-    public static IEnumerable<TSource> ToEnumerable<TSource> (this TSource source)
-    {
-      yield return source;
-    }
-
-    /// <summary>
     /// Determines whether two enumerable sequences contain the same set of elements without regarding the order or number of elements.
     /// This method constructs a <see cref="HashSet{T}"/> from <paramref name="sequence1"/> and then calls <see cref="HashSet{T}.SetEquals"/>.
     /// The <see cref="EqualityComparer{T}.Default"/> equality comparer is used to check elements for equality.

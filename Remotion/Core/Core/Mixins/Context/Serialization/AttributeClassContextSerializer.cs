@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
@@ -38,13 +40,13 @@ namespace Remotion.Mixins.Context.Serialization
     public void AddMixins(IEnumerable<MixinContext> mixinContexts)
     {
       ArgumentUtility.CheckNotNull ("mixinContexts", mixinContexts);
-      Values[1] = EnumerableUtility.SelectToArray<MixinContext, object> (mixinContexts, SerializeMixinContext);
+      Values[1] = mixinContexts.Select (mc => (object) SerializeMixinContext (mc)).ToArray ();
     }
 
     public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
     {
       ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
-      Values[2] = EnumerableUtility.ToArray (completeInterfaces);
+      Values[2] = completeInterfaces.ToArray ();
     }
 
     private object[] SerializeMixinContext (MixinContext m)

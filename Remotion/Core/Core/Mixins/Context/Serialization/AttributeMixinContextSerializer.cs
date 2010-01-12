@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
@@ -47,7 +48,7 @@ namespace Remotion.Mixins.Context.Serialization
 
     public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
     {
-      Values[3] = EnumerableUtility.ToArray (explicitDependencies);
+      Values[3] = explicitDependencies.ToArray ();
     }
   }
 }

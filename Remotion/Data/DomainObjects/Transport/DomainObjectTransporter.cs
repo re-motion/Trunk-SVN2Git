@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -154,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Transport
     public IEnumerable<DomainObject> LoadWithRelatedObjects (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return EnumerableUtility.ToArray (LazyLoadWithRelatedObjects(objectID));
+      return LazyLoadWithRelatedObjects(objectID).ToArray ();
     }
 
     private IEnumerable<DomainObject> LazyLoadWithRelatedObjects (ObjectID objectID)
@@ -243,7 +244,7 @@ namespace Remotion.Data.DomainObjects.Transport
     public void Export (Stream stream, IExportStrategy strategy)
     {
       IEnumerable<DataContainer> transportedContainers = GetTransportedContainers();
-      TransportItem[] transportItems = EnumerableUtility.ToArray (TransportItem.PackageDataContainers (transportedContainers));
+      TransportItem[] transportItems = TransportItem.PackageDataContainers (transportedContainers).ToArray ();
       strategy.Export (stream, transportItems);
     }
 

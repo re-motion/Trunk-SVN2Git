@@ -631,7 +631,7 @@
     <Compile Include="Utilities\CustomAttributeArguments.cs" />
     <Compile Include="Utilities\CustomAttributeDataUtility.cs" />
     <Compile Include="Utilities\DefaultConsoleManager.cs" />
-    <Compile Include="Utilities\EnumerableUtility.cs" />
+    <Compile Include="FunctionalProgramming\EnumerableUtility.cs" />
     <Compile Include="Utilities\EqualityUtility.cs" />
     <Compile Include="Utilities\ExceptionUtility.cs" />
     <Compile Include="Utilities\FileUtility.cs" />

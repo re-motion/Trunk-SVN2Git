@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
@@ -39,11 +41,11 @@ namespace Remotion.UnitTests.Globalization
     public void GetResourceDefinitionStream_SuccessOnSameType ()
     {
       ResourceDefinition<MultiLingualResourcesAttribute>[] definitions = 
-          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+          _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
 
       Assert.That (definitions.Length, Is.EqualTo (1));
       Assert.That (definitions[0].Type, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
-      Assert.That (EnumerableUtility.ToArray (definitions[0].SupplementingAttributes), Is.Empty);
+      Assert.That (definitions[0].SupplementingAttributes.ToArray (), Is.Empty);
       Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
           AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
     }
@@ -52,11 +54,11 @@ namespace Remotion.UnitTests.Globalization
     public void GetResourceDefinitionStream_InheritanceFalse ()
     {
       ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), false));
+          _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), false).ToArray ();
 
       Assert.That (definitions.Length, Is.EqualTo (1));
       Assert.That (definitions[0].Type, Is.SameAs (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
-      Assert.That (EnumerableUtility.ToArray (definitions[0].SupplementingAttributes), Is.Empty);
+      Assert.That (definitions[0].SupplementingAttributes.ToArray (), Is.Empty);
       Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
           AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (InheritedClassWithMultiLingualResourcesAttributes), false)));
     }
@@ -65,17 +67,17 @@ namespace Remotion.UnitTests.Globalization
     public void GetResourceDefinitionStream_InheritanceTrue ()
     {
       ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), true));
+          _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), true).ToArray ();
 
       Assert.That (definitions.Length, Is.EqualTo (2));
 
 			Assert.That (definitions[0].Type, Is.SameAs (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
-      Assert.That (EnumerableUtility.ToArray (definitions[0].SupplementingAttributes), Is.Empty);
+      Assert.That (definitions[0].SupplementingAttributes.ToArray (), Is.Empty);
       Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
           AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (InheritedClassWithMultiLingualResourcesAttributes), false)));
 
 			Assert.That (definitions[1].Type, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
-			Assert.That (EnumerableUtility.ToArray (definitions[1].SupplementingAttributes), Is.Empty);
+			Assert.That (definitions[1].SupplementingAttributes.ToArray (), Is.Empty);
 			Assert.That (definitions[1].OwnAttributes, Is.EquivalentTo (
 					AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
 
@@ -85,7 +87,7 @@ namespace Remotion.UnitTests.Globalization
     public void GetResourceDefinitionStream_SuccessOnBase ()
     {
       ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+          _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
       Assert.That (definitions.Length, Is.EqualTo (1));
       Assert.That (definitions[0].Type, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
 
@@ -97,7 +99,7 @@ namespace Remotion.UnitTests.Globalization
     public void GetResourceDefinitionStream_NoSuccess ()
     {
       ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+          _resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
       Assert.IsEmpty (definitions);
     }
 

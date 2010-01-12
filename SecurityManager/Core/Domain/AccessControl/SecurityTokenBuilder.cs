@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         else if (principal.SubstitutedRole != null)
         {
           principalUser = null;
-          principalRoles = substitution.SubstitutedRole.ToEnumerable ();
+          principalRoles = EnumerableUtility.Singleton (substitution.SubstitutedRole);
         }
         else
         {

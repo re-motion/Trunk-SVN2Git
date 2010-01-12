@@ -138,6 +138,7 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
+    <Compile Include="FunctionalProgramming\Element.cs" />
     <Compile Include="FunctionalProgramming\EnumerableExtensionsTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionarySpecificTest.cs" />
     <Compile Include="Collections\ReadOnlyDictionaryTest.cs" />
@@ -976,7 +977,7 @@
     <Compile Include="Utilities\EnumDescriptionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\EnumerableUtilityTest.cs" />
+    <Compile Include="FunctionalProgramming\EnumerableUtilityTest.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
     <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />

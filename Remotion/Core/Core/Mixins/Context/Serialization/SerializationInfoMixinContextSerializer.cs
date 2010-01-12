@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
@@ -54,7 +55,7 @@ namespace Remotion.Mixins.Context.Serialization
     public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
-      var typeNames = EnumerableUtility.SelectToArray (explicitDependencies, t => t.AssemblyQualifiedName);
+      var typeNames = explicitDependencies.Select (t => t.AssemblyQualifiedName).ToArray ();
       _info.AddValue (_prefix + ".ExplicitDependencies.AssemblyQualifiedNames", typeNames);
     }
   }

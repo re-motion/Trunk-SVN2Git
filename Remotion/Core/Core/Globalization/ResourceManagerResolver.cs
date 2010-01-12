@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Resources;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -62,7 +63,7 @@ namespace Remotion.Globalization
     {
 
       IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions = GetResourceDefinitionStream (objectType, includeHierarchy);
-      ResourceDefinition<TAttribute> firstResourceDefinition = EnumerableUtility.FirstOrDefault (resourceDefinitions);
+      ResourceDefinition<TAttribute> firstResourceDefinition = resourceDefinitions.FirstOrDefault ();
       if (firstResourceDefinition == null)
       {
         string message = string.Format ("Type {0} and its base classes do not define the attribute {1}.", objectType.FullName, typeof (TAttribute).Name);

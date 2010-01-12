@@ -57,7 +57,7 @@ namespace Remotion.Mixins.Context.Serialization
     public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
     {
       ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
-      var typeNames = EnumerableUtility.SelectToArray (completeInterfaces, t => t.AssemblyQualifiedName);
+      var typeNames = completeInterfaces.Select (t => t.AssemblyQualifiedName).ToArray ();
       _info.AddValue (_prefix + ".CompleteInterfaces.AssemblyQualifiedNames", typeNames);
     }
   }

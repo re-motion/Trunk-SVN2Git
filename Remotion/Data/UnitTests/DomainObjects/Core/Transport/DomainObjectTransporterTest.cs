@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -109,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
                   DomainObjectIDs.OrderTicket1, DomainObjectIDs.Customer1, DomainObjectIDs.Official1
               }));
       Assert.That (
-          EnumerableUtility.ToArray (loadedObjects),
+          loadedObjects.ToArray (),
           Is.EquivalentTo (
               new object[]
               {
@@ -134,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
                   DomainObjectIDs.Employee5, DomainObjectIDs.Computer3
               }));
       Assert.That (
-          EnumerableUtility.ToArray (loadedObjects),
+          loadedObjects.ToArray (),
           Is.EquivalentTo (
               new object[]
               {
@@ -152,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       Assert.That (
           _transporter.ObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Employee1, DomainObjectIDs.Employee4, DomainObjectIDs.Employee5 }));
       Assert.That (
-          EnumerableUtility.ToArray (loadedObjects),
+          loadedObjects.ToArray (),
           Is.EquivalentTo (
               new object[]
               {
@@ -168,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       IEnumerable<DomainObject> loadedObjects = _transporter.LoadRecursive (DomainObjectIDs.Employee1, strategy);
       Assert.That (_transporter.ObjectIDs, Is.EquivalentTo (new[] { DomainObjectIDs.Computer2, DomainObjectIDs.Computer3 }));
       Assert.That (
-          EnumerableUtility.ToArray (loadedObjects),
+          loadedObjects.ToArray (),
           Is.EquivalentTo (
               new object[]
               {

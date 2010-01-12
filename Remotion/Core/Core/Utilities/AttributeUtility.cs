@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 
@@ -95,7 +96,7 @@ namespace Remotion.Utilities
 
       AttributeWithMetadata[] attributes = GetCustomAttributesWithMetadata (type, inherit);
       AttributeWithMetadata[] suppressAttributes = 
-          EnumerableUtility.ToArray (AttributeWithMetadata.IncludeAll (attributes, typeof (SuppressAttributesAttribute)));
+          AttributeWithMetadata.IncludeAll (attributes, typeof (SuppressAttributesAttribute)).ToArray ();
 
       IEnumerable<AttributeWithMetadata> attributesWithRightType = AttributeWithMetadata.IncludeAll (attributes, attributeType);
       IEnumerable<AttributeWithMetadata> filteredAttributes = 
@@ -104,7 +105,7 @@ namespace Remotion.Utilities
       IEnumerable<AttributeWithMetadata> suppressedAttributes = AttributeWithMetadata.Suppress (filteredAttributes, suppressAttributes);
       IEnumerable<Attribute> attributeInstances = AttributeWithMetadata.ExtractInstances (suppressedAttributes);
 
-      return (object[]) ArrayUtility.Convert (EnumerableUtility.ToArray (attributeInstances), attributeType);
+      return (object[]) ArrayUtility.Convert (attributeInstances.ToArray (), attributeType);
     }
 
     private static readonly InterlockedCache<Tuple<Type, bool>, AttributeWithMetadata[]> s_attributesWithMetadataCache = new InterlockedCache<Tuple<Type, bool>, AttributeWithMetadata[]>();

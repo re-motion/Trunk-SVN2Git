@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Transport;
@@ -47,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       DataContainer container1 = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
       DataContainer container2 = Computer.GetObject (DomainObjectIDs.Computer1).InternalDataContainer;
-      TransportItem[] items = EnumerableUtility.ToArray (TransportItem.PackageDataContainers (new DataContainer[] { container1, container2 }));
+      TransportItem[] items = TransportItem.PackageDataContainers (new DataContainer[] { container1, container2 }).ToArray ();
 
       CheckEqualData (container1, items[0]);
       CheckEqualData (container2, items[1]);

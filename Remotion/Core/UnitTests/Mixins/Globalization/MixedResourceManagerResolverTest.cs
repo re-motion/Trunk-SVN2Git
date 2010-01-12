@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Resources;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -46,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<ClassWithoutMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+						_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
 				Assert.That (definitions.Length, Is.EqualTo (0));
       }
     }
@@ -55,7 +57,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
     public void GetResourceDefinitions_NoSuccessOnType_NoMixins ()
     {
       ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+          _resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
       Assert.That (definitions.Length, Is.EqualTo (0));
     }
 
@@ -65,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<ClassWithMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
             AttributesFor<ClassWithMultiLingualResourcesAttributes>());
@@ -78,7 +80,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<ClassWithoutMultiLingualResourcesAttributes>().AddMixin<MixinAddingMultiLingualResourcesAttributes1>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+						_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (ClassWithoutMultiLingualResourcesAttributes), 
             _noAttributes,
@@ -92,7 +94,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<ClassWithMultiLingualResourcesAttributes>().AddMixin<MixinAddingMultiLingualResourcesAttributes1>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
             AttributesFor<ClassWithMultiLingualResourcesAttributes>(),
@@ -110,7 +112,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
           .EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
 
 				CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
@@ -130,7 +132,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
           .EnterScope ())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
 
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes),
@@ -150,7 +152,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
           .EnterScope ())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
 
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes),
@@ -166,7 +168,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
             AttributesFor<ClassWithMultiLingualResourcesAttributes>());
@@ -179,7 +181,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<ClassWithoutMultiLingualResourcesAttributes>().AddMixin<InheritedMixinWithoutMultiLingualResourcesAttributes1>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (ClassWithoutMultiLingualResourcesAttributes),
 						_noAttributes,
@@ -193,7 +195,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<MixinAddingMultiLingualResourcesAttributes1>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
 						_noAttributes,
@@ -207,7 +209,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<InheritedMixinWithoutMultiLingualResourcesAttributes1>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
 						_noAttributes,
@@ -221,7 +223,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<ClassWithMultiLingualResourcesAttributes>().AddMixin<InheritedMixinWithoutMultiLingualResourcesAttributes1>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
             AttributesFor<ClassWithMultiLingualResourcesAttributes>(), TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
@@ -234,7 +236,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
       using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithMultiLingualResourcesAttributes>().AddMixin<InheritedMixinAddingMultiLingualResourcesAttributes2>().EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), false));
+            _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), false).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (1));
 				CheckDefinition (definitions[0], typeof (InheritedClassWithMultiLingualResourcesAttributes),
 						AttributesFor<InheritedClassWithMultiLingualResourcesAttributes> (),
@@ -252,7 +254,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
 					.EnterScope())
       {
         ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), true));
+            _resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), true).ToArray ();
         Assert.That (definitions.Length, Is.EqualTo (2));
         CheckDefinition (definitions[0], typeof (InheritedClassWithMultiLingualResourcesAttributes), 
             AttributesFor<InheritedClassWithMultiLingualResourcesAttributes>(),
@@ -270,7 +272,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
 				.AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
 			{
 				ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+						_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false).ToArray ();
 				Assert.That (definitions.Length, Is.EqualTo (1));
 				CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
 						_noAttributes,
@@ -285,7 +287,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
 				.AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
 			{
 				ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
-						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), true));
+						_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), true).ToArray ();
 				Assert.That (definitions.Length, Is.EqualTo (2));
 				CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
 						_noAttributes, 

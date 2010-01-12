@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
     private byte[] Serialize (params DataContainer[] containers)
     {
-      TransportItem[] items = EnumerableUtility.ToArray (TransportItem.PackageDataContainers (containers));
+      TransportItem[] items = TransportItem.PackageDataContainers (containers).ToArray ();
       KeyValuePair<string, Dictionary<string, object>>[] versionIndependentItems =
           Array.ConvertAll (
               items,

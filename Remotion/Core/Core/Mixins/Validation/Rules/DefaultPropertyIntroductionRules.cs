@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Mixins.Definitions;
 using System.Reflection;
 using Remotion.Utilities;
@@ -40,8 +41,8 @@ namespace Remotion.Mixins.Validation.Rules
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
         PropertyInfo introducedMember = args.Definition.InterfaceMember;
-        if (EnumerableUtility.FirstOrDefault (_memberLookupUtility.GetCachedMembersByName (
-            args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMember.Name)) != null)
+        if (_memberLookupUtility.GetCachedMembersByName (
+                args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMember.Name).FirstOrDefault () != null)
         {
           args.Log.Fail (args.Self);
           return;
