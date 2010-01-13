@@ -61,19 +61,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.RequiredItemType; }
     }
 
-    ICollectionEndPoint IDomainObjectCollectionData.AssociatedEndPoint
+    public ICollectionEndPoint AssociatedEndPoint
     {
-      get
-      {
-        var message = "It is not supported to get the associated end point from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
-        throw new NotSupportedException (message);
-      }
+      get { return _wrappedData.AssociatedEndPoint; }
     }
 
-    IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
+    public IDomainObjectCollectionData GetUndecoratedDataStore ()
     {
-      var message = "It is not supported to get the underlying data store from a " + typeof (ReadOnlyCollectionDataDecorator).Name + ".";
-      throw new NotSupportedException (message);
+      return _wrappedData;
     }
 
     public bool ContainsObjectID (ObjectID objectID)

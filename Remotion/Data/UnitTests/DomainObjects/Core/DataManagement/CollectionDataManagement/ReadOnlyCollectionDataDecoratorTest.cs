@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -74,17 +75,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void AssociatedEndPoint ()
     {
-      Dev.Null = ((IDomainObjectCollectionData) _readOnlyDecorator).AssociatedEndPoint;
+      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
+      _wrappedDataStub.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
+
+      Assert.That (_readOnlyDecorator.AssociatedEndPoint, Is.SameAs (endPointStub));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void GetUndecoratedDataStore ()
     {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).GetUndecoratedDataStore ();
+      Assert.That (_readOnlyDecorator.GetUndecoratedDataStore(), Is.SameAs (_wrappedDataStub));
     }
 
     [Test]

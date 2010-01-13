@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -26,12 +27,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// and allowing that data to be unloaded. When the <see cref="LazyLoadableCollectionEndPointData"/> is accessed and its data is empty, 
   /// it loads the data from a <see cref="ClientTransaction"/>.
   /// </summary>
-  public class LazyLoadableCollectionEndPointData
+  public class LazyLoadableCollectionEndPointData : IFlattenedSerializable
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
 
-    private DomainObjectCollectionData _actualData;
+    private DomainObjectCollectionData _dataStore;
     private DomainObjectCollection _originalOppositeDomainObjectsContents;
 
     public LazyLoadableCollectionEndPointData (
@@ -49,29 +50,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
         SetContents (initialContents);
     }
 
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
+    public RelationEndPointID EndPointID
+    {
+      get { return _endPointID; }
+    }
+
     public bool IsDataAvailable
     {
-      get { return _actualData != null; }
+      get { return _dataStore != null; }
     }
 
-    public void EnsureDataAvailable ()
-    {
-      if (!IsDataAvailable)
-      {
-        var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
-        SetContents (contents);
-      }
-    }
-
-
-    public DomainObjectCollectionData ActualData
+    public DomainObjectCollectionData DataStore
     {
       get
       {
         EnsureDataAvailable();
 
-        Assertion.IsNotNull (_actualData);
-        return _actualData;
+        Assertion.IsNotNull (_dataStore);
+        return _dataStore;
       }
     }
 
@@ -86,17 +87,50 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    public void EnsureDataAvailable ()
+    {
+      if (!IsDataAvailable)
+      {
+        var contents = _clientTransaction.LoadRelatedObjects (_endPointID);
+        SetContents (contents);
+      }
+    }
+
     public void Unload ()
     {
-      _actualData = null;
+      _dataStore = null;
       _originalOppositeDomainObjectsContents = null; // this is an optimization to allow the DomainObjectCollection to be garbage-collected
     }
 
     private void SetContents (IEnumerable<DomainObject> initialContents)
     {
-      _actualData = new DomainObjectCollectionData (initialContents);
+      _dataStore = new DomainObjectCollectionData (initialContents);
       var collectionType = _endPointID.Definition.PropertyType;
       _originalOppositeDomainObjectsContents = new DomainObjectCollectionFactory ().CreateCollection (collectionType, initialContents).AsReadOnly ();
     }
+
+    #region Serialization
+
+    protected LazyLoadableCollectionEndPointData (FlattenedDeserializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
+      _endPointID = info.GetValueForHandle<RelationEndPointID> ();
+      _dataStore = info.GetValue<DomainObjectCollectionData> ();
+      _originalOppositeDomainObjectsContents = info.GetValue<DomainObjectCollection> ();
+    }
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      info.AddHandle (_clientTransaction);
+      info.AddHandle (_endPointID);
+
+      info.AddValue (_dataStore);
+      info.AddValue (_originalOppositeDomainObjectsContents);
+    }
+    #endregion
   }
 }

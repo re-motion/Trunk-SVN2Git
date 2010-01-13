@@ -55,6 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_customerEndPoint.ID, Is.EqualTo (_customerEndPointID));
 
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
@@ -80,10 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
-    public void Initialize_WithNullInitialContents_Throws ()
+    [Ignore ("TODO 2096")]
+    public void Initialize_WithNullInitialContents ()
     {
-      RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);
+      Assert.That (endPoint.IsDataAvailable, Is.False);
     }
 
     [Test]

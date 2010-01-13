@@ -20,13 +20,14 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class LazyLoadingDomainObjectCollectionDataTest : StandardMappingTest
+  public class LazyLoadableCollectionEndPointDataTest : StandardMappingTest
   {
     private ClientTransaction _clientTransactionMock;
     private RelationEndPointID _endPointID;
@@ -37,8 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     
     private LazyLoadableCollectionEndPointData _loadedData;
     private LazyLoadableCollectionEndPointData _unloadedData;
-
-
+    
     public override void SetUp ()
     {
       base.SetUp ();
@@ -98,16 +98,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ActualData_Loaded ()
+    public void DataStore_Loaded ()
     {
       _clientTransactionMock.Replay ();
 
-      Assert.That (_loadedData.ActualData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_loadedData.DataStore.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
       _clientTransactionMock.AssertWasNotCalled (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID));
     }
 
     [Test]
-    public void ActualData_Unloaded_LoadsData ()
+    public void DataStore_Unloaded_LoadsData ()
     {
       _clientTransactionMock
           .Expect (mock => ClientTransactionTestHelper.CallLoadRelatedObjects (mock, _endPointID))
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _clientTransactionMock.Replay ();
 
       Assert.That (_unloadedData.IsDataAvailable, Is.False);
-      Assert.That (_unloadedData.ActualData.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
+      Assert.That (_unloadedData.DataStore.ToArray (), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
 
       Assert.That (_unloadedData.IsDataAvailable, Is.True);
       _clientTransactionMock.VerifyAllExpectations();
@@ -163,14 +163,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Unload_CausesActualDataToBeReloaded ()
+    public void Unload_CausesDataStoreToBeReloaded ()
     {
-      Assert.That (_loadedData.ActualData.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
+      Assert.That (_loadedData.DataStore.ToArray (), Is.EqualTo (new[] { _domainObject1 }));
 
       _loadedData.Unload ();
 
       StubLoadRelatedObjects (_domainObject2);
-      Assert.That (_loadedData.ActualData.ToArray (), Is.EqualTo (new[] { _domainObject2 }));
+      Assert.That (_loadedData.DataStore.ToArray (), Is.EqualTo (new[] { _domainObject2 }));
     }
 
     [Test]
@@ -185,6 +185,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_loadedData.OriginalOppositeDomainObjectsContents, Is.InstanceOfType (typeof (OrderCollection)));
       Assert.That (_loadedData.OriginalOppositeDomainObjectsContents.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void FlattenedSerializable_Loaded ()
+    {
+      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (_loadedData);
+
+      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
+
+      Assert.That (deserializedInstance.IsDataAvailable, Is.True);
+      Assert.That (deserializedInstance.DataStore.Count, Is.EqualTo (1));
+      Assert.That (deserializedInstance.OriginalOppositeDomainObjectsContents.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void FlattenedSerializable_Unloaded ()
+    {
+      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (_unloadedData);
+
+      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
+      Assert.That (deserializedInstance.IsDataAvailable, Is.False);
+
+      StubLoadRelatedObjects (_domainObject2, _domainObject3);
+
+      Assert.That (deserializedInstance.DataStore.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
+      Assert.That (deserializedInstance.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
     }
 
     private void StubLoadRelatedObjects (params DomainObject[] relatedObjects)
