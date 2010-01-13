@@ -14,8 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -41,6 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static T GetObjectInTransaction<T> (ClientTransaction transaction, ObjectID objectID) where T : DomainObject
     {
       return (T) RepositoryAccessor.GetObject (transaction, objectID, true);
+    }
+
+    public static T CreateFakeObject<T> () where T: DomainObject
+    {
+      return CreateObjectInOtherTransaction<T>();
     }
   }
 }

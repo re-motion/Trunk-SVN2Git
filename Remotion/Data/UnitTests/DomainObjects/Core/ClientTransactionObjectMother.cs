@@ -18,5 +18,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           new RootCollectionEndPointChangeDetectionStrategy (), 
           new DictionaryBasedEnlistedDomainObjectManager ());
     }
+
+    public static ClientTransaction CreateStrictMock ()
+    {
+      return new MockRepository ().StrictMock<ClientTransaction> (
+          new Dictionary<Enum, object> (),
+          new ClientTransactionExtensionCollection (),
+          new RootCollectionEndPointChangeDetectionStrategy (),
+          new DictionaryBasedEnlistedDomainObjectManager ());
+    }
   }
 }

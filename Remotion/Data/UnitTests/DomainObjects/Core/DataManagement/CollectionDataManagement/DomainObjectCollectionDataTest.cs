@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void RequiredItemType ()
     {
-      Assert.That (_data.RequiredItemType, Is.Null);
+      Assert.That (((IDomainObjectCollectionData) _data).RequiredItemType, Is.Null);
     }
 
     [Test]

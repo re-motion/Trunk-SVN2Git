@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _orderedObjectIDs.Count; }
     }
 
-    public Type RequiredItemType
+    Type IDomainObjectCollectionData.RequiredItemType
     {
       get { return null; }
     }
