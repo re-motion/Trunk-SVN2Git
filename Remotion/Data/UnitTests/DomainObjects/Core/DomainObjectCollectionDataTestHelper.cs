@@ -53,13 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (data, Is.InstanceOfType (typeof (T)));
       return (T) data;
     }
-
-
-    public static T GetActualDataAndCheckType<T> (EndPointDelegatingCollectionData newCollectionDelegatingData) where T : IDomainObjectCollectionData
+    
+    public static ICollectionEndPointData GetData (EndPointDelegatingCollectionData delegatingData)
     {
-      var data = PrivateInvoke.GetNonPublicField (newCollectionDelegatingData, "_actualData");
-      Assert.That (data, Is.InstanceOfType (typeof (T)));
-      return (T) data;
+      var data = (ICollectionEndPointData) PrivateInvoke.GetNonPublicField (delegatingData, "_endPointData");
+      return data;
     }
 
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
@@ -72,8 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (argCheckingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
 
-      var dataStore = GetActualDataAndCheckType<DomainObjectCollectionData> (delegator);
-      Assert.That (dataStore, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
+      var endPointData = GetData (delegator);
+      Assert.That (endPointData.DataStore, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)

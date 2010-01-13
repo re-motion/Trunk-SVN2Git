@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
@@ -30,26 +29,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public class EndPointDelegatingCollectionData : IDomainObjectCollectionData
   {
     [NonSerialized] // relies on the collection end point restoring the association on deserialization
-    private readonly ICollectionEndPoint _associatedEndPoint; 
-    private readonly IDomainObjectCollectionData _actualData;
+    private readonly ICollectionEndPoint _associatedEndPoint;
+    [NonSerialized] // relies on the collection end point restoring the association on deserialization
+    private readonly ICollectionEndPointData _endPointData;
 
-    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, IDomainObjectCollectionData actualData)
+    public EndPointDelegatingCollectionData (ICollectionEndPoint collectionEndPoint, ICollectionEndPointData endPointData)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      ArgumentUtility.CheckNotNull ("actualData", actualData);
+      ArgumentUtility.CheckNotNull ("endPointData", endPointData);
 
       _associatedEndPoint = collectionEndPoint;
-      _actualData = actualData;
+      _endPointData = endPointData;
     }
 
+    private IDomainObjectCollectionData DataStore
+    {
+      get { return _endPointData.DataStore; }
+    }
+    
     public int Count
     {
-      get { return _actualData.Count; }
+      get { return DataStore.Count; }
     }
 
     public Type RequiredItemType
     {
-      get { return _actualData.RequiredItemType; }
+      get { return DataStore.RequiredItemType; }
     }
 
     public ICollectionEndPoint AssociatedEndPoint
@@ -59,35 +64,35 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public IDomainObjectCollectionData GetUndecoratedDataStore ()
     {
-      return _actualData.GetUndecoratedDataStore();
+      return DataStore.GetUndecoratedDataStore();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _actualData.ContainsObjectID (objectID);
+      return DataStore.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _actualData.GetObject (index);
+      return DataStore.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _actualData.GetObject (objectID);
+      return DataStore.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _actualData.IndexOf (objectID);
+      return DataStore.IndexOf (objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      return _actualData.GetEnumerator ();
+      return DataStore.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

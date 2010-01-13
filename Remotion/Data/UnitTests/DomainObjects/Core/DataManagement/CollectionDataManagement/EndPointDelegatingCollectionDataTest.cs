@@ -22,9 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -36,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private Order _owningOrder;
 
     private ICollectionEndPoint _collectionEndPointMock;
-    private IDomainObjectCollectionData _actualDataStub;
+    private IDomainObjectCollectionData _dataStoreStub;
     private CompositeRelationModification _compositeModificationMock;
     private IRelationEndPointModification _modificationStub;
 
@@ -45,6 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private OrderItem _orderItem1;
     private OrderItem _orderItem2;
     private OrderItem _orderItem3;
+    private ICollectionEndPointData _endPointDataStub;
 
     public override void SetUp ()
     {
@@ -55,12 +54,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock = MockRepository.GenerateMock<ICollectionEndPoint>();
       StubCollectionEndPoint(_collectionEndPointMock, ClientTransactionMock, _owningOrder);
 
-      _actualDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
+      _dataStoreStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
 
       _modificationStub = MockRepository.GenerateStub<IRelationEndPointModification> ();
       _compositeModificationMock = MockRepository.GenerateMock<CompositeRelationModification> (new[] { new IRelationEndPointModification[0] });
 
-      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _actualDataStub);
+      _endPointDataStub = MockRepository.GenerateStub<ICollectionEndPointData> ();
+      _endPointDataStub.Stub (stub => stub.DataStore).Return (_dataStoreStub);
+      _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _endPointDataStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
@@ -86,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void RequiredItemType ()
     {
-      _actualDataStub.Stub (mock => mock.RequiredItemType).Return (typeof (Computer));
+      _dataStoreStub.Stub (mock => mock.RequiredItemType).Return (typeof (Computer));
 
       Assert.That (_data.RequiredItemType, Is.SameAs (typeof (Computer)));
     }
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void GetUndecoratedDataStore ()
     {
       var dataStoreStub = new DomainObjectCollectionData ();
-      _actualDataStub.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
+      _dataStoreStub.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
 
       Assert.That (_data.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
     }
@@ -358,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       }
 
       var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
-      var data = new EndPointDelegatingCollectionData (endPointStub, _actualDataStub);
+      var data = new EndPointDelegatingCollectionData (endPointStub, _endPointDataStub);
 
       using (_data.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope ())
       {
@@ -378,16 +379,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     private void PrepareActualDataContents (params DomainObject[] contents)
     {
-      _actualDataStub.Stub (stub => stub.Count).Return (contents.Length);
-      _actualDataStub.Stub (stub => stub.GetEnumerator ()).Return (((IEnumerable<DomainObject>) contents).GetEnumerator ());
+      _dataStoreStub.Stub (stub => stub.Count).Return (contents.Length);
+      _dataStoreStub.Stub (stub => stub.GetEnumerator ()).Return (((IEnumerable<DomainObject>) contents).GetEnumerator ());
 
       for (int i = 0; i < contents.Length; i++)
       {
         int currentIndex = i; // required because Stub creates a closure
-        _actualDataStub.Stub (stub => stub.ContainsObjectID (contents[currentIndex].ID)).Return (true);
-        _actualDataStub.Stub (stub => stub.GetObject (contents[currentIndex].ID)).Return (contents[currentIndex]);
-        _actualDataStub.Stub (stub => stub.GetObject (currentIndex)).Return (contents[currentIndex]);
-        _actualDataStub.Stub (stub => stub.IndexOf (contents[currentIndex].ID)).Return (currentIndex);
+        _dataStoreStub.Stub (stub => stub.ContainsObjectID (contents[currentIndex].ID)).Return (true);
+        _dataStoreStub.Stub (stub => stub.GetObject (contents[currentIndex].ID)).Return (contents[currentIndex]);
+        _dataStoreStub.Stub (stub => stub.GetObject (currentIndex)).Return (contents[currentIndex]);
+        _dataStoreStub.Stub (stub => stub.IndexOf (contents[currentIndex].ID)).Return (currentIndex);
       }
     }
   }

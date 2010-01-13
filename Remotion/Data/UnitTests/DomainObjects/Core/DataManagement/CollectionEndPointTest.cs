@@ -81,7 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2096")]
     public void Initialize_WithNullInitialContents ()
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, null);

@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// and allowing that data to be unloaded. When the <see cref="LazyLoadableCollectionEndPointData"/> is accessed and its data is empty, 
   /// it loads the data from a <see cref="ClientTransaction"/>.
   /// </summary>
-  public class LazyLoadableCollectionEndPointData : IFlattenedSerializable
+  public class LazyLoadableCollectionEndPointData : IFlattenedSerializable, ICollectionEndPointData
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _dataStore != null; }
     }
 
-    public DomainObjectCollectionData DataStore
+    public IDomainObjectCollectionData DataStore
     {
       get
       {

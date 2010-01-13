@@ -144,6 +144,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
+    <Compile Include="DataManagement\ICollectionEndPointData.cs" />
     <Compile Include="DataManagement\LazyLoadableCollectionEndPointData.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />

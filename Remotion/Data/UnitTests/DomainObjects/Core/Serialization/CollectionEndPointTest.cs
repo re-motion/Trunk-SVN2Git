@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
@@ -61,9 +62,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void CollectionEndPoint_Touched_Content ()
+    public void CollectionEndPoint_Content ()
     {
       _endPoint.OppositeDomainObjects.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
+
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.AreSame (_endPoint.Definition, deserializedEndPoint.Definition);
       Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
@@ -81,7 +83,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void CollectionEndPoint_Untouched_Content ()
+    public void CollectionEndPoint_Touched ()
+    {
+      _endPoint.Touch ();
+
+      CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      Assert.IsTrue (deserializedEndPoint.HasBeenTouched);
+    }
+
+    [Test]
+    public void CollectionEndPoint_Untouched ()
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.IsFalse (deserializedEndPoint.HasBeenTouched);
@@ -107,6 +118,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.IsNotNull (deserializedEndPoint.ClientTransaction);
+    }
+
+    [Test]
+    public void CollectionEndPoint_DelegatingDataMembers ()
+    {
+      _endPoint.OppositeDomainObjects.Add (OrderItem.GetObject (DomainObjectIDs.OrderItem5));
+
+      CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+
+      var deserializedArgumentCheckingData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (
+          deserializedEndPoint.OppositeDomainObjects);
+      var deserializedDelegatingData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (
+          deserializedArgumentCheckingData);
+
+      Assert.That (deserializedDelegatingData.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedDelegatingData, "_endPointData"), 
+          Is.SameAs (PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_data")));
     }
 
     [Test]

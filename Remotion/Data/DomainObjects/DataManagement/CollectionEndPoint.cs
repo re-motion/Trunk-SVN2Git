@@ -193,7 +193,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
-      var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, DataStore));
+      var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _data));
 
       return dataStrategy;
     }
@@ -283,6 +283,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var associatedEndPointField = typeof (EndPointDelegatingCollectionData).GetField ("_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);
       associatedEndPointField.SetValue (endPointDelegatingData, this);
+
+      var endPointDataField = typeof (EndPointDelegatingCollectionData).GetField ("_endPointData", BindingFlags.NonPublic | BindingFlags.Instance);
+      endPointDataField.SetValue (endPointDelegatingData, _data);
     }
 
     #endregion
