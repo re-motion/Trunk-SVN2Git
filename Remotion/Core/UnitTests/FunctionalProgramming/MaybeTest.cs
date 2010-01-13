@@ -38,22 +38,43 @@ namespace Remotion.UnitTests.FunctionalProgramming
     public void Initialization_Default ()
     {
       var value = new Maybe<string>();
-      Assert.That (value, Is.EqualTo (_nothing));
+      Assert.That (value.GetValueOrNull(), Is.Null);
     }
 
     [Test]
     public void Initialization_Null ()
     {
       var value = new Maybe<string> (null);
-      Assert.That (value, Is.EqualTo (_nothing));
+      Assert.That (value.GetValueOrNull (), Is.Null);
     }
 
     [Test]
     public void Initialization_NonNull ()
     {
-      var value = new Maybe<string> ("Test");
-      Assert.That (value, Is.Not.EqualTo (_nothing));
-      Assert.That (value, Is.EqualTo (new Maybe<string> ("Test")));
+      var innerValue = "Test";
+      var value = new Maybe<string> (innerValue);
+      Assert.That (value.GetValueOrNull (), Is.SameAs (innerValue));
+    }
+
+    [Test]
+    public void Equals_True ()
+    {
+      Assert.That (_nothing, Is.EqualTo (Maybe<string>.Nothing));
+      Assert.That (_nonNothing, Is.EqualTo (new Maybe<string> ("Test")));
+    }
+
+    [Test]
+    public void Equals_False ()
+    {
+      Assert.That (_nonNothing, Is.Not.EqualTo (Maybe<string>.Nothing));
+      Assert.That (_nothing, Is.Not.EqualTo (new Maybe<string> ("Test")));
+    }
+
+    [Test]
+    public void GetHashCode_EqualObjects ()
+    {
+      Assert.That (_nothing.GetHashCode (), Is.EqualTo (Maybe<string>.Nothing.GetHashCode ()));
+      Assert.That (_nonNothing.GetHashCode (), Is.EqualTo (new Maybe<string> ("Test").GetHashCode ()));
     }
 
     [Test]
@@ -117,13 +138,57 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void ToString_Nothing ()
     {
-      Assert.That (_nothing.ToString (), Is.EqualTo ("Nothing"));
+      Assert.That (_nothing.ToString (), Is.EqualTo ("Nothing (String)"));
     }
 
     [Test]
     public void ToString_NonNothing ()
     {
-      Assert.That (_nonNothing.ToString (), Is.EqualTo ("Value: Test"));
+      Assert.That (_nonNothing.ToString (), Is.EqualTo ("Value: Test (String)"));
+    }
+
+    [Test]
+    public void Select_Nothing_DoesNotCallSelector ()
+    {
+      bool selectorCalled = false;
+      _nothing.Select (s => { selectorCalled = true; return s.Length; });
+      Assert.That (selectorCalled, Is.False);
+    }
+
+    [Test]
+    public void Select_Nothing_ReturnsNothing ()
+    {
+      Assert.That (_nothing.Select (s => s.Length), Is.EqualTo (Maybe<int>.Nothing));
+    }
+
+    [Test]
+    public void Select_NonNothing_NonNull_ReturnsValue ()
+    {
+      Assert.That (_nonNothing.Select (s => s.Length), Is.EqualTo (Maybe.FromValue (4))); // "Test"
+    }
+
+    [Test]
+    public void Select_NonNothing_Null_ReturnsNothing ()
+    {
+      Assert.That (_nonNothing.Select (s => ((object) null)), Is.EqualTo (Maybe<object>.Nothing));
+    }
+
+    [Test]
+    public void Select_NullableValueType_Nothing_ReturnsNothing ()
+    {
+      Assert.That (_nothing.Select (s => (int?) s.Length), Is.EqualTo (Maybe<int>.Nothing));
+    }
+
+    [Test]
+    public void Select_NullableValueType_NonNothing_NonNull_ReturnsValue ()
+    {
+      Assert.That (_nonNothing.Select (s => (int?) s.Length), Is.EqualTo (Maybe.FromValue (4))); // "Test"
+    }
+
+    [Test]
+    public void Select_NullableValueType_NonNothing_Null_ReturnsNothing ()
+    {
+      Assert.That (_nonNothing.Select (s => ((int?) null)), Is.EqualTo (Maybe<int>.Nothing));
     }
   }
 }
