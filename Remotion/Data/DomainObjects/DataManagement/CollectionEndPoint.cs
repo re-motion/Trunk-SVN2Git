@@ -28,10 +28,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
-    private readonly LazyLoadableCollectionEndPointData _data;
+    private readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
-    private DomainObjectCollection _originalOppositeDomainObjectsReference;
-    private DomainObjectCollection _oppositeDomainObjects;
+    private DomainObjectCollection _oppositeDomainObjects; // points to _data by using EndPointDelegatingCollectionData as its data strategy
+    private DomainObjectCollection _originalOppositeDomainObjectsReference; // keeps the original reference of the _oppositeDomainObjects for rollback
 
     private bool _hasBeenTouched;
 
@@ -108,6 +108,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private IDomainObjectCollectionData DataStore
     {
       get { return _data.DataStore; }
+    }
+
+    public void Unload ()
+    {
+      _data.Unload ();
+    }
+
+    public void EnsureDataAvailable ()
+    {
+      _data.EnsureDataAvailable ();
     }
 
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)

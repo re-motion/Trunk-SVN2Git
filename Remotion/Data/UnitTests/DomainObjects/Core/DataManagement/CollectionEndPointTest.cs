@@ -219,6 +219,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Unload ()
+    {
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+      _customerEndPoint.Unload ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      _customerEndPoint.EnsureDataAvailable ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void ChangeOppositeDomainObjects ()
     {
       Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count));
