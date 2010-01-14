@@ -245,6 +245,131 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [Ignore ("TODO 2065")]
+    public void Unregister_NotLoaded ()
+    {
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionTestHelper.AddListener (_dataManager.ClientTransaction, listenerMock);
+      listenerMock.Replay (); // no events expected
+
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+
+      _dataManager.Unregister (DomainObjectIDs.Order1);
+
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    [Ignore ("TODO 2065")]
+    public void Unregister_RemovesDataContainer ()
+    {
+      EnsureDataAvailable (DomainObjectIDs.Order1);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+
+      _dataManager.Unregister (DomainObjectIDs.Order1);
+
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+    }
+
+    [Test]
+    [Ignore ("TODO 2065")]
+    public void Unregister_RemovesRelationsWithForeignKeys ()
+    {
+      var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var oppositeVirtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      EnsureDataAvailable (DomainObjectIDs.OrderTicket1);
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[oppositeVirtualEndPointID], Is.Not.Null);
+
+      _dataManager.Unregister (DomainObjectIDs.OrderTicket1);
+
+      Assert.That (_dataManager.RelationEndPointMap[realEndPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[oppositeVirtualEndPointID], Is.Null);
+    }
+
+    [Test]
+    [Ignore ("TODO 2065")]
+    public void Unregister_KeepsRelationsWithoutForeignKeys ()
+    {
+      var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var oppositeRealEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+
+      EnsureDataAvailable (DomainObjectIDs.OrderTicket1);
+      Assert.That (_dataManager.RelationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[virtualEndPointID], Is.Not.Null);
+
+      _dataManager.Unregister (DomainObjectIDs.Order1);
+
+      Assert.That (_dataManager.RelationEndPointMap[oppositeRealEndPointID], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[virtualEndPointID], Is.Not.Null);
+    }
+
+    [Test]
+    [Ignore ("TODO 2065")]
+    public void Unregister_RemovesNullVirtualEndPoints ()
+    {
+      var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
+      EnsureDataAvailable (DomainObjectIDs.Employee1);
+
+      _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
+
+      Assert.That (_dataManager.RelationEndPointMap[virtualEndPointID], Is.Not.Null);
+      Assert.That (((ObjectEndPoint) _dataManager.RelationEndPointMap[virtualEndPointID]).OppositeObjectID, Is.Null);
+
+      _dataManager.Unregister (DomainObjectIDs.Employee1);
+
+      Assert.That (_dataManager.RelationEndPointMap[virtualEndPointID], Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "??")]
+    [Ignore ("TODO 2065")]
+    public void Unregister_NotUnchanged ()
+    {
+      EnsureDataAvailable (DomainObjectIDs.Order1);
+      _dataManager.DataContainerMap[DomainObjectIDs.Order1].MarkAsChanged ();
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Changed));
+      
+      _dataManager.Unregister (DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    [Ignore ("TODO 2065")]
+    public void Unregister_UnloadsOwningCollections ()
+    {
+      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var collectionEndPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (collectionEndPointID);
+
+      Assert.That (collectionEndPoint.HasChanged, Is.False);
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.True);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
+
+      _dataManager.Unregister (DomainObjectIDs.OrderItem1);
+
+      Assert.That (collectionEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "??")]
+    [Ignore ("TODO 2065")]
+    public void Unregister_ChangedCollection ()
+    {
+      var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var collectionEndPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (collectionEndPointID);
+      collectionEndPoint.OppositeDomainObjects.Add (OrderItem.NewObject ());
+
+      Assert.That (collectionEndPoint.HasChanged, Is.True);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
+
+      _dataManager.Unregister (DomainObjectIDs.OrderItem1);
+    }
+
+    [Test]
     public void GetChangedDataContainersForCommitWithDeletedObject ()
     {
       OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -568,5 +693,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
       return dataContainer;
     }
+
+    private void EnsureDataAvailable (ObjectID objectID)
+    {
+      _dataManager.ClientTransaction.EnsureDataAvailable (objectID);
+    }
+
   }
 }

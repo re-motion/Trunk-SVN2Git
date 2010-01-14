@@ -59,5 +59,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         collectionEndPoint.Unload();
       }
     }
+
+    /// <summary>
+    /// Unloads the data held by the given <see cref="ClientTransaction"/> for the <see cref="DomainObject"/> with the specified 
+    /// <paramref name="objectID"/>. The <see cref="DomainObject"/> reference and <see cref="DomainObjectCollection"/> instances held by the
+    /// object are not removed, only the data is. The object can only be unloaded if its <see cref="DataContainer"/> as well as any collection-valued
+    /// relation the object is part of are in unchanged state.
+    /// </summary>
+    /// <param name="clientTransaction">The client transaction.</param>
+    /// <param name="objectID">The object ID.</param>
+    /// <remarks>
+    /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
+    /// the collection end points the object owns), the non-virtual end points owned by the object, and their respective opposite virtual object 
+    /// end-points. This means that unloading an object will unload a relation if and only if the object's <see cref="DataContainer"/> is holding the 
+    /// foreign key for the relation.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">The <see cref="DataContainer"/> of the object to be unloaded is not in unchanged state, or
+    /// a <see cref="CollectionEndPoint"/> the object is part of has changed.</exception>
+    public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      clientTransaction.DataManager.Unregister (objectID);
+    }
   }
 }

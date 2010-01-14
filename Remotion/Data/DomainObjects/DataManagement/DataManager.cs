@@ -145,6 +145,13 @@ public class DataManager : ISerializable, IDeserializationCallback
     _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
   }
 
+  public void Unregister (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+    throw new NotImplementedException ();
+  }
+
   public void Commit ()
   {
     var deletedDataContainers = _dataContainerMap.GetByState (StateType.Deleted).ToList();

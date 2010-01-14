@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -99,6 +100,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].HasChanged, Is.True);
 
       DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID);
+    }
+
+    [Test]
+    [Ignore ("TODO 2065")]
+    public void UnloadData ()
+    {
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "??")]
+    [Ignore ("TODO 2065")]
+    public void UnloadData_Changed ()
+    {
+      ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "??")]
+    [Ignore ("TODO 2065")]
+    public void UnloadData_ChangedCollection ()
+    {
+      OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject());
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID].HasChanged, Is.True);
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1);
     }
 
     private void EnsureEndPointLoaded (RelationEndPointID endPointID)
