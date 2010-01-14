@@ -78,10 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
     }
 
-
     public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
     {
-      return new RelationEndPointID (objectID, objectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
+      return new RelationEndPointID (objectID, objectID.ClassDefinition.ClassType, shortPropertyName);
     }
 
     public static CollectionEndPoint CreateCollectionEndPoint_Customer1_Orders (params Order[] initialContents)

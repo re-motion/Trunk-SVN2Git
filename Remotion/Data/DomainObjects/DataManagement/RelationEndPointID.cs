@@ -80,6 +80,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
     }
 
+    public RelationEndPointID (ObjectID objectID, Type declaringType, string shortPropertyName)
+      : this (
+          ArgumentUtility.CheckNotNull ("objectID", objectID),
+          GetRelationEndPointDefinition (objectID, MappingConfiguration.Current.NameResolver.GetPropertyName (declaringType, shortPropertyName)))
+    {
+    }
+
     public IRelationEndPointDefinition Definition
     {
       get { return _definition; }

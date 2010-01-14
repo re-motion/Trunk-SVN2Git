@@ -16,9 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -29,6 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private string _propertyName;
     private RelationEndPointID _endPointID;
     private RelationEndPointID _nullEndPointID;
+    private IRelationEndPointDefinition _endPointDefinition;
 
     public override void SetUp ()
     {
@@ -36,15 +39,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _objectID = DomainObjectIDs.Order1;
       _propertyName = "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket";
+      _endPointDefinition = _objectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (_propertyName);
+
       _endPointID = new RelationEndPointID (_objectID, _propertyName);
       _nullEndPointID = new RelationEndPointID (null, _endPointID.Definition);
     }
 
     [Test]
-    public void Initialize ()
+    public void Initialize_WithDefinition ()
     {
-      Assert.AreEqual (_propertyName, _endPointID.Definition.PropertyName);
-      Assert.AreEqual (_objectID, _endPointID.ObjectID);
+      var endPointID = new RelationEndPointID (_objectID, _endPointDefinition);
+      
+      Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
+      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
+    }
+
+    [Test]
+    public void Initialize_WithPropertyName ()
+    {
+      var endPointID = new RelationEndPointID (_objectID, _propertyName);
+      Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
+      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
+    }
+
+    [Test]
+    public void Initialize_WithShortPropertyName ()
+    {
+      var endPointID = new RelationEndPointID (_objectID, typeof (Order), "OrderTicket");
+      Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
+      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }
 
     [Test]
@@ -61,7 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       new RelationEndPointID (null, _propertyName);
     }
 
-
     [Test]
     [ExpectedException (typeof (MappingException))]
     public void InitializeWithInvalidClassID ()
@@ -75,14 +97,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HashCode ()
     {
       int expectedHashCode = _objectID.GetHashCode() ^ _propertyName.GetHashCode();
-      Assert.AreEqual (expectedHashCode, _endPointID.GetHashCode());
+      Assert.That (_endPointID.GetHashCode (), Is.EqualTo (expectedHashCode));
     }
 
     [Test]
     public void HashCode_NullID ()
     {
       int expectedHashCode = _propertyName.GetHashCode();
-      Assert.AreEqual (expectedHashCode, _nullEndPointID.GetHashCode());
+      Assert.That (_nullEndPointID.GetHashCode (), Is.EqualTo (expectedHashCode));
     }
 
     [Test]
@@ -90,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID2 = new RelationEndPointID (_objectID, _propertyName);
 
-      Assert.IsTrue (_endPointID.Equals (endPointID2));
+      Assert.That (_endPointID.Equals (endPointID2), Is.True);
     }
 
     [Test]
@@ -99,38 +121,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID2 = new RelationEndPointID (ObjectID.Parse (_objectID.ToString()), _propertyName);
       var endPointID3 = new RelationEndPointID (DomainObjectIDs.Order2, _propertyName);
 
-      Assert.IsTrue (_endPointID.Equals (endPointID2));
-      Assert.IsTrue (endPointID2.Equals (_endPointID));
-      Assert.IsFalse (_endPointID.Equals (endPointID3));
-      Assert.IsFalse (endPointID3.Equals (_endPointID));
-      Assert.IsFalse (endPointID2.Equals (endPointID3));
-      Assert.IsFalse (endPointID3.Equals (endPointID2));
+      Assert.That (_endPointID.Equals (endPointID2), Is.True);
+      Assert.That (endPointID2.Equals (_endPointID), Is.True);
+      Assert.That (_endPointID.Equals (endPointID3), Is.False);
+      Assert.That (endPointID3.Equals (_endPointID), Is.False);
+      Assert.That (endPointID2.Equals (endPointID3), Is.False);
+      Assert.That (endPointID3.Equals (endPointID2), Is.False);
     }
 
     [Test]
     public void EqualsWithOtherType ()
     {
-      Assert.IsFalse (_endPointID.Equals (new RelationEndPointIDTest()));
+      Assert.That (_endPointID.Equals (new RelationEndPointIDTest ()), Is.False);
     }
 
     [Test]
     public void EqualsWithNull ()
     {
-      Assert.IsFalse (_endPointID.Equals (null));
+      Assert.That (_endPointID.Equals (null), Is.False);
     }
 
     [Test]
     public new void ToString ()
     {
       string expected = _objectID + "/" + _propertyName;
-      Assert.AreEqual (expected, _endPointID.ToString());
+      Assert.That (_endPointID.ToString (), Is.EqualTo (expected));
     }
 
     [Test]
     public void ToString_WithNull ()
     {
       string expected = "null/" + _propertyName;
-      Assert.AreEqual (expected, _nullEndPointID.ToString ());
+      Assert.That (_nullEndPointID.ToString (), Is.EqualTo (expected));
     }
 
     [Test]
@@ -151,15 +173,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       RelationEndPointID[] endPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (existingDataContainer);
 
-      Assert.AreEqual (4, endPointIDs.Length);
-      Assert.AreSame (existingDataContainer.ID, endPointIDs[0].ObjectID);
-      Assert.AreSame (existingDataContainer.ID, endPointIDs[1].ObjectID);
-      Assert.AreSame (existingDataContainer.ID, endPointIDs[2].ObjectID);
-      Assert.AreSame (existingDataContainer.ID, endPointIDs[3].ObjectID);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[0].Definition.PropertyName) >= 0);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[1].Definition.PropertyName) >= 0);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[2].Definition.PropertyName) >= 0);
-      Assert.IsTrue (Array.IndexOf (expectedPropertyNames, endPointIDs[3].Definition.PropertyName) >= 0);
+      Assert.That (endPointIDs.Length, Is.EqualTo (4));
+      Assert.That (endPointIDs[0].ObjectID, Is.SameAs (existingDataContainer.ID));
+      Assert.That (endPointIDs[1].ObjectID, Is.SameAs (existingDataContainer.ID));
+      Assert.That (endPointIDs[2].ObjectID, Is.SameAs (existingDataContainer.ID));
+      Assert.That (endPointIDs[3].ObjectID, Is.SameAs (existingDataContainer.ID));
+      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[0].Definition.PropertyName) >= 0, Is.True);
+      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[1].Definition.PropertyName) >= 0, Is.True);
+      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[2].Definition.PropertyName) >= 0, Is.True);
+      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[3].Definition.PropertyName) >= 0, Is.True);
     }
 
     [Test]
@@ -168,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id1 = new RelationEndPointID (_objectID, _propertyName);
       var id2 = new RelationEndPointID (_objectID, _propertyName);
 
-      Assert.IsTrue (RelationEndPointID.Equals (id1, id2));
+      Assert.That (RelationEndPointID.Equals (id1, id2), Is.True);
     }
 
     [Test]
@@ -177,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id1 = new RelationEndPointID (_objectID, _propertyName);
       var id2 = new RelationEndPointID (DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
-      Assert.IsFalse (RelationEndPointID.Equals (id1, id2));
+      Assert.That (RelationEndPointID.Equals (id1, id2), Is.False);
     }
 
     [Test]
@@ -186,8 +208,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id1 = new RelationEndPointID (_objectID, _propertyName);
       var id2 = new RelationEndPointID (_objectID, _propertyName);
 
-      Assert.IsTrue (id1 == id2);
-      Assert.IsFalse (id1 != id2);
+      Assert.That (id1 == id2, Is.True);
+      Assert.That (id1 != id2, Is.False);
     }
 
     [Test]
@@ -196,8 +218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id1 = new RelationEndPointID (_objectID, _propertyName);
       var id2 = new RelationEndPointID (DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
-      Assert.IsFalse (id1 == id2);
-      Assert.IsTrue (id1 != id2);
+      Assert.That (id1 == id2, Is.False);
+      Assert.That (id1 != id2, Is.True);
     }
 
     [Test]
@@ -206,8 +228,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id1 = new RelationEndPointID (_objectID, _propertyName);
       var id2 = id1;
 
-      Assert.IsTrue (id1 == id2);
-      Assert.IsFalse (id1 != id2);
+      Assert.That (id1 == id2, Is.True);
+      Assert.That (id1 != id2, Is.False);
     }
 
     [Test]
@@ -215,8 +237,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var nullID1 = (RelationEndPointID) null;
       var nullID2 = (RelationEndPointID) null;
-      Assert.IsTrue (nullID1 == nullID2);
-      Assert.IsFalse (nullID1 != nullID2);
+      Assert.That (nullID1 == nullID2, Is.True);
+      Assert.That (nullID1 != nullID2, Is.False);
     }
 
     [Test]
@@ -225,8 +247,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var id2 = new RelationEndPointID (
           DomainObjectIDs.OrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
 
-      Assert.IsFalse (null == id2);
-      Assert.IsTrue (null != id2);
+      Assert.That (null == id2, Is.False);
+      Assert.That (null != id2, Is.True);
     }
 
     [Test]
@@ -234,8 +256,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var id1 = new RelationEndPointID (_objectID, _propertyName);
 
-      Assert.IsFalse (id1 == null);
-      Assert.IsTrue (id1 != null);
+      Assert.That (id1 == null, Is.False);
+      Assert.That (id1 != null, Is.True);
     }
   }
 }
