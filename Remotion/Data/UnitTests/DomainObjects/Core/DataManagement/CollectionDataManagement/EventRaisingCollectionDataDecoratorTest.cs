@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -32,10 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
   {
     private MockRepository _mockRepository;
     private IDomainObjectCollectionEventRaiser _eventRaiserMock;
-    private EventRaisingCollectionDataDecorator _eventRaisingDecoratorWithStubbedContent;
 
     private EventRaisingCollectionDataDecorator _eventRaisingDecoratorWithRealContent;
-    private IDomainObjectCollectionData _wrappedDataStub;
 
     private Order _order1;
     private Order _order2;
@@ -48,9 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _mockRepository = new MockRepository ();
       _eventRaiserMock = _mockRepository.StrictMock<IDomainObjectCollectionEventRaiser> ();
-      _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-
-      _eventRaisingDecoratorWithStubbedContent = new EventRaisingCollectionDataDecorator (_eventRaiserMock, _wrappedDataStub);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -62,79 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _eventRaiserMock.BackToRecord ();
       _eventRaiserMock.Replay();
-    }
-
-    [Test]
-    public void Enumeration ()
-    {
-      Assert.That (_eventRaisingDecoratorWithRealContent.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
-    }
-
-    [Test]
-    public void Count ()
-    {
-      Assert.That (_eventRaisingDecoratorWithRealContent.Count, Is.EqualTo (3));
-    }
-
-    [Test]
-    public void AssociatedEndPoint ()
-    {
-      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      _wrappedDataStub.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
-
-      Assert.That (_eventRaisingDecoratorWithStubbedContent.AssociatedEndPoint, Is.SameAs (endPointStub));
-    }
-
-    [Test]
-    public void IsDataAvailable ()
-    {
-      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
-      Assert.That (_eventRaisingDecoratorWithStubbedContent.IsDataAvailable, Is.True);
-
-      _wrappedDataStub.BackToRecord ();
-      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
-      Assert.That (_eventRaisingDecoratorWithStubbedContent.IsDataAvailable, Is.False);
-    }
-
-    [Test]
-    public void EnsureDataAvailable ()
-    {
-      _eventRaisingDecoratorWithStubbedContent.EnsureDataAvailable ();
-      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
-    }
-
-    [Test]
-    public void GetUndecoratedDataStore ()
-    {
-      var dataStoreStub = new DomainObjectCollectionData ();
-      _wrappedDataStub.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
-
-      Assert.That (_eventRaisingDecoratorWithStubbedContent.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
-    }
-
-    [Test]
-    public void ContainsObjectID ()
-    {
-      Assert.That (_eventRaisingDecoratorWithRealContent.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_eventRaisingDecoratorWithRealContent.ContainsObjectID (_order4.ID), Is.False);
-    }
-
-    [Test]
-    public void GetObject_ByIndex ()
-    {
-      Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (0), Is.SameAs (_order1));
-    }
-
-    [Test]
-    public void GetObject_ByID ()
-    {
-      Assert.That (_eventRaisingDecoratorWithRealContent.GetObject (_order2.ID), Is.SameAs (_order2));
-    }
-
-    [Test]
-    public void IndexOf ()
-    {
-      Assert.That (_eventRaisingDecoratorWithRealContent.IndexOf (_order2.ID), Is.EqualTo (1));
     }
 
     [Test]

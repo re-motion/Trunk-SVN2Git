@@ -236,8 +236,10 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\IndirectDomainObjectCollectionEventRaiserTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TestDomainObjectCollectionDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\LazyLoadableCollectionEndPointDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointIntegrationTest.cs" />

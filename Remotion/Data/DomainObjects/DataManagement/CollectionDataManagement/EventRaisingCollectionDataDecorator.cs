@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
@@ -26,18 +25,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// an <see cref="IDomainObjectCollectionEventRaiser"/> instance before and after the modification.
   /// </summary>
   [Serializable]
-  public class EventRaisingCollectionDataDecorator : IDomainObjectCollectionData
+  public class EventRaisingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
     private readonly IDomainObjectCollectionEventRaiser _eventRaiser;
-    private readonly IDomainObjectCollectionData _wrappedData;
 
     public EventRaisingCollectionDataDecorator (IDomainObjectCollectionEventRaiser eventRaiser, IDomainObjectCollectionData wrappedData)
+      : base (wrappedData)
     {
       ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
-      ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
-
       _eventRaiser = eventRaiser;
-      _wrappedData = wrappedData;
     }
 
     public IDomainObjectCollectionEventRaiser EventRaiser
@@ -45,60 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _eventRaiser; }
     }
 
-    public int Count
-    {
-      get { return _wrappedData.Count; }
-    }
-
-    public Type RequiredItemType
-    {
-      get { return _wrappedData.RequiredItemType; }
-    }
-
-    public ICollectionEndPoint AssociatedEndPoint
-    {
-      get { return _wrappedData.AssociatedEndPoint; }
-    }
-
-    public bool IsDataAvailable
-    {
-      get { return _wrappedData.IsDataAvailable; }
-    }
-
-    public void EnsureDataAvailable ()
-    {
-      _wrappedData.EnsureDataAvailable();
-    }
-
-    public IDomainObjectCollectionData GetUndecoratedDataStore ()
-    {
-      return _wrappedData.GetUndecoratedDataStore ();
-    }
-
-    public bool ContainsObjectID (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.ContainsObjectID(objectID);
-    }
-
-    public DomainObject GetObject (int index)
-    {
-      return _wrappedData.GetObject(index);
-    }
-
-    public DomainObject GetObject (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.GetObject(objectID);
-    }
-
-    public int IndexOf (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.IndexOf(objectID);
-    }
-
-    public void Clear ()
+    public override void Clear ()
     {
       var removedObjects = new Stack<DomainObject> (); // holds the removed objects in order to raise 
 
@@ -112,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       Assertion.IsTrue (index == Count);
 
-      _wrappedData.Clear ();
+      WrappedData.Clear ();
 
       foreach (var domainObject in removedObjects)
       {
@@ -123,16 +66,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       Assertion.IsTrue (index == 0);
     }
 
-    public void Insert (int index, DomainObject domainObject)
+    public override void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       _eventRaiser.BeginAdd (index, domainObject);
-      _wrappedData.Insert (index, domainObject);
+      WrappedData.Insert (index, domainObject);
       _eventRaiser.EndAdd (index, domainObject);
     }
 
-    public bool Remove (DomainObject domainObject)
+    public override bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       
@@ -141,13 +84,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         return false;
 
       _eventRaiser.BeginRemove (index, domainObject);
-      _wrappedData.Remove (domainObject);
+      WrappedData.Remove (domainObject);
       _eventRaiser.EndRemove (index, domainObject);
 
       return true;
     }
 
-    public bool Remove (ObjectID objectID)
+    public override bool Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
@@ -157,13 +100,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       
       var domainObject = GetObject (objectID);
       _eventRaiser.BeginRemove (index, domainObject);
-      _wrappedData.Remove (objectID);
+      WrappedData.Remove (objectID);
       _eventRaiser.EndRemove (index, domainObject);
       
       return true;
     }
 
-    public void Replace (int index, DomainObject value)
+    public override void Replace (int index, DomainObject value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
@@ -172,20 +115,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       {
         _eventRaiser.BeginRemove (index, oldDomainObject);
         _eventRaiser.BeginAdd (index, value);
-        _wrappedData.Replace (index, value);
+        WrappedData.Replace (index, value);
         _eventRaiser.EndRemove (index, oldDomainObject);
         _eventRaiser.EndAdd (index, value);
       }
-    }
-
-    public IEnumerator<DomainObject> GetEnumerator ()
-    {
-      return _wrappedData.GetEnumerator ();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator ();
     }
   }
 }
