@@ -189,6 +189,7 @@
     <Compile Include="DomainObjectCollectionExtensions.cs" />
     <Compile Include="DomainObjectCollectionWrapper.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
+    <Compile Include="Infrastructure\DomainObjectUnloader.cs" />
     <Compile Include="Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManager.cs" />
     <Compile Include="Infrastructure\Enlistment\IEnlistedDomainObjectManager.cs" />
     <Compile Include="Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManager.cs" />
