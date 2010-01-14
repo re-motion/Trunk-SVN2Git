@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -254,6 +255,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionMock.EnsureDataAvailable (new[] { DomainObjectIDs.Order1 });
 
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_EndPoint_Virtual ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      ClientTransactionMock.EnsureDataAvailable (endPointID);
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_EndPoint_Real ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      ClientTransactionMock.EnsureDataAvailable (endPointID);
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_EndPoint_Loaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Dev.Null = Customer.GetObject (DomainObjectIDs.Customer1).Orders;
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      ClientTransactionMock.EnsureDataAvailable (endPointID);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_EndPoint_Unloaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Dev.Null = Customer.GetObject (DomainObjectIDs.Customer1).Orders;
+      
+      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      Assert.That (endPoint, Is.Not.Null);
+      endPoint.Unload ();
+      Assert.That (endPoint.IsDataAvailable, Is.False);
+
+      ClientTransactionMock.EnsureDataAvailable (endPointID);
+      Assert.That (endPoint.IsDataAvailable, Is.True);
     }
 
     [Test]

@@ -70,6 +70,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return Definition.RelationDefinition; }
     }
 
+    public bool IsDataAvailable
+    {
+      get { return true; }
+    }
+
     public bool HasChanged
     {
       get { return false; }
@@ -137,6 +142,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     public void NotifyClientTransactionOfEndRelationChange ()
+    {
+      // do nothing
+    }
+
+    public void EnsureDataAvailable ()
     {
       // do nothing
     }

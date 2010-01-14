@@ -64,6 +64,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return Definition.RelationDefinition; }
     }
 
+    public bool IsDataAvailable
+    {
+      get { return true; }
+    }
+
     public ObjectID OppositeObjectID
     {
       get { return null; }
@@ -98,6 +103,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
     {
       throw new InvalidOperationException ("It is not possible to set the OppositeObjectID of a NullObjectEndPoint.");
+    }
+
+    public void EnsureDataAvailable ()
+    {
+      // do nothing
     }
 
     public void Touch ()

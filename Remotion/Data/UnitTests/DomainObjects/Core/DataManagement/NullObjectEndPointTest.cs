@@ -82,6 +82,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void IsDataAvailable_True ()
+    {
+      Assert.That (_nullEndPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void HasChanged ()
     {
       Assert.That (_nullEndPoint.HasChanged, Is.False);
@@ -166,6 +172,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           mock => mock.RelationChanged (
               Arg<DomainObject>.Is.Anything,
               Arg<string>.Is.Anything));
+    }
+
+    [Test]
+    public void EnsureDataAvailable_DoesNothing ()
+    {
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      listenerMock.Replay (); // no events expected
+
+      _nullEndPoint.EnsureDataAvailable ();
+
+      listenerMock.VerifyAllExpectations ();
     }
 
     [Test]

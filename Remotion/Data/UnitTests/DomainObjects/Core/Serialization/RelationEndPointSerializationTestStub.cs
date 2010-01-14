@@ -23,14 +23,14 @@ using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
   [Serializable]
-  public class RelationEndPointStub : RelationEndPoint
+  public class RelationEndPointSerializationTestStub : RelationEndPoint
   {
-    public RelationEndPointStub (ClientTransaction clientTransaction, RelationEndPointID id)
+    public RelationEndPointSerializationTestStub (ClientTransaction clientTransaction, RelationEndPointID id)
         : base (clientTransaction, id)
     {
     }
 
-    public RelationEndPointStub (FlattenedDeserializationInfo info)
+    public RelationEndPointSerializationTestStub (FlattenedDeserializationInfo info)
       : base (info)
     {
     }
@@ -38,6 +38,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public override void SetValueFrom (RelationEndPoint source)
     {
       throw new NotImplementedException();
+    }
+
+    public override bool IsDataAvailable
+    {
+      get { throw new NotImplementedException(); }
     }
 
     public override bool HasChanged
@@ -48,6 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public override bool HasBeenTouched
     {
       get { throw new NotImplementedException(); }
+    }
+
+    public override void EnsureDataAvailable ()
+    {
+      throw new NotImplementedException();
     }
 
     public override void Touch ()

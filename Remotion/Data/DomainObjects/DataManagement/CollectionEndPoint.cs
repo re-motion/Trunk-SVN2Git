@@ -90,6 +90,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _changeDetectionStrategy; }
     }
 
+    public override bool IsDataAvailable
+    {
+      get { return _data.IsDataAvailable; }
+    }
+
     public override bool HasChanged
     {
       get { return _changeDetectionStrategy.HasChanged (this); }
@@ -98,11 +103,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override bool HasBeenTouched
     {
       get { return _hasBeenTouched; }
-    }
-
-    public bool IsDataAvailable
-    {
-      get { return _data.IsDataAvailable; }
     }
 
     private IDomainObjectCollectionData DataStore
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _data.Unload ();
     }
 
-    public void EnsureDataAvailable ()
+    public override void EnsureDataAvailable ()
     {
       _data.EnsureDataAvailable ();
     }

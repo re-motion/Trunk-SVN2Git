@@ -17,12 +17,13 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -38,6 +39,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _endPointID = new RelationEndPointID (DomainObjectIDs.OrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void IsDataAvailable_True ()
+    {
+      Assert.That (_endPoint.IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_DoesNothing ()
+    {
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      listenerMock.Replay (); // no events expected
+
+      _endPoint.EnsureDataAvailable ();
+
+      listenerMock.VerifyAllExpectations ();
     }
     
     [Test]

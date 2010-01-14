@@ -32,6 +32,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract ObjectID OppositeObjectID { get; set; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
+    public override bool IsDataAvailable
+    {
+      get { return true; }
+    }
+
+    public override void EnsureDataAvailable ()
+    {
+      // nothing to do, ObjectEndPoints' data is always available
+      Assertion.IsTrue (IsDataAvailable);
+    }
+
     public void SetOppositeObjectAndNotify (DomainObject newRelatedObject)
     {
       RelationEndPointValueChecker.CheckClientTransaction (

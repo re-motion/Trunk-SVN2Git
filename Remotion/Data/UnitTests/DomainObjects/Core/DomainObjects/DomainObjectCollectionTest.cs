@@ -697,6 +697,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CheckSameEventHandlers (source, destination, "Removed");
     }
 
+    [Test]
+    [Ignore ("TODO 2100")]
+    public void EnsureDataAvailable_Associated ()
+    {
+    }
+
     private void CallRollback (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
     {
       PrivateInvoke.InvokeNonPublicMethod (collection, "Rollback", sourceCollection);

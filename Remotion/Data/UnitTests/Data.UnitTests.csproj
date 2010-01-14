@@ -560,7 +560,7 @@
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializationReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\FlattenedSerializationWriterTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointIDTest.cs" />
-    <Compile Include="DomainObjects\Core\Serialization\RelationEndPointStub.cs" />
+    <Compile Include="DomainObjects\Core\Serialization\RelationEndPointSerializationTestStub.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RelationEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\RealObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DataContainerMapTest.cs" />

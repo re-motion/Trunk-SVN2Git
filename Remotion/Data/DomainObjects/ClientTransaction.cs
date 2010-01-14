@@ -647,6 +647,21 @@ public abstract class ClientTransaction
     LoadObjects (idsToBeLoaded.ToList (), true);
   }
 
+  /// <summary>
+  /// Ensures that the data of the <see cref="IEndPoint"/> with the given <see cref="RelationEndPointID"/> has been loaded into this 
+  /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the relation end point's data.
+  /// </summary>
+  /// <param name="endPointID">The <see cref="RelationEndPointID"/> of the end point whose data must be loaded. In order to force a collection-valued 
+  /// relation property to be loaded, pass the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+  /// <exception cref="ArgumentNullException">The <paramref name="endPointID"/> parameter is <see langword="null" />.</exception>
+  public void EnsureDataAvailable (RelationEndPointID endPointID)
+  {
+    var endPoint = DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+    endPoint.EnsureDataAvailable();
+
+    Assertion.IsTrue (endPoint.IsDataAvailable);
+  }
+
   // TODO 2072: Move
   /// <summary>
   /// Copies the event handlers defined on the given <see cref="DomainObject"/>'s collection properties from another transaction to this
