@@ -54,20 +54,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.AssociatedEndPoint; }
     }
 
+    public bool IsDataAvailable
+    {
+      get { return _wrappedData.IsDataAvailable; }
+    }
+
+    public void EnsureDataAvailable ()
+    {
+      _wrappedData.EnsureDataAvailable();
+    }
+
     public IDomainObjectCollectionData GetUndecoratedDataStore ()
     {
-      return _wrappedData.GetUndecoratedDataStore ();
+      return _wrappedData.GetUndecoratedDataStore();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.ContainsObjectID(objectID);
+      return _wrappedData.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _wrappedData.GetObject(index);
+      return _wrappedData.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
@@ -79,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.IndexOf(objectID);
+      return _wrappedData.IndexOf (objectID);
     }
 
     public void Clear ()
@@ -155,20 +165,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       if (_requiredItemType != null && !_requiredItemType.IsInstanceOfType (domainObject))
       {
-        string message = string.Format ("Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
-            domainObject.GetPublicDomainObjectType (), _requiredItemType);
-        throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType ());
+        string message = string.Format (
+            "Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
+            domainObject.GetPublicDomainObjectType(),
+            _requiredItemType);
+        throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType());
       }
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      return _wrappedData.GetEnumerator ();
+      return _wrappedData.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
-      return GetEnumerator ();
+      return GetEnumerator();
     }
   }
 }

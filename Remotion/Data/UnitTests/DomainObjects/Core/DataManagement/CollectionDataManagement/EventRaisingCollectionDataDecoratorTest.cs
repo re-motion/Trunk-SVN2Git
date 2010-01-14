@@ -86,6 +86,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsDataAvailable ()
+    {
+      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
+      Assert.That (_eventRaisingDecoratorWithStubbedContent.IsDataAvailable, Is.True);
+
+      _wrappedDataStub.BackToRecord ();
+      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
+      Assert.That (_eventRaisingDecoratorWithStubbedContent.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      _eventRaisingDecoratorWithStubbedContent.EnsureDataAvailable ();
+      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
+    }
+
+    [Test]
     public void GetUndecoratedDataStore ()
     {
       var dataStoreStub = new DomainObjectCollectionData ();

@@ -253,6 +253,20 @@ namespace Remotion.Data.DomainObjects
       get { return _dataStrategy.AssociatedEndPoint; }
     }
 
+    public bool IsDataAvailable
+    {
+      get { return _dataStrategy.IsDataAvailable; }
+    }
+
+    /// <summary>
+    /// If this <see cref="DomainObjectCollection"/> represents a relation end point, ensures that the end point's data has been loaded, loading
+    /// the data if necessary. If this <see cref="DomainObjectCollection"/> is a stand-alone collection, this method does nothing.
+    /// </summary>
+    public void EnsureDataAvailable ()
+    {
+      _dataStrategy.EnsureDataAvailable ();
+    }
+
     /// <summary>
     /// Gets an enumerator for iterating over the items in this <see cref="DomainObjectCollection"/>.
     /// </summary>

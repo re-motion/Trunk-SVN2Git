@@ -63,6 +63,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return null; }
     }
 
+    public bool IsDataAvailable
+    {
+      get { return true; }
+    }
+
+    void IDomainObjectCollectionData.EnsureDataAvailable ()
+    {
+      Assertion.IsTrue (((IDomainObjectCollectionData) this).IsDataAvailable);
+    }
+
     IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
     {
       return this;

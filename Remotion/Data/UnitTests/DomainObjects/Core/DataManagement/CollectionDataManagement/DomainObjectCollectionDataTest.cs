@@ -66,6 +66,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsDataAvailable ()
+    {
+      Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);
+      ((IDomainObjectCollectionData) _data).EnsureDataAvailable ();
+      Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);
+    }
+
+    [Test]
     public void GetUndecoratedDataStore ()
     {
       Assert.That (((IDomainObjectCollectionData) _data).GetUndecoratedDataStore (), Is.SameAs (_data));

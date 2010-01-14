@@ -28,7 +28,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     int Count { get; }
     Type RequiredItemType { get; }
     ICollectionEndPoint AssociatedEndPoint { get; }
+    bool IsDataAvailable { get; }
 
+    void EnsureDataAvailable ();
     IDomainObjectCollectionData GetUndecoratedDataStore ();
 
     bool ContainsObjectID (ObjectID objectID);

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -127,6 +128,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Initialization_WithEnumerable_ChecksItems ()
     {
       new DomainObjectCollection (new[] { _customer1 }, typeof (Order));
+    }
+
+    [Test]
+    public void IsDataAvailable ()
+    {
+      _dataStrategyMock.Stub (mock => mock.IsDataAvailable).Return (true);
+      Assert.That (_collectionWithDataStrategyMock.IsDataAvailable, Is.True);
+
+      _dataStrategyMock.BackToRecord ();
+      _dataStrategyMock.Stub (mock => mock.IsDataAvailable).Return (false);
+      Assert.That (_collectionWithDataStrategyMock.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void EnsureDataAvailable_DelegatesToStrategy ()
+    {
+      _collectionWithDataStrategyMock.EnsureDataAvailable ();
+      _dataStrategyMock.AssertWasCalled (mock => mock.EnsureDataAvailable ());
     }
 
     [Test]
@@ -481,7 +500,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Clone_BecomesStandAlone ()
     {
-      OrderCollection associatedCollection = CreateAssociatedCollection();
+      OrderCollection associatedCollection = CreateAssociatedCollectionWithEndPointStub();
       var clonedCollection = (DomainObjectCollection) associatedCollection.Clone();
 
       // clone is always stand-alone, even when source is associated with end point
@@ -697,12 +716,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CheckSameEventHandlers (source, destination, "Removed");
     }
 
-    [Test]
-    [Ignore ("TODO 2100")]
-    public void EnsureDataAvailable_Associated ()
-    {
-    }
-
     private void CallRollback (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
     {
       PrivateInvoke.InvokeNonPublicMethod (collection, "Rollback", sourceCollection);
@@ -739,7 +752,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       return collection;
     }
 
-    private OrderCollection CreateAssociatedCollection ()
+    private OrderCollection CreateAssociatedCollectionWithEndPointStub ()
     {
       var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");

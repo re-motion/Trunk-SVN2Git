@@ -34,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private Order _owningOrder;
 
     private ICollectionEndPoint _collectionEndPointMock;
+    private ICollectionEndPointData _endPointDataStub;
     private IDomainObjectCollectionData _dataStoreStub;
     private CompositeRelationModification _compositeModificationMock;
     private IRelationEndPointModification _modificationStub;
@@ -43,7 +44,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private OrderItem _orderItem1;
     private OrderItem _orderItem2;
     private OrderItem _orderItem3;
-    private ICollectionEndPointData _endPointDataStub;
 
     public override void SetUp ()
     {
@@ -96,6 +96,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void AssociatedEndPoint ()
     {
       Assert.That (_data.AssociatedEndPoint, Is.SameAs (_collectionEndPointMock));
+    }
+
+    [Test]
+    public void IsDataAvailable ()
+    {
+      _endPointDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
+      Assert.That (_data.IsDataAvailable, Is.True);
+
+      _endPointDataStub.BackToRecord ();
+      _endPointDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
+      Assert.That (_data.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      _data.EnsureDataAvailable ();
+
+      _endPointDataStub.AssertWasCalled (mock => mock.EnsureDataAvailable ());
     }
 
     [Test]
