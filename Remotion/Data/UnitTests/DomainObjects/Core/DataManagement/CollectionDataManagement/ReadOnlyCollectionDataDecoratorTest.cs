@@ -69,12 +69,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IsReadOnly ()
-    {
-      Assert.That (_readOnlyDecorator.IsReadOnly, Is.True);
-    }
-
-    [Test]
     public void AssociatedEndPoint ()
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
@@ -100,12 +94,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _readOnlyDecorator.EnsureDataAvailable ();
       _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
-
-
+    
     [Test]
     public void GetUndecoratedDataStore ()
     {
-      Assert.That (_readOnlyDecorator.GetUndecoratedDataStore(), Is.SameAs (_wrappedDataStub));
+      var fakeData = new DomainObjectCollectionData ();
+
+      _wrappedDataStub.Stub (stub => stub.GetUndecoratedDataStore ()).Return (fakeData);
+      Assert.That (_readOnlyDecorator.GetUndecoratedDataStore (), Is.SameAs (fakeData));
     }
 
     [Test]
@@ -145,35 +141,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot clear a read-only collection.")]
     public void Clear_Throws ()
     {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Clear ();
+      _readOnlyDecorator.Clear ();
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
     public void Insert_Throws ()
     {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Insert (0, _order4);
+      _readOnlyDecorator.Insert (0, _order4);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_Throws ()
     {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Remove (_order1);
+      _readOnlyDecorator.Remove (_order1);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_ID_Throws ()
     {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Remove (_order1.ID);
+      _readOnlyDecorator.Remove (_order1.ID);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot replace an item in a read-only collection.")]
     public void Replace_Throws ()
     {
-      ((IDomainObjectCollectionData) _readOnlyDecorator).Replace (1, _order1);
+      _readOnlyDecorator.Replace (1, _order1);
     }
 
     [Test]

@@ -26,105 +26,34 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// of the <see cref="IDomainObjectCollectionData"/> interface will throw an <see cref="InvalidOperationException"/> when invoked on this class.
   /// </summary>
   [Serializable]
-  public class ReadOnlyCollectionDataDecorator : IDomainObjectCollectionData
+  public class ReadOnlyCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
-    private readonly IDomainObjectCollectionData _wrappedData;
-
     public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
+      : base (wrappedData)
     {
-      ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
-      _wrappedData = wrappedData;
     }
 
-    public IEnumerator<DomainObject> GetEnumerator ()
-    {
-      return _wrappedData.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator();
-    }
-
-    public int Count
-    {
-      get { return _wrappedData.Count; }
-    }
-
-    public bool IsReadOnly
-    {
-      get { return true; }
-    }
-
-    public Type RequiredItemType
-    {
-      get { return _wrappedData.RequiredItemType; }
-    }
-
-    public ICollectionEndPoint AssociatedEndPoint
-    {
-      get { return _wrappedData.AssociatedEndPoint; }
-    }
-
-    public bool IsDataAvailable
-    {
-      get { return _wrappedData.IsDataAvailable; }
-    }
-
-    public void EnsureDataAvailable ()
-    {
-      _wrappedData.EnsureDataAvailable ();
-    }
-
-    public IDomainObjectCollectionData GetUndecoratedDataStore ()
-    {
-      return _wrappedData;
-    }
-
-    public bool ContainsObjectID (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.ContainsObjectID (objectID);
-    }
-
-    public DomainObject GetObject (int index)
-    {
-      return _wrappedData.GetObject (index);
-    }
-
-    public DomainObject GetObject (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.GetObject (objectID);
-    }
-
-    public int IndexOf (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.IndexOf (objectID);
-    }
-
-    void IDomainObjectCollectionData.Clear ()
+    public override void  Clear()
     {
       throw new NotSupportedException ("Cannot clear a read-only collection.");
     }
 
-    void IDomainObjectCollectionData.Insert (int index, DomainObject domainObject)
+    public override void Insert (int index, DomainObject domainObject)
     {
       throw new NotSupportedException ("Cannot insert an item into a read-only collection.");
     }
 
-    bool IDomainObjectCollectionData.Remove (DomainObject domainObject)
+    public override bool Remove (DomainObject domainObject)
     {
       throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
     }
 
-    bool IDomainObjectCollectionData.Remove (ObjectID objectID)
+    public override bool Remove (ObjectID objectID)
     {
       throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
     }
 
-    void IDomainObjectCollectionData.Replace (int index, DomainObject newDomainObject)
+    public override void Replace (int index, DomainObject newDomainObject)
     {
       throw new NotSupportedException ("Cannot replace an item in a read-only collection.");
     }

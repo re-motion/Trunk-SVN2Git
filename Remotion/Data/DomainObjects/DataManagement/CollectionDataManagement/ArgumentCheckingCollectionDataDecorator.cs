@@ -26,78 +26,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <see cref="Insert"/>, <see cref="Replace"/>, and <see cref="Remove(Remotion.Data.DomainObjects.DomainObject)"/>.
   /// </summary>
   [Serializable]
-  public class ArgumentCheckingCollectionDataDecorator : IDomainObjectCollectionData
+  public class ArgumentCheckingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
-    private readonly IDomainObjectCollectionData _wrappedData;
     private readonly Type _requiredItemType;
 
     public ArgumentCheckingCollectionDataDecorator (Type requiredItemType, IDomainObjectCollectionData wrappedData)
+      : base (wrappedData)
     {
-      ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
-
-      _wrappedData = wrappedData;
       _requiredItemType = requiredItemType;
     }
 
-    public Type RequiredItemType
+    public override Type RequiredItemType
     {
       get { return _requiredItemType; }
     }
 
-    public int Count
-    {
-      get { return _wrappedData.Count; }
-    }
-
-    public ICollectionEndPoint AssociatedEndPoint
-    {
-      get { return _wrappedData.AssociatedEndPoint; }
-    }
-
-    public bool IsDataAvailable
-    {
-      get { return _wrappedData.IsDataAvailable; }
-    }
-
-    public void EnsureDataAvailable ()
-    {
-      _wrappedData.EnsureDataAvailable();
-    }
-
-    public IDomainObjectCollectionData GetUndecoratedDataStore ()
-    {
-      return _wrappedData.GetUndecoratedDataStore();
-    }
-
-    public bool ContainsObjectID (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.ContainsObjectID (objectID);
-    }
-
-    public DomainObject GetObject (int index)
-    {
-      return _wrappedData.GetObject (index);
-    }
-
-    public DomainObject GetObject (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.GetObject (objectID);
-    }
-
-    public int IndexOf (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.IndexOf (objectID);
-    }
-
-    public void Clear ()
-    {
-      _wrappedData.Clear();
-    }
-
-    public void Insert (int index, DomainObject domainObject)
+    public override void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -114,10 +58,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       CheckItemType (domainObject, "domainObject");
 
-      _wrappedData.Insert (index, domainObject);
+      base.Insert (index, domainObject);
     }
 
-    public bool Remove (DomainObject domainObject)
+    public override bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -128,17 +72,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         throw new ArgumentException (message, "domainObject");
       }
 
-      return _wrappedData.Remove (domainObject);
+      return base.Remove (domainObject);
     }
 
-    public bool Remove (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      return _wrappedData.Remove (objectID);
-    }
-
-    public void Replace (int index, DomainObject value)
+    public override void Replace (int index, DomainObject value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
@@ -158,7 +95,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       CheckItemType (value, "value");
 
-      _wrappedData.Replace (index, value);
+      base.Replace (index, value);
     }
 
     private void CheckItemType (DomainObject domainObject, string argumentName)
@@ -171,16 +108,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
             _requiredItemType);
         throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType());
       }
-    }
-
-    public IEnumerator<DomainObject> GetEnumerator ()
-    {
-      return _wrappedData.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator();
     }
   }
 }

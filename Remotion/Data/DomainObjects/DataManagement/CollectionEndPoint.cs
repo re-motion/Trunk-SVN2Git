@@ -288,7 +288,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var dataField = typeof (DomainObjectCollection).GetField ("_dataStrategy", BindingFlags.NonPublic | BindingFlags.Instance);
       var decorator = dataField.GetValue (collection);
 
-      var wrappedDataField = typeof (ArgumentCheckingCollectionDataDecorator).GetField ("_wrappedData", BindingFlags.NonPublic | BindingFlags.Instance);
+      var wrappedDataField = typeof (DomainObjectCollectionDataDecoratorBase).GetField ("_wrappedData", BindingFlags.NonPublic | BindingFlags.Instance);
       var endPointDelegatingData = (EndPointDelegatingCollectionData) wrappedDataField.GetValue (decorator);
 
       var associatedEndPointField = typeof (EndPointDelegatingCollectionData).GetField ("_associatedEndPoint", BindingFlags.NonPublic | BindingFlags.Instance);

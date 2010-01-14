@@ -52,31 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void GetUndecoratedDataStore ()
-    {
-      var dataStoreStub = new DomainObjectCollectionData ();
-      _wrappedDataMock.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStoreStub);
-      
-      Assert.That (_argumentCheckingDecorator.GetUndecoratedDataStore (), Is.SameAs (dataStoreStub));
-    }
-
-    [Test]
-    public void TrivialMembers_Delegated ()
-    {
-      CheckDelegation (data => data.GetEnumerator ());
-      CheckDelegation (data => Dev.Null = data.Count);
-      CheckDelegation (data => Dev.Null = data.AssociatedEndPoint);
-      CheckDelegation (data => Dev.Null = data.IsDataAvailable);
-      CheckDelegation (data => data.EnsureDataAvailable());
-      CheckDelegation (data => data.ContainsObjectID (DomainObjectIDs.Order1));
-      CheckDelegation (data => data.GetObject (0));
-      CheckDelegation (data => data.GetObject (DomainObjectIDs.Order1));
-      CheckDelegation (data => data.IndexOf (DomainObjectIDs.Order1));
-      CheckDelegation (data => data.Clear ());
-      CheckDelegation (data => data.Remove (DomainObjectIDs.Order1));
-    }
-
-    [Test]
     public void RequiredItemType ()
     {
       Assert.That (_argumentCheckingDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
@@ -258,12 +233,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var deserializedDecorator = Serializer.SerializeAndDeserialize (decorator);
 
       Assert.That (deserializedDecorator.Count(), Is.EqualTo (2));
-    }
-
-    private void CheckDelegation (Action<IDomainObjectCollectionData> action)
-    {
-      action (_argumentCheckingDecorator);
-      _wrappedDataMock.AssertWasCalled (action);
     }
 
     private void CheckThrows<T> (Action action, string expectedMessage) where T : Exception
