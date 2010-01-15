@@ -103,7 +103,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void UnloadData ()
     {
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
@@ -115,9 +114,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "??")]
-    [Ignore ("TODO 2065")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The state of DataContainer 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is 'Changed'. Only unchanged DataContainers can be "
+        + "unloaded.")]
     public void UnloadData_Changed ()
     {
       ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
@@ -126,8 +125,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "??")]
-    [Ignore ("TODO 2065")]
+        "The data of object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because the following relation end points "
+        + "have changed: Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems")]
     public void UnloadData_ChangedCollection ()
     {
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject());

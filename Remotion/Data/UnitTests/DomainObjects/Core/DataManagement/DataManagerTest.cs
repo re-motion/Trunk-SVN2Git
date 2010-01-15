@@ -245,7 +245,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void Unregister_NotLoaded ()
     {
       var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
@@ -262,7 +261,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void Unregister_RemovesDataContainer ()
     {
       EnsureDataAvailable (DomainObjectIDs.Order1);
@@ -274,7 +272,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void Unregister_RemovesRelationsWithForeignKeys ()
     {
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -291,7 +288,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void Unregister_KeepsRelationsWithoutForeignKeys ()
     {
       var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
@@ -308,7 +304,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void Unregister_RemovesNullVirtualEndPoints ()
     {
       var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
@@ -326,8 +321,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "??")]
-    [Ignore ("TODO 2065")]
+        "The state of DataContainer 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is 'Changed'. Only unchanged DataContainers can be "
+        + "unloaded.")]
     public void Unregister_NotUnchanged ()
     {
       EnsureDataAvailable (DomainObjectIDs.Order1);
@@ -338,7 +333,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO 2065")]
     public void Unregister_UnloadsOwningCollections ()
     {
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -355,8 +349,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "??")]
-    [Ignore ("TODO 2065")]
+        "The data of object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because the following relation end "
+        + "points have changed: "
+        + "Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems")]
     public void Unregister_ChangedCollection ()
     {
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -367,6 +362,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
 
       _dataManager.Unregister (DomainObjectIDs.OrderItem1);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The data of object 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid' cannot be unloaded because the following relation end points "
+        + "have changed: Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer")]
+    public void Unregister_ChangedVirtualNullEndPoint ()
+    {
+      var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee3, "Computer");
+      
+      var virtualEndPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
+      Assert.That (virtualEndPoint.OppositeObjectID, Is.Not.Null);
+      virtualEndPoint.OppositeObjectID = null;
+
+      Assert.That (virtualEndPoint.HasChanged, Is.True);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Employee3].State, Is.EqualTo (StateType.Unchanged));
+
+      _dataManager.Unregister (DomainObjectIDs.Employee3);
     }
 
     [Test]

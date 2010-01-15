@@ -20,6 +20,8 @@ using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
+using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
@@ -149,7 +151,45 @@ public class DataManager : ISerializable, IDeserializationCallback
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-    throw new NotImplementedException ();
+    var dataContainer = _dataContainerMap[objectID];
+    if (dataContainer != null)
+    {
+      if (dataContainer.State != StateType.Unchanged)
+      {
+        var message = string.Format (
+            "The state of DataContainer '{0}' is '{1}'. Only unchanged DataContainers can be unloaded.", 
+            dataContainer.ID, 
+            dataContainer.State);
+        throw new InvalidOperationException (message);
+      }
+
+      var endPointIDs = _relationEndPointMap.GetEndPointIDsForUnload (dataContainer);
+      
+      var changedEndPoints = endPointIDs.Where (id => _relationEndPointMap[id].HasChanged);
+      if (changedEndPoints.Any())
+      {
+        var message = string.Format (
+            "The data of object '{0}' cannot be unloaded because the following relation end points have changed: {1}",
+            objectID,
+            SeparatedStringBuilder.Build (", ", changedEndPoints));
+        throw new InvalidOperationException (message);
+      }
+
+      foreach (var unloadedEndPointID in endPointIDs)
+      {
+        if (unloadedEndPointID.Definition.Cardinality == CardinalityType.One)
+        {
+          _relationEndPointMap.RemoveEndPoint (unloadedEndPointID);
+        }
+        else
+        {
+          var unloadedCollectionEndPoint = (CollectionEndPoint) _relationEndPointMap[unloadedEndPointID];
+          unloadedCollectionEndPoint.Unload ();
+        }
+      }
+
+      _dataContainerMap.Remove (objectID);
+    }
   }
 
   public void Commit ()

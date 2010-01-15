@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -74,6 +75,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ICollectionEndPointChangeDetectionStrategy CollectionEndPointChangeDetectionStrategy
     {
       get { return _collectionEndPointChangeDetectionStrategy; }
+    }
+
+    public bool Contains (RelationEndPointID id)
+    {
+      return this[id] != null;
     }
 
     public void CommitAllEndPoints ()
@@ -296,7 +302,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (this[endPointID] == null)
+      if (!Contains (endPointID))
       {
         var message = string.Format ("End point '{0}' is not part of this map.", endPointID);
         throw new ArgumentException (message, "endPointID");
@@ -304,6 +310,49 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _transactionEventSink.RelationEndPointMapUnregistering (endPointID);
       _relationEndPoints.Remove (endPointID);
+    }
+
+    public RelationEndPointID[] GetEndPointIDsForUnload (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+      if (dataContainer.State != StateType.Unchanged)
+        throw new ArgumentException ("DataContainer must be unchanged.", "dataContainer");
+
+      var unloadedEndPointIDs = from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+                                from unloadedEndPointID in GetEndPointIDsForUnload (associatedEndPointID)
+                                select unloadedEndPointID;
+      return unloadedEndPointIDs.ToArray ();
+    }
+
+    private IEnumerable<RelationEndPointID> GetEndPointIDsForUnload (RelationEndPointID endPointID)
+    {
+      if (!endPointID.Definition.IsVirtual && !Contains (endPointID))
+        throw new InvalidOperationException ("Real end point has not been registered.");
+
+      var maybeRealEndPointID = Maybe.ForValue (endPointID).Where (id => !id.Definition.IsVirtual);
+
+      var maybeVirtualNullEndPointID = 
+          Maybe.ForValue (endPointID)
+            .Where (id => id.Definition.IsVirtual)
+            .Where (id => id.Definition.Cardinality == CardinalityType.One)
+            .Select (id => (ObjectEndPoint) _relationEndPoints[id])
+            .Where (endPoint => endPoint.OppositeObjectID == null)
+            .Select (endPoint => endPoint.ID);
+
+      var maybeOppositeEndPointID = 
+          Maybe.ForValue (endPointID)
+            .Where (id => !id.Definition.IsVirtual)
+            .Where (id => id.Definition.Cardinality == CardinalityType.One)
+            .Select (id => (ObjectEndPoint) _relationEndPoints[id])
+            .Where (endPoint => endPoint.OppositeObjectID != null)
+            .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition ()))
+            .Where (Contains);
+      
+      return Maybe.EnumerateValues (
+          maybeRealEndPointID,
+          maybeVirtualNullEndPointID,
+          maybeOppositeEndPointID);
     }
 
     public IEnumerator GetEnumerator ()
