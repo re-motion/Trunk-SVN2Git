@@ -31,7 +31,7 @@ namespace Remotion.FunctionalProgramming
     /// <param name="valueOrNull">The value. Can be <see langword="null" />, in which case <see cref="Maybe{T}.Nothing"/> is returned.</param>
     /// <returns><see cref="Maybe{T}.Nothing"/> if <paramref name="valueOrNull"/> is <see langword="null" />; otherwise an instance of 
     /// <see cref="Maybe{T}"/> that encapsulates the given <paramref name="valueOrNull"/>.</returns>
-    public static Maybe<T> FromValue<T> (T valueOrNull)
+    public static Maybe<T> ForValue<T> (T valueOrNull)
     {
       return new Maybe<T> (valueOrNull);
     }
@@ -40,12 +40,49 @@ namespace Remotion.FunctionalProgramming
     /// Creates a <see cref="Maybe{T}"/> instance for the given <paramref name="nullableValue"/>, unwrapping a nullable value type.
     /// </summary>
     /// <typeparam name="T">The underlying type of the <paramref name="nullableValue"/>.</typeparam>
-    /// <param name="nullableValue">The nullable value.</param>
+    /// <param name="nullableValue">
+    ///   The nullable value. Can be <see langword="null"/>, in which case <see cref="Maybe{T}.Nothing"/> is returned.
+    /// </param>
     /// <returns><see cref="Maybe{T}.Nothing"/> if <paramref name="nullableValue"/> is <see langword="null" />; otherwise an instance of 
     /// <see cref="Maybe{T}"/> that encapsulates the underlying value of <paramref name="nullableValue"/>.</returns>
-    public static Maybe<T> FromNullableValueType<T> (T? nullableValue) where T : struct
+    public static Maybe<T> ForValue<T> (T? nullableValue) where T : struct
     {
       return nullableValue.HasValue ? new Maybe<T> (nullableValue.Value) : Maybe<T>.Nothing;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Maybe{T}"/> instance for the given value, which can be <see langword="null"/>, if a boolean condition evaluates to
+    /// <see langword="true"/>. If it evaluates to <see langword="false"/>, <see cref="Maybe{T}.Nothing"/> is returned.
+    /// </summary>
+    /// <typeparam name="T">The type of the <paramref name="valueIfTrue"/>.</typeparam>
+    /// <param name="condition">The condition to check. If <see langword="false" />, <see cref="Maybe{T}.Nothing"/> is returned.</param>
+    /// <param name="valueIfTrue">The value. Can be <see langword="null"/>, in which case <see cref="Maybe{T}.Nothing"/> is returned.</param>
+    /// <returns>
+    /// 	<see cref="Maybe{T}.Nothing"/> if <paramref name="valueIfTrue"/> is <see langword="null"/> or <paramref name="condition"/> is 
+    /// 	<see langword="false" />; otherwise an instance of <see cref="Maybe{T}"/> that encapsulates the given <paramref name="valueIfTrue"/>.
+    /// </returns>
+    public static Maybe<T> ForCondition<T> (bool condition, T valueIfTrue)
+    {
+      return condition ? ForValue (valueIfTrue) : Maybe<T>.Nothing;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Maybe{T}"/> instance for the given value, unwrapping a nullable value type, if a boolean condition evaluates to
+    /// <see langword="true"/>. If it evaluates to <see langword="false"/>, <see cref="Maybe{T}.Nothing"/> is returned.
+    /// </summary>
+    /// <typeparam name="T">The underlying type of the <paramref name="nullableValueIfTrue"/>.</typeparam>
+    /// <param name="condition">The condition to check. If <see langword="false" />, <see cref="Maybe{T}.Nothing"/> is returned.</param>
+    /// <param name="nullableValueIfTrue">
+    ///   The nullable value. Can be <see langword="null"/>, in which case <see cref="Maybe{T}.Nothing"/> is returned.
+    ///   </param>
+    /// <returns>
+    /// 	<see cref="Maybe{T}.Nothing"/> if <paramref name="nullableValueIfTrue"/> is <see langword="null"/> or <paramref name="condition"/> is 
+    /// 	<see langword="false" />; otherwise an instance of <see cref="Maybe{T}"/> that encapsulates the underlying value of 
+    /// 	<paramref name="nullableValueIfTrue"/>.
+    /// </returns>
+    public static Maybe<T> ForCondition<T> (bool condition, T? nullableValueIfTrue) where T : struct
+    {
+      return condition ? ForValue (nullableValueIfTrue) : Maybe<T>.Nothing;
     }
   }
 
@@ -109,7 +146,7 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("selector", selector);
 
       if (_hasValue)
-        return Maybe.FromValue (selector (_value));
+        return Maybe.ForValue (selector (_value));
       else
         return Maybe<TR>.Nothing;
     }
@@ -129,18 +166,28 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("selector", selector);
 
       if (_hasValue)
-        return Maybe.FromNullableValueType (selector (_value));
+        return Maybe.ForValue (selector (_value));
       else
         return Maybe<TR>.Nothing;
     }
 
     /// <summary>
-    /// Gets the value held by this instance, or <see langword="null" /> if this instance is <see cref="Nothing"/>.
+    /// Gets the value held by this instance, or <see langword="null" /> if this instance does not have a value.
     /// </summary>
-    /// <returns>The value held by this instance, or <see langword="null" /> if this instance is <see cref="Nothing"/></returns>
+    /// <returns>The value held by this instance, or <see langword="null" /> if this instance does not have a value.</returns>
     public T GetValueOrNull ()
     {
       return _value;
+    }
+
+    /// <summary>
+    /// Executes the specified action if this instance has a value. Otherwise, the action is not performed.
+    /// </summary>
+    /// <param name="action">The action to execute.</param>
+    public void Do (Action<T> action)
+    {
+      if (_hasValue)
+        action (_value);
     }
   }
 }
