@@ -158,30 +158,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetAllRelationEndPointIDs ()
     {
-      var expectedPropertyNames = new[]
-                                       {
-                                           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer",
-                                           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket",
-                                           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems",
-                                           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"
-                                       };
+      var endPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (DomainObjectIDs.Order1);
 
-      DataContainer existingDataContainer = DataContainer.CreateForExisting (
-          new ObjectID ("Order", Guid.NewGuid()),
-          null,
-          definition => definition.DefaultValue);
-
-      RelationEndPointID[] endPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (existingDataContainer);
-
-      Assert.That (endPointIDs.Length, Is.EqualTo (4));
-      Assert.That (endPointIDs[0].ObjectID, Is.SameAs (existingDataContainer.ID));
-      Assert.That (endPointIDs[1].ObjectID, Is.SameAs (existingDataContainer.ID));
-      Assert.That (endPointIDs[2].ObjectID, Is.SameAs (existingDataContainer.ID));
-      Assert.That (endPointIDs[3].ObjectID, Is.SameAs (existingDataContainer.ID));
-      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[0].Definition.PropertyName) >= 0, Is.True);
-      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[1].Definition.PropertyName) >= 0, Is.True);
-      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[2].Definition.PropertyName) >= 0, Is.True);
-      Assert.That (Array.IndexOf (expectedPropertyNames, endPointIDs[3].Definition.PropertyName) >= 0, Is.True);
+      var expectedIDs = new[]
+        {
+          RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer"),
+          RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket"),
+          RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"),
+          RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Official"),
+        };
+      Assert.That (endPointIDs, Is.EquivalentTo (expectedIDs));
     }
 
     [Test]

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -23,18 +24,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public sealed class RelationEndPointID : IFlattenedSerializable
   {
-    public static RelationEndPointID[] GetAllRelationEndPointIDs (DataContainer dataContainer)
+    public static RelationEndPointID[] GetAllRelationEndPointIDs (ObjectID objectID)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      IRelationEndPointDefinition[] endPointDefinitions = dataContainer.ClassDefinition.GetRelationEndPointDefinitions ();
-
-      var relationEndPointIDs = new RelationEndPointID[endPointDefinitions.Length];
-
-      for (int i = 0; i < endPointDefinitions.Length; i++)
-        relationEndPointIDs[i] = new RelationEndPointID (dataContainer.ID, endPointDefinitions[i].PropertyName);
-
-      return relationEndPointIDs;
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      
+      var endPointDefinitions = objectID.ClassDefinition.GetRelationEndPointDefinitions ();
+      return endPointDefinitions.Select (endPointDefinition => new RelationEndPointID (objectID, endPointDefinition)).ToArray();
     }
 
     public static bool operator == (RelationEndPointID endPointID1, RelationEndPointID endPointID2)
