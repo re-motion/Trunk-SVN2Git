@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.FunctionalProgramming
 {
@@ -63,7 +65,7 @@ namespace Remotion.FunctionalProgramming
     /// </returns>
     public static Maybe<T> ForCondition<T> (bool condition, T valueIfTrue)
     {
-      return condition ? ForValue (valueIfTrue) : Maybe<T>.Nothing;
+      return ForValue (valueIfTrue).Where (v => condition);
     }
 
     /// <summary>
@@ -83,6 +85,28 @@ namespace Remotion.FunctionalProgramming
     public static Maybe<T> ForCondition<T> (bool condition, T? nullableValueIfTrue) where T : struct
     {
       return condition ? ForValue (nullableValueIfTrue) : Maybe<T>.Nothing;
+    }
+
+    /// <summary>
+    /// Enumerates the values of a number of <see cref="Maybe{T}"/> instances. <see cref="Maybe{T}"/> instances that have no values are ignored.
+    /// </summary>
+    /// <typeparam name="T">The value type of the <see cref="Maybe{T}"/> values.</typeparam>
+    /// <param name="maybeValues">The maybe instances to enumerate the values of. <see cref="Maybe{T}"/> instances that have no values are ignored.</param>
+    /// <returns>An enumerable sequence containing all non-<see langword="null" /> values</returns>
+    public static IEnumerable<T> EnumerateValues<T> (IEnumerable<Maybe<T>> maybeValues)
+    {
+      return maybeValues.Where (v => v.HasValue).Select (v => v.GetValueOrNull ());
+    }
+
+    /// <summary>
+    /// Enumerates the values of a number of <see cref="Maybe{T}"/> instances. <see cref="Maybe{T}"/> instances that have no values are ignored.
+    /// </summary>
+    /// <typeparam name="T">The value type of the <see cref="Maybe{T}"/> values.</typeparam>
+    /// <param name="maybeValues">The maybe instances to enumerate the values of. <see cref="Maybe{T}"/> instances that have no values are ignored.</param>
+    /// <returns>An enumerable sequence containing all non-<see langword="null" /> values</returns>
+    public static IEnumerable<T> EnumerateValues<T> (params Maybe<T>[] maybeValues)
+    {
+      return EnumerateValues ((IEnumerable<Maybe<T>>) maybeValues);
     }
   }
 
@@ -188,6 +212,11 @@ namespace Remotion.FunctionalProgramming
     {
       if (_hasValue)
         action (_value);
+    }
+
+    public Maybe<T> Where (Func<T, bool> predicate)
+    {
+      return _hasValue && predicate (_value) ? this : Nothing;
     }
   }
 }

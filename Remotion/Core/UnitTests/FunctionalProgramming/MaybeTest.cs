@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.FunctionalProgramming;
 
 namespace Remotion.UnitTests.FunctionalProgramming
@@ -126,7 +126,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void ForCondition_True_Null ()
     {
-      var value = Maybe.ForCondition<string> (true, null);
+      var value = Maybe.ForCondition (true, (string) null);
       Assert.That (value, Is.EqualTo (_stringNothing));
     }
 
@@ -263,6 +263,49 @@ namespace Remotion.UnitTests.FunctionalProgramming
 
       Assert.That (actionExecuted, Is.True);
       Assert.That (value, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void Where_Nothing_DoesNotCallPredicate ()
+    {
+      bool predicateCalled = false;
+      _stringNothing.Where (s => { predicateCalled = true; return true; });
+      Assert.That (predicateCalled, Is.False);
+    }
+
+    [Test]
+    public void Where_Nothing_ReturnsNothing ()
+    {
+      Assert.That (_stringNothing.Where (s => true), Is.EqualTo (_stringNothing));
+    }
+
+    [Test]
+    public void Where_NonNothing_CallsPredicateWithValue ()
+    {
+      string predicateParameter = null;
+      _stringNonNothingTest.Where (s => { predicateParameter = s; return false; });
+
+      Assert.That (predicateParameter, Is.EqualTo ("Test"));
+    }
+
+    [Test]
+    public void Where_NonNothing_False_ReturnsNothing ()
+    {
+      Assert.That (_stringNonNothingTest.Where (s => false), Is.EqualTo (_stringNothing));
+    }
+
+    [Test]
+    public void Where_NonNothing_True_ReturnsNonNothing ()
+    {
+      Assert.That (_stringNonNothingTest.Where (s => true), Is.EqualTo (_stringNonNothingTest));
+    }
+
+    [Test]
+    public void EnumerateValues ()
+    {
+      var enumerable = Maybe.EnumerateValues (Maybe.ForValue ("One"), Maybe.ForValue ((string) null), Maybe.ForValue ("Two"));
+
+      Assert.That (enumerable.ToArray (), Is.EqualTo (new[] { "One", "Two" }));
     }
   }
 }
