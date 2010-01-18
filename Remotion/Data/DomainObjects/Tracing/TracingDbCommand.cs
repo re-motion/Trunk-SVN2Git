@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using Remotion.Utilities;
-using ArgumentUtility=Remotion.Data.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
