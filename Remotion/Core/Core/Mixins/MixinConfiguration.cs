@@ -30,7 +30,8 @@ namespace Remotion.Mixins
 {
   /// <summary>
   /// Constitutes a mixin configuration (ie. a set of classes associated with mixins) and manages the mixin configuration for the current thread
-  /// (actually: <see cref="SafeContext"/>).
+  /// (actually: <see cref="SafeContext"/>). 
+  /// Instances of this class are immutable, i.e., their content is initialized on construction and cannot be changed later on.
   /// </summary>
   /// <remarks>
   /// <para>

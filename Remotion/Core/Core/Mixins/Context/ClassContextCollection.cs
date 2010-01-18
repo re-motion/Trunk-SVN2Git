@@ -26,6 +26,7 @@ namespace Remotion.Mixins.Context
   /// <summary>
   /// Holds the <see cref="ClassContext"/> instances for a <see cref="MixinConfiguration"/>, providing easy means to search exactly for a given type
   /// (<see cref="GetExact"/>) and with inheritance rules (<see cref="GetWithInheritance"/>).
+  /// This class is immutable, i.e., it is initialized on construction and cannot be changed later on.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
   public class ClassContextCollection : ICollection, ICollection<ClassContext>

@@ -20,6 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
 {
+  // This class is immutable, i.e., it is initialized on construction and cannot be changed later on.
   public class MixinContextCollection : ReadOnlyContextCollection<Type, MixinContext>
   {
     internal static bool ContainsOverrideForMixin (IEnumerable<MixinContext> mixinContexts, Type mixinType)
