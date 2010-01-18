@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
@@ -23,6 +25,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public interface ICollectionEndPointChangeDetectionStrategy
   {
-    bool HasChanged (ICollectionEndPoint endPoint);
+    bool HasDataChanged (IDomainObjectCollectionData currentData, DomainObjectCollection originalData);
   }
 }

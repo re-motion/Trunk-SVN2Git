@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -113,12 +114,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
 
-      strategyMock.Expect (mock => mock.HasChanged (endPoint)).Return (true);
+      strategyMock.Expect (mock => mock.HasDataChanged (
+          Arg<IDomainObjectCollectionData>.List.Equal (endPoint.OppositeDomainObjects), 
+          Arg.Is (endPoint.OriginalOppositeDomainObjectsContents))).Return (true);
       strategyMock.Replay();
 
       var result = endPoint.HasChanged;
 
       strategyMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void HasChanged_TrueWithoutStrategy_WhenReferenceChanged ()
+    {
+      var strategyMock = MockRepository.GenerateMock<ICollectionEndPointChangeDetectionStrategy> ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
+
+      endPoint.SetOppositeCollectionAndNotify (new OrderCollection { _order1 });
+
+      var result = endPoint.HasChanged;
+
+      strategyMock.AssertWasNotCalled (mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<DomainObjectCollection>.Is.Anything));
       Assert.That (result, Is.EqualTo (true));
     }
 

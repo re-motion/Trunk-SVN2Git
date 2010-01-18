@@ -15,11 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -27,58 +28,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   [TestFixture]
   public class RootCollectionEndPointChangeDetectionStrategyTest : ClientTransactionBaseTest
   {
-    private CollectionEndPoint _customerEndPoint;
-    private Order _order1; // Customer1
-    private Order _orderWithoutOrderItem; // Customer1
-    private Order _order2; // Customer3
+    private Order _order1;
+    private Order _order2;
+    private Order _order3;
+
     private RootCollectionEndPointChangeDetectionStrategy _strategy;
+    private IDomainObjectCollectionData _currentData;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
+      _order3 = Order.GetObject (DomainObjectIDs.Order3);
 
-      _customerEndPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders (_order1, _orderWithoutOrderItem);
+      _currentData = new DomainObjectCollectionData (new[] { _order1, _order2 });
 
       _strategy = new RootCollectionEndPointChangeDetectionStrategy ();
     }
 
     [Test]
-    public void HasChanged_False ()
+    public void HasDataChanged_False ()
     {
-      Assert.That (_strategy.HasChanged (_customerEndPoint), Is.False);
+      Assert.That (_strategy.HasDataChanged (_currentData, new DomainObjectCollection (_currentData, null)), Is.False);
     }
 
     [Test]
-    public void HasChanged_False_OrderOnly ()
+    public void HasDataChanged_False_OrderOnly ()
     {
-      _customerEndPoint.OppositeDomainObjects.RemoveAt (0);
-      _customerEndPoint.OppositeDomainObjects.Insert (1, _order1);
-      Assert.That (_strategy.HasChanged (_customerEndPoint), Is.False);
+      var originalData = new DomainObjectCollection (_currentData.Cast<DomainObject>().Reverse(), null);
+      Assert.That (_strategy.HasDataChanged (_currentData, originalData), Is.False);
     }
 
     [Test]
-    public void HasChanged_False_TouchedOnly ()
+    public void HasDataChanged_True_Content ()
     {
-      _customerEndPoint.Touch ();
-      Assert.That (_strategy.HasChanged (_customerEndPoint), Is.False);
-    }
-
-    [Test]
-    public void HasChanged_True_ReferenceChanged ()
-    {
-      _customerEndPoint.SetOppositeCollectionAndNotify (_customerEndPoint.OppositeDomainObjects.Clone ());
-      Assert.That (_strategy.HasChanged (_customerEndPoint), Is.True);
-    }
-
-    [Test]
-    public void HasChanged_True_Content ()
-    {
-      _customerEndPoint.OppositeDomainObjects.Add (_order2);
-      Assert.That (_strategy.HasChanged (_customerEndPoint), Is.True);
+      var originalData = new DomainObjectCollection (new[] { _order1, _order2, _order3 }, null);
+      Assert.That (_strategy.HasDataChanged (_currentData, originalData), Is.True);
     }
   }
 }

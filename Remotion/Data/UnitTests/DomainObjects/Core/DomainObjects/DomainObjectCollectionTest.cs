@@ -759,7 +759,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var endPointDataStub = new LazyLoadableCollectionEndPointData (
           ClientTransactionMock, 
           endPointID, 
-          new RootCollectionEndPointChangeDetectionStrategy(), 
           new DomainObject[0]);
 
       var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, endPointDataStub);

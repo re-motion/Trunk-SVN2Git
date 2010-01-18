@@ -27,6 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
+    private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
     private readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
     private DomainObjectCollection _oppositeDomainObjects; // points to _data by using EndPointDelegatingCollectionData as its data strategy
@@ -42,7 +43,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
-      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, changeDetectionStrategy, initialContents);
+      
+      _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContents);
 
       var factory = new DomainObjectCollectionFactory ();
       var collectionType = id.Definition.PropertyType;
@@ -52,6 +54,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _originalCollectionReference = _oppositeDomainObjects;
       
       _hasBeenTouched = false;
+      _changeDetectionStrategy = changeDetectionStrategy;
     }
 
     public DomainObjectCollection OppositeDomainObjects
@@ -85,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
     {
-      get { return _data.ChangeDetectionStrategy; }
+      get { return _changeDetectionStrategy; }
     }
 
     public override bool IsDataAvailable
@@ -95,7 +98,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override bool HasChanged
     {
-      get { return _data.HasChanged (this); }
+      get { return OriginalCollectionReference != OppositeDomainObjects || _data.HasDataChanged (_changeDetectionStrategy); }
     }
 
     public override bool HasBeenTouched
@@ -252,6 +255,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _originalCollectionReference = info.GetValueForHandle<DomainObjectCollection>();
       _hasBeenTouched = info.GetBoolValue();
       _data = info.GetValue<LazyLoadableCollectionEndPointData> ();
+      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
 
       FixupAssociatedEndPoint (_oppositeDomainObjects);
     }
@@ -262,6 +266,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_originalCollectionReference);
       info.AddBoolValue (_hasBeenTouched);
       info.AddValue (_data);
+      info.AddHandle (_changeDetectionStrategy);
     }
 
     private void FixupAssociatedEndPoint (DomainObjectCollection collection)
