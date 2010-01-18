@@ -756,7 +756,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      var endPointDataStub = new LazyLoadableCollectionEndPointData (ClientTransactionMock, endPointID, new DomainObject[0]);
+      var endPointDataStub = new LazyLoadableCollectionEndPointData (
+          ClientTransactionMock, 
+          endPointID, 
+          new RootCollectionEndPointChangeDetectionStrategy(), 
+          new DomainObject[0]);
+
       var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, endPointDataStub);
       var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
       Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));

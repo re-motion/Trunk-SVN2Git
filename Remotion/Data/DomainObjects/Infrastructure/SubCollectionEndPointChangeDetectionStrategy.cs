@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return endPoint.OppositeDomainObjects != endPoint.OriginalOppositeDomainObjectsReference
+      return endPoint.OppositeDomainObjects != endPoint.OriginalCollectionReference
           || !endPoint.OppositeDomainObjects.SequenceEqual (endPoint.OriginalOppositeDomainObjectsContents.Cast<DomainObject> ());
     }
   }

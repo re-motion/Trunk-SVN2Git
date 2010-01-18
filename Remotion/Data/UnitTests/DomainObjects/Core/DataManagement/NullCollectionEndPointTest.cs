@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException))]
     public void OriginalOppositeDomainObjectsReference ()
     {
-      Dev.Null = _nullEndPoint.OriginalOppositeDomainObjectsReference;
+      Dev.Null = _nullEndPoint.OriginalCollectionReference;
     }
 
     [Test]

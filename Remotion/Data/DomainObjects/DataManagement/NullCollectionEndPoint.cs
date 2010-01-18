@@ -106,9 +106,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsContents from a NullCollectionEndPoint."); }
     }
 
-    public DomainObjectCollection OriginalOppositeDomainObjectsReference
+    public DomainObjectCollection OriginalCollectionReference
     {
-      get { throw new InvalidOperationException ("It is not possible to get the OriginalOppositeDomainObjectsReference from a NullCollectionEndPoint."); }
+      get { throw new InvalidOperationException ("It is not possible to get the OriginalCollectionReference from a NullCollectionEndPoint."); }
     }
 
     public void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects)

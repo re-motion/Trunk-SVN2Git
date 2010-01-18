@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     DomainObjectCollection OppositeDomainObjects { get; set; }
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
-    DomainObjectCollection OriginalOppositeDomainObjectsReference { get; }
+    DomainObjectCollection OriginalCollectionReference { get; }
 
     void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects);
 

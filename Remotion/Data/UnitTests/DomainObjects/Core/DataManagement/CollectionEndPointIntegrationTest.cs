@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (oldOpposites));
+      Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (oldOpposites));
     }
 
     [Test]
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (oldOpposites));
+      Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (oldOpposites));
     }
 
     [Test]
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.SameAs (oldOriginalOpposites));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (oldOpposites));
+      Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (oldOpposites));
     }
 
     [Test]
@@ -314,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
+      Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
       Assert.That (_customerEndPoint.OppositeDomainObjects.IsReadOnly, Is.True);
     }
 
@@ -368,7 +368,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem, _order2 }));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
+      Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
       Assert.That (_customerEndPoint.OppositeDomainObjects.IsReadOnly, Is.True);
     }
 

@@ -31,6 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
+    private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     private DomainObjectCollectionData _dataStore;
     private DomainObjectCollection _originalOppositeDomainObjectsContents;
@@ -38,13 +39,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public LazyLoadableCollectionEndPointData (
         ClientTransaction clientTransaction, 
         RelationEndPointID endPointID, 
+        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy, 
         IEnumerable<DomainObject> initialContents)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
       _clientTransaction = clientTransaction;
       _endPointID = endPointID;
+      _changeDetectionStrategy = changeDetectionStrategy;
 
       if (initialContents != null)
         SetContents (initialContents);
@@ -58,6 +62,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public RelationEndPointID EndPointID
     {
       get { return _endPointID; }
+    }
+
+    public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
+    {
+      get { return _changeDetectionStrategy; }
     }
 
     public bool IsDataAvailable
@@ -85,6 +94,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Assertion.IsNotNull (_originalOppositeDomainObjectsContents);
         return _originalOppositeDomainObjectsContents; 
       }
+    }
+
+    public bool HasChanged (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      
+      if (!IsDataAvailable)
+        return false; // if we are unloaded, we're definitely unchanged
+
+      return _changeDetectionStrategy.HasChanged (endPoint);
     }
 
     public void EnsureDataAvailable ()
@@ -117,6 +136,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       _endPointID = info.GetValueForHandle<RelationEndPointID> ();
+      _changeDetectionStrategy = info.GetValueForHandle<ICollectionEndPointChangeDetectionStrategy> ();
+
       _dataStore = info.GetValue<DomainObjectCollectionData> ();
       _originalOppositeDomainObjectsContents = info.GetValue<DomainObjectCollection> ();
     }
@@ -127,6 +148,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       info.AddHandle (_clientTransaction);
       info.AddHandle (_endPointID);
+      info.AddHandle (_changeDetectionStrategy);
 
       info.AddValue (_dataStore);
       info.AddValue (_originalOppositeDomainObjectsContents);

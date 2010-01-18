@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -58,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.IsDataAvailable, Is.True);
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
+      Assert.That (_customerEndPoint.OriginalCollectionReference, Is.SameAs (_customerEndPoint.OppositeDomainObjects));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents, Is.Not.SameAs (_customerEndPoint.OppositeDomainObjects));
     }
@@ -107,19 +108,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void HasChangedFalse ()
+    public void HasChanged_UsesStrategy ()
     {
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      var strategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (_customerEndPointID, strategyMock, ClientTransactionMock, new[] { _order1 });
+
+      strategyMock.Expect (mock => mock.HasChanged (endPoint)).Return (true);
+      strategyMock.Replay();
+
+      var result = endPoint.HasChanged;
+
+      strategyMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (true));
     }
 
     [Test]
-    public void HasChangedFalseWhenSameElements ()
+    public void HasChanged_DoesNotLoadData ()
     {
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
-      _customerEndPoint.OppositeDomainObjects.Add (Order.NewObject ());
-      Assert.That (_customerEndPoint.HasChanged, Is.True);
-      _customerEndPoint.OppositeDomainObjects.RemoveAt (_customerEndPoint.OppositeDomainObjects.Count - 1);
-      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      var result = _customerEndPoint.HasChanged;
+      
+      Assert.That (result, Is.EqualTo (false));
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
 
     [Test]
@@ -130,6 +142,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
+    [Test]
+    public void Touch_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      _customerEndPoint.Touch ();
+
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+    
     [Test]
     public void HasBeenTouchedAddAndRemove_LeavingSameElements ()
     {
@@ -208,7 +232,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void OriginalOppositeDomainObjectsType ()
+    public void HasBeenTouched_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      var result = _customerEndPoint.HasBeenTouched;
+
+      Assert.That (result, Is.EqualTo (false));
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void OriginalOppositeDomainObjectsContents_Type ()
     {
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.GetType (), Is.EqualTo (typeof (OrderCollection)));
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.IsReadOnly, Is.True);
@@ -293,7 +329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
       Assert.That (_customerEndPoint.OppositeDomainObjects.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsReference.AssociatedEndPoint, Is.Null);
+      Assert.That (_customerEndPoint.OriginalCollectionReference.AssociatedEndPoint, Is.Null);
     }
 
     [Test]
@@ -372,6 +408,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Commit_Unchanged_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      _customerEndPoint.Commit();
+      
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
     public void Rollback ()
     {
       var newOrder = Order.NewObject ();
@@ -427,6 +474,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (oldCollection));
       Assert.That (newCollection.AssociatedEndPoint, Is.Null);
       Assert.That (oldCollection.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+    }
+
+    [Test]
+    public void Rollback_Unchanged_DoesNotLoadData ()
+    {
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      _customerEndPoint.Rollback ();
+
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
 
     [Test]
@@ -582,6 +640,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void OppositeDomainObjects_Get_DoesNotLoadData ()
+    {
+      var oppositeCollection = _customerEndPoint.OppositeDomainObjects;
+
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      var result = _customerEndPoint.OppositeDomainObjects;
+
+      Assert.That (result, Is.SameAs (oppositeCollection));
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
     public void OppositeDomainObjects_Set ()
     {
       var delegatingData = _customerEndPoint.CreateDelegatingCollectionData ();
@@ -625,5 +697,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _customerEndPoint.OppositeDomainObjects = newOppositeCollection;
     }
+
+    [Test]
+    public void OriginalCollectionReference_Get_DoesNotLoadData ()
+    {
+      var originalReference = _customerEndPoint.OriginalCollectionReference;
+
+      _customerEndPoint.Unload ();
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+
+      var result = _customerEndPoint.OriginalCollectionReference;
+
+      Assert.That (result, Is.SameAs (originalReference));
+      Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
+    }
+
   }
 }

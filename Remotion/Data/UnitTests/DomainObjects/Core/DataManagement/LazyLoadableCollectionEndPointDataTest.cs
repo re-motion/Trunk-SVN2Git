@@ -31,6 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private ClientTransaction _clientTransactionMock;
     private RelationEndPointID _endPointID;
+    private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategyMock;
     
     private DomainObject _domainObject1;
     private DomainObject _domainObject2;
@@ -45,28 +46,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _clientTransactionMock = ClientTransactionObjectMother.CreateStrictMock ();
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      _changeDetectionStrategyMock = MockRepository.GenerateMock<ICollectionEndPointChangeDetectionStrategy> ();
 
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
 
-
-      _loadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, new[] { _domainObject1 });
-      _unloadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, null);
+      _loadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, _changeDetectionStrategyMock, new[] { _domainObject1 });
+      _unloadedData = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, _changeDetectionStrategyMock, null);
     }
     
     [Test]
     public void Initialization_Null ()
     {
-      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, null);
+      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, _changeDetectionStrategyMock, null);
       Assert.That (data.IsDataAvailable, Is.False);
     }
 
     [Test]
     public void Initialization_NotNull ()
     {
-      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, new[] { _domainObject1, _domainObject2 });
+      var data = new LazyLoadableCollectionEndPointData (_clientTransactionMock, _endPointID, _changeDetectionStrategyMock, new[] { _domainObject1, _domainObject2 });
       Assert.That (data.IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    public void HasChanged_Loaded ()
+    {
+      var fakeEndPoint = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      _changeDetectionStrategyMock.Expect (mock => mock.HasChanged (fakeEndPoint)).Return (true);
+      _changeDetectionStrategyMock.Replay ();
+
+      var result = _loadedData.HasChanged (fakeEndPoint);
+
+      _changeDetectionStrategyMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void HasChanged_Unloaded_AlwaysFalse ()
+    {
+      var fakeEndPoint = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      var result = _unloadedData.HasChanged (fakeEndPoint);
+
+      _changeDetectionStrategyMock.AssertWasNotCalled (mock => mock.HasChanged (Arg<ICollectionEndPoint>.Is.Anything));
+      Assert.That (result, Is.EqualTo (false));
+
+      Assert.That (_unloadedData.IsDataAvailable, Is.False);
     }
 
     [Test]
@@ -194,6 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
+      Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
 
       Assert.That (deserializedInstance.IsDataAvailable, Is.True);
       Assert.That (deserializedInstance.DataStore.Count, Is.EqualTo (1));
@@ -207,8 +234,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
-      Assert.That (deserializedInstance.IsDataAvailable, Is.False);
+      Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
 
+      Assert.That (deserializedInstance.IsDataAvailable, Is.False);
       StubLoadRelatedObjects (_domainObject2, _domainObject3);
 
       Assert.That (deserializedInstance.DataStore.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
