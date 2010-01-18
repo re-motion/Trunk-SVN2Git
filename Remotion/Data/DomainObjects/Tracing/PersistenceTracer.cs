@@ -22,6 +22,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
+  /// <summary>
+  /// The default implementation of the <see cref="IPersistenceTracer"/>.
+  /// </summary>
   public class PersistenceTracer : IPersistenceTracer
   {
     private readonly List<IPersistenceTraceListener> _listeners = new List<IPersistenceTraceListener>();
