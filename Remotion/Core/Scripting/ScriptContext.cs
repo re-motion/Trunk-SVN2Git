@@ -30,7 +30,7 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
-    private const string scriptContextCurrentSafeContextTag = "Remotion.Scripting.ScriptContext.Current";
+    private const string c_scriptContextCurrentSafeContextTag = "Remotion.Scripting.ScriptContext.Current";
     
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
@@ -116,12 +116,12 @@ namespace Remotion.Scripting
     {
       get
       {
-        return (ScriptContext) SafeContext.Instance.GetData (scriptContextCurrentSafeContextTag);
+        return (ScriptContext) SafeContext.Instance.GetData (c_scriptContextCurrentSafeContextTag);
       }
 
       set
       {
-        SafeContext.Instance.SetData (scriptContextCurrentSafeContextTag, value);
+        SafeContext.Instance.SetData (c_scriptContextCurrentSafeContextTag, value);
       }
     }
 

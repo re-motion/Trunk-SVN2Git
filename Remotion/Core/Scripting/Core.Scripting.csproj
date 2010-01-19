@@ -105,7 +105,6 @@
     <None Include="Core.Scripting.build" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bag.txt" />
     <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

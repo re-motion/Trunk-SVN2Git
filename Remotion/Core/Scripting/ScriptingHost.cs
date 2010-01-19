@@ -51,7 +51,7 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptingHost
   {
-    private const string scriptingHostCurrentSafeContextTag = "Remotion.Scripting.ScriptingHost.Current";
+    private const string c_scriptingHostCurrentSafeContextTag = "Remotion.Scripting.ScriptingHost.Current";
 
     private ScriptRuntime _scriptRuntime;
     private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> _scriptEngines;
@@ -64,11 +64,11 @@ namespace Remotion.Scripting
     {
       get
       {
-        var scriptingHost = (ScriptingHost) SafeContext.Instance.GetData (scriptingHostCurrentSafeContextTag);
+        var scriptingHost = (ScriptingHost) SafeContext.Instance.GetData (c_scriptingHostCurrentSafeContextTag);
         if (scriptingHost == null)
         {
           scriptingHost = new ScriptingHost ();
-          SafeContext.Instance.SetData (scriptingHostCurrentSafeContextTag, scriptingHost);
+          SafeContext.Instance.SetData (c_scriptingHostCurrentSafeContextTag, scriptingHost);
         }
         return scriptingHost;
       }
