@@ -16,14 +16,45 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.UnitTests.Utilities
+namespace Remotion.Data.Linq.UnitTests.TestUtilities
 {
-  public static class Dev
+  [Serializable]
+  public struct Tuple<TA, TB, TC> : IEquatable<Tuple<TA, TB, TC>>
   {
-    public static object Null
+    private readonly TA _a;
+    private readonly TB _b;
+    private readonly TC _c;
+
+    public Tuple (TA a, TB b, TC c)
     {
-      get { return null; }
-      set {  }
+      _a = a;
+      _b = b;
+      _c = c;
+    }
+
+    public TA A
+    {
+      get { return _a; }
+    }
+
+    public TB B
+    {
+      get { return _b; }
+    }
+
+    public TC C
+    {
+      get { return _c; }
+    }
+
+    public bool Equals (Tuple<TA, TB, TC> other)
+    {
+      return Equals ((object) other);
+    }
+
+    public override string ToString ()
+    {
+      return string.Format ("<{0}, {1}, {2}>", _a, _b, _c);
     }
   }
 }

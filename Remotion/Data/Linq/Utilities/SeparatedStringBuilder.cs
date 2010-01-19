@@ -14,26 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.UnitTests.TestUtilities;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Remotion.Data.Linq.UnitTests.Parsing
+namespace Remotion.Data.Linq.Utilities
 {
-  [TestFixture]
-  public class ParserExceptionTest
+  /// <summary>
+  /// Builds a string from a sequence, separating each item with a given separator string.
+  /// </summary>
+  public static class SeparatedStringBuilder
   {
-    [Test]
-    public void Serialization ()
+    public static string Build<T> (string separator, IEnumerable<T> sequence)
     {
-      var exception = new ParserException ("test", "expr", new Exception ("test2"));
+      var sb = new StringBuilder ();
+      bool first = true;
 
-      var deserializedException = Serializer.SerializeAndDeserialize (exception);
-      Assert.That (deserializedException.Message, Is.EqualTo (exception.Message));
-      Assert.That (deserializedException.ParsedExpression, Is.EqualTo (exception.ParsedExpression));
-      Assert.That (deserializedException.InnerException.Message, Is.EqualTo (exception.InnerException.Message));
+      foreach (var item in sequence)
+      {
+        if (!first)
+          sb.Append (separator);
+        sb.Append (item);
+
+        first = false;
+      }
+
+      return sb.ToString ();
     }
   }
 }

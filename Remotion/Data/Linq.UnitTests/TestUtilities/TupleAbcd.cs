@@ -16,19 +16,22 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.UnitTests.Utilities
+namespace Remotion.Data.Linq.UnitTests.TestUtilities
 {
-  // TODO: Doc
-   [Serializable]
-  public class Tuple<TA, TB> : IEquatable<Tuple<TA, TB>>
+  [Serializable]
+  public struct Tuple<TA, TB, TC, TD> : IEquatable<Tuple<TA, TB, TC, TD>>
   {
     private readonly TA _a;
     private readonly TB _b;
+    private readonly TC _c;
+    private readonly TD _d;
 
-    public Tuple (TA a, TB b)
+    public Tuple (TA a, TB b, TC c, TD d)
     {
       _a = a;
       _b = b;
+      _c = c;
+      _d = d;
     }
 
     public TA A
@@ -41,26 +44,24 @@ namespace Remotion.Data.Linq.UnitTests.Utilities
       get { return _b; }
     }
 
-    public bool Equals (Tuple<TA, TB> other)
+    public TC C
     {
-      return EqualityUtility.NotNullAndSameType (this, other)
-             && EqualityUtility.Equals (_a, other._a) 
-             && EqualityUtility.Equals (_b, other._b);
+      get { return _c; }
     }
 
-    public override bool Equals (object obj)
+    public TD D
     {
-      return EqualityUtility.EqualsEquatable (this, obj);
+      get { return _d; }
     }
 
-    public override int GetHashCode ()
+    public bool Equals (Tuple<TA, TB, TC, TD> other)
     {
-      return EqualityUtility.GetRotatedHashCode (_a, _b);
+      return Equals ((object) other);
     }
 
     public override string ToString ()
     {
-      return string.Format ("<{0}, {1}>", _a, _b);
+      return string.Format ("<{0}, {1}, {2}, {3}>", _a, _b, _c, _d);
     }
   }
 }

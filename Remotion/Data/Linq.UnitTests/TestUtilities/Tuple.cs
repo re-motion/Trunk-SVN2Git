@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.Linq.UnitTests.Utilities
+namespace Remotion.Data.Linq.UnitTests.TestUtilities
 {
   public static class Tuple
   {
