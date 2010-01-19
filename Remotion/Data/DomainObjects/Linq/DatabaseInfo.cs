@@ -20,7 +20,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Utilities;
 using ArgumentUtility=Remotion.Utilities.ArgumentUtility;
 
 
@@ -118,7 +117,6 @@ namespace Remotion.Data.DomainObjects.Linq
       string rightColumn = GetJoinColumn (rightEndPoint);
 
       return new JoinColumnNames (leftColumn, rightColumn);
-      //return Tuple.NewTuple (leftColumn, rightColumn);
     }
 
     public object ProcessWhereParameter (object parameter)
