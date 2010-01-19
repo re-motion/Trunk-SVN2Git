@@ -97,7 +97,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithWhereConditionAndGreaterThan ()
+    public void QueryWithWhere_BooleanPropertyOnly()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
+          where e.BooleanProperty
+          select e;
+
+      Assert.That(objectsWithAllDataTypes.Count(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void QueryWithWhere_BooleanProperty_ExplicitComparison()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
+// ReSharper disable RedundantBoolCompare
+          where e.BooleanProperty == true
+// ReSharper restore RedundantBoolCompare
+          select e;
+
+      Assert.That(objectsWithAllDataTypes.Count(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void QueryWithWhere_BooleanPropertyOnly_Negate()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
+          where !e.BooleanProperty
+          select e;
+
+      Assert.That(objectsWithAllDataTypes.Count(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void QueryWithWhere_BooleanPropertyAndAnother ()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
+          where e.Int32Property == -2147483647 && e.BooleanProperty
+          select e;
+
+      CheckQueryResult (objectsWithAllDataTypes, DomainObjectIDs.ClassWithAllDataTypes2);
+    }
+
+    [Test]
+    public void QueryWithWhere_BooleanPropertyAndAnother_Negate()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
+          where e.Int32Property == 2147483647 && !e.BooleanProperty
+          select e;
+
+      CheckQueryResult(objectsWithAllDataTypes, DomainObjectIDs.ClassWithAllDataTypes1);
+    }
+
+    [Test]
+    public void QueryWithWhere_BooleanPropertyAndAnother_ExplicitComparison_True()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
+// ReSharper disable RedundantBoolCompare
+          where e.Int32Property == -2147483647 && e.BooleanProperty == true
+// ReSharper restore RedundantBoolCompare
+          select e;
+
+      CheckQueryResult(objectsWithAllDataTypes, DomainObjectIDs.ClassWithAllDataTypes2);
+    }
+
+    [Test]
+    public void QueryWithWhere_BooleanPropertyAndAnother_ExplicitComparison_False()
+    {
+      var objectsWithAllDataTypes =
+          from e in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
+          where e.Int32Property == 2147483647 && e.BooleanProperty == false
+          select e;
+
+      CheckQueryResult(objectsWithAllDataTypes, DomainObjectIDs.ClassWithAllDataTypes1);
+    }
+
+    [Test]
+    public void QueryWithWhere_LessThan ()
     {
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
