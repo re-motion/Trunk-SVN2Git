@@ -312,49 +312,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Remove (endPointID);
     }
 
-    public RelationEndPointID[] GetEndPointIDsForUnload (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      if (dataContainer.State != StateType.Unchanged)
-        throw new ArgumentException ("DataContainer must be unchanged.", "dataContainer");
-
-      var unloadedEndPointIDs = from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                                from unloadedEndPointID in GetEndPointIDsForUnload (associatedEndPointID)
-                                select unloadedEndPointID;
-      return unloadedEndPointIDs.ToArray ();
-    }
-
-    private IEnumerable<RelationEndPointID> GetEndPointIDsForUnload (RelationEndPointID endPointID)
-    {
-      if (!endPointID.Definition.IsVirtual && !Contains (endPointID))
-        throw new InvalidOperationException ("Real end point has not been registered.");
-
-      var maybeRealEndPointID = Maybe.ForValue (endPointID).Where (id => !id.Definition.IsVirtual);
-
-      var maybeVirtualNullEndPointID = 
-          Maybe.ForValue (endPointID)
-            .Where (id => id.Definition.IsVirtual)
-            .Where (id => id.Definition.Cardinality == CardinalityType.One)
-            .Select (id => (ObjectEndPoint) _relationEndPoints[id])
-            .Where (endPoint => endPoint.OppositeObjectID == null)
-            .Select (endPoint => endPoint.ID);
-
-      var maybeOppositeEndPointID = 
-          Maybe.ForValue (endPointID)
-            .Where (id => !id.Definition.IsVirtual)
-            .Where (id => id.Definition.Cardinality == CardinalityType.One)
-            .Select (id => (ObjectEndPoint) _relationEndPoints[id])
-            .Where (endPoint => endPoint.OppositeObjectID != null)
-            .Select (endPoint => new RelationEndPointID (endPoint.OppositeObjectID, endPoint.Definition.GetOppositeEndPointDefinition ()))
-            .Where (Contains);
-      
-      return Maybe.EnumerateValues (
-          maybeRealEndPointID,
-          maybeVirtualNullEndPointID,
-          maybeOppositeEndPointID);
-    }
-
     public IEnumerator GetEnumerator ()
     {
       return _relationEndPoints.GetEnumerator();

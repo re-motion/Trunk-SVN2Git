@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -41,13 +42,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (endPointID.Definition.Cardinality != CardinalityType.Many)
-      {
-        var message = string.Format ("The given end point ID '{0}' does not denote a CollectionEndPoint.", endPointID);
-        throw new ArgumentException (message, "endPointID");
-      }
-
-      var collectionEndPoint = (CollectionEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
+      var collectionEndPoint = CheckAndGetCollectionEndPoint(clientTransaction, endPointID);
       if (collectionEndPoint != null)
       {
         if (collectionEndPoint.HasChanged)
@@ -82,6 +77,43 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       clientTransaction.DataManager.Unregister (objectID);
+    }
+
+    /// <summary>
+    /// Unloads the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified 
+    /// <see cref="ClientTransaction"/> as well as the data items stored by it. If the end point has not been loaded or has already been unloaded, 
+    /// this method does nothing.
+    /// </summary>
+    /// <param name="clientTransaction">The client transaction to unload the data from.</param>
+    /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
+    /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+    /// <exception cref="InvalidOperationException">The given end point or one of the items it stores is not unchanged state.</exception>
+    /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
+    public static void UnloadCollectionEndPointAndData (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
+      if (endPoint != null && endPoint.IsDataAvailable)
+      {
+        var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject>().Select (obj => obj.ID);
+        clientTransaction.DataManager.Unregister (unloadedIDs);
+
+        UnloadCollectionEndPoint (clientTransaction, endPointID); // needed in case unloadedIDs is empty
+      }
+    }
+
+    private static CollectionEndPoint CheckAndGetCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    {
+      if (endPointID.Definition.Cardinality != CardinalityType.Many)
+      {
+        var message = string.Format ("The given end point ID '{0}' does not denote a CollectionEndPoint.", endPointID);
+        throw new ArgumentException (message, "endPointID");
+      }
+
+      return (CollectionEndPoint) clientTransaction.DataManager.RelationEndPointMap[endPointID];
     }
   }
 }

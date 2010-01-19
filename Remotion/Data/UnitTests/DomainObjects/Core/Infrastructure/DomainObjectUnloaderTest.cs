@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -115,8 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The state of DataContainer 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is 'Changed'. Only unchanged DataContainers can be "
-        + "unloaded.")]
+        "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed).")]
     public void UnloadData_Changed ()
     {
       ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
@@ -125,8 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The data of object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because the following relation end points "
-        + "have changed: Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems")]
+        "The following objects cannot be unloaded because they take part in a relation that has been changed: "
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' "
+        + "(Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems).")]
     public void UnloadData_ChangedCollection ()
     {
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject());
@@ -135,6 +137,117 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID].HasChanged, Is.True);
 
       DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_UnloadsEndPointAndItems ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemsEndPoint = order.OrderItems.AssociatedEndPoint;
+
+      var orderItem1 = orderItemsEndPoint.OppositeDomainObjects[0];
+      var orderItem2 = orderItemsEndPoint.OppositeDomainObjects[1];
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItemsEndPoint.ID);
+
+      Assert.That (orderItemsEndPoint.IsDataAvailable, Is.False);
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_UnloadsEndPoint_EmptyCollection ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var ordersEndPoint = customer.Orders.AssociatedEndPoint;
+
+      Assert.That (ordersEndPoint.OppositeDomainObjects, Is.Empty);
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID);
+
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
+      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given end point ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/"
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' does not denote a CollectionEndPoint.\r\nParameter name: endPointID")]
+    public void UnloadCollectionEndPointAndData_ObjectEndPoint ()
+    {
+      var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      EnsureEndPointLoaded (objectEndPointID);
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_DoesNothing_IfEndPointNotLoaded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      listenerMock.Replay (); // no calls are expected
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, endPointID);
+
+      listenerMock.VerifyAllExpectations ();
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_DoesNothing_IfEndPointUnloaded ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var ordersEndPoint = customer.Orders.AssociatedEndPoint;
+
+      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, ordersEndPoint.ID);
+
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
+
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      listenerMock.Replay (); // no calls are expected
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID);
+
+      listenerMock.VerifyAllExpectations ();
+
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_ThrowsAndDoesNothing_IfItemCannotBeUnloaded ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var ordersEndPoint = customer.Orders.AssociatedEndPoint;
+
+      var order1 = (Order) ordersEndPoint.OppositeDomainObjects[0];
+      var orderWithoutOrderItem = (Order) ordersEndPoint.OppositeDomainObjects[1];
+      
+      // this will cause the orderWithoutOrderItem to be rejected for unload; order1 won't be unloaded either although it comes before 
+      // orderWithoutOrderItem
+      ++orderWithoutOrderItem.OrderNumber;
+      
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderWithoutOrderItem.State, Is.EqualTo (StateType.Changed));
+
+      try
+      {
+        DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID);
+        Assert.Fail ("Expected InvalidOperationException");
+      }
+      catch (InvalidOperationException)
+      {
+        // ok
+      }
+
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderWithoutOrderItem.State, Is.EqualTo (StateType.Changed));
+      Assert.That (ordersEndPoint.IsDataAvailable, Is.True);
     }
 
     private void EnsureEndPointLoaded (RelationEndPointID endPointID)
