@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -126,9 +125,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The following objects cannot be unloaded because they take part in a relation that has been changed: "
-        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' "
-        + "(Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems).")]
+        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
+        + "unchanged objects can be unloaded. Changed end point: "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'.")]
+    public void UnloadData_ChangedVirtualEndPoint ()
+    {
+      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      domainObject.OrderTicket = OrderTicket.NewObject ();
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, domainObject.ID);
+    }
+
+    [Test]
+    public void UnloadData_NonLoadedObject_DoesNothing ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
+        + "unchanged objects can be unloaded. Changed end point: "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
     public void UnloadData_ChangedCollection ()
     {
       OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject());
@@ -188,13 +207,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
 
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      listenerMock.Replay (); // no calls are expected
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, endPointID);
 
-      listenerMock.VerifyAllExpectations ();
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
     }
 
@@ -208,13 +224,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
 
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      listenerMock.Replay (); // no calls are expected
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID);
-
-      listenerMock.VerifyAllExpectations ();
 
       Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
     }

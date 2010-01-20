@@ -247,17 +247,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Unregister_NotLoaded ()
     {
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionTestHelper.AddListener (_dataManager.ClientTransaction, listenerMock);
-      listenerMock.Replay (); // no events expected
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_dataManager.ClientTransaction);
 
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
 
       _dataManager.Unregister (DomainObjectIDs.Order1);
 
       Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
-
-      listenerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -349,9 +345,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The following objects cannot be unloaded because they take part in a relation that has been changed: "
-        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' "
-        + "(Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems).")]
+        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
+        + "unchanged objects can be unloaded. Changed end point: "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
     public void Unregister_ChangedCollection ()
     {
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
@@ -366,9 +362,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The following objects cannot be unloaded because they take part in a relation that has been changed: "
-        + "'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid' "
-        + "(Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer).")]
+        "Object 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
+        + "unchanged objects can be unloaded. Changed end point: "
+        + "'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'.")]
     public void Unregister_ChangedVirtualNullEndPoint ()
     {
       var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee3, "Computer");

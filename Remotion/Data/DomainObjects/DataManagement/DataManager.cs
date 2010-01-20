@@ -156,8 +156,8 @@ public class DataManager : ISerializable, IDeserializationCallback
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-    var loadedDataContainers = UnregisterAffectedDataFinder.GetAndCheckDataContainers (DataContainerMap, objectIDs);
-    var endPointIDsToBeUnloaded = UnregisterAffectedDataFinder.GetAndCheckEndPointIDs (RelationEndPointMap, loadedDataContainers);
+    var loadedDataContainers = UnregisterAffectedDataFinder.GetAndCheckAffectedDataContainers (DataContainerMap, objectIDs);
+    var endPointIDsToBeUnloaded = UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (RelationEndPointMap, loadedDataContainers);
 
     UnregisterEndPoints (endPointIDsToBeUnloaded);
     UnregisterDataContainers(loadedDataContainers);

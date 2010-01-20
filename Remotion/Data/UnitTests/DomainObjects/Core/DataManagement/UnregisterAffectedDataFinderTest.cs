@@ -29,13 +29,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   public class UnregisterAffectedDataFinderTest : ClientTransactionBaseTest
   {
     [Test]
-    public void GetAndCheckDataContainers_GetsDataContainers ()
+    public void GetAndCheckAffectedDataContainers_GetsDataContainers ()
     {
       EnsureDataContainerAvailable (DomainObjectIDs.Order1);
       EnsureDataContainerAvailable (DomainObjectIDs.Order2);
 
       DataManager dataManager = ClientTransactionMock.DataManager;
-      var result = UnregisterAffectedDataFinder.GetAndCheckDataContainers (dataManager.DataContainerMap, new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var result = UnregisterAffectedDataFinder.GetAndCheckAffectedDataContainers (dataManager.DataContainerMap, new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       Assert.That (result, Is.EqualTo (new[] { 
           ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], 
@@ -43,12 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetAndCheckDataContainers_IgnoresUnloadedDataContainers ()
+    public void GetAndCheckAffectedDataContainers_IgnoresUnloadedDataContainers ()
     {
       EnsureDataContainerAvailable (DomainObjectIDs.Order1);
 
       DataManager dataManager = ClientTransactionMock.DataManager;
-      var result = UnregisterAffectedDataFinder.GetAndCheckDataContainers (dataManager.DataContainerMap, new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var result = UnregisterAffectedDataFinder.GetAndCheckAffectedDataContainers (dataManager.DataContainerMap, new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       Assert.That (result, Is.EqualTo (new[] { ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1] }));
     }
@@ -57,17 +57,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed).")]
-    public void GetAndCheckDataContainers_ThrowsOnChangedDataContainers ()
+    public void GetAndCheckAffectedDataContainers_ThrowsOnChangedDataContainers ()
     {
       EnsureDataContainerAvailable (DomainObjectIDs.Order1);
       ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1].MarkAsChanged ();
 
       DataManager dataManager = ClientTransactionMock.DataManager;
-      UnregisterAffectedDataFinder.GetAndCheckDataContainers (dataManager.DataContainerMap, new[] { DomainObjectIDs.Order1 });
+      UnregisterAffectedDataFinder.GetAndCheckAffectedDataContainers (dataManager.DataContainerMap, new[] { DomainObjectIDs.Order1 });
     }
 
     [Test]
-    public void GetAndCheckEndPointIDs ()
+    public void GetAndCheckAffectedEndPointIDs ()
     {
       EnsureDataContainerAvailable (DomainObjectIDs.Order1);
       EnsureDataContainerAvailable (DomainObjectIDs.Order2);
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer2 = ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order2];
 
       DataManager dataManager = ClientTransactionMock.DataManager;
-      var result = UnregisterAffectedDataFinder.GetAndCheckEndPointIDs (dataManager.RelationEndPointMap, new[] { dataContainer1, dataContainer2 });
+      var result = UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (dataManager.RelationEndPointMap, new[] { dataContainer1, dataContainer2 });
 
       var expectedEndPoint1 = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer1.ID, "Official");
       var expectedEndPoint2 = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer2.ID, "Official");
@@ -91,47 +91,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The following objects cannot be unloaded because they take part in a relation that has been changed: "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' "
-        + "(Official|1|System.Int32/Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders), "
-        + "'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' "
-        + "(Official|1|System.Int32/Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders).")]
-    public void GetAndCheckEndPointIDs_ThrowsOnChangedEndPoints ()
+        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
+        + "unchanged objects can be unloaded. Changed end point: "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
+    public void GetAndCheckAffectedEndPointIDs_ThrowsOnChangedEndPoints ()
     {
       EnsureDataContainerAvailable (DomainObjectIDs.Order1);
-      EnsureDataContainerAvailable (DomainObjectIDs.Order2);
 
-      var dataContainer1 = ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1];
-      var dataContainer2 = ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order2];
+      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1];
 
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders");
-      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order");
+      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      endPoint.OppositeDomainObjects.Add (Order.NewObject ());
+      endPoint.SetOppositeObjectAndNotify (Order.NewObject ());
 
       DataManager dataManager = ClientTransactionMock.DataManager;
-      UnregisterAffectedDataFinder.GetAndCheckEndPointIDs (dataManager.RelationEndPointMap, new[] { dataContainer1, dataContainer2 });
+      UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (dataManager.RelationEndPointMap, new[] { dataContainer });
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Real end point has not been registered.")]
-    public void GetEndPointIDsForUnload_NotRegistered ()
+    public void GetAndCheckAffectedEndPointIDs_One_NotRegistered ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      UnregisterAffectedDataFinder.GetEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
+      UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_RealEndPoint_Returned ()
+    public void GetAndCheckAffectedEndPointIDs_One_RealEndPoint_Returned ()
     {
       var realEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       Assert.That (realEndPoint.Definition.IsVirtual, Is.False);
 
-      GetEndPointIDs_Returns (DomainObjectIDs.OrderTicket1, realEndPoint);
+      GetAffectedEndPointIDs_Returns (DomainObjectIDs.OrderTicket1, realEndPoint);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_VirtualEndPointWithNullValue_Returned ()
+    public void GetAndCheckAffectedEndPointIDs_One_VirtualEndPointWithNullValue_Returned ()
     {
       var loadedVirtualEndPointWithNullValue = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
       Assert.That (loadedVirtualEndPointWithNullValue.Definition.IsVirtual, Is.True);
@@ -139,21 +135,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       EnsureEndPointAvailable (loadedVirtualEndPointWithNullValue);
       Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[loadedVirtualEndPointWithNullValue]).OppositeObjectID, Is.Null);
 
-      GetEndPointIDs_Returns (DomainObjectIDs.Employee1, loadedVirtualEndPointWithNullValue);
+      GetAffectedEndPointIDs_Returns (DomainObjectIDs.Employee1, loadedVirtualEndPointWithNullValue);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_OppositeVirtualObjectEndPoint_Returned ()
+    public void GetAndCheckAffectedEndPointIDs_One_OppositeVirtualObjectEndPoint_Returned ()
     {
       var oppositeVirtualObjectEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (oppositeVirtualObjectEndPoint.Definition.Cardinality, Is.EqualTo (CardinalityType.One));
       Assert.That (oppositeVirtualObjectEndPoint.Definition.IsVirtual, Is.True);
 
-      GetEndPointIDs_Returns (DomainObjectIDs.OrderTicket1, oppositeVirtualObjectEndPoint);
+      GetAffectedEndPointIDs_Returns (DomainObjectIDs.OrderTicket1, oppositeVirtualObjectEndPoint);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_OppositeVirtualCollectionEndPoint_Returned ()
+    public void GetAndCheckAffectedEndPointIDs_One_OppositeVirtualCollectionEndPoint_Returned ()
     {
       var oppositeCollectionEndPoint = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (oppositeCollectionEndPoint.Definition.Cardinality, Is.EqualTo (CardinalityType.Many));
@@ -161,85 +157,117 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       EnsureEndPointAvailable (oppositeCollectionEndPoint);
 
-      GetEndPointIDs_Returns (DomainObjectIDs.OrderItem1, oppositeCollectionEndPoint);
+      GetAffectedEndPointIDs_Returns (DomainObjectIDs.OrderItem1, oppositeCollectionEndPoint);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_VirtualObjectEndPoint_NotReturned ()
+    public void GetAndCheckAffectedEndPointIDs_One_VirtualObjectEndPoint_NotReturned ()
     {
       var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (virtualObjectEndPointID.Definition.IsVirtual, Is.True);
 
       EnsureEndPointAvailable (virtualObjectEndPointID);
 
-      GetEndPointIDs_NotReturns (DomainObjectIDs.Order1, virtualObjectEndPointID);
+      GetAffectedEndPointIDs_NotReturns (DomainObjectIDs.Order1, virtualObjectEndPointID);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_VirtualObjectEndPoint_NullAndNotLoaded_NotReturned ()
+    public void GetAndCheckAffectedEndPointIDs_One_VirtualObjectEndPoint_NullAndNotLoaded_NotReturned ()
     {
       var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[virtualObjectEndPointID], Is.Null);
 
-      GetEndPointIDs_NotReturns (DomainObjectIDs.Employee1, virtualObjectEndPointID);
+      GetAffectedEndPointIDs_NotReturns (DomainObjectIDs.Employee1, virtualObjectEndPointID);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_VirtualCollectionEndPoint_NotReturned ()
+    public void GetAndCheckAffectedEndPointIDs_One_VirtualCollectionEndPoint_NotReturned ()
     {
       var collectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       EnsureEndPointAvailable (collectionEndPointID);
 
-      GetEndPointIDs_NotReturns (DomainObjectIDs.Order1, collectionEndPointID);
+      GetAffectedEndPointIDs_NotReturns (DomainObjectIDs.Order1, collectionEndPointID);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_OppositeRealObjectEndPoint_NotReturned ()
+    public void GetAndCheckAffectedEndPointIDs_One_OppositeRealObjectEndPoint_NotReturned ()
     {
       var oppositeRealObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       Assert.That (oppositeRealObjectEndPointID.Definition.IsVirtual, Is.False);
 
       EnsureEndPointAvailable (oppositeRealObjectEndPointID);
 
-      GetEndPointIDs_NotReturns (DomainObjectIDs.Order1, oppositeRealObjectEndPointID);
+      GetAffectedEndPointIDs_NotReturns (DomainObjectIDs.Order1, oppositeRealObjectEndPointID);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_OppositeVirtualObjectEndPoint_OfNull_NotReturned ()
+    public void GetAndCheckAffectedEndPointIDs_One_OppositeVirtualObjectEndPoint_OfNull_NotReturned ()
     {
       var realEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Computer4, "Employee");
       var oppositeVirtualObjectEndPointID = new RelationEndPointID (null, realEndPointID.Definition.GetOppositeEndPointDefinition ());
       Assert.That (oppositeVirtualObjectEndPointID.Definition.IsVirtual, Is.True);
 
-      GetEndPointIDs_NotReturns (DomainObjectIDs.Computer4, oppositeVirtualObjectEndPointID);
+      GetAffectedEndPointIDs_NotReturns (DomainObjectIDs.Computer4, oppositeVirtualObjectEndPointID);
 
       Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID]).OppositeObjectID, Is.Null);
     }
 
     [Test]
-    public void GetEndPointIDsForUnload_OppositeVirtualCollectionEndPoint_NotLoaded_NotReturned ()
+    public void GetAndCheckAffectedEndPointIDs_One_OppositeVirtualCollectionEndPoint_NotLoaded_NotReturned ()
     {
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[oppositeCollectionEndPointID], Is.Null);
 
-      GetEndPointIDs_NotReturns (DomainObjectIDs.OrderItem1, oppositeCollectionEndPointID);
+      GetAffectedEndPointIDs_NotReturns (DomainObjectIDs.OrderItem1, oppositeCollectionEndPointID);
     }
 
-    private void GetEndPointIDs_Returns (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Object 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be unloaded because one of its relations has been changed. "
+        + "Only unchanged objects can be unloaded. Changed end point: "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'.")]
+    public void GetAndCheckAffectedEndPointIDs_One_ChangedAssociatedEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      var endPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+
+      endPoint.SetOppositeObjectAndNotify (Order.NewObject ());
+
+      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[endPoint.ObjectID];
+      UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. "
+        + "Only unchanged objects can be unloaded. Changed end point: "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
+    public void GetAndCheckAffectedEndPointIDs_One_ChangedOppositeEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+
+      endPoint.OppositeDomainObjects.Add (OrderItem.NewObject ());
+
+      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1];
+      UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
+    }
+
+    private void GetAffectedEndPointIDs_Returns (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
     {
       var domainObject = RepositoryAccessor.GetObject (ClientTransactionMock, unloadedObject, false);
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
-      var endPointIDs = UnregisterAffectedDataFinder.GetEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
+      var endPointIDs = UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
 
       Assert.That (endPointIDs, List.Contains (expectedEndPointID));
     }
 
-    private void GetEndPointIDs_NotReturns (ObjectID unloadedObject, RelationEndPointID unexpectedEndPointID)
+    private void GetAffectedEndPointIDs_NotReturns (ObjectID unloadedObject, RelationEndPointID unexpectedEndPointID)
     {
       var domainObject = RepositoryAccessor.GetObject (ClientTransactionMock, unloadedObject, false);
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
 
-      var endPointIDs = UnregisterAffectedDataFinder.GetEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
+      var endPointIDs = UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (ClientTransactionMock.DataManager.RelationEndPointMap, dataContainer);
 
       Assert.That (endPointIDs, List.Not.Contains (unexpectedEndPointID));
     }

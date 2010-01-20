@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The client transaction to unload the data from.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
-    /// <exception cref="InvalidOperationException">The given end point is not unchanged state.</exception>
+    /// <exception cref="InvalidOperationException">The given end point is not in unchanged state.</exception>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     public static void UnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
@@ -65,12 +65,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="objectID">The object ID.</param>
     /// <remarks>
     /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
-    /// the collection end points the object owns), the non-virtual end points owned by the object, and their respective opposite virtual object 
-    /// end-points. This means that unloading an object will unload a relation if and only if the object's <see cref="DataContainer"/> is holding the 
-    /// foreign key for the relation.
+    /// the collection end points the object owns), the non-virtual end points owned by the object, their respective opposite virtual object 
+    /// end-points, and the virtual object end points pointing to <see langword="null" />. This means that unloading an object will unload a relation 
+    /// if and only if the object's <see cref="DataContainer"/> is holding the foreign key for the relation or if the relation points from the 
+    /// unloaded object to <see langword="null" />.
     /// </remarks>
-    /// <exception cref="InvalidOperationException">The <see cref="DataContainer"/> of the object to be unloaded is not in unchanged state, or
-    /// a <see cref="CollectionEndPoint"/> the object is part of has changed.</exception>
+    /// <exception cref="InvalidOperationException">The object to be unloaded is not in unchanged state.</exception>
     public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The client transaction to unload the data from.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
-    /// <exception cref="InvalidOperationException">The given end point or one of the items it stores is not unchanged state.</exception>
+    /// <exception cref="InvalidOperationException">The given end point or one of the items it stores are not in unchanged state.</exception>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     public static void UnloadCollectionEndPointAndData (ClientTransaction clientTransaction, RelationEndPointID endPointID)

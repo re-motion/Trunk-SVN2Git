@@ -100,25 +100,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var mockRepository = new MockRepository ();
-      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      mockRepository.ReplayAll ();
       _modification.NotifyClientTransactionOfBegin ();
-      mockRepository.VerifyAll ();
     }
 
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var mockRepository = new MockRepository ();
-      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      mockRepository.ReplayAll ();
       _modification.NotifyClientTransactionOfEnd ();
-      mockRepository.VerifyAll ();
     }
 
     [Test]

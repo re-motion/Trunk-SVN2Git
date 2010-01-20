@@ -159,46 +159,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void NotifyClientTransactionOfBeginRelationChange ()
     {
       var order = Order.NewObject ();
-
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      listenerMock.Replay ();
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       _nullEndPoint.NotifyClientTransactionOfBeginRelationChange (order, order);
-
-      listenerMock.AssertWasNotCalled (
-          mock => mock.RelationChanging (
-              Arg<DomainObject>.Is.Anything,
-              Arg<string>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
     public void NotifyClientTransactionOfEndRelationChange ()
     {
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      listenerMock.Replay ();
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       _nullEndPoint.NotifyClientTransactionOfEndRelationChange ();
-
-      listenerMock.AssertWasNotCalled (
-          mock => mock.RelationChanged (
-              Arg<DomainObject>.Is.Anything,
-              Arg<string>.Is.Anything));
     }
 
     [Test]
     public void EnsureDataAvailable_DoesNothing ()
     {
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      listenerMock.Replay (); // no events expected
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       _nullEndPoint.EnsureDataAvailable ();
-
-      listenerMock.VerifyAllExpectations ();
     }
 
     [Test]

@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -42,6 +43,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)
     {
       PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "AddListener", listener);
+    }
+
+    public static void EnsureTransactionThrowsOnEvents (ClientTransaction clientTransaction)
+    {
+      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      AddListener (clientTransaction, listenerMock);
+      listenerMock.Replay (); // no events expected
     }
   }
 }

@@ -50,13 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void EnsureDataAvailable_DoesNothing ()
     {
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-      listenerMock.Replay (); // no events expected
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
       _endPoint.EnsureDataAvailable ();
-
-      listenerMock.VerifyAllExpectations ();
     }
     
     [Test]

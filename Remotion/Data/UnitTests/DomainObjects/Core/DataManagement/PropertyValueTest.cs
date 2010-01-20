@@ -767,23 +767,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       {
         PropertyValue propertyValue = Order.NewObject().InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
 
-        var listenerMock = new MockRepository().StrictMock<IClientTransactionListener>();
-        clientTransactionMock.AddListener (listenerMock);
-        listenerMock.Replay();
+        ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (clientTransactionMock);
 
         Dev.Null = propertyValue.GetValueWithoutEvents (ValueAccess.Current);
-
-        listenerMock.AssertWasNotCalled (
-            mock => mock.PropertyValueReading (
-                        Arg<DataContainer>.Is.Anything,
-                        Arg<PropertyValue>.Is.Anything,
-                        Arg<ValueAccess>.Is.Anything));
-        listenerMock.AssertWasNotCalled (
-            mock => mock.PropertyValueRead (
-                        Arg<DataContainer>.Is.Anything,
-                        Arg<PropertyValue>.Is.Anything,
-                        Arg<object>.Is.Anything,
-                        Arg<ValueAccess>.Is.Anything));
       }
     }
 
