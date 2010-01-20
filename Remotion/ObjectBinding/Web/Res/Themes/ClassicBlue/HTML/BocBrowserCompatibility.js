@@ -55,45 +55,52 @@ BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element) {
 
 
 BocBrowserCompatibility.AdjustDateTimeValueLayout = function(element) {
-  if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
-    return;
+  var intrinsicRatio = 8;
   var totalChildrens = element.children().size();
   if (totalChildrens > 2) {
-    //is date-time control
-    var dateField = element.children(':first').children(':first');
-    var dateFieldWidth = dateField.attr('maxlength') / 2;
-    dateField.css({ 'width': dateFieldWidth + 'em' });
+
+    var maxWidth = element.innerWidth();
+    var dateField = element.children(':first');
+    var dateInputField = dateField.children(':first');
+
+    var calField = element.children(':nth-child(2)');
+    var calFieldWidth = calField.width();
+
+
+    var timeField = element.children(':nth-child(3)');
+    var timeFieldWidth = timeField.width();
+
+    dateInputField.css('width', maxWidth - calFieldWidth - timeFieldWidth - intrinsicRatio);
+    calField.css({ 'left': maxWidth - calFieldWidth - timeFieldWidth });
+    timeField.css({ 'left': maxWidth - timeFieldWidth });
+
+  } else {
+
+    var maxWidth = element.innerWidth();
+    var dateField = element.children(':first');
+    var dateInputField = dateField.children(':first');
 
     var calField = element.children(':nth-child(2)');
     var calFieldWidth = calField.outerWidth(true);
-    calField.css({ 'position': 'absolute', 'left': dateField.outerWidth(true) });
 
-    var timeField = element.children(':nth-child(3)').children(':first');
-    var timeFieldWidth = timeField.attr('maxlength') / 2;
-    timeField.css({ 'position': 'absolute', 'width': timeFieldWidth + 'em', 'left': calFieldWidth });
+    if (element.css('width') == 'auto') {
+      dateInputField.css('width', '147px');
+      calField.css({ 'left': '155px' });
+    } else {
+    dateInputField.css('width', maxWidth - calFieldWidth - intrinsicRatio);
+      calField.css({ 'left': maxWidth - calFieldWidth });
+    }
 
-
-    element.width(dateField.outerWidth(true) + timeField.outerWidth(true));
   }
-  else {
-    //is date control
-    var dateField = element.children(':first').children(':first');
-    var dateFieldWidth = dateField.attr('maxlength') / 2;
-    dateField.css({ 'width': dateFieldWidth + 'em' });
 
-    var calField = element.children(':nth-child(2)');
-    calField.css({ 'left': dateField.innerWidth() });
-  }
+
 }
 
-
-BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element)
-{
+BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element) {
   BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
 }
 
-BocBrowserCompatibility.AdjustReferenceValueLayout = function(element)
-{
+BocBrowserCompatibility.AdjustReferenceValueLayout = function(element) {
   BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
 }
 

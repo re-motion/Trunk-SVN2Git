@@ -1,33 +1,21 @@
 span.bocDateTimeValue, span.bocDateValue
 {
-  display: block;
-  text-align: left;
-  height: 1.5em;
-  white-space: nowrap;
-  vertical-align: top;
   position: relative;
-  width: 100%;
-  display: inline-block;
+  display: block;
+  height: 1.8em;
 }
 
 
 span.bocDateTimeValue span.bocDateInputWrapper
 {
-  position: absolute;
-  left: 0; 
 }
 
 span.bocDateTimeValue span.bocTimeInputWrapper
 {
-  position: absolute;
-  right: 0px;
 }
 
 span.bocDateTimeValue a
 {
-  position: absolute;
-  border: 0;
-  top: 0.25em;
 }
 
 span.bocDateTimeValue.disabled a
@@ -43,85 +31,111 @@ span.bocDateTimeValue a img
 span.bocDateTimeValue.disabled a img
 {
   opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40), progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
   -moz-opacity: 0.4;
 }
 
 /* === put time, date picker and date from right to left depending on time format (24 or 12 hours, with or without seconds) === */
 span.bocDateTimeValue span.bocDate24Hours
 {
-  right: 6.5em;
+  position: relative;
+  display: block;
+}
+
+span.bocDateTimeValue span.bocDate24Hours input
+{
+  position: absolute;
+  right: 72px;
+  left: 1px;
+  width: 67px;
 }
 
 span.bocDateTimeValue a.bocPicker24Hours
 {
-  right: 3.4em;
+  position: absolute;
+  width: 30px;
+  top: 50%;
+  margin-top: -9px;
+  left: 75px;
 }
 
 span.bocDateTimeValue span.bocTime24Hours
 {
-  width: 3em;
+  position: absolute;
+  width: 40px;
+  left: 106px;
+  top: 0;
 }
+span.bocDateTimeValue span.bocTime24Hours input
+{
+  width: 40px;
+  margin-top: -1px;
+}
+
+
 
 span.bocDateTimeValue span.bocDate24HoursWithSeconds
 {
-  right: 7.5em;
+}
+
+span.bocDateTimeValue span.bocDate24HoursWithSeconds input
+{
+  width: 67px;
 }
 
 span.bocDateTimeValue a.bocPicker24HoursWithSeconds
 {
-  right: 4.4em;
+  position: absolute;
+  width: 30px;
+  top: 50%;
+  margin-top: -8px;
+  left: 75px;
 }
 
 span.bocDateTimeValue span.bocTime24HoursWithSeconds
 {
-  width: 4em;
+  position: absolute;
+  width: 60px;
+  left: 106px;
+  top: 0;
 }
+span.bocDateTimeValue span.bocTime24HoursWithSeconds input
+{
+  width: 60px;
+}
+
 
 span.bocDateTimeValue span.bocDate12Hours
 {
-  right: 8.3em;
 }
 
 span.bocDateTimeValue a.bocPicker12Hours
 {
-  right: 5.2em;
 }
 
 span.bocDateTimeValue span.bocTime12Hours
 {
-  width: 4.8em;
 }
 
 span.bocDateTimeValue span.bocDate12HoursWithSeconds
 {
-  right: 9.8em;
 }
 
 span.bocDateTimeValue a.bocPicker12HoursWithSeconds
 {
-  right: 6.7em;
 }
 
 span.bocDateTimeValue span.bocTime12HoursWithSeconds
 {
-  width: 6.3em;
 }
 /* === === */
 
 span.bocDateValue span.bocDateInputWrapper
 {
-  position: absolute;
-  left: 0;
-  right: 3.1em;
 }
 
 span.bocDateValue a
 {
-  position: absolute;
-  right: 0;
-  top: 0.25em;
 }
 
 span.bocDateValue a.disabled
@@ -137,13 +151,37 @@ span.bocDateValue a img
 span.bocDateValue.disabled a img
 {
   opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40), progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
   -moz-opacity: 0.4;
 }
 
+span.bocDateValue a.bocPicker24Hours
+{
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+}
+
+span.bocListContent span.bocDateValue a.bocPicker24Hours
+{
+  position: absolute;
+  top: 50%;
+  margin-top: -11px;
+}
+
+
+span.bocDateValue input
+{
+  width: 65px;
+}
+
+
+
 input.bocDateTimeDate, input.bocDateTimeTime
 {
-  width: 100%; 
-  margin: 0;
+}
+
+td span.bocListContent
+{
+  display: block;
 }
