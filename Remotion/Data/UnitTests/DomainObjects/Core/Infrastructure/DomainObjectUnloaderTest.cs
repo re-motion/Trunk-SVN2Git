@@ -51,21 +51,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_AlreadyUnloaded ()
-    {
-      EnsureEndPointLoaded (_endPointID);
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.False);
-
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.False);
-    }
-
-    [Test]
     public void UnloadCollectionEndPoint_NotLoadedYet ()
     {
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Null);
@@ -98,19 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].HasChanged, Is.True);
-
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: RelationEndPointUnloading.")]
-    public void UnloadCollectionEndPoint_TransactionReadOnly ()
-    {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      var subDataManager = ClientTransactionTestHelper.GetDataManager (subTransaction);
-
-      EnsureEndPointLoaded (subDataManager, _endPointID);
 
       DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
     }
@@ -162,77 +134,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed).")]
-    public void UnloadData_Changed ()
-    {
-      ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
-        + "unchanged objects can be unloaded. Changed end point: "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket'.")]
-    public void UnloadData_ChangedVirtualEndPoint ()
-    {
-      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
-      domainObject.OrderTicket = OrderTicket.NewObject ();
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, domainObject.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    public void UnloadData_NonLoadedObject_DoesNothing ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-      
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
-        + "unchanged objects can be unloaded. Changed end point: "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
-    public void UnloadData_ChangedCollection ()
-    {
-      OrderItem.GetObject (DomainObjectIDs.OrderItem1).Order.OrderItems.Add (OrderItem.NewObject());
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1].State, Is.EqualTo (StateType.Unchanged));
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID].HasChanged, Is.True);
-
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "RelationEndPointMapUnregistering.")]
-    public void UnloadData_TransactionReadOnly_WithEndPoints ()
-    {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-
-      subTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);
-
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "DataContainerMapUnregistering.")]
-    public void UnloadData_TransactionReadOnly_WithoutEndPoints ()
-    {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-
-      subTransaction.EnsureDataAvailable (DomainObjectIDs.ClassWithAllDataTypes1);
-
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -326,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_DoesNothing_IfEndPointUnloaded ()
+    public void UnloadCollectionEndPointAndData_DoesNothing_IfNoDataAvailable ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = customer.Orders.AssociatedEndPoint;
@@ -348,15 +249,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = customer.Orders.AssociatedEndPoint;
 
-      var order1 = (Order) ordersEndPoint.OppositeDomainObjects[0];
-      var orderWithoutOrderItem = (Order) ordersEndPoint.OppositeDomainObjects[1];
+      var orderA = (Order) ordersEndPoint.OppositeDomainObjects[0];
+      var orderB = (Order) ordersEndPoint.OppositeDomainObjects[1];
       
-      // this will cause the orderWithoutOrderItem to be rejected for unload; order1 won't be unloaded either although it comes before 
-      // orderWithoutOrderItem
-      ++orderWithoutOrderItem.OrderNumber;
+      // this will cause the orderB to be rejected for unload; orderA won't be unloaded either although it comes before orderWithoutOrderItem
+      ++orderB.OrderNumber;
       
-      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (orderWithoutOrderItem.State, Is.EqualTo (StateType.Changed));
+      Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderB.State, Is.EqualTo (StateType.Changed));
 
       try
       {
@@ -368,8 +268,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         // ok
       }
 
-      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (orderWithoutOrderItem.State, Is.EqualTo (StateType.Changed));
+      Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderB.State, Is.EqualTo (StateType.Changed));
       Assert.That (ordersEndPoint.IsDataAvailable, Is.True);
     }
 

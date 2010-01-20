@@ -308,6 +308,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransaction.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\UnloadTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\DomainObjectConstructorLookupInfoTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClass.cs" />

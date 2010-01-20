@@ -113,8 +113,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void Unload ()
     {
-      ClientTransaction.TransactionEventSink.RelationEndPointUnloading (this);
-      _data.Unload ();
+      if (IsDataAvailable)
+      {
+        ClientTransaction.TransactionEventSink.RelationEndPointUnloading (this);
+        _data.Unload();
+      }
     }
 
     public override void EnsureDataAvailable ()

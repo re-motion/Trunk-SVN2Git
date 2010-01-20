@@ -297,6 +297,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       listenerMock.VerifyAllExpectations ();
     }
 
+    [Test]
+    public void Unload_NoListener_IfNoDataAvailable ()
+    {
+      _customerEndPoint.Unload ();
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      _customerEndPoint.Unload ();
+    }
 
     [Test]
     public void EnsureDataAvailable ()
