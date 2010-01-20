@@ -28,16 +28,35 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public static class DomainObjectUnloader
   {
     /// <summary>
-    /// Unloads the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified 
+    /// Defines how an unload operation should treat transactions that are part of a hierarchy.
+    /// </summary>
+    public enum TransactionMode
+    {
+      /// <summary>
+      /// Affect the given transaction only.
+      /// </summary>
+      ThisTransactionOnly,
+      /// <summary>
+      /// Affect this transaction and all of its parent transactions, up to the root transaction. This parent transactions are temporarily
+      /// made writeable while the operation is executing. The recursive operation is not atomic; if an error occurs in one of the parent 
+      /// transactions, the effects of the operation in the subtransactions will already have taken place.
+      /// </summary>
+      RecurseToRoot
+    }
+
+    /// <summary>
+    /// Unloads the unchanged collection end point indicated by the given <see cref="RelationEndPointID"/> in the specified
     /// <see cref="ClientTransaction"/>. If the end point has not been loaded or has already been unloaded, this method does nothing.
     /// </summary>
     /// <param name="clientTransaction">The client transaction to unload the data from.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+    /// <param name="transactionMode">The <see cref="TransactionMode"/> to use. This can be used to specify whether the unload operation should 
+    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>>
     /// <exception cref="InvalidOperationException">The given end point is not in unchanged state.</exception>
-    /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
-    public static void UnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static void UnloadCollectionEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID, TransactionMode transactionMode)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -53,6 +72,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         collectionEndPoint.Unload();
       }
+
+      if (transactionMode == TransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      {
+        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
+        {
+          UnloadCollectionEndPoint (clientTransaction.ParentTransaction, endPointID, transactionMode);
+        }
+      }
     }
 
     /// <summary>
@@ -63,6 +90,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="clientTransaction">The client transaction.</param>
     /// <param name="objectID">The object ID.</param>
+    /// <param name="transactionMode">The <see cref="TransactionMode"/> to use. This can be used to specify whether the unload operation should 
+    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <remarks>
     /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
     /// the collection end points the object owns), the non-virtual end points owned by the object, their respective opposite virtual object 
@@ -71,12 +100,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// unloaded object to <see langword="null" />.
     /// </remarks>
     /// <exception cref="InvalidOperationException">The object to be unloaded is not in unchanged state.</exception>
-    public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID)
+    public static void UnloadData (ClientTransaction clientTransaction, ObjectID objectID, TransactionMode transactionMode)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       clientTransaction.DataManager.Unregister (objectID);
+
+      if (transactionMode == TransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      {
+        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
+        {
+          UnloadData (clientTransaction.ParentTransaction, objectID, transactionMode);
+        }
+      }
     }
 
     /// <summary>
@@ -87,10 +124,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The client transaction to unload the data from.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+    /// <param name="transactionMode">The <see cref="TransactionMode"/> to use. This can be used to specify whether the unload operation should 
+    /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <exception cref="InvalidOperationException">The given end point or one of the items it stores are not in unchanged state.</exception>
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
-    public static void UnloadCollectionEndPointAndData (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static void UnloadCollectionEndPointAndData (
+        ClientTransaction clientTransaction, 
+        RelationEndPointID endPointID, 
+        TransactionMode transactionMode)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -101,7 +143,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject>().Select (obj => obj.ID);
         clientTransaction.DataManager.Unregister (unloadedIDs);
 
-        UnloadCollectionEndPoint (clientTransaction, endPointID); // needed in case unloadedIDs is empty
+        UnloadCollectionEndPoint (clientTransaction, endPointID, TransactionMode.ThisTransactionOnly); // needed in case unloadedIDs is empty
+      }
+
+      if (transactionMode == TransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
+      {
+        using (TransactionUnlocker.MakeWriteable (clientTransaction.ParentTransaction))
+        {
+          UnloadCollectionEndPointAndData (clientTransaction.ParentTransaction, endPointID, transactionMode);
+        }
       }
     }
 

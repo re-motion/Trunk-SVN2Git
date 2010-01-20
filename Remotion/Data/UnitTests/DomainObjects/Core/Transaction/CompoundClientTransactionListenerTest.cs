@@ -165,24 +165,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var id = new RelationEndPointID (order.ID, typeof (Order).FullName + ".Customer");
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapRegistering"),
-          new object[] {endPoint});
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapUnregistering"),
-          new object[] {endPoint.ID});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapRegistering"), new object[] {endPoint});
+
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapUnregistering"), new object[] {endPoint.ID});
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapPerformingDelete"),
           new object[] {new RelationEndPointID[0]});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointUnloading"), new object[] { endPoint });
 
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("DataManagerMarkingObjectDiscarded"),
-          new object[] {order.ID});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataManagerMarkingObjectDiscarded"), new object[] {order.ID});
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataContainerMapRegistering"), new object[] {order.InternalDataContainer});
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("DataContainerMapUnregistering"),
-          new object[] {order.InternalDataContainer});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataContainerMapUnregistering"), new object[] {order.InternalDataContainer});
     }
 
     [Test]

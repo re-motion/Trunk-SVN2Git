@@ -154,6 +154,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    {
+      throw CreateException();
+    }
+
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
       throw CreateException();

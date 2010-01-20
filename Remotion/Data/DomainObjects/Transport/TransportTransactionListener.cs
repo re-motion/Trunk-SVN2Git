@@ -168,6 +168,11 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
+    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    {
+
+    }
+
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
       

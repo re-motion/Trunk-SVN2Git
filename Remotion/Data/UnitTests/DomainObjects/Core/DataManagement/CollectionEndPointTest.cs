@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
@@ -279,6 +280,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
+
+    [Test]
+    public void Unload_TriggersListener ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.RelationEndPointUnloading (_customerEndPoint))
+          .WhenCalled (mi => Assert.That (_customerEndPoint.IsDataAvailable, Is.True));
+      listenerMock.Replay ();
+
+      ClientTransactionMock.AddListener (listenerMock);
+      
+      _customerEndPoint.Unload ();
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
 
     [Test]
     public void EnsureDataAvailable ()

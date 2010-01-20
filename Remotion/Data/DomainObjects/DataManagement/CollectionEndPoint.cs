@@ -113,6 +113,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public void Unload ()
     {
+      ClientTransaction.TransactionEventSink.RelationEndPointUnloading (this);
       _data.Unload ();
     }
 

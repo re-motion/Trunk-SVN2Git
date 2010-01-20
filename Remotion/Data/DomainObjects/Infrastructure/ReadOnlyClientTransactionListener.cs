@@ -160,12 +160,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      EnsureWriteable ("RelationEndPointMapUnregistering");
     }
 
     public virtual void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
+    }
+
+    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    {
+      EnsureWriteable ("RelationEndPointUnloading");
     }
 
     public virtual void DataManagerMarkingObjectDiscarded (ObjectID id)
@@ -180,7 +185,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void DataContainerMapUnregistering (DataContainer container)
     {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+      EnsureWriteable ("DataContainerMapUnregistering");
     }
   }
 }

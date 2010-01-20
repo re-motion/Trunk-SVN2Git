@@ -96,6 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationEndPointMapRegistering (RelationEndPoint endPoint);
     void RelationEndPointMapUnregistering (RelationEndPointID endPointID);
     void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs);
+    void RelationEndPointUnloading (RelationEndPoint endPoint);
 
     void DataManagerMarkingObjectDiscarded (ObjectID id);
 

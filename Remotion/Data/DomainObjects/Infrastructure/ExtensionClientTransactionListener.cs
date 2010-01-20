@@ -172,6 +172,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
+    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    {
+      // not handled by this listener
+    }
+
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
       // not handled by this listener
