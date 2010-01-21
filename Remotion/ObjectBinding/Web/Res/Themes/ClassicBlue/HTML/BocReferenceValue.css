@@ -81,7 +81,7 @@ span.bocReferenceValue span.content * {
 
 span.bocReferenceValue .disabled span.content 
 {
-  padding: 3px;
+  padding: 0.5px 3px;
 }
 
 span.bocReferenceValue.disabled img
