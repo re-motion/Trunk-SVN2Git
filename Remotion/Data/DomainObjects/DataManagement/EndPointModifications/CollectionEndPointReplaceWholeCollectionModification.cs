@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders = newOrders.</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification ExtendToAllRelatedObjects ()
+    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
     {
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
 
@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
           modificationsOfRemoved
           .Concat (modificationsOfAdded)
           .Concat (new IDataManagementCommand[] { this }); // customer.Orders = newOrders
-      return new CompositeRelationModificationWithEvents (allModificationSteps);
+      return new CompositeDataManagementCommand (allModificationSteps);
     }
   }
 }

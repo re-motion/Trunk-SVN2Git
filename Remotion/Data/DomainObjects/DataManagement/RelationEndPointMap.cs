@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -95,7 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 1914: Called by DeleteDomainObjectCommand
-    public void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+    public void PerformDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveModifications)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
@@ -124,14 +123,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 1914: Integrated into DeleteDomainObjectCommand
-    public CompositeRelationModificationWithEvents GetRemoveModificationsForOppositeEndPoints (DomainObject deletedObject)
+    public CompositeDataManagementCommand GetRemoveModificationsForOppositeEndPoints (DomainObject deletedObject)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 
       var allOppositeRelationEndPoints = OppositeRelationEndPointFinder.GetOppositeRelationEndPoints (this, deletedObject);
       var modifications = from oppositeEndPoint in allOppositeRelationEndPoints
                           select oppositeEndPoint.CreateRemoveModification (deletedObject);
-      return new CompositeRelationModificationWithEvents (modifications);
+      return new CompositeDataManagementCommand (modifications);
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)

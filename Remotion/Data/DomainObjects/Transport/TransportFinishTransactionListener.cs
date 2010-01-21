@@ -17,7 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -52,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Transport
           var dataContainer = _transaction.GetDataContainer (domainObject);
           if (dataContainer.State == StateType.New)
           {
-            _transaction.DataManager.PerformDelete (domainObject, new CompositeRelationModificationWithEvents ());
+            _transaction.DataManager.PerformDelete (domainObject, new CompositeDataManagementCommand ());
             Assertion.IsTrue (dataContainer.IsDiscarded);
           }
           else

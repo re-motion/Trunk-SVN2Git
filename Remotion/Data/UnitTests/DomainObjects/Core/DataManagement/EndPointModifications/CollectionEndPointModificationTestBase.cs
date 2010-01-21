@@ -74,9 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       CollectionDataMock.Replay ();
     }
 
-    protected IList<RelationEndPointModification> GetModificationSteps (CompositeRelationModification bidirectionalModification)
+    protected IList<RelationEndPointModification> GetModificationSteps (CompositeDataManagementCommand bidirectionalModification)
     {
-      return bidirectionalModification.GetModificationSteps ().Cast<RelationEndPointModification> ().ToList ();
+      return bidirectionalModification.GetCommands ().Cast<RelationEndPointModification> ().ToList ();
     }
   }
 }

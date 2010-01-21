@@ -61,12 +61,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldCustomer.Orders.Remove (order).</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification ExtendToAllRelatedObjects ()
+    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
     {
       var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (NewRelatedObject);
       var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (OldRelatedObject);
 
-      var bidirectionalModification = new CompositeRelationModificationWithEvents (
+      var bidirectionalModification = new CompositeDataManagementCommand (
         // => order.Customer = newCustomer
           this,
         // => newCustomer.Orders.Add (order)

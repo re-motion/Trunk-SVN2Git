@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
     /// <see cref="ExtendToAllRelatedObjects"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
     /// </remarks>
-    public abstract CompositeRelationModification ExtendToAllRelatedObjects ();
+    public abstract CompositeDataManagementCommand ExtendToAllRelatedObjects ();
 
     public virtual void Begin ()
     {

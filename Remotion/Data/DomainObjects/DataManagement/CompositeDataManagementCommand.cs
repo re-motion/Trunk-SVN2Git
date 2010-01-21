@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
   /// Composes several <see cref="IDataManagementCommand"/> instances into a single command.
@@ -28,32 +28,78 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// This can, for example, be used to model bidirectional relation modifications. Such modifications always comprise multiple steps: they need to 
   /// be performed on either side of the relation being changed, and usually they also invole one "previous" or "new" related object. (Eg. an insert 
   /// modificaton has a previous related object (possibly <see langword="null" />), a remove modification has an old related object.)
-  /// <see cref="CompositeRelationModification"/> aggregates these modification steps and allows executing and raising events for them all at once.
+  /// <see cref="CompositeDataManagementCommand"/> aggregates these modification steps and allows executing and raising events for them all at once.
   /// </remarks>
-  // TODO 1914: Refactor to CompositeDataManagementCommand, move to outer namespace
-  // TODO 1914: should implement IDataManagementCommand; should get two versions of ExecuteAllSteps (WithEvents/WithoutEvents)
-  // TODO 1914: in CollectionEndPointReplaceSameModification and ObjectEndPointSetSameModification, there is no need to have a WithoutEvents object, those modifications don't send any notifications anyway
-  public abstract class CompositeRelationModification
+  public class CompositeDataManagementCommand : IDataManagementCommand
   {
     private readonly List<IDataManagementCommand> _commands;
 
-    protected CompositeRelationModification (IEnumerable<IDataManagementCommand> commands)
+    public CompositeDataManagementCommand (IEnumerable<IDataManagementCommand> commands)
     {
       ArgumentUtility.CheckNotNull ("commands", commands);
       _commands = new List<IDataManagementCommand> (commands);
     }
 
-    public ReadOnlyCollection<IDataManagementCommand> GetModificationSteps ()
+    public CompositeDataManagementCommand (params IDataManagementCommand[] commands)
+        : this ((IEnumerable<IDataManagementCommand>) commands)
+    {
+    }
+
+    public ReadOnlyCollection<IDataManagementCommand> GetCommands ()
     {
       return _commands.AsReadOnly ();
     }
 
-    public void AddModificationStep (IDataManagementCommand command)
+    public void AddCommand (IDataManagementCommand command)
     {
       ArgumentUtility.CheckNotNull ("command", command);
       _commands.Add (command);
     }
 
-    public abstract void ExecuteAllSteps ();
+    public void Begin ()
+    {
+      foreach (var modificationStep in GetCommands())
+        modificationStep.Begin ();
+    }
+
+    public void Perform ()
+    {
+      foreach (var modificationStep in GetCommands ())
+        modificationStep.Perform ();
+    }
+
+    public void End ()
+    {
+      foreach (var modificationStep in GetCommands ())
+        modificationStep.End ();
+    }
+
+    public void NotifyClientTransactionOfBegin ()
+    {
+      foreach (var modificationStep in GetCommands ())
+        modificationStep.NotifyClientTransactionOfBegin ();
+    }
+
+    public void NotifyClientTransactionOfEnd ()
+    {
+      foreach (var modificationStep in GetCommands ())
+        modificationStep.NotifyClientTransactionOfEnd ();
+    }
+
+    public CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    {
+      return this;
+    }
+
+    public virtual void ExecuteAllSteps ()
+    {
+      NotifyClientTransactionOfBegin();
+      Begin();
+
+      Perform();
+
+      NotifyClientTransactionOfEnd();
+      End();
+    }
   }
 }

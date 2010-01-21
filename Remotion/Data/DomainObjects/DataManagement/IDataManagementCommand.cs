@@ -1,5 +1,4 @@
 using System;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -80,6 +79,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <see cref="IDataManagementCommand"/>. If no other objects are involved by the change, this method returns just this 
     /// <see cref="IDataManagementCommand"/>.
     /// </summary>
-    CompositeRelationModification ExtendToAllRelatedObjects ();
+    CompositeDataManagementCommand ExtendToAllRelatedObjects ();
   }
 }

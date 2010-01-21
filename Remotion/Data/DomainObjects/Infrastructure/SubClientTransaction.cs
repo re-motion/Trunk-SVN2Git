@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -292,7 +291,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           "deleted DataContainers cannot be discarded or deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
-      ParentTransaction.DataManager.PerformDelete (dataContainer.DomainObject, new CompositeRelationModificationWithEvents ());
+      ParentTransaction.DataManager.PerformDelete (dataContainer.DomainObject, new CompositeDataManagementCommand ());
     }
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
@@ -331,7 +330,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       newDiscardedContainer.SetDomainObject (objectToBeDiscarded);
       newDiscardedContainer.RegisterWithTransaction (this);
 
-      DataManager.PerformDelete (objectToBeDiscarded, new CompositeRelationModificationWithEvents());
+      DataManager.PerformDelete (objectToBeDiscarded, new CompositeDataManagementCommand ());
 
       Assertion.IsTrue (DataManager.IsDiscarded (newDiscardedContainer.ID),
           "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");

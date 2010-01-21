@@ -179,7 +179,6 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceWholeCollectionModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceSameModification.cs" />
-    <Compile Include="DataManagement\EndPointModifications\CompositeRelationModificationWithEvents.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneManyModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneOneModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetSameModification.cs" />
@@ -202,7 +201,7 @@
     <Compile Include="Infrastructure\RootCollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationLogger.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
-    <Compile Include="DataManagement\EndPointModifications\CompositeRelationModification.cs" />
+    <Compile Include="DataManagement\CompositeDataManagementCommand.cs" />
     <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetModificationBase.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModification.cs" />

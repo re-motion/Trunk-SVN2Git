@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -240,7 +239,7 @@ public class DataManager : ISerializable, IDeserializationCallback
   }
 
   // TODO: This will be rewritten as a command.
-  internal void PerformDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+  internal void PerformDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveModifications)
   {
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
@@ -263,7 +262,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     }
   }
 
-  private void BeginDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+  private void BeginDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveModifications)
   {
     _transactionEventSink.ObjectDeleting (deletedObject);
     oppositeEndPointRemoveModifications.NotifyClientTransactionOfBegin();
@@ -272,7 +271,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     oppositeEndPointRemoveModifications.Begin();
   }
 
-  private void EndDelete (DomainObject deletedObject, CompositeRelationModificationWithEvents oppositeEndPointRemoveModifications)
+  private void EndDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveModifications)
   {
     oppositeEndPointRemoveModifications.NotifyClientTransactionOfEnd();
     _transactionEventSink.ObjectDeleted (deletedObject);

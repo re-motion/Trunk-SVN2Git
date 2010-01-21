@@ -147,9 +147,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       listenerMock.AssertWasCalled (mock => mock.RelationChanged (_endPoint.GetDomainObject (), _endPoint.PropertyName));
     }
 
-    protected IList<RelationEndPointModification> GetModificationSteps (CompositeRelationModification bidirectionalModification)
+    protected IList<RelationEndPointModification> GetModificationSteps (CompositeDataManagementCommand bidirectionalModification)
     {
-      return bidirectionalModification.GetModificationSteps ().Cast<RelationEndPointModification> ().ToList ();
+      return bidirectionalModification.GetCommands ().Cast<RelationEndPointModification> ().ToList ();
     }
   }
 }

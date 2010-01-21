@@ -21,7 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private ICollectionEndPoint _collectionEndPointMock;
     private ICollectionEndPointData _endPointDataStub;
     private IDomainObjectCollectionData _dataStoreStub;
-    private CompositeRelationModification _compositeModificationMock;
+    private CompositeDataManagementCommand _compositeModificationMock;
     private IDataManagementCommand _modificationStub;
 
     private EndPointDelegatingCollectionData _data;
@@ -57,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _dataStoreStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
 
       _modificationStub = MockRepository.GenerateStub<IDataManagementCommand> ();
-      _compositeModificationMock = MockRepository.GenerateMock<CompositeRelationModification> (new[] { new IDataManagementCommand[0] });
+      _compositeModificationMock = MockRepository.GenerateMock<CompositeDataManagementCommand> (new[] { new IDataManagementCommand[0] });
 
       _endPointDataStub = MockRepository.GenerateStub<ICollectionEndPointData> ();
       _endPointDataStub.Stub (stub => stub.DataStore).Return (_dataStoreStub);

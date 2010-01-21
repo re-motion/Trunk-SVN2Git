@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
@@ -29,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     private IDataManagementCommand _modificationMock1;
     private IDataManagementCommand _modificationMock2;
     private IDataManagementCommand _modificationMock3;
-    private CompositeRelationModificationWithEvents _collection;
+    private CompositeDataManagementCommand _collection;
 
     public override void SetUp ()
     {
@@ -40,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modificationMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
       _modificationMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
 
-      _collection = new CompositeRelationModificationWithEvents (_modificationMock1, _modificationMock2, _modificationMock3);
+      _collection = new CompositeDataManagementCommand (_modificationMock1, _modificationMock2, _modificationMock3);
     }
 
     [Test]

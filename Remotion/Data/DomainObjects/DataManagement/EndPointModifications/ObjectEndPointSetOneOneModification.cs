@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldOrderOfNewTicket.OrderTicket = null.</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification ExtendToAllRelatedObjects ()
+    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
     {
       var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
       var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject (true);
       var oldRelatedEndPointOfNewRelatedEndPoint = newRelatedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject);
 
-      var bidirectionalModification = new CompositeRelationModificationWithEvents (
+      var bidirectionalModification = new CompositeDataManagementCommand (
         // => order.OrderTicket = newTicket
         this,
         // => oldTicket.Order = null (remove)

@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do nothing
     }
 
-    public override CompositeRelationModification ExtendToAllRelatedObjects ()
+    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
     {
       throw new NotSupportedException ("Null end points cannot be the starting point for a bidirectional modification.");
     }
