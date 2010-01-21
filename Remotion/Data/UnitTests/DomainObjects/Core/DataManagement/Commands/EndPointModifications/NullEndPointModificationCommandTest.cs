@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class NullEndPointModificationTest : ClientTransactionBaseTest
+  public class NullEndPointModificationCommandTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private IEndPoint _endPointMock;
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private IEndPoint _newEndPointStub;
     private Order _oldRelatedObject;
     private Order _newRelatedObject;
-    private NullEndPointModification _modification;
+    private NullEndPointModificationCommand _command;
     private RelationEndPointID _id;
 
     public override void SetUp ()
@@ -60,26 +60,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newEndPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
       _newEndPointStub.Replay ();
 
-      _modification = new NullEndPointModification (_endPointMock, _oldRelatedObject, _newRelatedObject);
+      _command = new NullEndPointModificationCommand (_endPointMock, _oldRelatedObject, _newRelatedObject);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPointMock, _modification.ModifiedEndPoint);
-      Assert.AreSame (_oldRelatedObject, _modification.OldRelatedObject);
-      Assert.AreSame (_newRelatedObject, _modification.NewRelatedObject);
+      Assert.AreSame (_endPointMock, _command.ModifiedEndPoint);
+      Assert.AreSame (_oldRelatedObject, _command.OldRelatedObject);
+      Assert.AreSame (_newRelatedObject, _command.NewRelatedObject);
     }
 
     [Test]
     public void Initialization_FromNullObjectEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _id.Definition);
-      var modification = (RelationEndPointModification) endPoint.CreateSetModification (_newRelatedObject);
-      Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
-      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
-      Assert.IsNull (modification.OldRelatedObject);
-      Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
+      var command = (RelationEndPointModificationCommand) endPoint.CreateSetCommand (_newRelatedObject);
+      Assert.IsInstanceOfType (typeof (NullEndPointModificationCommand), command);
+      Assert.AreSame (endPoint, command.ModifiedEndPoint);
+      Assert.IsNull (command.OldRelatedObject);
+      Assert.AreSame (_newRelatedObject, command.NewRelatedObject);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       _mockRepository.ReplayAll ();
 
-      _modification.Begin ();
+      _command.Begin ();
 
       _mockRepository.VerifyAll ();
     }
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       _mockRepository.ReplayAll ();
 
-      _modification.Perform ();
+      _command.Perform ();
 
       _mockRepository.VerifyAll ();
     }
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       _mockRepository.ReplayAll ();
 
-      _modification.End ();
+      _command.End ();
 
       _mockRepository.VerifyAll ();
     }
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       _mockRepository.ReplayAll ();
 
-      _modification.NotifyClientTransactionOfBegin ();
+      _command.NotifyClientTransactionOfBegin ();
 
       _mockRepository.VerifyAll ();
     }
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       _mockRepository.ReplayAll ();
 
-      _modification.NotifyClientTransactionOfEnd ();
+      _command.NotifyClientTransactionOfEnd ();
 
       _mockRepository.VerifyAll ();
     }
@@ -135,9 +135,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExtendToAllRelatedObjects ()
     {
-      var result = _modification.ExtendToAllRelatedObjects ();
+      var result = _command.ExtendToAllRelatedObjects ();
 
-      Assert.That (result, Is.SameAs (_modification));
+      Assert.That (result, Is.SameAs (_command));
     }
   }
 }

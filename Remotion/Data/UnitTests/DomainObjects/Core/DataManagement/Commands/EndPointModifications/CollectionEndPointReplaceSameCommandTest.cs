@@ -27,9 +27,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class CollectionEndPointReplaceSameModificationTest : CollectionEndPointModificationTestBase
+  public class CollectionEndPointReplaceSameCommandTest : CollectionEndPointModificationCommandTestBase
   {
-    private CollectionEndPointReplaceSameModification _modification;
+    private CollectionEndPointReplaceSameCommand _command;
     private Order _replacedRelatedObject;
 
     public override void SetUp ()
@@ -38,26 +38,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
 
-      _modification = new CollectionEndPointReplaceSameModification (CollectionEndPoint, _replacedRelatedObject, CollectionDataMock);
+      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject, CollectionDataMock);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_modification.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
-      Assert.That (_modification.OldRelatedObject, Is.SameAs (_replacedRelatedObject));
-      Assert.That (_modification.NewRelatedObject, Is.SameAs (_replacedRelatedObject));
-      Assert.That (_modification.ModifiedCollection, Is.SameAs (CollectionEndPoint.OppositeDomainObjects));
-      Assert.That (_modification.ModifiedCollectionData, Is.SameAs (CollectionDataMock));
+      Assert.That (_command.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
+      Assert.That (_command.OldRelatedObject, Is.SameAs (_replacedRelatedObject));
+      Assert.That (_command.NewRelatedObject, Is.SameAs (_replacedRelatedObject));
+      Assert.That (_command.ModifiedCollection, Is.SameAs (CollectionEndPoint.OppositeDomainObjects));
+      Assert.That (_command.ModifiedCollectionData, Is.SameAs (CollectionDataMock));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModification is needed.\r\n"
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModificationCommand is needed.\r\n"
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceSameModification (endPoint, _replacedRelatedObject, CollectionDataMock);
+      new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      _modification.Begin ();
+      _command.Begin ();
 
       Assert.That (relationChangingCalled, Is.False); // no change notification
       Assert.That (relationChangedCalled, Is.False); // no change notification
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      _modification.End ();
+      _command.End ();
 
       Assert.That (relationChangingCalled, Is.False); // no change notification
       Assert.That (relationChangedCalled, Is.False); // no change notification
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      _modification.NotifyClientTransactionOfBegin ();
+      _command.NotifyClientTransactionOfBegin ();
     }
 
     [Test]
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      _modification.NotifyClientTransactionOfEnd ();
+      _command.NotifyClientTransactionOfEnd ();
     }
 
     [Test]
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       CollectionDataMock.BackToRecord ();
       CollectionDataMock.Replay ();
 
-      _modification.Perform ();
+      _command.Perform ();
 
       CollectionDataMock.VerifyAllExpectations ();
 
@@ -142,21 +142,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExtendToAllRelatedObjects ()
     {
-      var bidirectionalModification = _modification.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = (CompositeDataManagementCommand) _command.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
 
       var relationEndPointID = new RelationEndPointID (_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
-      var steps = GetModificationSteps (bidirectionalModification);
+      var steps = bidirectionalModification.GetCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       // customer.Orders.Touch()
-      Assert.That (steps[0], Is.SameAs (_modification));
+      Assert.That (steps[0], Is.SameAs (_command));
 
       // customer.Orders[index].Touch()
-      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchModification)));
-      Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (oppositeEndPoint));
+      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchCommand)));
+      Assert.That (((RelationEndPointTouchCommand) steps[1]).EndPoint, Is.SameAs (oppositeEndPoint));
     }
   }
 }

@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -538,7 +537,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void CreateAssociationModification ()
+    public void CreateAssociationCommand ()
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
       IDomainObjectCollectionData endPointDataStore = DomainObjectCollectionDataTestHelper
@@ -546,60 +545,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           .GetUndecoratedDataStore ();
 
       var newCollection = new OrderCollection ();
-      var modification = (CollectionEndPointReplaceWholeCollectionModification) newCollection.CreateAssociationModification (endPoint);
+      var command = (CollectionEndPointReplaceWholeCollectionCommand) newCollection.CreateAssociationCommand (endPoint);
 
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (endPoint));
-      Assert.That (modification.NewOppositeCollection, Is.SameAs (newCollection));
-      Assert.That (modification.NewOppositeCollectionTransformer.Collection, Is.SameAs (newCollection));
-      Assert.That (modification.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (modification.ModifiedEndPointDataStore, Is.SameAs (endPointDataStore));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
+      Assert.That (command.NewOppositeCollection, Is.SameAs (newCollection));
+      Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (newCollection));
+      Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.ModifiedEndPointDataStore, Is.SameAs (endPointDataStore));
     }
 
     [Test]
-    public void CreateAssociationModification_CollectionIsReadOnly ()
+    public void CreateAssociationCommand_CollectionIsReadOnly ()
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new OrderCollection ();
       newCollection.SetIsReadOnly (true);
-      newCollection.CreateAssociationModification (endPoint);
+      newCollection.CreateAssociationCommand (endPoint);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "This collection ('Remotion.Data.DomainObjects.ObjectList`1[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order]') is not of the same type "
         + "as the end point's current opposite collection ('Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderCollection').")]
-    public void CreateAssociationModification_DifferentCollectionTypes ()
+    public void CreateAssociationCommand_DifferentCollectionTypes ()
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new ObjectList<Order> ();
-      newCollection.CreateAssociationModification (endPoint);
+      newCollection.CreateAssociationCommand (endPoint);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "This collection has a different item type than the end point's current opposite collection.")]
-    public void CreateAssociationModification_DifferentRequiredItemType ()
+    public void CreateAssociationCommand_DifferentRequiredItemType ()
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
       var newCollection = new DomainObjectCollection (typeof (Customer));
-      newCollection.CreateAssociationModification (endPoint);
+      newCollection.CreateAssociationCommand (endPoint);
     }
 
     [Test]
-    public void CreateAssociationModification_SelfReplace ()
+    public void CreateAssociationCommand_SelfReplace ()
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
-      var modification = (CollectionEndPointReplaceWholeCollectionModification)
-                         endPoint.OppositeDomainObjects.CreateAssociationModification (endPoint);
+      var command = (CollectionEndPointReplaceWholeCollectionCommand)
+                         endPoint.OppositeDomainObjects.CreateAssociationCommand (endPoint);
 
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (endPoint));
-      Assert.That (modification.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (modification.NewOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (modification.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
+      Assert.That (command.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
     }
 
     [Test]

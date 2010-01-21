@@ -29,9 +29,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     void SetOppositeCollectionAndNotify (DomainObjectCollection oppositeDomainObjects);
 
-    IDataManagementCommand CreateInsertModification (DomainObject insertedRelatedObject, int index);
-    IDataManagementCommand CreateAddModification (DomainObject addedRelatedObject);
-    IDataManagementCommand CreateReplaceModification (int index, DomainObject replacementObject);
+    IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
+    IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
+    IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
   }

@@ -134,8 +134,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
 
-      var modification = oppositeDomainObjects.CreateAssociationModification (this);
-      var bidirectionalModification = modification.ExtendToAllRelatedObjects ();
+      var command = oppositeDomainObjects.CreateAssociationCommand (this);
+      var bidirectionalModification = command.ExtendToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
 
@@ -173,8 +173,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var oppositeObjectsReferenceBeforeRollback = _oppositeDomainObjects;
 
-        var modification = _originalCollectionReference.CreateAssociationModification (this);
-        modification.Perform (); // no notifications, no bidirectional changes, we only change the collections' associations
+        var command = _originalCollectionReference.CreateAssociationCommand (this);
+        command.Perform (); // no notifications, no bidirectional changes, we only change the collections' associations
 
         _oppositeDomainObjects = _originalCollectionReference;
 
@@ -213,31 +213,31 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataStrategy;
     }
 
-    public override IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveModification (this, removedRelatedObject, DataStore);
+      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, DataStore);
     }
 
-    public virtual IDataManagementCommand CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, DataStore);
+      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, DataStore);
     }
 
-    public virtual IDataManagementCommand CreateAddModification (DomainObject addedRelatedObject)
+    public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      return CreateInsertModification (addedRelatedObject, OppositeDomainObjects.Count);
+      return CreateInsertCommand (addedRelatedObject, OppositeDomainObjects.Count);
     }
 
-    public virtual IDataManagementCommand CreateReplaceModification (int index, DomainObject replacementObject)
+    public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameModification (this, replacedObject, DataStore);
+        return new CollectionEndPointReplaceSameCommand (this, replacedObject, DataStore);
       else
-        return new CollectionEndPointReplaceModification (this, replacedObject, index, replacementObject, DataStore);
+        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, DataStore);
     }
 
     public override void PerformDelete ()

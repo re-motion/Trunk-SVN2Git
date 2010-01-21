@@ -619,7 +619,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
     /// <remarks>
     /// <para>
-    /// When the modification is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
+    /// When the command is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
     /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
     /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
     /// </para>
@@ -637,7 +637,7 @@ namespace Remotion.Data.DomainObjects
     /// <see cref="CollectionEndPoint"/> has no possibility to do that.
     /// </para>
     /// </remarks>
-    public IDataManagementCommand CreateAssociationModification (CollectionEndPoint endPoint)
+    public IDataManagementCommand CreateAssociationCommand (CollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
@@ -653,7 +653,7 @@ namespace Remotion.Data.DomainObjects
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointReplaceWholeCollectionModification (
+      return new CollectionEndPointReplaceWholeCollectionCommand (
           endPoint,
           this,
           new Transformer (endPoint.OppositeDomainObjects),

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -26,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// Represents the replacement of the whole <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection, including the transformation
   /// of the involved <see cref="DomainObjectCollection"/> instances into stand-alone resp. associated collections.
   /// </summary>
-  public class CollectionEndPointReplaceWholeCollectionModification : RelationEndPointModification
+  public class CollectionEndPointReplaceWholeCollectionCommand : RelationEndPointModificationCommand
   {
     private readonly ICollectionEndPoint _modifiedEndPoint;
     private readonly DomainObjectCollection _newOppositeCollection;
@@ -38,7 +37,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private DomainObject[] _removedObjects;
     private DomainObject[] _addedObjects;
 
-    public CollectionEndPointReplaceWholeCollectionModification (
+    public CollectionEndPointReplaceWholeCollectionCommand (
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newOppositeCollection,
         IDomainObjectCollectionTransformer oldOppositeCollectionTransformer,
@@ -52,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ArgumentUtility.CheckNotNull ("modifiedEndPointDataStore", modifiedEndPointDataStore);
 
       if (modifiedEndPoint.IsNull)
-        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _modifiedEndPoint = modifiedEndPoint;
       _newOppositeCollection = newOppositeCollection;
@@ -149,7 +148,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     }
 
     /// <summary>
-    /// Creates all modifications needed to perform a bidirectional collection replace operation within this collection end point.
+    /// Creates all commands needed to perform a bidirectional collection replace operation within this collection end point.
     /// </summary>
     /// <remarks>
     /// A replace operation of the form "customer.Orders = newOrders" involves the following steps:
@@ -164,24 +163,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
 
-      var modificationsOfRemoved = from oldObject in RemovedObjects
-                                   let endPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldObject)
-                                   select endPoint.CreateRemoveModification (domainObjectOfCollectionEndPoint); // oldOrder.Customer = null
+      var commandsForRemoved = from oldObject in RemovedObjects
+                               let endPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldObject)
+                               select endPoint.CreateRemoveCommand (domainObjectOfCollectionEndPoint); // oldOrder.Customer = null
       
-      var modificationsOfAdded = from newObject in AddedObjects
-                                 let endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (newObject) // newOrder.Customer
-                                 let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject (false) // newOrder.Customer
-                                 let endPointOfOldRelatedOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedOfNewObject) // newOrder.Customer.Orders
-                                 let removeModification = endPointOfOldRelatedOfNewObject.CreateRemoveModification (newObject) // newOrder.Customer.Orders.Remove (newOrder)
-                                 let setModification = endPointOfNewObject.CreateSetModification (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
-                                 from modification in new[] { removeModification, setModification }
-                                 select modification;
+      var commandsForAdded = from newObject in AddedObjects
+                             let endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (newObject) // newOrder.Customer
+                             let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject (false) // newOrder.Customer
+                             let endPointOfOldRelatedOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedOfNewObject) // newOrder.Customer.Orders
+                             let removeCommand = endPointOfOldRelatedOfNewObject.CreateRemoveCommand (newObject) // newOrder.Customer.Orders.Remove (newOrder)
+                             let setCommand = endPointOfNewObject.CreateSetCommand (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer
+                             from command in new[] { removeCommand, setCommand }
+                             select command;
 
-      var allModificationSteps =
-          modificationsOfRemoved
-          .Concat (modificationsOfAdded)
+      var allCommands =
+          commandsForRemoved
+          .Concat (commandsForAdded)
           .Concat (new IDataManagementCommand[] { this }); // customer.Orders = newOrders
-      return new CompositeDataManagementCommand (allModificationSteps);
+      return new CompositeDataManagementCommand (allCommands);
     }
   }
 }

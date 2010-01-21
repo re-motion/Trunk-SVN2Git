@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -23,36 +22,36 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// <summary>
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> that is part of a one-to-one relation.
   /// </summary>
-  public class ObjectEndPointSetOneOneModification : ObjectEndPointSetModificationBase
+  public class ObjectEndPointSetOneOneCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetOneOneModification (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    public ObjectEndPointSetOneOneCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
       if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {
-        var message = string.Format ("EndPoint '{0}' is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalModification instead.",
+        var message = string.Format ("EndPoint '{0}' is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
       if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().Cardinality == CardinalityType.Many)
       {
-        var message = string.Format ("EndPoint '{0}' is from a 1:n relation - use a ObjectEndPointSetOneManyModification instead.",
+        var message = string.Format ("EndPoint '{0}' is from a 1:n relation - use a ObjectEndPointSetOneManyCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
       if (newRelatedObject == modifiedEndPoint.GetOppositeObject (true))
       {
-        var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameModification instead.",
+        var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "newRelatedObject");
       }
     }
 
     /// <summary>
-    /// Creates all modification steps needed to perform a bidirectional 1:1 set operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
-    /// this modification, the other steps are the opposite modifications on the new/old related objects.
+    /// Creates all commands needed to perform a bidirectional 1:1 set operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
+    /// this command, the other steps are the opposite commands on the new/old related objects.
     /// </summary>
     /// <remarks>
     /// A 1:1 set operation of the form "order.OrderTicket = newTicket" needs four steps:
@@ -75,11 +74,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         // => order.OrderTicket = newTicket
         this,
         // => oldTicket.Order = null (remove)
-        oldRelatedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()),
+        oldRelatedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject ()),
         // => newTicket.Order = order
-        newRelatedEndPoint.CreateSetModification (ModifiedEndPoint.GetDomainObject ()),
+        newRelatedEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject ()),
         // => oldOrderOfNewTicket.OrderTicket = null (remove)
-        oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (NewRelatedObject));
+        oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveCommand (NewRelatedObject));
 
       return bidirectionalModification;
     }

@@ -55,8 +55,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       CheckNewRelatedObjectType (newRelatedObject);
 
-      var setModification = CreateSetModification (newRelatedObject);
-      var bidirectionalModification = setModification.ExtendToAllRelatedObjects ();
+      var setCommand = CreateSetCommand (newRelatedObject);
+      var bidirectionalModification = setCommand.ExtendToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public override IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
@@ -88,22 +88,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException (message);
       }
 
-      return CreateSetModification (null);
+      return CreateSetCommand (null);
     }
 
-    public virtual IDataManagementCommand CreateSetModification (DomainObject newRelatedObject)
+    public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
 
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
       if (OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameModification (this);
+        return new ObjectEndPointSetSameCommand (this);
       else if (oppositeEndPointDefinition.IsAnonymous)
-          return new ObjectEndPointSetUnidirectionalModification (this, newRelatedObject);
+          return new ObjectEndPointSetUnidirectionalCommand (this, newRelatedObject);
         else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-          return new ObjectEndPointSetOneOneModification (this, newRelatedObject);
+          return new ObjectEndPointSetOneOneCommand (this, newRelatedObject);
         else 
-          return new ObjectEndPointSetOneManyModification (this, newRelatedObject);
+          return new ObjectEndPointSetOneManyCommand (this, newRelatedObject);
     }
 
     public override void PerformDelete ()

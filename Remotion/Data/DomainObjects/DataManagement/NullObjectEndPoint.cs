@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// Represents an <see cref="IObjectEndPoint"/> (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
   /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
   /// object, this end point (or <see cref="NullCollectionEndPoint"/>) is used to represent the object's part in the relation, and a 
-  /// <see cref="NullEndPointModification"/> is used to represent the modification. The end point is created by 
+  /// <see cref="NullEndPointModificationCommand"/> is used to represent the modification. The end point is created by 
   /// <see cref="RelationEndPoint.CreateNullRelationEndPoint"/> (e.g. via 
   /// <see cref="EndPointExtensions.GetEndPointWithOppositeDefinition{T}(Remotion.Data.DomainObjects.DataManagement.IEndPoint,Remotion.Data.DomainObjects.DomainObject)"/>)
   /// and is usually discarded after executing the modification.
@@ -125,14 +125,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("Rollback cannot be called on a NullObjectEndPoint.");
     }
 
-    public IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
+    public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
-      return new NullEndPointModification (this, removedRelatedObject, null);
+      return new NullEndPointModificationCommand (this, removedRelatedObject, null);
     }
 
-    public IDataManagementCommand CreateSetModification (DomainObject newRelatedObject)
+    public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return new NullEndPointModification (this, this.GetOppositeObject (true), newRelatedObject);
+      return new NullEndPointModificationCommand (this, this.GetOppositeObject (true), newRelatedObject);
     }
 
     public void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)

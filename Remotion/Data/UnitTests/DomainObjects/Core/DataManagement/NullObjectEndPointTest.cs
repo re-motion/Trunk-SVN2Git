@@ -118,23 +118,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateRemoveModification ()
+    public void CreateRemoveCommand ()
     {
       var removedRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = (RelationEndPointModification) _nullEndPoint.CreateRemoveModification (removedRelatedObject);
-      Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (removedRelatedObject));
-      Assert.That (modification.NewRelatedObject, Is.Null);
+      var command = (RelationEndPointModificationCommand) _nullEndPoint.CreateRemoveCommand (removedRelatedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (command.OldRelatedObject, Is.SameAs (removedRelatedObject));
+      Assert.That (command.NewRelatedObject, Is.Null);
     }
 
     [Test]
-    public void CreateSetModification ()
+    public void CreateSetCommand ()
     {
       var newRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = (RelationEndPointModification) _nullEndPoint.CreateSetModification (newRelatedObject);
-      Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
-      Assert.That (modification.OldRelatedObject, Is.Null);
-      Assert.That (modification.NewRelatedObject, Is.SameAs (newRelatedObject));
+      var command = (RelationEndPointModificationCommand) _nullEndPoint.CreateSetCommand (newRelatedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
+      Assert.That (command.OldRelatedObject, Is.Null);
+      Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
     }
 
     [Test]

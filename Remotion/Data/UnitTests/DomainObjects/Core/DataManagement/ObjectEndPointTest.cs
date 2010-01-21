@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
       Assert.IsNotNull (_endPoint.OppositeObjectID);
-      _endPoint.CreateRemoveModification (Order.GetObject (DomainObjectIDs.Order1)).Perform();
+      _endPoint.CreateRemoveCommand (Order.GetObject (DomainObjectIDs.Order1)).Perform();
       Assert.IsNull (_endPoint.OppositeObjectID);
     }
 
@@ -144,15 +144,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateSetModification_Same ()
+    public void CreateSetCommand_Same ()
     {
-      var modification = (RelationEndPointModification) _endPoint.CreateSetModification (_endPoint.GetOppositeObject (true));
-      Assert.That (modification.GetType(), Is.EqualTo (typeof (ObjectEndPointSetSameModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
+      var command = (RelationEndPointModificationCommand) _endPoint.CreateSetCommand (_endPoint.GetOppositeObject (true));
+      Assert.That (command.GetType(), Is.EqualTo (typeof (ObjectEndPointSetSameCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
     }
 
     [Test]
-    public void CreateSetModification_Unidirectional ()
+    public void CreateSetCommand_Unidirectional ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
@@ -162,14 +162,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
       var newClient = Client.NewObject ();
 
-      var modification = (RelationEndPointModification) unidirectionalEndPoint.CreateSetModification (newClient);
-      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetUnidirectionalModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (unidirectionalEndPoint));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (newClient));
+      var command = (RelationEndPointModificationCommand) unidirectionalEndPoint.CreateSetCommand (newClient);
+      Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetUnidirectionalCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (unidirectionalEndPoint));
+      Assert.That (command.NewRelatedObject, Is.SameAs (newClient));
     }
 
     [Test]
-    public void CreateSetModification_OneOne ()
+    public void CreateSetCommand_OneOne ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
@@ -179,14 +179,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
 
-      var modification = (RelationEndPointModification) bidirectionalEndPoint.CreateSetModification (newOrderTicket);
-      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (newOrderTicket));
+      var command = (RelationEndPointModificationCommand) bidirectionalEndPoint.CreateSetCommand (newOrderTicket);
+      Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
+      Assert.That (command.NewRelatedObject, Is.SameAs (newOrderTicket));
     }
 
     [Test]
-    public void CreateSetModification_OneMany ()
+    public void CreateSetCommand_OneMany ()
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orderEndPointDefinition = orderItem.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
@@ -197,21 +197,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       // orderItem.Order = newOrder;
       var newOrder = Order.GetObject (DomainObjectIDs.Order2);
 
-      var modification = (RelationEndPointModification) bidirectionalEndPoint.CreateSetModification (newOrder);
-      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (newOrder));
+      var command = (RelationEndPointModificationCommand) bidirectionalEndPoint.CreateSetCommand (newOrder);
+      Assert.That (command.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
+      Assert.That (command.NewRelatedObject, Is.SameAs (newOrder));
     }
 
     [Test]
-    public void CreateRemoveModification ()
+    public void CreateRemoveCommand ()
     {
       var order = Order.GetObject (_endPoint.OppositeObjectID);
-      var modification = (RelationEndPointModification) _endPoint.CreateRemoveModification (order);
-      Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetOneManyModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (order));
-      Assert.That (modification.NewRelatedObject, Is.Null);
+      var command = (RelationEndPointModificationCommand) _endPoint.CreateRemoveCommand (order);
+      Assert.That (command, Is.InstanceOfType (typeof (ObjectEndPointSetOneManyCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (command.OldRelatedObject, Is.SameAs (order));
+      Assert.That (command.NewRelatedObject, Is.Null);
     }
 
     [Test]
@@ -219,10 +219,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "'Order|90e26c86-611f-4735-8d1b-e1d0918515c2|System.Guid' from object end point "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - it currently holds object "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
-    public void CreateRemoveModification_InvalidID ()
+    public void CreateRemoveCommand_InvalidID ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order4);
-      _endPoint.CreateRemoveModification (order);
+      _endPoint.CreateRemoveCommand (order);
     }
 
     [Test]

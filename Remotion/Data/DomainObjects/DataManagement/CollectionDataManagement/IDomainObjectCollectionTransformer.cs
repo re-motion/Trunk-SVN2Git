@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
   /// Provides an interface that allows transforming collections from stand-alone to end point-associated collections and back.
-  /// This interface is used by  <see cref="CollectionEndPointReplaceWholeCollectionModification"/> and should usually not be required by framework 
+  /// This interface is used by  <see cref="CollectionEndPointReplaceWholeCollectionCommand"/> and should usually not be required by framework 
   /// users.
   /// </summary>
   public interface IDomainObjectCollectionTransformer

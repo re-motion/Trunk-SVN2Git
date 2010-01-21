@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
         // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
         Assertion.IsTrue (removedObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
-        CreateAndExecuteRemoveModification (removedObject);
+        CreateAndExecuteRemoveCommand (removedObject);
       }
 
       AssociatedEndPoint.Touch ();
@@ -134,8 +134,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, domainObject);
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
 
-      var insertModification = AssociatedEndPoint.CreateInsertModification (domainObject, index);
-      var bidirectionalModification = insertModification.ExtendToAllRelatedObjects ();
+      var insertCommand = AssociatedEndPoint.CreateInsertCommand (domainObject, index);
+      var bidirectionalModification = insertCommand.ExtendToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
 
       AssociatedEndPoint.Touch ();
@@ -151,7 +151,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       var containsObjectID = ContainsObjectID (domainObject.ID);
       if (containsObjectID)
-        CreateAndExecuteRemoveModification (domainObject);
+        CreateAndExecuteRemoveCommand (domainObject);
 
       AssociatedEndPoint.Touch ();
       return containsObjectID;
@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
         Assertion.IsTrue (domainObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
 
-        CreateAndExecuteRemoveModification (domainObject);
+        CreateAndExecuteRemoveCommand (domainObject);
       }
 
       AssociatedEndPoint.Touch ();
@@ -184,17 +184,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, value);
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
 
-      var replaceModification = AssociatedEndPoint.CreateReplaceModification (index, value);
-      var bidirectionalModification = replaceModification.ExtendToAllRelatedObjects ();
+      var replaceCommand = AssociatedEndPoint.CreateReplaceCommand (index, value);
+      var bidirectionalModification = replaceCommand.ExtendToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
 
       AssociatedEndPoint.Touch ();
     }
 
-    private void CreateAndExecuteRemoveModification (DomainObject domainObject)
+    private void CreateAndExecuteRemoveCommand (DomainObject domainObject)
     {
-      var modification = AssociatedEndPoint.CreateRemoveModification (domainObject);
-      var bidirectionalModification = modification.ExtendToAllRelatedObjects ();
+      var command = AssociatedEndPoint.CreateRemoveCommand (domainObject);
+      var bidirectionalModification = command.ExtendToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
   }

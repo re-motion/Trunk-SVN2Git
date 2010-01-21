@@ -27,9 +27,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   public class CompositeDataManagementCommandTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
-    private IDataManagementCommand _modificationMock1;
-    private IDataManagementCommand _modificationMock2;
-    private IDataManagementCommand _modificationMock3;
+    private IDataManagementCommand _commandMock1;
+    private IDataManagementCommand _commandMock2;
+    private IDataManagementCommand _commandMock3;
     private CompositeDataManagementCommand _composite;
 
     public override void SetUp ()
@@ -37,19 +37,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       base.SetUp ();
       _mockRepository = new MockRepository ();
     
-      _modificationMock1 = _mockRepository.StrictMock<IDataManagementCommand> ();
-      _modificationMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
-      _modificationMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _commandMock1 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _commandMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _commandMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
 
-      _composite = new CompositeDataManagementCommand (_modificationMock1, _modificationMock2, _modificationMock3);
+      _composite = new CompositeDataManagementCommand (_commandMock1, _commandMock2, _commandMock3);
     }
 
     [Test]
     public void Begin ()
     {
-      _modificationMock1.Begin ();
-      _modificationMock2.Begin ();
-      _modificationMock3.Begin ();
+      _commandMock1.Begin ();
+      _commandMock2.Begin ();
+      _commandMock3.Begin ();
 
       _mockRepository.ReplayAll();
 
@@ -61,9 +61,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Perform ()
     {
-      _modificationMock1.Perform ();
-      _modificationMock2.Perform ();
-      _modificationMock3.Perform ();
+      _commandMock1.Perform ();
+      _commandMock2.Perform ();
+      _commandMock3.Perform ();
 
       _mockRepository.ReplayAll ();
 
@@ -75,9 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End ()
     {
-      _modificationMock1.End ();
-      _modificationMock2.End ();
-      _modificationMock3.End ();
+      _commandMock1.End ();
+      _commandMock2.End ();
+      _commandMock3.End ();
 
       _mockRepository.ReplayAll ();
 
@@ -89,9 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      _modificationMock1.NotifyClientTransactionOfBegin ();
-      _modificationMock2.NotifyClientTransactionOfBegin ();
-      _modificationMock3.NotifyClientTransactionOfBegin ();
+      _commandMock1.NotifyClientTransactionOfBegin ();
+      _commandMock2.NotifyClientTransactionOfBegin ();
+      _commandMock3.NotifyClientTransactionOfBegin ();
 
       _mockRepository.ReplayAll ();
 
@@ -103,9 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      _modificationMock1.NotifyClientTransactionOfEnd ();
-      _modificationMock2.NotifyClientTransactionOfEnd ();
-      _modificationMock3.NotifyClientTransactionOfEnd ();
+      _commandMock1.NotifyClientTransactionOfEnd ();
+      _commandMock2.NotifyClientTransactionOfEnd ();
+      _commandMock3.NotifyClientTransactionOfEnd ();
 
       _mockRepository.ReplayAll ();
 
@@ -127,25 +127,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       using (_mockRepository.Ordered ())
       {
-        _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfBegin());
-        _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfBegin());
-        _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfBegin());
 
-        _modificationMock1.Expect (mock => mock.Begin());
-        _modificationMock2.Expect (mock => mock.Begin());
-        _modificationMock3.Expect (mock => mock.Begin());
+        _commandMock1.Expect (mock => mock.Begin());
+        _commandMock2.Expect (mock => mock.Begin());
+        _commandMock3.Expect (mock => mock.Begin());
 
-        _modificationMock1.Expect (mock => mock.Perform());
-        _modificationMock2.Expect (mock => mock.Perform());
-        _modificationMock3.Expect (mock => mock.Perform());
+        _commandMock1.Expect (mock => mock.Perform());
+        _commandMock2.Expect (mock => mock.Perform());
+        _commandMock3.Expect (mock => mock.Perform());
 
-        _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfEnd());
-        _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfEnd());
-        _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd());
 
-        _modificationMock1.Expect (mock => mock.End());
-        _modificationMock2.Expect (mock => mock.End());
-        _modificationMock3.Expect (mock => mock.End());
+        _commandMock1.Expect (mock => mock.End());
+        _commandMock2.Expect (mock => mock.End());
+        _commandMock3.Expect (mock => mock.End());
       }
 
       _mockRepository.ReplayAll ();

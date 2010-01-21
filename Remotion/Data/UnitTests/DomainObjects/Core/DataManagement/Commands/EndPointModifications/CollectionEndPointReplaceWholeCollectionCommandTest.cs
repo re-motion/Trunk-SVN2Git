@@ -31,7 +31,7 @@ using System.Collections.Generic;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class CollectionEndPointReplaceWholeCollectionModificationTest : CollectionEndPointModificationTestBase
+  public class CollectionEndPointReplaceWholeCollectionCommandTest : CollectionEndPointModificationCommandTestBase
   {
     private DomainObjectCollection _newCollection;
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private IDomainObjectCollectionTransformer _oldTransformerMock;
     private IDomainObjectCollectionTransformer _newTransformerMock;
 
-    private CollectionEndPointReplaceWholeCollectionModification _modification;
+    private CollectionEndPointReplaceWholeCollectionCommand _command;
 
     private Order _order1;
     private Order _orderWithoutOrderItem;
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldTransformerMock = _mockRepository.StrictMock<IDomainObjectCollectionTransformer> ();
       _newTransformerMock = _mockRepository.StrictMock<IDomainObjectCollectionTransformer> ();
 
-      _modification = new CollectionEndPointReplaceWholeCollectionModification (
+      _command = new CollectionEndPointReplaceWholeCollectionCommand (
           CollectionEndPoint, 
           _newCollection,
           _oldTransformerMock,
@@ -70,21 +70,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Initialization ()
     {
-      Assert.That (_modification.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
-      Assert.That (_modification.OldRelatedObject, Is.Null);
-      Assert.That (_modification.NewRelatedObject, Is.Null);
-      Assert.That (_modification.NewOppositeCollection, Is.SameAs (_newCollection));
-      Assert.That (_modification.OldOppositeCollectionTransformer, Is.SameAs (_oldTransformerMock));
-      Assert.That (_modification.NewOppositeCollectionTransformer, Is.SameAs (_newTransformerMock));
+      Assert.That (_command.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
+      Assert.That (_command.OldRelatedObject, Is.Null);
+      Assert.That (_command.NewRelatedObject, Is.Null);
+      Assert.That (_command.NewOppositeCollection, Is.SameAs (_newCollection));
+      Assert.That (_command.OldOppositeCollectionTransformer, Is.SameAs (_oldTransformerMock));
+      Assert.That (_command.NewOppositeCollectionTransformer, Is.SameAs (_newTransformerMock));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModification is needed.\r\n"
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModificationCommand is needed.\r\n"
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceWholeCollectionModification (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock, CollectionDataMock);
+      new CollectionEndPointReplaceWholeCollectionCommand (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock, CollectionDataMock);
     }
 
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingEventArgs.Add (args);
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      _modification.Begin ();
+      _command.Begin ();
 
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty);
       Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null);
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
       };
 
-      _modification.End ();
+      _command.End ();
 
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.True); // operation was finished
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       ClientTransactionMock.AddListener (listenerMock);
 
-      _modification.NotifyClientTransactionOfBegin ();
+      _command.NotifyClientTransactionOfBegin ();
 
       listenerMock.VerifyAllExpectations ();
     }
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       ClientTransactionMock.AddListener (listenerMock);
 
-      _modification.NotifyClientTransactionOfEnd ();
+      _command.NotifyClientTransactionOfEnd ();
 
       listenerMock.VerifyAllExpectations ();
     }
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       }
       _mockRepository.ReplayAll ();
       
-      _modification.Perform ();
+      _command.Perform ();
 
       _mockRepository.VerifyAll ();
 
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _mockRepository.ReplayAll ();
 
-      _modification.Perform ();
+      _command.Perform ();
 
       _oldTransformerMock.AssertWasNotCalled (mock => mock.TransformToStandAlone ());
       _newTransformerMock.VerifyAllExpectations ();
@@ -274,12 +274,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection.Add (_order1);
       _newCollection.Add (_order2);
       
-      var bidirectionalModification = _modification.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = _command.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
 
       // DomainObject.Orders = _newCollection
 
-      var steps = GetModificationSteps (bidirectionalModification);
+      var steps = GetAllCommands (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (4));
 
       // orderWithoutOrderItem.Customer = null;
@@ -288,28 +288,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       // DomainObject.Orders = _newCollection
 
       // orderWithoutOrderItem.Customer = null;
-      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
+      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
       Assert.That (steps[0].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_orderWithoutOrderItem.ID));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
       Assert.That (steps[0].NewRelatedObject, Is.Null);
 
       // order2.Customer.Orders.Remove (order2);
-      Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
+      Assert.That (steps[1], Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
       Assert.That (steps[1].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (steps[1].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (customer3.ID));
       Assert.That (steps[1].OldRelatedObject, Is.SameAs (_order2));
       Assert.That (steps[1].NewRelatedObject, Is.Null);
 
       // order2.Customer = DomainObject
-      Assert.That (steps[2], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
+      Assert.That (steps[2], Is.InstanceOfType (typeof (ObjectEndPointSetCommand)));
       Assert.That (steps[2].ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_order2.ID));
       Assert.That (steps[2].OldRelatedObject, Is.SameAs (customer3));
       Assert.That (steps[2].NewRelatedObject, Is.SameAs (DomainObject));
 
       // DomainObject.Orders = _newCollection
-      Assert.That (steps[3], Is.SameAs (_modification));
+      Assert.That (steps[3], Is.SameAs (_command));
     }
 
     private void TransformToAssociated (DomainObjectCollection collection)

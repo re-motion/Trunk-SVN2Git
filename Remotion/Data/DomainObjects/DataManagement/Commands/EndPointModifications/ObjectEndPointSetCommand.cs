@@ -19,43 +19,25 @@ using System;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Represents a modification that touches, but does not change the modified end point.
+  /// Implementations of this class represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/>.
   /// </summary>
-  public class RelationEndPointTouchModification : RelationEndPointModification
+  public abstract class ObjectEndPointSetCommand : RelationEndPointModificationCommand
   {
-    public RelationEndPointTouchModification (IEndPoint endPointBeingModified)
-        : base (endPointBeingModified, null, null)
-    {
-    }
+    private readonly IObjectEndPoint _modifiedEndPoint;
 
-    public override void NotifyClientTransactionOfBegin ()
+    protected ObjectEndPointSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+      : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
     {
-      // do not issue any change notifications, a touch is not a change
-    }
+      if (modifiedEndPoint.IsNull)
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
-    public override void Begin ()
-    {
-      // do not issue any change notifications, a touch is not a change
+      _modifiedEndPoint = modifiedEndPoint;
     }
 
     public override void Perform ()
     {
-      ModifiedEndPoint.Touch ();
-    }
-
-    public override void End ()
-    {
-      // do not issue any change notifications, a touch is not a change
-    }
-
-    public override void NotifyClientTransactionOfEnd ()
-    {
-      // do not issue any change notifications, a touch is not a change
-    }
-
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
-    {
-      return this;
+      var id = NewRelatedObject == null ? null : NewRelatedObject.ID;
+      _modifiedEndPoint.OppositeObjectID = id;
     }
   }
 }

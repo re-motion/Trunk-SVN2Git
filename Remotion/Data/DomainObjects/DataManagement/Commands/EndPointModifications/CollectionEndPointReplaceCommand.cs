@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -24,13 +23,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// <summary>
   /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/>.
   /// </summary>
-  public class CollectionEndPointReplaceModification : RelationEndPointModification
+  public class CollectionEndPointReplaceCommand : RelationEndPointModificationCommand
   {
     private readonly int _index;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointReplaceModification (
+    public CollectionEndPointReplaceCommand (
         ICollectionEndPoint modifiedEndPoint, 
         DomainObject replacedObject, 
         int index, 
@@ -42,7 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
             ArgumentUtility.CheckNotNull ("replacementObject", replacementObject))
     {
       if (modifiedEndPoint.IsNull)
-        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _index = index;
       _modifiedCollectionData = collectionData;
@@ -80,7 +79,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     }
 
     /// <summary>
-    /// Creates all modifications needed to perform a bidirectional replace operation within this collection end point.
+    /// Creates all commands needed to perform a bidirectional replace operation within this collection end point.
     /// </summary>
     /// <remarks>
     /// A replace operation of the form "customer.Orders[index] = newOrder" needs four steps:
@@ -104,13 +103,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       return new CompositeDataManagementCommand (
           // customer.Order[index].Customer = null
-          endPointOfOldObject.CreateRemoveModification (ModifiedEndPoint.GetDomainObject()),
+          endPointOfOldObject.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject()),
           // newOrder.Customer = customer
-          endPointOfNewObject.CreateSetModification (ModifiedEndPoint.GetDomainObject()),
+          endPointOfNewObject.CreateSetCommand (ModifiedEndPoint.GetDomainObject()),
           // customer.Orders[index] = newOrder
           this,
           // oldCustomer.Orders.Remove (insertedOrder)
-          oldRelatedEndPointOfNewObject.CreateRemoveModification (NewRelatedObject));
+          oldRelatedEndPointOfNewObject.CreateRemoveCommand (NewRelatedObject));
     }
   }
 }

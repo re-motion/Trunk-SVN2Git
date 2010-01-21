@@ -132,27 +132,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateInsertModification ()
+    public void CreateInsertCommand ()
     {
-      Assert.That (_nullEndPoint.CreateInsertModification (_relatedObject, 12), Is.InstanceOfType (typeof (NullEndPointModification)));
+      Assert.That (_nullEndPoint.CreateInsertCommand (_relatedObject, 12), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
-    public void CreateAddModification ()
+    public void CreateAddCommand ()
     {
-      Assert.That (_nullEndPoint.CreateAddModification (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModification)));
+      Assert.That (_nullEndPoint.CreateAddCommand (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
-    public void CreateRemoveModification ()
+    public void CreateRemoveCommand ()
     {
-      Assert.That (_nullEndPoint.CreateRemoveModification (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModification)));
+      Assert.That (_nullEndPoint.CreateRemoveCommand (_relatedObject), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]
-    public void CreateReplaceModification ()
+    public void CreateReplaceCommand ()
     {
-      Assert.That (_nullEndPoint.CreateReplaceModification (12, _relatedObject), Is.InstanceOfType (typeof (NullEndPointModification)));
+      Assert.That (_nullEndPoint.CreateReplaceCommand (12, _relatedObject), Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
     }
 
     [Test]

@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -95,10 +94,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 1914: Called by DeleteDomainObjectCommand
-    public void PerformDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveModifications)
+    public void PerformDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveCommands)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-      ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveModifications", oppositeEndPointRemoveModifications);
+      ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveCommands", oppositeEndPointRemoveCommands);
 
       if (!ClientTransaction.IsEnlisted (deletedObject))
       {
@@ -110,7 +109,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var relationEndPointIDs = ClientTransaction.GetDataContainer (deletedObject).AssociatedRelationEndPointIDs;
       _transactionEventSink.RelationEndPointMapPerformingDelete (relationEndPointIDs);
 
-      oppositeEndPointRemoveModifications.Perform (); // remove all back-references to the deleted object
+      oppositeEndPointRemoveCommands.Perform (); // remove all back-references to the deleted object
       foreach (RelationEndPointID endPointID in relationEndPointIDs)
       {
         RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
@@ -124,14 +123,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // TODO 1914: Integrated into DeleteDomainObjectCommand
-    public CompositeDataManagementCommand GetRemoveModificationsForOppositeEndPoints (DomainObject deletedObject)
+    public CompositeDataManagementCommand GetRemoveCommandsForOppositeEndPoints (DomainObject deletedObject)
     {
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
 
       var allOppositeRelationEndPoints = OppositeRelationEndPointFinder.GetOppositeRelationEndPoints (this, deletedObject);
-      var modifications = from oppositeEndPoint in allOppositeRelationEndPoints
-                          select oppositeEndPoint.CreateRemoveModification (deletedObject);
-      return new CompositeDataManagementCommand (modifications);
+      var commands = from oppositeEndPoint in allOppositeRelationEndPoints
+                     select oppositeEndPoint.CreateRemoveCommand (deletedObject);
+      return new CompositeDataManagementCommand (commands);
     }
 
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)

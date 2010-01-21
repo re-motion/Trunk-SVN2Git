@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order newOrder = Order.NewObject();
       Assert.That (_map.Count > 0, Is.True);
 
-      _map.PerformDelete (newOrder, _map.GetRemoveModificationsForOppositeEndPoints (newOrder));
+      _map.PerformDelete (newOrder, _map.GetRemoveCommandsForOppositeEndPoints (newOrder));
       Assert.That (_map.Count, Is.EqualTo (0));
     }
 

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// Represents an <see cref="ICollectionEndPoint"/> (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
   /// This is used by the different end point modification commands - when a bidirectional relation modification extends to a <see langword="null"/> 
   /// object, this end point (or <see cref="NullObjectEndPoint"/>) is used to represent the object's part in the relation, and a 
-  /// <see cref="NullEndPointModification"/> is used to represent the modification. The end point is created by 
+  /// <see cref="NullEndPointModificationCommand"/> is used to represent the modification. The end point is created by 
   /// <see cref="RelationEndPoint.CreateNullRelationEndPoint"/> (e.g. via 
   /// <see cref="EndPointExtensions.GetEndPointWithOppositeDefinition{T}(Remotion.Data.DomainObjects.DataManagement.IEndPoint,Remotion.Data.DomainObjects.DomainObject)"/>)
   /// and is usually discarded after executing the modification.
@@ -90,9 +90,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
-    public IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
+    public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
-      return new NullEndPointModification (this, removedRelatedObject, null);
+      return new NullEndPointModificationCommand (this, removedRelatedObject, null);
     }
 
     public DomainObjectCollection OppositeDomainObjects
@@ -116,19 +116,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint.");
     }
 
-    public IDataManagementCommand CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
-      return new NullEndPointModification (this, null, insertedRelatedObject);
+      return new NullEndPointModificationCommand (this, null, insertedRelatedObject);
     }
 
-    public IDataManagementCommand CreateAddModification (DomainObject addedRelatedObject)
+    public IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
-      return new NullEndPointModification (this, null, addedRelatedObject);
+      return new NullEndPointModificationCommand (this, null, addedRelatedObject);
     }
 
-    public IDataManagementCommand CreateReplaceModification (int index, DomainObject replacementObject)
+    public IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     { 
-      return new NullEndPointModification (this, null, replacementObject);
+      return new NullEndPointModificationCommand (this, null, replacementObject);
     }
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()

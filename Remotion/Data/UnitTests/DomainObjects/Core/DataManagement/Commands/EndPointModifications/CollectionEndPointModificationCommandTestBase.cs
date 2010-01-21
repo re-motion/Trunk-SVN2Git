@@ -28,7 +28,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
-  public abstract class CollectionEndPointModificationTestBase : ClientTransactionBaseTest
+  public abstract class CollectionEndPointModificationCommandTestBase : ClientTransactionBaseTest
   {
     private CollectionEndPoint _collectionEndPoint;
     private IDomainObjectCollectionData _collectionDataMock;
@@ -75,9 +75,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       CollectionDataMock.Replay ();
     }
 
-    protected IList<RelationEndPointModification> GetModificationSteps (IDataManagementCommand bidirectionalModification)
+    protected IList<RelationEndPointModificationCommand> GetAllCommands (IDataManagementCommand bidirectionalModification)
     {
-      return ((CompositeDataManagementCommand) bidirectionalModification).GetCommands ().Cast<RelationEndPointModification> ().ToList ();
+      return ((CompositeDataManagementCommand) bidirectionalModification).GetCommands ().Cast<RelationEndPointModificationCommand> ().ToList ();
     }
   }
 }

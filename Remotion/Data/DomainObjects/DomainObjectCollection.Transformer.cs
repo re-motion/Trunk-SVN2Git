@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects
   {
     /// <summary>
     /// Implements <see cref="IDomainObjectCollectionTransformer"/> for <see cref="DomainObjectCollection"/>, thus allowing 
-    /// <see cref="CollectionEndPointReplaceWholeCollectionModification"/> to convert between stand-alone and associated collections.
+    /// <see cref="CollectionEndPointReplaceWholeCollectionCommand"/> to convert between stand-alone and associated collections.
     /// </summary>
     private class Transformer : IDomainObjectCollectionTransformer
     {

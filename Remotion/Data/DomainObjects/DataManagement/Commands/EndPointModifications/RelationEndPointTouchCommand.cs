@@ -19,25 +19,50 @@ using System;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Implementations of this class represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/>.
+  /// Represents a command that touches, but does not change the modified end point.
   /// </summary>
-  public abstract class ObjectEndPointSetModificationBase : RelationEndPointModification
+  public class RelationEndPointTouchCommand : IDataManagementCommand
   {
-    private readonly IObjectEndPoint _modifiedEndPoint;
+    private readonly IEndPoint _endPoint;
 
-    protected ObjectEndPointSetModificationBase (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
-      : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
+    public RelationEndPointTouchCommand (IEndPoint endPoint)
     {
-      if (modifiedEndPoint.IsNull)
-        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
-
-      _modifiedEndPoint = modifiedEndPoint;
+      _endPoint = endPoint;
     }
 
-    public override void Perform ()
+    public IEndPoint EndPoint
     {
-      var id = NewRelatedObject == null ? null : NewRelatedObject.ID;
-      _modifiedEndPoint.OppositeObjectID = id;
+      get { return _endPoint; }
+    }
+
+    public void NotifyClientTransactionOfBegin ()
+    {
+      // do not issue any notifications
+    }
+
+    public void Begin ()
+    {
+      // do not issue any notifications
+    }
+
+    public void Perform ()
+    {
+      _endPoint.Touch ();
+    }
+
+    public void End ()
+    {
+      // do not issue any notifications
+    }
+
+    public void NotifyClientTransactionOfEnd ()
+    {
+      // do not issue any notifications
+    }
+
+    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    {
+      return this;
     }
   }
 }

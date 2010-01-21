@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       throw new NotImplementedException();
     }

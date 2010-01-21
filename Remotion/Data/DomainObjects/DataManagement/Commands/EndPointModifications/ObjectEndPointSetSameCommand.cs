@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -23,9 +22,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> to the same value as before. Calling 
   /// <see cref="ExtendToAllRelatedObjects"/> results in a <see cref="IDataManagementCommand"/> that does not raise any events.
   /// </summary>
-  public class ObjectEndPointSetSameModification : ObjectEndPointSetModificationBase
+  public class ObjectEndPointSetSameCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetSameModification (IObjectEndPoint modifiedEndPoint)
+    public ObjectEndPointSetSameCommand (IObjectEndPoint modifiedEndPoint)
         : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true))
     {
     }
@@ -51,8 +50,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     }
 
     /// <summary>
-    /// Creates all modification steps needed to perform a bidirectional set-same operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
-    /// this modification, the other steps are the opposite modifications on the new/old related objects.
+    /// Creates all commands needed to perform a bidirectional set-same operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
+    /// this command, the other steps are the opposite commands on the new/old related objects.
     /// </summary>
     /// <remarks>
     /// A same-set operation of the form "order.OrderTicket = order.OrderTicket" needs two steps:
@@ -72,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       else
       {
         var oppositeEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IEndPoint> (NewRelatedObject);
-        return new CompositeDataManagementCommand (this, new RelationEndPointTouchModification (oppositeEndPoint));
+        return new CompositeDataManagementCommand (this, new RelationEndPointTouchCommand (oppositeEndPoint));
       }
     }
   }

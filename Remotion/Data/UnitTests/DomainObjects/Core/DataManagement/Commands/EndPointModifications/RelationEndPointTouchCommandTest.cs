@@ -26,10 +26,10 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class RelationEndPointTouchModificationTest : ClientTransactionBaseTest
+  public class RelationEndPointTouchCommandTest : ClientTransactionBaseTest
   {
     private RelationEndPoint _endPoint;
-    private RelationEndPointTouchModification _modification;
+    private RelationEndPointTouchCommand _command;
 
     public override void SetUp ()
     {
@@ -38,15 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
-      _modification = new RelationEndPointTouchModification (_endPoint);
+      _command = new RelationEndPointTouchCommand (_endPoint);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_modification.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (_modification.OldRelatedObject, Is.Null);
-      Assert.That (_modification.NewRelatedObject, Is.Null);
+      Assert.That (_command.EndPoint, Is.SameAs (_endPoint));
     }
 
     [Test]
@@ -54,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      _modification.NotifyClientTransactionOfBegin ();
+      _command.NotifyClientTransactionOfBegin ();
     }
 
     [Test]
@@ -62,14 +60,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      _modification.NotifyClientTransactionOfEnd ();
+      _command.NotifyClientTransactionOfEnd ();
     }
 
     [Test]
     public void Begin ()
     {
       var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject());
-      _modification.Begin ();
+      _command.Begin ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -80,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject ());
 
-      _modification.End ();
+      _command.End ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -91,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
-      _modification.Perform ();
+      _command.Perform ();
 
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
@@ -99,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExtendToAllRelatedObjects ()
     {
-      var result = _modification.ExtendToAllRelatedObjects ();
-      Assert.That (result, Is.SameAs (_modification));
+      var result = _command.ExtendToAllRelatedObjects ();
+      Assert.That (result, Is.SameAs (_command));
     }
   }
 }

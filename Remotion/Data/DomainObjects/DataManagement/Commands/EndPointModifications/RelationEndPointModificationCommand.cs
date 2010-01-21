@@ -23,17 +23,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// Represents a modification performed on a <see cref="RelationEndPoint"/>. Provides default behavior for triggering the required
   /// events and notifying the <see cref="ClientTransaction"/> about the modification. The actual modification has to be specified by subclasses
   /// by implementing <see cref="Perform"/>. In addition, <see cref="ExtendToAllRelatedObjects"/> has to be overridden to return a 
-  /// composite object containing all modifications needed to be performed when this modification starts a bidirectional relation change. If
-  /// the modification is performed on a unidirectional relation, the composite returned by <see cref="ExtendToAllRelatedObjects"/> needs only 
-  /// contain this <see cref="RelationEndPointModification"/>.
+  /// composite object containing all commands needed to be performed when this modification starts a bidirectional relation change.
   /// </summary>
-  public abstract class RelationEndPointModification : IDataManagementCommand
+  public abstract class RelationEndPointModificationCommand : IDataManagementCommand
   {
     private readonly IEndPoint _modifiedEndPoint;
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
-    protected RelationEndPointModification (IEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    protected RelationEndPointModificationCommand (IEndPoint endPointBeingModified, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified);
 
@@ -58,17 +56,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     }
 
     /// <summary>
-    /// Performs this modification without raising any events and without performing any bidirectional modifications.
+    /// Performs this command without raising any events and without performing any bidirectional modifications.
     /// </summary>
     public abstract void Perform ();
 
     /// <summary>
     /// Returns a new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this
-    /// <see cref="RelationEndPointModification"/>. If no other objects are involved by the change, this method returns just this
+    /// <see cref="RelationEndPointModificationCommand"/>. If no other objects are involved by the change, this method returns just this
     /// <see cref="IDataManagementCommand"/>.
     /// </summary>
     /// <returns>A new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this
-    /// <see cref="RelationEndPointModification"/>.</returns>
+    /// <see cref="RelationEndPointModificationCommand"/>.</returns>
     public abstract IDataManagementCommand ExtendToAllRelatedObjects ();
 
     public virtual void Begin ()

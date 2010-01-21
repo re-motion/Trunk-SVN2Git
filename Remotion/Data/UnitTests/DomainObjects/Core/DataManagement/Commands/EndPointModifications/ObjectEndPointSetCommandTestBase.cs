@@ -29,17 +29,17 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
-  public abstract class ObjectEndPointSetModificationBaseTest : ClientTransactionBaseTest
+  public abstract class ObjectEndPointSetCommandTestBase : ClientTransactionBaseTest
   {
     private ObjectEndPoint _endPoint;
-    private ObjectEndPointSetModificationBase _modification;
+    private ObjectEndPointSetCommand _command;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
-      _modification = CreateModification (_endPoint, NewRelatedObject);
+      _command = CreateCommand (_endPoint, NewRelatedObject);
     }
 
     protected abstract DomainObject OldRelatedObject { get; }
@@ -47,12 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     protected abstract RelationEndPointID GetRelationEndPointID ();
 
-    protected abstract ObjectEndPointSetModificationBase CreateModification (IObjectEndPoint endPoint, DomainObject newRelatedObject);
-    protected abstract ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject);
+    protected abstract ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject);
+    protected abstract ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject);
 
-    public ObjectEndPointSetModificationBase Modification
+    public ObjectEndPointSetCommand Command
     {
-      get { return _modification; }
+      get { return _command; }
     }
 
     public ObjectEndPoint EndPoint
@@ -63,18 +63,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPoint, _modification.ModifiedEndPoint);
-      Assert.AreSame (OldRelatedObject, _modification.OldRelatedObject);
-      Assert.AreSame (NewRelatedObject, _modification.NewRelatedObject);
+      Assert.AreSame (_endPoint, _command.ModifiedEndPoint);
+      Assert.AreSame (OldRelatedObject, _command.OldRelatedObject);
+      Assert.AreSame (NewRelatedObject, _command.NewRelatedObject);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModification is needed.\r\n"
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModificationCommand is needed.\r\n"
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, GetRelationEndPointID().Definition);
-      CreateModification (endPoint, NewRelatedObject);
+      CreateCommand (endPoint, NewRelatedObject);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject domainObject = EndPoint.GetDomainObject ();
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      _modification.Begin();
+      _command.Begin();
 
       Assert.IsTrue (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Perform_InvokesPerformRelationChange ()
     {
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (OldRelatedObject.ID));
-      _modification.Perform();
+      _command.Perform();
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (NewRelatedObject.ID));
     }
 
@@ -103,9 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (GetRelationEndPointID (), OldRelatedObject.ID);
       Assert.That (endPoint.HasBeenTouched, Is.False);
 
-      var modification = CreateModification (endPoint, NewRelatedObject);
+      var command = CreateCommand (endPoint, NewRelatedObject);
 
-      modification.Perform();
+      command.Perform();
 
       Assert.That (endPoint.HasBeenTouched, Is.True);
     }
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject domainObject = EndPoint.GetDomainObject ();
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      _modification.End();
+      _command.End();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsTrue (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      _modification.NotifyClientTransactionOfBegin();
+      _command.NotifyClientTransactionOfBegin();
 
       listenerMock.AssertWasCalled(mock => mock.RelationChanging (
           _endPoint.GetDomainObject (), 
@@ -143,14 +143,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      _modification.NotifyClientTransactionOfEnd ();
+      _command.NotifyClientTransactionOfEnd ();
 
       listenerMock.AssertWasCalled (mock => mock.RelationChanged (_endPoint.GetDomainObject (), _endPoint.PropertyName));
     }
 
-    protected IList<RelationEndPointModification> GetModificationSteps (IDataManagementCommand bidirectionalModification)
+    protected IList<RelationEndPointModificationCommand> GetAllCommands (IDataManagementCommand bidirectionalModification)
     {
-      return ((CompositeDataManagementCommand) bidirectionalModification).GetCommands ().Cast<RelationEndPointModification> ().ToList ();
+      return ((CompositeDataManagementCommand) bidirectionalModification).GetCommands ().Cast<RelationEndPointModificationCommand> ().ToList ();
     }
   }
 }

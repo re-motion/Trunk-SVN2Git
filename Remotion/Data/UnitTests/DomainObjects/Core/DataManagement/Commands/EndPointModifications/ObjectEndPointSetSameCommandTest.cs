@@ -33,7 +33,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class ObjectEndPointSetSameModificationTest : ObjectEndPointSetModificationBaseTest
+  public class ObjectEndPointSetSameCommandTest : ObjectEndPointSetCommandTestBase
   {
     protected override DomainObject OldRelatedObject
     {
@@ -50,14 +50,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       return new RelationEndPointID (DomainObjectIDs.Computer1, typeof (Computer).FullName + ".Employee");
     }
 
-    protected override ObjectEndPointSetModificationBase CreateModification (IObjectEndPoint endPoint, DomainObject newRelatedObject)
+    protected override ObjectEndPointSetCommand CreateCommand (IObjectEndPoint endPoint, DomainObject newRelatedObject)
     {
-      return new ObjectEndPointSetSameModification (endPoint);
+      return new ObjectEndPointSetSameCommand (endPoint);
     }
 
-    protected override ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject)
+    protected override ObjectEndPointSetCommand CreateCommandMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject)
     {
-      return repository.StrictMock<ObjectEndPointSetSameModification> (endPoint);
+      return repository.StrictMock<ObjectEndPointSetSameCommand> (endPoint);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      Modification.Begin ();
+      Command.Begin ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      Modification.End ();
+      Command.End ();
 
       Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      Modification.NotifyClientTransactionOfBegin ();
+      Command.NotifyClientTransactionOfBegin ();
 
       listenerMock.AssertWasNotCalled (mock => mock.RelationChanging (
           EndPoint.GetDomainObject (), 
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionMock.AddListener (listenerMock);
 
-      Modification.NotifyClientTransactionOfBegin ();
+      Command.NotifyClientTransactionOfBegin ();
 
       listenerMock.AssertWasNotCalled (mock => mock.RelationChanged (EndPoint.GetDomainObject (), EndPoint.PropertyName));
     }
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
-      var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
+      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
       var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.SameAs (setSameModification));
     }
@@ -139,18 +139,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           bidirectionalEndPoint.Definition.GetOppositeEndPointDefinition());
 
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
-      var setSameModification = new ObjectEndPointSetSameModification (bidirectionalEndPoint);
+      var setSameCommand = new ObjectEndPointSetSameCommand (bidirectionalEndPoint);
 
-      var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = (CompositeDataManagementCommand) setSameCommand.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
 
-      var steps = GetModificationSteps (bidirectionalModification);
+      var steps = bidirectionalModification.GetCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));
 
-      Assert.That (steps[0], Is.SameAs (setSameModification));
+      Assert.That (steps[0], Is.SameAs (setSameCommand));
 
-      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchModification)));
-      Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (oppositeEndPoint));
+      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchCommand)));
+      Assert.That (((RelationEndPointTouchCommand) steps[1]).EndPoint, Is.SameAs (oppositeEndPoint));
     }
   }
 }

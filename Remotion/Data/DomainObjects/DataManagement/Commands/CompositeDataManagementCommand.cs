@@ -58,32 +58,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      foreach (var modificationStep in GetCommands())
-        modificationStep.Begin ();
+      foreach (var command in _commands)
+        command.Begin ();
     }
 
     public void Perform ()
     {
-      foreach (var modificationStep in GetCommands ())
-        modificationStep.Perform ();
+      foreach (var command in _commands)
+        command.Perform ();
     }
 
     public void End ()
     {
-      foreach (var modificationStep in GetCommands ())
-        modificationStep.End ();
+      foreach (var command in _commands)
+        command.End ();
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      foreach (var modificationStep in GetCommands ())
-        modificationStep.NotifyClientTransactionOfBegin ();
+      foreach (var command in _commands)
+        command.NotifyClientTransactionOfBegin ();
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      foreach (var modificationStep in GetCommands ())
-        modificationStep.NotifyClientTransactionOfEnd ();
+      foreach (var command in _commands)
+        command.NotifyClientTransactionOfEnd ();
     }
 
     public IDataManagementCommand ExtendToAllRelatedObjects ()

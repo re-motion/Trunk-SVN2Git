@@ -22,21 +22,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// <summary>
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> that is part of a unidirectional relation.
   /// </summary>
-  public class ObjectEndPointSetUnidirectionalModification : ObjectEndPointSetModificationBase
+  public class ObjectEndPointSetUnidirectionalCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetUnidirectionalModification (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+    public ObjectEndPointSetUnidirectionalCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
       if (!modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {
-        var message = string.Format ("EndPoint '{0}' is from a bidirectional relation - use a ObjectEndPointSetOneOneModification or ObjectEndPointSetOneManyModification instead.",
+        var message = string.Format ("EndPoint '{0}' is from a bidirectional relation - use a ObjectEndPointSetOneOneCommand or ObjectEndPointSetOneManyCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
       if (newRelatedObject == modifiedEndPoint.GetOppositeObject (true))
       {
-        var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameModification instead.",
+        var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
         throw new ArgumentException (message, "newRelatedObject");
       }

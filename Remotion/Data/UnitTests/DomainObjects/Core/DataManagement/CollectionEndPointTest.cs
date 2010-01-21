@@ -323,10 +323,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "Customer");
       IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (endPointID, _customerEndPoint.ObjectID);
-      var modification = _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
-      modification.Begin ();
-      modification.Perform ();
-      modification.End ();
+      var command = _customerEndPoint.CreateRemoveCommand (endPointOfObjectBeingRemoved.GetDomainObject());
+      command.Begin ();
+      command.Perform ();
+      command.End ();
 
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count != _customerEndPoint.OppositeDomainObjects.Count, Is.True);
     }
@@ -339,9 +339,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "Customer");
       IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (endPointID, _customerEndPoint.ObjectID);
 
-      var modification =
-          _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
-      modification.Perform();
+      var command = _customerEndPoint.CreateRemoveCommand (endPointOfObjectBeingRemoved.GetDomainObject());
+      command.Perform();
 
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count != _customerEndPoint.OppositeDomainObjects.Count, Is.True);
     }
@@ -354,10 +353,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "Customer");
       IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (endPointID, _customerEndPoint.ObjectID);
 
-      var modification = _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
-      modification.Begin ();
+      var command = _customerEndPoint.CreateRemoveCommand (endPointOfObjectBeingRemoved.GetDomainObject());
+      command.Begin ();
       _customerEndPoint.PerformDelete ();
-      modification.End ();
+      command.End ();
 
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count != _customerEndPoint.OppositeDomainObjects.Count, Is.True);
       Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (0));
@@ -606,68 +605,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
     
     [Test]
-    public void CreateRemoveModification ()
+    public void CreateRemoveCommand ()
     {
-      var modification = (RelationEndPointModification) _customerEndPoint.CreateRemoveModification (_order1);
-      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
+      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateRemoveCommand (_order1);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointRemoveCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
 
       var collectionData = 
           DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointRemoveModification) modification).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
+      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
     }
 
     [Test]
-    public void CreateInsertModification ()
+    public void CreateInsertCommand ()
     {
-      var modification = (RelationEndPointModification) _customerEndPoint.CreateInsertModification (_order1, 12);
-      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
-      Assert.That (((CollectionEndPointInsertModification) modification).Index, Is.EqualTo (12));
+      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateInsertCommand (_order1, 12);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
+      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
 
       var collectionData =
           DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointInsertModification) modification).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
     }
 
     [Test]
-    public void CreateAddModification ()
+    public void CreateAddCommand ()
     {
-      var modification = (RelationEndPointModification) _customerEndPoint.CreateAddModification (_order1);
-      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
-      Assert.That (((CollectionEndPointInsertModification) modification).Index, Is.EqualTo (2));
+      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateAddCommand (_order1);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointInsertCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
+      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
 
       var collectionData =
           DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointInsertModification) modification).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore()));
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore()));
     }
 
     [Test]
-    public void CreateReplaceModification ()
+    public void CreateReplaceCommand ()
     {
-      var modification = (RelationEndPointModification) _customerEndPoint.CreateReplaceModification (0, _orderWithoutOrderItem);
-      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointReplaceModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (_orderWithoutOrderItem));
+      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateReplaceCommand (0, _orderWithoutOrderItem);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_orderWithoutOrderItem));
 
       var collectionData =
           DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointReplaceModification) modification).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
+      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
     }
 
     [Test]
-    public void CreateReplaceModification_SelfReplace ()
+    public void CreateReplaceCommand_SelfReplace ()
     {
-      var modification = (RelationEndPointModification) _customerEndPoint.CreateReplaceModification (0, _customerEndPoint.OppositeDomainObjects[0]);
-      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameModification)));
-      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
+      var command = (RelationEndPointModificationCommand) _customerEndPoint.CreateReplaceCommand (0, _customerEndPoint.OppositeDomainObjects[0]);
+      Assert.That (command, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameCommand)));
+      Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
+      Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
     }
 
     [Test]

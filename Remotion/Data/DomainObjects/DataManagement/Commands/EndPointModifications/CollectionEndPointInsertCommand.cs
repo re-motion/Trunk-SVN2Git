@@ -23,13 +23,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// <summary>
   /// Represents the insertion of an element into a <see cref="CollectionEndPoint"/>.
   /// </summary>
-  public class CollectionEndPointInsertModification : RelationEndPointModification
+  public class CollectionEndPointInsertCommand : RelationEndPointModificationCommand
   {
     private readonly int _index;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointInsertModification (
+    public CollectionEndPointInsertCommand (
         ICollectionEndPoint modifiedEndPoint, 
         int index, 
         DomainObject insertedObject, 
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
             ArgumentUtility.CheckNotNull ("insertedObject", insertedObject))
     {
       if (modifiedEndPoint.IsNull)
-        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
       _index = index;
       _modifiedCollectionData = collectionData;
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     }
 
     /// <summary>
-    /// Creates all modifications needed to perform a bidirectional insert operation into this collection end point.
+    /// Creates all commands needed to perform a bidirectional insert operation into this collection end point.
     /// </summary>
     /// <remarks>
     /// An insert operation of the form "customer.Orders.Insert (insertedOrder, index)" needs three steps:
@@ -102,11 +102,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       return new CompositeDataManagementCommand (
           // insertedOrder.Customer = customer (previously oldCustomer)
-          insertedObjectEndPoint.CreateSetModification (ModifiedEndPoint.GetDomainObject()),
+          insertedObjectEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject()),
           // customer.Orders.Insert (insertedOrder, index)
           this,
           // oldCustomer.Orders.Remove (insertedOrder)
-          oldRelatedEndPointOfInsertedObject.CreateRemoveModification (NewRelatedObject));
+          oldRelatedEndPointOfInsertedObject.CreateRemoveCommand (NewRelatedObject));
     }
   }
 }
