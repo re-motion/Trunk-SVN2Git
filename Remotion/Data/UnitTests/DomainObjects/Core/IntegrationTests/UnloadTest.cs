@@ -41,20 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: RelationEndPointUnloading.")]
-    public void UnloadCollectionEndPoint_TransactionReadOnly ()
-    {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var endPoint = customer.Orders.AssociatedEndPoint;
-
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-      }
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The state of the following DataContainers prohibits that they be unloaded; only unchanged DataContainers can be unloaded: "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed).")]
@@ -98,34 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
     }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "RelationEndPointMapUnregistering.")]
-    public void UnloadData_TransactionReadOnly_WithEndPoints ()
-    {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-
-      subTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);
-
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
-        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "DataContainerMapUnregistering.")]
-    public void UnloadData_TransactionReadOnly_WithoutEndPoints ()
-    {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction ();
-
-      subTransaction.EnsureDataAvailable (DomainObjectIDs.ClassWithAllDataTypes1);
-
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-
 
  
   }

@@ -421,5 +421,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransactionMock.IsReadOnly = true;
       ClientTransactionMock.CreateSubTransaction();
     }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
+        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: RelationEndPointUnloading.")]
+    public void ThrowsOnUnloadCollectionEndPoint ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var endPoint = customer.Orders.AssociatedEndPoint;
+
+      ClientTransactionMock.IsReadOnly = true;
+      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
+        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
+        + "RelationEndPointMapUnregistering.")]
+    public void ThrowsOnUnloadData_WithEndPoints ()
+    {
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+
+      ClientTransactionMock.IsReadOnly = true;
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
+        "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
+        + "DataContainerMapUnregistering.")]
+    public void ThrowsOnUnloadData_WithoutEndPoints ()
+    {
+      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.ClassWithAllDataTypes1);
+
+      ClientTransactionMock.IsReadOnly = true;
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+    }
   }
 }
