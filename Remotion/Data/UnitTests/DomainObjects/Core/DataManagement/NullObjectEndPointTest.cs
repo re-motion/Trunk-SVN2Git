@@ -121,38 +121,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateRemoveCommand ()
     {
       var removedRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var command = (RelationEndPointModificationCommand) _nullEndPoint.CreateRemoveCommand (removedRelatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
-      Assert.That (command.OldRelatedObject, Is.SameAs (removedRelatedObject));
-      Assert.That (command.NewRelatedObject, Is.Null);
+      var command = (NullEndPointModificationCommand) _nullEndPoint.CreateRemoveCommand (removedRelatedObject);
+      Assert.That (command.AffectedEndPoint, Is.SameAs (_nullEndPoint));
     }
 
     [Test]
     public void CreateSetCommand ()
     {
       var newRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var command = (RelationEndPointModificationCommand) _nullEndPoint.CreateSetCommand (newRelatedObject);
-      Assert.That (command, Is.InstanceOfType (typeof (NullEndPointModificationCommand)));
-      Assert.That (command.OldRelatedObject, Is.Null);
-      Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfBeginRelationChange ()
-    {
-      var order = Order.NewObject ();
-
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _nullEndPoint.NotifyClientTransactionOfBeginRelationChange (order, order);
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEndRelationChange ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _nullEndPoint.NotifyClientTransactionOfEndRelationChange ();
+      var command = (NullEndPointModificationCommand) _nullEndPoint.CreateSetCommand (newRelatedObject);
+      Assert.That (command.AffectedEndPoint, Is.SameAs (_nullEndPoint));
     }
 
     [Test]

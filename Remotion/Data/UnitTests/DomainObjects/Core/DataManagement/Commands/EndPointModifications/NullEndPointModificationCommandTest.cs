@@ -30,10 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   {
     private MockRepository _mockRepository;
     private IEndPoint _endPointMock;
-    private IEndPoint _oldEndPointStub;
-    private IEndPoint _newEndPointStub;
-    private Order _oldRelatedObject;
-    private Order _newRelatedObject;
     private NullEndPointModificationCommand _command;
     private RelationEndPointID _id;
 
@@ -47,39 +43,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _endPointMock = _mockRepository.StrictMock<IEndPoint> ();
 
-      _oldRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-      _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
-
-      _oldEndPointStub = _mockRepository.Stub<IEndPoint> ();
-      _oldEndPointStub.Stub (stub => stub.ObjectID).Return (_oldRelatedObject.ID);
-      _oldEndPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
-      _oldEndPointStub.Replay ();
-
-      _newEndPointStub = _mockRepository.Stub<IEndPoint> ();
-      _newEndPointStub.Stub (stub => stub.ObjectID).Return (_newRelatedObject.ID);
-      _newEndPointStub.Stub (stub => stub.ClientTransaction).Return (ClientTransactionMock);
-      _newEndPointStub.Replay ();
-
-      _command = new NullEndPointModificationCommand (_endPointMock, _oldRelatedObject, _newRelatedObject);
+      _command = new NullEndPointModificationCommand (_endPointMock);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPointMock, _command.ModifiedEndPoint);
-      Assert.AreSame (_oldRelatedObject, _command.OldRelatedObject);
-      Assert.AreSame (_newRelatedObject, _command.NewRelatedObject);
+      Assert.AreSame (_endPointMock, _command.AffectedEndPoint);
     }
 
     [Test]
     public void Initialization_FromNullObjectEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (ClientTransactionMock, _id.Definition);
-      var command = (RelationEndPointModificationCommand) endPoint.CreateSetCommand (_newRelatedObject);
-      Assert.IsInstanceOfType (typeof (NullEndPointModificationCommand), command);
-      Assert.AreSame (endPoint, command.ModifiedEndPoint);
-      Assert.IsNull (command.OldRelatedObject);
-      Assert.AreSame (_newRelatedObject, command.NewRelatedObject);
+      var command = (NullEndPointModificationCommand) endPoint.CreateSetCommand (Employee.NewObject());
+      Assert.AreSame (endPoint, command.AffectedEndPoint);
     }
 
     [Test]

@@ -149,11 +149,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
-    {
-      throw CreateException();
-    }
-
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
       throw CreateException();

@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void ObjectsObjectDeletingObjectsDeletedRelationEndPointMapPerformingDelete2 ()
+    public void ObjectsObjectDeletingObjectsDeleted ()
     {
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       ClientTransactionMock.AddListener (_strictListenerMock);
@@ -95,7 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
           _strictListenerMock.Expect (mock => mock.ObjectDeleting (cwadt));
-          _strictListenerMock.Expect (mock => mock.RelationEndPointMapPerformingDelete (Arg<RelationEndPointID[]>.Matches (ids => ids.Length == 0)));
           _strictListenerMock.Expect (mock => mock.ObjectDeleted (cwadt));
       }
 
@@ -230,9 +229,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
                         oldCustomer.ID,
                         newCustomer.ID));
-        _strictListenerMock.Expect (mock => mock.RelationChanged (order, typeof (Order).FullName + ".Customer"));
-        _strictListenerMock.Expect (mock => mock.RelationChanged (newCustomer, typeof (Customer).FullName + ".Orders"));
         _strictListenerMock.Expect (mock => mock.RelationChanged (oldCustomer, typeof (Customer).FullName + ".Orders"));
+        _strictListenerMock.Expect (mock => mock.RelationChanged (newCustomer, typeof (Customer).FullName + ".Orders"));
+        _strictListenerMock.Expect (mock => mock.RelationChanged (order, typeof (Order).FullName + ".Customer"));
       }
 
       _mockRepository.ReplayAll ();
@@ -342,7 +341,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (order));
-        _strictListenerMock.Expect (mock => mock.RelationEndPointMapPerformingDelete (Arg<RelationEndPointID[]>.Is.Anything));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (Arg<RelationEndPointID>.Matches (id => id.ObjectID == order.ID)))

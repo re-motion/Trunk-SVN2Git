@@ -95,12 +95,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         relationChangedCalled = true;
 
         Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
-        Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _removedRelatedObject }));
-        // collection got event first
+        Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // collection gets event later
       };
 
       _command.End();
 
+      Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _removedRelatedObject })); // collection got event later
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.True); // operation was finished
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started

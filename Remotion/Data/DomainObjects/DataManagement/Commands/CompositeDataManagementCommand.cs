@@ -70,8 +70,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      foreach (var command in _commands)
-        command.End ();
+      for (int i = _commands.Count - 1; i >= 0; i--)
+        _commands[i].End();
     }
 
     public void NotifyClientTransactionOfBegin ()
@@ -82,8 +82,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void NotifyClientTransactionOfEnd ()
     {
-      foreach (var command in _commands)
-        command.NotifyClientTransactionOfEnd ();
+      for (int i = _commands.Count - 1; i >= 0; i--)
+        _commands[i].NotifyClientTransactionOfEnd ();
     }
 
     public IDataManagementCommand ExtendToAllRelatedObjects ()

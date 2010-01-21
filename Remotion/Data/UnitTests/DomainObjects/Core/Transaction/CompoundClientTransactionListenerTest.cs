@@ -168,9 +168,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapRegistering"), new object[] {endPoint});
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapUnregistering"), new object[] {endPoint.ID});
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("RelationEndPointMapPerformingDelete"),
-          new object[] {new RelationEndPointID[0]});
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationEndPointUnloading"), new object[] { endPoint });
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("DataManagerMarkingObjectDiscarded"), new object[] {order.ID});

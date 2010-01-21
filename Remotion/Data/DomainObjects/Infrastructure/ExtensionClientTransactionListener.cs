@@ -167,11 +167,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
-    {
-      // not handled by this listener
-    }
-
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
       // not handled by this listener

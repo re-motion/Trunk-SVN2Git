@@ -163,11 +163,6 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
-    {
-      
-    }
-
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
 

@@ -18,39 +18,46 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
-  public class NullEndPointModificationCommand : RelationEndPointModificationCommand
+  public class NullEndPointModificationCommand : IDataManagementCommand
   {
-    public NullEndPointModificationCommand (IEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-        : base (affectedEndPoint, oldRelatedObject, newRelatedObject)
+    private readonly IEndPoint _affectedEndPoint;
+
+    public NullEndPointModificationCommand (IEndPoint affectedEndPoint)
     {
+      _affectedEndPoint = affectedEndPoint;
     }
 
-    public override void Begin ()
+    public IEndPoint AffectedEndPoint
     {
-      // do nothing
+      get { return _affectedEndPoint; }
     }
 
-    public override void Perform ()
-    {
-      // do nothing
-    }
-
-    public override void End ()
+    public void Begin ()
     {
       // do nothing
     }
 
-    public override void NotifyClientTransactionOfBegin ()
+    public void Perform ()
     {
       // do nothing
     }
 
-    public override void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       // do nothing
     }
 
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
+    public void NotifyClientTransactionOfBegin ()
+    {
+      // do nothing
+    }
+
+    public void NotifyClientTransactionOfEnd ()
+    {
+      // do nothing
+    }
+
+    public IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       return this;
     }

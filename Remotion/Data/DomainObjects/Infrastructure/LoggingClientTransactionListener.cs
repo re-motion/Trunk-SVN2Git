@@ -191,12 +191,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("RelationEndPointMapUnregistering: {0}", endPointID);
     }
 
-    public void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("RelationEndPointMapPerformingDelete: {0}", SeparatedStringBuilder.Build (", ", endPointIDs));
-    }
-
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
       if (s_log.IsDebugEnabled)

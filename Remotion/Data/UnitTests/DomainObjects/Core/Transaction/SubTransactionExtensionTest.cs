@@ -446,8 +446,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         _extension.ObjectDeleting (_subTransaction, computer);
         computerEventReceiver.Deleting (computer, EventArgs.Empty);
-        _extension.ObjectDeleted (_subTransaction, computer);
         computerEventReceiver.Deleted (computer, EventArgs.Empty);
+        _extension.ObjectDeleted (_subTransaction, computer);
       }
 
       _mockRepository.ReplayAll();
@@ -513,18 +513,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           LastCall.IgnoreArguments().Constraints (Mocks_Is.Same (officialOrders), Mocks_Property.Value ("DomainObject", _order1));
         }
 
-        using (_mockRepository.Unordered())
-        {
-          _extension.RelationChanged (_subTransaction, customer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
-          _extension.RelationChanged (_subTransaction, orderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
-          _extension.RelationChanged (_subTransaction, orderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
-          _extension.RelationChanged (_subTransaction, orderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
-          _extension.RelationChanged (_subTransaction, official, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders");
-        }
-
-        _extension.ObjectDeleted (_subTransaction, _order1);
-
-        using (_mockRepository.Unordered())
+        using (_mockRepository.Unordered ())
         {
           customerMockEventReceiver.RelationChanged (customer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
           customerOrdersMockEventReceiver.Removed (customerOrders, _order1);
@@ -536,6 +525,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         }
 
         order1MockEventReceiver.Deleted (_order1, EventArgs.Empty);
+
+        using (_mockRepository.Unordered ())
+        {
+          _extension.RelationChanged (_subTransaction, customer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+          _extension.RelationChanged (_subTransaction, orderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order");
+          _extension.RelationChanged (_subTransaction, orderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
+          _extension.RelationChanged (_subTransaction, orderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order");
+          _extension.RelationChanged (_subTransaction, official, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders");
+        }
+
+        _extension.ObjectDeleted (_subTransaction, _order1);
       }
 
       _mockRepository.ReplayAll();

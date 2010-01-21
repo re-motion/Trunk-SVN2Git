@@ -42,8 +42,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void Rollback ();
 
     IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
-
-    void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject);
-    void NotifyClientTransactionOfEndRelationChange ();
   }
 }

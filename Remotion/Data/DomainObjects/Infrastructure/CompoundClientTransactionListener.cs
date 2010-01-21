@@ -183,12 +183,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointMapUnregistering (endPointID);
     }
 
-    public void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
-    {
-      foreach (IClientTransactionListener listener in _listeners)
-        listener.RelationEndPointMapPerformingDelete (endPointIDs);
-    }
-
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
       foreach (IClientTransactionListener listener in _listeners)

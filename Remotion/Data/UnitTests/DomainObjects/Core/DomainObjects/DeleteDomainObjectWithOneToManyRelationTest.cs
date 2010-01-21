@@ -52,8 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       new ObjectDeletionState (_supervisor, "1. Deleting of supervisor"),
       new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "2. Relation changing of subordinate1"),
       new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "3. Relation changing of subordinate2"),
-      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "4. Relation changed of subordinate1"),
-      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "5. Relation changed of subordinate2"),
+      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "4. Relation changed of subordinate2"),
+      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "5. Relation changed of subordinate1"),
       new ObjectDeletionState (_supervisor, "6. Deleted of supervisor")
     };
 

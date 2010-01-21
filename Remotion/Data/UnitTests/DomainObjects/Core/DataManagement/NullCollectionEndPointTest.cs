@@ -156,23 +156,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void NotifyClientTransactionOfBeginRelationChange ()
-    {
-      var order = Order.NewObject ();
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _nullEndPoint.NotifyClientTransactionOfBeginRelationChange (order, order);
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEndRelationChange ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      _nullEndPoint.NotifyClientTransactionOfEndRelationChange ();
-    }
-
-    [Test]
     public void EnsureDataAvailable_DoesNothing ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);

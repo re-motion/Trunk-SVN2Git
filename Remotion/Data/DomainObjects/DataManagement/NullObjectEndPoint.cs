@@ -127,22 +127,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
-      return new NullEndPointModificationCommand (this, removedRelatedObject, null);
+      return new NullEndPointModificationCommand (this);
     }
 
     public IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return new NullEndPointModificationCommand (this, this.GetOppositeObject (true), newRelatedObject);
-    }
-
-    public void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      // do nothing
-    }
-
-    public void NotifyClientTransactionOfEndRelationChange ()
-    {
-      // do nothing
+      return new NullEndPointModificationCommand (this);
     }
   }
 }

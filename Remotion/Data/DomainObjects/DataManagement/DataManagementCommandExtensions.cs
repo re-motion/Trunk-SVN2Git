@@ -37,8 +37,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       command.NotifyClientTransactionOfBegin ();
       command.Begin ();
       command.Perform ();
-      command.NotifyClientTransactionOfEnd ();
       command.End ();
+      command.NotifyClientTransactionOfEnd ();
     }
   }
 }

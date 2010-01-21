@@ -139,13 +139,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         _commandMock2.Expect (mock => mock.Perform());
         _commandMock3.Expect (mock => mock.Perform());
 
-        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd());
-        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd());
-        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock3.Expect (mock => mock.End ());
+        _commandMock2.Expect (mock => mock.End ());
+        _commandMock1.Expect (mock => mock.End ());
 
-        _commandMock1.Expect (mock => mock.End());
-        _commandMock2.Expect (mock => mock.End());
-        _commandMock3.Expect (mock => mock.End());
+        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ());
       }
 
       _mockRepository.ReplayAll ();

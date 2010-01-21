@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       new ObjectDeletionState (_orderItem, "1. Deleting event of orderItem"),
       new CollectionChangeState (_order.OrderItems, _orderItem, "2. Removing event of order.OrderItems"),
       new RelationChangeState (_order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", _orderItem, null, "3. Relation changing event of order"),
-      new CollectionChangeState (_order.OrderItems, _orderItem, "4. Removed event of order.OrderItems"),
-      new RelationChangeState (_order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, null, "5. Relation changed event of order"),
+      new RelationChangeState (_order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", null, null, "4. Relation changed event of order"),
+      new CollectionChangeState (_order.OrderItems, _orderItem, "5. Removed event of order.OrderItems"),
       new ObjectDeletionState (_orderItem, "6. Deleted event of orderItem"),
     };
 

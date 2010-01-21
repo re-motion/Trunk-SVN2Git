@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
-      return new NullEndPointModificationCommand (this, removedRelatedObject, null);
+      return new NullEndPointModificationCommand (this);
     }
 
     public DomainObjectCollection OppositeDomainObjects
@@ -118,32 +118,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
-      return new NullEndPointModificationCommand (this, null, insertedRelatedObject);
+      return new NullEndPointModificationCommand (this);
     }
 
     public IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
-      return new NullEndPointModificationCommand (this, null, addedRelatedObject);
+      return new NullEndPointModificationCommand (this);
     }
 
     public IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     { 
-      return new NullEndPointModificationCommand (this, null, replacementObject);
+      return new NullEndPointModificationCommand (this);
     }
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
-    }
-
-    public void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      // do nothing
-    }
-
-    public void NotifyClientTransactionOfEndRelationChange ()
-    {
-      // do nothing
     }
 
     public void EnsureDataAvailable ()

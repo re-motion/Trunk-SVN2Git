@@ -124,22 +124,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End ()
     {
+      CollectionEndPoint.OppositeDomainObjects.Add (_order1); // will stay
+      CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem); // will be removed
+
+      _newCollection.Add (_order1); // same as existing
+      _newCollection.Add (_order2); // new
+
+      var relationChangedEventArgs = new List<RelationChangedEventArgs> ();
       bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
+
+      CollectionEventReceiver.Reset ();
 
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) =>
-      {
-        relationChangedCalled = true;
-        Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
-      };
+      DomainObject.RelationChanged += (sender, args) => relationChangedEventArgs.Add (args);
 
       _command.End ();
 
-      Assert.That (relationChangingCalled, Is.False); // operation was not started
-      Assert.That (relationChangedCalled, Is.True); // operation was finished
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty);
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null);
+
+      Assert.That (relationChangedEventArgs.Count, Is.EqualTo (2)); // operation was started
+      Assert.That (relationChangingCalled, Is.False); // operation was not finished
+
+      Assert.That (relationChangedEventArgs[0].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
+
+      Assert.That (relationChangedEventArgs[1].PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
     }
 
     [Test]
@@ -174,11 +183,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
       listenerMock.Expect (mock => mock.RelationChanged (DomainObject, CollectionEndPoint.PropertyName));
+      listenerMock.Expect (mock => mock.RelationChanged (DomainObject, CollectionEndPoint.PropertyName));
+
       listenerMock.Replay ();
 
       ClientTransactionMock.AddListener (listenerMock);
 
-      _command.NotifyClientTransactionOfEnd ();
+      _command.NotifyClientTransactionOfEnd();
 
       listenerMock.VerifyAllExpectations ();
     }

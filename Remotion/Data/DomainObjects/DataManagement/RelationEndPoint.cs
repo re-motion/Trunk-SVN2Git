@@ -104,16 +104,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return false; }
     }
 
-    public virtual void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      _clientTransaction.TransactionEventSink.RelationChanging (this.GetDomainObject(), PropertyName, oldRelatedObject, newRelatedObject);
-    }
-
-    public virtual void NotifyClientTransactionOfEndRelationChange ()
-    {
-      _clientTransaction.TransactionEventSink.RelationChanged (this.GetDomainObject(), PropertyName);
-    }
-
     protected MandatoryRelationNotSetException CreateMandatoryRelationNotSetException (
         DomainObject domainObject,
         string propertyName,

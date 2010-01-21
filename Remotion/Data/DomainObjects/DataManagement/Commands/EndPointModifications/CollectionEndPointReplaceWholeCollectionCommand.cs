@@ -115,9 +115,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public override void NotifyClientTransactionOfBegin ()
     {
       foreach (var removedObject in RemovedObjects)
-        _modifiedEndPoint.NotifyClientTransactionOfBeginRelationChange (removedObject, null);
+        RaiseClientTransactionBeginNotification (removedObject, null);
       foreach (var addedObject in AddedObjects)
-        _modifiedEndPoint.NotifyClientTransactionOfBeginRelationChange (null, addedObject);
+        RaiseClientTransactionBeginNotification (null, addedObject);
     }
 
     public override void Begin ()
@@ -145,6 +145,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       // now make end point refer to the new collection by reference, too
       ModifiedEndPoint.OppositeDomainObjects = NewOppositeCollection; // this also touches the end point
+    }
+
+    public override void End ()
+    {
+      DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
+
+      foreach (var addedObject in AddedObjects.Reverse ())
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
+      foreach (var removedObject in RemovedObjects.Reverse())
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
+    }
+
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      foreach (var removedObject in RemovedObjects.Reverse ())
+        RaiseClientTransactionEndNotification (removedObject, null);
+      foreach (var addedObject in AddedObjects.Reverse ())
+        RaiseClientTransactionEndNotification (null, addedObject);
     }
 
     /// <summary>

@@ -28,6 +28,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   public abstract class RelationEndPointModificationCommand : IDataManagementCommand
   {
     private readonly IEndPoint _modifiedEndPoint;
+    private readonly DomainObject _domainObject;
+
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
@@ -36,6 +38,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ArgumentUtility.CheckNotNull ("endPointBeingModified", endPointBeingModified);
 
       _modifiedEndPoint = endPointBeingModified;
+      _domainObject = endPointBeingModified.GetDomainObject ();
+
       _oldRelatedObject = oldRelatedObject;
       _newRelatedObject = newRelatedObject;
     }
@@ -83,12 +87,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public virtual void NotifyClientTransactionOfBegin ()
     {
-      _modifiedEndPoint.NotifyClientTransactionOfBeginRelationChange (_oldRelatedObject, _newRelatedObject);
+      RaiseClientTransactionBeginNotification (_oldRelatedObject, _newRelatedObject);
     }
 
     public virtual void NotifyClientTransactionOfEnd ()
     {
-      _modifiedEndPoint.NotifyClientTransactionOfEndRelationChange ();
+      RaiseClientTransactionEndNotification (_oldRelatedObject, _newRelatedObject);
+    }
+
+    protected void RaiseClientTransactionBeginNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      _modifiedEndPoint.ClientTransaction.TransactionEventSink.RelationChanging (
+          _domainObject, 
+          _modifiedEndPoint.Definition.PropertyName, 
+          oldRelatedObject, 
+          newRelatedObject);
+    }
+
+    protected void RaiseClientTransactionEndNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      _modifiedEndPoint.ClientTransaction.TransactionEventSink.RelationChanged (_domainObject, _modifiedEndPoint.Definition.PropertyName);
     }
   }
 }

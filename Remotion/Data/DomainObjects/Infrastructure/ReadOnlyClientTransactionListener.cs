@@ -163,11 +163,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable ("RelationEndPointMapUnregistering");
     }
 
-    public virtual void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
-    {
-      Assertion.IsFalse (_clientTransaction.IsReadOnly);
-    }
-
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
       EnsureWriteable ("RelationEndPointUnloading");

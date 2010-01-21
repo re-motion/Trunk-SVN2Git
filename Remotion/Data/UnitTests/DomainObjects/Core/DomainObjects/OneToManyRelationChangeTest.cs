@@ -60,11 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       new RelationChangeState (_newCustomer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, _order, "3. Changing event of new customer"),
       new CollectionChangeState (_oldCustomer.Orders, _order, "4. Removing of orders of old customer"),
       new RelationChangeState (_oldCustomer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", _order, null, "5. Changing event of old customer"),
-      new RelationChangeState (_order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, null, "6. Changed event of order from old to new customer"),
-      new CollectionChangeState (_newCustomer.Orders, _order, "7. Added event of new customer's order collection"),
+      new RelationChangeState (_oldCustomer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, null, "6. Changed event of old customer"),
+      new CollectionChangeState (_oldCustomer.Orders, _order, "7. Removed event of old customer's order collection"),
       new RelationChangeState (_newCustomer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, null, "8. Changed event of new customer"),
-      new CollectionChangeState (_oldCustomer.Orders, _order, "9. Removed event of old customer's order collection"),
-      new RelationChangeState (_oldCustomer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, null, "10. Changed event of old customer")
+      new CollectionChangeState (_newCustomer.Orders, _order, "9. Added event of new customer's order collection"),
+      new RelationChangeState (_order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, null, "10. Changed event of order from old to new customer"),
     };
 
       eventReceiver.Check (expectedChangeStates);
