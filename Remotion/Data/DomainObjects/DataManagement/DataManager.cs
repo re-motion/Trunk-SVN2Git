@@ -189,9 +189,10 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap.RollbackAllDataContainers ();
   }
 
+  // TODO 1952: Make public and check that no dangling end points can be created. Add tests.
   // This method might leave dangling end points, so it must only be used from scenarios where it is guaranteed that nothing points back to the
   // discarded object.
-  private void Discard (DataContainer dataContainer)
+  internal void Discard (DataContainer dataContainer)
   {
     foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
     {
@@ -246,8 +247,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     return new ClientTransactionsDifferException (String.Format (message, args));
   }
 
-  // TODO 1914: Make non-internal
-  internal void MarkDiscarded (DataContainer discardedDataContainer)
+  private void MarkDiscarded (DataContainer discardedDataContainer)
   {
     _transactionEventSink.DataManagerMarkingObjectDiscarded (discardedDataContainer.ID);
     _discardedDataContainers.Add (discardedDataContainer.ID, discardedDataContainer);

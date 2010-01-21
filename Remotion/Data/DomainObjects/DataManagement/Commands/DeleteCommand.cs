@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 using ArgumentUtility=Remotion.Data.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
+  // TODO 1952: Test!
   /// <summary>
   /// Encapsulates all logic that is required to delete a <see cref="DomainObject"/>.
   /// </summary>
@@ -75,19 +75,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       }
 
       if (dataContainer.State == StateType.New)
-      {
-        foreach (var endPointID in relationEndPointIDs)
-          _clientTransaction.DataManager.RelationEndPointMap.RemoveEndPoint (endPointID);
-
-        _clientTransaction.DataManager.DataContainerMap.Remove (dataContainer.ID);    
-
-        dataContainer.Discard ();
-        _clientTransaction.DataManager.MarkDiscarded (dataContainer);
-      }
+        _clientTransaction.DataManager.Discard (dataContainer);
       else
-      {
         dataContainer.Delete ();
-      }
     }
 
     public void End ()
