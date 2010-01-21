@@ -146,3 +146,12 @@ span.bocAutoCompleteReferenceValueDummy
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
   -moz-opacity: 0.4;
 }
+
+/* Hack for IE 6 */
+* html .bocAutoCompleteReferenceValue .disabled span.content {
+  padding-top: 0;
+}
+
+* html .bocAutoCompleteReferenceValue .disabled input {
+  width: auto;
+}

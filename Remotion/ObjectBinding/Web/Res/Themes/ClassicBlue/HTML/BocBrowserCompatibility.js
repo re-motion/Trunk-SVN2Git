@@ -22,35 +22,57 @@ BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element) {
   if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
     return;
 
+  var maxWidth = element.innerWidth();
+  var controlContentChildrens = element.children(':first').children();
+  var totalChildrens = controlContentChildrens.size();
 
-  var content = element.children(':first').children('.content');
-  var prevElement = content.prev();
-  var firstElement = content.children(':first');
-  var seccondElement = content.next();
-  var continerElement = content.parent();
-  var thisWidth = continerElement.outerWidth(true) - seccondElement.outerWidth(true) - prevElement.outerWidth(true);
+  var firstControlElement = $(controlContentChildrens.get(0));
+  var firstControlElementWidth = firstControlElement.outerWidth(true);
 
-  firstElement.css('width', thisWidth);
+  var seccondControlElement = $(controlContentChildrens.get(1));
 
-  var firstElementInput = firstElement.children(':first').children(':first');
-  var firstElementArrow = firstElement.children(':nth-child(2)');
+  var thirdControlElement = $(controlContentChildrens.get(2));
+  var thirdControlElementMenuArrowWidth = thirdControlElement.find('img').outerWidth(true);
 
-  if (firstElementInput) {
-    var newWidth = firstElementInput.width() - firstElementArrow.outerWidth(true);
-    firstElementInput.css('width', newWidth);
-    firstElementArrow.css('height', firstElementInput.outerHeight());
+  if (thirdControlElement.hasClass('bocReferenceValueOptionsMenu')) {
+    var thirdControlElementMenuText = thirdControlElement.find('a').outerWidth(true);
+    var thirdControlElementWidth = thirdControlElementMenuText + thirdControlElementMenuArrowWidth;
+  } else {
+    var thirdControlElementWidth = thirdControlElementMenuArrowWidth;
   }
 
-  if (element.hasClass('disabled') || element.hasClass('readOnly')) {
-    if (firstElement.className != 'undefined') {
-      var firstElementSpan = element.children(':first').children(':first');
-      firstElementSpan.css({ 'display': 'block' });
-      var seccondElement = element.children().find('input, select');
-      seccondElement.css({ 'width': 'auto' });
+
+  if (totalChildrens == 1) {
+    var firstControlElementSelect = firstControlElement.find('.content');
+    if (firstControlElementSelect) {
+
+      var firstControlElementSelectMarginPadding = firstControlElementSelect.outerWidth(true) - firstControlElementSelect.width();
+
+      firstControlElementSelectMaxWidth = maxWidth - firstControlElementSelectMarginPadding - firstControlElementSelect.prev().outerWidth(true) - firstControlElementSelect.next().outerWidth(true);
+      firstControlElementSelect.css('width', firstControlElementSelectMaxWidth);
     }
   }
-}
 
+  if (totalChildrens == 2) {
+
+    if (seccondControlElement.hasClass('bocReferenceValueOptionsMenu')) {
+      var seccondControlElementMenuText = seccondControlElement.find('a').outerWidth(true);
+      var seccondControlElementMenuArrowWidth = seccondControlElement.find('img').outerWidth(true);
+      var seccondControlElementWidth = seccondControlElementMenuText + seccondControlElementMenuArrowWidth;
+      var firstControlElementWidth = maxWidth - seccondControlElementWidth;
+
+    } else {
+      var seccondControlElementWidth = maxWidth - firstControlElementWidth;
+    }
+    seccondControlElement.css({ 'left': firstControlElementWidth, 'width': seccondControlElementWidth });
+
+  } else if (totalChildrens == 3) {
+    var seccondControlElementWidth = maxWidth - firstControlElementWidth - thirdControlElementWidth;
+    seccondControlElement.css({ 'left': firstControlElementWidth, 'width': seccondControlElementWidth });
+    thirdControlElement.css({ 'left': firstControlElementWidth + seccondControlElementWidth, 'width': thirdControlElementWidth });
+
+  }
+}
 
 
 
