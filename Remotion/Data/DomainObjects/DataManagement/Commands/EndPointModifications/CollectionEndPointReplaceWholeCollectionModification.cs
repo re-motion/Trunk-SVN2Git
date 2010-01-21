@@ -16,10 +16,11 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
   /// Represents the replacement of the whole <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection, including the transformation

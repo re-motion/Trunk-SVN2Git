@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   public class NullEndPointModification : RelationEndPointModification
   {

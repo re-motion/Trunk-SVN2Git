@@ -16,32 +16,32 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Represents the removal of an element from a <see cref="CollectionEndPoint"/>.
+  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="ExtendToAllRelatedObjects"/>
+  /// results in an <see cref="IDataManagementCommand"/> that does not raise any events.
   /// </summary>
-  public class CollectionEndPointRemoveModification : RelationEndPointModification
+  public class CollectionEndPointReplaceSameModification : RelationEndPointModification
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
-    private readonly int _index;
 
-    public CollectionEndPointRemoveModification (
+    public CollectionEndPointReplaceSameModification (
         ICollectionEndPoint modifiedEndPoint, 
-        DomainObject removedObject, 
+        DomainObject selfReplacedObject, 
         IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
-            ArgumentUtility.CheckNotNull ("removedObject", removedObject),
-            null)
+            ArgumentUtility.CheckNotNull ("selfReplacedObject", selfReplacedObject),
+            ArgumentUtility.CheckNotNull ("selfReplacedObject", selfReplacedObject))
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
 
-      _index = modifiedEndPoint.OppositeDomainObjects.IndexOf (removedObject);
       _modifiedCollectionData = collectionData;
       _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
     }
@@ -58,39 +58,47 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Begin ()
     {
-      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginRemove (_index, OldRelatedObject);
-      
-      base.Begin ();
+      // do not issue any change notifications, a self-replacement is not a change
     }
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Remove (OldRelatedObject);
-      ModifiedEndPoint.Touch ();
+      ModifiedEndPoint.Touch();
     }
 
     public override void End ()
     {
-      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndRemove (_index, OldRelatedObject);
-      base.End ();
+      // do not issue any change notifications, a self-replacement is not a change
+    }
+
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      // do not issue any change notifications, a same-set is not a change
     }
 
     /// <summary>
-    /// Creates all modifications needed to perform a bidirectional remove operation from this collection end point.
+    /// Creates all modifications needed to perform a self-replace operation within this collection end point.
     /// </summary>
     /// <remarks>
-    /// A remove operation of the form "customer.Orders.Remove (RemovedOrder)" needs two steps:
+    /// A self-replace operation of the form "customer.Orders[index] = customer.Orders[index]" needs two steps:
     /// <list type="bullet">
-    ///   <item>RemovedOrder.Customer = null and</item>
-    ///   <item>customer.Orders.Remove (removedOrder).</item>
+    ///   <item>customer.Orders.Touch() and</item>
+    ///   <item>customer.Orders[index].Touch().</item>
     /// </list>
+    /// No change notifications are sent for this operation.
     /// </remarks>
     public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
-      var removedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
+      var endPointOfRelatedObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
+
       return new CompositeDataManagementCommand (
-          removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), 
-          this);
+          this,
+          new RelationEndPointTouchModification (endPointOfRelatedObject));
     }
   }
 }

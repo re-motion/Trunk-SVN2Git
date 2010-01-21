@@ -16,28 +16,30 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Represents the insertion of an element into a <see cref="CollectionEndPoint"/>.
+  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/>.
   /// </summary>
-  public class CollectionEndPointInsertModification : RelationEndPointModification
+  public class CollectionEndPointReplaceModification : RelationEndPointModification
   {
     private readonly int _index;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointInsertModification (
+    public CollectionEndPointReplaceModification (
         ICollectionEndPoint modifiedEndPoint, 
+        DomainObject replacedObject, 
         int index, 
-        DomainObject insertedObject, 
+        DomainObject replacementObject, 
         IDomainObjectCollectionData collectionData)
-        : base (
+      : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
-            null,
-            ArgumentUtility.CheckNotNull ("insertedObject", insertedObject))
+            ArgumentUtility.CheckNotNull ("replacedObject", replacedObject),
+            ArgumentUtility.CheckNotNull ("replacementObject", replacementObject))
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
@@ -45,11 +47,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       _index = index;
       _modifiedCollectionData = collectionData;
       _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
-    }
-
-    public int Index
-    {
-      get { return _index; }
     }
 
     public DomainObjectCollection ModifiedCollection
@@ -64,49 +61,56 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Begin ()
     {
-      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginAdd (Index, NewRelatedObject);
-      base.Begin();
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginRemove (_index, OldRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginAdd (_index, NewRelatedObject);
+      base.Begin ();
     }
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Insert (Index, NewRelatedObject);
+      ModifiedCollectionData.Replace (_index, NewRelatedObject);
       ModifiedEndPoint.Touch();
     }
 
     public override void End ()
     {
-      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndAdd (Index, NewRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndRemove (_index, OldRelatedObject);
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndAdd (_index, NewRelatedObject);
       base.End();
     }
 
     /// <summary>
-    /// Creates all modifications needed to perform a bidirectional insert operation into this collection end point.
+    /// Creates all modifications needed to perform a bidirectional replace operation within this collection end point.
     /// </summary>
     /// <remarks>
-    /// An insert operation of the form "customer.Orders.Insert (insertedOrder, index)" needs three steps:
+    /// A replace operation of the form "customer.Orders[index] = newOrder" needs four steps:
     /// <list type="bullet">
-    ///   <item>insertedOrder.Customer = customer,</item>
-    ///   <item>customer.Orders.Insert (insertedOrder, index), and</item>
-    ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the inserted order (if non-null).</item>
+    ///   <item>customer.Order[index].Customer = null,</item>
+    ///   <item>newOrder.Customer = customer,</item>
+    ///   <item>customer.Orders[index] = newOrder,</item>
+    ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the new order (if non-null).</item>
     /// </list>
     /// </remarks>
     public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       // the end point that will be linked to the collection end point after the operation
-      var insertedObjectEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
+      var endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
+      // the end point that was linked to the collection end point before the operation
+      var endPointOfOldObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
       // the object that was linked to the new related object before the operation
-      var oldRelatedObjectOfInsertedObject = insertedObjectEndPoint.GetOppositeObject (false);
+      var oldRelatedObjectOfNewObject = endPointOfNewObject.GetOppositeObject (false);
       // the end point that was linked to the new related object before the operation
-      var oldRelatedEndPointOfInsertedObject = insertedObjectEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedObjectOfInsertedObject);
+      var oldRelatedEndPointOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedObjectOfNewObject);
 
       return new CompositeDataManagementCommand (
-          // insertedOrder.Customer = customer (previously oldCustomer)
-          insertedObjectEndPoint.CreateSetModification (ModifiedEndPoint.GetDomainObject()),
-          // customer.Orders.Insert (insertedOrder, index)
+          // customer.Order[index].Customer = null
+          endPointOfOldObject.CreateRemoveModification (ModifiedEndPoint.GetDomainObject()),
+          // newOrder.Customer = customer
+          endPointOfNewObject.CreateSetModification (ModifiedEndPoint.GetDomainObject()),
+          // customer.Orders[index] = newOrder
           this,
           // oldCustomer.Orders.Remove (insertedOrder)
-          oldRelatedEndPointOfInsertedObject.CreateRemoveModification (NewRelatedObject));
+          oldRelatedEndPointOfNewObject.CreateRemoveModification (NewRelatedObject));
     }
   }
 }

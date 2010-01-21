@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
   /// Implementations of this class represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/>.

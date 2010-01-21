@@ -18,9 +18,10 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
   [TestFixture]
   public class CompositeDataManagementCommandTest : ClientTransactionBaseTest

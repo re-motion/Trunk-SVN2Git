@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
   /// Represents a modification that touches, but does not change the modified end point.
