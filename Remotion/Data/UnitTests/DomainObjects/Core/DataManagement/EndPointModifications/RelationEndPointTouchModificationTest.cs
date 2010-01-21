@@ -50,6 +50,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
+    public void NotifyClientTransactionOfBegin_DoesNothing ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      _modification.NotifyClientTransactionOfBegin ();
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfEnd_DoesNothing ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      _modification.NotifyClientTransactionOfEnd ();
+    }
+
+    [Test]
     public void Begin ()
     {
       var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject());

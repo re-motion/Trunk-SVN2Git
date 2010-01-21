@@ -28,9 +28,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
     }
 
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      // do not issue any change notifications, a touch is not a change
+    }
+
     public override void Begin ()
     {
-      // do not issue any change notifications, a same-set is not a change
+      // do not issue any change notifications, a touch is not a change
     }
 
     public override void Perform ()
@@ -40,10 +45,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void End ()
     {
-      // do not issue any change notifications, a same-set is not a change
+      // do not issue any change notifications, a touch is not a change
     }
 
-    // TODO 1914: Override NotifyClientTransaction not to do anything
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      // do not issue any change notifications, a touch is not a change
+    }
 
     public override CompositeRelationModification ExtendToAllRelatedObjects ()
     {
