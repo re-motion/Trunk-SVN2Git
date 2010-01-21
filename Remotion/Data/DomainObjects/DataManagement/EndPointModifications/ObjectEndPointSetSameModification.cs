@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> to the same value as before. Calling 
-  /// <see cref="ExtendToAllRelatedObjects"/> results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise
+  /// <see cref="ExtendToAllRelatedObjects"/> results in a <see cref="CompositeRelationModificationWithEvents"/> that does not raise
   /// any events.
   /// </summary>
   public class ObjectEndPointSetSameModification : ObjectEndPointSetModificationBase
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       var oppositeEndPointDefinition = ModifiedEndPoint.Definition.GetOppositeEndPointDefinition ();
 
-      var bidirectionalModification = new CompositeRelationModificationWithoutEvents (this);
+      var bidirectionalModification = new CompositeRelationModificationWithEvents (this);
       if (!oppositeEndPointDefinition.IsAnonymous)
       {
         var oppositeEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IEndPoint> (NewRelatedObject);

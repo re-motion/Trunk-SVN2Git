@@ -16,14 +16,13 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
   /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="ExtendToAllRelatedObjects"/>
-  /// results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise any events.
+  /// results in a <see cref="CompositeRelationModificationWithEvents"/> that does not raise any events.
   /// </summary>
   public class CollectionEndPointReplaceSameModification : RelationEndPointModification
   {
@@ -96,7 +95,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       var endPointOfRelatedObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
 
-      return new CompositeRelationModificationWithoutEvents (
+      return new CompositeRelationModificationWithEvents (
           this,
           new RelationEndPointTouchModification (endPointOfRelatedObject));
     }

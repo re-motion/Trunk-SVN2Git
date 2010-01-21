@@ -262,7 +262,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointReplaceSameModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointReplaceWholeCollectionModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\RelationEndPointTouchModificationTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CompositeRelationModificationWithoutEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneManyModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneOneModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetSameModificationTest.cs" />

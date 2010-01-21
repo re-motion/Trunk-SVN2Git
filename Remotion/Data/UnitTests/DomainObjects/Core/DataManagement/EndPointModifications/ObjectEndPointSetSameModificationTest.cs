@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
       var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       var steps = bidirectionalModification.GetModificationSteps ();
       Assert.That (steps.Count, Is.EqualTo (1));
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var setSameModification = new ObjectEndPointSetSameModification (bidirectionalEndPoint);
 
       var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       var steps = GetModificationSteps (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (2));

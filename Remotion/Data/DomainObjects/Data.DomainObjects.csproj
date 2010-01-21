@@ -179,7 +179,6 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceWholeCollectionModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceSameModification.cs" />
-    <Compile Include="DataManagement\EndPointModifications\CompositeRelationModificationWithoutEvents.cs" />
     <Compile Include="DataManagement\EndPointModifications\CompositeRelationModificationWithEvents.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneManyModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneOneModification.cs" />
