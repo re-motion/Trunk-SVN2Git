@@ -15,44 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.DataManagement;
+using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  public class NullEndPointModification : RelationEndPointModification
+  [TestFixture]
+  public class DataManagementCommandExtensionsTest
   {
-    public NullEndPointModification (IEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-        : base (affectedEndPoint, oldRelatedObject, newRelatedObject)
+    [Test]
+    public void NotifyAndPerform ()
     {
-    }
+      var commandMock = new MockRepository ().StrictMock<IDataManagementCommand> ();
 
-    public override void Begin ()
-    {
-      // do nothing
-    }
+      using (commandMock.GetMockRepository ().Ordered ())
+      {
+        commandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        commandMock.Expect (mock => mock.Begin());
+        commandMock.Expect (mock => mock.Perform());
+        commandMock.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        commandMock.Expect (mock => mock.End());
+      }
 
-    public override void Perform ()
-    {
-      // do nothing
-    }
+      commandMock.Replay ();
 
-    public override void End ()
-    {
-      // do nothing
-    }
+      commandMock.NotifyAndPerform ();
 
-    public override void NotifyClientTransactionOfBegin ()
-    {
-      // do nothing
-    }
-
-    public override void NotifyClientTransactionOfEnd ()
-    {
-      // do nothing
-    }
-
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
-    {
-      return this;
+      commandMock.VerifyAllExpectations ();
     }
   }
 }

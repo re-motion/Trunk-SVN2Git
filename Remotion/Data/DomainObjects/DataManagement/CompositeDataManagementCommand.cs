@@ -86,20 +86,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
         modificationStep.NotifyClientTransactionOfEnd ();
     }
 
-    public CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    public IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       return this;
     }
 
-    public virtual void ExecuteAllSteps ()
-    {
-      NotifyClientTransactionOfBegin();
-      Begin();
 
-      Perform();
-
-      NotifyClientTransactionOfEnd();
-      End();
-    }
   }
 }

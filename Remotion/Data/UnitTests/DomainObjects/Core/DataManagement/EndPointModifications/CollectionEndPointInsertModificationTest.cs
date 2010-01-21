@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void CreateBidirectionalModification ()
+    public void ExtendToAllRelatedObjects ()
     {
       var bidirectionalModification = _modification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));

@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void CreateBidirectionalModification_SetDifferent_Unidirectional ()
+    public void ExtendToAllRelatedObjects_SetDifferent_Unidirectional ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
@@ -103,12 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       var setDifferentModification = new ObjectEndPointSetUnidirectionalModification (unidirectionalEndPoint, newClient);
       var bidirectionalModification = setDifferentModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
-
-      var steps = GetModificationSteps (bidirectionalModification);
-      Assert.That (steps.Count, Is.EqualTo (1));
-
-      Assert.That (steps[0], Is.SameAs (setDifferentModification));
+      Assert.That (bidirectionalModification, Is.SameAs (setDifferentModification));
     }
   }
 }

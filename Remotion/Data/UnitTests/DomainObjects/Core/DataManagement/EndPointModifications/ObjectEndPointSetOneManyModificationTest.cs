@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void CreateBidirectionalModification_SetDifferent_BidirectionalOneMany ()
+    public void ExtendToAllRelatedObjects_SetDifferent_BidirectionalOneMany ()
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orderEndPointDefinition = orderItem.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");

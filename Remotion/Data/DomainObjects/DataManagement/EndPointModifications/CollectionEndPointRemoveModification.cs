@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
@@ -86,10 +85,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders.Remove (removedOrder).</item>
     /// </list>
     /// </remarks>
-    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       var removedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
-      return new CompositeDataManagementCommand (removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), this);
+      return new CompositeDataManagementCommand (
+          removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), 
+          this);
     }
   }
 }

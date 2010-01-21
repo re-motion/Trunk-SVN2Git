@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
@@ -129,6 +130,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modification.NotifyClientTransactionOfEnd ();
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void ExtendToAllRelatedObjects ()
+    {
+      var result = _modification.ExtendToAllRelatedObjects ();
+
+      Assert.That (result, Is.SameAs (_modification));
     }
   }
 }

@@ -61,16 +61,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// Performs this modification without raising any events and without performing any bidirectional modifications.
     /// </summary>
     public abstract void Perform ();
-    
+
     /// <summary>
-    /// Creates all modification steps needed to perform a bidirectional operation. One of the steps is this modification, the other 
-    /// steps are the opposite modifications on the new/old related objects.
+    /// Returns a new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this
+    /// <see cref="RelationEndPointModification"/>. If no other objects are involved by the change, this method returns just this
+    /// <see cref="IDataManagementCommand"/>.
     /// </summary>
-    /// <remarks>
-    /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
-    /// <see cref="ExtendToAllRelatedObjects"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
-    /// </remarks>
-    public abstract CompositeDataManagementCommand ExtendToAllRelatedObjects ();
+    /// <returns>A new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this
+    /// <see cref="RelationEndPointModification"/>.</returns>
+    public abstract IDataManagementCommand ExtendToAllRelatedObjects ();
 
     public virtual void Begin ()
     {

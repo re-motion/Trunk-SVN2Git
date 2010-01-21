@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var setModification = CreateSetModification (newRelatedObject);
       var bidirectionalModification = setModification.ExtendToAllRelatedObjects ();
-      bidirectionalModification.ExecuteAllSteps ();
+      bidirectionalModification.NotifyAndPerform ();
     }
 
     public override void CheckMandatory ()

@@ -97,10 +97,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void CreateBidirectionalModification ()
+    public void ExtendToAllRelatedObjects ()
     {
-      _modification.ExtendToAllRelatedObjects ();
+      var result = _modification.ExtendToAllRelatedObjects ();
+      Assert.That (result, Is.SameAs (_modification));
     }
   }
 }

@@ -236,6 +236,8 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandExtensionsTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\IndirectDomainObjectCollectionEventRaiserTest.cs" />
@@ -556,7 +558,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\UpdateCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InsertCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\QueryCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CompositeRelationModificationWithEventsTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CompositeDataManagementCommandTest.cs" />
     <Compile Include="DomainObjects\Core\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="DomainObjects\Core\Serialization\CollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DomainObjectCollectionTest.cs" />

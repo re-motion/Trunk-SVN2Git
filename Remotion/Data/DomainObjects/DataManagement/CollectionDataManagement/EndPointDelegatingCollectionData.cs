@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       var insertModification = AssociatedEndPoint.CreateInsertModification (domainObject, index);
       var bidirectionalModification = insertModification.ExtendToAllRelatedObjects ();
-      bidirectionalModification.ExecuteAllSteps ();
+      bidirectionalModification.NotifyAndPerform ();
 
       AssociatedEndPoint.Touch ();
     }
@@ -186,7 +186,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       var replaceModification = AssociatedEndPoint.CreateReplaceModification (index, value);
       var bidirectionalModification = replaceModification.ExtendToAllRelatedObjects ();
-      bidirectionalModification.ExecuteAllSteps ();
+      bidirectionalModification.NotifyAndPerform ();
 
       AssociatedEndPoint.Touch ();
     }
@@ -195,7 +195,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       var modification = AssociatedEndPoint.CreateRemoveModification (domainObject);
       var bidirectionalModification = modification.ExtendToAllRelatedObjects ();
-      bidirectionalModification.ExecuteAllSteps ();
+      bidirectionalModification.NotifyAndPerform ();
     }
   }
 }

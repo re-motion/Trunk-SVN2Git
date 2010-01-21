@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void CreateBidirectionalModification_SetSame_Unidirectional ()
+    public void ExtendToAllRelatedObjects_SetSame_Unidirectional ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
@@ -121,16 +121,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
       var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
-
-      var steps = bidirectionalModification.GetCommands ();
-      Assert.That (steps.Count, Is.EqualTo (1));
-
-      Assert.That (steps[0], Is.SameAs (setSameModification));
+      Assert.That (bidirectionalModification, Is.SameAs (setSameModification));
     }
 
     [Test]
-    public void CreateBidirectionalModification_SetSame_Bidirectional ()
+    public void ExtendToAllRelatedObjects_SetSame_Bidirectional ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");

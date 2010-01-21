@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var modification = oppositeDomainObjects.CreateAssociationModification (this);
       var bidirectionalModification = modification.ExtendToAllRelatedObjects ();
-      bidirectionalModification.ExecuteAllSteps ();
+      bidirectionalModification.NotifyAndPerform ();
     }
 
     public override void SetValueFrom (RelationEndPoint source)

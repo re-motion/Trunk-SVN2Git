@@ -259,7 +259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void CreateBidirectionalModification ()
+    public void ExtendToAllRelatedObjects ()
     {
       CollectionEndPoint.OppositeDomainObjects.Add (_order1);
       CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem);

@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
@@ -91,7 +90,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the new order (if non-null).</item>
     /// </list>
     /// </remarks>
-    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       // the end point that will be linked to the collection end point after the operation
       var endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);

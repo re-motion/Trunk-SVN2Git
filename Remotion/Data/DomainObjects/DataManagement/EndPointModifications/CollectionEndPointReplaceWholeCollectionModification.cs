@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 using System.Linq;
@@ -160,7 +159,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders = newOrders.</item>
     /// </list>
     /// </remarks>
-    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
 

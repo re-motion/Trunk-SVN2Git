@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void CreateBidirectionalModification_SetDifferent_BidirectionalOneOne ()
+    public void ExtendToAllRelatedObjects_SetDifferent_BidirectionalOneOne ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");

@@ -16,19 +16,20 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class CompositeRelationModificationWithEventsTest : ClientTransactionBaseTest
+  public class CompositeDataManagementCommandTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private IDataManagementCommand _modificationMock1;
     private IDataManagementCommand _modificationMock2;
     private IDataManagementCommand _modificationMock3;
-    private CompositeDataManagementCommand _collection;
+    private CompositeDataManagementCommand _composite;
 
     public override void SetUp ()
     {
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modificationMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
       _modificationMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
 
-      _collection = new CompositeDataManagementCommand (_modificationMock1, _modificationMock2, _modificationMock3);
+      _composite = new CompositeDataManagementCommand (_modificationMock1, _modificationMock2, _modificationMock3);
     }
 
     [Test]
@@ -51,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _mockRepository.ReplayAll();
 
-      _collection.Begin();
+      _composite.Begin();
 
       _mockRepository.VerifyAll();
     }
@@ -65,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _mockRepository.ReplayAll ();
 
-      _collection.Perform ();
+      _composite.Perform ();
 
       _mockRepository.VerifyAll ();
     }
@@ -79,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _mockRepository.ReplayAll ();
 
-      _collection.End ();
+      _composite.End ();
 
       _mockRepository.VerifyAll ();
     }
@@ -93,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _mockRepository.ReplayAll ();
 
-      _collection.NotifyClientTransactionOfBegin ();
+      _composite.NotifyClientTransactionOfBegin ();
 
       _mockRepository.VerifyAll ();
     }
@@ -107,37 +108,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _mockRepository.ReplayAll ();
 
-      _collection.NotifyClientTransactionOfEnd ();
+      _composite.NotifyClientTransactionOfEnd ();
 
       _mockRepository.VerifyAll ();
     }
 
     [Test]
-    public void ExecuteAllSteps ()
+    public void ExtendToRelatedObjects ()
     {
-      _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ());
-      _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ());
-      _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfBegin ());
+      var result = _composite.ExtendToAllRelatedObjects ();
 
-      _modificationMock1.Expect (mock => mock.Begin ());
-      _modificationMock2.Expect (mock => mock.Begin ());
-      _modificationMock3.Expect (mock => mock.Begin ());
+      Assert.That (result, Is.SameAs (_composite));
+    }
 
-      _modificationMock1.Expect (mock => mock.Perform());
-      _modificationMock2.Expect (mock => mock.Perform ());
-      _modificationMock3.Expect (mock => mock.Perform ());
+    [Test]
+    public void NotifyAndPerform ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfBegin());
 
-      _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-      _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-      _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        _modificationMock1.Expect (mock => mock.Begin());
+        _modificationMock2.Expect (mock => mock.Begin());
+        _modificationMock3.Expect (mock => mock.Begin());
 
-      _modificationMock1.Expect (mock => mock.End ());
-      _modificationMock2.Expect (mock => mock.End ());
-      _modificationMock3.Expect (mock => mock.End ());
+        _modificationMock1.Expect (mock => mock.Perform());
+        _modificationMock2.Expect (mock => mock.Perform());
+        _modificationMock3.Expect (mock => mock.Perform());
+
+        _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfEnd());
+
+        _modificationMock1.Expect (mock => mock.End());
+        _modificationMock2.Expect (mock => mock.End());
+        _modificationMock3.Expect (mock => mock.End());
+      }
 
       _mockRepository.ReplayAll ();
 
-      _collection.ExecuteAllSteps ();
+      _composite.NotifyAndPerform ();
 
       _mockRepository.VerifyAll ();
     }

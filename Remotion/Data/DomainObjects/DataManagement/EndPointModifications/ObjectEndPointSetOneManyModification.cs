@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldCustomer.Orders.Remove (order).</item>
     /// </list>
     /// </remarks>
-    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
       var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (NewRelatedObject);
       var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (OldRelatedObject);

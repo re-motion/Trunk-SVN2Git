@@ -53,9 +53,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do not issue any change notifications, a touch is not a change
     }
 
-    public override CompositeDataManagementCommand ExtendToAllRelatedObjects ()
+    public override IDataManagementCommand ExtendToAllRelatedObjects ()
     {
-      throw new NotSupportedException ("Cannot create a bidirectional operation from a touch modification.");
+      return this;
     }
   }
 }

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private ICollectionEndPoint _collectionEndPointMock;
     private ICollectionEndPointData _endPointDataStub;
     private IDomainObjectCollectionData _dataStoreStub;
-    private CompositeDataManagementCommand _compositeModificationMock;
+    private IDataManagementCommand _compositeModificationMock;
     private IDataManagementCommand _modificationStub;
 
     private EndPointDelegatingCollectionData _data;
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _dataStoreStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
 
       _modificationStub = MockRepository.GenerateStub<IDataManagementCommand> ();
-      _compositeModificationMock = MockRepository.GenerateMock<CompositeDataManagementCommand> (new[] { new IDataManagementCommand[0] });
+      _compositeModificationMock = MockRepository.GenerateMock<IDataManagementCommand> ();
 
       _endPointDataStub = MockRepository.GenerateStub<ICollectionEndPointData> ();
       _endPointDataStub.Stub (stub => stub.DataStore).Return (_dataStoreStub);
@@ -181,7 +181,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _modificationStub.Stub (stub => stub.ExtendToAllRelatedObjects()).Return (_compositeModificationMock);
 
-      _compositeModificationMock.Expect (mock => mock.ExecuteAllSteps ()).Repeat.Times (3);
+      using (_compositeModificationMock.GetMockRepository ().Ordered ())
+      {
+        _compositeModificationMock.Expect (mock => mock.NotifyAndPerform ());
+        _compositeModificationMock.Expect (mock => mock.NotifyAndPerform ());
+        _compositeModificationMock.Expect (mock => mock.NotifyAndPerform ());
+      }
+
       _compositeModificationMock.Replay ();
 
       _data.Clear();
@@ -214,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _data.Insert (17, _orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
-      _compositeModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+      DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_compositeModificationMock);
     }
 
     [Test]
@@ -238,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var result = _data.Remove (_orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
-      _compositeModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+      DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_compositeModificationMock);
 
       Assert.That (result, Is.True);
     }
@@ -275,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var result = _data.Remove (_orderItem1.ID);
 
       _collectionEndPointMock.VerifyAllExpectations ();
-      _compositeModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+      DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_compositeModificationMock);
 
       Assert.That (result, Is.True);
     }
@@ -308,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _data.Replace (17, _orderItem1);
 
       _collectionEndPointMock.VerifyAllExpectations ();
-      _compositeModificationMock.AssertWasCalled (mock => mock.ExecuteAllSteps ());
+      DataManagementCommandTestHelper.AssertNotifyAndPerformWasCalled (_compositeModificationMock);
     }
 
     [Test]
