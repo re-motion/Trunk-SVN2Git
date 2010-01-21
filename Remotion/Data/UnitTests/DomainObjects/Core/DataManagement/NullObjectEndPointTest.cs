@@ -17,14 +17,11 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -124,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateRemoveModification ()
     {
       var removedRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = _nullEndPoint.CreateRemoveModification (removedRelatedObject);
+      var modification = (RelationEndPointModification) _nullEndPoint.CreateRemoveModification (removedRelatedObject);
       Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
       Assert.That (modification.OldRelatedObject, Is.SameAs (removedRelatedObject));
       Assert.That (modification.NewRelatedObject, Is.Null);
@@ -134,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateSetModification ()
     {
       var newRelatedObject = Order.GetObject (DomainObjectIDs.Order3);
-      var modification = _nullEndPoint.CreateSetModification (newRelatedObject);
+      var modification = (RelationEndPointModification) _nullEndPoint.CreateSetModification (newRelatedObject);
       Assert.That (modification, Is.InstanceOfType (typeof (NullEndPointModification)));
       Assert.That (modification.OldRelatedObject, Is.Null);
       Assert.That (modification.NewRelatedObject, Is.SameAs (newRelatedObject));

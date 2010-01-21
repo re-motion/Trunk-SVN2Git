@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -609,7 +608,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateRemoveModification ()
     {
-      var modification = _customerEndPoint.CreateRemoveModification (_order1);
+      var modification = (RelationEndPointModification) _customerEndPoint.CreateRemoveModification (_order1);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
@@ -622,7 +621,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateInsertModification ()
     {
-      var modification = _customerEndPoint.CreateInsertModification (_order1, 12);
+      var modification = (RelationEndPointModification) _customerEndPoint.CreateInsertModification (_order1, 12);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
@@ -636,7 +635,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateAddModification ()
     {
-      var modification = _customerEndPoint.CreateAddModification (_order1);
+      var modification = (RelationEndPointModification) _customerEndPoint.CreateAddModification (_order1);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
@@ -650,7 +649,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateReplaceModification ()
     {
-      var modification = _customerEndPoint.CreateReplaceModification(0, _orderWithoutOrderItem);
+      var modification = (RelationEndPointModification) _customerEndPoint.CreateReplaceModification (0, _orderWithoutOrderItem);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointReplaceModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
@@ -664,7 +663,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateReplaceModification_SelfReplace ()
     {
-      var modification = _customerEndPoint.CreateReplaceModification (0, _customerEndPoint.OppositeDomainObjects[0]);
+      var modification = (RelationEndPointModification) _customerEndPoint.CreateReplaceModification (0, _customerEndPoint.OppositeDomainObjects[0]);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointReplaceSameModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));

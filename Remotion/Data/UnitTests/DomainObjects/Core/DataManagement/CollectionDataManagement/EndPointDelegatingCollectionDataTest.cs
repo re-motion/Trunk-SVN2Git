@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     private ICollectionEndPointData _endPointDataStub;
     private IDomainObjectCollectionData _dataStoreStub;
     private CompositeRelationModification _compositeModificationMock;
-    private IRelationEndPointModification _modificationStub;
+    private IDataManagementCommand _modificationStub;
 
     private EndPointDelegatingCollectionData _data;
 
@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _dataStoreStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
 
-      _modificationStub = MockRepository.GenerateStub<IRelationEndPointModification> ();
-      _compositeModificationMock = MockRepository.GenerateMock<CompositeRelationModification> (new[] { new IRelationEndPointModification[0] });
+      _modificationStub = MockRepository.GenerateStub<IDataManagementCommand> ();
+      _compositeModificationMock = MockRepository.GenerateMock<CompositeRelationModification> (new[] { new IDataManagementCommand[0] });
 
       _endPointDataStub = MockRepository.GenerateStub<ICollectionEndPointData> ();
       _endPointDataStub.Stub (stub => stub.DataStore).Return (_dataStoreStub);
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.Touch());
       _collectionEndPointMock.Replay();
 
-      _modificationStub.Stub (stub => stub.CreateRelationModification()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.ExtendToAllRelatedObjects()).Return (_compositeModificationMock);
 
       _compositeModificationMock.Expect (mock => mock.ExecuteAllSteps ()).Repeat.Times (3);
       _compositeModificationMock.Replay ();
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateInsertModification (_orderItem1, 17)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.ExtendToAllRelatedObjects ()).Return (_compositeModificationMock);
 
       _data.Insert (17, _orderItem1);
 
@@ -234,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.ExtendToAllRelatedObjects ()).Return (_compositeModificationMock);
 
       var result = _data.Remove (_orderItem1);
 
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveModification (_orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.ExtendToAllRelatedObjects ()).Return (_compositeModificationMock);
 
       var result = _data.Remove (_orderItem1.ID);
 
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateReplaceModification (17, _orderItem1)).Return (_modificationStub);
       _collectionEndPointMock.Expect (mock => mock.Touch ());
       _collectionEndPointMock.Replay ();
-      _modificationStub.Stub (stub => stub.CreateRelationModification ()).Return (_compositeModificationMock);
+      _modificationStub.Stub (stub => stub.ExtendToAllRelatedObjects ()).Return (_compositeModificationMock);
 
       _data.Replace (17, _orderItem1);
 

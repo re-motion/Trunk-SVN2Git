@@ -124,13 +124,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       throw new InvalidOperationException ("Rollback cannot be called on a NullObjectEndPoint.");
     }
- 
-    public IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+
+    public IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
     {
       return new NullEndPointModification (this, removedRelatedObject, null);
     }
 
-    public IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
+    public IDataManagementCommand CreateSetModification (DomainObject newRelatedObject)
     {
       return new NullEndPointModification (this, this.GetOppositeObject (true), newRelatedObject);
     }

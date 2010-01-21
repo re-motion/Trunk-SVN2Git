@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
-  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="CreateRelationModification"/>
+  /// Represents the replacement of an element in a <see cref="CollectionEndPoint"/> with itself. Calling <see cref="ExtendToAllRelatedObjects"/>
   /// results in a <see cref="CompositeRelationModificationWithoutEvents"/> that does not raise any events.
   /// </summary>
   public class CollectionEndPointReplaceSameModification : RelationEndPointModification
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </list>
     /// No change notifications are sent for this operation.
     /// </remarks>
-    public override CompositeRelationModification CreateRelationModification ()
+    public override CompositeRelationModification ExtendToAllRelatedObjects ()
     {
       var endPointOfRelatedObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
 

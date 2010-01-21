@@ -22,37 +22,36 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   /// <summary>
-  /// Collects all <see cref="IRelationEndPointModification"/> steps needed to change a relation.
+  /// Composes several <see cref="IDataManagementCommand"/> instances into a single command.
   /// </summary>
   /// <remarks>
-  /// Bidirectional relation modifications always comprise multiple steps: they need to be performed on either side of the relation being changed, 
-  /// and usually they also invole one "previous" or "new" related object. (Eg. an insert modificaton has a previous related object (possibly 
-  /// <see langword="null" />), a remove modification has a new related object (<see langword="null" />).) Subclasses of 
-  /// <see cref="CompositeRelationModification"/> aggregate these  modification steps and allow executing them all at once, with events being raised 
-  /// before and after the full operation.
+  /// This can, for example, be used to model bidirectional relation modifications. Such modifications always comprise multiple steps: they need to 
+  /// be performed on either side of the relation being changed, and usually they also invole one "previous" or "new" related object. (Eg. an insert 
+  /// modificaton has a previous related object (possibly <see langword="null" />), a remove modification has an old related object.)
+  /// <see cref="CompositeRelationModification"/> aggregates these modification steps and allows executing and raising events for them all at once.
   /// </remarks>
   // TODO 1914: Refactor to CompositeDataManagementCommand, move to outer namespace
   // TODO 1914: should implement IDataManagementCommand; should get two versions of ExecuteAllSteps (WithEvents/WithoutEvents)
   // TODO 1914: in CollectionEndPointReplaceSameModification and ObjectEndPointSetSameModification, there is no need to have a WithoutEvents object, those modifications don't send any notifications anyway
   public abstract class CompositeRelationModification
   {
-    private readonly List<IRelationEndPointModification> _modificationSteps;
+    private readonly List<IDataManagementCommand> _commands;
 
-    protected CompositeRelationModification (IEnumerable<IRelationEndPointModification> modificationSteps)
+    protected CompositeRelationModification (IEnumerable<IDataManagementCommand> commands)
     {
-      ArgumentUtility.CheckNotNull ("modificationSteps", modificationSteps);
-      _modificationSteps = new List<IRelationEndPointModification>(modificationSteps);
+      ArgumentUtility.CheckNotNull ("commands", commands);
+      _commands = new List<IDataManagementCommand> (commands);
     }
 
-    public ReadOnlyCollection<IRelationEndPointModification> GetModificationSteps ()
+    public ReadOnlyCollection<IDataManagementCommand> GetModificationSteps ()
     {
-      return _modificationSteps.AsReadOnly ();
+      return _commands.AsReadOnly ();
     }
 
-    public void AddModificationStep (IRelationEndPointModification modification)
+    public void AddModificationStep (IDataManagementCommand command)
     {
-      ArgumentUtility.CheckNotNull ("modification", modification);
-      _modificationSteps.Add (modification);
+      ArgumentUtility.CheckNotNull ("command", command);
+      _commands.Add (command);
     }
 
     public abstract void ExecuteAllSteps ();

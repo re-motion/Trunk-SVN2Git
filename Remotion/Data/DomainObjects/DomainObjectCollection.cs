@@ -609,7 +609,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Creates an <see cref="IRelationEndPointModification"/> instance that encapsulates all the modifications required to associate this
+    /// Creates an <see cref="IDataManagementCommand"/> instance that encapsulates all the modifications required to associate this
     /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
     /// but it is invoked when a collection-valued relation property is set to a new collection.
     /// </summary>
@@ -624,8 +624,8 @@ namespace Remotion.Data.DomainObjects
     /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
     /// </para>
     /// <para>
-    /// The returned <see cref="IRelationEndPointModification"/> should be executed as a bidirectional modification 
-    /// (<see cref="IRelationEndPointModification.CreateRelationModification"/>), otherwise inconsistent state might arise.
+    /// The returned <see cref="IDataManagementCommand"/> should be executed as a bidirectional modification 
+    /// (<see cref="IDataManagementCommand.ExtendToAllRelatedObjects"/>), otherwise inconsistent state might arise.
     /// </para>
     /// <para>
     /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,
@@ -637,7 +637,7 @@ namespace Remotion.Data.DomainObjects
     /// <see cref="CollectionEndPoint"/> has no possibility to do that.
     /// </para>
     /// </remarks>
-    public IRelationEndPointModification CreateAssociationModification (CollectionEndPoint endPoint)
+    public IDataManagementCommand CreateAssociationModification (CollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 

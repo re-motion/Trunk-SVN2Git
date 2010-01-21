@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>oldOrderOfNewTicket.OrderTicket = null.</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification CreateRelationModification ()
+    public override CompositeRelationModification ExtendToAllRelatedObjects ()
     {
       var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
       var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);

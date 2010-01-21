@@ -17,10 +17,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -143,13 +141,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
-      var bidirectionalModification = _modification.CreateRelationModification ();
+      var bidirectionalModification = _modification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
       var relationEndPointID = new RelationEndPointID (_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = GetModificationSteps (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (2));
 
       // customer.Orders.Touch()

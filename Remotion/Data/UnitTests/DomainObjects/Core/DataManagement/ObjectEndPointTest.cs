@@ -19,11 +19,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -148,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateSetModification_Same ()
     {
-      var modification = _endPoint.CreateSetModification (_endPoint.GetOppositeObject (true));
+      var modification = (RelationEndPointModification) _endPoint.CreateSetModification (_endPoint.GetOppositeObject (true));
       Assert.That (modification.GetType(), Is.EqualTo (typeof (ObjectEndPointSetSameModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
     }
@@ -164,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
       var newClient = Client.NewObject ();
 
-      var modification = unidirectionalEndPoint.CreateSetModification (newClient);
+      var modification = (RelationEndPointModification) unidirectionalEndPoint.CreateSetModification (newClient);
       Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetUnidirectionalModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (unidirectionalEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (newClient));
@@ -181,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
 
-      var modification = bidirectionalEndPoint.CreateSetModification (newOrderTicket);
+      var modification = (RelationEndPointModification) bidirectionalEndPoint.CreateSetModification (newOrderTicket);
       Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (newOrderTicket));
@@ -199,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       // orderItem.Order = newOrder;
       var newOrder = Order.GetObject (DomainObjectIDs.Order2);
 
-      var modification = bidirectionalEndPoint.CreateSetModification (newOrder);
+      var modification = (RelationEndPointModification) bidirectionalEndPoint.CreateSetModification (newOrder);
       Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
       Assert.That (modification.NewRelatedObject, Is.SameAs (newOrder));
@@ -209,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateRemoveModification ()
     {
       var order = Order.GetObject (_endPoint.OppositeObjectID);
-      var modification = _endPoint.CreateRemoveModification (order);
+      var modification = (RelationEndPointModification) _endPoint.CreateRemoveModification (order);
       Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetOneManyModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (order));

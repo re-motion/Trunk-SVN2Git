@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders.Remove (removedOrder).</item>
     /// </list>
     /// </remarks>
-    public override CompositeRelationModification CreateRelationModification ()
+    public override CompositeRelationModification ExtendToAllRelatedObjects ()
     {
       var removedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
       return new CompositeRelationModificationWithEvents (removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), this);

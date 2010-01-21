@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -69,6 +72,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _collectionDataMock = new MockRepository ().StrictMock<IDomainObjectCollectionData> ();
       CollectionDataMock.Replay ();
+    }
+
+    protected IList<RelationEndPointModification> GetModificationSteps (CompositeRelationModification bidirectionalModification)
+    {
+      return bidirectionalModification.GetModificationSteps ().Cast<RelationEndPointModification> ().ToList ();
     }
   }
 }

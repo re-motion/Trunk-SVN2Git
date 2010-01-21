@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameModification (unidirectionalEndPoint);
-      var bidirectionalModification = setSameModification.CreateRelationModification ();
+      var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
       var steps = bidirectionalModification.GetModificationSteps ();
@@ -145,10 +145,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       var setSameModification = new ObjectEndPointSetSameModification (bidirectionalEndPoint);
 
-      var bidirectionalModification = setSameModification.CreateRelationModification ();
+      var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithoutEvents)));
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = GetModificationSteps (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (2));
 
       Assert.That (steps[0], Is.SameAs (setSameModification));

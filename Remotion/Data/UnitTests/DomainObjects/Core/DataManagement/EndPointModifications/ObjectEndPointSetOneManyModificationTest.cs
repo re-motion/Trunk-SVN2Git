@@ -105,10 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var newOrder = Order.GetObject (DomainObjectIDs.Order2);
       var setDifferentModification = new ObjectEndPointSetOneManyModification (bidirectionalEndPoint, newOrder);
 
-      var bidirectionalModification = setDifferentModification.CreateRelationModification ();
+      var bidirectionalModification = setDifferentModification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = GetModificationSteps (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (3));
 
       // orderItem.Order = newOrder;

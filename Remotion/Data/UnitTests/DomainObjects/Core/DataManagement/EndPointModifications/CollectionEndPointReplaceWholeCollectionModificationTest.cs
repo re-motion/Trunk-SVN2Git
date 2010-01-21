@@ -273,12 +273,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _newCollection.Add (_order1);
       _newCollection.Add (_order2);
       
-      var bidirectionalModification = _modification.CreateRelationModification ();
+      var bidirectionalModification = _modification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
       // DomainObject.Orders = _newCollection
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = GetModificationSteps (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (4));
 
       // orderWithoutOrderItem.Customer = null;

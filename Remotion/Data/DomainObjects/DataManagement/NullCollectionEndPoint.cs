@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
-    public IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
     {
       return new NullEndPointModification (this, removedRelatedObject, null);
     }
@@ -116,17 +116,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       throw new InvalidOperationException ("It is not possible to set the OppositeDomainObjects of a NullCollectionEndPoint.");
     }
 
-    public IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public IDataManagementCommand CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       return new NullEndPointModification (this, null, insertedRelatedObject);
     }
 
-    public IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    public IDataManagementCommand CreateAddModification (DomainObject addedRelatedObject)
     {
       return new NullEndPointModification (this, null, addedRelatedObject);
     }
 
-    public IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
+    public IDataManagementCommand CreateReplaceModification (int index, DomainObject replacementObject)
     { 
       return new NullEndPointModification (this, null, replacementObject);
     }

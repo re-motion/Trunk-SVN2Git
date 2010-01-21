@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
 
       var modification = oppositeDomainObjects.CreateAssociationModification (this);
-      var bidirectionalModification = modification.CreateRelationModification ();
+      var bidirectionalModification = modification.ExtendToAllRelatedObjects ();
       bidirectionalModification.ExecuteAllSteps ();
     }
 
@@ -213,25 +213,25 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return dataStrategy;
     }
 
-    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
       return new CollectionEndPointRemoveModification (this, removedRelatedObject, DataStore);
     }
 
-    public virtual IRelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
+    public virtual IDataManagementCommand CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
       return new CollectionEndPointInsertModification (this, index, insertedRelatedObject, DataStore);
     }
 
-    public virtual IRelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    public virtual IDataManagementCommand CreateAddModification (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
       return CreateInsertModification (addedRelatedObject, OppositeDomainObjects.Count);
     }
 
-    public virtual IRelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
+    public virtual IDataManagementCommand CreateReplaceModification (int index, DomainObject replacementObject)
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)

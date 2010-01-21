@@ -22,20 +22,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// Represents a modification to a relation that only calls <see cref="RelationEndPointModification.Perform"/> on its 
   /// steps. Specifically, it does not notify the client transaction when its steps are executed, and it does not
   /// call <see cref="RelationEndPointModification.Begin"/> or <see cref="RelationEndPointModification.End"/> on its steps.
-  /// This is used when <see cref="RelationEndPointModification.CreateRelationModification"/> is called on a "no-op"
+  /// This is used when <see cref="RelationEndPointModification.ExtendToAllRelatedObjects"/> is called on a "no-op"
   /// <see cref="RelationEndPointModification"/> such as <see cref="ObjectEndPointSetSameModification"/> or 
   /// <see cref="CollectionEndPointReplaceSameModification"/>. Such relation modifications should be performed (in order to touch the 
   /// data stored by the end point, for example), but they should not raise any events.
   /// </summary>
   public class CompositeRelationModificationWithoutEvents : CompositeRelationModification
   {
-    public CompositeRelationModificationWithoutEvents (params IRelationEndPointModification[] modificationSteps)
-        : this ((IEnumerable<IRelationEndPointModification>) modificationSteps)
+    public CompositeRelationModificationWithoutEvents (params IDataManagementCommand[] commands)
+      : this ((IEnumerable<IDataManagementCommand>) commands)
     {
     }
 
-    public CompositeRelationModificationWithoutEvents (IEnumerable<IRelationEndPointModification> modificationSteps)
-        : base (modificationSteps)
+    public CompositeRelationModificationWithoutEvents (IEnumerable<IDataManagementCommand> commands)
+        : base (commands)
     {
     }
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Rhino.Mocks;
 
@@ -25,9 +26,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
   public class CompositeRelationModificationWithEventsTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
-    private IRelationEndPointModification _modificationMock1;
-    private IRelationEndPointModification _modificationMock2;
-    private IRelationEndPointModification _modificationMock3;
+    private IDataManagementCommand _modificationMock1;
+    private IDataManagementCommand _modificationMock2;
+    private IDataManagementCommand _modificationMock3;
     private CompositeRelationModificationWithEvents _collection;
 
     public override void SetUp ()
@@ -35,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       base.SetUp ();
       _mockRepository = new MockRepository ();
     
-      _modificationMock1 = _mockRepository.StrictMock<IRelationEndPointModification> ();
-      _modificationMock2 = _mockRepository.StrictMock<IRelationEndPointModification> ();
-      _modificationMock3 = _mockRepository.StrictMock<IRelationEndPointModification> ();
+      _modificationMock1 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _modificationMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _modificationMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
 
       _collection = new CompositeRelationModificationWithEvents (_modificationMock1, _modificationMock2, _modificationMock3);
     }

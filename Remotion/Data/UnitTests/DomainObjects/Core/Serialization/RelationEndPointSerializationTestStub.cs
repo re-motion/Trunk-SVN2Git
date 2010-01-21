@@ -17,7 +17,6 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
@@ -85,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
     {
       throw new NotImplementedException();
     }

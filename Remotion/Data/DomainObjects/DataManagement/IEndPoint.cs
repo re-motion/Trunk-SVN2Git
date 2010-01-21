@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void Commit ();
     void Rollback ();
 
-    IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject);
+    IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject);
 
     void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject);
     void NotifyClientTransactionOfEndRelationChange ();

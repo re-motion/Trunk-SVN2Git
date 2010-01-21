@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNewRelatedObjectType (newRelatedObject);
 
       var setModification = CreateSetModification (newRelatedObject);
-      var bidirectionalModification = setModification.CreateRelationModification ();
+      var bidirectionalModification = setModification.ExtendToAllRelatedObjects ();
       bidirectionalModification.ExecuteAllSteps ();
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public override IRelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetModification (null);
     }
 
-    public virtual IRelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
+    public virtual IDataManagementCommand CreateSetModification (DomainObject newRelatedObject)
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
 

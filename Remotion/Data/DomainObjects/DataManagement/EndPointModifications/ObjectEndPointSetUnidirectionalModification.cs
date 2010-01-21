@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       }
     }
 
-    public override CompositeRelationModification CreateRelationModification ()
+    public override CompositeRelationModification ExtendToAllRelatedObjects ()
     {
       return new CompositeRelationModificationWithEvents (this);
     }

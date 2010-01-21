@@ -104,10 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
       var setDifferentModification = new ObjectEndPointSetOneOneModification (bidirectionalEndPoint, newOrderTicket);
 
-      var bidirectionalModification = setDifferentModification.CreateRelationModification ();
+      var bidirectionalModification = setDifferentModification.ExtendToAllRelatedObjects ();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeRelationModificationWithEvents)));
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = GetModificationSteps (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (4));
 
       // order.OrderTicket = newOrderTicket;

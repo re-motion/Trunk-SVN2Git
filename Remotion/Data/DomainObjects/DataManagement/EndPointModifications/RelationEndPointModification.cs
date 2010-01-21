@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
@@ -23,12 +22,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// <summary>
   /// Represents a modification performed on a <see cref="RelationEndPoint"/>. Provides default behavior for triggering the required
   /// events and notifying the <see cref="ClientTransaction"/> about the modification. The actual modification has to be specified by subclasses
-  /// by implementing <see cref="Perform"/>. In addition, <see cref="CreateRelationModification"/> has to be overridden to return a 
+  /// by implementing <see cref="Perform"/>. In addition, <see cref="ExtendToAllRelatedObjects"/> has to be overridden to return a 
   /// composite object containing all modifications needed to be performed when this modification starts a bidirectional relation change. If
-  /// the modification is performed on a unidirectional relation, the composite returned by <see cref="CreateRelationModification"/> needs only 
+  /// the modification is performed on a unidirectional relation, the composite returned by <see cref="ExtendToAllRelatedObjects"/> needs only 
   /// contain this <see cref="RelationEndPointModification"/>.
   /// </summary>
-  public abstract class RelationEndPointModification : IRelationEndPointModification
+  public abstract class RelationEndPointModification : IDataManagementCommand
   {
     private readonly IEndPoint _modifiedEndPoint;
     private readonly DomainObject _oldRelatedObject;
@@ -69,9 +68,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </summary>
     /// <remarks>
     /// If this <see cref="RelationEndPointModification"/> is performed on a unidirectional relation, the composite returned by 
-    /// <see cref="CreateRelationModification"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
+    /// <see cref="ExtendToAllRelatedObjects"/> needs only contain this <see cref="RelationEndPointModification"/>, no other steps.
     /// </remarks>
-    public abstract CompositeRelationModification CreateRelationModification ();
+    public abstract CompositeRelationModification ExtendToAllRelatedObjects ();
 
     public virtual void Begin ()
     {

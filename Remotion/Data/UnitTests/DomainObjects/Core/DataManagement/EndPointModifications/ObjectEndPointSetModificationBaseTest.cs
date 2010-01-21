@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -143,6 +145,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modification.NotifyClientTransactionOfEnd ();
 
       listenerMock.AssertWasCalled (mock => mock.RelationChanged (_endPoint.GetDomainObject (), _endPoint.PropertyName));
+    }
+
+    protected IList<RelationEndPointModification> GetModificationSteps (CompositeRelationModification bidirectionalModification)
+    {
+      return bidirectionalModification.GetModificationSteps ().Cast<RelationEndPointModification> ().ToList ();
     }
   }
 }

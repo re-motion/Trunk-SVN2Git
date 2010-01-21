@@ -24,13 +24,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class CompositeRelationModificationWithEvents : CompositeRelationModification
   {
-    public CompositeRelationModificationWithEvents (params IRelationEndPointModification[] modificationSteps)
-        : this ((IEnumerable<IRelationEndPointModification>) modificationSteps)
+    public CompositeRelationModificationWithEvents (params IDataManagementCommand[] commands)
+      : this ((IEnumerable<IDataManagementCommand>) commands)
     {
     }
 
-    public CompositeRelationModificationWithEvents (IEnumerable<IRelationEndPointModification> modificationSteps)
-        : base (modificationSteps)
+    public CompositeRelationModificationWithEvents (IEnumerable<IDataManagementCommand> commands)
+        : base (commands)
     {
     }
 
