@@ -382,7 +382,7 @@
     <exec program="${release-notes.generator.exe}" basedir="${release-notes.generator.directory}" workingdir="${release-notes.generator.directory}" failonerror="true">
       <arg value="${MajorVersion}.${MinorVersion}.${BuildVersion}"/>
       <arg value="${relinq-release-notes.directory.full}"/>
-      <arg value="component+%3D+%22Data.Linq%22"/>
+      <arg value="component='Data.Linq'"/>
     </exec>
 
     <call target="relinq-copy-release-notes" cascade="false"/>
