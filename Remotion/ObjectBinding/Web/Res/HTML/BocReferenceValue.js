@@ -68,8 +68,10 @@ function BocReferenceValue_AdjustPosition(control, isEmbedded)
   {
     contentSpan.css('right', right);
     
-    var heightDifference = $(control).height() - optionsMenu.height();
-    var offset = heightDifference / 2;
-    optionsMenu.css('top', offset);
+    if($.browser.msie){
+      var heightDifference = $(control).height() - optionsMenu.height();
+      var offset = heightDifference / 2;
+      optionsMenu.css('top', offset);
+    }
   }
 }
