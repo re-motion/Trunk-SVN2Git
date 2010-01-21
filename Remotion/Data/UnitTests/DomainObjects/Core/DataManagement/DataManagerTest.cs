@@ -20,10 +20,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -99,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer container1 = CreateClassWithAllDataTypesDataContainer();
       DataContainer container2 = CreateOrder2DataContainer ();
 
-      _dataManager.Delete (container1.DomainObject);
+      ClientTransactionMock.Delete (container1.DomainObject);
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Deleted);
       Assert.That (domainObjects, Is.Not.Null);
@@ -430,31 +429,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-       ExpectedMessage = "Cannot delete DomainObject '.*', because it belongs to a different ClientTransaction.",
-       MatchType = MessageMatch.Regex)]
-    public void DeleteWithOtherClientTransaction ()
-    {
-      Order order1;
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        order1 = Order.GetObject (DomainObjectIDs.Order1);
-      }
-      _dataManager.Delete (order1);
-    }
-
-    [Test]
-    public void DeleteWithOtherClientTransaction_UsesStoredTransaction ()
-    {
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        _dataManager.Delete (order1); // deletes in _dataManager's transaction, not in current transaction
-      }
-      Assert.That (Order.GetObject (DomainObjectIDs.Order1, true).State, Is.EqualTo (StateType.Deleted));
-    }
-
-    [Test]
     public void IsDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -669,30 +643,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Delete_DeletedObject ()
+    public void CreateDeleteCommand ()
+    {
+      var deletedObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      var command = _dataManager.CreateDeleteCommand (deletedObject);
+
+      Assert.That (command, Is.InstanceOfType (typeof (DeleteCommand)));
+      Assert.That (((DeleteCommand) command).ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
+      Assert.That (((DeleteCommand) command).DeletedObject, Is.SameAs (deletedObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException),
+       ExpectedMessage = "Cannot delete DomainObject '.*', because it belongs to a different ClientTransaction.",
+       MatchType = MessageMatch.Regex)]
+    public void CreateDeleteCommand_OtherClientTransaction ()
+    {
+      var order1 = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
+      _dataManager.CreateDeleteCommand (order1);
+    }
+
+    [Test]
+    public void CreateDeleteCommand_DeletedObject ()
     {
       var deletedObject = Order.GetObject (DomainObjectIDs.Order1);
       deletedObject.Delete ();
       Assert.That (deletedObject.State, Is.EqualTo (StateType.Deleted));
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
-
-      _dataManager.Delete (deletedObject);
-      Assert.That (deletedObject.State, Is.EqualTo (StateType.Deleted));
-
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectDeleting (deletedObject));
+      var command = _dataManager.CreateDeleteCommand (deletedObject);
+      Assert.That (command, Is.InstanceOfType (typeof (NopCommand)));
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDiscardedException))]
-    public void Delete_DiscardedObject ()
+    public void CreateDeleteCommand_DiscardedObject ()
     {
       var discardedObject = Order.NewObject ();
       discardedObject.Delete ();
       Assert.That (discardedObject.IsDiscarded, Is.True);
 
-      _dataManager.Delete (discardedObject);
+      _dataManager.CreateDeleteCommand (discardedObject);
     }
 
     private DataContainer CreateOrder1DataContainer ()

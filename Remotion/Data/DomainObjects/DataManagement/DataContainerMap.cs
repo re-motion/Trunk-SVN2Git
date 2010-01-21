@@ -99,15 +99,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     _dataContainers.Add (dataContainer);
   }
 
-  public void PerformDelete (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-    CheckClientTransactionForDeletion (dataContainer);
-
-    if (dataContainer.State == StateType.New)
-      Remove (dataContainer.ID);    
-  }
-
   public void Remove (ObjectID id)
   {
     ArgumentUtility.CheckNotNull ("id", id);

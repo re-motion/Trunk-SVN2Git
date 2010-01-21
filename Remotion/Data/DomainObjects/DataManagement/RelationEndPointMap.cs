@@ -93,46 +93,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         endPoint.Rollback ();
     }
 
-    // TODO 1914: Called by DeleteDomainObjectCommand
-    public void PerformDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveCommands)
-    {
-      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-      ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveCommands", oppositeEndPointRemoveCommands);
-
-      if (!ClientTransaction.IsEnlisted (deletedObject))
-      {
-        var message = String.Format ("Cannot remove DomainObject '{0}' from RelationEndPointMap, because it belongs to a different ClientTransaction.", 
-            deletedObject.ID);
-        throw new ClientTransactionsDifferException(message);
-      }
-
-      var relationEndPointIDs = ClientTransaction.GetDataContainer (deletedObject).AssociatedRelationEndPointIDs;
-      _transactionEventSink.RelationEndPointMapPerformingDelete (relationEndPointIDs);
-
-      oppositeEndPointRemoveCommands.Perform (); // remove all back-references to the deleted object
-      foreach (RelationEndPointID endPointID in relationEndPointIDs)
-      {
-        RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
-        
-        // this triggers a Begin/EndDelete notification on CollectionEndPoint and clears the end point's data
-        endPoint.PerformDelete ();
-
-        if (deletedObject.TransactionContext[ClientTransaction].State == StateType.New)
-          RemoveEndPoint (endPointID);
-      }
-    }
-
-    // TODO 1914: Integrated into DeleteDomainObjectCommand
-    public CompositeDataManagementCommand GetRemoveCommandsForOppositeEndPoints (DomainObject deletedObject)
-    {
-      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-
-      var allOppositeRelationEndPoints = OppositeRelationEndPointFinder.GetOppositeRelationEndPoints (this, deletedObject);
-      var commands = from oppositeEndPoint in allOppositeRelationEndPoints
-                     select oppositeEndPoint.CreateRemoveCommand (deletedObject);
-      return new CompositeDataManagementCommand (commands);
-    }
-
     public DomainObject GetRelatedObject (RelationEndPointID endPointID, bool includeDeleted)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);

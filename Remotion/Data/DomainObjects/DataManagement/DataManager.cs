@@ -222,73 +222,23 @@ public class DataManager : ISerializable, IDeserializationCallback
     get { return _relationEndPointMap; }
   }
 
-  public void Delete (DomainObject deletedObject)
+  public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)
   {
     ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-    CheckClientTransactionForDeletion (deletedObject);
+    
+    if (!_clientTransaction.IsEnlisted (deletedObject))
+    {
+      throw CreateClientTransactionsDifferException (
+          "Cannot delete DomainObject '{0}', because it belongs to a different ClientTransaction.",
+          deletedObject.ID);
+    }
 
     DomainObjectCheckUtility.CheckIfObjectIsDiscarded (deletedObject, ClientTransaction);
 
     if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
-      return;
+      return new NopCommand();
 
-    var oppositeEndPointRemoveCommand = _relationEndPointMap.GetRemoveCommandsForOppositeEndPoints (deletedObject);
-
-    BeginDelete (deletedObject, oppositeEndPointRemoveCommand);
-    PerformDelete (deletedObject, oppositeEndPointRemoveCommand);
-    EndDelete (deletedObject, oppositeEndPointRemoveCommand);
-  }
-
-  // TODO: This will be rewritten as a command.
-  internal void PerformDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveCommands)
-  {
-    ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-    ArgumentUtility.CheckNotNull ("oppositeEndPointRemoveCommands", oppositeEndPointRemoveCommands);
-
-    var dataContainer = _clientTransaction.GetDataContainer (deletedObject);  // rescue dataContainer before the map deletes is
-    Assertion.IsFalse (dataContainer.State == StateType.Deleted);
-    Assertion.IsFalse (dataContainer.State == StateType.Discarded);
-
-    _relationEndPointMap.PerformDelete (deletedObject, oppositeEndPointRemoveCommands);
-    _dataContainerMap.PerformDelete (dataContainer);
-
-    if (dataContainer.State == StateType.New)
-    {
-      dataContainer.Discard ();
-      MarkDiscarded (dataContainer);
-    }
-    else
-    {
-      dataContainer.Delete();
-    }
-  }
-
-  private void BeginDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveCommands)
-  {
-    _transactionEventSink.ObjectDeleting (deletedObject);
-    oppositeEndPointRemoveCommands.NotifyClientTransactionOfBegin();
-
-    deletedObject.OnDeleting (EventArgs.Empty);
-    oppositeEndPointRemoveCommands.Begin();
-  }
-
-  private void EndDelete (DomainObject deletedObject, CompositeDataManagementCommand oppositeEndPointRemoveCommands)
-  {
-    oppositeEndPointRemoveCommands.NotifyClientTransactionOfEnd();
-    _transactionEventSink.ObjectDeleted (deletedObject);
-
-    oppositeEndPointRemoveCommands.End();
-    deletedObject.OnDeleted (EventArgs.Empty);
-  }
-
-  private void CheckClientTransactionForDeletion (DomainObject domainObject)
-  {
-    if (!_clientTransaction.IsEnlisted (domainObject))
-    {
-      throw CreateClientTransactionsDifferException (
-          "Cannot delete DomainObject '{0}', because it belongs to a different ClientTransaction.",
-          domainObject.ID);
-    }
+    return new DeleteCommand (ClientTransaction, deletedObject);
   }
 
   private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
@@ -296,7 +246,8 @@ public class DataManager : ISerializable, IDeserializationCallback
     return new ClientTransactionsDifferException (String.Format (message, args));
   }
 
-  private void MarkDiscarded (DataContainer discardedDataContainer)
+  // TODO 1914: Make non-internal
+  internal void MarkDiscarded (DataContainer discardedDataContainer)
   {
     _transactionEventSink.DataManagerMarkingObjectDiscarded (discardedDataContainer.ID);
     _discardedDataContainers.Add (discardedDataContainer.ID, discardedDataContainer);

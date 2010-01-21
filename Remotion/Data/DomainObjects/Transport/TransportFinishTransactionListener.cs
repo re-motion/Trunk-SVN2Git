@@ -17,7 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -52,7 +51,8 @@ namespace Remotion.Data.DomainObjects.Transport
           var dataContainer = _transaction.GetDataContainer (domainObject);
           if (dataContainer.State == StateType.New)
           {
-            _transaction.DataManager.PerformDelete (domainObject, new CompositeDataManagementCommand ());
+            var deleteCommand = _transaction.DataManager.CreateDeleteCommand (domainObject);
+            deleteCommand.Perform (); // no events, no bidirectional changes
             Assertion.IsTrue (dataContainer.IsDiscarded);
           }
           else
@@ -175,11 +175,6 @@ namespace Remotion.Data.DomainObjects.Transport
     }
 
     public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointMapPerformingDelete (RelationEndPointID[] endPointIDs)
     {
       // not handled by this listener
     }
