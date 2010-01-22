@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
 using System.Linq;
@@ -56,6 +57,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void NotifyClientTransactionOfBegin_TriggersEndPointModifications ()
+    {
+      var mockRepository = new MockRepository ();
+
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
+      var compositeCommand = (CompositeDataManagementCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
+      compositeCommand.AddCommand (endPointCommandMock);
+
+      using (mockRepository.Ordered ())
+      {
+        listenerMock.Expect (mock => mock.ObjectDeleting (_order1));
+        endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
+      }
+
+      ClientTransactionMock.AddListener (listenerMock);
+      mockRepository.ReplayAll ();
+
+      _deleteOrder1Command.NotifyClientTransactionOfBegin ();
+
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void NotifyClientTransactionOfEnd ()
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
@@ -64,6 +89,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 
       listenerMock.AssertWasCalled (mock => mock.ObjectDeleted (_order1));
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfEnd_TriggersEndPointModifications ()
+    {
+      var mockRepository = new MockRepository ();
+
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
+      var compositeCommand = (CompositeDataManagementCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
+      compositeCommand.AddCommand (endPointCommandMock);
+
+      using (mockRepository.Ordered ())
+      {
+        endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        listenerMock.Expect (mock => mock.ObjectDeleted (_order1));
+      }
+
+      ClientTransactionMock.AddListener (listenerMock);
+      mockRepository.ReplayAll ();
+
+      _deleteOrder1Command.NotifyClientTransactionOfEnd ();
+
+      mockRepository.VerifyAll ();
     }
 
     [Test]
@@ -79,7 +128,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void Begin_TriggersEndPointDeleting ()
     {
       var eventReceiver = new DomainObjectCollectionEventReceiver (_order1.OrderItems);
@@ -92,7 +140,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void Begin_Sequence ()
     {
       var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _order1.OrderItems });
@@ -117,7 +164,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void End_TriggersEndPointDeleted ()
     {
       var eventReceiver = new DomainObjectCollectionEventReceiver (_order1.OrderItems);
@@ -130,7 +176,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void End_Sequence ()
     {
       var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _order1.OrderItems });

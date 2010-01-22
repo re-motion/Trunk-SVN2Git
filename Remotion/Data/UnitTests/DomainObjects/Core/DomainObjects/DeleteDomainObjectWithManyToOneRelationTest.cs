@@ -184,7 +184,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void DeleteOrderEvents ()
     {
       _order.Delete ();
@@ -203,7 +202,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void DeleteOrderEvents_CancelFromCollectionDeletingEvent ()
     {
       _eventReceiver.CancelEventNumber = 2;
@@ -229,7 +227,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [Ignore ("TODO 1953")]
     public void DeleteOrderEvents_CancelAfterCollectionDeletingEvent ()
     {
       _eventReceiver.CancelEventNumber = 3;

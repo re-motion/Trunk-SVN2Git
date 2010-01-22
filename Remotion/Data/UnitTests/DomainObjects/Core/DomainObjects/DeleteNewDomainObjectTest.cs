@@ -464,10 +464,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ChangeState[] expectedStates = new ChangeState[]
     {
       new ObjectDeletionState (_newOrder, "1. Deleting event of order"),
-      new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrder, null, "2. Relation changing event of orderTicket"),
-      new CollectionDeletionState (orderItemsCollection, "3. Deleting of order.OrderItems"),
-      new CollectionDeletionState (orderItemsCollection, "4. Deleted of order.OrderItems"),
-      new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, null, "5. Relation changed event of orderTicket"),
+      new CollectionDeletionState (orderItemsCollection, "2. Deleting of order.OrderItems"),
+      new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrder, null, "3. Relation changing event of orderTicket"),
+      new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, null, "4. Relation changed event of orderTicket"),
+      new CollectionDeletionState (orderItemsCollection, "5. Deleted of order.OrderItems"),
       new ObjectDeletionState (_newOrder, "6. Deleted event of order")
     };
 

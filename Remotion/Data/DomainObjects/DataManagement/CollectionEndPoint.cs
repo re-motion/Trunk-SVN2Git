@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -219,6 +220,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointRemoveCommand (this, removedRelatedObject, DataStore);
     }
 
+    public override IDataManagementCommand CreateDeleteCommand ()
+    {
+      return new AdHocCommand
+          {
+            BeginHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete (),
+            PerformHandler = () => { DataStore.Clear (); Touch (); },
+            EndHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ()
+          };
+    }
+
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
@@ -238,16 +249,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new CollectionEndPointReplaceSameCommand (this, replacedObject, DataStore);
       else
         return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, DataStore);
-    }
-
-    public override void PerformDelete ()
-    {
-      Assertion.IsFalse (_oppositeDomainObjects.IsReadOnly);
-
-      ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete ();
-      DataStore.Clear ();
-      _hasBeenTouched = true;
-      ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ();
     }
 
     #region Serialization

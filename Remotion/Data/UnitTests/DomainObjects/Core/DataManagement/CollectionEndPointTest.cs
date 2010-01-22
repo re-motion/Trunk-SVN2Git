@@ -21,9 +21,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Utilities;
@@ -241,14 +243,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void HasBeenTouchedPerformDelete ()
-    {
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
-      _customerEndPoint.PerformDelete ();
-      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-
-    [Test]
     public void HasBeenTouched_DoesNotLoadData ()
     {
       _customerEndPoint.Unload ();
@@ -346,20 +340,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void PerformDelete ()
+    public void CreateDeleteCommand ()
     {
-      Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count));
+      var command = (AdHocCommand) _customerEndPoint.CreateDeleteCommand ();
+      Assert.That (command.NotifyClientTransactionOfBeginHandler, Is.Null);
+      Assert.That (command.NotifyClientTransactionOfEndHandler, Is.Null);
 
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "Customer");
-      IEndPoint endPointOfObjectBeingRemoved = RelationEndPointObjectMother.CreateObjectEndPoint (endPointID, _customerEndPoint.ObjectID);
-
-      var command = _customerEndPoint.CreateRemoveCommand (endPointOfObjectBeingRemoved.GetDomainObject());
+      var beginEventReceiver = new DomainObjectCollectionEventReceiver (_customerEndPoint.OppositeDomainObjects);
       command.Begin ();
-      _customerEndPoint.PerformDelete ();
-      command.End ();
+      Assert.That (beginEventReceiver.HasDeletingEventBeenCalled, Is.True);
 
-      Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.Count != _customerEndPoint.OppositeDomainObjects.Count, Is.True);
-      Assert.That (_customerEndPoint.OppositeDomainObjects.Count, Is.EqualTo (0));
+      var endEventReceiver = new DomainObjectCollectionEventReceiver (_customerEndPoint.OppositeDomainObjects);
+      command.End ();
+      Assert.That (endEventReceiver.HasDeletedEventBeenCalled, Is.True);
+
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.Not.Empty);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
+
+      command.Perform ();
+
+      Assert.That (_customerEndPoint.OppositeDomainObjects, Is.Empty);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]

@@ -66,32 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (map.GetByState (StateType.Discarded).ToArray (), Is.EquivalentTo (new[] { discardedDataContainer }));
     }
 
-    [Test]
-    [Ignore ("TODO: 1953")]
-    public void DeleteNewDataContainer ()
-    {
-      //_map.Register (_newOrderDataContainer);
-      //Assert.That (_map.Count, Is.EqualTo (1));
-
-      //_map.PerformDelete (_newOrderDataContainer);
-      //Assert.That (_map.Count, Is.EqualTo (0));
-    }
-
-    [Test]
-    [Ignore ("TODO: 1953")]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-        ExpectedMessage = "Cannot remove DataContainer '.*' from DataContainerMap, because it belongs to a different ClientTransaction.",
-        MatchType = MessageMatch.Regex)]
-    public void PerformDeleteWithOtherClientTransaction ()
-    {
-      //using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      //{
-      //  Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-
-      //  _map.PerformDelete (order1.InternalDataContainer);
-      //}
-    }
-
     private DataContainer CreateNewOrderDataContainer ()
     {
       Order order = Order.NewObject();

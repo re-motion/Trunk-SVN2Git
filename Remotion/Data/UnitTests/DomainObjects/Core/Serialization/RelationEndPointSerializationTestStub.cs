@@ -79,12 +79,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override void PerformDelete ()
+    public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       throw new NotImplementedException();
     }
 
-    public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
+    public override IDataManagementCommand CreateDeleteCommand ()
     {
       throw new NotImplementedException();
     }

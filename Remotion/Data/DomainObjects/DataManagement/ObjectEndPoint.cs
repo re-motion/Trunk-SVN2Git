@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -91,6 +92,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetCommand (null);
     }
 
+    public override IDataManagementCommand CreateDeleteCommand ()
+    {
+      return new AdHocCommand { PerformHandler = () => OppositeObjectID = null };
+    }
+
     public virtual IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
@@ -99,16 +105,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (OppositeObjectID == newRelatedObjectID)
         return new ObjectEndPointSetSameCommand (this);
       else if (oppositeEndPointDefinition.IsAnonymous)
-          return new ObjectEndPointSetUnidirectionalCommand (this, newRelatedObject);
-        else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
-          return new ObjectEndPointSetOneOneCommand (this, newRelatedObject);
-        else 
-          return new ObjectEndPointSetOneManyCommand (this, newRelatedObject);
-    }
-
-    public override void PerformDelete ()
-    {
-      OppositeObjectID = null;
+        return new ObjectEndPointSetUnidirectionalCommand (this, newRelatedObject);
+      else if (oppositeEndPointDefinition.Cardinality == CardinalityType.One)
+        return new ObjectEndPointSetOneOneCommand (this, newRelatedObject);
+      else 
+        return new ObjectEndPointSetOneManyCommand (this, newRelatedObject);
     }
 
     public override void SetValueFrom (RelationEndPoint source)

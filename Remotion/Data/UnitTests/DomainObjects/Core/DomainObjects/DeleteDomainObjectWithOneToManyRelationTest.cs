@@ -50,12 +50,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ChangeState[] expectedStates = new ChangeState[]
     {
       new ObjectDeletionState (_supervisor, "1. Deleting of supervisor"),
-      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "2. Relation changing of subordinate1"),
-      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "3. Relation changing of subordinate2"),
-      new CollectionDeletionState (_supervisor.Subordinates, "4. Deleting of supervisor.Subordinates"),
-      new CollectionDeletionState (_supervisor.Subordinates, "5. Deleted of supervisor.Subordinates"),
-      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "6. Relation changed of subordinate2"),
-      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "7. Relation changed of subordinate1"),
+      new CollectionDeletionState (_supervisor.Subordinates, "2. Deleting of supervisor.Subordinates"),
+      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "3. Relation changing of subordinate1"),
+      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "4. Relation changing of subordinate2"),
+      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "5. Relation changed of subordinate2"),
+      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "6. Relation changed of subordinate1"),
+      new CollectionDeletionState (_supervisor.Subordinates, "7. Deleted of supervisor.Subordinates"),
       new ObjectDeletionState (_supervisor, "8. Deleted of supervisor")
     };
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SubordinateCancelsDeleteEvent ()
     {
-      _eventReceiver.CancelEventNumber = 2;
+      _eventReceiver.CancelEventNumber = 3;
 
       try
       {
@@ -95,7 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ChangeState[] expectedStates = new ChangeState[]
             {
               new ObjectDeletionState (_supervisor, "1. Deleting of supervisor"),
-              new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "2. Relation changing of subordinate1")
+              new CollectionDeletionState (_supervisor.Subordinates, "2. Deleting of supervisor.Subordinates"),
+              new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "3. Relation changing of subordinate1")
             };
 
         _eventReceiver.Check (expectedStates);

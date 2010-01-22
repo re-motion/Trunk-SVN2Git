@@ -28,6 +28,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly DomainObject _deletedObject;
+    private readonly CompositeDataManagementCommand _endPointDeleteCommands;
+    private DataContainer _dataContainer;
 
     public DeleteCommand (ClientTransaction clientTransaction, DomainObject deletedObject)
     {
@@ -36,6 +38,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
       _clientTransaction = clientTransaction;
       _deletedObject = deletedObject;
+
+      _dataContainer = _clientTransaction.GetDataContainer (_deletedObject);
+      Assertion.IsFalse (_dataContainer.State == StateType.Deleted);
+      Assertion.IsFalse (_dataContainer.State == StateType.Discarded);
+      
+      _endPointDeleteCommands = new CompositeDataManagementCommand (
+          from endPointID in _dataContainer.AssociatedRelationEndPointIDs
+          let endPoint = _clientTransaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
+          select endPoint.CreateDeleteCommand());
     }
 
     public ClientTransaction ClientTransaction
@@ -51,41 +62,34 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public void NotifyClientTransactionOfBegin ()
     {
       _clientTransaction.TransactionEventSink.ObjectDeleting (_deletedObject);
+      _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
     }
 
     public void Begin ()
     {
       _deletedObject.OnDeleting (EventArgs.Empty);
+      _endPointDeleteCommands.Begin ();
     }
 
     public void Perform ()
     {
-      var dataContainer = _clientTransaction.GetDataContainer (_deletedObject);
-      Assertion.IsFalse (dataContainer.State == StateType.Deleted);
-      Assertion.IsFalse (dataContainer.State == StateType.Discarded);
+      _endPointDeleteCommands.Perform ();
 
-      var relationEndPointIDs = dataContainer.AssociatedRelationEndPointIDs;
-      foreach (var endPointID in relationEndPointIDs)
-      {
-        var endPoint = _clientTransaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
-
-        // this triggers a Begin/EndDelete notification on CollectionEndPoint and clears the end point's data
-        endPoint.PerformDelete();
-      }
-
-      if (dataContainer.State == StateType.New)
-        _clientTransaction.DataManager.Discard (dataContainer);
+      if (_dataContainer.State == StateType.New)
+        _clientTransaction.DataManager.Discard (_dataContainer);
       else
-        dataContainer.Delete();
+        _dataContainer.Delete();
     }
 
     public void End ()
     {
+      _endPointDeleteCommands.End ();
       _deletedObject.OnDeleted (EventArgs.Empty);
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
+      _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
       _clientTransaction.TransactionEventSink.ObjectDeleted (_deletedObject);
     }
 
