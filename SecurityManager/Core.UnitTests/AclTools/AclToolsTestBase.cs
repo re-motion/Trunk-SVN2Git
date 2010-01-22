@@ -170,7 +170,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       }
       else
       {
-        aclExpansionEntryList = aclExpander.GetAclExpansionEntryList().ToList();
+        aclExpansionEntryList = aclExpander.GetAclExpansionEntryList();
       }
       return aclExpansionEntryList;
     }
