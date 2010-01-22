@@ -15,11 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.FunctionalProgramming;
+using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
 using System.Linq;
@@ -189,28 +192,54 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap.RollbackAllDataContainers ();
   }
 
-  // TODO 1952: Make public and check that no dangling end points can be created. Add tests.
-  // This method might leave dangling end points, so it must only be used from scenarios where it is guaranteed that nothing points back to the
+ // This method might leave dangling end points, so it must only be used from scenarios where it is guaranteed that nothing points back to the
   // discarded object.
-  internal void Discard (DataContainer dataContainer)
+  public void Discard (DataContainer dataContainer)
   {
-    foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
+    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+    RelationEndPoint[] endPoints;
+    try
     {
-      var endPoint = _relationEndPointMap[endPointID];
-      if (endPoint != null)
-      {
-        Assertion.IsTrue (
-            (endPoint.Definition.Cardinality == CardinalityType.One && ((ObjectEndPoint) endPoint).OppositeObjectID == null)
-            || (endPoint.Definition.Cardinality == CardinalityType.Many && ((CollectionEndPoint) endPoint).OppositeDomainObjects.Count == 0),
-            "Discard can only be used from scenarios where no dangling end points would be created.");
-        _relationEndPointMap.RemoveEndPoint (endPointID);
-      }
+      endPoints = (from endPointID in dataContainer.AssociatedRelationEndPointIDs
+                   let endPoint = _relationEndPointMap[endPointID]
+                   where endPoint != null
+                   where EnsureEndPointReferencesNothing (endPoint)
+                   select endPoint).ToArray ();
     }
+    catch (InvalidOperationException ex)
+    {
+      var message = string.Format ("Cannot discard data container '{0}', it might leave dangling references: '{1}'", dataContainer.ID, ex.Message);
+      throw new ArgumentException (message, "dataContainer", ex);
+    }
+
+    foreach (var endPoint in endPoints)
+      _relationEndPointMap.RemoveEndPoint (endPoint.ID);
 
     _dataContainerMap.Remove (dataContainer.ID);
 
     dataContainer.Discard ();
     MarkDiscarded (dataContainer);
+  }
+
+  private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
+  {
+    Maybe
+        .ForValue (relationEndPoint as IObjectEndPoint)
+        .Where (endPoint => endPoint.OppositeObjectID != null)
+        .Select (endPoint => string.Format ("End point '{0}' still references object '{1}'.", endPoint.ID, endPoint.OppositeObjectID))
+        .Do (message => { throw new InvalidOperationException (message); });
+
+    Maybe
+        .ForValue (relationEndPoint as ICollectionEndPoint)
+        .Where (endPoint => endPoint.OppositeDomainObjects.Count != 0)
+        .Select (endPoint => string.Format (
+            "End point '{0}' still references objects '{1}'.", 
+            endPoint.ID, 
+            SeparatedStringBuilder.Build (", ", endPoint.OppositeDomainObjects, (DomainObject obj) => obj.ID.ToString())))
+        .Do (message => { throw new InvalidOperationException (message); });
+
+    return true;
   }
 
   public DataContainerMap DataContainerMap

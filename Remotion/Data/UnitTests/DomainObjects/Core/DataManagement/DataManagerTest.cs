@@ -21,8 +21,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -459,6 +461,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDiscardedDataContainerThrowsWhenNotDiscarded ()
     {
       _dataManager.GetDiscardedDataContainer (DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void Discard_RemovesEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
+    }
+
+    [Test]
+    public void Discard_RemovesDataContainer ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (dataContainer));
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+    }
+
+    [Test]
+    public void Discard_DiscardsDataContainer ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+    }
+
+    [Test]
+    public void Discard_MarksDataContainerDiscarded ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.True);
+      listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectDiscarded (dataContainer.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Cannot discard data container 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid', it might leave dangling references: 'End point "
+        + "'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' still "
+        + "references object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.'\r\nParameter name: dataContainer")]
+    public void Discard_ThrowsOnDanglingReferences ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
+      var endPoint = (ObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      endPoint.OppositeObjectID = DomainObjectIDs.Order1;
+
+      _dataManager.Discard (dataContainer);
     }
 
     [Test]
