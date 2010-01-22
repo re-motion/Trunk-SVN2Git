@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -180,6 +181,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _orderItem.Delete ();
 
       _order.OrderItems.Add (_orderItem);
+    }
+
+    [Test]
+    [Ignore ("TODO 1953")]
+    public void DeleteOrderEvents ()
+    {
+      _order.Delete ();
+
+      var expectedStates = new ChangeState[]
+    {
+      new ObjectDeletionState (_order, "1. Deleting event of order"),
+      new CollectionDeletionState (_order.OrderItems, "2. Deleting event of order.OrderItems"),
+      new RelationChangeState (_orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order, null, "3. Relation changing event of orderItem"),
+      new RelationChangeState (_orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, null, "4. Relation changed event of orderItem"),
+      new CollectionDeletionState (_order.OrderItems, "5. Deleted event of order.OrderItems"),
+      new ObjectDeletionState (_order, "6. Deleted event of order"),
+    };
+
+      _eventReceiver.Check (expectedStates);
+    }
+
+    [Test]
+    [Ignore ("TODO 1953")]
+    public void DeleteOrderEvents_CancelFromCollectionDeletingEvent ()
+    {
+      _eventReceiver.CancelEventNumber = 2;
+
+      try
+      {
+        _order.Delete ();
+        Assert.Fail ("EventReceiverCancelException should be raised.");
+      }
+      catch (EventReceiverCancelException)
+      {
+        var expectedStates = new ChangeState[]
+            {
+              new ObjectDeletionState (_order, "1. Deleting event of order"),
+              new CollectionDeletionState (_order.OrderItems, "2. Deleting event of order.OrderItems"),
+            };
+
+        _eventReceiver.Check (expectedStates);
+      }
+
+      Assert.That (_order.State, Is.Not.EqualTo (StateType.Deleted));
+      Assert.That (_order.OrderItems, Is.Not.Empty);
+    }
+
+    [Test]
+    [Ignore ("TODO 1953")]
+    public void DeleteOrderEvents_CancelAfterCollectionDeletingEvent ()
+    {
+      _eventReceiver.CancelEventNumber = 3;
+
+      try
+      {
+        _order.Delete ();
+        Assert.Fail ("EventReceiverCancelException should be raised.");
+      }
+      catch (EventReceiverCancelException)
+      {
+        var expectedStates = new ChangeState[]
+            {
+              new ObjectDeletionState (_order, "1. Deleting event of order"),
+              new CollectionDeletionState (_order.OrderItems, "2. Deleting event of order.OrderItems"),
+              new RelationChangeState (_orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order, null, "3. Relation changing event of orderItem"),
+            };
+
+        _eventReceiver.Check (expectedStates);
+      }
+
+      Assert.That (_order.State, Is.Not.EqualTo (StateType.Deleted));
+      Assert.That (_order.OrderItems, Is.Not.Empty);
     }
 
     private SequenceEventReceiver CreateEventReceiver ()

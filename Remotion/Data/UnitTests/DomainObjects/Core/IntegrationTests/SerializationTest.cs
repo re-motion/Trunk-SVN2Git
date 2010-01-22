@@ -418,6 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             new DomainObject[] { desNewCustomer1, desNewCustomer2, desNewOrderTicket1, desNewOrder2, desNewOrder1, desNewOrderItem1 },
             new DomainObjectCollection[] { desNewOrder2.OrderItems, desNewCustomer1.Orders, desNewCustomer2.Orders });
 
+        var desNewOrder2Items = desNewOrder2.OrderItems;
         desNewOrder2.Delete ();
 
         expectedChangeStates = new ChangeState[]
@@ -428,11 +429,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         new RelationChangeState (desNewOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", desNewOrder2, null, "16: 4. Changing event of newOrderItem1 from newOrder2 to null"),
         new RelationChangeState (desNewOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", desNewOrder2, null, "16: 5. Changing event of newOrderTicket1 from newOrder2 to null"),
 
-        new RelationChangeState (desNewOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, null, "16: 6. Changed event of newOrderTicket1 from newOrder2 to null"),
-        new RelationChangeState (desNewOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, null, "16: 7. Changed event of newOrderItem1 from newOrder2 to null"),
-        new RelationChangeState (desNewCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, null, "16: 8. Changed event of newCustomer2 from newOrder2 to null"),
-        new CollectionChangeState (desNewCustomer2.Orders, desNewOrder2, "16: 9. Removed of newOrder2 from newCustomer2"),
-        new ObjectDeletionState (desNewOrder2, "16: 10. Deleted event of newOrder2")
+        new CollectionDeletionState (desNewOrder2Items, "16: 6. Deleting event of newOrder.OrderItems"),
+        new CollectionDeletionState (desNewOrder2Items, "16: 7. Deleted event of newOrder.OrderItems"),
+
+        new RelationChangeState (desNewOrderTicket1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, null, "16: 8. Changed event of newOrderTicket1 from newOrder2 to null"),
+        new RelationChangeState (desNewOrderItem1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", null, null, "16: 9. Changed event of newOrderItem1 from newOrder2 to null"),
+        new RelationChangeState (desNewCustomer2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders", null, null, "16: 10. Changed event of newCustomer2 from newOrder2 to null"),
+        new CollectionChangeState (desNewCustomer2.Orders, desNewOrder2, "16: 11. Removed of newOrder2 from newCustomer2"),
+        new ObjectDeletionState (desNewOrder2, "16: 12. Deleted event of newOrder2")
       };
 
         eventReceiver.Check (expectedChangeStates);

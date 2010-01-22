@@ -165,8 +165,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       ChangeState[] expectedStates = new ChangeState[]
           {
-            new ObjectDeletionState (_order, "1. Deleting event of ordert"),
-            new ObjectDeletionState (_order, "2. Deleted event of order"),
+            new ObjectDeletionState (_order, "1. Deleting event of order"),
+            new CollectionDeletionState (_order.OrderItems, "2. Deleting of _order.OrderItems"),
+            new CollectionDeletionState (_order.OrderItems, "3. Deleted of _order.OrderItems"),
+            new ObjectDeletionState (_order, "4. Deleted event of order"),
           };
 
       _eventReceiver.Check (expectedStates);

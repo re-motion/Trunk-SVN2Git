@@ -31,30 +31,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // member fields
 
-    private DomainObject[] _domainObjects;
-    private DomainObjectCollection[] _collections;
-    private ArrayList _states = new ArrayList ();
-    private int _cancelEventNumber = 0;
+    private readonly DomainObject[] _domainObjects;
+    private readonly DomainObjectCollection[] _collections;
+    private readonly ArrayList _states = new ArrayList();
+    private int _cancelEventNumber;
 
     // construction and disposing
 
     public SequenceEventReceiver (DomainObjectCollection collection)
-      : this (new DomainObject[0], new DomainObjectCollection[] { collection })
+        : this (new DomainObject[0], new[] { collection })
     {
     }
 
     public SequenceEventReceiver (DomainObject domainObject)
-      : this (new DomainObject[] { domainObject }, new DomainObjectCollection[0])
+        : this (new[] { domainObject }, new DomainObjectCollection[0])
     {
     }
 
     public SequenceEventReceiver (DomainObject[] domainObjects, DomainObjectCollection[] collections)
-      : this (domainObjects, collections, 0)
+        : this (domainObjects, collections, 0)
     {
     }
 
     public SequenceEventReceiver (DomainObjectCollection collection, int cancelEventNumber)
-      : this (new DomainObject[0], new DomainObjectCollection[] { collection }, cancelEventNumber)
+        : this (new DomainObject[0], new[] { collection }, cancelEventNumber)
     {
     }
 
@@ -67,22 +67,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _collections = collections;
       _cancelEventNumber = cancelEventNumber;
 
-      foreach (DomainObject domainObject in domainObjects)
+      foreach (var domainObject in domainObjects)
       {
-        domainObject.Deleting += new EventHandler (DomainObject_Deleting);
-        domainObject.Deleted += new EventHandler (DomainObject_Deleted);
-        domainObject.PropertyChanging += new PropertyChangeEventHandler (DomainObject_PropertyChanging);
-        domainObject.PropertyChanged += new PropertyChangeEventHandler (DomainObject_PropertyChanged);
-        domainObject.RelationChanging += new RelationChangingEventHandler (DomainObject_RelationChanging);
-        domainObject.RelationChanged += new RelationChangedEventHandler (DomainObject_RelationChanged);
+        domainObject.Deleting += DomainObject_Deleting;
+        domainObject.Deleted += DomainObject_Deleted;
+        domainObject.PropertyChanging += DomainObject_PropertyChanging;
+        domainObject.PropertyChanged += DomainObject_PropertyChanged;
+        domainObject.RelationChanging += DomainObject_RelationChanging;
+        domainObject.RelationChanged += DomainObject_RelationChanged;
       }
 
-      foreach (DomainObjectCollection collection in collections)
+      foreach (var collection in collections)
       {
-        collection.Adding += new DomainObjectCollectionChangeEventHandler (Collection_Changing);
-        collection.Added += new DomainObjectCollectionChangeEventHandler (Collection_Changed);
-        collection.Removing += new DomainObjectCollectionChangeEventHandler (Collection_Changing);
-        collection.Removed += new DomainObjectCollectionChangeEventHandler (Collection_Changed);
+        collection.Adding += Collection_Changing;
+        collection.Added += Collection_Changed;
+        collection.Removing += Collection_Changing;
+        collection.Removed += Collection_Changed;
+        collection.Deleting += Collection_Deleting;
+        collection.Deleted += Collection_Deleted;
       }
     }
 
@@ -94,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       set { _cancelEventNumber = value; }
     }
 
-    public ChangeState this[int index]
+    public ChangeState this [int index]
     {
       get { return (ChangeState) _states[index]; }
     }
@@ -126,22 +128,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void Unregister ()
     {
-      foreach (DomainObject domainObject in _domainObjects)
+      foreach (var domainObject in _domainObjects)
       {
-        domainObject.Deleting -= new EventHandler (DomainObject_Deleting);
-        domainObject.Deleted -= new EventHandler (DomainObject_Deleted);
-        domainObject.PropertyChanging -= new PropertyChangeEventHandler (DomainObject_PropertyChanging);
-        domainObject.PropertyChanged -= new PropertyChangeEventHandler (DomainObject_PropertyChanged);
-        domainObject.RelationChanging -= new RelationChangingEventHandler (DomainObject_RelationChanging);
-        domainObject.RelationChanged -= new RelationChangedEventHandler (DomainObject_RelationChanged);
+        domainObject.Deleting -= DomainObject_Deleting;
+        domainObject.Deleted -= DomainObject_Deleted;
+        domainObject.PropertyChanging -= DomainObject_PropertyChanging;
+        domainObject.PropertyChanged -= DomainObject_PropertyChanged;
+        domainObject.RelationChanging -= DomainObject_RelationChanging;
+        domainObject.RelationChanged -= DomainObject_RelationChanged;
       }
 
-      foreach (DomainObjectCollection collection in _collections)
+      foreach (var collection in _collections)
       {
-        collection.Adding -= new DomainObjectCollectionChangeEventHandler (Collection_Changing);
-        collection.Added -= new DomainObjectCollectionChangeEventHandler (Collection_Changed);
-        collection.Removing -= new DomainObjectCollectionChangeEventHandler (Collection_Changing);
-        collection.Removed -= new DomainObjectCollectionChangeEventHandler (Collection_Changed);
+        collection.Adding -= Collection_Changing;
+        collection.Added -= Collection_Changed;
+        collection.Removing -= Collection_Changing;
+        collection.Removed -= Collection_Changed;
       }
     }
 
@@ -155,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _states.Add (new PropertyChangeState (sender, args.PropertyValue, args.OldValue, args.NewValue));
 
       if (_states.Count == _cancelEventNumber)
-        CancelOperation ();
+        CancelOperation();
     }
 
     public void DomainObject_RelationChanging (object sender, RelationChangingEventArgs args)
@@ -163,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _states.Add (new RelationChangeState (sender, args.PropertyName, args.OldRelatedObject, args.NewRelatedObject));
 
       if (_states.Count == _cancelEventNumber)
-        CancelOperation ();
+        CancelOperation();
     }
 
     public void DomainObject_RelationChanged (object sender, RelationChangedEventArgs args)
@@ -176,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _states.Add (new ObjectDeletionState (sender));
 
       if (_states.Count == _cancelEventNumber)
-        CancelOperation ();
+        CancelOperation();
     }
 
     public void DomainObject_Deleted (object sender, EventArgs args)
@@ -189,12 +191,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _states.Add (new CollectionChangeState (sender, args.DomainObject));
 
       if (_states.Count == _cancelEventNumber)
-        CancelOperation ();
+        CancelOperation();
     }
 
     public void Collection_Changed (object sender, DomainObjectCollectionChangeEventArgs args)
     {
       _states.Add (new CollectionChangeState (sender, args.DomainObject));
+    }
+
+    public void Collection_Deleting (object sender, EventArgs args)
+    {
+      _states.Add (new CollectionDeletionState (sender));
+
+      if (_states.Count == _cancelEventNumber)
+        CancelOperation();
+    }
+
+    public void Collection_Deleted (object sender, EventArgs args)
+    {
+      _states.Add (new CollectionDeletionState (sender));
     }
   }
 }

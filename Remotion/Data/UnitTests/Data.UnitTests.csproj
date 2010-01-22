@@ -236,6 +236,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBaseTest.cs" />
@@ -285,6 +286,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionTest.EventRaiser.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionWrapperTest.cs" />
+    <Compile Include="DomainObjects\Core\EventReceiver\CollectionDeletionState.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectUnloaderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManagerTest.cs" />

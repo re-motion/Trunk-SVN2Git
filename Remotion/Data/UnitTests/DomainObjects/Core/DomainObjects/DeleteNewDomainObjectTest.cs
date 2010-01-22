@@ -454,9 +454,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Events ()
     {
+      var orderItemsCollection = _newOrder.OrderItems;
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (
           new DomainObject[] { _newOrder, _newOrderTicket },
-          new DomainObjectCollection[] { _newOrder.OrderItems });
+          new DomainObjectCollection[] { orderItemsCollection });
 
       _newOrder.Delete ();
 
@@ -464,8 +465,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       new ObjectDeletionState (_newOrder, "1. Deleting event of order"),
       new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrder, null, "2. Relation changing event of orderTicket"),
-      new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, null, "3. Relation changed event of orderTicket"),
-      new ObjectDeletionState (_newOrder, "4. Deleted event of order")
+      new CollectionDeletionState (orderItemsCollection, "3. Deleting of order.OrderItems"),
+      new CollectionDeletionState (orderItemsCollection, "4. Deleted of order.OrderItems"),
+      new RelationChangeState (_newOrderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", null, null, "5. Relation changed event of orderTicket"),
+      new ObjectDeletionState (_newOrder, "6. Deleted event of order")
     };
 
       eventReceiver.Check (expectedStates);

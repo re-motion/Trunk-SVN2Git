@@ -56,17 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [Ignore ("TODO: 1953")]
-    public void DeleteNew ()
-    {
-      //Order newOrder = Order.NewObject();
-      //Assert.That (_map.Count > 0, Is.True);
-
-      //_map.PerformDelete (newOrder, _map.GetRemoveCommandsForOppositeEndPoints (newOrder));
-      //Assert.That (_map.Count, Is.EqualTo (0));
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "GetOriginalRelatedObjects can only be called for end points with a cardinality of 'Many'.\r\nParameter name: endPointID")]
     public void GetOriginalRelatedObjectsWithEndPointIDOfWrongCardinality ()
@@ -232,22 +221,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
 
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Location1], Is.Not.Null);
-    }
-
-    [Test]
-    [Ignore ("TODO: 1953")]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-        ExpectedMessage = "Cannot remove DomainObject '.*' from RelationEndPointMap, because it belongs to a different ClientTransaction.",
-        MatchType = MessageMatch.Regex)]
-    public void PerformDeletionWithOtherClientTransaction ()
-    {
-      //Order order1;
-      //using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      //{
-      //  order1 = Order.GetObject (DomainObjectIDs.Order1);
-      //}
-
-      //_map.PerformDelete (order1, new CompositeDataManagementCommand ());
     }
 
     [Test]

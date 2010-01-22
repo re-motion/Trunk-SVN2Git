@@ -21,7 +21,6 @@ using ArgumentUtility=Remotion.Data.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
-  // TODO 1952: Test!
   /// <summary>
   /// Encapsulates all logic that is required to delete a <see cref="DomainObject"/>.
   /// </summary>
@@ -77,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       if (dataContainer.State == StateType.New)
         _clientTransaction.DataManager.Discard (dataContainer);
       else
-        dataContainer.Delete ();
+        dataContainer.Delete();
     }
 
     public void End ()

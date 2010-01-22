@@ -49,6 +49,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedEndPoint; }
     }
 
+    public DomainObject DomainObject
+    {
+      get { return _domainObject; }
+    }
+
     public DomainObject OldRelatedObject
     {
       get { return _oldRelatedObject; }

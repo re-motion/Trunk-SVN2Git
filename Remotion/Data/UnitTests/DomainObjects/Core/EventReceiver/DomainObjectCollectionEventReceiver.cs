@@ -28,17 +28,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // member fields
 
-    private bool _cancel;
-
     private DomainObject _addingDomainObject;
     private DomainObject _addedDomainObject;
-    private bool _hasAddingEventBeenCalled;
-    private bool _hasAddedEventBeenCalled;
 
     private DomainObjectCollection _removingDomainObjects;
     private DomainObjectCollection _removedDomainObjects;
-    private bool _hasRemovingEventBeenCalled;
-    private bool _hasRemovedEventBeenCalled;
 
     // construction and disposing
 
@@ -49,13 +43,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public DomainObjectCollectionEventReceiver (DomainObjectCollection collection, bool cancel)
     {
-      _cancel = cancel;
+      Cancel = cancel;
 
-      collection.Adding += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Adding);
-      collection.Added += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Added);
+      collection.Adding += DomainObjectCollection_Adding;
+      collection.Added += DomainObjectCollection_Added;
 
-      collection.Removing += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Removing);
-      collection.Removed += new DomainObjectCollectionChangeEventHandler (DomainObjectCollection_Removed);
+      collection.Removing += DomainObjectCollection_Removing;
+      collection.Removed += DomainObjectCollection_Removed;
+
+      collection.Deleting += DomainObjectCollection_Deleting;
+      collection.Deleted += DomainObjectCollection_Deleted;
 
       Reset ();
     }
@@ -66,20 +63,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       _addingDomainObject = null;
       _addedDomainObject = null;
-      _hasAddingEventBeenCalled = false;
-      _hasAddedEventBeenCalled = false;
+      HasAddingEventBeenCalled = false;
+      HasAddedEventBeenCalled = false;
 
       _removingDomainObjects = new DomainObjectCollection ();
       _removedDomainObjects = new DomainObjectCollection ();
-      _hasRemovingEventBeenCalled = false;
-      _hasRemovedEventBeenCalled = false;
+      HasRemovingEventBeenCalled = false;
+      HasRemovedEventBeenCalled = false;
+
+      HasDeletingEventBeenCalled = false;
+      HasDeletedEventBeenCalled = false;
     }
 
-    public bool Cancel
-    {
-      get { return _cancel; }
-      set { _cancel = value; }
-    }
+    public bool Cancel { get; set; }
 
     public DomainObject AddingDomainObject
     {
@@ -91,15 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       get { return _addedDomainObject; }
     }
 
-    public bool HasAddingEventBeenCalled
-    {
-      get { return _hasAddingEventBeenCalled; }
-    }
-
-    public bool HasAddedEventBeenCalled
-    {
-      get { return _hasAddedEventBeenCalled; }
-    }
+    public bool HasAddingEventBeenCalled { get; private set; }
+    public bool HasAddedEventBeenCalled { get; private set; }
 
     public DomainObjectCollection RemovingDomainObjects
     {
@@ -111,44 +100,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       get { return _removedDomainObjects; }
     }
 
-    public bool HasRemovingEventBeenCalled
-    {
-      get { return _hasRemovingEventBeenCalled; }
-    }
+    public bool HasRemovingEventBeenCalled { get; private set; }
+    public bool HasRemovedEventBeenCalled { get; private set; }
 
-    public bool HasRemovedEventBeenCalled
-    {
-      get { return _hasRemovedEventBeenCalled; }
-    }
+    public bool HasDeletingEventBeenCalled { get; private set; }
+    public bool HasDeletedEventBeenCalled { get; private set; }
 
     private void DomainObjectCollection_Adding (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      _hasAddingEventBeenCalled = true;
+      HasAddingEventBeenCalled = true;
       _addingDomainObject = args.DomainObject;
 
-      if (_cancel)
+      if (Cancel)
         CancelOperation ();
     }
 
     private void DomainObjectCollection_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
       _addedDomainObject = args.DomainObject;
-      _hasAddedEventBeenCalled = true;
+      HasAddedEventBeenCalled = true;
     }
 
     private void DomainObjectCollection_Removing (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      _hasRemovingEventBeenCalled = true;
+      HasRemovingEventBeenCalled = true;
       _removingDomainObjects.Add (args.DomainObject);
 
-      if (_cancel)
+      if (Cancel)
         CancelOperation ();
     }
 
     private void DomainObjectCollection_Removed (object sender, DomainObjectCollectionChangeEventArgs args)
     {
       _removedDomainObjects.Add (args.DomainObject);
-      _hasRemovedEventBeenCalled = true;
+      HasRemovedEventBeenCalled = true;
+    }
+
+    private void DomainObjectCollection_Deleting (object sender, EventArgs args)
+    {
+      HasDeletingEventBeenCalled = true;
+
+      if (Cancel)
+        CancelOperation ();
+    }
+
+    private void DomainObjectCollection_Deleted (object sender, EventArgs args)
+    {
+      HasDeletedEventBeenCalled = true;
     }
   }
 }

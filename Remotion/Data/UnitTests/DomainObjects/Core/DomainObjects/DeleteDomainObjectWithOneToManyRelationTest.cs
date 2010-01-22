@@ -52,9 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       new ObjectDeletionState (_supervisor, "1. Deleting of supervisor"),
       new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "2. Relation changing of subordinate1"),
       new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _supervisor, null, "3. Relation changing of subordinate2"),
-      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "4. Relation changed of subordinate2"),
-      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "5. Relation changed of subordinate1"),
-      new ObjectDeletionState (_supervisor, "6. Deleted of supervisor")
+      new CollectionDeletionState (_supervisor.Subordinates, "4. Deleting of supervisor.Subordinates"),
+      new CollectionDeletionState (_supervisor.Subordinates, "5. Deleted of supervisor.Subordinates"),
+      new RelationChangeState (_subordinate2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "6. Relation changed of subordinate2"),
+      new RelationChangeState (_subordinate1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", null, null, "7. Relation changed of subordinate1"),
+      new ObjectDeletionState (_supervisor, "8. Deleted of supervisor")
     };
 
       _eventReceiver.Check (expectedStates);
@@ -127,7 +129,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ChangeState[] expectedStates = new ChangeState[]
     {
       new ObjectDeletionState (_supervisor, "1. Deleting of supervisor"),
-      new ObjectDeletionState (_supervisor, "2. Deleted of supervisor"),
+      new CollectionDeletionState (_supervisor.Subordinates, "2. Deleting of supervisor.Subordinates"),
+      new CollectionDeletionState (_supervisor.Subordinates, "3. Deleted of supervisor.Subordinates"),
+      new ObjectDeletionState (_supervisor, "4. Deleted of supervisor"),
     };
 
       _eventReceiver.Check (expectedStates);

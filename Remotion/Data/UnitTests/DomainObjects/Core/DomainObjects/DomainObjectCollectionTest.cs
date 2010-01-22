@@ -706,6 +706,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       source.Removed += delegate { };
       source.Removing += delegate { };
       source.Removing += delegate { };
+      source.Deleted += delegate { };
+      source.Deleted += delegate { };
+      source.Deleting += delegate { };
+      source.Deleting += delegate { };
 
       CallCopyEventHandlersFrom (source, destination);
 
@@ -713,6 +717,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CheckSameEventHandlers (source, destination, "Added");
       CheckSameEventHandlers (source, destination, "Removing");
       CheckSameEventHandlers (source, destination, "Removed");
+      CheckSameEventHandlers (source, destination, "Deleting");
+      CheckSameEventHandlers (source, destination, "Deleted");
+    }
+
+    [Test]
+    public void OnDeleting ()
+    {
+      object eventSender = null;
+      EventArgs eventArgs = null;
+      _collection.Deleting += (sender, args) => { eventSender = sender; eventArgs = args; };
+
+      PrivateInvoke.InvokeNonPublicMethod (_collection, "OnDeleting");
+
+      Assert.That (eventSender, Is.SameAs (_collection));
+      Assert.That (eventArgs, Is.EqualTo (EventArgs.Empty));
+    }
+
+    [Test]
+    public void OnDeleted ()
+    {
+      object eventSender = null;
+      EventArgs eventArgs = null;
+      _collection.Deleted += (sender, args) => { eventSender = sender; eventArgs = args; };
+
+      PrivateInvoke.InvokeNonPublicMethod (_collection, "OnDeleted");
+
+      Assert.That (eventSender, Is.SameAs (_collection));
+      Assert.That (eventArgs, Is.EqualTo (EventArgs.Empty));
     }
 
     private void CallRollback (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
@@ -736,7 +768,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Delegate[] sourceInvocationList = sourceEvent.GetInvocationList ();
 
       var destinationEvent = ((Delegate) PrivateInvoke.GetNonPublicField (destination, eventName));
-      Assert.That (destinationEvent, SyntaxHelper.Not.Null, eventName + " event handlers not copied");
+      Assert.That (destinationEvent, Is.Not.Null, eventName + " event handlers not copied");
       Delegate[] destinationInvocationList = destinationEvent.GetInvocationList ();
 
       Assert.That (sourceInvocationList, Is.EqualTo (destinationInvocationList), eventName + " event handlers not copied");

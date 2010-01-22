@@ -144,8 +144,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <remarks>
     /// This event is not raised if the <see cref="DomainObject"/> holding the <see cref="DomainObjectCollection"/> is being deleted. 
-    /// Either subscribe to the <see cref="DomainObject.Deleting"/> event or override the <see cref="OnDeleting"/> method to implement 
-    /// business logic handling this situation.
+    /// The <see cref="Deleting"/> event is raised instead.
     /// </remarks>
     public event DomainObjectCollectionChangeEventHandler Removing;
 
@@ -154,10 +153,19 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <remarks>
     /// This event is not raised if the <see cref="DomainObject"/> holding the <see cref="DomainObjectCollection"/> has been deleted. 
-    /// Either subscribe to the <see cref="DomainObject.Deleted"/> event or override the <see cref="OnDeleted"/> method to implement 
-    /// business logic handling this situation.
+    /// The <see cref="Deleted"/> event is raised instead.
     /// </remarks>
     public event DomainObjectCollectionChangeEventHandler Removed;
+
+    /// <summary>
+    /// Occurs before the object holding this collection is deleted if this <see cref="DomainObjectCollection"/> represents a one-to-many relation.
+    /// </summary>
+    public event EventHandler Deleting;
+
+    /// <summary>
+    /// Occurs after the object holding this collection is deleted if this <see cref="DomainObjectCollection"/> represents a one-to-many relation.
+    /// </summary>
+    public event EventHandler Deleted;
 
     private IDomainObjectCollectionData _dataStrategy; // holds the actual data represented by this collection
     private bool _isReadOnly;
@@ -776,13 +784,15 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <remarks>
     /// During the delete process of a <see cref="DomainObject"/> all <see cref="DomainObject"/>s are removed from the <see cref="DomainObjectCollection" /> without notifying other objects.
-    /// Immediately before all <see cref="DomainObject"/>s will be removed the <see cref="OnDeleting"/> method is invoked.
+    /// Before all <see cref="DomainObject"/>s will be removed the <see cref="OnDeleting"/> method is invoked.
     /// To clear any internal state or to unsubscribe from events whenever the <see cref="DomainObject"/> holding this collection is deleted 
     /// use the <see cref="OnDeleted"/> method, because the operation could be cancelled after the <see cref="OnDeleting"/> method has been called.<br/><br/>
     /// <note type="inotes">Inheritors overriding this method must not throw an exception from the override.</note>
     /// </remarks>
     protected virtual void OnDeleting()
     {
+      if (Deleting != null)
+        Deleting (this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -796,6 +806,8 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected virtual void OnDeleted()
     {
+      if (Deleted != null)
+        Deleted (this, EventArgs.Empty);
     }
 
     internal void CopyEventHandlersFrom (DomainObjectCollection source)
@@ -806,6 +818,8 @@ namespace Remotion.Data.DomainObjects
       Added += source.Added;
       Removing += source.Removing;
       Removed += source.Removed;
+      Deleting += source.Deleting;
+      Deleted += source.Deleted;
     }
   }
 }
