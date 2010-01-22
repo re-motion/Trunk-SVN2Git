@@ -63,10 +63,10 @@ public class SeparatedStringBuilder
   /// <summary>
   /// Appends each item in the specified list.
   /// </summary>
-  public static string Build<T> (string separator, IEnumerable list)
+  public static string Build (string separator, IEnumerable list)
   {
     SeparatedStringBuilder sb = new SeparatedStringBuilder (separator);
-    foreach (object obj in list)
+    foreach (var obj in list)
       sb.Append (obj);
     return sb.ToString ();
   }
