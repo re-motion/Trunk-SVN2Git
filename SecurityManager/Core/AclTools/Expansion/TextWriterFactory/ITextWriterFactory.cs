@@ -23,7 +23,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   /// <summary>
   /// Creates <see cref="TextWriter"/>|s through <see cref="CreateTextWriter(string,string,string)"/> in the currently set 
   /// <see cref="Directory"/>.
-  /// Stores references to the created <see cref="TextWriter"/>|s. 
   /// </summary>
   public interface ITextWriterFactory
   {

@@ -25,6 +25,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.HtmlTagWriter
 {
   /// <summary>
   /// Supports convenient writing of HTML to a <see cref="TextWriter"/> / <see cref="XmlWriter"/>.
+  /// A mismatched closing tag leads to an <see cref="XmlException"/>.
   /// </summary>
   /// <remarks>
   /// <example>

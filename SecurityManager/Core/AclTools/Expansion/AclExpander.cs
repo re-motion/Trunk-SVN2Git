@@ -28,6 +28,12 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  /// <summary>
+  /// Core class of the AclTools.Expansion library:
+  /// Creates an <see cref="AclExpansionEntry"/> enumeration through  <see cref="GetAclExpansionEntries"/>
+  /// for either all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s
+  /// or for the ones returned by a <see cref="IUserRoleAclAceCombinationFinder"/> passed to its ctor.
+  /// </summary>
   public class AclExpander
   {
     private readonly IUserRoleAclAceCombinationFinder _userRoleAclAceCombinationFinder;
@@ -48,12 +54,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     );
 
+    /// <summary>
+    /// <see cref="AclExpander"/> base ctor: Initializes the class instance with an <see cref="IUserRoleAclAceCombinationFinder"/>
+    /// which supplies the <see cref="UserRoleAclAceCombination"/>|s the <see cref="AclExpander"/> works on.
+    /// </summary>
+    /// <param name="userRoleAclAceCombinationFinder"></param>
     public AclExpander (IUserRoleAclAceCombinationFinder userRoleAclAceCombinationFinder)
     {
       ArgumentUtility.CheckNotNull ("userRoleAclAceCombinationFinder", userRoleAclAceCombinationFinder);
       _userRoleAclAceCombinationFinder = userRoleAclAceCombinationFinder;
     }
 
+    /// <summary>
+    /// Convenience ctor which takes <see cref="IAclExpanderUserFinder"/> and <see cref="IAclExpanderAclFinder"/> separately and combines them into
+    /// an <see cref="IUserRoleAclAceCombinationFinder"/> to initialize the class instance with.
+    /// </summary>
+    /// <param name="userFinder"></param>
+    /// <param name="accessControlListFinder"></param>
     public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
       : this (new UserRoleAclAceCombinationFinder (userFinder, accessControlListFinder))
     {}
@@ -68,7 +85,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _aclExpansionEntryCreator; }
     }
 
-
+    /// <summary>
+    /// Returns the distinct result set of calling <see cref="GetAclExpansionEntryList"/> sorted after the <see cref="User"/>|s last and first name.
+    /// </summary>
     virtual public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
     {
       return (from AclExpansionEntry aclExpansionEntry in GetAclExpansionEntryList ()
@@ -82,7 +101,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// all the <see cref="User"/>|s and all <see cref="AccessControlList"/>|s  
     /// supplied in the ctor as a <see cref="IEnumerable{T}"/> of <see cref="AclExpansionEntry"/>. 
     /// </summary>
-    /// <returns></returns>
     virtual public IEnumerable<AclExpansionEntry> GetAclExpansionEntries ()
     {
       foreach (UserRoleAclAceCombination userRoleAclAce in _userRoleAclAceCombinationFinder)
@@ -101,7 +119,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// all the <see cref="User"/>|s and all <see cref="AccessControlList"/>|s  
     /// supplied in the ctor as a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>. 
     /// </summary>
-    /// <returns></returns>
     virtual public List<AclExpansionEntry> GetAclExpansionEntryList ()
     {
       return GetAclExpansionEntries().ToList();
