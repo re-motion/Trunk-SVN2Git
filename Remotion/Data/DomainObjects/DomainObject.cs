@@ -166,15 +166,17 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Occurs before a Relation of the <see cref="DomainObject"/> is changed.
-    /// This event is raised once per involved operation and thus might be raised more often than <see cref="RelationChanged"/>. For example,
-    /// when a whole related object collection is replaced in one go, this event is raised once for each old object that is not in the new collection
-    /// and once for each new object not in the old collection.
+    /// This event might be raised more than once for a given relation change operation. For example, when a whole related object collection is 
+    /// replaced in one go, this event is raised once for each old object that is not in the new collection and once for each new object not in the 
+    /// old collection.
     /// </summary>
     public event RelationChangingEventHandler RelationChanging;
 
     /// <summary>
     /// Occurs after a Relation of the <see cref="DomainObject"/> has been changed.
-    /// This event is only raised once per relation change and thus might be raised less often than <see cref="RelationChanging"/>.
+    /// This event might be raised more than once for a given relation change operation. For example, when a whole related object collection is 
+    /// replaced in one go, this event is raised once for each old object that is not in the new collection and once for each new object not in the 
+    /// old collection.
     /// </summary>
     public event RelationChangedEventHandler RelationChanged;
 

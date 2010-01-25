@@ -67,9 +67,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     /// <summary>
     /// Indicates that a relation is about to change. 
-    /// This method is invoked once per involved operation and thus might be invoked more often than <see cref="RelationChanged"/>. For example,
-    /// when a whole related object collection is replaced in one go, this method is invoked once for each old object that is not in the new collection
-    /// and once for each new object not in the old collection.
+    /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
+    /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
+    /// old collection.
     /// </summary>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="propertyName">The name of the property that changes.</param>
@@ -80,7 +80,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
     /// <summary>
     /// Indicates that a relation has been changed. 
-    /// This method is only invoked once per relation change and thus might be invoked less often than <see cref="RelationChanging"/>.
+    /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
+    /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
+    /// old collection.
     /// </summary>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="propertyName">The name of the property that changes.</param>

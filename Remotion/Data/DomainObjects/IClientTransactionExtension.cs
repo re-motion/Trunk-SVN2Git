@@ -256,9 +256,9 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// This method is invoked before a relation is changed.
     /// The operation may be cancelled at this point.
-    /// This method is invoked once per involved operation and thus might be raised more often than <see cref="RelationChanged"/>. For example,
-    /// when a whole related object collection is replaced in one go, this method is invoked once for each old object that is not in the new collection
-    /// and once for each new object not in the old collection.
+    /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
+    /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
+    /// old collection.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property is being changed.</param>
@@ -307,7 +307,9 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// This method is invoked after a relation was changed.
-    /// This method is only invoked once per relation change and thus might be invoked less often than <see cref="RelationChanging"/>.
+    /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
+    /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
+    /// old collection.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was changed.</param>
