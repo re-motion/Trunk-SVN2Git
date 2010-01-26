@@ -27,7 +27,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -322,8 +321,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void GetCollection_ReturnsDiscardedObjects ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      
-      PrivateInvoke.InvokeNonPublicMethod (ClientTransactionMock.DataManager, "MarkDiscarded", order1.InternalDataContainer);
+      order1.Delete ();
+      ClientTransactionMock.DataManager.Discard (order1.InternalDataContainer);
       
       var order2 = Order.GetObject (DomainObjectIDs.Order2);
 

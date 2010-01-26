@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -148,24 +146,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     _relationEndPointMap.RegisterEndPointsForDataContainer (dataContainer);
   }
 
-  public void Unregister (ObjectID objectID)
-  {
-    ArgumentUtility.CheckNotNull ("objectID", objectID);
-    
-    Unregister (new[] { objectID });
-  }
-
-  public void Unregister (IEnumerable<ObjectID> objectIDs)
-  {
-    ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-
-    var loadedDataContainers = UnregisterAffectedDataFinder.GetAndCheckAffectedDataContainers (DataContainerMap, objectIDs);
-    var endPointIDsToBeUnloaded = UnregisterAffectedDataFinder.GetAndCheckAffectedEndPointIDs (RelationEndPointMap, loadedDataContainers);
-
-    UnregisterEndPoints (endPointIDsToBeUnloaded);
-    UnregisterDataContainers(loadedDataContainers);
-  }
-
   public void Commit ()
   {
     var deletedDataContainers = _dataContainerMap.GetByState (StateType.Deleted).ToList();
@@ -219,7 +199,9 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap.Remove (dataContainer.ID);
 
     dataContainer.Discard ();
-    MarkDiscarded (dataContainer);
+    
+    _transactionEventSink.DataManagerMarkingObjectDiscarded (dataContainer.ID);
+    _discardedDataContainers.Add (dataContainer.ID, dataContainer);
   }
 
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
@@ -271,37 +253,14 @@ public class DataManager : ISerializable, IDeserializationCallback
     return new DeleteCommand (ClientTransaction, deletedObject);
   }
 
+  public UnloadCommand CreateUnloadCommand (params ObjectID[] objectIDs)
+  {
+    return new UnloadCommand (objectIDs, _dataContainerMap, _relationEndPointMap);
+  }
+
   private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
   {
     return new ClientTransactionsDifferException (String.Format (message, args));
-  }
-
-  private void MarkDiscarded (DataContainer discardedDataContainer)
-  {
-    _transactionEventSink.DataManagerMarkingObjectDiscarded (discardedDataContainer.ID);
-    _discardedDataContainers.Add (discardedDataContainer.ID, discardedDataContainer);
-  }
-
-  private void UnregisterDataContainers (IEnumerable<DataContainer> dataContainers)
-  {
-    foreach (var dataContainer in dataContainers)
-      _dataContainerMap.Remove (dataContainer.ID);
-  }
-
-  private void UnregisterEndPoints (IEnumerable<RelationEndPointID> unloadedEndPointIDs)
-  {
-    foreach (var unloadedEndPointID in unloadedEndPointIDs)
-    {
-      if (unloadedEndPointID.Definition.Cardinality == CardinalityType.One)
-      {
-        _relationEndPointMap.RemoveEndPoint (unloadedEndPointID);
-      }
-      else
-      {
-        var unloadedCollectionEndPoint = (CollectionEndPoint) _relationEndPointMap[unloadedEndPointID];
-        unloadedCollectionEndPoint.Unload ();
-      }
-    }
   }
 
   #region Serialization

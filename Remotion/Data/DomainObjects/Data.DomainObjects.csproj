@@ -148,6 +148,7 @@
     <Compile Include="DataManagement\Commands\AdHocCommand.cs" />
     <Compile Include="DataManagement\Commands\DeleteCommand.cs" />
     <Compile Include="DataManagement\Commands\NopCommand.cs" />
+    <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
     <Compile Include="DataManagement\ICollectionEndPointData.cs" />
@@ -159,7 +160,6 @@
     <Compile Include="DataManagement\RealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />
     <Compile Include="DataManagement\StateValueSet.cs" />
-    <Compile Include="DataManagement\UnregisterAffectedDataFinder.cs" />
     <Compile Include="DataManagement\VirtualObjectEndPoint.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />
     <Compile Include="DomainObjectCollection.Transformer.cs" />

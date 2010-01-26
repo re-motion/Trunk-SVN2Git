@@ -105,7 +105,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      clientTransaction.DataManager.Unregister (objectID);
+      var command = clientTransaction.DataManager.CreateUnloadCommand (objectID);
+      command.NotifyAndPerform ();
 
       if (transactionMode == TransactionMode.RecurseToRoot && clientTransaction.ParentTransaction != null)
       {
@@ -140,8 +141,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var endPoint = CheckAndGetCollectionEndPoint (clientTransaction, endPointID);
       if (endPoint != null && endPoint.IsDataAvailable)
       {
-        var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject>().Select (obj => obj.ID);
-        clientTransaction.DataManager.Unregister (unloadedIDs);
+        var unloadedIDs = endPoint.OppositeDomainObjects.Cast<DomainObject>().Select (obj => obj.ID).ToArray();
+        var command = clientTransaction.DataManager.CreateUnloadCommand (unloadedIDs);
+        command.NotifyAndPerform ();
 
         UnloadCollectionEndPoint (clientTransaction, endPointID, TransactionMode.ThisTransactionOnly); // needed in case unloadedIDs is empty
       }

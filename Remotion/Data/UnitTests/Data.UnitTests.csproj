@@ -237,6 +237,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBaseTest.cs" />
@@ -249,7 +250,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\StateValueSetTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\UnregisterAffectedDataFinderTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\VirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DomainObjectCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecoratorTest.cs" />

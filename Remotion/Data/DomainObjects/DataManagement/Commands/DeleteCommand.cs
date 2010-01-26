@@ -28,8 +28,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly DomainObject _deletedObject;
+    private readonly DataContainer _dataContainer;
     private readonly CompositeDataManagementCommand _endPointDeleteCommands;
-    private DataContainer _dataContainer;
 
     public DeleteCommand (ClientTransaction clientTransaction, DomainObject deletedObject)
     {
