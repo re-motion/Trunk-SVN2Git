@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
-    public void ObjectLoading (ClientTransaction clientTransaction, ObjectID id)
+    public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
     }
 

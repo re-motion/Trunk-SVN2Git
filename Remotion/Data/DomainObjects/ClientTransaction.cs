@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
@@ -203,7 +202,7 @@ public abstract class ClientTransaction
   /// <returns>A <see cref="DataContainer"/> with the given <paramref name="id"/>.</returns>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// This method raises the <see cref="IClientTransactionListener.ObjectsLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
   /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
   /// </para>
   /// <para>
@@ -226,7 +225,7 @@ public abstract class ClientTransaction
   /// </param>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// This method raises the <see cref="IClientTransactionListener.ObjectsLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
   /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
   /// </para>
   /// <para>
@@ -244,7 +243,7 @@ public abstract class ClientTransaction
   /// </summary>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// This method raises the <see cref="IClientTransactionListener.ObjectsLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
   /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
   /// </para>
   /// <para>
@@ -1219,28 +1218,11 @@ public abstract class ClientTransaction
 
     using (EnterNonDiscardingScope ())
     {
-      var relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
+      var relatedDataContainers = LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
 
-      // TODO 2074: For symmetry with LoadObjects, the ObjectLoading event should be raised by LoadRelatedDataContainers. I'd suggest refactoring to
-      //            LoadRelatedIDs and perform the actual bulk load via LoadObjects. Would reverse the order of events, however. Also, it would
-      //            mean that we always need two queries for related collection loading; currently we only need one without table inheritance.
+      FindNewDataContainersAndInitialize (relatedDataContainers);
 
-      var newlyLoadedDataContainers = (from DataContainer dataContainer in relatedDataContainers
-                                       where _dataManager.DataContainerMap[dataContainer.ID] == null
-                                       select dataContainer).ToList();
-
-      // Signal all events before registering any containers
-      foreach (var dataContainer in newlyLoadedDataContainers)
-        TransactionEventSink.ObjectLoading (dataContainer.ID);
-
-      foreach (var dataContainer in newlyLoadedDataContainers)
-        InitializeLoadedDataContainer (dataContainer);
-
-      var newlyLoadedDomainObjects = from dataContainer in newlyLoadedDataContainers
-                                     select dataContainer.DomainObject;
-      OnLoaded (new ClientTransactionEventArgs (newlyLoadedDomainObjects.ToList ().AsReadOnly ()));
-
-      var relatedObjects = from DataContainer loadedDataContainer in relatedDataContainers
+      var relatedObjects = from loadedDataContainer in relatedDataContainers
                            let relatedID = loadedDataContainer.ID
                            let registeredDataContainer = Assertion.IsNotNull (_dataManager.DataContainerMap[relatedID])
                            select registeredDataContainer.DomainObject;
@@ -1580,6 +1562,25 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject GetObject (ObjectID id)
   {
     throw new NotImplementedException ();
+  }
+
+  internal void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers)
+  {
+    var newlyLoadedDataContainers = (from dataContainer in dataContainers
+                                     where dataContainer != null && _dataManager.DataContainerMap[dataContainer.ID] == null
+                                     select dataContainer).ToList ();
+
+    if (newlyLoadedDataContainers.Count == 0)
+      return;
+
+    TransactionEventSink.ObjectsLoading (newlyLoadedDataContainers.Select (dc => dc.ID).ToList ().AsReadOnly ());
+
+    foreach (var dataContainer in newlyLoadedDataContainers)
+      InitializeLoadedDataContainer (dataContainer);
+
+    var newlyLoadedDomainObjects = from dataContainer in newlyLoadedDataContainers
+                                   select dataContainer.DomainObject;
+    OnLoaded (new ClientTransactionEventArgs (newlyLoadedDomainObjects.ToList ().AsReadOnly ()));
   }
 }
 }

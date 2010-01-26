@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
@@ -115,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
       else
       {
-        TransactionEventSink.ObjectLoading (id);
+        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { id }));
 
         using (TransactionUnlocker.MakeWriteable (ParentTransaction))
         {
@@ -130,7 +131,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      foreach (ObjectID id in objectIDs)
+      var objectIDArray = objectIDs.ToArray();
+      if (objectIDArray.Length == 0)
+        return new DataContainerCollection ();
+
+      foreach (ObjectID id in objectIDArray)
       {
         if (DataManager.IsDiscarded (id))
           throw new ObjectDiscardedException (id);
@@ -138,7 +143,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        var parentObjects = ParentTransaction.GetObjects<DomainObject> (objectIDs.ToArray(), throwOnNotFound).Where (obj => obj != null);
+        var parentObjects = ParentTransaction.GetObjects<DomainObject> (objectIDArray, throwOnNotFound).Where (obj => obj != null);
         var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
@@ -146,8 +151,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           loadedDataContainers.Add (thisDataContainer);
         }
 
-        foreach (DataContainer dataContainer in loadedDataContainers)
-          TransactionEventSink.ObjectLoading (dataContainer.ID);
+        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (objectIDArray));
         
         return loadedDataContainers;
       }

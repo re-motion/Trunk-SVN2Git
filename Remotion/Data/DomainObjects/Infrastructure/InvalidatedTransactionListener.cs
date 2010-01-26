@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void ObjectLoading (ObjectID id)
+    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
       throw CreateException();
     }

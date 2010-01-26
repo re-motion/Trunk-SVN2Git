@@ -57,15 +57,16 @@ namespace Remotion.Data.DomainObjects
     void NewObjectCreating (ClientTransaction clientTransaction, Type type);
 
     /// <summary>
-    /// This method is invoked when a <see cref="DomainObject"/> is about to be loaded, after its <see cref="DataContainer"/> has been created
-    /// but before the <see cref="DataContainer"/> is associated with the <see cref="ClientTransaction"/>.
+    /// This method is invoked when one or multiple <see cref="DomainObject"/> instances are about to be loaded, after their 
+    /// <see cref="DataContainer">DataContainers</see> have been created but before the <see cref="DataContainer">DataContainers</see> are 
+    /// associated with the <see cref="ClientTransaction"/>.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> to be loaded.</param>
+    /// <param name="objectIDs">A collection of <see cref="ObjectID"/> values identifying the objects to be loaded.</param>
     /// <remarks>
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    void ObjectLoading (ClientTransaction clientTransaction, ObjectID id);
+    void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs);
 
     /// <summary>
     /// This method is invoked when one or multiple <see cref="DomainObject"/>s were loaded. 

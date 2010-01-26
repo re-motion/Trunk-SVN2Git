@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     void NewObjectCreating (Type type, DomainObject instance);
 
-    void ObjectLoading (ObjectID id);
+    void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs);
     void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects);
 
     void ObjectGotID (DomainObject instance, ObjectID id);

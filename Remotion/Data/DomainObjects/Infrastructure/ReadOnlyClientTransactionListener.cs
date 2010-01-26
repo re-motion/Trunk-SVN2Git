@@ -63,9 +63,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable ("NewObjectCreating");
     }
 
-    public virtual void ObjectLoading (ObjectID id)
+    public virtual void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
-      EnsureWriteable ("ObjectLoading");
+      EnsureWriteable ("ObjectsLoading");
     }
 
     public void ObjectGotID (DomainObject instance, ObjectID id)

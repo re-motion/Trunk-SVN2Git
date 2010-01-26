@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -165,34 +163,15 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private T[] ExecuteCollectionAndMergeResult<T> (IQuery query) where T: DomainObject
     {
-      T[] resultArray;
       using (var storageProviderManager = new StorageProviderManager (_clientTransaction.ID))
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         var dataContainers = provider.ExecuteCollectionQuery (query);
-        resultArray = MergeQueryResultWithExistingObjects<T> (dataContainers);
-      }
-      return resultArray;
-    }
 
-    // TODO 1051: This is very similar to ClientTransaction.LoadRelatedObjects, unify.
-    private T[] MergeQueryResultWithExistingObjects<T> (DataContainer[] dataContainers) where T : DomainObject
-    {
-      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-
-      using (ClientTransaction.EnterNonDiscardingScope ())
-      {
-        var newLoadedDataContainers = Array.FindAll (dataContainers, dc => dc != null && ClientTransaction.DataManager.DataContainerMap[dc.ID] == null);
-        foreach (DataContainer dataContainer in newLoadedDataContainers)
-          ClientTransaction.TransactionEventSink.ObjectLoading (dataContainer.ID);
-
-        foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
+        using (ClientTransaction.EnterNonDiscardingScope ())
         {
-          newLoadedDataContainer.RegisterWithTransaction (ClientTransaction);
-          newLoadedDataContainer.SetDomainObject (ClientTransaction.GetObjectForDataContainer (newLoadedDataContainer));
+          ClientTransaction.FindNewDataContainersAndInitialize (dataContainers);
         }
-        var newLoadedDomainObjects = newLoadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly();
-        ClientTransaction.OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
         return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID, true)));
       }

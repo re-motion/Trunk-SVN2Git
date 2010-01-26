@@ -26,14 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
   [TestFixture]
   public class ReadOnlyClientTransactionTest : ClientTransactionBaseTest
   {
-    public override void SetUp ()
-    {
-      base.SetUp ();
-      //ConsoleAppender appender = new ConsoleAppender ();
-      //appender.Layout = new PatternLayout ("%logger - %message%newline");
-      //BasicConfigurator.Configure (appender);
-    }
-
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
         + "ClientTransaction is read-only. Offending transaction modification: NewObjectCreating.")]
@@ -103,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-        + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
+        + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnGetObjectIfNotLoaded ()
     {
       ClientTransactionMock.IsReadOnly = true;
@@ -127,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-        + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
+        + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnGetRelatedObjects1SideIfNotLoaded ()
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
@@ -194,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-       + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
+       + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnGetRelatedObjectsNSideIfNotLoaded ()
     {
       OrderItem loadedOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -257,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-       + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
+       + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnGetRelatedObject1To1RealSideIfNotLoaded ()
     {
       Computer loadedComputer = Computer.GetObject (DomainObjectIDs.Computer1);
@@ -320,7 +312,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-       + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
+       + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnGetRelatedObject1To1VirtualSideIfNotLoaded ()
     {
       Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee3);
@@ -403,7 +395,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = "The operation cannot be executed because the "
-        + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
+        + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnExecuteQueryIfNotLoaded ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");

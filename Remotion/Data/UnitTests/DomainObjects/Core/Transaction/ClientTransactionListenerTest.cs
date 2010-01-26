@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1));
+        _strictListenerMock.Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
         _strictListenerMock.Expect (mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Is.Anything));
         _strictListenerMock.Expect (
             mock => mock.ObjectGotID (Arg<DomainObject>.Matches (obj => obj.ID != null), Arg.Is (DomainObjectIDs.ClassWithAllDataTypes1)));
@@ -312,7 +312,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
+        _strictListenerMock.Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
         _strictListenerMock.Expect (mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Is.Anything));
         _strictListenerMock.Expect (
             mock => mock.RelationEndPointMapRegistering (
@@ -365,7 +365,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1));
+        _strictListenerMock.Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
         _strictListenerMock.Expect (
             mock => mock.DataContainerMapRegistering (Arg<DataContainer>.Matches (dc => dc.ID == DomainObjectIDs.ClassWithAllDataTypes1)));
 

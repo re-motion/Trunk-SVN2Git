@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Logging;
 using Remotion.Text;
+using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -51,10 +51,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("NewObjectCreating: {0}", type.FullName);
     }
 
-    public void ObjectLoading (ObjectID id)
+    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectLoading: {0}", id);
+        s_log.DebugFormat ("ObjectsLoading: {0}", GetObjectIDString (objectIDs));
     }
 
     public void ObjectGotID (DomainObject instance, ObjectID id)
@@ -149,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat (
             "FilterQueryResult: {0}: {1} ({2})",
             queryResult.Query.ID,
-            GetDomainObjectsString (queryResult.AsEnumerable()),
+            GetDomainObjectsString (queryResult.AsEnumerable().Cast<DomainObject>()),
             queryResult.Query.Statement);
       }
       return queryResult;
@@ -215,9 +215,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("DataContainerMapUnregistering: {0}", container.ID);
     }
 
-    private string GetDomainObjectsString (IEnumerable domainObjects)
+    private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)
     {
-      return SeparatedStringBuilder.Build (", ", domainObjects.Cast<DomainObject>(), GetDomainObjectString);
+      return SeparatedStringBuilder.Build (", ", objectIDs);
+    }
+
+    private string GetDomainObjectsString (IEnumerable<DomainObject> domainObjects)
+    {
+      return SeparatedStringBuilder.Build (", ", domainObjects.Select (obj => GetDomainObjectString (obj)));
     }
 
     private string GetDomainObjectString (DomainObject domainObject)

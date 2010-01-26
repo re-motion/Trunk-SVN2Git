@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
@@ -24,6 +25,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Reflection;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -123,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (var persistenceManager = new PersistenceManager (_id))
       {
         var dataContainer = persistenceManager.LoadDataContainer (id);
-        TransactionEventSink.ObjectLoading (dataContainer.ID);
+        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { id }));
         return dataContainer;
       }
     }
@@ -132,7 +134,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      foreach (ObjectID id in objectIDs)
+      var objectIDList = objectIDs.ToList();
+      if (objectIDList.Count == 0)
+        return new DataContainerCollection();
+
+      foreach (ObjectID id in objectIDList)
       {
         if (DataManager.IsDiscarded (id))
           throw new ObjectDiscardedException (id);
@@ -141,8 +147,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (var persistenceManager = new PersistenceManager (_id))
       {
         var newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
-        foreach (DataContainer dataContainer in newLoadedDataContainers)
-          TransactionEventSink.ObjectLoading (dataContainer.ID);
+        TransactionEventSink.ObjectsLoading (objectIDList.AsReadOnly());
         return newLoadedDataContainers;
       }
     }
@@ -163,7 +168,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
             + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
         if (relatedDataContainer != null)
-          TransactionEventSink.ObjectLoading (relatedDataContainer.ID);
+          TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { relatedDataContainer.ID }));
       }
       return relatedDataContainer;
     }

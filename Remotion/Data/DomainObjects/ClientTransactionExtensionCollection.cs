@@ -158,12 +158,12 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ObjectLoading (ClientTransaction clientTransaction, ObjectID id)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
-      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.ObjectLoading (clientTransaction, id);
+        extension.ObjectsLoading (clientTransaction, objectIDs);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

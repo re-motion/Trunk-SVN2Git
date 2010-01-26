@@ -60,9 +60,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.NewObjectCreating (_clientTransaction, type);
     }
 
-    public void ObjectLoading (ObjectID id)
+    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
-      Extensions.ObjectLoading (_clientTransaction, id);
+      Extensions.ObjectsLoading (_clientTransaction, objectIDs);
     }
 
     public void ObjectGotID (DomainObject instance, ObjectID id)

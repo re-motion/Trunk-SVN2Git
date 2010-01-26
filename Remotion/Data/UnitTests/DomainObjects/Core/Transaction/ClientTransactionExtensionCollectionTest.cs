@@ -26,6 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Diagnostics;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -387,15 +388,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ObjectsLoading ()
     {
+      var objectIDs = new List<ObjectID> { _order.ID }.AsReadOnly ();
+
       using (_mockRepository.Ordered ())
       {
-        _extension1.ObjectLoading (ClientTransactionMock, _order.ID);
-        _extension2.ObjectLoading (ClientTransactionMock, _order.ID);
+        _extension1.Expect (mock => mock.ObjectsLoading (ClientTransactionMock, objectIDs));
+        _extension2.Expect (mock => mock.ObjectsLoading (ClientTransactionMock, objectIDs));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectLoading (ClientTransactionMock, _order.ID);
+      _collectionWithExtensions.ObjectsLoading (ClientTransactionMock, objectIDs);
 
       _mockRepository.VerifyAll ();
     }

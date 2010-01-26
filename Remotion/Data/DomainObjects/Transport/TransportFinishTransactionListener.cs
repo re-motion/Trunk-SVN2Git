@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
-    public void ObjectLoading (ObjectID id)
+    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
       // not handled by this listener
     }

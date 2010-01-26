@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     #region IClientTransactionExtension Implementation
 
-    void IClientTransactionExtension.ObjectLoading (ClientTransaction clientTransaction, ObjectID id)
+    void IClientTransactionExtension.ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
     }
 
@@ -277,6 +277,7 @@ namespace Remotion.Data.DomainObjects.Security
     }
 
     //TODO: Move to reflection Utility and test
+    // Note: maybe use MappingConfiguration.NameResolver.GetProperty (string propertyName).Name instead?
     private string GetSimplePropertyName (string propertyName)
     {
       int lastIndex = propertyName.LastIndexOf ('.');

@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void ObjectLoading (ObjectID id)
+    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
       
     }
