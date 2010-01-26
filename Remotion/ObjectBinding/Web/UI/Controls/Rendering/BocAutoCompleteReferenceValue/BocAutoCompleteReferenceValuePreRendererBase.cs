@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           businessObjectClass,
           businessObjectProperty,
           businessObjectId,
-          ""
+          Control.Args
           );
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
     }

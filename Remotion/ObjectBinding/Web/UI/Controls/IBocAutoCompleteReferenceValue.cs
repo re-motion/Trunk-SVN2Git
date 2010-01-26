@@ -70,6 +70,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     int? CompletionSetCount { get; }
     int CompletionInterval { get; }
     int SuggestionInterval { get; }
+    string Args { get; }
     string GetLabelText ();
   }
 }
