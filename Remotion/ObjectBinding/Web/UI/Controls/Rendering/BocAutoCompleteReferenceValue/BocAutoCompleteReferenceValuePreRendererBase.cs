@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -107,9 +108,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           @"$(document).ready( function() {{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), "
           + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
 
-      string businessObjectClass = Control.DataSource != null ? Control.DataSource.BusinessObjectClass.Identifier : "";
-      string businessObjectProperty = Control.Property != null ? Control.Property.Identifier : "";
-      string businessObjectId = Control.DataSource != null ? ((IBusinessObjectWithIdentity) Control.DataSource.BusinessObject).UniqueIdentifier : "";
+      var dataSource = Maybe.ForValue (Control.DataSource);
+      string businessObjectClass = dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).GetValueOrNull() ?? "";
+      string businessObjectProperty = Maybe.ForValue (Control.Property).Select (p => p.Identifier).GetValueOrNull() ?? "";
+      string businessObjectID = 
+          dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).GetValueOrNull() ?? "";
+      
       string script = string.Format (
           scriptTemplate,
           Control.TextBoxClientID,
@@ -125,7 +129,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           Control.NullValueString,
           businessObjectClass,
           businessObjectProperty,
-          businessObjectId,
+          businessObjectID,
           Control.Args
           );
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
