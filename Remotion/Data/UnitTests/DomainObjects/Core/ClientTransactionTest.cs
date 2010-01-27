@@ -45,6 +45,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void GetObject_EnlistedButNotLoadedObject_LoadsObject ()
+    {
+      var order1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      ClientTransactionMock.EnlistDomainObject (order1);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var order1Again = ClientTransactionMock.GetObject (order1.ID, false);
+
+      Assert.That (order1Again, Is.SameAs (order1));
+      Assert.That (order1Again.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
     public void GetObjectForDataContainer_EnlistedObject ()
     {
       var creator = (InterceptedDomainObjectCreator) MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).GetDomainObjectCreator ();

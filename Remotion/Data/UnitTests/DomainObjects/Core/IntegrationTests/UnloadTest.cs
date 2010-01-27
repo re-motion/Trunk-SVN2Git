@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -22,12 +23,122 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
   public class UnloadTest : ClientTransactionBaseTest
   {
+    [Test]
+    public void UnloadCollectionEndPoint ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+
+      DomainObjectUnloader.UnloadCollectionEndPoint (
+          ClientTransactionMock, 
+          orderItems.AssociatedEndPoint.ID, 
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order, true);
+      CheckDataContainerExists (orderItem1, true);
+      CheckDataContainerExists (orderItem2, true);
+
+      CheckEndPointExists (orderItem1, "Order", true);
+      CheckEndPointExists (orderItem2, "Order", true);
+      CheckCollectionEndPoint (order, "OrderItems", false);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void UnloadCollectionEndPoint_AccessingEndPoint ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+
+      DomainObjectUnloader.UnloadCollectionEndPoint (
+          ClientTransactionMock,
+          orderItems.AssociatedEndPoint.ID,
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (orderItems.IsDataAvailable, Is.False);
+
+      Dev.Null = order.OrderItems;
+
+      Assert.That (orderItems.IsDataAvailable, Is.False, "Reaccessing the end point does not load data");
+
+      var orderItemArray = order.OrderItems.ToArray ();
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItemArray, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
+    }
+
+    [Test]
+    public void UnloadCollectionEndPoint_EnsureDataAvailable ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+
+      DomainObjectUnloader.UnloadCollectionEndPoint (
+          ClientTransactionMock,
+          orderItems.AssociatedEndPoint.ID,
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (orderItems.IsDataAvailable, Is.False);
+
+      orderItems.EnsureDataAvailable ();
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
+    }
+
+    [Test]
+    public void UnloadCollectionEndPoint_Reload ()
+    {
+      SetDatabaseModifyable ();
+
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      ObjectID newOrderItemID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var orderInOtherTx = Order.GetObject (DomainObjectIDs.Order1);
+        var newOrderItem = OrderItem.NewObject ();
+        newOrderItemID = newOrderItem.ID;
+        orderInOtherTx.OrderItems.Add (newOrderItem);
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
+
+      DomainObjectUnloader.UnloadCollectionEndPoint (
+          ClientTransactionMock, 
+          orderItems.AssociatedEndPoint.ID, 
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, OrderItem.GetObject (newOrderItemID) }));
+    }
+    
     [Test]
     public void UnloadCollectionEndPoint_AlreadyUnloaded ()
     {
@@ -39,6 +150,167 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (endPoint.IsDataAvailable, Is.False);
 
       DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+    }
+
+    [Test]
+    public void UnloadData_OrderTicket ()
+    {
+      var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      var order = orderTicket1.Order;
+
+      Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, orderTicket1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (orderTicket1, false);
+      CheckDataContainerExists (order, true);
+
+      CheckEndPointExists (orderTicket1, "Order", false);
+      CheckEndPointExists (order, "OrderTicket", false);
+
+      Assert.That (orderTicket1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void UnloadData_Order ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order1.OrderItems;
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+      var orderTicket = order1.OrderTicket;
+      var customer = order1.Customer;
+      var customerOrders = customer.Orders;
+
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customerOrders.IsDataAvailable, Is.True);
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order1, false);
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+      CheckDataContainerExists (orderTicket, true);
+      CheckDataContainerExists (customer, true);
+
+      CheckEndPointExists (orderTicket, "Order", true);
+      CheckEndPointExists (order1, "OrderTicket", true);
+      CheckEndPointExists (orderItemA, "Order", true);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", true);
+      CheckEndPointExists (order1, "Customer", false);
+      CheckCollectionEndPoint (customer, "Orders", false);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void UnloadData_OrderItem ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order1.OrderItems;
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, orderItemA.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order1, true);
+      CheckDataContainerExists (orderItemA, false);
+      CheckDataContainerExists (orderItemB, true);
+
+      CheckEndPointExists (orderItemA, "Order", false);
+      CheckEndPointExists (orderItemB, "Order", true);
+      CheckCollectionEndPoint (order1, "OrderItems", false);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItems.IsDataAvailable, Is.False);
+      Assert.That (orderItemA.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void UnloadData_Reload_PropertyValue ()
+    {
+      SetDatabaseModifyable();
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var orderInOtherTx = Order.GetObject (order1.ID);
+        orderInOtherTx.OrderNumber = 4711;
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (order1.OrderNumber, Is.EqualTo (1));
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (order1.OrderNumber, Is.EqualTo (4711));
+    }
+
+    [Test]
+    public void UnloadData_Reload_ForeignKey ()
+    {
+      SetDatabaseModifyable ();
+      var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+
+      ObjectID newEmployeeID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var computerInOtherTx = Computer.GetObject (computer1.ID);
+        computerInOtherTx.Employee = Employee.NewObject ();
+        newEmployeeID = computerInOtherTx.Employee.ID;
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (DomainObjectIDs.Employee3)));
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, computer1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (computer1.Employee, Is.SameAs (Employee.GetObject (newEmployeeID)));
+    }
+
+    [Test]
+    public void UnloadData_AlreadyUnloaded ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.Order1), Is.SameAs (order1));
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void UnloadData_NonLoadedObject ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (ClientTransactionMock.GetEnlistedDomainObject (DomainObjectIDs.Order1), Is.Null);
     }
 
     [Test]
@@ -68,26 +340,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         "Object 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
         + "unchanged objects can be unloaded. Changed end point: "
         + "'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'.")]
-    public void Perform_ChangedVirtualNullEndPoint ()
+    public void UnloadData_ChangedVirtualNullEndPoint ()
     {
       var domainObject = Employee.GetObject (DomainObjectIDs.Employee3);
-      
+
       var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (domainObject.ID, "Computer");
       var virtualEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
       Assert.That (virtualEndPoint.OppositeObjectID, Is.Not.Null);
       virtualEndPoint.OppositeObjectID = null;
 
       Assert.That (virtualEndPoint.HasChanged, Is.True);
-      
+
       DomainObjectUnloader.UnloadData (ClientTransactionMock, domainObject.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
-    }
-
-    [Test]
-    public void UnloadData_NonLoadedObject_DoesNothing ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
-
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -105,6 +369,536 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.OrderItem1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
     }
 
- 
+    [Test]
+    public void UnloadCollectionEndPointAndData ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (
+          ClientTransactionMock,
+          orderItems.AssociatedEndPoint.ID,
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      CheckDataContainerExists (order, true);
+      CheckDataContainerExists (orderItem1, false);
+      CheckDataContainerExists (orderItem2, false);
+
+      CheckCollectionEndPoint (order, "OrderItems", false);
+      CheckEndPointExists (orderItem1, "Order", false);
+      CheckEndPointExists (orderItem2, "Order", false);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (orderItems.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_EnsureDataAvailable ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (
+          ClientTransactionMock,
+          orderItems.AssociatedEndPoint.ID,
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItems.IsDataAvailable, Is.False);
+
+      orderItem1.EnsureDataAvailable ();
+
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItems.IsDataAvailable, Is.False);
+
+      orderItems.EnsureDataAvailable ();
+
+      Assert.That (orderItem1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItem2.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItems.IsDataAvailable, Is.True);
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
+    }
+
+    [Test]
+    public void UnloadCollectionEndPointAndData_Reload ()
+    {
+      SetDatabaseModifyable ();
+
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order.OrderItems;
+      var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+
+      ObjectID newOrderItemID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var orderInOtherTx = Order.GetObject (DomainObjectIDs.Order1);
+        var orderItem1InOtherTx = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+        var newOrderItem = OrderItem.NewObject ();
+        newOrderItemID = newOrderItem.ID;
+        orderInOtherTx.OrderItems.Add (newOrderItem);
+        orderInOtherTx.OrderItems.Remove (orderItem1InOtherTx);
+
+        orderItem1InOtherTx.Order = Order.GetObject (DomainObjectIDs.Order2);
+
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (
+          ClientTransactionMock,
+          orderItems.AssociatedEndPoint.ID,
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, OrderItem.GetObject (newOrderItemID) }));
+      Assert.That (orderItem1.Order, Is.SameAs (Order.GetObject (DomainObjectIDs.Order2)));
+    }
+
+    [Test]
+    public void Events ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      using (listenerMock.GetMockRepository ().Ordered ())
+      {
+        listenerMock
+            .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .WhenCalled (
+            mi =>
+            {
+              Assert.That (orderItemA.UnloadingCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemB.UnloadingCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemA.UnloadedCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderItemB.UnloadedCalled, Is.False, "items unloaded after this method is called");
+
+              Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
+              Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
+            });
+        listenerMock
+            .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .WhenCalled (
+            mi =>
+            {
+              Assert.That (orderItemA.UnloadingCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemB.UnloadingCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemA.UnloadedCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderItemB.UnloadedCalled, Is.True, "items unloaded before this method is called");
+
+              Assert.That (orderItemA.State, Is.EqualTo (StateType.NotLoadedYet));
+              Assert.That (orderItemB.State, Is.EqualTo (StateType.NotLoadedYet));
+            });
+      }
+
+      listenerMock.Replay ();
+
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (
+          ClientTransactionMock, 
+          order1.OrderItems.AssociatedEndPoint.ID, 
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      listenerMock.VerifyAllExpectations ();
+
+      Assert.That (orderItemA.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
+      Assert.That (orderItemB.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
+      Assert.That (orderItemA.UnloadingDateTime, Is.LessThan (orderItemB.UnloadingDateTime), "orderItemA.OnUnloading before orderItemB.OnUnloading");
+
+      Assert.That (orderItemA.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
+      Assert.That (orderItemB.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
+      Assert.That (orderItemA.UnloadedDateTime, Is.GreaterThan (orderItemB.UnloadedDateTime), "orderItemA.OnUnloaded after orderItemB.OnUnloaded");
+    }
+
+    [Test]
+    public void ReadingValueProperties_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      Dev.Null = order1.OrderNumber;
+
+      AssertObjectWasLoaded(listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void WritingValueProperties_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      order1.OrderNumber = 4711;
+
+      AssertObjectWasLoaded (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void ReadingStateProperties_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      EnsureTransactionThrowsOnLoad ();
+
+      Dev.Null = order1.ID;
+      Dev.Null = order1.IsDiscarded;
+      Dev.Null = order1.State;
+      try
+      {
+        Dev.Null = order1.GetBindingTransaction ();
+        Assert.Fail ("Expected InvalidOperationException");
+      }
+      catch (InvalidOperationException)
+      {
+      }
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void ReadingTimestamp_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      Dev.Null = order1.Timestamp;
+
+      AssertObjectWasLoaded (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void MarkAsChanged_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      order1.MarkAsChanged ();
+
+      AssertObjectWasLoaded (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void EnsureDataAvailable_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      order1.EnsureDataAvailable ();
+
+      AssertObjectWasLoaded (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+    }
+    
+    [Test]
+    public void ReadingPropertyAccessor_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      EnsureTransactionThrowsOnLoad ();
+
+      order1.PreparePropertyAccess (typeof (Order).FullName + ".OrderNumber");
+      Dev.Null = order1.CurrentProperty;
+      order1.PropertyAccessFinished ();
+
+      Dev.Null = order1.Properties;
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void ReadingTransactionContext_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      EnsureTransactionThrowsOnLoad ();
+
+      Dev.Null = order1.DefaultTransactionContext;
+      Dev.Null = order1.TransactionContext;
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void ReadingCollectionEndPoint_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customer = order1.Customer;
+      var customerOrders = customer.Orders;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      EnsureTransactionThrowsOnLoad ();
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+
+      Assert.That (customer.Orders, Is.SameAs (customerOrders)); // does not reload the object or the relation
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void ChangingCollectionEndPoint_ReloadsCollectionAndObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customer = order1.Customer;
+      var customerOrders = customer.Orders;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      customer.Orders.Add (Order.NewObject ()); // reloads the relation contents and thus the object
+
+      AssertObjectWasLoadedAmongOthers(listenerMock, order1);
+      
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (customerOrders.IsDataAvailable, Is.True);
+    }
+
+    [Test]
+    [Ignore ("TODO 2204")]
+    public void ReadingVirtualRelationEndPoints_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItems = order1.OrderItems;
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+      var orderTicket = order1.OrderTicket;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      EnsureTransactionThrowsOnLoad ();
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (order1.OrderTicket, Is.SameAs (orderTicket)); // does not reload the object
+      Assert.That (orderTicket.Order, Is.SameAs (order1)); // does not reload the object
+      Assert.That (order1.OrderItems, Is.SameAs (orderItems)); // does not reload the object
+      Assert.That (order1.OrderItems, Is.EquivalentTo (new[] { orderItemA, orderItemB })); // does not reload the object
+      Assert.That (orderItemA.Order, Is.SameAs (order1)); // does not reload the object
+      Assert.That (orderItemB.Order, Is.SameAs (order1)); // does not reload the object
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    [Ignore ("TODO 2204")]
+    public void ChangingVirtualRelationEndPoints_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+      var orderTicket = order1.OrderTicket;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      EnsureTransactionThrowsOnLoad ();
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      order1.OrderTicket = OrderTicket.NewObject(); // does not reload the object
+      Assert.That (orderTicket.Order, Is.Null);
+
+      order1.OrderItems.Add (OrderItem.NewObject ()); // does not reload the object
+      order1.OrderItems = new ObjectList<OrderItem> (new[] { orderItemA }); // does not reload the object
+      Assert.That (orderItemA.Order, Is.SameAs (order1));
+      Assert.That (orderItemB.Order, Is.Null);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void ReadingRealRelationEndPoints_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customer = order1.Customer;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (order1.Customer, Is.SameAs (customer)); // reloads the object because the foreign key is stored in order1
+
+      AssertObjectWasLoaded (listenerMock, order1);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void ChangingRealRelationEndPoints_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      order1.Customer = Customer.NewObject (); // reloads the object because the foreign key is stored in order1
+
+      AssertObjectWasLoaded (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void ReadingOppositeCollectionEndPoints_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customer = order1.Customer;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (customer.Orders, List.Contains (order1)); // enumerating reloads the relation contents because the foreign key is stored in order1
+
+      AssertObjectWasLoadedAmongOthers (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void ChangingOppositeCollectionEndPoints_ReloadsObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customer = order1.Customer;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      customer.Orders.Add (Order.NewObject()); // reloads the relation contents because the foreign key is stored in order1
+
+      AssertObjectWasLoadedAmongOthers (listenerMock, order1);
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void Commit_DoesNotReloadObjectOrCollection ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customerOrders = order1.Customer.Orders;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+
+      EnsureTransactionThrowsOnLoad();
+
+      ClientTransactionMock.Commit();
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+    }
+
+    [Test]
+    public void Rollback_DoesNotReloadObjectOrCollection ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var customerOrders = order1.Customer.Orders;
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+
+      EnsureTransactionThrowsOnLoad ();
+
+      ClientTransactionMock.Rollback();
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (customerOrders.IsDataAvailable, Is.False);
+    }
+
+    private void CheckDataContainerExists (DomainObject domainObject, bool dataContainerShouldExist)
+    {
+      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
+      if (dataContainerShouldExist)
+        Assert.That (dataContainer, Is.Not.Null, "Data container '{0}' does not exist.", domainObject.ID);
+      else
+        Assert.That (dataContainer, Is.Null, "Data container '{0}' should not exist.", domainObject.ID);
+    }
+
+    private void CheckEndPointExists (DomainObject owningObject, string shortPropertyName, bool endPointShouldExist)
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
+      var endPoint = ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      if (endPointShouldExist)
+        Assert.That (endPoint, Is.Not.Null, "End point '{0}' does not exist.", endPointID);
+      else
+        Assert.That (endPoint, Is.Null, "End point '{0}' should not exist.", endPointID);
+    }
+
+    private void CheckCollectionEndPoint (DomainObject owningObject, string shortPropertyName, bool shouldDataBeAvailable)
+    {
+      CheckEndPointExists (owningObject, shortPropertyName, true);
+
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
+      var endPoint = ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      if (shouldDataBeAvailable)
+        Assert.That (endPoint.IsDataAvailable, Is.True, "End point '{0}' does not have any data.", endPoint.ID);
+      else
+        Assert.That (endPoint.IsDataAvailable, Is.False, "End point '{0}' should not have any data.", endPoint.ID);
+    }
+
+    private void EnsureTransactionThrowsOnLoad ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
+          ClientTransactionMock,
+          mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+    }
+
+    private void AssertObjectWasLoaded (IClientTransactionListener listenerMock, DomainObject loadedObject)
+    {
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { loadedObject })));
+    }
+
+    private void AssertObjectWasLoadedAmongOthers (IClientTransactionListener listenerMock, DomainObject loadedObject)
+    {
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { loadedObject })));
+    }
   }
 }

@@ -19,7 +19,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -167,10 +166,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot get a RelationEndPoint for an anonymous end point definition. "
-                                                                              +
-                                                                              "There are no end points for the non-existing side of unidirectional relations."
-        )]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot get a RelationEndPoint for an anonymous end point definition. There are no end points for the non-existing side of unidirectional "
+        + "relations.")]
     public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
@@ -191,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       Assert.That (_map[orderItemsEndPointID], Is.Null);
-      
+
       var endPoint = _map.GetRelationEndPointWithLazyLoad (orderItemsEndPointID);
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (_map[orderItemsEndPointID], Is.SameAs (endPoint));
@@ -201,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetRelationEndPointWithLazyLoad_RegistersVirtualObjectEndPoint ()
     {
       _map.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // preload Order1 before lazily loading its virtual end point
-      
+
       var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (_map[orderTicketEndPointID], Is.Null);
 
@@ -211,16 +209,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsNotYetRegistered ()
+    public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsWithRealEndPointNotYetRegistered ()
     {
-      IRelationEndPointDefinition locationEndPointDefinition =
-          DomainObjectIDs.Location1.ClassDefinition.GetRelationEndPointDefinition (typeof (Location) + ".Client");
-      var locationEndPointID = new RelationEndPointID (DomainObjectIDs.Location1, locationEndPointDefinition);
+      var locationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+      Assert.That (locationEndPointID.Definition.IsVirtual, Is.False);
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Location1], Is.Null);
 
-      _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
+      var result = _map.GetRelationEndPointWithLazyLoad (locationEndPointID);
+      Assert.That (result, Is.Not.Null);
 
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Location1], Is.Not.Null);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithLazyLoad_DoesNotLoadData_OfObjectsWithVirtualEndPointNotYetRegistered_IfNotNeeded ()
+    {
+      OrderTicket.GetObject (DomainObjectIDs.OrderTicket1); // ensure opposite real end point is available
+      Assert.That (_map[RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order")], Is.Not.Null);
+      Assert.That (_map[RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order")].Definition.IsVirtual, Is.False);
+      
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      Assert.That (endPointID.Definition.IsVirtual, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+
+      var result = _map.GetRelationEndPointWithLazyLoad (endPointID);
+      Assert.That (result, Is.Not.Null);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+    }
+
+    [Test]
+    public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsWithVirtualEndPointNotYetRegistered_IfNeeded ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      Assert.That (endPointID.Definition.IsVirtual, Is.True);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+
+      var result = _map.GetRelationEndPointWithLazyLoad (endPointID);
+      Assert.That (result, Is.Not.Null);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
     }
 
     [Test]
@@ -281,9 +309,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var foreignKeyPropertyName = typeof (OrderTicket) + ".Order";
       var dataContainer = DataContainer.CreateForExisting (
-          DomainObjectIDs.OrderTicket1, 
-          null, 
-          pd => pd.PropertyName == foreignKeyPropertyName ? DomainObjectIDs.Order2 :  pd.DefaultValue);
+          DomainObjectIDs.OrderTicket1,
+          null,
+          pd => pd.PropertyName == foreignKeyPropertyName ? DomainObjectIDs.Order2 : pd.DefaultValue);
       var foreignKeyProperty = dataContainer.PropertyValues[foreignKeyPropertyName];
 
       _map.RegisterEndPointsForDataContainer (dataContainer);
@@ -388,11 +416,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
-      var addedObject = Order.NewObject ();
+      var addedObject = Order.NewObject();
       endPoint.OppositeDomainObjects.Add (addedObject);
       Assert.That (endPoint.HasChanged, Is.True);
 
-      _map.CommitAllEndPoints ();
+      _map.CommitAllEndPoints();
 
       Assert.That (endPoint.HasChanged, Is.False);
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { addedObject }));
@@ -404,11 +432,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPoint = _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
 
-      var addedObject = Order.NewObject ();
+      var addedObject = Order.NewObject();
       endPoint.OppositeDomainObjects.Add (addedObject);
       Assert.That (endPoint.HasChanged, Is.True);
 
-      _map.RollbackAllEndPoints ();
+      _map.RollbackAllEndPoints();
 
       Assert.That (endPoint.HasChanged, Is.False);
       Assert.That (endPoint.OppositeDomainObjects, Is.Empty);
@@ -433,12 +461,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RegisterCollectionEndPoint (endPointID, new DomainObject[0]);
       Assert.That (_map[endPointID], Is.Not.Null);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
       listenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (endPointID))
           .WhenCalled (mi => Assert.That (_map[endPointID], Is.Not.Null));
       ClientTransactionMock.AddListener (listenerMock);
 
-      listenerMock.Replay ();
+      listenerMock.Replay();
 
       _map.RemoveEndPoint (endPointID);
 
@@ -446,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "End point 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' is "
         + "not part of this map.\r\nParameter name: endPointID")]
     public void RemoveEndPoint_NonExistingEndPoint ()

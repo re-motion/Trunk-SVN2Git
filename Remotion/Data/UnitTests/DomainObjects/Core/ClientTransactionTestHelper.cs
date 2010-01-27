@@ -51,5 +51,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       AddListener (clientTransaction, listenerMock);
       listenerMock.Replay (); // no events expected
     }
+
+    public static void EnsureTransactionThrowsOnEvent (ClientTransaction clientTransaction, Action<IClientTransactionListener> forbiddenEventExpectation)
+    {
+      IClientTransactionListener listenerMock = CreateAndAddListenerMock(clientTransaction);
+      listenerMock.Expect (forbiddenEventExpectation).WhenCalled (mi => { throw new InvalidOperationException ("Forbidden event raised."); });
+
+      listenerMock.Replay ();
+    }
+
+    public static IClientTransactionListener CreateAndAddListenerMock (ClientTransaction clientTransaction)
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
+      AddListener (clientTransaction, listenerMock);
+      return listenerMock;
+    }
   }
 }

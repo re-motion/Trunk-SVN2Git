@@ -221,7 +221,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
             + "relations.");
       }
 
-      ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // lazily load the data before retrieving its 
+      if (!endPointID.Definition.IsVirtual)
+        ClientTransaction.EnsureDataAvailable (endPointID.ObjectID); // to retrieve a real end-point, the data container must have been registered
 
       var existingEndPoint = _relationEndPoints[endPointID];
       if (existingEndPoint != null)
