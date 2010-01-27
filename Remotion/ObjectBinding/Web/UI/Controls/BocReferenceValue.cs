@@ -436,7 +436,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override string GetSelectionCountFunction ()
     {
-      return "function() { return BocReferenceValue_GetSelectionCount ('" + DropDownListClientID + "'); }";
+      return "function() { return BocReferenceValue_GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
     }
 
     protected override string GetOptionsMenuTitle ()

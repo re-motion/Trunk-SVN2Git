@@ -21,22 +21,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
   public abstract class BocReferenceValuePreRendererBase : BocPreRendererBase<IBocReferenceValue>, IBocReferenceValuePreRenderer
   {
-    protected const string c_styleFileUrl = "BocReferenceValue.css";
-
-    private static readonly string s_startUpScriptKey = typeof (IBocReferenceValue).FullName + "_Startup";
-    
     protected BocReferenceValuePreRendererBase (IHttpContext context, IBocReferenceValue control)
         : base (context, control)
     {
-    }
-
-    public override void PreRender ()
-    {
-      if (!Control.IsDesignMode && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocReferenceValuePreRendererBase), s_startUpScriptKey))
-      {
-        string script = "BocReferenceValue_InitializeGlobals ('" + Control.NullIdentifier + "');";
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocReferenceValuePreRendererBase), s_startUpScriptKey, script);
-      }
     }
   }
 }

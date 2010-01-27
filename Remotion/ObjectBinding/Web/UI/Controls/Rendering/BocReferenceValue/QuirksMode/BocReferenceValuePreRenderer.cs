@@ -53,5 +53,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
+
+    public override void PreRender ()
+    {
+    }
   }
 }

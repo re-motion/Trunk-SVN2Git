@@ -34,7 +34,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
 
     public override void PreRender ()
     {
-      base.PreRender();
       RegisterAdjustPositionScript();
       RegisterAdjustLayoutScript();
     }
