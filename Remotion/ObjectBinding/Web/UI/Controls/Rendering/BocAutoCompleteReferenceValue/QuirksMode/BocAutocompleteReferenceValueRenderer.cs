@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -93,7 +94,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     {
       var hiddenField = new HiddenField();
       hiddenField.ID = Control.HiddenFieldUniqueID;
-      hiddenField.Value = Control.BusinessObjectUniqueIdentifier;
+      hiddenField.Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString;
 
       return hiddenField;
     }
@@ -202,9 +203,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       string postBackEvent = "";
       if (!Control.IsDesignMode)
         postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = string.Empty;
-      if (Control.BusinessObjectUniqueIdentifier != c_nullIdentifier)
-        objectID = Control.BusinessObjectUniqueIdentifier;
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
         RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
@@ -296,10 +295,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
       string argument = string.Empty;
       string postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = string.Empty;
-      if (Control.BusinessObjectUniqueIdentifier != c_nullIdentifier)
-        objectID = Control.BusinessObjectUniqueIdentifier;
-
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
       {

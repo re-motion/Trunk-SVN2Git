@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -104,9 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       string postBackEvent = "";
       if (!Control.IsDesignMode)
         postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = string.Empty;
-      if (Control.BusinessObjectUniqueIdentifier != null)
-        objectID = Control.BusinessObjectUniqueIdentifier;
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
         RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
@@ -241,17 +240,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       label.CssClass = CssClassReadOnly;
       bool isReadOnly = Control.IsReadOnly;
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isDropDownListHeightEmpty = string.IsNullOrEmpty (textBox.Style["height"]);
-
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
 
       string argument = string.Empty;
       string postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = string.Empty;
-      if (Control.BusinessObjectUniqueIdentifier != null)
-        objectID = Control.BusinessObjectUniqueIdentifier;
-
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
         RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
@@ -352,7 +345,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
                             ID = Control.HiddenFieldUniqueID,
                             Page = Control.Page.WrappedInstance,
                             EnableViewState = true,
-                            Value = Control.BusinessObjectUniqueIdentifier
+                            Value = Control.BusinessObjectUniqueIdentifier ?? Control.NullValueString
                         };
       hiddenField.RenderControl (Writer);
     }

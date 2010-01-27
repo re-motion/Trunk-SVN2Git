@@ -97,10 +97,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _internalValue; }
       set
       {
-        //  Don't update identical values, unless they are null
-        if (_internalValue == value && _internalValue != null)
-          return;
-
         _internalValue = StringUtility.EmptyToNull (value);
       }
     }
