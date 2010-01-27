@@ -109,10 +109,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
 
       var dataSource = Maybe.ForValue (Control.DataSource);
-      string businessObjectClass = dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).GetValueOrNull() ?? "";
-      string businessObjectProperty = Maybe.ForValue (Control.Property).Select (p => p.Identifier).GetValueOrNull() ?? "";
-      string businessObjectID = 
-          dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).GetValueOrNull() ?? "";
+      string businessObjectClass = dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault("");
+      string businessObjectProperty = Maybe.ForValue (Control.Property).Select (p => p.Identifier).ValueOrDefault("");
+      string businessObjectID =
+          dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).ValueOrDefault("");
       
       string script = string.Format (
           scriptTemplate,
