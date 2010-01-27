@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
   {
     private Maybe<string> _stringNothing;
     private Maybe<string> _stringNonNothingTest;
-    
+
     private Maybe<int> _intNothing;
     private Maybe<int> _intNonNothingFour;
 
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     public void Initialization_Null ()
     {
       var value = new Maybe<string> (null);
-      Assert.That (value.GetValueOrNull (), Is.Null);
+      Assert.That (value.GetValueOrNull(), Is.Null);
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     {
       var innerValue = "Test";
       var value = new Maybe<string> (innerValue);
-      Assert.That (value.GetValueOrNull (), Is.SameAs (innerValue));
+      Assert.That (value.GetValueOrNull(), Is.SameAs (innerValue));
     }
 
     [Test]
@@ -80,8 +80,8 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void GetHashCode_EqualObjects ()
     {
-      Assert.That (_stringNothing.GetHashCode (), Is.EqualTo (Maybe<string>.Nothing.GetHashCode ()));
-      Assert.That (_stringNonNothingTest.GetHashCode (), Is.EqualTo (new Maybe<string> ("Test").GetHashCode ()));
+      Assert.That (_stringNothing.GetHashCode(), Is.EqualTo (Maybe<string>.Nothing.GetHashCode()));
+      Assert.That (_stringNonNothingTest.GetHashCode(), Is.EqualTo (new Maybe<string> ("Test").GetHashCode()));
     }
 
     [Test]
@@ -190,20 +190,25 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void ToString_Nothing ()
     {
-      Assert.That (_stringNothing.ToString (), Is.EqualTo ("Nothing (String)"));
+      Assert.That (_stringNothing.ToString(), Is.EqualTo ("Nothing (String)"));
     }
 
     [Test]
     public void ToString_NonNothing ()
     {
-      Assert.That (_stringNonNothingTest.ToString (), Is.EqualTo ("Value: Test (String)"));
+      Assert.That (_stringNonNothingTest.ToString(), Is.EqualTo ("Value: Test (String)"));
     }
 
     [Test]
     public void Select_Nothing_DoesNotCallSelector ()
     {
       bool selectorCalled = false;
-      _stringNothing.Select (s => { selectorCalled = true; return s.Length; });
+      _stringNothing.Select (
+          s =>
+          {
+            selectorCalled = true;
+            return s.Length;
+          });
       Assert.That (selectorCalled, Is.False);
     }
 
@@ -259,7 +264,12 @@ namespace Remotion.UnitTests.FunctionalProgramming
       bool actionExecuted = false;
       string value = null;
 
-      _stringNonNothingTest.Do (s => { value = s; actionExecuted = true; });
+      _stringNonNothingTest.Do (
+          s =>
+          {
+            value = s;
+            actionExecuted = true;
+          });
 
       Assert.That (actionExecuted, Is.True);
       Assert.That (value, Is.EqualTo ("Test"));
@@ -269,7 +279,12 @@ namespace Remotion.UnitTests.FunctionalProgramming
     public void Where_Nothing_DoesNotCallPredicate ()
     {
       bool predicateCalled = false;
-      _stringNothing.Where (s => { predicateCalled = true; return true; });
+      _stringNothing.Where (
+          s =>
+          {
+            predicateCalled = true;
+            return true;
+          });
       Assert.That (predicateCalled, Is.False);
     }
 
@@ -283,7 +298,12 @@ namespace Remotion.UnitTests.FunctionalProgramming
     public void Where_NonNothing_CallsPredicateWithValue ()
     {
       string predicateParameter = null;
-      _stringNonNothingTest.Where (s => { predicateParameter = s; return false; });
+      _stringNonNothingTest.Where (
+          s =>
+          {
+            predicateParameter = s;
+            return false;
+          });
 
       Assert.That (predicateParameter, Is.EqualTo ("Test"));
     }
@@ -305,7 +325,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     {
       var enumerable = Maybe.EnumerateValues (Maybe.ForValue ("One"), Maybe.ForValue ((string) null), Maybe.ForValue ("Two"));
 
-      Assert.That (enumerable.ToArray (), Is.EqualTo (new[] { "One", "Two" }));
+      Assert.That (enumerable.ToArray(), Is.EqualTo (new[] { "One", "Two" }));
     }
   }
 }
