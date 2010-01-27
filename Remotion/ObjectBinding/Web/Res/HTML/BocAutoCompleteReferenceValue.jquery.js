@@ -917,17 +917,33 @@
       show: function()
       {
         var offset = $(input).offset();
+        // re-motion: calculate best position where to open dropdown list
+        var position = $.Autocompleter.calculateSpaceAround(input);
+        if (position.spaceVertical == 'T')
+        {
+          var newTop = -2;
+          var newScrollHeight = position.top;
+        } else
+        {
+          var newTop = offset.top + input.offsetHeight;
+          var newScrollHeight = options.scrollHeight;
+        }
+        options.scrollHeight = position.top;
+
         element.css({
           // re-motion: changed width to span the entire control, including dropdown button
+          height: options.scrollHeight,
           width: $(input).parents('span.bocAutoCompleteReferenceValueDropDownList').width() - 2,
-          top: offset.top + input.offsetHeight,
+          top: newTop,
           left: offset.left
         }).show();
+
         if (options.scroll)
         {
           list.scrollTop(0);
+          // re-motion: need to resize list to fit available space
           list.css({
-            maxHeight: options.scrollHeight,
+            maxHeight: newScrollHeight,
             overflow: 'auto'
           });
 
@@ -993,5 +1009,44 @@
     }
     field.focus();
   };
+
+  $.Autocompleter.calculateSpaceAround = function(element)
+  {
+    // re-motion: make sure CSS values are allways numbers, IE can return 'auto'
+    function number(num)
+    {
+      return parseInt(num) || 0;
+    };
+
+    var element = $(element);
+    // re-motion: check position where to place the element
+    var offsetParent = element.offsetParent();
+    var pos = element.position();
+    // re-motion: position and dimensions of the element
+    var top = number(pos.top) + number(element.css('margin-top')); // IE can return 'auto' for margins
+    var left = number(pos.left) + number(element.css('margin-left'));
+    var width = element.outerWidth();
+    var height = element.outerHeight();
+
+    // re-motion: calculate space arrownd the element
+    var scrollTop = number($(document).scrollTop());
+    var scrollLeft = number($(document).scrollLeft());
+    var documentWidth = number($(window).width());
+    var documentHeight = number($(window).height());
+    var windowRight = scrollLeft + documentWidth;
+    var windowBottom = scrollTop + documentHeight;
+
+    var space = new Object();
+    space.top = element.offset().top - scrollTop;
+    space.bottom = documentHeight - ((element.offset().top + height) - scrollTop);
+    space.left = element.offset().left - scrollLeft;
+    space.right = documentWidth - ((element.offset().left + width) - scrollLeft);
+
+    (space.top > space.bottom) ? space.spaceVertical = 'T' : space.spaceVertical = 'B';
+    (space.left > space.right) ? space.spaceHorizontal = 'L' : space.spaceHorizontal = 'R';
+    space.space = space.spaceVertical + space.spaceHorizontal;
+
+    return space;
+  }
 
 })(jQuery);
