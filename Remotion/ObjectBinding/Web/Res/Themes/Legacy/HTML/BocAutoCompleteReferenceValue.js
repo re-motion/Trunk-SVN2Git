@@ -63,11 +63,11 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
     });
 };
 
-//  Returns the number of rows selected for the specified BocList
-BocAutoCompleteReferenceValue.GetSelectionCount = function(referenceValueHiddenFieldId)
+//  Returns the number of rows selected for the specified ReferenceValue
+BocAutoCompleteReferenceValue.GetSelectionCount = function(referenceValueHiddenFieldID, nullValue)
 {
-  var hiddenField = document.getElementById(referenceValueHiddenFieldId);
-  if (hiddenField == null || hiddenField.value == null || hiddenField.value.length == 0)
+  var hiddenField = document.getElementById(referenceValueHiddenFieldID);
+  if (hiddenField == null || hiddenField.value == nullValue)
     return 0;
 
   return 1;

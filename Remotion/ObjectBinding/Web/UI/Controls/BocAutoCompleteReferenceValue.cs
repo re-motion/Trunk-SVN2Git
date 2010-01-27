@@ -598,7 +598,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override string GetSelectionCountFunction ()
     {
-      return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "'); }";
+      return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "', '" + c_nullIdentifier + "'); }";
     }
   }
 }
