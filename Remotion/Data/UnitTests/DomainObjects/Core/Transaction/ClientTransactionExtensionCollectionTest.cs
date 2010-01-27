@@ -404,6 +404,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void ObjectsUnloaded ()
+    {
+      var unloadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { _order });
+
+      using (_mockRepository.Ordered ())
+      {
+        _extension1.Expect (mock => mock.ObjectsUnloaded (ClientTransactionMock, unloadedDomainObjects));
+        _extension2.Expect (mock => mock.ObjectsUnloaded (ClientTransactionMock, unloadedDomainObjects));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _collectionWithExtensions.ObjectsUnloaded (ClientTransactionMock, unloadedDomainObjects);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void ObjectsUnloading ()
+    {
+      var unloadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { _order });
+
+      using (_mockRepository.Ordered ())
+      {
+        _extension1.Expect (mock => mock.ObjectsUnloading (ClientTransactionMock, unloadedDomainObjects));
+        _extension2.Expect (mock => mock.ObjectsUnloading (ClientTransactionMock, unloadedDomainObjects));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      _collectionWithExtensions.ObjectsUnloading (ClientTransactionMock, unloadedDomainObjects);
+
+      _mockRepository.VerifyAll ();
+    }
+
+
+    [Test]
     public void FilterQueryResult ()
     {
       var originalResult = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new Order[0]);

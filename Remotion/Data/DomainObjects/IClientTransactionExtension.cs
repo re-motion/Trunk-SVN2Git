@@ -80,6 +80,28 @@ namespace Remotion.Data.DomainObjects
     void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> loadedDomainObjects);
 
     /// <summary>
+    /// This method is invoked when the data of one or multiple <see cref="DomainObject"/> instances are about to be unloaded.
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    /// <param name="unloadedDomainObjects">A collection of <see cref="DomainObject"/> references whose data is to be unloaded from 
+    /// <paramref name="clientTransaction"/>.</param>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// </remarks>
+    void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+
+    /// <summary>
+    /// This method is invoked when the data of one or multiple <see cref="DomainObject"/> instances was unloaded. 
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    /// <param name="unloadedDomainObjects">A collection of <see cref="DomainObject"/> references whose data was unloaded from
+    /// <paramref name="clientTransaction"/>.</param>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method must not throw an exception.</note>
+    /// </remarks>
+    void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+
+    /// <summary>
     /// This method is invoked, before a <see cref="DomainObject"/> is deleted. 
     /// The operation may be cancelled at this point.
     /// </summary>

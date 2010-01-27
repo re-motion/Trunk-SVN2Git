@@ -60,6 +60,16 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      
+    }
+
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      
+    }
+
     public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       

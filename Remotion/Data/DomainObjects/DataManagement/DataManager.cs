@@ -255,7 +255,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public UnloadCommand CreateUnloadCommand (params ObjectID[] objectIDs)
   {
-    return new UnloadCommand (objectIDs, _dataContainerMap, _relationEndPointMap);
+    return new UnloadCommand (objectIDs, ClientTransaction, _dataContainerMap, _relationEndPointMap);
   }
 
   private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

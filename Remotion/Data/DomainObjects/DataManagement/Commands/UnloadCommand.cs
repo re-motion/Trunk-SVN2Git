@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
@@ -30,23 +31,54 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   public class UnloadCommand : IDataManagementCommand
   {
     private readonly ObjectID[] _objectIDs;
+    private readonly ClientTransaction _clientTransaction;
     private readonly DataContainerMap _dataContainerMap;
     private readonly RelationEndPointMap _relationEndPointMap;
 
-    public UnloadCommand (ObjectID[] objectIDs, DataContainerMap dataContainerMap, RelationEndPointMap relationEndPointMap)
+    private readonly DataContainer[] _affectedDataContainers;
+    private readonly ReadOnlyCollection<DomainObject> _affectedDomainObjects;
+
+    private readonly RelationEndPointID[] _affectedEndPointIDs;
+
+    public UnloadCommand (
+        ObjectID[] objectIDs, 
+        ClientTransaction clientTransaction, 
+        DataContainerMap dataContainerMap, 
+        RelationEndPointMap relationEndPointMap)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("dataContainerMap", dataContainerMap);
       ArgumentUtility.CheckNotNull ("relationEndPointMap", relationEndPointMap);
 
       _objectIDs = objectIDs;
+      _clientTransaction = clientTransaction;
       _dataContainerMap = dataContainerMap;
       _relationEndPointMap = relationEndPointMap;
+      
+      _affectedDataContainers = GetAndCheckAffectedDataContainers ();
+      _affectedDomainObjects = _affectedDataContainers.Select (dc => dc.DomainObject).ToList ().AsReadOnly ();
+
+      _affectedEndPointIDs = (from dataContainer in _affectedDataContainers
+                              from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
+                              from unloadedEndPointID in GetAndCheckAffectedEndPointIDs (associatedEndPointID)
+                              select unloadedEndPointID).ToArray();
+    }
+
+    public DataContainer[] AffectedDataContainers
+    {
+      get { return _affectedDataContainers; }
+    }
+
+    public RelationEndPointID[] AffectedEndPointIDs
+    {
+      get { return _affectedEndPointIDs; }
     }
 
     public void NotifyClientTransactionOfBegin ()
     {
-      // TODO 2176
+      if (_affectedDomainObjects.Count > 0)
+        _clientTransaction.TransactionEventSink.ObjectsUnloading (_affectedDomainObjects);
     }
 
     public void Begin ()
@@ -56,11 +88,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Perform ()
     {
-      var loadedDataContainers = GetAndCheckAffectedDataContainers ();
-      var endPointIDsToBeUnloaded = GetAndCheckAffectedEndPointIDs (loadedDataContainers);
-
-      UnregisterEndPoints (endPointIDsToBeUnloaded);
-      UnregisterDataContainers (loadedDataContainers);
+      UnregisterEndPoints (_affectedEndPointIDs);
+      UnregisterDataContainers (_affectedDataContainers);
     }
 
     public void End ()
@@ -70,7 +99,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void NotifyClientTransactionOfEnd ()
     {
-      // TODO 2176
+      if (_affectedDomainObjects.Count > 0)
+        _clientTransaction.TransactionEventSink.ObjectsUnloaded (_affectedDomainObjects);
     }
 
     IDataManagementCommand IDataManagementCommand.ExtendToAllRelatedObjects ()
@@ -78,10 +108,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return this;
     }
 
-    public DataContainer[] GetAndCheckAffectedDataContainers ()
+    private DataContainer[] GetAndCheckAffectedDataContainers ()
     {
-      var loadedDataContainers = _objectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null);
-      var notUnchangedDataContainers = loadedDataContainers.Where (dc => dc.State != StateType.Unchanged);
+      var affectedDataContainers = _objectIDs.Select (id => _dataContainerMap[id]).Where (dc => dc != null).ToArray();
+      var notUnchangedDataContainers = affectedDataContainers.Where (dc => dc.State != StateType.Unchanged);
       if (notUnchangedDataContainers.Any ())
       {
         var message =
@@ -91,34 +121,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         throw new InvalidOperationException (message);
       }
       
-      return loadedDataContainers.ToArray();
-    }
-
-    public RelationEndPointID[] GetAndCheckAffectedEndPointIDs (
-        IEnumerable<DataContainer> unregisteredDataContainers)
-    {
-      ArgumentUtility.CheckNotNull ("unregisteredDataContainers", unregisteredDataContainers);
-
-      var endPointIDsToBeUnloaded = from dc in unregisteredDataContainers
-                                    from endPointID in GetAndCheckAffectedEndPointIDs (dc)
-                                    select endPointID;
-      return endPointIDsToBeUnloaded.ToArray();
-    }
-
-    public RelationEndPointID[] GetAndCheckAffectedEndPointIDs (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      var unloadedEndPointIDs = from associatedEndPointID in dataContainer.AssociatedRelationEndPointIDs
-                                from unloadedEndPointID in GetAndCheckAffectedEndPointIDs (associatedEndPointID)
-                                select unloadedEndPointID;
-      return unloadedEndPointIDs.ToArray();
+      return affectedDataContainers;
     }
 
     private IEnumerable<RelationEndPointID> GetAndCheckAffectedEndPointIDs (RelationEndPointID endPointID)
     {
-      if (!endPointID.Definition.IsVirtual && !_relationEndPointMap.Contains (endPointID))
-        throw new InvalidOperationException ("Real end point has not been registered.");
+      Assertion.IsFalse (
+          !endPointID.Definition.IsVirtual && !_relationEndPointMap.Contains (endPointID), 
+          "Real end point is always registered when data container exists.");
 
       var maybeLoadedEndPoint = Maybe.ForValue (_relationEndPointMap[endPointID])
           .Where (endPoint => EnsureUnchanged (endPoint.ObjectID, endPoint));

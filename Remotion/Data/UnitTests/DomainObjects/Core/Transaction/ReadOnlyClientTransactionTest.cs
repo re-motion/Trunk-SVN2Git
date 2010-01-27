@@ -429,7 +429,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
         "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "RelationEndPointMapUnregistering.")]
+        + "ObjectsUnloading.")]
     public void ThrowsOnUnloadData_WithEndPoints ()
     {
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
@@ -441,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
         "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "DataContainerMapUnregistering.")]
+        + "ObjectsUnloading.")]
     public void ThrowsOnUnloadData_WithoutEndPoints ()
     {
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.ClassWithAllDataTypes1);

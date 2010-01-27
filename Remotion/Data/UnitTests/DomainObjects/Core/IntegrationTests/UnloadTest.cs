@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -59,6 +60,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var domainObject = Order.GetObject (DomainObjectIDs.Order1);
       domainObject.OrderTicket = OrderTicket.NewObject ();
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, domainObject.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Object 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid' cannot be unloaded because one of its relations has been changed. Only "
+        + "unchanged objects can be unloaded. Changed end point: "
+        + "'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer'.")]
+    public void Perform_ChangedVirtualNullEndPoint ()
+    {
+      var domainObject = Employee.GetObject (DomainObjectIDs.Employee3);
+      
+      var virtualEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (domainObject.ID, "Computer");
+      var virtualEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (virtualEndPointID);
+      Assert.That (virtualEndPoint.OppositeObjectID, Is.Not.Null);
+      virtualEndPoint.OppositeObjectID = null;
+
+      Assert.That (virtualEndPoint.HasChanged, Is.True);
+      
       DomainObjectUnloader.UnloadData (ClientTransactionMock, domainObject.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
     }
 

@@ -65,6 +65,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.ObjectsLoading (_clientTransaction, objectIDs);
     }
 
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      Extensions.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
+    }
+
     public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       // not handled by this listener
@@ -73,6 +78,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Extensions.ObjectsLoaded (_clientTransaction, domainObjects);
+    }
+
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      Extensions.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
     }
 
     public void ObjectDeleting (DomainObject domainObject)

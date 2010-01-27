@@ -49,6 +49,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+    }
+
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+    }
+
     public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
     }

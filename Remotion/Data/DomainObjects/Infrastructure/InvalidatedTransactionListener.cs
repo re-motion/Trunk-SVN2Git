@@ -49,6 +49,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      throw CreateException ();
+    }
+
     public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       throw CreateException();
@@ -57,6 +62,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
+    }
+
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      throw CreateException ();
     }
 
     public void ObjectDeleting (DomainObject domainObject)

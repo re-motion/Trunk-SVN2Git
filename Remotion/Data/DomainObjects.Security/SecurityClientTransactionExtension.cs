@@ -52,6 +52,14 @@ namespace Remotion.Data.DomainObjects.Security
     {
     }
 
+    void IClientTransactionExtension.ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+    }
+
+    void IClientTransactionExtension.ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+    }
+
     void IClientTransactionExtension.ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
     }

@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -1457,6 +1458,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       }
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void UnloadData ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloading (
+                        Arg.Is (ClientTransactionMock),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_order1.ID] != null));
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloaded (
+                        Arg.Is (ClientTransactionMock),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainerMap[_order1.ID] == null));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      DomainObjectUnloader.UnloadData (ClientTransactionMock, _order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      _mockRepository.VerifyAll ();
     }
 
     private void RecordObjectLoadingCalls (

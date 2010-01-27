@@ -83,12 +83,22 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      // not handled by this listener
+    }
+
     public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       // not handled by this listener
     }
 
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+      // not handled by this listener
+    }
+
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       // not handled by this listener
     }

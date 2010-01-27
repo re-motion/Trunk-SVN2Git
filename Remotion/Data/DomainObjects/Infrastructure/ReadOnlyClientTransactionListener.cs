@@ -68,6 +68,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable ("ObjectsLoading");
     }
 
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      Assertion.IsFalse (_clientTransaction.IsReadOnly);
+    }
+
     public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       EnsureWriteable ("ObjectGotID");
@@ -76,6 +81,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public virtual void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
+    }
+
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      EnsureWriteable ("ObjectsUnloading");
     }
 
     public virtual void ObjectDeleting (DomainObject domainObject)

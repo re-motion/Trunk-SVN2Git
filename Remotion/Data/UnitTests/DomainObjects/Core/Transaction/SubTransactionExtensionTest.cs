@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -46,6 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     private ClientTransactionScope _subTransactionScope;
 
     private Order _order1;
+    private DataManager _parentTransactionDataManager;
+    private DataManager _subTransactionDataManager;
 
     public override void TestFixtureSetUp ()
     {
@@ -68,6 +71,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _subTransaction.Extensions.Add ("TestExtension", _extensionMock);
 
       _mockRepository.BackToRecordAll();
+
+      _parentTransactionDataManager = ClientTransactionTestHelper.GetDataManager (_subTransaction.ParentTransaction);
+      _subTransactionDataManager = ClientTransactionTestHelper.GetDataManager (_subTransaction);
     }
 
     public override void TearDown ()
@@ -1528,5 +1534,65 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         _subTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       }
     }
+
+    [Test]
+    public void UnloadData_ThisTransactionOnly ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloading (
+                        Arg.Is (_subTransaction),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] != null));
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloaded (
+                        Arg.Is (_subTransaction),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] == null));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      DomainObjectUnloader.UnloadData (_subTransaction, _order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void UnloadData_Recursive ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloading (
+                        Arg.Is (_subTransaction),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] != null));
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloaded (
+                        Arg.Is (_subTransaction),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (_subTransactionDataManager.DataContainerMap[_order1.ID] == null));
+
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloading (
+                        Arg.Is (_subTransaction.ParentTransaction),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (_parentTransactionDataManager.DataContainerMap[_order1.ID] != null));
+        _extensionMock
+            .Expect (mock => mock.ObjectsUnloaded (
+                        Arg.Is (_subTransaction.ParentTransaction),
+                        Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
+            .WhenCalled (mi => Assert.That (_parentTransactionDataManager.DataContainerMap[_order1.ID] == null));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      DomainObjectUnloader.UnloadData (_subTransaction, _order1.ID, DomainObjectUnloader.TransactionMode.RecurseToRoot);
+
+      _mockRepository.VerifyAll ();
+    }
+
   }
 }

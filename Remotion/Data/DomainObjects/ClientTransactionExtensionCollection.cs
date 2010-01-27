@@ -175,6 +175,22 @@ namespace Remotion.Data.DomainObjects
         extension.ObjectsLoaded (clientTransaction, loadedDomainObjects);
     }
 
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.ObjectsUnloading (clientTransaction, unloadedDomainObjects);
+    }
+
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.ObjectsUnloaded (clientTransaction, unloadedDomainObjects);
+    }
+
     [EditorBrowsable (EditorBrowsableState.Never)]
     public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {

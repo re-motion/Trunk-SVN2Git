@@ -57,6 +57,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("ObjectsLoading: {0}", GetObjectIDString (objectIDs));
     }
 
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("ObjectsUnloaded: {0}", GetDomainObjectsString (unloadedDomainObjects));
+    }
+
     public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       if (s_log.IsDebugEnabled)
@@ -67,6 +73,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectsLoaded: {0}", GetDomainObjectsString (domainObjects));
+    }
+
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("ObjectsUnloading: {0}", GetDomainObjectsString (unloadedDomainObjects));
     }
 
     public void ObjectDeleting (DomainObject domainObject)
