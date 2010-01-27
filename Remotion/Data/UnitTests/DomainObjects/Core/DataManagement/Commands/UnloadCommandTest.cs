@@ -291,6 +291,111 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void Begin ()
+    {
+      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+      
+      var unloadedObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
+      ClientTransactionMock.EnlistDomainObject (unloadedObject);
+      Assert.That (unloadedObject.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
+      command.Begin ();
+
+      Assert.That (loadedObject.UnloadingCalled, Is.True);
+
+      Assert.That (loadedObject.UnloadedCalled, Is.False);
+
+      Assert.That (unloadedObject.UnloadingCalled, Is.False);
+      Assert.That (unloadedObject.UnloadedCalled, Is.False);
+    }
+
+    [Test]
+    public void Begin_Transaction ()
+    {
+      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      var command = CreateCommand (loadedObject.ID);
+
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        command.Begin();
+      }
+
+      Assert.That (loadedObject.UnloadingTx, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void Begin_Sequence ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      var command = CreateCommand (order1.ID, order2.ID);
+      command.Begin ();
+
+      Assert.That (order1.UnloadingCalled, Is.True);
+      Assert.That (order2.UnloadingCalled, Is.True);
+
+      Assert.That (order1.UnloadingDateTime, Is.LessThan (order2.UnloadingDateTime), "order1 was called first");
+    }
+
+    [Test]
+    public void End ()
+    {
+      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      var unloadedObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
+      ClientTransactionMock.EnlistDomainObject (unloadedObject);
+      Assert.That (unloadedObject.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
+      command.End ();
+
+      Assert.That (loadedObject.UnloadedCalled, Is.True);
+
+      Assert.That (loadedObject.UnloadingCalled, Is.False);
+
+      Assert.That (unloadedObject.UnloadingCalled, Is.False);
+      Assert.That (unloadedObject.UnloadedCalled, Is.False);
+    }
+
+    [Test]
+    public void End_Transaction ()
+    {
+      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      var command = CreateCommand (loadedObject.ID);
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        command.End();
+      }
+
+      Assert.That (loadedObject.UnloadedTx, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void End_Sequence ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      var command = CreateCommand (order1.ID, order2.ID);
+      command.End ();
+
+      Assert.That (order1.UnloadedCalled, Is.True);
+      Assert.That (order2.UnloadedCalled, Is.True);
+
+      Assert.That (order1.UnloadedDateTime, Is.GreaterThan (order2.UnloadedDateTime), "order2 was called first");
+    }
+
+    [Test]
     public void Perform_NotLoaded ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_dataManager.ClientTransaction);

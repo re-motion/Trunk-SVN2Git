@@ -642,6 +642,20 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// This method is invoked before an object's data is unloaded from the <see cref="ClientTransaction.Current"/> transaction.
+    /// </summary>
+    protected internal virtual void OnUnloading ()
+    {
+    }
+
+    /// <summary>
+    /// This method is invoked after an object's data has been unloaded from the <see cref="ClientTransaction.Current"/> transaction.
+    /// </summary>
+    protected internal virtual void OnUnloaded ()
+    {
+    }
+
+    /// <summary>
     /// Raises the <see cref="Committing"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>

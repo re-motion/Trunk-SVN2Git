@@ -83,7 +83,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      // TODO 2176
+      using (_clientTransaction.EnterNonDiscardingScope ())
+      {
+        for (int i = 0; i < _affectedDomainObjects.Count; i++)
+          _affectedDomainObjects[i].OnUnloading();
+      }
     }
 
     public void Perform ()
@@ -94,7 +98,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      // TODO 2176
+      using (_clientTransaction.EnterNonDiscardingScope ())
+      {
+        for (int i = _affectedDomainObjects.Count - 1; i >= 0; i--)
+          _affectedDomainObjects[i].OnUnloaded();
+      }
     }
 
     public void NotifyClientTransactionOfEnd ()

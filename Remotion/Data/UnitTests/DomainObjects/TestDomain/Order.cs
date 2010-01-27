@@ -47,6 +47,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public readonly bool CtorCalled = false;
     public LoadMode LastLoadMode;
 
+    public bool UnloadingCalled = false;
+    public ClientTransaction UnloadingTx;
+    public DateTime UnloadingDateTime;
+    public bool UnloadedCalled = false;
+    public ClientTransaction UnloadedTx;
+    public DateTime UnloadedDateTime;
+    
     protected Order ()
     {
       CtorCalled = true;
@@ -123,6 +130,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
         ProtectedLoaded (this, EventArgs.Empty);
       if (StaticLoadHandler != null)
         StaticLoadHandler (this, EventArgs.Empty);
+    }
+
+    protected override void OnUnloading ()
+    {
+      base.OnUnloading ();
+      UnloadingCalled = true;
+      UnloadingTx = ClientTransaction.Current;
+
+      UnloadingDateTime = DateTime.Now;
+      while (DateTime.Now == UnloadingDateTime)
+      {
+      }
+    }
+
+    protected override void OnUnloaded ()
+    {
+      base.OnUnloading ();
+      UnloadedCalled = true;
+      UnloadedTx = ClientTransaction.Current;
+
+      UnloadedDateTime = DateTime.Now;
+      while (DateTime.Now == UnloadedDateTime)
+      {
+      }
     }
   }
 }
