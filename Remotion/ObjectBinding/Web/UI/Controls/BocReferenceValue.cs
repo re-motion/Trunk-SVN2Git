@@ -800,11 +800,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HasOptionsMenu; }
     }
 
-    string IBocReferenceValue.InternalValue
-    {
-      get { return InternalValue; }
-    }
-
     bool IBocReferenceValue.IsCommandEnabled (bool readOnly)
     {
       return IsCommandEnabled (readOnly);

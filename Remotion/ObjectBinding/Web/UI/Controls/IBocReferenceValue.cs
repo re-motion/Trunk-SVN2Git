@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     bool? HasValueEmbeddedInsideOptionsMenu { get; }
     bool HasOptionsMenu { get; }
-    string InternalValue { get; }
+    string BusinessObjectUniqueIdentifier { get; }
     bool IsCommandEnabled (bool readOnly);
 
     DropDownMenu OptionsMenu { get; }

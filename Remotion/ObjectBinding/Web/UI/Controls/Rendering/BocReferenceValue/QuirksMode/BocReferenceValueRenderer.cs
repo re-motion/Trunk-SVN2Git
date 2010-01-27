@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
@@ -32,7 +33,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
   /// </remarks>
   public class BocReferenceValueRenderer : BocRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
-    private const string c_nullIdentifier = "==null==";
     private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod = () => new DropDownList();
 
@@ -190,9 +190,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       string postBackEvent = "";
       if (!Control.IsDesignMode)
         postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = string.Empty;
-      if (Control.InternalValue != c_nullIdentifier)
-        objectID = Control.InternalValue;
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
       {
@@ -284,10 +282,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
 
       string argument = string.Empty;
       string postBackEvent = Control.Page.ClientScript.GetPostBackEventReference (Control, argument) + ";";
-      string objectID = string.Empty;
-      if (Control.InternalValue != c_nullIdentifier)
-        objectID = Control.InternalValue;
-
+      string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
       {
