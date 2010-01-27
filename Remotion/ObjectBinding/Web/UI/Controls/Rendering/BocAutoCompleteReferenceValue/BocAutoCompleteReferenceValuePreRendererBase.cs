@@ -23,10 +23,11 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue
 {
-  public abstract class BocAutoCompleteReferenceValuePreRendererBase : BocPreRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValuePreRenderer
+  public abstract class BocAutoCompleteReferenceValuePreRendererBase
+      : BocPreRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValuePreRenderer
   {
     protected BocAutoCompleteReferenceValuePreRendererBase (IHttpContext context, IBocAutoCompleteReferenceValue control)
-        : base(context, control)
+        : base (context, control)
     {
     }
 
@@ -36,8 +37,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
       base.RegisterHtmlHeadContents (htmlHeadAppender);
 
-      RegisterJavaScriptFiles(htmlHeadAppender);
-      RegisterStylesheets(htmlHeadAppender);
+      RegisterJavaScriptFiles (htmlHeadAppender);
+      RegisterStylesheets (htmlHeadAppender);
+    }
+
+    public override void PreRender ()
+    {
+      RegisterBindScript();
     }
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
@@ -67,50 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               "BocAutoCompleteReferenceValue.js"));
     }
 
-    protected void RegisterBindScript ()
-    {
-      string key = Control.UniqueID + "_BindScript";
-      const string scriptTemplate =
-          @"$(document).ready( function(){{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), " 
-          + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
-
-      string businessObjectClass = Control.DataSource!=null ? Control.DataSource.BusinessObjectClass.Identifier : "";
-      string businessObjectProperty = Control.Property!=null ? Control.Property.Identifier : "";
-      string businessObjectId = Control.DataSource!=null ? ((IBusinessObjectWithIdentity)Control.DataSource.BusinessObject).UniqueIdentifier : "";
-      string script = string.Format (
-          scriptTemplate,
-          Control.TextBoxClientID,
-          Control.HiddenFieldClientID,
-          Control.DropDownButtonClientID,
-          string.IsNullOrEmpty (Control.ServicePath)
-              ? ""
-              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath, true),
-          StringUtility.NullToEmpty(Control.ServiceMethod),
-          Control.CompletionSetCount.HasValue ? Control.CompletionSetCount.Value : 10,
-          Control.CompletionInterval,
-          Control.SuggestionInterval,
-          Control.NullValueString,
-          businessObjectClass,
-          businessObjectProperty,
-          businessObjectId,
-          Control.Args
-          );
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
-    }
-
-    protected void RegisterAdjustPositionScript ()
-    {
-      string key = Control.ClientID + "_AdjustPositionScript";
-      Control.Page.ClientScript.RegisterStartupScriptBlock (
-          Control,
-          typeof (BocAutoCompleteReferenceValuePreRendererBase),
-          key,
-          string.Format ("BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1});",
-                         Control.ClientID,
-                         Control.EmbedInOptionsMenu ? "true" : "false"));
-    }
-
-    protected virtual void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
+    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
     {
       string styleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (
@@ -135,6 +98,37 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               ResourceTheme,
               "BocAutoCompleteReferenceValue.jquery.css"),
           HtmlHeadAppender.Priority.Library);
+    }
+
+    private void RegisterBindScript ()
+    {
+      string key = Control.UniqueID + "_BindScript";
+      const string scriptTemplate =
+          @"$(document).ready( function() {{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), "
+          + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
+
+      string businessObjectClass = Control.DataSource != null ? Control.DataSource.BusinessObjectClass.Identifier : "";
+      string businessObjectProperty = Control.Property != null ? Control.Property.Identifier : "";
+      string businessObjectId = Control.DataSource != null ? ((IBusinessObjectWithIdentity) Control.DataSource.BusinessObject).UniqueIdentifier : "";
+      string script = string.Format (
+          scriptTemplate,
+          Control.TextBoxClientID,
+          Control.HiddenFieldClientID,
+          Control.DropDownButtonClientID,
+          string.IsNullOrEmpty (Control.ServicePath)
+              ? ""
+              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath, true),
+          StringUtility.NullToEmpty (Control.ServiceMethod),
+          Control.CompletionSetCount.HasValue ? Control.CompletionSetCount.Value : 10,
+          Control.CompletionInterval,
+          Control.SuggestionInterval,
+          Control.NullValueString,
+          businessObjectClass,
+          businessObjectProperty,
+          businessObjectId,
+          Control.Args
+          );
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
     }
   }
 }

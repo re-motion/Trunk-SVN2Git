@@ -28,9 +28,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     public override void PreRender ()
     {
-      RegisterBindScript();
+      base.PreRender();
       RegisterAdjustPositionScript();
       RegisterAdjustLayoutScript ();
+    }
+
+    private void RegisterAdjustPositionScript ()
+    {
+      string key = Control.ClientID + "_AdjustPositionScript";
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocAutoCompleteReferenceValuePreRendererBase),
+          key,
+          string.Format ("BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1});",
+                         Control.ClientID,
+                         Control.EmbedInOptionsMenu ? "true" : "false"));
     }
 
     private void RegisterAdjustLayoutScript ()
