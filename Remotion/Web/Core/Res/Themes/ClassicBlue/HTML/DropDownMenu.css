@@ -178,7 +178,7 @@ ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover {
 
 
 /* style separator */
-span.DropDownMenuSeparator {
+.DropDownMenuSeparator {
 	line-height: 0.1em;
 	margin-left: 35px; 
 	border: 0;
