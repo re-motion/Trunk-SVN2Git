@@ -41,9 +41,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns>Do not use this method, use <see cref="ClientTransaction.CreateBindingTransaction"/> instead.</returns>
     [Obsolete ("Use ClientTransaction.CreateBindingTransaction for clarity.")]
-    public static new ClientTransaction CreateBindingTransaction ()
+    public new static ClientTransaction CreateBindingTransaction ()
     {
-      return ClientTransaction.CreateBindingTransaction ();
+      return ClientTransaction.CreateBindingTransaction();
     }
 
     private readonly ClientTransaction _parentTransaction;
@@ -53,12 +53,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected SubClientTransaction (ClientTransaction parentTransaction)
         : base (
-          ArgumentUtility.CheckNotNull("parentTransaction", parentTransaction).ApplicationData, 
-          parentTransaction.Extensions, 
-          new SubCollectionEndPointChangeDetectionStrategy(),
-          new DelegatingEnlistedDomainObjectManager (parentTransaction))
+            ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction).ApplicationData,
+            parentTransaction.Extensions,
+            new SubCollectionEndPointChangeDetectionStrategy(),
+            new DelegatingEnlistedDomainObjectManager (parentTransaction))
     {
-      parentTransaction.NotifyOfSubTransactionCreating ();
+      parentTransaction.NotifyOfSubTransactionCreating();
       Assertion.IsTrue (parentTransaction.IsReadOnly);
 
       _parentTransaction = parentTransaction;
@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var objectIDArray = objectIDs.ToArray();
       if (objectIDArray.Length == 0)
-        return new DataContainerCollection ();
+        return new DataContainerCollection();
 
       foreach (ObjectID id in objectIDArray)
       {
@@ -147,12 +147,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
-          DataContainer thisDataContainer = TransferParentObject(parentObject);
+          DataContainer thisDataContainer = TransferParentObject (parentObject);
           loadedDataContainers.Add (thisDataContainer);
         }
 
         TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (objectIDArray));
-        
+
         return loadedDataContainers;
       }
     }
@@ -170,21 +170,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
-      DomainObjectCollection parentObjects;
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        parentObjects = ParentTransaction.GetRelatedObjects (relationEndPointID);
-      }
+        DomainObjectCollection parentObjects = ParentTransaction.GetRelatedObjects (relationEndPointID);
 
-      var transferredContainers = new DataContainerCollection ();
-      foreach (DomainObject parentObject in parentObjects)
-      {
-        DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer (parentObject));
-        transferredContainers.Add (transferredContainer);
-        Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
+        var transferredContainers = new DataContainerCollection();
+        foreach (DomainObject parentObject in parentObjects)
+        {
+          DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer (parentObject));
+          transferredContainers.Add (transferredContainer);
+          Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
+        }
+        return transferredContainers;
       }
-
-      return transferredContainers;
     }
 
     private DataContainer TransferParentObject (DomainObject parentObject)
@@ -193,7 +191,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DataContainer thisDataContainer = TransferParentContainer (parentDataContainer);
       return thisDataContainer;
     }
-    
+
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {
       Assertion.IsFalse (DataManager.IsDiscarded (parentDataContainer.ID));
@@ -253,7 +251,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (dataContainer.IsDiscarded);
 
       var parentDataContainer = DataContainer.CreateNew (dataContainer.ID);
-      
+
       parentDataContainer.SetPropertyValuesFrom (dataContainer);
       if (dataContainer.HasBeenMarkedChanged)
         parentDataContainer.MarkAsChanged();
@@ -278,9 +276,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       parentDataContainer.SetTimestamp (dataContainer.Timestamp);
       parentDataContainer.SetPropertyValuesFrom (dataContainer);
-      
+
       if (dataContainer.HasBeenMarkedChanged)
-        parentDataContainer.MarkAsChanged ();
+        parentDataContainer.MarkAsChanged();
     }
 
     private void PersistDeletedDataContainer (DataContainer dataContainer)
@@ -296,7 +294,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
       var deleteCommand = ParentTransaction.DataManager.CreateDeleteCommand (dataContainer.DomainObject);
-      deleteCommand.Perform (); // no events, no bidirectional changes
+      deleteCommand.Perform(); // no events, no bidirectional changes
     }
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
@@ -322,9 +320,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
               + "to the child transaction is when the object was of state New in the ParentTransaction and its DataContainer was just discarded.");
         }
         else
-        {
           parentEndPoint.SetValueFrom (endPoint);
-        }
       }
     }
 
@@ -336,9 +332,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       newDiscardedContainer.RegisterWithTransaction (this);
 
       var command = DataManager.CreateDeleteCommand (objectToBeDiscarded);
-      command.Perform (); // no bidirectional changes, no events
+      command.Perform(); // no bidirectional changes, no events
 
-      Assertion.IsTrue (DataManager.IsDiscarded (newDiscardedContainer.ID),
+      Assertion.IsTrue (
+          DataManager.IsDiscarded (newDiscardedContainer.ID),
           "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");
       Assertion.IsTrue (DataManager.GetDiscardedDataContainer (newDiscardedContainer.ID) == newDiscardedContainer);
     }

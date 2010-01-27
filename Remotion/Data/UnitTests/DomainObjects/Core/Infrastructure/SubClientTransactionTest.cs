@@ -27,20 +27,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   [TestFixture]
   public class SubClientTransactionTest : ClientTransactionBaseTest
   {
-    private SubClientTransaction _subTx;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp ();
-
-      _subTx = (SubClientTransaction) ClientTransactionMock.CreateSubTransaction ();
-    }
-
     [Test]
     public void CollectionEndPointChangeDetectionStrategy ()
     {
-      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (_subTx, "DataManager");
+      var subTx = (SubClientTransaction) ClientTransactionMock.CreateSubTransaction ();
+
+      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (subTx, "DataManager");
       Assert.That (dataManager.RelationEndPointMap.CollectionEndPointChangeDetectionStrategy, 
           Is.InstanceOfType (typeof (SubCollectionEndPointChangeDetectionStrategy)));
     }
@@ -48,13 +40,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void Enlist_UsesParentManager ()
     {
+      var subTx = (SubClientTransaction) ClientTransactionMock.CreateSubTransaction ();
+
       var order = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
-      Assert.That (_subTx.IsEnlisted (order), Is.False);
+      Assert.That (subTx.IsEnlisted (order), Is.False);
       Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
 
-      _subTx.EnlistDomainObject (order);
-      Assert.That (_subTx.IsEnlisted (order), Is.True);
+      subTx.EnlistDomainObject (order);
+      Assert.That (subTx.IsEnlisted (order), Is.True);
       Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+    }
+
+    [Test]
+    public void LoadRelatedDataContainers_MakesParentWritableWhileGettingItsContainers ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+
+      // cause parent tx to require reload of data containers...
+      DomainObjectUnloader.UnloadCollectionEndPointAndData (
+          ClientTransactionMock, 
+          order.OrderItems.AssociatedEndPoint.ID, 
+          DomainObjectUnloader.TransactionMode.ThisTransactionOnly); 
+      
+      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      {
+        var relatedObjects = order.OrderItems.ToArray ();
+        Assert.That (relatedObjects, 
+            Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+      }
     }
   }
 }
