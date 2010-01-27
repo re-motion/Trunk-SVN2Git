@@ -95,7 +95,7 @@ namespace Remotion.FunctionalProgramming
     /// <returns>An enumerable sequence containing all non-<see langword="null" /> values</returns>
     public static IEnumerable<T> EnumerateValues<T> (IEnumerable<Maybe<T>> maybeValues)
     {
-      return maybeValues.Where (v => v.HasValue).Select (v => v.GetValueOrNull ());
+      return maybeValues.Where (v => v.HasValue).Select (v => v.ValueOrDefault ());
     }
 
     /// <summary>
@@ -196,11 +196,33 @@ namespace Remotion.FunctionalProgramming
     }
 
     /// <summary>
-    /// Gets the value held by this instance, or <see langword="null" /> if this instance does not have a value.
+    /// Gets the value held by this instance, or the default value of <typeparamref name="T"/> if this instance does not have a value.
     /// </summary>
-    /// <returns>The value held by this instance, or <see langword="null" /> if this instance does not have a value.</returns>
-    public T GetValueOrNull ()
+    /// <returns>The value held by this instance, or the default value of <typeparamref name="T"/> if this instance does not have a value.</returns>
+    public T ValueOrDefault ()
     {
+      return ValueOrDefault (default(T));
+    }
+
+    /// <summary>
+    /// Gets the value held by this instance, or the <paramref name="defaultValue"/> if this instance does not have a value.
+    /// </summary>
+    /// <param name="defaultValue">The default value returned if this instance does not have a value.</param>
+    /// <returns>The value held by this instance, or the <paramref name="defaultValue"/> if this instance does not have a value.</returns>
+    public T ValueOrDefault (T defaultValue)
+    {
+      return _hasValue ? _value : defaultValue;
+    }
+
+    /// <summary>
+    /// Gets the value held by this instance. An exception is thrown if this instance does not have a value.
+    /// </summary>
+    /// <returns>The value held by this instance. An exception is thrown if this instance does not have a value.</returns>
+    /// <exception cref="InvalidOperationException">The <see cref="HasValue"/> property is <see langword="false" />.</exception>
+    public T Value ()
+    {
+      if (!_hasValue)
+        throw new InvalidOperationException ("Maybe-Object must have a value.");
       return _value;
     }
 
