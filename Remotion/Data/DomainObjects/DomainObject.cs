@@ -644,6 +644,9 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// This method is invoked before an object's data is unloaded from the <see cref="ClientTransaction.Current"/> transaction.
     /// </summary>
+    /// <remarks>
+    /// <note type="inotes">Overrides of this method can throw an exception in order to stop the operation.</note>
+    /// </remarks>
     protected internal virtual void OnUnloading ()
     {
     }
@@ -651,6 +654,9 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// This method is invoked after an object's data has been unloaded from the <see cref="ClientTransaction.Current"/> transaction.
     /// </summary>
+    /// <remarks>
+    /// <note type="inotes">Overrides of this method must not throw an exception; the operation has already been performed here.</note>
+    /// </remarks>
     protected internal virtual void OnUnloaded ()
     {
     }
