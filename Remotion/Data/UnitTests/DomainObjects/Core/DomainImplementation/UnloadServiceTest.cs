@@ -18,15 +18,15 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 {
   [TestFixture]
-  public class DomainObjectUnloaderTest : ClientTransactionBaseTest
+  public class UnloadServiceTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.True);
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.False);
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Null);
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Null);
     }
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       EnsureEndPointLoaded (objectEndPointID);
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, objectEndPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, objectEndPointID, UnloadService.TransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID], Is.Not.Null);
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[_endPointID].HasChanged, Is.True);
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, _endPointID, UnloadService.TransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.True);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.True);
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (subTransaction, _endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (subTransaction, _endPointID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.False);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.True);
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.True);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.True);
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (subTransaction, _endPointID, DomainObjectUnloader.TransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPoint (subTransaction, _endPointID, UnloadService.TransactionMode.RecurseToRoot);
 
       Assert.That (subDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.False);
       Assert.That (parentDataManager.RelationEndPointMap[_endPointID].IsDataAvailable, Is.False);
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
 
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
     }
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
       Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
 
-      DomainObjectUnloader.UnloadData (subTransaction, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (subTransaction, DomainObjectIDs.Order1, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
       Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
       Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
 
-      DomainObjectUnloader.UnloadData (subTransaction, DomainObjectIDs.Order1, DomainObjectUnloader.TransactionMode.RecurseToRoot);
+      UnloadService.UnloadData (subTransaction, DomainObjectIDs.Order1, UnloadService.TransactionMode.RecurseToRoot);
 
       Assert.That (subDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
       Assert.That (parentDataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var orderItem1 = orderItemsEndPoint.OppositeDomainObjects[0];
       var orderItem2 = orderItemsEndPoint.OppositeDomainObjects[1];
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItemsEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, orderItemsEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (orderItemsEndPoint.IsDataAvailable, Is.False);
       Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (ordersEndPoint.OppositeDomainObjects, Is.Empty);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
       Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       EnsureEndPointLoaded (objectEndPointID);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, objectEndPointID, UnloadService.TransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, endPointID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, endPointID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
     }
@@ -232,13 +232,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = customer.Orders.AssociatedEndPoint;
 
-      DomainObjectUnloader.UnloadCollectionEndPoint (ClientTransactionMock, ordersEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, ordersEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (ordersEndPoint.IsDataAvailable, Is.False);
     }
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       try
       {
-        DomainObjectUnloader.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+        UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, ordersEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
         Assert.Fail ("Expected InvalidOperationException");
       }
       catch (InvalidOperationException)
@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var subOrderItemsEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrderItemsEndPoint.ID);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (subOrderItemsEndPoint.IsDataAvailable, Is.False);
       Assert.That (parentOrderItemsEndPoint.IsDataAvailable, Is.True);
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var subOrderItemsEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrderItemsEndPoint.ID);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID, DomainObjectUnloader.TransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID, UnloadService.TransactionMode.RecurseToRoot);
 
       Assert.That (subOrderItemsEndPoint.IsDataAvailable, Is.False);
       Assert.That (parentOrderItemsEndPoint.IsDataAvailable, Is.False);
@@ -327,7 +327,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var subOrdersEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       Assert.That (subOrdersEndPoint.IsDataAvailable, Is.False);
       Assert.That (parentOrdersEndPoint.IsDataAvailable, Is.True);
@@ -345,7 +345,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var subOrdersEndPoint = ClientTransactionTestHelper.GetDataManager (subTransaction).RelationEndPointMap.GetRelationEndPointWithLazyLoad (
           parentOrdersEndPoint.ID);
 
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, DomainObjectUnloader.TransactionMode.RecurseToRoot);
+      UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID, UnloadService.TransactionMode.RecurseToRoot);
 
       Assert.That (subOrdersEndPoint.IsDataAvailable, Is.False);
       Assert.That (parentOrdersEndPoint.IsDataAvailable, Is.False);

@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   {
     public static T CreateObjectInTransaction<T> (ClientTransaction transaction) where T : DomainObject
     {
-      return (T) RepositoryAccessor.NewObject (transaction, typeof (T), ParamList.Empty);
+      return (T) LifetimeService.NewObject (transaction, typeof (T), ParamList.Empty);
     }
 
     public static T CreateObjectInOtherTransaction<T> () where T : DomainObject
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static T GetObjectInTransaction<T> (ClientTransaction transaction, ObjectID objectID) where T : DomainObject
     {
-      return (T) RepositoryAccessor.GetObject (transaction, objectID, true);
+      return (T) LifetimeService.GetObject (transaction, objectID, true);
     }
 
     public static T CreateFakeObject<T> () where T: DomainObject

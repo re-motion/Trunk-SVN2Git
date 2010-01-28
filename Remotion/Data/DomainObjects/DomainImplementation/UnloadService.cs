@@ -17,15 +17,16 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.DomainImplementation
 {
   /// <summary>
-  /// Provides APIs for unloading the data that a <see cref="ClientTransaction"/> stores for <see cref="DomainObject"/> instances.
+  /// Provides functionality for unloading the data that a <see cref="ClientTransaction"/> stores for <see cref="DomainObject"/> instances.
   /// </summary>
-  public static class DomainObjectUnloader
+  public static class UnloadService
   {
     /// <summary>
     /// Defines how an unload operation should treat transactions that are part of a hierarchy.

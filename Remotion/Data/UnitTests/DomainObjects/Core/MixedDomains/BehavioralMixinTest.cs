@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (DOWithVirtualPropertiesAndMethods)).Clear().AddMixins (typeof (MixinOverridingPropertiesAndMethods)).EnterScope())
       {
-        var instance = (DOWithVirtualPropertiesAndMethods) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DOWithVirtualPropertiesAndMethods), ParamList.Empty);
+        var instance = (DOWithVirtualPropertiesAndMethods) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithVirtualPropertiesAndMethods), ParamList.Empty);
         instance.Property = "Text";
         Assert.AreEqual ("Text-MixinSetter-MixinGetter", instance.Property);
         Assert.AreEqual ("Something-MixinMethod", instance.GetSomething ());

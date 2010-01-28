@@ -19,7 +19,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void VerifyInterfaceImplementation ()
     {
       IBusinessObjectWithIdentity businessObject = (SampleBindableDomainObjectWithOverriddenDisplayName) 
-          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (SampleBindableDomainObjectWithOverriddenDisplayName), ParamList.Empty);
+          LifetimeService.NewObject (ClientTransactionMock, typeof (SampleBindableDomainObjectWithOverriddenDisplayName), ParamList.Empty);
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (businessObject, typeof (BindableDomainObject), "_implementation");
 
       Assert.That (businessObject.BusinessObjectClass, Is.SameAs (implementation.BusinessObjectClass));

@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetPropertyDefaultForNonMappingProperties ()
     {
       var businessObject = (IBusinessObject)
-          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
+          LifetimeService.NewObject (ClientTransactionMock, typeof (BindableDomainObjectWithProperties), ParamList.Empty);
       Assert.IsNotNull (businessObject.GetProperty ("RequiredPropertyNotInMapping"));
       Assert.AreEqual (true, businessObject.GetProperty ("RequiredPropertyNotInMapping"));
     }

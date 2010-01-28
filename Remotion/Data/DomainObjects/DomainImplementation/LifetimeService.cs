@@ -21,13 +21,12 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.DomainImplementation
 {
   /// <summary>
-  /// Provides functionality for infrastructure code to instantiate, get, and delete <see cref="DomainObject"/> instances
-  /// without having to go through the protected methods defined by <see cref="DomainObject"/>.
+  /// Provides functionality to instantiate, get, and delete <see cref="DomainObject"/> instances.
   /// </summary>
-  public static class RepositoryAccessor
+  public static class LifetimeService
   {
     /// <summary>
     /// Returns a new instance of a <see cref="DomainObject"/> with the supplied constructor arguments in the given <see cref="ClientTransaction"/>.

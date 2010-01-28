@@ -22,7 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -1479,7 +1479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll ();
 
-      DomainObjectUnloader.UnloadData (ClientTransactionMock, _order1.ID, DomainObjectUnloader.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, _order1.ID, UnloadService.TransactionMode.ThisTransactionOnly);
 
       _mockRepository.VerifyAll ();
     }

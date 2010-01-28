@@ -198,4 +198,44 @@
     </table>
     </div>
   </namespace>
+
+  <namespace name="Remotion.Data.DomainObjects.DomainImplementation">
+    <para>
+      The <B>Remotion.Data.DomainObjects.DomainImplementation</B> namespace and its sub namespaces contain advanced functionality and services
+      that assist in building domains based on re-store.
+    </para>
+
+    <div class="tablediv">
+      <table class="dtTABLE" cellspacing="0">
+        <colgroup>
+          <col width="25%"/>
+          <col width="75%"/>
+        </colgroup>
+        <thead>
+          <tr valign="top">
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <see cref="T:Remotion.Data.DomainObjects.DomainImplementation.LifetimeService"/>
+            </td>
+            <td>
+              Provides methods to create, get, and delete domain objects.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <see cref="T:Remotion.Data.DomainObjects.DomainImplementation.UnloadService"/>
+            </td>
+            <td>
+              Provides methods to unload the data stored for domain objects from memory.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </namespace>
 </namespaces>

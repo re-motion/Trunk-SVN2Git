@@ -193,7 +193,7 @@
     <Compile Include="DomainObjectCollectionExtensions.cs" />
     <Compile Include="DomainObjectCollectionWrapper.cs" />
     <Compile Include="ExtensibleEnumPropertyAttribute.cs" />
-    <Compile Include="Infrastructure\DomainObjectUnloader.cs" />
+    <Compile Include="DomainImplementation\UnloadService.cs" />
     <Compile Include="Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManager.cs" />
     <Compile Include="Infrastructure\Enlistment\IEnlistedDomainObjectManager.cs" />
     <Compile Include="Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManager.cs" />
@@ -232,7 +232,7 @@
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationInfo.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationWriter.cs" />
     <Compile Include="Infrastructure\Serialization\IFlattenedSerializable.cs" />
-    <Compile Include="Infrastructure\RepositoryAccessor.cs" />
+    <Compile Include="DomainImplementation\LifetimeService.cs" />
     <Compile Include="IGraphTraversalStrategy.cs" />
     <Compile Include="Linq\ContainsObjectExpressionNode.cs" />
     <Compile Include="Linq\DatabaseInfo.cs" />

@@ -21,7 +21,7 @@ using System.Linq;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web;
@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         var result = referenceProperty.SearchAvailableObjects (
-            (IBusinessObject) RepositoryAccessor.NewObject (ClientTransaction.Current, type, ParamList.Empty), new DefaultSearchArguments (args));
+            (IBusinessObject) LifetimeService.NewObject (ClientTransaction.Current, type, ParamList.Empty), new DefaultSearchArguments (args));
         if (completionSetCount.HasValue)
           result.Take (completionSetCount.Value);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();

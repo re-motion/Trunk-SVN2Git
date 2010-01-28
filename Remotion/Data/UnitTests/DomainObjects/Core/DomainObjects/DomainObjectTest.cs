@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
@@ -804,7 +805,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void MultiplePropertiesWithSameShortName ()
     {
-      var derivedClass = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+      var derivedClass = (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
       ClassWithMixedProperties baseClass = derivedClass;
 
       derivedClass.String = "Derived";

@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -278,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ShortNameAndTypeWithShadowedProperties ()
     {
       var classWithMixedProperties = (DerivedClassWithMixedProperties) 
-          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+          LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
 
       var indexer = new PropertyIndexer(classWithMixedProperties);
       Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
@@ -307,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void FindFromGenericType ()
     {
       var instance = (ClosedGenericClassWithManySideRelationProperties)
-          RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClosedGenericClassWithManySideRelationProperties), ParamList.Empty);
+          LifetimeService.NewObject (ClientTransactionMock, typeof (ClosedGenericClassWithManySideRelationProperties), ParamList.Empty);
       Assert.IsFalse (instance.Properties.Contains (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
       Assert.AreEqual (instance.Properties[typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), "BaseUnidirectional"],
           instance.Properties.Find (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
@@ -325,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void FindWithShadowedProperty ()
     {
       var classWithMixedProperties =
-          (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+          (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
       
       var indexer = new PropertyIndexer (classWithMixedProperties);
       Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
@@ -338,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void FindWithShadowedPropertyAndInferredType ()
     {
       var classWithMixedProperties =
-          (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
+          (DerivedClassWithMixedProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithMixedProperties), ParamList.Empty);
 
       var indexer = new PropertyIndexer (classWithMixedProperties);
       Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],

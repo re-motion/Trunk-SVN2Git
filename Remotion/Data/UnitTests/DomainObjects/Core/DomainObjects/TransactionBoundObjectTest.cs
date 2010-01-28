@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 
@@ -215,13 +215,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private T NewBound<T> (params object[] args)
     where T : DomainObject
     {
-      return (T) RepositoryAccessor.NewObject (_bindingTransaction, typeof (T), ParamList.CreateDynamic (args));
+      return (T) LifetimeService.NewObject (_bindingTransaction, typeof (T), ParamList.CreateDynamic (args));
     }
 
     private T GetBound<T> (ObjectID id)
         where T : DomainObject
     {
-      return (T) RepositoryAccessor.GetObject (_bindingTransaction, id, true);
+      return (T) LifetimeService.GetObject (_bindingTransaction, id, true);
     }
   }
 }

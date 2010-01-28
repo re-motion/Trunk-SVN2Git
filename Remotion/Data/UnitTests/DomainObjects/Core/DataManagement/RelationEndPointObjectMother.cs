@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID)
     {
-      var domainObject = RepositoryAccessor.GetObject (ClientTransaction.Current, endPointID.ObjectID, true);
+      var domainObject = LifetimeService.GetObject (ClientTransaction.Current, endPointID.ObjectID, true);
       var dataContainer = (DataContainer) PrivateInvoke.InvokeNonPublicMethod (ClientTransaction.Current, "GetDataContainer", domainObject);
       return CreateRealObjectEndPoint (endPointID, dataContainer);
     }

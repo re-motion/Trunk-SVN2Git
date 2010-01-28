@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -57,10 +58,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var order = Order.GetObject (DomainObjectIDs.Order1);
 
       // cause parent tx to require reload of data containers...
-      DomainObjectUnloader.UnloadCollectionEndPointAndData (
+      UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock, 
           order.OrderItems.AssociatedEndPoint.ID, 
-          DomainObjectUnloader.TransactionMode.ThisTransactionOnly); 
+          UnloadService.TransactionMode.ThisTransactionOnly); 
       
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {

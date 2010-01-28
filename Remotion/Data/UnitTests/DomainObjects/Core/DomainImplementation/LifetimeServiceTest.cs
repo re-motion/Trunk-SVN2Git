@@ -19,29 +19,29 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using Remotion.Reflection;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 {
   [TestFixture]
-  public class RepositoryAccessorTest : ClientTransactionBaseTest
+  public class LifetimeServiceTest : ClientTransactionBaseTest
   {
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'System.Object'.")]
     public void NewObject_InvalidType ()
     {
-      RepositoryAccessor.NewObject (ClientTransactionMock, typeof (object), ParamList.Empty);
+      LifetimeService.NewObject (ClientTransactionMock, typeof (object), ParamList.Empty);
     }
 
     [Test]
     public void NewObject_NoCtorArgs ()
     {
-      var instance = (Order) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (Order), ParamList.Empty);
+      var instance = (Order) LifetimeService.NewObject (ClientTransactionMock, typeof (Order), ParamList.Empty);
       Assert.IsNotNull (instance);
       Assert.IsTrue (instance.CtorCalled);
     }
@@ -50,23 +50,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewObject_WithCtorArgs ()
     {
       var order = Order.NewObject();
-      var instance = (OrderItem) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (order));
+      var instance = (OrderItem) LifetimeService.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (order));
       Assert.IsNotNull (instance);
       Assert.AreSame (order, instance.Order);
     }
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
+                                                                           + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
     public void NewObject_WrongCtorArgs ()
     {
-      RepositoryAccessor.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (0m));
+      LifetimeService.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (0m));
     }
 
     [Test]
     public void NewObject_InitializesMixins ()
     {
-      var domainObject = RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithAllDataTypes), ParamList.Empty);
+      var domainObject = LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithAllDataTypes), ParamList.Empty);
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (domainObject);
       Assert.That (mixin, Is.Not.Null);
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetObject ()
     {
-      var order = (Order) RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
+      var order = (Order) LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.IsFalse (order.CtorCalled);
@@ -87,14 +87,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetObject_IncludeDeleted_False ()
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete();
-      RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
+      LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
     }
 
     [Test]
     public void GetObject_IncludeDeleted_True ()
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete ();
-      var order = (Order) RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, true);
+      var order = (Order) LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, true);
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.AreEqual (StateType.Deleted, order.State);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreNotEqual (StateType.Deleted, order.State);
-      RepositoryAccessor.DeleteObject (ClientTransactionMock, order);
+      LifetimeService.DeleteObject (ClientTransactionMock, order);
       Assert.AreEqual (StateType.Deleted, order.State);
     }
 
@@ -113,8 +113,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void DeleteObject_Twice ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      RepositoryAccessor.DeleteObject (ClientTransactionMock, order);
-      RepositoryAccessor.DeleteObject (ClientTransactionMock, order);
+      LifetimeService.DeleteObject (ClientTransactionMock, order);
+      LifetimeService.DeleteObject (ClientTransactionMock, order);
     }
   }
 }

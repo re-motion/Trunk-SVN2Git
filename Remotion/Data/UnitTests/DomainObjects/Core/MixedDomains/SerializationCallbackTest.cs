@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         var instance = (ClassWithSerializationCallbacks) 
-            RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+            LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType());
         Assert.IsTrue (instance is IMixinTarget);
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         var instance = (ClassWithSerializationCallbacks) 
-            RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+            LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType());
         Assert.IsTrue (instance is IMixinTarget);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         var instance = (ClassWithSerializationCallbacks) 
-            RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+            LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
         Assert.IsTrue (instance is IMixinTarget);
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         var instance = (ClassWithSerializationCallbacks)
-            RepositoryAccessor.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+            LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
         Assert.IsTrue (instance is IMixinTarget);

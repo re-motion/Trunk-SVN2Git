@@ -21,7 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
         where T: DomainObject
     {
       return (from id in expectedObjectIDs 
-              select (id == null ? null : (T) RepositoryAccessor.GetObject (ClientTransactionMock, id, false))).ToArray ();
+              select (id == null ? null : (T) LifetimeService.GetObject (ClientTransactionMock, id, false))).ToArray ();
     }
 
     protected void CheckDataContainersRegistered (params ObjectID[] objectIDs)
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                                    new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
       Assert.That (collectionEndPoint, Is.Not.Null);
 
-      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => RepositoryAccessor.GetObject (ClientTransactionMock, id, false)).ToArray ();
+      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (ClientTransactionMock, id, false)).ToArray ();
       if (checkOrdering)
         Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (expectedRelatedObjects));
       else

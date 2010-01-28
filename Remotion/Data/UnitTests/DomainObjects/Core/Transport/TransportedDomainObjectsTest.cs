@@ -20,6 +20,7 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
@@ -260,8 +261,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           {
             foreach (var id in objectsToLoadAndDelete)
             {
-              var domainObject = RepositoryAccessor.GetObject (ClientTransaction.Current, id, false);
-              RepositoryAccessor.DeleteObject (ClientTransaction.Current, domainObject);
+              var domainObject = LifetimeService.GetObject (ClientTransaction.Current, id, false);
+              LifetimeService.DeleteObject (ClientTransaction.Current, domainObject);
             }
           });
 
@@ -279,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
           {
             foreach (var id in objectsToLoadAndDelete)
             {
-              var domainObject = RepositoryAccessor.GetObject (ClientTransaction.Current, id, false);
+              var domainObject = LifetimeService.GetObject (ClientTransaction.Current, id, false);
               new PropertyIndexer (domainObject)[propertyName].SetValueWithoutTypeCheck (newValue);
             }
           });

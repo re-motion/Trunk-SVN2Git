@@ -22,6 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -704,7 +705,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction parent = ClientTransaction.CreateRootTransaction();
       ClientTransaction subTransaction = parent.CreateSubTransaction();
 
-      RepositoryAccessor.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
+      LifetimeService.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
 
       var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       parent.Extensions.Add ("mock", extensionMock);
@@ -728,7 +729,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction parent = ClientTransaction.CreateRootTransaction();
       ClientTransaction subTransaction = parent.CreateSubTransaction();
 
-      RepositoryAccessor.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
+      LifetimeService.GetObject (subTransaction, DomainObjectIDs.ClassWithAllDataTypes1, false); // preload ClassWithAllDataTypes
 
       var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       parent.Extensions.Add ("mock", extensionMock);

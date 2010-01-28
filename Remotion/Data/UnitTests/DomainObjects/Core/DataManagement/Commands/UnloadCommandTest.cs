@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -530,7 +531,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
     private void CheckAffectedEndPointIDsContains (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
     {
-      var domainObject = RepositoryAccessor.GetObject (ClientTransactionMock, unloadedObject, false);
+      var domainObject = LifetimeService.GetObject (ClientTransactionMock, unloadedObject, false);
       var command = CreateCommand (domainObject.ID);
       var endPointIDs = command.AffectedEndPointIDs;
 
@@ -539,7 +540,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
     private void CheckAffectedEndPointIDsNotContains (ObjectID unloadedObject, RelationEndPointID unexpectedEndPointID)
     {
-      var domainObject = RepositoryAccessor.GetObject (ClientTransactionMock, unloadedObject, false);
+      var domainObject = LifetimeService.GetObject (ClientTransactionMock, unloadedObject, false);
       var command = CreateCommand (domainObject.ID);
       var endPointIDs = command.AffectedEndPointIDs;
 

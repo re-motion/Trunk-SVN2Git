@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
@@ -111,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Transport
     {
       using (_transportTransaction.EnterNonDiscardingScope ())
       {
-        DomainObject domainObject = RepositoryAccessor.NewObject (ClientTransaction.Current, type, constructorParameters);
+        DomainObject domainObject = LifetimeService.NewObject (ClientTransaction.Current, type, constructorParameters);
         Load (domainObject.ID);
         return domainObject;
       }

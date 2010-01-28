@@ -19,6 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -120,8 +121,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
 
-      var domainObject1 = RepositoryAccessor.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
-      var domainObject2 = RepositoryAccessor.GetObject (firstClientTransaction, DomainObjectIDs.Partner1, false);
+      var domainObject1 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
+      var domainObject2 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.Partner1, false);
 
       var secondClientTransaction = ClientTransactionMock;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
@@ -145,8 +146,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
 
-      var domainObject1 = RepositoryAccessor.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
-      var domainObject2 = RepositoryAccessor.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
+      var domainObject1 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
+      var domainObject2 = LifetimeService.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
 
       var secondClientTransaction = ClientTransactionMock;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();

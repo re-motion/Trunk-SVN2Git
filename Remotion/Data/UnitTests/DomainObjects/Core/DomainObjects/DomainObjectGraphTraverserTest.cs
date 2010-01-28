@@ -18,6 +18,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -155,20 +156,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expected = new Set<DomainObject> (
           order,
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person7, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person3, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Person6, false));
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person7, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person3, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person6, false));
 
       Assert.That (graph, Is.EquivalentTo(expected));
     }
@@ -181,16 +182,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expected = new Set<DomainObject> (
           order,
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
-          RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
+          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
 
       Assert.That (graph, Is.EquivalentTo (expected));
     }
@@ -201,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
 
-      var expected = new Set<DomainObject> (RepositoryAccessor.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
+      var expected = new Set<DomainObject> (LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
 
       Assert.That (graph, Is.EquivalentTo (expected));
     }

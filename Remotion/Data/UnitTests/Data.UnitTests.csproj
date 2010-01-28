@@ -288,7 +288,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionWrapperTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\CollectionDeletionState.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectUnloaderTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\UnloadServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\UnloadSubTransactionTest.cs" />
@@ -426,7 +426,7 @@
     <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\NullEndPointModificationCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\ObjectEndPointSetCommandTestBase.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\LifetimeServiceTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\MultiTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ObjectListTest.cs" />

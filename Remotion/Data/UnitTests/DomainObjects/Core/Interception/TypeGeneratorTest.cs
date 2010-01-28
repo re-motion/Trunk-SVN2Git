@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
@@ -581,7 +582,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (type.GetMethod (typeof (DOWithRealRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
       var instance = (DOWithRealRelationEndPoint) Activator.CreateInstance (type);
-      var relatedObject = (DOWithVirtualRelationEndPoint) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DOWithVirtualRelationEndPoint), ParamList.Empty);
+      var relatedObject = (DOWithVirtualRelationEndPoint) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithVirtualRelationEndPoint), ParamList.Empty);
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -593,7 +594,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (type.GetMethod (typeof (DOWithVirtualRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
       var instance = (DOWithVirtualRelationEndPoint) Activator.CreateInstance (type);
-      var relatedObject = (DOWithRealRelationEndPoint) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DOWithRealRelationEndPoint), ParamList.Empty);
+      var relatedObject = (DOWithRealRelationEndPoint) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithRealRelationEndPoint), ParamList.Empty);
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -605,7 +606,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (type.GetMethod (typeof (DOWithUnidirectionalRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
       var instance = (DOWithUnidirectionalRelationEndPoint) Activator.CreateInstance (type);
-      var relatedObject = (DOWithVirtualProperties) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DOWithVirtualProperties), ParamList.Empty);
+      var relatedObject = (DOWithVirtualProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithVirtualProperties), ParamList.Empty);
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -697,7 +698,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void Overrides_PerformConstructorCheck_WithNoOp ()
     {
       var instance =
-          (DOWithVirtualStorageClassNoneProperties) RepositoryAccessor.NewObject (ClientTransactionMock, typeof (DOWithVirtualStorageClassNoneProperties), ParamList.Empty);
+          (DOWithVirtualStorageClassNoneProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DOWithVirtualStorageClassNoneProperties), ParamList.Empty);
       PrivateInvoke.InvokeNonPublicMethod (instance, "PerformConstructorCheck");
     }
   }
