@@ -19,6 +19,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
@@ -37,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetEnumerationValueFilter_FromPropertyInformation ()
     {
-      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.GetCustomAttribute<DisableEnumValuesAttribute> (true)).Return (_attribute);
 
       var provider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
@@ -47,13 +49,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
             Assert.Fail ("Must not be called");
             return null;
           });
-      Assert.That (provider.GetEnumerationValueFilter (), Is.TypeOf (typeof (StubEnumerationValueFilter)));
+      Assert.That (provider.GetEnumerationValueFilter(), Is.TypeOf (typeof (StubEnumerationValueFilter)));
     }
 
     [Test]
     public void GetEnumerationValueFilter_FromAttributeProvider ()
     {
-      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.GetCustomAttribute<DisableEnumValuesAttribute> (true)).Return (null);
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
 
@@ -64,20 +66,37 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
             Assert.That (type, Is.SameAs (typeof (int)));
             return new[] { _attribute };
           });
-      Assert.That (provider.GetEnumerationValueFilter (), Is.TypeOf (typeof (StubEnumerationValueFilter)));
+      Assert.That (provider.GetEnumerationValueFilter(), Is.TypeOf (typeof (StubEnumerationValueFilter)));
+    }
+
+    [Test]
+    public void GetEnumerationValueFilter_FromAttributeProvider_WithNullableProperty ()
+    {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub.Stub (stub => stub.GetCustomAttribute<DisableEnumValuesAttribute> (true)).Return (null);
+      propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int?));
+
+      var provider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
+          propertyInformationStub,
+          delegate (Type type)
+          {
+            Assert.That (type, Is.SameAs (typeof (int)));
+            return new[] { _attribute };
+          });
+      Assert.That (provider.GetEnumerationValueFilter(), Is.TypeOf (typeof (StubEnumerationValueFilter)));
     }
 
     [Test]
     public void GetEnumerationValueFilter_FromAttributeProvider_Multiple ()
     {
-      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.GetCustomAttribute<IDisableEnumValuesAttribute> (true)).Return (null);
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
 
-      var filterStub = MockRepository.GenerateStub<IEnumerationValueFilter> ();
-      
-      var additionalAttributeStub = MockRepository.GenerateStub<IDisableEnumValuesAttribute> ();
-      additionalAttributeStub.Stub (stub => stub.GetEnumerationValueFilter ()).Return (filterStub);
+      var filterStub = MockRepository.GenerateStub<IEnumerationValueFilter>();
+
+      var additionalAttributeStub = MockRepository.GenerateStub<IDisableEnumValuesAttribute>();
+      additionalAttributeStub.Stub (stub => stub.GetEnumerationValueFilter()).Return (filterStub);
 
       var provider = new EnumValueFilterProvider<IDisableEnumValuesAttribute> (
           propertyInformationStub,
@@ -87,7 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
             return new[] { _attribute, additionalAttributeStub };
           });
 
-      var actualFilter = provider.GetEnumerationValueFilter ();
+      var actualFilter = provider.GetEnumerationValueFilter();
 
       Assert.That (actualFilter, Is.TypeOf (typeof (CompositeEnumerationValueFilter)));
 
@@ -100,7 +119,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetEnumerationValueFilter_None ()
     {
-      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyInformationStub.Stub (stub => stub.GetCustomAttribute<DisableEnumValuesAttribute> (true)).Return (null);
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (typeof (int));
 
@@ -111,7 +130,68 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
             Assert.That (type, Is.SameAs (typeof (int)));
             return new DisableEnumValuesAttribute[0];
           });
-      Assert.That (provider.GetEnumerationValueFilter (), Is.TypeOf (typeof (NullEnumerationValueFilter)));
+      Assert.That (provider.GetEnumerationValueFilter(), Is.TypeOf (typeof (NullEnumerationValueFilter)));
+    }
+
+    [Test]
+    public void GetEnumerationValueFilter_FromPropertyInformation_IntegrationTestWithProperty ()
+    {
+      var provider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
+          GetPropertyInformation ("DisabledFromProperty"),
+          delegate
+          {
+            Assert.Fail ("Must not be called");
+            return null;
+          });
+
+      var actual = provider.GetEnumerationValueFilter();
+      Assert.That (actual, Is.TypeOf (typeof (ConstantEnumerationValueFilter)));
+      Assert.That (((ConstantEnumerationValueFilter) actual).DisabledEnumValues, Is.EquivalentTo (new[] { TestEnum.Value1 }));
+    }
+
+    [Test]
+    public void GetEnumerationValueFilter_FromPropertyInformation_IntegrationTestWithNullableProperty ()
+    {
+      var provider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
+          GetPropertyInformation ("DisabledFromNullableProperty"),
+          delegate
+          {
+            Assert.Fail ("Must not be called");
+            return null;
+          });
+
+      var actual = provider.GetEnumerationValueFilter();
+      Assert.That (actual, Is.TypeOf (typeof (ConstantEnumerationValueFilter)));
+      Assert.That (((ConstantEnumerationValueFilter) actual).DisabledEnumValues, Is.EquivalentTo (new[] { TestEnum.Value1 }));
+    }
+
+    [Test]
+    public void GetEnumerationValueFilter_FromAttributeProvider_IntegrationTestWithPropertyType ()
+    {
+      var provider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
+          GetPropertyInformation ("DisabledFromPropertyType"),
+          t => AttributeUtility.GetCustomAttributes<DisableEnumValuesAttribute> (t, true));
+
+      var actual = provider.GetEnumerationValueFilter();
+      Assert.That (actual, Is.TypeOf (typeof (ConstantEnumerationValueFilter)));
+      Assert.That (((ConstantEnumerationValueFilter) actual).DisabledEnumValues, Is.EquivalentTo (new[] { TestEnum.Value5 }));
+    }
+
+    [Test]
+    public void GetEnumerationValueFilter_FromAttributeProvider_IntegrationTestWithNullablePropertyType ()
+    {
+      var provider = new EnumValueFilterProvider<DisableEnumValuesAttribute> (
+          GetPropertyInformation ("DisabledFromNullablePropertyType"),
+          t => AttributeUtility.GetCustomAttributes<DisableEnumValuesAttribute> (t, true));
+
+      var actual = provider.GetEnumerationValueFilter();
+      Assert.That (actual, Is.TypeOf (typeof (ConstantEnumerationValueFilter)));
+      Assert.That (((ConstantEnumerationValueFilter) actual).DisabledEnumValues, Is.EquivalentTo (new[] { TestEnum.Value5 }));
+    }
+
+    private PropertyInfoAdapter GetPropertyInformation (string name)
+    {
+      return new PropertyInfoAdapter (typeof (ClassWithDisabledEnumValue).GetProperty (name));
     }
   }
 }

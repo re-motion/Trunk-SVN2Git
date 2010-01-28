@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
               new EnumerationValueInfo (TestEnum.Value2, "Value2", "Value2", true),
               new EnumerationValueInfo (TestEnum.Value3, "Value3", "Value3", true),
               new EnumerationValueInfo (TestEnum.Value4, "Value4", "Value4", true),
-              new EnumerationValueInfo (TestEnum.Value5, "Value5", "Value5", true)
+              new EnumerationValueInfo (TestEnum.Value5, "Value5", "Value5", false)
           };
 
       CheckEnumerationValueInfos (expected, property.GetAllValues (null));

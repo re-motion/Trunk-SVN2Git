@@ -56,7 +56,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private IEnumerationValueFilter GetFilterFromType ()
     {
-      var attributes = _typeAttributeProvider (PropertyInformation.PropertyType);
+      var underlyingType = Nullable.GetUnderlyingType (PropertyInformation.PropertyType) ?? PropertyInformation.PropertyType;
+      var attributes = _typeAttributeProvider (underlyingType);
       Assertion.IsNotNull (attributes, "TypeAttributeProvider must return a non-null array.");
 
       if (attributes.Length == 0)

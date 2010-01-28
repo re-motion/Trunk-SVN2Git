@@ -30,6 +30,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public TestEnum DisabledFromPropertyType { get; set; }
 
+    [DisableEnumValues (TestEnum.Value1)]
+    public TestEnum? DisabledFromNullableProperty { get; set; }
+
+    public TestEnum? DisabledFromNullablePropertyType { get; set; }
+
     [DisableEnumValues (typeof (EnumerationValueFilter))]
     public TestEnum DisabledWithObject { get; set; }
   }
