@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      return new ExpandedCommand (_commands);
+      return new ExpandedCommand (_commands.SelectMany (nestedCommand => nestedCommand.ExpandToAllRelatedObjects().GetNestedCommands()));
     }
 
     public CompositeCommand CombineWith (IEnumerable<IDataManagementCommand> commands)

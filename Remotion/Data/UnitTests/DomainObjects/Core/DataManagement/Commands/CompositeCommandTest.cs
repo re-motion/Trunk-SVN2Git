@@ -35,11 +35,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [SetUp]
     public void SetUp ()
     {
-      _mockRepository = new MockRepository ();
-    
-      _commandMock1 = _mockRepository.StrictMock<IDataManagementCommand> ();
-      _commandMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
-      _commandMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _mockRepository = new MockRepository();
+
+      _commandMock1 = _mockRepository.StrictMock<IDataManagementCommand>();
+      _commandMock2 = _mockRepository.StrictMock<IDataManagementCommand>();
+      _commandMock3 = _mockRepository.StrictMock<IDataManagementCommand>();
 
       _composite = new CompositeCommand (_commandMock1, _commandMock2, _commandMock3);
     }
@@ -47,15 +47,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void GetNestedCommands ()
     {
-      Assert.That (_composite.GetNestedCommands (), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
+      Assert.That (_composite.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
     }
 
     [Test]
     public void Begin ()
     {
-      _commandMock1.Begin ();
-      _commandMock2.Begin ();
-      _commandMock3.Begin ();
+      _commandMock1.Begin();
+      _commandMock2.Begin();
+      _commandMock3.Begin();
 
       _mockRepository.ReplayAll();
 
@@ -67,82 +67,103 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Perform ()
     {
-      _commandMock1.Perform ();
-      _commandMock2.Perform ();
-      _commandMock3.Perform ();
+      _commandMock1.Perform();
+      _commandMock2.Perform();
+      _commandMock3.Perform();
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _composite.Perform ();
+      _composite.Perform();
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void End ()
     {
-      _commandMock1.End ();
-      _commandMock2.End ();
-      _commandMock3.End ();
+      _commandMock1.End();
+      _commandMock2.End();
+      _commandMock3.End();
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _composite.End ();
+      _composite.End();
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      _commandMock1.NotifyClientTransactionOfBegin ();
-      _commandMock2.NotifyClientTransactionOfBegin ();
-      _commandMock3.NotifyClientTransactionOfBegin ();
+      _commandMock1.NotifyClientTransactionOfBegin();
+      _commandMock2.NotifyClientTransactionOfBegin();
+      _commandMock3.NotifyClientTransactionOfBegin();
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _composite.NotifyClientTransactionOfBegin ();
+      _composite.NotifyClientTransactionOfBegin();
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      _commandMock1.NotifyClientTransactionOfEnd ();
-      _commandMock2.NotifyClientTransactionOfEnd ();
-      _commandMock3.NotifyClientTransactionOfEnd ();
+      _commandMock1.NotifyClientTransactionOfEnd();
+      _commandMock2.NotifyClientTransactionOfEnd();
+      _commandMock3.NotifyClientTransactionOfEnd();
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _composite.NotifyClientTransactionOfEnd ();
+      _composite.NotifyClientTransactionOfEnd();
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void ExtendToRelatedObjects ()
     {
-      var result = _composite.ExpandToAllRelatedObjects ();
+      var expandedStub1A = MockRepository.GenerateStub<IDataManagementCommand>();
+      var expandedStub1B = MockRepository.GenerateStub<IDataManagementCommand>();
+      var expandedStub2A = MockRepository.GenerateStub<IDataManagementCommand>();
+      var expandedStub2B = MockRepository.GenerateStub<IDataManagementCommand>();
+      var expandedStub3A = MockRepository.GenerateStub<IDataManagementCommand>();
+      var expandedStub3B = MockRepository.GenerateStub<IDataManagementCommand>();
 
-      Assert.That (result.GetNestedCommands(), Is.EqualTo (_composite.GetNestedCommands()));
+      _commandMock1.Expect (mock => mock.ExpandToAllRelatedObjects()).Return (new ExpandedCommand (expandedStub1A, expandedStub1B));
+      _commandMock2.Expect (mock => mock.ExpandToAllRelatedObjects()).Return (new ExpandedCommand (expandedStub2A, expandedStub2B));
+      _commandMock3.Expect (mock => mock.ExpandToAllRelatedObjects()).Return (new ExpandedCommand (expandedStub3A, expandedStub3B));
+
+      _commandMock1.Replay();
+      _commandMock2.Replay();
+      _commandMock3.Replay();
+
+      var result = _composite.ExpandToAllRelatedObjects();
+
+      Assert.That (
+          result.GetNestedCommands(),
+          Is.EqualTo (new[] { expandedStub1A, expandedStub1B, expandedStub2A, expandedStub2B, expandedStub3A, expandedStub3B }));
+
+      _commandMock1.VerifyAllExpectations();
+      _commandMock2.VerifyAllExpectations();
+      _commandMock3.VerifyAllExpectations();
     }
 
     [Test]
     public void CombineWith ()
     {
-      var otherCommandStub = MockRepository.GenerateStub<IDataManagementCommand> ();
+      var otherCommandStub = MockRepository.GenerateStub<IDataManagementCommand>();
       var result = _composite.CombineWith (otherCommandStub);
 
       Assert.That (result, Is.Not.SameAs (_composite));
-      Assert.That (result.GetNestedCommands (), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3, otherCommandStub }));
-      Assert.That (_composite.GetNestedCommands (), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
+      Assert.That (result.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3, otherCommandStub }));
+      Assert.That (_composite.GetNestedCommands(), Is.EqualTo (new[] { _commandMock1, _commandMock2, _commandMock3 }));
     }
 
     [Test]
     public void NotifyAndPerform ()
     {
-      using (_mockRepository.Ordered ())
+      using (_mockRepository.Ordered())
       {
         _commandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin());
         _commandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin());
@@ -156,20 +177,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         _commandMock2.Expect (mock => mock.Perform());
         _commandMock3.Expect (mock => mock.Perform());
 
-        _commandMock3.Expect (mock => mock.End ());
-        _commandMock2.Expect (mock => mock.End ());
-        _commandMock1.Expect (mock => mock.End ());
+        _commandMock3.Expect (mock => mock.End());
+        _commandMock2.Expect (mock => mock.End());
+        _commandMock1.Expect (mock => mock.End());
 
-        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd());
       }
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _composite.NotifyAndPerform ();
+      _composite.NotifyAndPerform();
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
   }
 }
