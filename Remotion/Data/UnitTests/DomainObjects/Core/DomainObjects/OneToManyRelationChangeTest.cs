@@ -486,6 +486,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       };
 
       eventReceiver.Check (expectedStates);
+
+      Assert.That (_oldCustomer.Orders, Is.Empty);
+      Assert.That (_orderWithoutOrderItem.Customer, Is.Null);
+      Assert.That (_order1.Customer, Is.Null);
+      Assert.That (_oldCustomer.Orders.AssociatedEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]
