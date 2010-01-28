@@ -361,6 +361,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       var document = Html.GetResultDocument();
       var div = document.GetAssertedChildElement ("div", 0);
+      div.AssertAttributeValueEquals ("id", "MyReferenceValue");
       div.AssertAttributeValueContains ("class", "bocReferenceValue");
       if (Control.IsReadOnly)
         div.AssertAttributeValueContains ("class", "readOnly");

@@ -47,7 +47,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
     /// </summary>
     public override void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -57,10 +56,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
         RenderEditModeControls ();
 
       Writer.RenderEndTag ();
-    }
-
-    protected override void AddAdditionalAttributes ()
-    {
     }
 
     protected override void RenderEditModeControls ()

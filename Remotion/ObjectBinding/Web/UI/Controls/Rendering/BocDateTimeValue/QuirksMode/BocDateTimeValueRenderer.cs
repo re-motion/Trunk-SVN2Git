@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
@@ -46,7 +45,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     /// </summary>
     public override void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (true);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
@@ -217,6 +215,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
     protected override void AddAdditionalAttributes ()
     {
+      base.AddAdditionalAttributes ();
       Writer.AddStyleAttribute ("display", "inline");
     }
 

@@ -108,10 +108,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     /// </summary>
     /// <returns>A <see cref="Label"/> control with all relevant properties set and all appropriate styles applied to it.</returns>
     protected abstract Label GetLabel ();
-
-    protected override void AddAdditionalAttributes ()
-    {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-    }
   }
 }

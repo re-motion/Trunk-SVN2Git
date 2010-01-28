@@ -18,7 +18,6 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
@@ -551,6 +550,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       var document = Html.GetResultDocument ();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
 
+      containerDiv.AssertAttributeValueEquals ("id", "MyReferenceValue");
       containerDiv.AssertAttributeValueContains ("class", "bocAutoCompleteReferenceValue");
       if (Control.IsReadOnly)
         containerDiv.AssertAttributeValueContains ("class", "readOnly");

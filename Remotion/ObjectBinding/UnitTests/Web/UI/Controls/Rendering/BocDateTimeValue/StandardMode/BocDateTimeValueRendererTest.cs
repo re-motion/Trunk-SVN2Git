@@ -145,6 +145,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
       var document = Html.GetResultDocument ();
       var container = document.GetAssertedChildElement ("span", 0);
+      container.AssertAttributeValueEquals ("id", "MyDateTimeValue");
       container.AssertAttributeValueEquals ("class", isDateOnly ? renderer.CssClassDateOnly : renderer.CssClassDateTime);
       container.AssertChildElementCount (isDateOnly ? 1 : 2);
       return container;

@@ -159,10 +159,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
       return label;
     }
 
-    protected override void AddAdditionalAttributes ()
-    {
-    }
-
     public override string CssClassBase
     {
       get { return "bocEnumValue"; }

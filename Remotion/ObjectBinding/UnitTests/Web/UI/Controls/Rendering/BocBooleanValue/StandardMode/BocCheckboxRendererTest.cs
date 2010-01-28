@@ -26,7 +26,7 @@ using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanValue.QuirksMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanValue.StandardMode
 {
   [TestFixture]
   public class BocCheckboxRendererTest : RendererTestBase
@@ -48,6 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Initialize();
       _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
 
+      _checkbox.Stub (mock => mock.ClientID).Return ("MyCheckbox");
       _checkbox.Stub (mock => mock.GetCheckboxUniqueID()).Return ("_Boc_CheckBox");
       _checkbox.Stub (mock => mock.GetImageUniqueID()).Return ("_Boc_Image");
       _checkbox.Stub (mock => mock.GetLabelUniqueID()).Return ("_Boc_Label");
@@ -228,7 +229,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       var document = Html.GetResultDocument();
 
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
-      checkCssClass (outerSpan);
+      CheckCssClass (outerSpan);
 
       Html.AssertStyleAttribute (outerSpan, "white-space", "nowrap");
       if (!_checkbox.IsReadOnly)
@@ -272,7 +273,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertStyleAttribute (image, "vertical-align", "middle");
     }
 
-    private void checkCssClass (XmlNode outerSpan)
+    private void CheckCssClass (XmlNode outerSpan)
     {
       string cssClass = _checkbox.CssClass;
       if (string.IsNullOrEmpty (cssClass))
@@ -280,6 +281,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _renderer.CssClassBase;
 
+      Html.AssertAttribute (outerSpan, "id", "MyCheckbox");
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if (_checkbox.IsReadOnly)
         Html.AssertAttribute (outerSpan, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);

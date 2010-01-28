@@ -182,10 +182,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       return cssClassTableCell;
     }
 
-    protected override void AddAdditionalAttributes ()
-    {
-    }
-
     public override string CssClassBase
     {
       get { throw new NotImplementedException (); }

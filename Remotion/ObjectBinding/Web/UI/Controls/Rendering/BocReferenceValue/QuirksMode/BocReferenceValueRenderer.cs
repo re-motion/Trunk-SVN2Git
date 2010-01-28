@@ -51,7 +51,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
 
     public void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
@@ -134,6 +133,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
 
     protected override void AddAdditionalAttributes ()
     {
+      base.AddAdditionalAttributes ();
       Writer.AddStyleAttribute ("display", "inline");
     }
 

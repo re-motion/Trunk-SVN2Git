@@ -51,7 +51,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
 
     public void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -131,10 +130,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
         }
       }
       return icon;
-    }
-
-    protected override void AddAdditionalAttributes ()
-    {
     }
 
     public override string CssClassBase

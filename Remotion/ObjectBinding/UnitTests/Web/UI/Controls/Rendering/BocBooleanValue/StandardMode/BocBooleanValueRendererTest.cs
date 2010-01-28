@@ -28,7 +28,7 @@ using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanValue.QuirksMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanValue.StandardMode
 {
   [TestFixture]
   public class BocBooleanValueRendererTest : RendererTestBase
@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
 
-
+      _booleanValue.Stub (mock => mock.ClientID).Return ("MyBooleanValue");
       _booleanValue.Stub (mock => mock.GetHiddenFieldUniqueID()).Return ("_Boc_HiddenField");
       _booleanValue.Stub (mock => mock.GetHyperLinkUniqueID()).Return ("_Boc_HyperLink");
       _booleanValue.Stub (mock => mock.GetImageClientID()).Return ("_Boc_Image");
@@ -264,7 +264,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _renderer.Render();
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
-      checkOuterSpanAttributes (outerSpan);
+      CheckOuterSpanAttributes (outerSpan);
 
       int offset = 0;
       if (!_booleanValue.IsReadOnly)
@@ -301,9 +301,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
-    private void checkOuterSpanAttributes (XmlNode outerSpan)
+    private void CheckOuterSpanAttributes (XmlNode outerSpan)
     {
       CheckCssClass (outerSpan);
+
+      Html.AssertAttribute (outerSpan, "id", "MyBooleanValue");
 
       if (!_booleanValue.Enabled)
         Html.AssertAttribute (outerSpan, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);

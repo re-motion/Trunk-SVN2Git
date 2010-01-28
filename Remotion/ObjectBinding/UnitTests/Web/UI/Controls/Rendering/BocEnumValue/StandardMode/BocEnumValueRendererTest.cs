@@ -55,6 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
                   (BindableObjectProvider) businessObjectProvider, propertyInfo, typeof (TestEnum), typeof (TestEnum), null, true, false)
               );
       _enumValue.Property = property;
+      _enumValue.Stub (stub => stub.ClientID).Return ("MyEnumValue");
       _enumValue.Stub (mock => mock.IsDesignMode).Return (false);
 
       var pageStub = MockRepository.GenerateStub<IPage>();
@@ -347,6 +348,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       if (string.IsNullOrEmpty (cssClass))
         cssClass = renderer.CssClassBase;
 
+      Html.AssertAttribute (div, "id", "MyEnumValue");
       Html.AssertAttribute (div, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if (isReadOnly)
         Html.AssertAttribute (div, "class", renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);

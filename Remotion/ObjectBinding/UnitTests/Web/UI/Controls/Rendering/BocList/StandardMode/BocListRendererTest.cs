@@ -79,6 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement(document, "div", 0);
+      Html.AssertAttribute (div, "id", "MyList");
 
       var table = Html.GetAssertedChildElement (div, "table", 0);
       Html.AssertAttribute (table, "cellspacing", "0");

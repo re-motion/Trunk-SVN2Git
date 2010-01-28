@@ -73,6 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List = MockRepository.GenerateMock<IBocList>();
 
+      List.Stub (list => list.ClientID).Return ("MyList");
       List.Stub (list => list.HasClientScript).Return (true);
 
       List.Stub (list => list.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource>());

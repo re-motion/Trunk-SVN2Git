@@ -144,6 +144,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     protected override void AddAdditionalAttributes ()
     {
+      base.AddAdditionalAttributes();
       Writer.AddStyleAttribute ("display", "inline");
     }
 

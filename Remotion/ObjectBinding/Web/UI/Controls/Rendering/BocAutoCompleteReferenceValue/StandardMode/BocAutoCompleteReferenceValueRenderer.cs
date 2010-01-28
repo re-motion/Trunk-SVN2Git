@@ -376,11 +376,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       return textBox;
     }
 
-    protected override void AddAdditionalAttributes ()
-    {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-    }
-
     public string CssClassDummy
     {
       get { return "bocAutoCompleteReferenceValueDummy"; }

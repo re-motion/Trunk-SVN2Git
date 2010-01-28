@@ -72,6 +72,8 @@ namespace Remotion.Web.UI.Controls.Rendering
 
     protected void AddStandardAttributesToRender ()
     {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+
       if (!string.IsNullOrEmpty (Control.CssClass))
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
 

@@ -47,8 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       datePickerButton.Stub (stub => stub.EnableClientScript).Return (true);
 
       _dateTimeValue = MockRepository.GenerateStub<IBocDateTimeValue>();
-      _dateTimeValue.ID = "controlId";
-      _dateTimeValue.Stub (mock => mock.ClientID).Return ("controlId");
+      _dateTimeValue.Stub (mock => mock.ClientID).Return ("MyDateTimeValue");
       _dateTimeValue.Stub (mock => mock.DatePickerButton).Return (datePickerButton);
       _dateTimeValue.DatePickerButton.AlternateText = "DatePickerButton";
 
@@ -559,6 +558,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private XmlNode GetAssertedDiv (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle)
     {
       var div = Html.GetAssertedChildElement (document, "div", 0);
+      
+      Html.AssertAttribute (div, "id", "MyDateTimeValue");
+
       Html.AssertAttribute (
           div,
           "class",

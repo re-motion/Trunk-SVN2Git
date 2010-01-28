@@ -203,10 +203,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       Writer.RenderEndTag();
     }
 
-    protected override void AddAdditionalAttributes ()
-    {
-    }
-
     public override string CssClassBase
     {
       get { return "bocList"; }

@@ -64,7 +64,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     /// Called after all attributes have been added by <see cref="AddAttributesToRender"/>.
     /// Use this to render style attributes without putting them into the control's <see cref="IBocRenderableControl.Style"/> property.
     /// </summary>
-    protected abstract void AddAdditionalAttributes();
+    protected virtual void AddAdditionalAttributes ()
+    {
+    }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
