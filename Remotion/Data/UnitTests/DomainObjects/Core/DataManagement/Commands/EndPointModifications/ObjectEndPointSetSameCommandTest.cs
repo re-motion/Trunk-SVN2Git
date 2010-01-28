@@ -141,8 +141,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       var setSameCommand = new ObjectEndPointSetSameCommand (bidirectionalEndPoint);
 
-      var bidirectionalModification = (CompositeDataManagementCommand) setSameCommand.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
+      var bidirectionalModification = (CompositeCommand) setSameCommand.ExtendToAllRelatedObjects ();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
 
       var steps = bidirectionalModification.GetCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));

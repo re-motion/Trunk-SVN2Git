@@ -28,19 +28,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   /// This can, for example, be used to model bidirectional relation modifications. Such modifications always comprise multiple steps: they need to 
   /// be performed on either side of the relation being changed, and usually they also invole one "previous" or "new" related object. (Eg. an insert 
   /// modificaton has a previous related object (possibly <see langword="null" />), a remove modification has an old related object.)
-  /// <see cref="CompositeDataManagementCommand"/> aggregates these modification steps and allows executing and raising events for them all at once.
+  /// <see cref="CompositeCommand"/> aggregates these modification steps and allows executing and raising events for them all at once.
   /// </remarks>
-  public class CompositeDataManagementCommand : IDataManagementCommand
+  public class CompositeCommand : IDataManagementCommand
   {
     private readonly List<IDataManagementCommand> _commands;
 
-    public CompositeDataManagementCommand (IEnumerable<IDataManagementCommand> commands)
+    public CompositeCommand (IEnumerable<IDataManagementCommand> commands)
     {
       ArgumentUtility.CheckNotNull ("commands", commands);
       _commands = new List<IDataManagementCommand> (commands);
     }
 
-    public CompositeDataManagementCommand (params IDataManagementCommand[] commands)
+    public CompositeCommand (params IDataManagementCommand[] commands)
         : this ((IEnumerable<IDataManagementCommand>) commands)
     {
     }

@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (NewRelatedObject);
       var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (OldRelatedObject);
 
-      var bidirectionalModification = new CompositeDataManagementCommand (
+      var bidirectionalModification = new CompositeCommand (
         // => order.Customer = newCustomer
           this,
         // => newCustomer.Orders.Add (order)

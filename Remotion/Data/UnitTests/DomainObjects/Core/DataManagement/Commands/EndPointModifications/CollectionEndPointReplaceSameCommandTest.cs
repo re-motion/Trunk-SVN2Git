@@ -142,8 +142,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExtendToAllRelatedObjects ()
     {
-      var bidirectionalModification = (CompositeDataManagementCommand) _command.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
+      var bidirectionalModification = (CompositeCommand) _command.ExtendToAllRelatedObjects ();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
 
       var relationEndPointID = new RelationEndPointID (_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);

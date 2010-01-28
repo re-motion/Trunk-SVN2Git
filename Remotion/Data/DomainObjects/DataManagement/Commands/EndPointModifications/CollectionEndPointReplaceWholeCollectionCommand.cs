@@ -198,7 +198,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
           commandsForRemoved
           .Concat (commandsForAdded)
           .Concat (new IDataManagementCommand[] { this }); // customer.Orders = newOrders
-      return new CompositeDataManagementCommand (allCommands);
+      return new CompositeCommand (allCommands);
     }
   }
 }

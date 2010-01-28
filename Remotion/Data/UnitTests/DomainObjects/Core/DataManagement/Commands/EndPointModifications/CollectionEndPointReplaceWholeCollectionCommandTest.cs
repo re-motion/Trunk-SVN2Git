@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection.Add (_order2);
       
       var bidirectionalModification = _command.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
 
       // DomainObject.Orders = _newCollection
 

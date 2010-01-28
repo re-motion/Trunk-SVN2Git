@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly ClientTransaction _clientTransaction;
     private readonly DomainObject _deletedObject;
     private readonly DataContainer _dataContainer;
-    private readonly CompositeDataManagementCommand _endPointDeleteCommands;
+    private readonly CompositeCommand _endPointDeleteCommands;
 
     public DeleteCommand (ClientTransaction clientTransaction, DomainObject deletedObject)
     {
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       Assertion.IsFalse (_dataContainer.State == StateType.Deleted);
       Assertion.IsFalse (_dataContainer.State == StateType.Discarded);
       
-      _endPointDeleteCommands = new CompositeDataManagementCommand (
+      _endPointDeleteCommands = new CompositeCommand (
           from endPointID in _dataContainer.AssociatedRelationEndPointIDs
           let endPoint = _clientTransaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
           select endPoint.CreateDeleteCommand());
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       var commands = from oppositeEndPoint in allOppositeRelationEndPoints
                      select oppositeEndPoint.CreateRemoveCommand (_deletedObject);
 
-      return new CompositeDataManagementCommand (new IDataManagementCommand[] { this }.Concat (commands));
+      return new CompositeCommand (new IDataManagementCommand[] { this }.Concat (commands));
     }
   }
 }

@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject (true);
       var oldRelatedEndPointOfNewRelatedEndPoint = newRelatedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject);
 
-      var bidirectionalModification = new CompositeDataManagementCommand (
+      var bidirectionalModification = new CompositeCommand (
         // => order.OrderTicket = newTicket
         this,
         // => oldTicket.Order = null (remove)

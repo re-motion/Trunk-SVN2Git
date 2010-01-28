@@ -24,13 +24,13 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
   [TestFixture]
-  public class CompositeDataManagementCommandTest : ClientTransactionBaseTest
+  public class CompositeCommandTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private IDataManagementCommand _commandMock1;
     private IDataManagementCommand _commandMock2;
     private IDataManagementCommand _commandMock3;
-    private CompositeDataManagementCommand _composite;
+    private CompositeCommand _composite;
 
     public override void SetUp ()
     {
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _commandMock2 = _mockRepository.StrictMock<IDataManagementCommand> ();
       _commandMock3 = _mockRepository.StrictMock<IDataManagementCommand> ();
 
-      _composite = new CompositeDataManagementCommand (_commandMock1, _commandMock2, _commandMock3);
+      _composite = new CompositeCommand (_commandMock1, _commandMock2, _commandMock3);
     }
 
     [Test]

@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExtendToAllRelatedObjects ()
     {
       var bidirectionalModification = _command.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeDataManagementCommand)));
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
 
       // DomainObject.Orders.Remove (_removedRelatedObject)
       var steps = GetAllCommands (bidirectionalModification);

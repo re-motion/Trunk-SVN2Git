@@ -205,7 +205,7 @@
     <Compile Include="Infrastructure\RootCollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationLogger.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
-    <Compile Include="DataManagement\Commands\CompositeDataManagementCommand.cs" />
+    <Compile Include="DataManagement\Commands\CompositeCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\NullEndPointModificationCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\ObjectEndPointSetCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommand.cs" />

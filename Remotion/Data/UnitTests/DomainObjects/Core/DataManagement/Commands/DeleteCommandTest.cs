@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
-      var compositeCommand = (CompositeDataManagementCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
+      var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
       compositeCommand.AddCommand (endPointCommandMock);
 
       using (mockRepository.Ordered ())
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
-      var compositeCommand = (CompositeDataManagementCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
+      var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
       compositeCommand.AddCommand (endPointCommandMock);
 
       using (mockRepository.Ordered ())
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void ExtendToAllRelatedObjects ()
     {
-      var extended = (CompositeDataManagementCommand) _deleteOrder1Command.ExtendToAllRelatedObjects ();
+      var extended = (CompositeCommand) _deleteOrder1Command.ExtendToAllRelatedObjects ();
 
       var commands = extended.GetCommands();
       Assert.That (commands.Count, Is.EqualTo (6)); // self, Official, OrderTicket, Customer, OrderItem1, OrderItem2

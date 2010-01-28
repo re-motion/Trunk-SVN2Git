@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // the end point that was linked to the new related object before the operation
       var oldRelatedEndPointOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedObjectOfNewObject);
 
-      return new CompositeDataManagementCommand (
+      return new CompositeCommand (
           // customer.Order[index].Customer = null
           endPointOfOldObject.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject()),
           // newOrder.Customer = customer
