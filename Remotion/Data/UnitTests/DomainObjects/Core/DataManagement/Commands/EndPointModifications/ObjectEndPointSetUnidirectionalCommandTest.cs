@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects_SetDifferent_Unidirectional ()
+    public void ExpandToAllRelatedObjects_SetDifferent_Unidirectional ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
@@ -102,8 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var newClient = Client.NewObject ();
 
       var setDifferentCommand = new ObjectEndPointSetUnidirectionalCommand (unidirectionalEndPoint, newClient);
-      var bidirectionalModification = setDifferentCommand.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.SameAs (setDifferentCommand));
+      var bidirectionalModification = setDifferentCommand.ExpandToAllRelatedObjects ();
+      Assert.That (bidirectionalModification.GetNestedCommands(), Is.EqualTo (new[] { setDifferentCommand }));
     }
   }
 }

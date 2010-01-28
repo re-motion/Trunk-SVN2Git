@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 {
   /// <summary>
   /// Represents the operation of setting the object stored by an <see cref="ObjectEndPoint"/> to the same value as before. Calling 
-  /// <see cref="ExtendToAllRelatedObjects"/> results in a <see cref="IDataManagementCommand"/> that does not raise any events.
+  /// <see cref="ExpandToAllRelatedObjects"/> results in a <see cref="IDataManagementCommand"/> that does not raise any events.
   /// </summary>
   public class ObjectEndPointSetSameCommand : ObjectEndPointSetCommand
   {
@@ -61,17 +61,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     /// </list>
     /// No change notifications are sent for this operation.
     /// </remarks>
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
+    public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       var oppositeEndPointDefinition = ModifiedEndPoint.Definition.GetOppositeEndPointDefinition ();
       if (oppositeEndPointDefinition.IsAnonymous)
       {
-        return this;
+        return new ExpandedCommand (this);
       }
       else
       {
         var oppositeEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IEndPoint> (NewRelatedObject);
-        return new CompositeCommand (this, new RelationEndPointTouchCommand (oppositeEndPoint));
+        return new ExpandedCommand (this, new RelationEndPointTouchCommand (oppositeEndPoint));
       }
     }
   }

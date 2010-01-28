@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNewRelatedObjectType (newRelatedObject);
 
       var setCommand = CreateSetCommand (newRelatedObject);
-      var bidirectionalModification = setCommand.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = setCommand.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
 

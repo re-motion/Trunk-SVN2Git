@@ -42,9 +42,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       }
     }
 
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
+    public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      return this;
+      return new ExpandedCommand (this);
     }
   }
 }

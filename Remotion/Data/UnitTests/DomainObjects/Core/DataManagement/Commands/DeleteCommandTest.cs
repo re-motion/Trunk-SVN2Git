@@ -63,8 +63,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
+      
       var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
-      compositeCommand.AddCommand (endPointCommandMock);
+      var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
+      PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
 
       using (mockRepository.Ordered ())
       {
@@ -99,7 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
       var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
-      compositeCommand.AddCommand (endPointCommandMock);
+      var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
+      PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
 
       using (mockRepository.Ordered ())
       {
@@ -216,11 +219,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects ()
+    public void ExpandToAllRelatedObjects ()
     {
-      var extended = (CompositeCommand) _deleteOrder1Command.ExtendToAllRelatedObjects ();
+      var extended = _deleteOrder1Command.ExpandToAllRelatedObjects ();
 
-      var commands = extended.GetCommands();
+      var commands = extended.GetNestedCommands();
       Assert.That (commands.Count, Is.EqualTo (6)); // self, Official, OrderTicket, Customer, OrderItem1, OrderItem2
 
       Assert.That (commands, List.Contains (_deleteOrder1Command));

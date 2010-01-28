@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
 
       var command = oppositeDomainObjects.CreateAssociationCommand (this);
-      var bidirectionalModification = command.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = command.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
 

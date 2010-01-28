@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// <summary>
   /// Represents a modification performed on a <see cref="RelationEndPoint"/>. Provides default behavior for triggering the required
   /// events and notifying the <see cref="ClientTransaction"/> about the modification. The actual modification has to be specified by subclasses
-  /// by implementing <see cref="Perform"/>. In addition, <see cref="ExtendToAllRelatedObjects"/> has to be overridden to return a 
+  /// by implementing <see cref="Perform"/>. In addition, <see cref="ExpandToAllRelatedObjects"/> has to be overridden to return a 
   /// composite object containing all commands needed to be performed when this modification starts a bidirectional relation change.
   /// </summary>
   public abstract class RelationEndPointModificationCommand : IDataManagementCommand
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     /// </summary>
     /// <returns>A new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this
     /// <see cref="RelationEndPointModificationCommand"/>.</returns>
-    public abstract IDataManagementCommand ExtendToAllRelatedObjects ();
+    public abstract ExpandedCommand ExpandToAllRelatedObjects ();
 
     public virtual void Begin ()
     {

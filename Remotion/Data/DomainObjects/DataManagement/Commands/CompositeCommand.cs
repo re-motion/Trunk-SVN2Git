@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
@@ -32,12 +33,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   /// </remarks>
   public class CompositeCommand : IDataManagementCommand
   {
-    private readonly List<IDataManagementCommand> _commands;
+    private readonly ReadOnlyCollection<IDataManagementCommand> _commands;
 
     public CompositeCommand (IEnumerable<IDataManagementCommand> commands)
     {
       ArgumentUtility.CheckNotNull ("commands", commands);
-      _commands = new List<IDataManagementCommand> (commands);
+      _commands = new List<IDataManagementCommand> (commands).AsReadOnly();
     }
 
     public CompositeCommand (params IDataManagementCommand[] commands)
@@ -45,15 +46,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
     }
 
-    public ReadOnlyCollection<IDataManagementCommand> GetCommands ()
+    public ReadOnlyCollection<IDataManagementCommand> GetNestedCommands ()
     {
-      return _commands.AsReadOnly ();
-    }
-
-    public void AddCommand (IDataManagementCommand command)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      _commands.Add (command);
+      return _commands;
     }
 
     public void Begin ()
@@ -86,11 +81,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         _commands[i].NotifyClientTransactionOfEnd ();
     }
 
-    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      return this;
+      return new ExpandedCommand (_commands);
     }
 
+    public CompositeCommand CombineWith (IEnumerable<IDataManagementCommand> commands)
+    {
+      return new CompositeCommand (_commands.Concat (commands));
+    }
 
+    public CompositeCommand CombineWith (params IDataManagementCommand[] commands)
+    {
+      return CombineWith ((IEnumerable<IDataManagementCommand>) commands);
+    }
   }
 }

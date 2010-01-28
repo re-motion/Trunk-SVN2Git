@@ -111,9 +111,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         _clientTransaction.TransactionEventSink.ObjectsUnloaded (_affectedDomainObjects);
     }
 
-    IDataManagementCommand IDataManagementCommand.ExtendToAllRelatedObjects ()
+    ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
     {
-      return this;
+      return new ExpandedCommand (this);
     }
 
     private DataContainer[] GetAndCheckAffectedDataContainers ()

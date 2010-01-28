@@ -1072,7 +1072,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       var command = _dataManager.CreateDeleteCommand (domainObject);
-      var fullCommand = command.ExtendToAllRelatedObjects ();
+      var fullCommand = command.ExpandToAllRelatedObjects ();
       fullCommand.NotifyAndPerform ();
     }
   }

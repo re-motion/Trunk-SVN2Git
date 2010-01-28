@@ -95,10 +95,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects ()
+    public void ExpandToAllRelatedObjects ()
     {
-      var result = _command.ExtendToAllRelatedObjects ();
-      Assert.That (result, Is.SameAs (_command));
+      var result = ((IDataManagementCommand) _command).ExpandToAllRelatedObjects ();
+      Assert.That (result.GetNestedCommands(), Is.EqualTo (new[] { _command }));
     }
   }
 }

@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects_SetDifferent_BidirectionalOneMany ()
+    public void ExpandToAllRelatedObjects_SetDifferent_BidirectionalOneMany ()
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orderEndPointDefinition = orderItem.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
@@ -106,8 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var newOrder = Order.GetObject (DomainObjectIDs.Order2);
       var setDifferentModification = new ObjectEndPointSetOneManyCommand (bidirectionalEndPoint, newOrder);
 
-      var bidirectionalModification = setDifferentModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
+      var bidirectionalModification = setDifferentModification.ExpandToAllRelatedObjects ();
 
       var steps = GetAllCommands (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (3));

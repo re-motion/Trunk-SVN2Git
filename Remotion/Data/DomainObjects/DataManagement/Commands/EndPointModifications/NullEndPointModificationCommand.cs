@@ -57,9 +57,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // do nothing
     }
 
-    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
     {
-      return this;
+      return new ExpandedCommand (this);
     }
   }
 }

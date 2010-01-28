@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects_SetSame_Unidirectional ()
+    public void ExpandToAllRelatedObjects_SetSame_Unidirectional ()
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
@@ -121,12 +121,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
-      var bidirectionalModification = setSameModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.SameAs (setSameModification));
+      var bidirectionalModification = setSameModification.ExpandToAllRelatedObjects ();
+      Assert.That (bidirectionalModification.GetNestedCommands(), Is.EqualTo (new[] { setSameModification }));
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects_SetSame_Bidirectional ()
+    public void ExpandToAllRelatedObjects_SetSame_Bidirectional ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
@@ -141,10 +141,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
       var setSameCommand = new ObjectEndPointSetSameCommand (bidirectionalEndPoint);
 
-      var bidirectionalModification = (CompositeCommand) setSameCommand.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
+      var bidirectionalModification = setSameCommand.ExpandToAllRelatedObjects ();
 
-      var steps = bidirectionalModification.GetCommands ();
+      var steps = bidirectionalModification.GetNestedCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       Assert.That (steps[0], Is.SameAs (setSameCommand));

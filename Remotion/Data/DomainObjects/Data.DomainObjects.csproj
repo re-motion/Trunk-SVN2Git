@@ -147,6 +147,7 @@
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\Commands\AdHocCommand.cs" />
     <Compile Include="DataManagement\Commands\DeleteCommand.cs" />
+    <Compile Include="DataManagement\Commands\ExpandedCommand.cs" />
     <Compile Include="DataManagement\Commands\NopCommand.cs" />
     <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />

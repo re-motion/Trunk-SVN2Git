@@ -237,6 +237,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\ExpandedCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandTestHelper.cs" />

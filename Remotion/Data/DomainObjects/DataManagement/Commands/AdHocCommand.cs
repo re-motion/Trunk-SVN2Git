@@ -19,7 +19,8 @@ using System;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
-  /// Implements a possibility to implement <see cref="IDataManagementCommand"/> ad-hoc, without having to implement a new class.
+  /// Provides the possibility to implement <see cref="IDataManagementCommand"/> ad-hoc using delegates and lambdas, without having to create a 
+  /// new class.
   /// </summary>
   public class AdHocCommand : IDataManagementCommand
   {
@@ -29,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public Action EndHandler { get; set; }
     public Action NotifyClientTransactionOfEndHandler { get; set; }
     
-    public Func<AdHocCommand, IDataManagementCommand> Extender { get; set; }
+    public Func<AdHocCommand, ExpandedCommand> Expander { get; set; }
 
     public void NotifyClientTransactionOfBegin ()
     {
@@ -61,12 +62,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         NotifyClientTransactionOfEndHandler ();
     }
 
-    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      if (Extender != null)
-        return Extender (this);
+      if (Expander != null)
+        return Expander (this);
       else
-        return this;
+        return new ExpandedCommand (this);
     }
   }
 }

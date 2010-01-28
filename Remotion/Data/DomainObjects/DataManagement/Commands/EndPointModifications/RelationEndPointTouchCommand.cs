@@ -60,9 +60,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // do not issue any notifications
     }
 
-    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
     {
-      return this;
+      return new ExpandedCommand (this);
     }
   }
 }

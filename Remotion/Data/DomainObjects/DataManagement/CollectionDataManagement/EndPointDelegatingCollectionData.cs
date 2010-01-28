@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
 
       var insertCommand = AssociatedEndPoint.CreateInsertCommand (domainObject, index);
-      var bidirectionalModification = insertCommand.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = insertCommand.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
 
       AssociatedEndPoint.Touch ();
@@ -185,7 +185,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
 
       var replaceCommand = AssociatedEndPoint.CreateReplaceCommand (index, value);
-      var bidirectionalModification = replaceCommand.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = replaceCommand.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
 
       AssociatedEndPoint.Touch ();
@@ -194,7 +194,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     private void CreateAndExecuteRemoveCommand (DomainObject domainObject)
     {
       var command = AssociatedEndPoint.CreateRemoveCommand (domainObject);
-      var bidirectionalModification = command.ExtendToAllRelatedObjects ();
+      var bidirectionalModification = command.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
   }

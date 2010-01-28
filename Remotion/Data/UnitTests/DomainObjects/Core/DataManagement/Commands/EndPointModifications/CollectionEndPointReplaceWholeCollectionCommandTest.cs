@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects ()
+    public void ExpandToAllRelatedObjects ()
     {
       CollectionEndPoint.OppositeDomainObjects.Add (_order1);
       CollectionEndPoint.OppositeDomainObjects.Add (_orderWithoutOrderItem);
@@ -285,8 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection.Add (_order1);
       _newCollection.Add (_order2);
       
-      var bidirectionalModification = _command.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
+      var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       // DomainObject.Orders = _newCollection
 

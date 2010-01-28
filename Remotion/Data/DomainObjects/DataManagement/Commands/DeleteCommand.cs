@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _clientTransaction.TransactionEventSink.ObjectDeleted (_deletedObject);
     }
 
-    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
       var allOppositeRelationEndPoints = 
           OppositeRelationEndPointFinder.GetOppositeRelationEndPoints (_clientTransaction.DataManager.RelationEndPointMap, _deletedObject);
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       var commands = from oppositeEndPoint in allOppositeRelationEndPoints
                      select oppositeEndPoint.CreateRemoveCommand (_deletedObject);
 
-      return new CompositeCommand (new IDataManagementCommand[] { this }.Concat (commands));
+      return new ExpandedCommand (this).CombineWith (commands);
     }
   }
 }

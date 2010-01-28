@@ -140,15 +140,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects ()
+    public void ExpandToAllRelatedObjects ()
     {
-      var bidirectionalModification = (CompositeCommand) _command.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
+      var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       var relationEndPointID = new RelationEndPointID (_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
       var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
-      var steps = bidirectionalModification.GetCommands ();
+      var steps = bidirectionalModification.GetNestedCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       // customer.Orders.Touch()

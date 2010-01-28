@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void ExtendToAllRelatedObjects_SetDifferent_BidirectionalOneOne ()
+    public void ExpandToAllRelatedObjects_SetDifferent_BidirectionalOneOne ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
@@ -105,8 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
       var setDifferentModification = new ObjectEndPointSetOneOneCommand (bidirectionalEndPoint, newOrderTicket);
 
-      var bidirectionalModification = setDifferentModification.ExtendToAllRelatedObjects ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (CompositeCommand)));
+      var bidirectionalModification = setDifferentModification.ExpandToAllRelatedObjects ();
 
       var steps = GetAllCommands (bidirectionalModification);
       Assert.That (steps.Count, Is.EqualTo (4));

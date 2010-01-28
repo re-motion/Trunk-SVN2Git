@@ -633,7 +633,7 @@ namespace Remotion.Data.DomainObjects
     /// </para>
     /// <para>
     /// The returned <see cref="IDataManagementCommand"/> should be executed as a bidirectional modification 
-    /// (<see cref="IDataManagementCommand.ExtendToAllRelatedObjects"/>), otherwise inconsistent state might arise.
+    /// (<see cref="IDataManagementCommand.ExpandToAllRelatedObjects"/>), otherwise inconsistent state might arise.
     /// </para>
     /// <para>
     /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,

@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
     }
 
-    public IDataManagementCommand ExtendToAllRelatedObjects ()
+    public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      return this;
+      return new ExpandedCommand (this);
     }
   }
 }

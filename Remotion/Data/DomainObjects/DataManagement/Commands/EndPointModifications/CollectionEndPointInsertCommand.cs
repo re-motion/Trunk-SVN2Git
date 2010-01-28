@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the inserted order (if non-null).</item>
     /// </list>
     /// </remarks>
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
+    public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       // the end point that will be linked to the collection end point after the operation
       var insertedObjectEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // the end point that was linked to the new related object before the operation
       var oldRelatedEndPointOfInsertedObject = insertedObjectEndPoint.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedObjectOfInsertedObject);
 
-      return new CompositeCommand (
+      return new ExpandedCommand (
           // insertedOrder.Customer = customer (previously oldCustomer)
           insertedObjectEndPoint.CreateSetCommand (ModifiedEndPoint.GetDomainObject()),
           // customer.Orders.Insert (insertedOrder, index)

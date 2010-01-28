@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     ///   <item>customer.Orders = newOrders.</item>
     /// </list>
     /// </remarks>
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
+    public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       var domainObjectOfCollectionEndPoint = base.ModifiedEndPoint.GetDomainObject ();
 
@@ -194,11 +194,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
                              from command in new[] { removeCommand, setCommand }
                              select command;
 
-      var allCommands =
-          commandsForRemoved
-          .Concat (commandsForAdded)
-          .Concat (new IDataManagementCommand[] { this }); // customer.Orders = newOrders
-      return new CompositeCommand (allCommands);
+      return new ExpandedCommand (commandsForRemoved).CombineWith (commandsForAdded).CombineWith (this);
     }
   }
 }

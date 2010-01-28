@@ -1,4 +1,5 @@
 using System;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -38,9 +39,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// Not all commands have to implement all the steps, unrequired steps can be left empty.
   /// </para>
   /// <para>
-  /// Some commands can be broadened to include other objects also affected by the operation via <see cref="ExtendToAllRelatedObjects"/>. For example,
+  /// Some commands can be broadened to include other objects also affected by the operation via <see cref="ExpandToAllRelatedObjects"/>. For example,
   /// a relation end point modification command can be extended to include changes to all affected opposite objects via 
-  /// <see cref="ExtendToAllRelatedObjects"/>.
+  /// <see cref="ExpandToAllRelatedObjects"/>.
   /// </para>
   /// </remarks>
   public interface IDataManagementCommand
@@ -75,10 +76,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void NotifyClientTransactionOfEnd ();
 
     /// <summary>
-    /// Returns a new <see cref="IDataManagementCommand"/> instance that involves changes to all objects affected by this 
-    /// <see cref="IDataManagementCommand"/>. If no other objects are involved by the change, this method returns just this 
-    /// <see cref="IDataManagementCommand"/>.
+    /// Returns an <see cref="ExpandedCommand"/> that involves changes to all objects affected by this 
+    /// <see cref="IDataManagementCommand"/>. If no other objects are involved by the change, that <see cref="ExpandedCommand"/> method contains just 
+    /// this <see cref="IDataManagementCommand"/>.
     /// </summary>
-    IDataManagementCommand ExtendToAllRelatedObjects ();
+    ExpandedCommand ExpandToAllRelatedObjects ();
   }
 }

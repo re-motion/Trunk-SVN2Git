@@ -84,10 +84,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     ///   <item>customer.Orders.Remove (removedOrder).</item>
     /// </list>
     /// </remarks>
-    public override IDataManagementCommand ExtendToAllRelatedObjects ()
+    public override ExpandedCommand ExpandToAllRelatedObjects ()
     {
       var removedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
-      return new CompositeCommand (
+      return new ExpandedCommand (
           removedEndPoint.CreateRemoveCommand (ModifiedEndPoint.GetDomainObject ()), 
           this);
     }
