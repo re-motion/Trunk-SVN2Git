@@ -42,6 +42,7 @@
         <include name="ConfigurationLoader/**/*.cs"/>
         <include name="Design/**/*.cs"/>
         <include name="Development/**/*.cs"/>
+        <include name="DomainImplementation/**/*.cs"/>
         <include name="Infrastructure/**/*.cs"/>
         <include name="Linq/**/*.cs"/>
         <include name="Mapping/**/*.cs"/>
