@@ -17,6 +17,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
@@ -113,17 +116,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public void Clear ()
     {
       RelationEndPointValueChecker.CheckNotDeleted (AssociatedEndPoint, AssociatedEndPoint.GetDomainObject ());
-
-      for (int i = Count - 1; i >= 0; --i)
-      {
-        var removedObject = GetObject (i);
-
-        // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
-        Assertion.IsTrue (removedObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
-        CreateAndExecuteRemoveCommand (removedObject);
-      }
-
-      AssociatedEndPoint.Touch ();
+      
+      var combinedCommand = GetClearCommand ();
+      combinedCommand.NotifyAndPerform ();
     }
 
     public void Insert (int index, DomainObject domainObject)
@@ -196,6 +191,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       var command = AssociatedEndPoint.CreateRemoveCommand (domainObject);
       var bidirectionalModification = command.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
+    }
+
+    private CompositeCommand GetClearCommand ()
+    {
+      var removeCommands = new List<ExpandedCommand> ();
+
+      for (int i = Count - 1; i >= 0; --i)
+      {
+        var removedObject = GetObject (i);
+
+        // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
+        Assertion.IsTrue (removedObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
+        removeCommands.Add (AssociatedEndPoint.CreateRemoveCommand (removedObject).ExpandToAllRelatedObjects ());
+      }
+
+      return new CompositeCommand (removeCommands.Cast<IDataManagementCommand> ()).CombineWith (new RelationEndPointTouchCommand (AssociatedEndPoint));
     }
   }
 }

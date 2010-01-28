@@ -22,7 +22,9 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -171,7 +173,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    [Ignore ("TODO 2175")]
+    public void Clear_CompositeCommand ()
+    {
+      PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
+
+      var mockRepository = _collectionEndPointMock.GetMockRepository ();
+
+      var removeCommandStub1 = mockRepository.Stub<IDataManagementCommand> ();
+      var removeCommandStub2 = mockRepository.Stub<IDataManagementCommand> ();
+      var removeCommandStub3 = mockRepository.Stub<IDataManagementCommand> ();
+
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem1)).Return (removeCommandStub1);
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
+      _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
+
+      var expandedCommand1 = new ExpandedCommand ();
+      var expandedCommand2 = new ExpandedCommand ();
+      var expandedCommand3 = new ExpandedCommand ();
+      
+      removeCommandStub1.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (expandedCommand1);
+      removeCommandStub2.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (expandedCommand2);
+      removeCommandStub3.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (expandedCommand3);
+
+      mockRepository.ReplayAll ();
+
+      var clearCommand = (CompositeCommand) PrivateInvoke.InvokeNonPublicMethod (_data, "GetClearCommand");
+      var nestedClearCommands = clearCommand.GetNestedCommands ();
+
+      Assert.That (nestedClearCommands.Count, Is.EqualTo (4));
+      
+      Assert.That (nestedClearCommands, List.Contains (expandedCommand1));
+      Assert.That (nestedClearCommands, List.Contains (expandedCommand2));
+      Assert.That (nestedClearCommands, List.Contains (expandedCommand3));
+      
+      Assert.That (nestedClearCommands[3], Is.InstanceOfType (typeof (RelationEndPointTouchCommand)));
+      Assert.That (((RelationEndPointTouchCommand) nestedClearCommands[3]).EndPoint, Is.SameAs (_collectionEndPointMock));
+
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void Clear ()
     {
       PrepareActualDataContents (_orderItem1, _orderItem2, _orderItem3);
@@ -194,25 +235,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem2)).Return (removeCommandStub2);
       _collectionEndPointMock.Expect (mock => mock.CreateRemoveCommand (_orderItem3)).Return (removeCommandStub3);
 
-      _collectionEndPointMock.Expect (mock => mock.Touch());
-      
       using (mockRepository.Ordered ())
       {
-        nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock1.NotifyClientTransactionOfBegin");
-        nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock2.NotifyClientTransactionOfBegin");
         nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock3.NotifyClientTransactionOfBegin");
-        nestedCommandMock1.Expect (mock => mock.Begin ()).Message ("nestedCommandMock1.Begin");
-        nestedCommandMock2.Expect (mock => mock.Begin ()).Message ("nestedCommandMock2.Begin");
+        nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock2.NotifyClientTransactionOfBegin");
+        nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock1.NotifyClientTransactionOfBegin");
         nestedCommandMock3.Expect (mock => mock.Begin ()).Message ("nestedCommandMock3.Begin");
-        nestedCommandMock1.Expect (mock => mock.Perform ()).Message ("nestedCommandMock1.Perform");
-        nestedCommandMock2.Expect (mock => mock.Perform ()).Message ("nestedCommandMock2.Perform");
+        nestedCommandMock2.Expect (mock => mock.Begin ()).Message ("nestedCommandMock2.Begin");
+        nestedCommandMock1.Expect (mock => mock.Begin ()).Message ("nestedCommandMock1.Begin");
         nestedCommandMock3.Expect (mock => mock.Perform ()).Message ("nestedCommandMock3.Perform");
-        nestedCommandMock3.Expect (mock => mock.End ()).Message ("nestedCommandMock3.End");
-        nestedCommandMock2.Expect (mock => mock.End ()).Message ("nestedCommandMock2.End");
+        nestedCommandMock2.Expect (mock => mock.Perform ()).Message ("nestedCommandMock2.Perform");
+        nestedCommandMock1.Expect (mock => mock.Perform ()).Message ("nestedCommandMock1.Perform");
+        _collectionEndPointMock.Expect (mock => mock.Touch ()).Message ("endPoint.Touch");
         nestedCommandMock1.Expect (mock => mock.End ()).Message ("nestedCommandMock1.End");
-        nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock3.NotifyClientTransactionOfEnd");
-        nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock2.NotifyClientTransactionOfEnd");
+        nestedCommandMock2.Expect (mock => mock.End ()).Message ("nestedCommandMock2.End");
+        nestedCommandMock3.Expect (mock => mock.End ()).Message ("nestedCommandMock3.End");
         nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock1.NotifyClientTransactionOfEnd");
+        nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock2.NotifyClientTransactionOfEnd");
+        nestedCommandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock3.NotifyClientTransactionOfEnd");
       }
 
       mockRepository.ReplayAll ();
