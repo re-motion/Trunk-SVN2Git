@@ -113,6 +113,7 @@ namespace Remotion.FunctionalProgramming
   /// <summary>
   /// Encapsulates a value that may be <see langword="null" />, providing helpful methods to avoid <see langword="null" /> checks.
   /// </summary>
+  [Serializable]
   public struct Maybe<T>
   {
     public static readonly Maybe<T> Nothing = new Maybe<T> ();
@@ -183,7 +184,7 @@ namespace Remotion.FunctionalProgramming
     public T Value ()
     {
       if (!_hasValue)
-        throw new InvalidOperationException ("Maybe-Object must have a value.");
+        throw new InvalidOperationException ("Maybe instance does not have a value.");
       return _value;
     }
 

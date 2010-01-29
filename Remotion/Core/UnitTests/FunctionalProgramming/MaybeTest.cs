@@ -19,6 +19,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 using Remotion.FunctionalProgramming;
 
 namespace Remotion.UnitTests.FunctionalProgramming
@@ -179,185 +180,52 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_DefaultFromReferenceType ()
+    public void ValueOrDefault_DefaultFromReferenceType ()
     {
-      var value = new Maybe<string> ();
-      Assert.That (value.ValueOrDefault (), Is.Null);
+      Assert.That (_stringNothing.ValueOrDefault (), Is.Null);
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_NullFromReferenceType ()
+    public void ValueOrDefault_NonNullFromReferenceType ()
     {
-      var value = new Maybe<string> (null);
-      Assert.That (value.ValueOrDefault (), Is.Null);
+      Assert.That (_stringNonNothingTest.ValueOrDefault (), Is.EqualTo ("Test"));
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_NonNullFromReferenceType ()
+    public void ValueOrDefault_DefaultFromValueType ()
     {
-      var innerValue = "Test";
-      var value = new Maybe<string> (innerValue);
-      Assert.That (value.ValueOrDefault (), Is.SameAs (innerValue));
+      Assert.That (_intNothing.ValueOrDefault (), Is.EqualTo (default (int)));
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_DefaultFromValueType ()
+    public void ValueOrDefault_NonNullFromValueType ()
     {
-      var value = new Maybe<int> ();
-      Assert.That (value.ValueOrDefault (), Is.EqualTo (default (int)));
+      Assert.That (_intNonNothingFour.ValueOrDefault (), Is.EqualTo (4));
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_NonNullFromValueType ()
+    public void ValueOrDefault_WithExplicitDefaultValue_Default ()
     {
-      var innerValue = 42;
-      var value = new Maybe<int> (innerValue);
-      Assert.That (value.ValueOrDefault (), Is.EqualTo (innerValue));
+      Assert.That (_stringNothing.ValueOrDefault ("42"), Is.EqualTo ("42"));
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_DefaultFromNullableValueType ()
+    public void ValueOrDefault_WithExplicitDefaultValue_Value ()
     {
-      var value = new Maybe<int?> ();
-      Assert.That (value.ValueOrDefault (), Is.Null);
+      Assert.That (_stringNonNothingTest.ValueOrDefault ("42"), Is.EqualTo ("Test"));
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_NullFromNullableValueType ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Maybe instance does not have a value.")]
+    public void Value_Nothing_Throws ()
     {
-      var value = new Maybe<int?> (null);
-      Assert.That (value.ValueOrDefault (), Is.Null);
+      _intNothing.Value ();
     }
 
     [Test]
-    public void Initialize_And_ValueOrDefault_NonNullFromNullableValueType ()
+    public void Value_NonNothing ()
     {
-      var innerValue = 42;
-      var value = new Maybe<int?> (innerValue);
-      Assert.That (value.ValueOrDefault (), Is.EqualTo (innerValue));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_DefaultFromReferenceType ()
-    {
-      var value = new Maybe<string> ();
-      Assert.That (value.ValueOrDefault ("42"), Is.EqualTo ("42"));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_NullFromReferenceType ()
-    {
-      var value = new Maybe<string> (null);
-      Assert.That (value.ValueOrDefault ("42"), Is.EqualTo ("42"));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_NonNullFromReferenceType ()
-    {
-      var innerValue = "Test";
-      var value = new Maybe<string> (innerValue);
-      Assert.That (value.ValueOrDefault ("42"), Is.SameAs (innerValue));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_DefaultFromValueType ()
-    {
-      var value = new Maybe<int> ();
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (-1));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_NonNullFromValueType ()
-    {
-      var innerValue = 42;
-      var value = new Maybe<int> (innerValue);
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (innerValue));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_DefaultFromNullableValueType ()
-    {
-      var value = new Maybe<int?> ();
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (-1));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_NullFromNullableValueType ()
-    {
-      var value = new Maybe<int?> (null);
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (-1));
-    }
-
-    [Test]
-    public void ValueOrDefault_WithExplicitDefaultValue_NonNullFromNullableValueType ()
-    {
-      var innerValue = 42;
-      var value = new Maybe<int> (innerValue);
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (innerValue));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Maybe-Object must have a value.")]
-    public void Value_DefaultFromReferenceType_Throws ()
-    {
-      var value = new Maybe<string> ();
-      value.Value ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void Value_NullFromReferenceType_Throws ()
-    {
-      var value = new Maybe<string> (null);
-      value.Value ();
-    }
-
-    [Test]
-    public void Value_NonNullFromReferenceType ()
-    {
-      var innerValue = "Test";
-      var value = new Maybe<string> (innerValue);
-      Assert.That (value.Value (), Is.SameAs (innerValue));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void Value_DefaultFromValueType_Throws ()
-    {
-      var value = new Maybe<int> ();
-      value.Value ();
-    }
-
-    [Test]
-    public void Value_NonNullFromValueType ()
-    {
-      var innerValue = 42;
-      var value = new Maybe<int> (innerValue);
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (innerValue));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void Value_DefaultFromNullableValueType_Throws ()
-    {
-      var value = new Maybe<int?> ();
-      value.Value ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void Value_NullFromNullableValueType_Throws ()
-    {
-      var value = new Maybe<int?> (null);
-      value.Value ();
-    }
-
-    [Test]
-    public void Value_NonNullFromNullableValueType ()
-    {
-      var innerValue = 42;
-      var value = new Maybe<int> (innerValue);
-      Assert.That (value.ValueOrDefault (-1), Is.EqualTo (innerValue));
+      Assert.That (_intNonNothingFour.Value (), Is.EqualTo (4));
     }
 
     [Test]
@@ -651,6 +519,16 @@ namespace Remotion.UnitTests.FunctionalProgramming
       Assert.That (ExecuteLinqQuery ("s", 99), Is.EqualTo (Maybe<string>.Nothing));
       Assert.That (ExecuteLinqQuery (null, 100), Is.EqualTo (Maybe<string>.Nothing));
       Assert.That (ExecuteLinqQuery ("s", null), Is.EqualTo (Maybe<string>.Nothing));
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var deserializedIntNothing = Serializer.SerializeAndDeserialize (_intNothing);
+      Assert.That (deserializedIntNothing, Is.EqualTo (_intNothing));
+
+      var deserializedIntNonNothing = Serializer.SerializeAndDeserialize (_intNonNothingFour);
+      Assert.That (deserializedIntNonNothing, Is.EqualTo (_intNonNothingFour));
     }
 
     private Maybe<string> ExecuteLinqQuery (string stringValue, int? intValue)
