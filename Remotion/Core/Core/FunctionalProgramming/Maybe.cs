@@ -157,51 +157,12 @@ namespace Remotion.FunctionalProgramming
     }
 
     /// <summary>
-    /// Selects another value from this instance. If this instance does not have a value, the selected value is <see cref="Nothing"/>.
-    /// Otherwise, the selected value is retrieved via a selector function.
-    /// </summary>
-    /// <typeparam name="TR">The type of the value to be selected.</typeparam>
-    /// <param name="selector">The selector function. This function is only executed if this instance has a value.</param>
-    /// <returns><see cref="Nothing"/> if this instance has no value or <paramref name="selector"/> returns <see langword="null" />; 
-    /// otherwise, a new <see cref="Maybe{T}"/> instance holding the value returned by <paramref name="selector"/>.
-    /// </returns>
-    public Maybe<TR> Select<TR> (Func<T, TR> selector)
-    {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-
-      if (_hasValue)
-        return Maybe.ForValue (selector (_value));
-      else
-        return Maybe<TR>.Nothing;
-    }
-
-    /// <summary>
-    /// Selects a nullable value from this instance. If this instance does not have a value, the selected value is <see cref="Nothing"/>.
-    /// Otherwise, the selected value is retrieved via a selector function.
-    /// </summary>
-    /// <typeparam name="TR">The type of the value to be selected.</typeparam>
-    /// <param name="selector">The selector function. This function is only executed if this instance has a value. Its return value is unwrapped
-    /// into the underlying type.</param>
-    /// <returns><see cref="Nothing"/> if this instance has no value or <paramref name="selector"/> returns <see langword="null" />; 
-    /// otherwise, a new <see cref="Maybe{T}"/> instance holding the non-nullable value returned by <paramref name="selector"/>.
-    /// </returns>
-    public Maybe<TR> Select<TR> (Func<T, TR?> selector) where TR : struct
-    {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-
-      if (_hasValue)
-        return Maybe.ForValue (selector (_value));
-      else
-        return Maybe<TR>.Nothing;
-    }
-
-    /// <summary>
     /// Gets the value held by this instance, or the default value of <typeparamref name="T"/> if this instance does not have a value.
     /// </summary>
     /// <returns>The value held by this instance, or the default value of <typeparamref name="T"/> if this instance does not have a value.</returns>
     public T ValueOrDefault ()
     {
-      return ValueOrDefault (default(T));
+      return ValueOrDefault (default (T));
     }
 
     /// <summary>
@@ -230,12 +191,126 @@ namespace Remotion.FunctionalProgramming
     /// Executes the specified action if this instance has a value. Otherwise, the action is not performed.
     /// </summary>
     /// <param name="action">The action to execute.</param>
-    public void Do (Action<T> action)
+    /// <returns>This instance.</returns>
+    public Maybe<T> Do (Action<T> action)
     {
       if (_hasValue)
         action (_value);
+
+      return this;
     }
 
+    /// <summary>
+    /// Executes the specified action if this instance has a value. Otherwise, a different action is performed.
+    /// </summary>
+    /// <param name="action">The action to execute.</param>
+    /// <param name="otherwise">The action to execute if this instance doesn't have a value.</param>
+    /// <returns>This instance.</returns>
+    public Maybe<T> Do (Action<T> action, Action otherwise)
+    {
+      return Do (action).Otherwise (otherwise);
+    }
+
+    /// <summary>
+    /// Executes the specified action if this instance doesn't have a value. If it does, the action is not performed.
+    /// </summary>
+    /// <param name="action">The action to execute.</param>
+    /// <returns>This instance.</returns>
+    public Maybe<T> Otherwise (Action action)
+    {
+      if (!_hasValue)
+        action();
+
+      return this;
+    }
+
+    /// <summary>
+    /// Selects another value from this instance. If this instance does not have a value, the selected value is <see cref="Nothing"/>.
+    /// Otherwise, the selected value is retrieved via a selector function.
+    /// </summary>
+    /// <typeparam name="TR">The type of the value to be selected.</typeparam>
+    /// <param name="selector">The selector function. This function is only executed if this instance has a value.</param>
+    /// <returns><see cref="Nothing"/> if this instance has no value or <paramref name="selector"/> returns <see langword="null" />; 
+    /// otherwise, a new <see cref="Maybe{T}"/> instance holding the value returned by <paramref name="selector"/>.
+    /// </returns>
+    public Maybe<TR> Select<TR> (Func<T, TR> selector)
+    {
+      ArgumentUtility.CheckNotNull ("selector", selector);
+
+      if (_hasValue)
+        return Maybe.ForValue (selector (_value));
+      else
+        return Maybe<TR>.Nothing;
+    }
+
+    /// <summary>
+    /// Combines a <see cref="Maybe{T}"/> value with another <see cref="Maybe{T}"/> value, returning <see cref="Nothing"/> unless both
+    /// <see cref="Maybe{T}"/> instances have a value.
+    /// </summary>
+    /// <typeparam name="TOther">The type stored by the other maybe instance to combine this instance with.</typeparam>
+    /// <typeparam name="TResult">The type of the combined values.</typeparam>
+    /// <param name="otherMaybeSelector">A selector function that returns the other <see cref="Maybe{T}"/> instance to combine this instance with. 
+    /// This function is only executed if this instance has a value.</param>
+    /// <param name="resultSelector">A function selecting the resulting value from the value of this instance and the value of the other 
+    /// <see cref="Maybe{T}"/> instance.</param>
+    /// <returns><see cref="Nothing"/> if this instance does not have a value, <paramref name="otherMaybeSelector"/> returns <see cref="Nothing"/>,
+    /// or <paramref nane="resultSelector"/> returns <see langword="null" />. Otherwise, the result of <paramref name="resultSelector"/> applied
+    /// to the value held by this instance and the value held by the <see cref="Maybe{T}"/> instance returned by <paramref name="otherMaybeSelector"/>.
+    /// </returns>
+    /// <remarks>
+    /// This method enables LINQ-style queries with multiple from clauses.
+    /// <example>
+    /// <code>
+    /// var r = from s in Maybe.ForValue (stringValue)
+    ///         from i in Maybe.ForValue (intValue)
+    ///         let j = s.Length + i
+    ///         where j &gt; 100
+    ///         select new { i, s };
+    /// r.Do (tuple => Console.WriteLine (tuple.i + "/" + tuple.s), () => Console.WriteLine ("Nothing!"));
+    /// </code>
+    /// </example>
+    /// </remarks>
+    public Maybe<TResult> SelectMany<TOther, TResult> (Func<T, Maybe<TOther>> otherMaybeSelector, Func<T, TOther, TResult> resultSelector) 
+    {
+      if (!_hasValue)
+        return Maybe<TResult>.Nothing;
+
+      var otherMaybe = otherMaybeSelector (_value);
+      if (!otherMaybe._hasValue)
+        return Maybe<TResult>.Nothing;
+
+      return Maybe.ForValue (resultSelector (_value, otherMaybe._value));
+    }
+   
+
+    /// <summary>
+    /// Selects a nullable value from this instance. If this instance does not have a value, the selected value is <see cref="Nothing"/>.
+    /// Otherwise, the selected value is retrieved via a selector function.
+    /// </summary>
+    /// <typeparam name="TR">The type of the value to be selected.</typeparam>
+    /// <param name="selector">The selector function. This function is only executed if this instance has a value. Its return value is unwrapped
+    /// into the underlying type.</param>
+    /// <returns><see cref="Nothing"/> if this instance has no value or <paramref name="selector"/> returns <see langword="null" />; 
+    /// otherwise, a new <see cref="Maybe{T}"/> instance holding the non-nullable value returned by <paramref name="selector"/>.
+    /// </returns>
+    public Maybe<TR> Select<TR> (Func<T, TR?> selector) where TR : struct
+    {
+      ArgumentUtility.CheckNotNull ("selector", selector);
+
+      if (_hasValue)
+        return Maybe.ForValue (selector (_value));
+      else
+        return Maybe<TR>.Nothing;
+    }
+
+    /// <summary>
+    /// Checks the given predicate, returning this instance if the predicate is <see langword="true" />, or <see cref="Nothing"/> if the predicate is 
+    /// <see langword="false" />. If this instance does not have a value, <see cref="Nothing"/> is immediately returned and the predicate is not
+    /// evaluated.
+    /// </summary>
+    /// <param name="predicate">The predicate to check. This is only evaluated if this instance has a value.</param>
+    /// <returns><see cref="Nothing"/> if this instance does not have a value or the <paramref name="predicate"/> returns <see langword="false" />;
+    /// otherwise, this instance.</returns>
     public Maybe<T> Where (Func<T, bool> predicate)
     {
       return _hasValue && predicate (_value) ? this : Nothing;
