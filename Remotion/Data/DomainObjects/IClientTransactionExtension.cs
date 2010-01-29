@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects
@@ -262,7 +263,9 @@ namespace Remotion.Data.DomainObjects
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was read.</param>
     /// <param name="propertyName">The name of the relation property that was read.</param>
     /// <param name="relatedObjects">
-    ///   A <see cref="ReadOnlyCollection{T}"/> wrapping the related object collection that is returned to the reader.
+    ///   An implementation of <see cref="ReadOnlyDomainObjectCollectionAdapter{T}"/> wrapping the related object data that is returned to the reader.
+    ///   Implementors should check the <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection 
+    ///   data in order to avoid reloading an unloaded collection end-point.
     /// </param>
     /// <param name="valueAccess">A value indicating whether the current or the original value was accessed.</param>
     /// <remarks>
@@ -274,7 +277,7 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     /// </remarks>
-    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
     /// This method is invoked before a relation is changed.

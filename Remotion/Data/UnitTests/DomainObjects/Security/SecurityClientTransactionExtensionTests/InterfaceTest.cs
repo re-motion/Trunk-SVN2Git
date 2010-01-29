@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Security;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       extension.ObjectDeleted (null, null);
       extension.PropertyValueRead (null, null, null, null, ValueAccess.Current);
       extension.PropertyValueChanged (null, null, null, null, null);
-      extension.RelationRead (null, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Current);
+      extension.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
       extension.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
       extension.RelationChanged (null, null, null);
       extension.Committing (null, null);

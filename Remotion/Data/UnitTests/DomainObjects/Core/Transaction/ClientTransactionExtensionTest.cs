@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -910,7 +911,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         _extensionMock.RelationReading (
             _newTransaction, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", ValueAccess.Current);
-        _extensionMock.RelationRead (null, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Current);
+        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
@@ -943,7 +944,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         _extensionMock.RelationReading (
             _newTransaction, _order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems", ValueAccess.Original);
-        _extensionMock.RelationRead (null, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Original);
+        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Original);
 
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
@@ -1008,7 +1009,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         _extensionMock.ObjectsLoaded (null, null);
         LastCall.Constraints (Mocks_Is.Same (_newTransaction), Mocks_Property.Value ("Count", 2));
-        _extensionMock.RelationRead (null, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Current);
+        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
@@ -1072,7 +1073,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         _extensionMock.ObjectsLoaded (null, null);
         LastCall.Constraints (Mocks_Is.Same (_newTransaction), Mocks_Property.Value ("Count", 2));
-        _extensionMock.RelationRead (null, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Current);
+        _extensionMock.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         LastCall.Constraints (
             Mocks_Is.Same (_newTransaction),
             Mocks_Is.Same (_order1),
@@ -1513,7 +1514,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         }
 
         if (expectingCollection)
-          _extensionMock.RelationRead (transaction, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Current);
+          _extensionMock.RelationRead (transaction, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         else
           _extensionMock.RelationRead (transaction, null, null, (DomainObject) null, ValueAccess.Current);
 
@@ -1527,7 +1528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         LastCall.IgnoreArguments ();
 
         if (expectingCollection)
-          _extensionMock.RelationRead (transaction, null, null, (ReadOnlyCollection<DomainObject>) null, ValueAccess.Current);
+          _extensionMock.RelationRead (transaction, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
         else
           _extensionMock.RelationRead (transaction, null, null, (DomainObject) null, ValueAccess.Current);
         LastCall.IgnoreArguments ();

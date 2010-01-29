@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
@@ -25,11 +26,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// This class acts as a read-only adapter for an <see cref="IDomainObjectCollectionData"/> object.
   /// </summary>
   [Serializable]
-  public class ReadOnlyCollectionDataAdapter : IReadOnlyDomainObjectCollectionData
+  public class ReadOnlyDomainObjectCollectionAdapter<T> : IEnumerable<T> where T : DomainObject
   {
-    private readonly IDomainObjectCollectionData _wrappedData;
+    private readonly DomainObjectCollection _wrappedData;
 
-    public ReadOnlyCollectionDataAdapter (IDomainObjectCollectionData wrappedData)
+    public ReadOnlyDomainObjectCollectionAdapter (DomainObjectCollection wrappedData)
     {
       ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
       _wrappedData = wrappedData;
@@ -60,9 +61,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData.EnsureDataAvailable();
     }
 
-    public IEnumerator<DomainObject> GetEnumerator ()
+    public IEnumerator<T> GetEnumerator ()
     {
-      return _wrappedData.GetEnumerator();
+      return _wrappedData.Cast<T>().GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
@@ -70,21 +71,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       return GetEnumerator();
     }
 
-    public bool ContainsObjectID (ObjectID objectID)
+    public bool Contains (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.ContainsObjectID (objectID);
+      return _wrappedData.Contains (objectID);
+    }
+
+    public bool ContainsObject (DomainObject domainObject)
+    {
+      return _wrappedData.ContainsObject (domainObject);
+    }
+
+    public int IndexOf (DomainObject domainObject)
+    {
+      return _wrappedData.IndexOf (domainObject);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _wrappedData.GetObject (index);
+      return _wrappedData[index];
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData.GetObject (objectID);
+      return _wrappedData[objectID];
     }
 
     public int IndexOf (ObjectID objectID)

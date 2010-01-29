@@ -20,12 +20,12 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Diagnostics;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -497,7 +497,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void RelationReadWithOneToManyRelation ()
     {
-      var orderItems = _order.OrderItems.Cast<DomainObject> ().ToList().AsReadOnly();
+      var orderItems = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_order.OrderItems);
 
       using (_mockRepository.Ordered ())
       {

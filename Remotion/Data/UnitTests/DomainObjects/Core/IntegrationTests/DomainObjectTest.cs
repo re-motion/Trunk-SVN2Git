@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newCustomer1),
             Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (data => data.Count == 0),
+            Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 0),
             Arg.Is (ValueAccess.Current)));
 
         extension.RelationChanging (ClientTransactionMock, newOrder1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newCustomer1),
             Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (data => data.Count == 1 && data.Contains (newOrder1)),
+            Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 1 && data.ContainsObject (newOrder1)),
             Arg.Is (ValueAccess.Current)));
 
         extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", null, newCustomer1);
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg.Is (ClientTransactionScope.CurrentTransaction), 
             Arg.Is (newCustomer1), 
             Arg.Is ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"),
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (data => data.Count == 2 && data.Contains (newOrder1) && data.Contains (newOrder2)),
+            Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (data => data.Count == 2 && data.ContainsObject (newOrder1) && data.ContainsObject (newOrder2)),
             Arg.Is (ValueAccess.Current)));
 
         extension.RelationChanging (ClientTransactionMock, newOrder2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", newCustomer1, null);

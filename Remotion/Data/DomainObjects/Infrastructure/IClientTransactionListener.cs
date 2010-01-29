@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -64,9 +65,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
     /// <param name="propertyName">The name of the property that has been read.</param>
-    /// <param name="relatedObjects">A read-only wrapper of the related object collection that is returned to the reader.</param>
+    /// <param name="relatedObjects">
+    /// A read-only wrapper of the related object data that is returned to the reader. Implementors should check the 
+    /// <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection data in order to avoid reloading 
+    /// an unloaded collection end-point.
+    /// </param>
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
-    void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess);
+    void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
     /// Indicates that a relation is about to change. 

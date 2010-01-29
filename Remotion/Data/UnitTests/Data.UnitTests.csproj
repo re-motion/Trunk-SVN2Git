@@ -258,7 +258,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionEventRaiserFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecoratorTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyCollectionDataAdapterTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointModificationCommandTestBase.cs" />

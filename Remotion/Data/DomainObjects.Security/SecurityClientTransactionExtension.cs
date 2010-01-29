@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -76,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Security
     {
     }
 
-    void IClientTransactionExtension.RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
+    void IClientTransactionExtension.RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
     }
 

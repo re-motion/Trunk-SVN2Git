@@ -21,6 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
@@ -140,12 +141,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
               new[]
                   {
                       typeof (DomainObject), typeof (string),
-                      typeof (ReadOnlyCollection<DomainObject>), typeof (ValueAccess)
+                      typeof (ReadOnlyDomainObjectCollectionAdapter<DomainObject>), typeof (ValueAccess)
                   }),
           new object[]
               {
                   order, "FooBar",
-                  new ReadOnlyCollection<DomainObject>(new DomainObject[0]), ValueAccess.Original
+                  new ReadOnlyDomainObjectCollectionAdapter<DomainObject>(new DomainObjectCollection()), ValueAccess.Original
               });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationReading"), new object[] {order, "Whatever", ValueAccess.Current});
 

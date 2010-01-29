@@ -173,12 +173,11 @@
     <Compile Include="DataManagement\DomainObjectCollectionFactory.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ArgumentCheckingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EndPointDelegatingCollectionData.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\IReadOnlyDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionEventRaiser.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyCollectionDataAdapter.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointReplaceCommand.cs" />

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
@@ -1027,7 +1028,7 @@ public abstract class ClientTransaction
 
       TransactionEventSink.RelationReading (domainObject, relationEndPointID.Definition.PropertyName, ValueAccess.Current);
       var relatedObjects = _dataManager.RelationEndPointMap.GetRelatedObjects (relationEndPointID);
-      var readOnlyRelatedObjects = new ReadOnlyCollection<DomainObject> (relatedObjects.AsList<DomainObject>());
+      var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (domainObject, relationEndPointID.Definition.PropertyName, readOnlyRelatedObjects, ValueAccess.Current);
 
       return relatedObjects;
@@ -1050,7 +1051,7 @@ public abstract class ClientTransaction
 
       TransactionEventSink.RelationReading (domainObject, relationEndPointID.Definition.PropertyName, ValueAccess.Original);
       DomainObjectCollection relatedObjects = _dataManager.RelationEndPointMap.GetOriginalRelatedObjects (relationEndPointID);
-      var readOnlyRelatedObjects = new ReadOnlyCollection<DomainObject> (relatedObjects.AsList<DomainObject> ());
+      var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
       TransactionEventSink.RelationRead (domainObject, relationEndPointID.Definition.PropertyName, readOnlyRelatedObjects, ValueAccess.Original);
 
       return relatedObjects;

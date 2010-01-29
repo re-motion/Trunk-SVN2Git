@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -143,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
-    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       // not handled by this listener
     }

@@ -18,12 +18,11 @@
 // All rights reserved.
 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Linq;
@@ -32,10 +31,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
-  public class ReadOnlyCollectionDataAdapterTest : ClientTransactionBaseTest
+  public class ReadOnlyDomainObjectCollectionAdapterTest : ClientTransactionBaseTest
   {
-    private ReadOnlyCollectionDataAdapter _readOnlyAdapter;
-    private IDomainObjectCollectionData _wrappedDataStub;
+    private ReadOnlyDomainObjectCollectionAdapter<DomainObject> _readOnlyAdapter;
+    private DomainObjectCollection _wrappedData;
 
     private Order _order1;
     private Order _order2;
@@ -45,8 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public override void SetUp ()
     {
       base.SetUp ();
-      _wrappedDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-      _readOnlyAdapter = new ReadOnlyCollectionDataAdapter (_wrappedDataStub);
+      _wrappedData = new DomainObjectCollection (typeof (Order));
+      _readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_wrappedData);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -64,27 +63,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void RequiredItemType ()
     {
-      _wrappedDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (DateTime));
-      Assert.That (_readOnlyAdapter.RequiredItemType, Is.SameAs (typeof (DateTime)));
+      Assert.That (_readOnlyAdapter.RequiredItemType, Is.SameAs (typeof (Order)));
     }
 
     [Test]
     public void AssociatedEndPoint ()
     {
-      var endPointFake = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      _wrappedDataStub.Stub (stub => stub.AssociatedEndPoint).Return (endPointFake);
-      Assert.That (_readOnlyAdapter.AssociatedEndPoint, Is.SameAs (endPointFake));
+      var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
+      var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
+      
+      Assert.That (readOnlyAdapter.AssociatedEndPoint, Is.SameAs (associatedCollection.AssociatedEndPoint));
     }
 
     [Test]
     public void IsDataAvailable ()
     {
-      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
       Assert.That (_readOnlyAdapter.IsDataAvailable, Is.True);
 
-      _wrappedDataStub.BackToRecord ();
-      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
-      Assert.That (_readOnlyAdapter.IsDataAvailable, Is.False);
+      var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
+      UnloadService.UnloadCollectionEndPoint (
+          ClientTransactionMock, 
+          associatedCollection.AssociatedEndPoint.ID, 
+          UnloadService.TransactionMode.ThisTransactionOnly);
+
+      var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
+      Assert.That (readOnlyAdapter.IsDataAvailable, Is.False);
     }
 
     [Test]
@@ -97,17 +100,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void EnsureDataAvailable ()
     {
-      _readOnlyAdapter.EnsureDataAvailable();
-      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
+      var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
+      UnloadService.UnloadCollectionEndPoint (
+          ClientTransactionMock,
+          associatedCollection.AssociatedEndPoint.ID,
+          UnloadService.TransactionMode.ThisTransactionOnly);
+
+      var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
+      Assert.That (associatedCollection.IsDataAvailable, Is.False);
+
+      readOnlyAdapter.EnsureDataAvailable ();
+
+      Assert.That (associatedCollection.IsDataAvailable, Is.True);
     }
 
     [Test]
-    public void ContainsObjectID ()
+    public void Contains_ID ()
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyAdapter.ContainsObjectID (_order1.ID), Is.True);
-      Assert.That (_readOnlyAdapter.ContainsObjectID (_order4.ID), Is.False);
+      Assert.That (_readOnlyAdapter.Contains (_order1.ID), Is.True);
+      Assert.That (_readOnlyAdapter.Contains (_order4.ID), Is.False);
+    }
+
+    [Test]
+    public void ContainsObject ()
+    {
+      StubInnerData (_order1, _order2, _order3);
+
+      Assert.That (_readOnlyAdapter.ContainsObject (_order1), Is.True);
+      Assert.That (_readOnlyAdapter.ContainsObject (_order4), Is.False);
     }
 
     [Test]
@@ -127,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void IndexOf ()
+    public void IndexOf_ID ()
     {
       StubInnerData (_order1, _order2, _order3);
 
@@ -135,26 +157,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IndexOf_Object ()
+    {
+      StubInnerData (_order1, _order2, _order3);
+
+      Assert.That (_readOnlyAdapter.IndexOf (_order2), Is.EqualTo (1));
+    }
+
+    [Test]
     public void Serializable ()
     {
-      var decorator = new ReadOnlyCollectionDataAdapter (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }));
-      var result = Serializer.SerializeAndDeserialize (decorator);
+      StubInnerData (_order1, _order2, _order3);
+      var result = Serializer.SerializeAndDeserialize (_readOnlyAdapter);
       Assert.That (result.Count, Is.EqualTo (3));
     }
 
     private void StubInnerData (params DomainObject[] contents)
     {
-      _wrappedDataStub.Stub (stub => stub.Count).Return (contents.Length);
-      _wrappedDataStub.Stub (stub => stub.GetEnumerator()).Return (((IEnumerable<DomainObject>)contents).GetEnumerator());
-
-      for (int i = 0; i < contents.Length; i++)
-      {
-        int currentIndex = i; // required because Stub creates a closure
-        _wrappedDataStub.Stub (stub => stub.ContainsObjectID (contents[currentIndex].ID)).Return (true);
-        _wrappedDataStub.Stub (stub => stub.GetObject (contents[currentIndex].ID)).Return (contents[currentIndex]);
-        _wrappedDataStub.Stub (stub => stub.GetObject (currentIndex)).Return (contents[currentIndex]);
-        _wrappedDataStub.Stub (stub => stub.IndexOf (contents[currentIndex].ID)).Return (currentIndex);
-      }
+      _wrappedData.AddRange (contents);
     }
   }
 }

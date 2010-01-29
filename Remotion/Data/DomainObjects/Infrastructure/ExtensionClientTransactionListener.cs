@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -127,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationRead (_clientTransaction, domainObject, propertyName, relatedObject, valueAccess);
     }
 
-    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyCollection<DomainObject> relatedObjects, ValueAccess valueAccess)
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       Extensions.RelationRead (_clientTransaction, domainObject, propertyName, relatedObjects, valueAccess);
     }
