@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -61,10 +62,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void RequiredItemType ()
+    {
+      _wrappedDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (DateTime));
+      Assert.That (_readOnlyAdapter.RequiredItemType, Is.SameAs (typeof (DateTime)));
+    }
+
+    [Test]
+    public void AssociatedEndPoint ()
+    {
+      var endPointFake = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      _wrappedDataStub.Stub (stub => stub.AssociatedEndPoint).Return (endPointFake);
+      Assert.That (_readOnlyAdapter.AssociatedEndPoint, Is.SameAs (endPointFake));
+    }
+
+    [Test]
+    public void IsDataAvailable ()
+    {
+      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (true);
+      Assert.That (_readOnlyAdapter.IsDataAvailable, Is.True);
+
+      _wrappedDataStub.BackToRecord ();
+      _wrappedDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
+      Assert.That (_readOnlyAdapter.IsDataAvailable, Is.False);
+    }
+
+    [Test]
     public void Count ()
     {
       StubInnerData (_order1, _order2, _order3);
       Assert.That (_readOnlyAdapter.Count, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      _readOnlyAdapter.EnsureDataAvailable();
+      _wrappedDataStub.AssertWasCalled (stub => stub.EnsureDataAvailable ());
     }
 
     [Test]

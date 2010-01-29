@@ -35,6 +35,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData = wrappedData;
     }
 
+    public Type RequiredItemType
+    {
+      get { return _wrappedData.RequiredItemType; }
+    }
+
+    public ICollectionEndPoint AssociatedEndPoint
+    {
+      get { return _wrappedData.AssociatedEndPoint; }
+    }
+
+    public bool IsDataAvailable
+    {
+      get { return _wrappedData.IsDataAvailable; }
+    }
+
+    public int Count
+    {
+      get { return _wrappedData.Count; }
+    }
+
+    public void EnsureDataAvailable ()
+    {
+      _wrappedData.EnsureDataAvailable();
+    }
+
     public IEnumerator<DomainObject> GetEnumerator ()
     {
       return _wrappedData.GetEnumerator();
@@ -43,11 +68,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator();
-    }
-
-    public int Count
-    {
-      get { return _wrappedData.Count; }
     }
 
     public bool ContainsObjectID (ObjectID objectID)

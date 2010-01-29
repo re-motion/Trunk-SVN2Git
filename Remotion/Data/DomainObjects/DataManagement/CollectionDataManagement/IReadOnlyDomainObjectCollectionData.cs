@@ -27,9 +27,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   public interface IReadOnlyDomainObjectCollectionData : IEnumerable<DomainObject>
   {
     int Count { get; }
+    Type RequiredItemType { get; }
+    ICollectionEndPoint AssociatedEndPoint { get; }
+    bool IsDataAvailable { get; }
     bool ContainsObjectID (ObjectID objectID);
     DomainObject GetObject (int index);
     DomainObject GetObject (ObjectID objectID);
     int IndexOf (ObjectID objectID);
+    void EnsureDataAvailable ();
   }
 }
