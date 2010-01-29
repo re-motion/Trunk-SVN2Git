@@ -18,8 +18,7 @@
 function BocBrowserCompatibility()
 { }
 
-BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element)
-{
+BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element) {
   if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
     return;
 
@@ -35,21 +34,18 @@ BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element)
   var thirdControlElement = $(controlContentChildrens.get(2));
   var thirdControlElementMenuArrowWidth = thirdControlElement.find('img').outerWidth(true);
 
-  if (thirdControlElement.hasClass('bocReferenceValueOptionsMenu'))
-  {
+  if (thirdControlElement.hasClass('bocReferenceValueOptionsMenu')) {
     var thirdControlElementMenuText = thirdControlElement.find('a').outerWidth(true);
     var thirdControlElementWidth = thirdControlElementMenuText + thirdControlElementMenuArrowWidth;
-  }
-  else
-  {
+  } else {
     var thirdControlElementWidth = thirdControlElementMenuArrowWidth;
   }
 
-  if (totalChildrens == 1)
-  {
+
+  if (totalChildrens == 1) {
     var firstControlElementSelect = firstControlElement.find('.content');
-    if (firstControlElementSelect)
-    {
+    if (firstControlElementSelect) {
+
       var firstControlElementSelectMarginPadding = firstControlElementSelect.outerWidth(true) - firstControlElementSelect.width();
 
       firstControlElementSelectMaxWidth = maxWidth - firstControlElementSelectMarginPadding - firstControlElementSelect.prev().outerWidth(true) - firstControlElementSelect.next().outerWidth(true);
@@ -57,78 +53,75 @@ BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element)
     }
   }
 
-  if (totalChildrens == 2)
-  {
-    if (seccondControlElement.hasClass('bocReferenceValueOptionsMenu'))
-    {
+  if (totalChildrens == 2) {
+
+    if (seccondControlElement.hasClass('bocReferenceValueOptionsMenu')) {
       var seccondControlElementMenuText = seccondControlElement.find('a').outerWidth(true);
       var seccondControlElementMenuArrowWidth = seccondControlElement.find('img').outerWidth(true);
       var seccondControlElementWidth = seccondControlElementMenuText + seccondControlElementMenuArrowWidth;
       var firstControlElementWidth = maxWidth - seccondControlElementWidth;
-    }
-    else
-    {
+
+    } else {
       var seccondControlElementWidth = maxWidth - firstControlElementWidth;
     }
     seccondControlElement.css({ 'left': firstControlElementWidth, 'width': seccondControlElementWidth });
 
-  }
-  else if (totalChildrens == 3)
-  {
+  } else if (totalChildrens == 3) {
     var seccondControlElementWidth = maxWidth - firstControlElementWidth - thirdControlElementWidth;
     seccondControlElement.css({ 'left': firstControlElementWidth, 'width': seccondControlElementWidth });
     thirdControlElement.css({ 'left': firstControlElementWidth + seccondControlElementWidth, 'width': thirdControlElementWidth });
+
   }
 }
 
 BocBrowserCompatibility.AdjustDateTimeValueLayout = function(element)
 {
-  var intrinsicRatio = 8;
-  var totalChildrens = element.children().size();
-  if (totalChildrens > 2)
+  var hasDateAndTimeFields = element.children().size() == 3;
+  if (hasDateAndTimeFields)
   {
-    var maxWidth = element.innerWidth();
-    var dateField = element.children(':first');
-    var dateInputField = dateField.children(':first');
+    var maxWidth = element.width();
+    var dateField = element.children().eq(0);
+    var dateInputField = dateField.children().eq(0);
+    var dateFieldMarginPadding = dateField.outerWidth(true) - dateField.width();
+    var dateInputFieldMaxLength = dateInputField.attr('maxLength');
+    var dateInputFieldMinWidth = dateInputFieldMaxLength * 7.3; //7.3 is character width
 
-    var calField = element.children(':nth-child(2)');
-    var calFieldWidth = calField.width();
+    var calendarField = element.children().eq(1);
+    var calendarFieldWidth = calendarField.width(true);
 
+    var timeField = element.children().eq(2);
+    var timeFieldWidth = timeField.outerWidth(true);
 
-    var timeField = element.children(':nth-child(3)');
-    var timeFieldWidth = timeField.width();
+    var dateInputFieldNewWidth = maxWidth - calendarFieldWidth - timeFieldWidth - dateFieldMarginPadding; // 2 is a margin
 
-    dateInputField.css('width', maxWidth - calFieldWidth - timeFieldWidth - intrinsicRatio);
-    calField.css({ 'left': maxWidth - calFieldWidth - timeFieldWidth });
+    dateInputField.css('width', dateInputFieldNewWidth);
+    calendarField.css({ 'left': dateInputFieldNewWidth });
     timeField.css({ 'left': maxWidth - timeFieldWidth });
-  } 
+  }
   else
   {
     var maxWidth = element.innerWidth();
-    var dateField = element.children(':first');
-    var dateInputField = dateField.children(':first');
+    var dateField = element.children().eq(0);
+    var dateInputField = dateField.children().eq(0);
 
-    var calField = element.children(':nth-child(2)');
-    var calFieldWidth = calField.outerWidth(true);
+    var calendarField = element.children().eq(1);
+    var calendarFieldWidth = calendarField.width(true);
 
-    if (element.css('width') == 'auto')
+    if (element.css('width') != 'auto')
     {
-      dateInputField.css('width', '147px');
-      calField.css({ 'left': '155px' });
-    } else
-    {
-      dateInputField.css('width', maxWidth - calFieldWidth - intrinsicRatio);
-      calField.css({ 'left': maxWidth - calFieldWidth });
+      dateInputField.css('width', maxWidth - calendarFieldWidth - dateFieldMarginPadding );
+      calendarField.css({ 'left': maxWidth - calendarFieldWidth });
     }
   }
 }
 
-BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element)
-{
+
+
+BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element) {
+  BocBrowserCompatibility.AutoCompleteReferenceValueLayoutFixIE6(element);
+}
+
+BocBrowserCompatibility.AdjustReferenceValueLayout = function(element) {
   BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
 }
 
-BocBrowserCompatibility.AdjustReferenceValueLayout = function(element)
-{
-  BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
-}

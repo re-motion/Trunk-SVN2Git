@@ -81,7 +81,7 @@ td.bocListDataCellEven
 {
 	text-align: left;
 
-  padding: 2px 2px 2px 2px;
+  padding: 2px 5px 2px 2px;
   border-top: none;
   border-right: none;
   border-left: none;
@@ -206,6 +206,10 @@ td.bocListDataCellEven span.DropDownMenuSelect.disabled a:hover
   background-color: Transparent;
 }
 
+td.bocListDataCellOdd span.bocDateValue a,
+td.bocListDataCellEven span.bocDateValue a,
+td.bocListDataCellOdd span.bocDateValue a:hover,
+td.bocListDataCellEven span.bocDateValue a:hover,
 td.bocListDataCellOdd span.bocDateTimeValue a,
 td.bocListDataCellEven span.bocDateTimeValue a,
 td.bocListDataCellOdd span.bocDateTimeValue a:hover,
