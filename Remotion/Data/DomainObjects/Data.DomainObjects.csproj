@@ -144,6 +144,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataDecoratorBase.cs" />
     <Compile Include="DataManagement\Commands\AdHocCommand.cs" />
     <Compile Include="DataManagement\Commands\DeleteCommand.cs" />
