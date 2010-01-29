@@ -34,7 +34,6 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 
     public void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddStandardAttributesToRender();
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);

@@ -38,6 +38,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.StandardMode
       Initialize();
 
       _control = MockRepository.GenerateStub<ITabbedMenu>();
+      _control.Stub (stub => stub.ClientID).Return ("MyTabbedMenu");
       _control.Stub (stub => stub.MainMenuTabStrip).Return (MockRepository.GenerateStub<IWebTabStrip>());
       _control.Stub (stub => stub.SubMenuTabStrip).Return (MockRepository.GenerateStub<IWebTabStrip> ());
 

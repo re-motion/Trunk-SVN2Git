@@ -68,7 +68,6 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
     protected void AddAttributesToRender ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddStandardAttributesToRender ();
       if (Control.IsDesignMode)
       {

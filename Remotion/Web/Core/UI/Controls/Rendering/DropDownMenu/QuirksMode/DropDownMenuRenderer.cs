@@ -35,7 +35,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
     public void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddStandardAttributesToRender();
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
