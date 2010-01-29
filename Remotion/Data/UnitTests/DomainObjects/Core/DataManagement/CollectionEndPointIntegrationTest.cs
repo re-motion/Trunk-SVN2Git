@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
       var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
-      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetUndecoratedDataStore ();
+      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetDataStore ();
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       // old collection got a new data store...
       var dataStoreOfOldOpposites = 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldOpposites).GetUndecoratedDataStore();
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldOpposites).GetDataStore();
       Assert.That (dataStoreOfOldOpposites, Is.Not.SameAs (originalDataStoreOfOldOpposites));
 
       // with the data it had before!
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
       var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
-      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetUndecoratedDataStore ();
+      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetDataStore ();
       
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
       var oldCollectionDataStore = 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection).GetUndecoratedDataStore ();
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
 
       var newCollection = new OrderCollection { _order2 };
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
@@ -343,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
       var oldCollectionDataStore =
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection).GetUndecoratedDataStore ();
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
 
       var newCollection = new OrderCollection { _order2 };
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);

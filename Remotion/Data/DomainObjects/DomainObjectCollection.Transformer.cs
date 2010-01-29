@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects
       {
         Assertion.IsNotNull (Collection.AssociatedEndPoint);
 
-        var standAloneDataStore = new DomainObjectCollectionData (Collection._dataStrategy.GetUndecoratedDataStore ()); // copy data
+        var standAloneDataStore = new DomainObjectCollectionData (Collection._dataStrategy.GetDataStore ()); // copy data
         Collection._dataStrategy = CreateDataStrategyForStandAloneCollection (standAloneDataStore, Collection.RequiredItemType, Collection);
       }
     }

@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     bool IsDataAvailable { get; }
 
     void EnsureDataAvailable ();
-    IDomainObjectCollectionData GetUndecoratedDataStore ();
+    IDomainObjectCollectionData GetDataStore ();
 
     bool ContainsObjectID (ObjectID objectID);
 

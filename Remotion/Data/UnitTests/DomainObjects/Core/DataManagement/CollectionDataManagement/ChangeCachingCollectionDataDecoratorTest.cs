@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_UsesStrategy ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_wrappedDataStub, _originalData)).Return (true);
+      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true);
       _strategyMock.Replay ();
 
       var result = _decorator.HasChanged (_strategyMock);
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void HasChanged_CachesData ()
     {
-      _strategyMock.Expect (mock => mock.HasDataChanged (_wrappedDataStub, _originalData)).Return (true).Repeat.Once();
+      _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true).Repeat.Once();
       _strategyMock.Replay ();
       Assert.That (_decorator.IsCacheUpToDate, Is.False);
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void InvalidateCache ()
     {
-      StubStrategyMock(_wrappedDataStub, _originalData);
+      StubStrategyMock (_decorator, _originalData);
 
       _decorator.HasChanged (_strategyMock);
       Assert.That (_decorator.IsCacheUpToDate, Is.True);
@@ -95,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_strategyMock.GetMockRepository ().Ordered ())
       {
-        _strategyMock.Expect (mock => mock.HasDataChanged (_wrappedDataStub, _originalData)).Return (true);
-        _strategyMock.Expect (mock => mock.HasDataChanged (_wrappedDataStub, _originalData)).Return (false);
+        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (true);
+        _strategyMock.Expect (mock => mock.HasDataChanged (_decorator, _originalData)).Return (false);
       }
       _strategyMock.Replay ();
 
@@ -109,6 +109,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       Assert.That (result1, Is.True);
       Assert.That (result2, Is.False);
+    }
+
+    [Test]
+    public void GetDataStore ()
+    {
+      Assert.That (_decorator.GetDataStore (), Is.SameAs (_decorator));
     }
 
     [Test]
@@ -216,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       var originalData = new DomainObjectCollection ();
       var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, originalData);
 
-      WarmUpCache (decorator, wrappedData, originalData);
+      WarmUpCache (decorator, originalData);
 
       Assert.That (decorator.Count, Is.EqualTo (1));
       Assert.That (decorator.IsCacheUpToDate, Is.True);
@@ -231,20 +237,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
     private void WarmUpCache ()
     {
-      WarmUpCache(_decorator, _wrappedDataStub, _originalData);
+      WarmUpCache(_decorator, _originalData);
     }
 
-    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, IDomainObjectCollectionData wrappedData, DomainObjectCollection originalData)
+    private void WarmUpCache (ChangeCachingCollectionDataDecorator decorator, DomainObjectCollection originalData)
     {
-      StubStrategyMock (wrappedData, originalData);
+      StubStrategyMock (decorator, originalData);
 
       decorator.HasChanged (_strategyMock);
       Assert.That (decorator.IsCacheUpToDate, Is.True);
     }
 
-    private void StubStrategyMock (IDomainObjectCollectionData wrappedData, DomainObjectCollection originalData)
+    private void StubStrategyMock (ChangeCachingCollectionDataDecorator decorator, DomainObjectCollection originalData)
     {
-      _strategyMock.Stub (mock => mock.HasDataChanged (wrappedData, originalData)).Return (false);
+      _strategyMock.Stub (mock => mock.HasDataChanged (decorator, originalData)).Return (false);
       _strategyMock.Replay ();
     }
 

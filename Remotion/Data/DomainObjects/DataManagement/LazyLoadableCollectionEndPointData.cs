@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly ClientTransaction _clientTransaction;
     private readonly RelationEndPointID _endPointID;
 
-    private DomainObjectCollectionData _dataStore;
+    private ChangeCachingCollectionDataDecorator _dataStore;
     private DomainObjectCollection _originalOppositeDomainObjectsContents;
 
     public LazyLoadableCollectionEndPointData (
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (!IsDataAvailable)
         return false; // if we are unloaded, we're definitely unchanged
       else
-        return changeDetectionStrategy.HasDataChanged (DataStore, OriginalOppositeDomainObjectsContents);
+        return _dataStore.HasChanged (changeDetectionStrategy);
     }
 
     public void EnsureDataAvailable ()
@@ -107,14 +107,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Unload ()
     {
       _dataStore = null;
-      _originalOppositeDomainObjectsContents = null; // this is an optimization to allow the DomainObjectCollection to be garbage-collected
+      _originalOppositeDomainObjectsContents = null; // allow the DomainObjectCollection to be garbage-collected
+    }
+
+    public void CommitOriginalContents ()
+    {
+      if (IsDataAvailable)
+      {
+        OriginalOppositeDomainObjectsContents.Commit (DataStore);
+        _dataStore.InvalidateCache ();
+      }
     }
 
     private void SetContents (IEnumerable<DomainObject> initialContents)
     {
-      _dataStore = new DomainObjectCollectionData (initialContents);
       var collectionType = _endPointID.Definition.PropertyType;
       _originalOppositeDomainObjectsContents = new DomainObjectCollectionFactory ().CreateCollection (collectionType, initialContents).AsReadOnly ();
+      _dataStore = new ChangeCachingCollectionDataDecorator (new DomainObjectCollectionData (initialContents), _originalOppositeDomainObjectsContents);
     }
 
     #region Serialization
@@ -126,7 +135,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       _endPointID = info.GetValueForHandle<RelationEndPointID> ();
 
-      _dataStore = info.GetValue<DomainObjectCollectionData> ();
+      _dataStore = info.GetValue<ChangeCachingCollectionDataDecorator> ();
       _originalOppositeDomainObjectsContents = info.GetValue<DomainObjectCollection> ();
     }
 

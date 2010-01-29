@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _clientTransactionMock = ClientTransactionObjectMother.CreateStrictMock ();
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      _changeDetectionStrategyMock = MockRepository.GenerateMock<ICollectionEndPointChangeDetectionStrategy> ();
+      _changeDetectionStrategyMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
 
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
@@ -86,8 +86,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void HasDataChanged_Loaded_Cached ()
+    {
+      _changeDetectionStrategyMock
+          .Expect (mock => mock.HasDataChanged (_loadedData.DataStore, _loadedData.OriginalOppositeDomainObjectsContents))
+          .Return (true)
+          .Repeat.Once();
+      _changeDetectionStrategyMock.Replay ();
+
+      var result1 = _loadedData.HasDataChanged (_changeDetectionStrategyMock);
+      var result2 = _loadedData.HasDataChanged (_changeDetectionStrategyMock);
+
+      _changeDetectionStrategyMock.VerifyAllExpectations ();
+
+      Assert.That (result1, Is.EqualTo (true));
+      Assert.That (result2, Is.EqualTo (true));
+    }
+
+    [Test]
+    public void HasDataChanged_Loaded_Cache_InvalidatedOnModifyingOperations ()
+    {
+      using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
+      {
+        _changeDetectionStrategyMock
+            .Expect (mock => mock.HasDataChanged (_loadedData.DataStore, _loadedData.OriginalOppositeDomainObjectsContents))
+            .Return (true);
+        _changeDetectionStrategyMock
+            .Expect (mock => mock.HasDataChanged (_loadedData.DataStore, _loadedData.OriginalOppositeDomainObjectsContents))
+            .Return (false);
+      }
+      _changeDetectionStrategyMock.Replay ();
+
+      var result1 = _loadedData.HasDataChanged (_changeDetectionStrategyMock);
+
+      _loadedData.DataStore.Clear ();
+
+      var result2 = _loadedData.HasDataChanged (_changeDetectionStrategyMock);
+
+      _changeDetectionStrategyMock.VerifyAllExpectations ();
+      Assert.That (result1, Is.EqualTo (true));
+      Assert.That (result2, Is.EqualTo (false));
+    }
+
+    [Test]
     public void HasDataChanged_Unloaded_AlwaysFalse ()
     {
+      _changeDetectionStrategyMock.Replay ();
+
       var result = _unloadedData.HasDataChanged (_changeDetectionStrategyMock);
 
       _changeDetectionStrategyMock.AssertWasNotCalled (
@@ -241,6 +286,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (deserializedInstance.DataStore.ToArray(), Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
       Assert.That (deserializedInstance.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _domainObject2, _domainObject3 }));
+    }
+
+    [Test]
+    public void CommitOriginalContents_Loaded_UpdatesOriginalContents ()
+    {
+      _loadedData.DataStore.Insert (1, _domainObject2);
+      Assert.That (_loadedData.DataStore.ToArray(), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_loadedData.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _domainObject1 }));
+
+      _loadedData.CommitOriginalContents ();
+
+      Assert.That (_loadedData.DataStore.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
+      Assert.That (_loadedData.OriginalOppositeDomainObjectsContents, Is.EqualTo (new[] { _domainObject1 , _domainObject2}));
+    }
+
+    [Test]
+    public void CommitOriginalContents_Loaded_InvalidatesHasChangedCache ()
+    {
+      using (_changeDetectionStrategyMock.GetMockRepository ().Ordered ())
+      {
+        _changeDetectionStrategyMock.Expect (mock => mock.HasDataChanged (_loadedData.DataStore, _loadedData.OriginalOppositeDomainObjectsContents)).
+            Return (true);
+        _changeDetectionStrategyMock.Expect (mock => mock.HasDataChanged (_loadedData.DataStore, _loadedData.OriginalOppositeDomainObjectsContents)).
+            Return (false);
+      }
+      _changeDetectionStrategyMock.Replay ();
+
+      Assert.That (_loadedData.HasDataChanged (_changeDetectionStrategyMock), Is.True);
+
+      _loadedData.CommitOriginalContents ();
+
+      Assert.That (_loadedData.HasDataChanged (_changeDetectionStrategyMock), Is.False);
+    }
+
+    [Test]
+    public void CommitOriginalContents_Unloaded_DoesNothing ()
+    {
+      _unloadedData.CommitOriginalContents ();
+
+      Assert.That (_unloadedData.IsDataAvailable, Is.False);
     }
 
     private void StubLoadRelatedObjects (params DomainObject[] relatedObjects)

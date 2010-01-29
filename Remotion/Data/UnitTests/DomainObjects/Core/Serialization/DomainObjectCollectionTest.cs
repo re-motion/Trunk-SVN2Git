@@ -65,14 +65,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
 
       var dataStore = (DomainObjectCollectionData) 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection).GetUndecoratedDataStore();
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection).GetDataStore();
       long version = dataStore.Version;
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (deserializedCollection, typeof (Order));
       var deserializedDataStore = (DomainObjectCollectionData)
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (deserializedCollection).GetUndecoratedDataStore ();
+          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (deserializedCollection).GetDataStore ();
       Assert.AreEqual (version, deserializedDataStore.Version);
     }
 

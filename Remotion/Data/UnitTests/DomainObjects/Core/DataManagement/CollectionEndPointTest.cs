@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -613,9 +614,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
 
-      var collectionData = 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
+      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
     [Test]
@@ -627,9 +627,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
 
-      var collectionData =
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
+      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
     [Test]
@@ -641,9 +640,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
 
-      var collectionData =
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore()));
+      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
     [Test]
@@ -655,9 +653,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
       Assert.That (command.NewRelatedObject, Is.SameAs (_orderWithoutOrderItem));
 
-      var collectionData =
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_customerEndPoint.OppositeDomainObjects);
-      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (collectionData.GetUndecoratedDataStore ()));
+      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
     [Test]
@@ -754,5 +751,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
 
+    private LazyLoadableCollectionEndPointData GetEndPointData (CollectionEndPoint endPoint)
+    {
+      return (LazyLoadableCollectionEndPointData) PrivateInvoke.GetNonPublicField (endPoint, "_data");
+    }
   }
 }

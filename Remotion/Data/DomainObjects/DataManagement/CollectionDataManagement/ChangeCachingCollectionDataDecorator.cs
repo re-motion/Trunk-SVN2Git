@@ -54,11 +54,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       if (!_isCacheUpToDate)
       {
-        _cachedHasChangedFlag = strategy.HasDataChanged (WrappedData, _originalData);
+        _cachedHasChangedFlag = strategy.HasDataChanged (this, _originalData);
         _isCacheUpToDate = true;
       }
 
       return _cachedHasChangedFlag;
+    }
+
+    public override IDomainObjectCollectionData GetDataStore ()
+    {
+      return this;
     }
 
     public override void Clear ()

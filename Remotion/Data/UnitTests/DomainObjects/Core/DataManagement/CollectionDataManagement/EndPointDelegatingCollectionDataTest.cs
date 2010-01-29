@@ -122,12 +122,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void GetUndecoratedDataStore ()
+    public void GetDataStore ()
     {
       var dataStoreStub = new DomainObjectCollectionData();
-      _dataStoreStub.Stub (mock => mock.GetUndecoratedDataStore()).Return (dataStoreStub);
+      _dataStoreStub.Stub (mock => mock.GetDataStore()).Return (dataStoreStub);
 
-      Assert.That (_data.GetUndecoratedDataStore(), Is.SameAs (dataStoreStub));
+      Assert.That (_data.GetDataStore(), Is.SameAs (dataStoreStub));
     }
 
     [Test]

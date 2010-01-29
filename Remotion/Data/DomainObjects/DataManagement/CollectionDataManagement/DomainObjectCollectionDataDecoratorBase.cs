@@ -50,9 +50,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _wrappedData.EnsureDataAvailable();
     }
 
-    public virtual IDomainObjectCollectionData GetUndecoratedDataStore ()
+    public virtual IDomainObjectCollectionData GetDataStore ()
     {
-      return _wrappedData.GetUndecoratedDataStore ();
+      return _wrappedData.GetDataStore ();
     }
 
     public virtual bool ContainsObjectID (ObjectID objectID)

@@ -116,14 +116,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void GetUndecoratedDataStore ()
+    public void GetDataStore ()
     {
       var fakeDataStore = _mockRepository.Stub<IDomainObjectCollectionData> ();
 
-      _wrappedDataMock.Expect (mock => mock.GetUndecoratedDataStore()).Return (fakeDataStore);
+      _wrappedDataMock.Expect (mock => mock.GetDataStore()).Return (fakeDataStore);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.GetUndecoratedDataStore();
+      var result = _decorator.GetDataStore();
 
       _wrappedDataMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeDataStore));

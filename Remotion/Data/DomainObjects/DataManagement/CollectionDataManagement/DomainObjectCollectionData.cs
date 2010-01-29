@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       Assertion.IsTrue (((IDomainObjectCollectionData) this).IsDataAvailable);
     }
 
-    IDomainObjectCollectionData IDomainObjectCollectionData.GetUndecoratedDataStore ()
+    IDomainObjectCollectionData IDomainObjectCollectionData.GetDataStore ()
     {
       return this;
     }

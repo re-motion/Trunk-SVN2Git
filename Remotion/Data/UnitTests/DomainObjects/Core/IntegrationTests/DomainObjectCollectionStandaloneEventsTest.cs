@@ -354,7 +354,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var dataStore = new DomainObjectCollectionData ();
 
       var dataDecoratorMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
-      dataDecoratorMock.Stub (mock => mock.GetUndecoratedDataStore ()).Return (dataStore);
+      dataDecoratorMock.Stub (mock => mock.GetDataStore ()).Return (dataStore);
 
       var collection = new DomainObjectCollection (dataDecoratorMock);
       IDomainObjectCollectionData nonNotifyingData = CallGetNonNotifyingData (collection);

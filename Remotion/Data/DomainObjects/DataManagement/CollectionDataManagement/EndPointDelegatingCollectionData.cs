@@ -75,9 +75,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _endPointData.EnsureDataAvailable ();
     }
 
-    public IDomainObjectCollectionData GetUndecoratedDataStore ()
+    public IDomainObjectCollectionData GetDataStore ()
     {
-      return DataStore.GetUndecoratedDataStore();
+      return DataStore.GetDataStore();
     }
 
     public bool ContainsObjectID (ObjectID objectID)

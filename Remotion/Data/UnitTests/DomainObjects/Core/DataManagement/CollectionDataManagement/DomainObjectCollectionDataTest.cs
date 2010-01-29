@@ -80,9 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void GetUndecoratedDataStore ()
+    public void GetDataStore ()
     {
-      Assert.That (((IDomainObjectCollectionData) _data).GetUndecoratedDataStore (), Is.SameAs (_data));
+      Assert.That (((IDomainObjectCollectionData) _data).GetDataStore (), Is.SameAs (_data));
     }
 
     [Test]

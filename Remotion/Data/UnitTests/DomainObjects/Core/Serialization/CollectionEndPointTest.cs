@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var dataStore = deserializedEndPoint.CreateDelegatingCollectionData ().GetUndecoratedDataStore ();
+      var dataStore = deserializedEndPoint.CreateDelegatingCollectionData ().GetDataStore ();
       Assert.That (dataStore, Is.Not.Null);
 
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (

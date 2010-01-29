@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -26,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -450,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var dataStore = new DomainObjectCollectionData ();
       var originalDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
       originalDataStub.Stub (stub => stub.RequiredItemType).Return (typeof (Customer));
-      originalDataStub.Stub (stub => stub.GetUndecoratedDataStore()).Return (dataStore);
+      originalDataStub.Stub (stub => stub.GetDataStore()).Return (dataStore);
 
       var collection = new DomainObjectCollection (originalDataStub);
 
@@ -542,7 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
       IDomainObjectCollectionData endPointDataStore = DomainObjectCollectionDataTestHelper
           .GetCollectionDataAndCheckType<IDomainObjectCollectionData> (endPoint.OppositeDomainObjects)
-          .GetUndecoratedDataStore ();
+          .GetDataStore ();
 
       var newCollection = new OrderCollection ();
       var command = (CollectionEndPointReplaceWholeCollectionCommand) newCollection.CreateAssociationCommand (endPoint);
@@ -675,7 +677,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Commit ()
     {
-      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      var sourceCollection = new[] { _customer3NotInCollection };
       CallCommit (_collection, sourceCollection);
 
       Assert.That (_collection, Is.EqualTo (sourceCollection));
@@ -685,7 +687,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Commit_ReadOnly ()
     {
       var readOnlyCollection = _collection.Clone (true);
-      var sourceCollection = new DomainObjectCollection { _customer3NotInCollection };
+      var sourceCollection = new[] { _customer3NotInCollection };
       CallCommit (readOnlyCollection, sourceCollection);
 
       Assert.That (readOnlyCollection, Is.EqualTo (sourceCollection));
@@ -752,7 +754,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       PrivateInvoke.InvokeNonPublicMethod (collection, "Rollback", sourceCollection);
     }
 
-    private void CallCommit (DomainObjectCollection collection, DomainObjectCollection sourceCollection)
+    private void CallCommit (DomainObjectCollection collection, IEnumerable<DomainObject> sourceCollection)
     {
       PrivateInvoke.InvokeNonPublicMethod (collection, "Commit", sourceCollection);
     }

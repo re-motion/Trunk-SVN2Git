@@ -554,7 +554,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
-      return new ArgumentCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetUndecoratedDataStore());
+      return new ArgumentCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore());
     }
 
     /// <summary>
@@ -666,7 +666,7 @@ namespace Remotion.Data.DomainObjects
           this,
           new Transformer (endPoint.OppositeDomainObjects),
           new Transformer (this),
-          endPoint.OppositeDomainObjects._dataStrategy.GetUndecoratedDataStore());
+          endPoint.OppositeDomainObjects._dataStrategy.GetDataStore());
     }
 
     /// <summary>
@@ -700,7 +700,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="originalDomainObjects">A <see cref="DomainObjectCollection"/> containing the original items of the collection. Must not be <see langword="null"/>.</param>
     /// <remarks>
-    ///   This method is called for collections associated to a collection end point during the rollvack operation of the associated 
+    ///   This method is called for collections associated to a collection end point during the rollback operation of the associated 
     ///   <see cref="ClientTransaction"/>. 
     ///   A derived collection should replace its internal state with the state of <paramref name="originalDomainObjects"/>.
     /// </remarks>
@@ -718,12 +718,12 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="domainObjects">A <see cref="DomainObjectCollection"/> containing the new items for the collection. Must not be <see langword="null"/>.</param>
     /// <remarks>
-    ///   This method is called for collections associated to a collection end point during the commit operation of the associated 
-    ///   <see cref="ClientTransaction"/>. 
-    ///   A derived collection should replace its internal state with the state of <paramref name="domainObjects"/>.
+    ///   This method is called for those collections representing the original values of a collection-valued relation during the commit operation
+    ///   of the associated <see cref="ClientTransaction"/>. 
+    ///   A derived collection should replace its internal state accordingly.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    protected internal virtual void Commit (DomainObjectCollection domainObjects)
+    protected internal virtual void Commit (IEnumerable<DomainObject> domainObjects)
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 

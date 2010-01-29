@@ -96,12 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
     
     [Test]
-    public void GetUndecoratedDataStore ()
+    public void GetDataStore ()
     {
       var fakeData = new DomainObjectCollectionData ();
 
-      _wrappedDataStub.Stub (stub => stub.GetUndecoratedDataStore ()).Return (fakeData);
-      Assert.That (_readOnlyDecorator.GetUndecoratedDataStore (), Is.SameAs (fakeData));
+      _wrappedDataStub.Stub (stub => stub.GetDataStore ()).Return (fakeData);
+      Assert.That (_readOnlyDecorator.GetDataStore (), Is.SameAs (fakeData));
     }
 
     [Test]

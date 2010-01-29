@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -161,7 +162,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
-        OriginalOppositeDomainObjectsContents.Commit (_oppositeDomainObjects);
+        _data.CommitOriginalContents ();
         _originalCollectionReference = _oppositeDomainObjects;
       }
 
@@ -174,8 +175,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var oppositeObjectsReferenceBeforeRollback = _oppositeDomainObjects;
 
-        var command = _originalCollectionReference.CreateAssociationCommand (this);
-        command.Perform (); // no notifications, no bidirectional changes, we only change the collections' associations
+        if (_originalCollectionReference != _oppositeDomainObjects)
+        {
+          var command = _originalCollectionReference.CreateAssociationCommand (this);
+          command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
+        }
 
         _oppositeDomainObjects = _originalCollectionReference;
 
