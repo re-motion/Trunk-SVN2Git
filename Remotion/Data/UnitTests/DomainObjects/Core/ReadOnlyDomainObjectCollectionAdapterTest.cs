@@ -21,14 +21,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Linq;
-using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
   public class ReadOnlyDomainObjectCollectionAdapterTest : ClientTransactionBaseTest

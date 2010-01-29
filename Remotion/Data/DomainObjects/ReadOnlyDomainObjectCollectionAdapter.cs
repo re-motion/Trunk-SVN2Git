@@ -17,10 +17,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
+namespace Remotion.Data.DomainObjects
 {
   /// <summary>
   /// This class acts as a read-only adapter for an <see cref="IDomainObjectCollectionData"/> object.

@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction

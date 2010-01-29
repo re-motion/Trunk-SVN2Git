@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
