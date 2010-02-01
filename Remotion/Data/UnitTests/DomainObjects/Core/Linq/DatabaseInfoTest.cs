@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
@@ -74,6 +75,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void GetTable_Metadata ()
+    {
+      var orderTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Order> (), "x");
+      var mappedTable = (MappedTable) orderTable;
+
+      var expectedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      Assert.That (mappedTable.ClassDefinition, Is.SameAs (expectedClassDefinition));
+    }
+
+    [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
         "The from clause with identifier 'source' and item type 'System.String' does not identify a queryable table.")]
     public void GetTableName_InvalidType ()
@@ -122,6 +133,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var table = _databaseInfo.GetTableForRelation (typeof (OrderItem).GetProperty ("Order"), "y");
       Assert.That (table.Name, Is.EqualTo ("OrderView"));
       Assert.That (table.Alias, Is.EqualTo ("y"));
+    }
+
+    [Test]
+    public void GetTableForRelation_Metadata ()
+    {
+      var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("OrderItems"), "x");
+      var mappedTable = (MappedTable) table;
+
+      var expectedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      Assert.That (mappedTable.ClassDefinition, Is.SameAs (expectedClassDefinition));
     }
 
     [Test]

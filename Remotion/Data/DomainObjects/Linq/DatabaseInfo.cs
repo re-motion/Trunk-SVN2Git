@@ -23,7 +23,6 @@ using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using ArgumentUtility=Remotion.Utilities.ArgumentUtility;
 
-
 namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
@@ -54,24 +53,24 @@ namespace Remotion.Data.DomainObjects.Linq
       else
       {
         var viewName = classDefinition.GetViewName();
-        return new Table (viewName, alias);
+        return new MappedTable (viewName, alias, classDefinition);
       }
     }
 
     public bool IsRelationMember (MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
-      
-      string viewName = GetViewNameForRelation (member);
-      return viewName != null;
+
+      var relationData = GetRelationData (member);
+      return relationData != null;
     }
 
     public Table GetTableForRelation (MemberInfo relationMember, string alias)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      string viewName = GetViewNameForRelation(relationMember);
-      if (viewName == null)
+      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (relationMember);
+      if (relationData == null)
       {
         string message = string.Format (
             "The member '{0}.{1}' does not identify a mapped relation.",
@@ -80,7 +79,14 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return new Table (viewName, alias);
+      RelationDefinition relationDefinition = relationData.A;
+      ClassDefinition classDefinition = relationData.B;
+      string propertyIdentifier = relationData.C;
+
+      var relatedClassDefinition = relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier);
+
+      var viewName = relatedClassDefinition.GetViewName ();
+      return new MappedTable (viewName, alias, relatedClassDefinition);
     }
 
     public bool HasAssociatedColumn (MemberInfo member)
@@ -175,19 +181,6 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ClassDefinition classDefinition = endPoint.ClassDefinition;
       return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
-    }
-
-    private string GetViewNameForRelation (MemberInfo relationMember)
-    {
-      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (relationMember);
-      if (relationData == null)
-        return null;
-
-      RelationDefinition relationDefinition = relationData.A;
-      ClassDefinition classDefinition = relationData.B;
-      string propertyIdentifier = relationData.C;
-
-      return relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier).GetViewName ();
     }
 
     private string GetColumnName (MemberInfo member)
