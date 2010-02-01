@@ -228,30 +228,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void GetJoinColumns_FK_Right()
     {
       var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderItems"));
-      Assert.That (columns.Value.PrimaryKey, Is.EqualTo ("ID"));
-      Assert.That (columns.Value.ForeignKey, Is.EqualTo ("OrderID"));
+      Assert.That (columns.PrimaryKey, Is.EqualTo ("ID"));
+      Assert.That (columns.ForeignKey, Is.EqualTo ("OrderID"));
     }
 
     [Test]
     public void GetJoinColumns_FK_Left ()
     {
       var columns = _databaseInfo.GetJoinColumnNames (typeof (OrderItem).GetProperty ("Order"));
-      Assert.That (columns.Value.PrimaryKey, Is.EqualTo ("OrderID"));
-      Assert.That (columns.Value.ForeignKey, Is.EqualTo ("ID"));
+      Assert.That (columns.PrimaryKey, Is.EqualTo ("OrderID"));
+      Assert.That (columns.ForeignKey, Is.EqualTo ("ID"));
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMapping' does not identify a relation.")]
     public void GetJoinColumns_NotInMapping ()
     {
-      var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("NotInMapping"));
-      Assert.That (columns, Is.Null);
+      _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("NotInMapping"));
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' does not identify a relation.")]
     public void GetJoinColumns_NoRelationProperty ()
     {
-      var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderNumber"));
-      Assert.That (columns, Is.Null);
+      _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderNumber"));
     }
 
     [Test]

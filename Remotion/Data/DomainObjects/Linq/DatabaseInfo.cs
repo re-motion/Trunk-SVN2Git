@@ -107,13 +107,17 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    public JoinColumnNames? GetJoinColumnNames (MemberInfo relationMember)
+    public JoinColumnNames GetJoinColumnNames (MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (relationMember);
       if (relationData == null)
-        return null;
+      {
+        string message =
+            string.Format ("The member '{0}.{1}' does not identify a relation.", relationMember.DeclaringType.FullName, relationMember.Name);
+        throw new UnmappedItemException (message);
+      }
 
       RelationDefinition relationDefinition = relationData.A;
       ClassDefinition classDefinition = relationData.B;
