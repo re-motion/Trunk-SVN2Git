@@ -135,6 +135,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void HasColumn_True ()
+    {
+      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("OrderNumber")), Is.True);
+      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("DeliveryDate")), Is.True);
+      Assert.That (_databaseInfo.HasColumn (typeof (OrderTicket).GetProperty ("Order")), Is.True);
+      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("ID")), Is.True);
+    }
+
+    [Test]
+    public void HasColumn_False ()
+    {
+      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("OrderTicket")), Is.False);
+      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("NotInMapping")), Is.False);
+      Assert.That (_databaseInfo.HasColumn (typeof (string).GetProperty ("Length")), Is.False);
+      Assert.That (_databaseInfo.HasColumn (typeof (DatabaseInfoTest).GetMethod ("SetUp")), Is.False);
+      Assert.That (
+          _databaseInfo.HasColumn (typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance)), 
+          Is.False);
+    }
+
+    [Test]
     public void GetColumnName()
     {
       Assert.AreEqual ("OrderNo", _databaseInfo.GetColumnName (typeof (Order).GetProperty ("OrderNumber")));

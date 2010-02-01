@@ -83,6 +83,11 @@ namespace Remotion.Data.DomainObjects.Linq
       return new Table (viewName, alias);
     }
 
+    public bool HasColumn (MemberInfo member)
+    {
+      return GetColumnName (member) != null;
+    }
+
     public string GetColumnName (MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
