@@ -19,8 +19,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -41,27 +43,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void GetTableName()
+    public void GetTableForFromClause()
     {
-      Assert.AreEqual ("OrderView", _databaseInfo.GetTableName (CreateFromClause<Order>()));
-      Assert.AreEqual ("CustomerView", _databaseInfo.GetTableName (CreateFromClause<Customer> ()));
-      Assert.AreEqual ("ClassWithValidRelationsView", _databaseInfo.GetTableName (CreateFromClause<ClassWithValidRelations> ()));
+      var orderTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Order> ());
+      Assert.That (orderTable.Name, Is.EqualTo ("OrderView"));
+      Assert.That (orderTable.Alias, Is.EqualTo ("source"));
+
+      var customerTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Customer> ());
+      Assert.That (customerTable.Name, Is.EqualTo ("CustomerView"));
+      Assert.That (customerTable.Alias, Is.EqualTo ("source"));
+
+      var classWithValidRelationsTable = _databaseInfo.GetTableForFromClause (CreateFromClause<ClassWithValidRelations> ());
+      Assert.That (classWithValidRelationsTable.Name, Is.EqualTo ("ClassWithValidRelationsView"));
+      Assert.That (classWithValidRelationsTable.Alias, Is.EqualTo ("source"));
     }
 
     [Test]
     public void GetTableName_ForFromClauseWithOrderCollection ()
     {
       var fromClause = new MainFromClause ("o", typeof (Order), Expression.Constant (new OrderCollection ()));
-      Assert.AreEqual ("OrderView", _databaseInfo.GetTableName (fromClause));
+      var table = _databaseInfo.GetTableForFromClause (fromClause);
+      Assert.That (table.Name, Is.EqualTo ("OrderView"));
+      Assert.That (table.Alias, Is.EqualTo ("o"));
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "The from clause with identifier 'source' and item type 'System.String' does not identify a queryable table.")]
     public void GetTableName_InvalidType ()
     {
       var stringSource = new DummyQueryable<string>();
       var stringClause = new MainFromClause ("source", typeof (string), Expression.Constant (stringSource));
 
-      Assert.IsNull (_databaseInfo.GetTableName (stringClause));
+      _databaseInfo.GetTableForFromClause(stringClause);
     }
 
     [Test]

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,6 +27,7 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
+using ReflectionUtility=Remotion.Data.Linq.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -45,7 +47,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       SourceClause = QueryModel.MainFromClause;
       SourceReference = (QuerySourceReferenceExpression) QueryModel.SelectClause.Selector;
 
-      _node = new ContainsObjectExpressionNode (CreateParseInfo(), Expression.Constant ("test"));
+      var fakeParseInfo = CreateFakeParseInfo();
+      _node = new ContainsObjectExpressionNode (fakeParseInfo, Expression.Constant ("test"));
     }
 
     public MainSourceExpressionNode SourceNode { get; private set; }
@@ -65,7 +68,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (InvalidOperationException))]
     public void Resolve_ThrowsInvalidOperationException ()
     {
-      _node.Resolve (ExpressionHelper.CreateParameterExpression(), ExpressionHelper.CreateExpression(), ClauseGenerationContext);
+      var parameterExpression = Expression.Parameter (typeof (int), "i");
+      var resolvedExpression = Expression.Parameter (typeof (int), "j");
+      _node.Resolve (parameterExpression, resolvedExpression, ClauseGenerationContext);
     }
 
     [Test]
@@ -83,21 +88,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (QueryModel.ResultOperators[0], Is.InstanceOfType (expectedResultOperatorType));
     }
 
-
-    private MethodCallExpressionParseInfo CreateParseInfo ()
+    private MethodCallExpressionParseInfo CreateFakeParseInfo ()
     {
-      return CreateParseInfo (SourceNode);
+      var query = ExpressionHelper.CreateStudentQueryable ();
+      var methodInfo = ReflectionUtility.GetMethod (() => query.Count ());
+      var methodCallExpression = Expression.Call (methodInfo, query.Expression);
+      return new MethodCallExpressionParseInfo ("x", SourceNode, methodCallExpression);
     }
 
-
-    private MethodCallExpressionParseInfo CreateParseInfo (IExpressionNode source)
-    {
-      return CreateParseInfo (source, "x");
-    }
-
-    private MethodCallExpressionParseInfo CreateParseInfo (IExpressionNode source, string associatedIdentifier)
-    {
-      return new MethodCallExpressionParseInfo (associatedIdentifier, source, ExpressionHelper.CreateMethodCallExpression ());
-    }
   }
 }

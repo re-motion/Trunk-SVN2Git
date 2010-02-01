@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -27,6 +28,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -67,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteScalar()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Count());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       var count = _computerExecutor.ExecuteScalar<int> (model);
       Assert.That (count, Is.EqualTo (5));
@@ -78,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteScalar_NoCurrentTransaction ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Count());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       using (ClientTransactionScope.EnterNullScope ())
       {
@@ -91,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var expression = ExpressionHelper.MakeExpression( () => 
           (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count());
-      QueryModel queryModel = ExpressionHelper.ParseQuery (expression);
+      QueryModel queryModel = ParseQuery (expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
       queryModel.ResultOperators.Insert (0, fetchRequest);
@@ -123,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteSingle ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       var result = _computerExecutor.ExecuteSingle<Computer> (model, true);
       Assert.That (result, Is.SameAs (Computer.GetObject (DomainObjectIDs.Computer5)));
@@ -134,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteSingle_NoCurrentTransaction ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       using (ClientTransactionScope.EnterNullScope ())
       {
@@ -146,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteSingle_DefaultIfEmpty_True ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () where false select computer).First ());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       var result = _computerExecutor.ExecuteSingle<Computer> (model, true);
       Assert.That (result, Is.Null);
@@ -158,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var expression =
           ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() where false select computer).First());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       _computerExecutor.ExecuteSingle<Computer> (model, false);
     }
@@ -167,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel model = ParseQuery (query.Expression);
 
       IEnumerable<Computer> computers = _computerExecutor.ExecuteCollection<Computer> (model);
 
@@ -190,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WithFetches ()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel queryModel = ParseQuery (query.Expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
       queryModel.ResultOperators.Add (fetchRequest);
@@ -224,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_NoCurrentTransaction ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel model = ParseQuery (query.Expression);
 
       using (ClientTransactionScope.EnterNullScope ())
       {
@@ -236,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_ExecutesGroupByInMemory ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel model = ParseQuery (query.Expression);
 
       var computers = _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model).ToArray();
       Assert.That (computers.Length, Is.EqualTo (5));
@@ -248,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WithGroupBy_WithFetchRequests ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
-      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel queryModel = ParseQuery (query.Expression);
 
       var relationMember = typeof (IGrouping<Computer, Computer>).GetProperty ("Key");
       queryModel.ResultOperators.Add (new FetchOneRequest (relationMember));
@@ -263,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    from company2 in QueryFactory.CreateLinqQuery<Company> ()
                    where company1.ID == DomainObjectIDs.Partner1
                    select company1).Distinct().Cast<Partner>().GroupBy (p => p, p => p.ContactPerson);
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel model = ParseQuery (query.Expression);
 
       var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model).ToArray();
       Assert.That (partners.Length, Is.EqualTo (1));
@@ -276,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WithGroupBy_WithOtherOperators_After ()
     {
       var query = (from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer).Distinct();
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel model = ParseQuery (query.Expression);
 
       _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model);
     }
@@ -285,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteScalar_WithParameters ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
-      QueryModel model = ExpressionHelper.ParseQuery (expression);
+      QueryModel model = ParseQuery (expression);
 
       var count = _orderExecutor.ExecuteScalar<int> (model);
 
@@ -296,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WithParameters()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel queryModel = ParseQuery (query.Expression);
 
       IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (queryModel);
 
@@ -348,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_FromModel_Scalar ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
-      var queryModel = ExpressionHelper.ParseQuery (expression);
+      var queryModel = ParseQuery (expression);
 
       var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Scalar);
       Assert.That (query.Statement, Is.EqualTo ("SELECT COUNT (*) FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
@@ -364,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_FromModel_Collection ()
     {
       var queryable = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var queryModel = ParseQuery (queryable.Expression);
 
       var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
       Assert.That (query.Statement, Is.EqualTo ("SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
@@ -380,7 +382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries ()
     {
       var queryable = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
@@ -411,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries_BeforeOtherResultOperators ()
     {
       var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
@@ -423,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries_AfterOtherResultOperators ()
     {
       var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 1);
@@ -439,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries_ForNonRelationProperty ()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      var queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      var queryModel = ParseQuery (query.Expression);
       var relationMember = typeof (Order).GetProperty ("NotInMappingRelatedObjects");
       var fetchRequest = new FetchManyRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
@@ -453,7 +455,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries_ForField ()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      var queryModel = ExpressionHelper.ParseQuery (query.Expression);
+      var queryModel = ParseQuery (query.Expression);
       var relationMember = typeof (Order).GetField ("LastLoadMode");
       var fetchRequest = new FetchOneRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
@@ -465,7 +467,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries_WithSortExpression ()
     {
       var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Customer).GetProperty ("Orders");
       var fetchRequest = new FetchManyRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
@@ -492,7 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateQuery_EagerFetchQueries_Recursive ()
     {
       var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
-      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var queryModel = ParseQuery (queryable.Expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Customer).GetProperty ("Orders"));
       fetchRequest.GetOrAddInnerFetchRequest (new FetchManyRequest (typeof (Order).GetProperty("OrderItems")));
@@ -550,7 +552,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var executor = queryable.GetExecutor();
 
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-        executor.CreateStatement (ExpressionHelper.ParseQuery (query.Expression));
+        executor.CreateStatement (ParseQuery (query.Expression));
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).GetStatementCalled, Is.True);
       }
     }
@@ -565,7 +567,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
         ClassDefinition classDefinition = executor.StartingClassDefinition;
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-        CommandData statement = executor.CreateStatement(ExpressionHelper.ParseQuery (query.Expression));
+        CommandData statement = executor.CreateStatement(ParseQuery (query.Expression));
 
         executor.CreateQuery ("<dynamic query>", classDefinition.StorageProviderID, statement.Statement, statement.Parameters, QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
@@ -578,7 +580,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-        var queryModel = ExpressionHelper.ParseQuery (query.Expression);
+        var queryModel = ParseQuery (query.Expression);
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor>(ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
@@ -592,12 +594,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-        var queryModel = ExpressionHelper.ParseQuery (query.Expression);
+        var queryModel = ParseQuery (query.Expression);
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
       }
+    }
+
+    private static QueryModel ParseQuery (Expression queryExpression)
+    {
+      var parser = new QueryParser ();
+      return parser.GetParsedQuery (queryExpression);
     }
   }
 }

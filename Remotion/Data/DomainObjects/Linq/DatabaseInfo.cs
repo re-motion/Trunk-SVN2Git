@@ -19,6 +19,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using ArgumentUtility=Remotion.Utilities.ArgumentUtility;
 
@@ -36,16 +37,25 @@ namespace Remotion.Data.DomainObjects.Linq
     {
     }
 
-    public string GetTableName (FromClauseBase fromClause)
+    public Table GetTableForFromClause (FromClauseBase fromClause)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       
       Type domainObjectType = fromClause.ItemType;
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[domainObjectType];
       if (classDefinition == null)
-        return null;
+      {
+        string message = string.Format (
+            "The from clause with identifier '{0}' and item type '{1}' does not identify a queryable table.",
+            fromClause.ItemName,
+            fromClause.ItemType.FullName);
+        throw new UnmappedItemException (message);
+      }
       else
-        return classDefinition.GetViewName();
+      {
+        var viewName = classDefinition.GetViewName();
+        return new Table (viewName, fromClause.ItemName);
+      }
     }
 
     public bool IsTableType (Type type)
