@@ -135,23 +135,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void HasColumn_True ()
+    public void HasAssociatedColumn_True ()
     {
-      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("OrderNumber")), Is.True);
-      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("DeliveryDate")), Is.True);
-      Assert.That (_databaseInfo.HasColumn (typeof (OrderTicket).GetProperty ("Order")), Is.True);
-      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("ID")), Is.True);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (Order).GetProperty ("OrderNumber")), Is.True);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (Order).GetProperty ("DeliveryDate")), Is.True);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (OrderTicket).GetProperty ("Order")), Is.True);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (Order).GetProperty ("ID")), Is.True);
     }
 
     [Test]
-    public void HasColumn_False ()
+    public void HasAssociatedColumn_False ()
     {
-      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("OrderTicket")), Is.False);
-      Assert.That (_databaseInfo.HasColumn (typeof (Order).GetProperty ("NotInMapping")), Is.False);
-      Assert.That (_databaseInfo.HasColumn (typeof (string).GetProperty ("Length")), Is.False);
-      Assert.That (_databaseInfo.HasColumn (typeof (DatabaseInfoTest).GetMethod ("SetUp")), Is.False);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (Order).GetProperty ("OrderTicket")), Is.False);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (Order).GetProperty ("NotInMapping")), Is.False);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (string).GetProperty ("Length")), Is.False);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (DatabaseInfoTest).GetMethod ("SetUp")), Is.False);
       Assert.That (
-          _databaseInfo.HasColumn (typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance)), 
+          _databaseInfo.HasAssociatedColumn (typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance)), 
           Is.False);
     }
 

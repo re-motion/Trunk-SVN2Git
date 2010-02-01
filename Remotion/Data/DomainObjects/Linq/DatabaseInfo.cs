@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return new Table (viewName, alias);
     }
 
-    public bool HasColumn (MemberInfo member)
+    public bool HasAssociatedColumn (MemberInfo member)
     {
       return GetColumnName (member) != null;
     }
