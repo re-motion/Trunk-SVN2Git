@@ -45,26 +45,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void GetTableForFromClause()
     {
-      var orderTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Order> ());
+      var orderTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Order> (), "x");
       Assert.That (orderTable.Name, Is.EqualTo ("OrderView"));
-      Assert.That (orderTable.Alias, Is.EqualTo ("source"));
+      Assert.That (orderTable.Alias, Is.EqualTo ("x"));
 
-      var customerTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Customer> ());
+      var customerTable = _databaseInfo.GetTableForFromClause (CreateFromClause<Customer> (), "y");
       Assert.That (customerTable.Name, Is.EqualTo ("CustomerView"));
-      Assert.That (customerTable.Alias, Is.EqualTo ("source"));
+      Assert.That (customerTable.Alias, Is.EqualTo ("y"));
 
-      var classWithValidRelationsTable = _databaseInfo.GetTableForFromClause (CreateFromClause<ClassWithValidRelations> ());
+      var classWithValidRelationsTable = _databaseInfo.GetTableForFromClause (CreateFromClause<ClassWithValidRelations> (), null);
       Assert.That (classWithValidRelationsTable.Name, Is.EqualTo ("ClassWithValidRelationsView"));
-      Assert.That (classWithValidRelationsTable.Alias, Is.EqualTo ("source"));
+      Assert.That (classWithValidRelationsTable.Alias, Is.Null);
     }
 
     [Test]
     public void GetTableName_ForFromClauseWithOrderCollection ()
     {
       var fromClause = new MainFromClause ("o", typeof (Order), Expression.Constant (new OrderCollection ()));
-      var table = _databaseInfo.GetTableForFromClause (fromClause);
+      var table = _databaseInfo.GetTableForFromClause (fromClause, "order");
       Assert.That (table.Name, Is.EqualTo ("OrderView"));
-      Assert.That (table.Alias, Is.EqualTo ("o"));
+      Assert.That (table.Alias, Is.EqualTo ("order"));
     }
 
     [Test]
@@ -75,21 +75,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var stringSource = new DummyQueryable<string>();
       var stringClause = new MainFromClause ("source", typeof (string), Expression.Constant (stringSource));
 
-      _databaseInfo.GetTableForFromClause(stringClause);
+      _databaseInfo.GetTableForFromClause(stringClause, "whatever");
     }
 
     [Test]
-    public void IsTable_True ()
+    public void IsRelationMember_FK_Right ()
     {
-      Type type = typeof (Order);
-      Assert.IsTrue (_databaseInfo.IsTableType (type));
+      Assert.That (_databaseInfo.IsRelationMember (typeof (Order).GetProperty ("OrderItems")), Is.True);
     }
 
     [Test]
-    public void IsTable_False ()
+    public void IsRelationMember_FK_Left ()
     {
-      Type type = typeof (int);
-      Assert.IsFalse (_databaseInfo.IsTableType (type));
+      Assert.That (_databaseInfo.IsRelationMember (typeof (OrderItem).GetProperty ("Order")), Is.True);
+    }
+
+    [Test]
+    public void IsRelationMember_NotInMapping ()
+    {
+      Assert.That (_databaseInfo.IsRelationMember (typeof (Order).GetProperty ("NotInMapping")), Is.False);
+    }
+
+    [Test]
+    public void IsRelationMember_NoRelationProperty ()
+    {
+      Assert.That (_databaseInfo.IsRelationMember (typeof (Order).GetProperty ("OrderNumber")), Is.False);
+    }
+
+    [Test]
+    public void GetTableForRelation_FK_Right ()
+    {
+      var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("OrderItems"), "x");
+      Assert.AreEqual ("OrderItemView", table.Name);
+      Assert.AreEqual ("x", table.Alias);
+    }
+
+    [Test]
+    public void GetTableForRelation_FK_Left ()
+    {
+      var table = _databaseInfo.GetTableForRelation (typeof (OrderItem).GetProperty ("Order"), "y");
+      Assert.AreEqual ("OrderView", table.Name);
+      Assert.AreEqual ("y", table.Alias);
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
+        "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMapping' does not identify a mapped relation.")]
+    public void GetTableForRelation_NotInMapping ()
+    {
+      _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("NotInMapping"), "z");
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = 
+        "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' does not identify a mapped relation.")]
+    public void GetTableForRelation_NoRelationProperty ()
+    {
+      _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("OrderNumber"), "z");
     }
 
     [Test]
@@ -146,33 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.IsNull (columns);
     }
 
-    [Test]
-    public void GetRelatedTable_FK_Right ()
-    {
-      string tableName = _databaseInfo.GetRelatedTableName (typeof (Order).GetProperty ("OrderItems"));
-      Assert.AreEqual ("OrderItemView", tableName);
-    }
-
-    [Test]
-    public void GetRelatedTable_FK_Left ()
-    {
-      string tableName = _databaseInfo.GetRelatedTableName (typeof (OrderItem).GetProperty ("Order"));
-      Assert.AreEqual ("OrderView", tableName);
-    }
-
-    [Test]
-    public void GetRelatedTable_NotInMapping ()
-    {
-      string tableName = _databaseInfo.GetRelatedTableName (typeof (Order).GetProperty ("NotInMapping"));
-      Assert.IsNull (tableName);
-    }
-
-    [Test]
-    public void GetRelatedTable_NoRelationProperty ()
-    {
-      string tableName = _databaseInfo.GetRelatedTableName (typeof (Order).GetProperty ("OrderNumber"));
-      Assert.IsNull (tableName);
-    }
+   
 
     [Test]
     public void ProcessWhereParameter_Entity ()

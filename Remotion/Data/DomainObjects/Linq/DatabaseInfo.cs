@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Linq
     {
     }
 
-    public Table GetTableForFromClause (FromClauseBase fromClause)
+    public Table GetTableForFromClause (FromClauseBase fromClause, string alias)
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       
@@ -54,33 +54,33 @@ namespace Remotion.Data.DomainObjects.Linq
       else
       {
         var viewName = classDefinition.GetViewName();
-        return new Table (viewName, fromClause.ItemName);
+        return new Table (viewName, alias);
       }
     }
 
-    public bool IsTableType (Type type)
+    public bool IsRelationMember (MemberInfo member)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[type];
-      if (classDefinition == null)
-        return false;
-      else
-        return true;
+      ArgumentUtility.CheckNotNull ("member", member);
+      
+      string viewName = GetViewNameForRelation (member);
+      return viewName != null;
     }
 
-    public string GetRelatedTableName (MemberInfo relationMember)
+    public Table GetTableForRelation (MemberInfo relationMember, string alias)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
 
-      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (relationMember);
-      if (relationData == null)
-        return null;
+      string viewName = GetViewNameForRelation(relationMember);
+      if (viewName == null)
+      {
+        string message = string.Format (
+            "The member '{0}.{1}' does not identify a mapped relation.",
+            relationMember.DeclaringType.FullName,
+            relationMember.Name);
+        throw new UnmappedItemException (message);
+      }
 
-      RelationDefinition relationDefinition = relationData.A;
-      ClassDefinition classDefinition = relationData.B;
-      string propertyIdentifier = relationData.C;
-
-      return relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier).GetViewName();
+      return new Table (viewName, alias);
     }
 
     public string GetColumnName (MemberInfo member)
@@ -120,8 +120,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ClassDefinition classDefinition = relationData.B;
       string propertyIdentifier = relationData.C;
 
-      IRelationEndPointDefinition leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
-      IRelationEndPointDefinition rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
+      var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
+      var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
      
       string leftColumn = GetJoinColumn (leftEndPoint);
       string rightColumn = GetJoinColumn (rightEndPoint);
@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-      PropertyInfo property = relationMember as PropertyInfo;
+      var property = relationMember as PropertyInfo;
       if (property == null)
         return null;
 
@@ -170,6 +170,19 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ClassDefinition classDefinition = endPoint.ClassDefinition;
       return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
+    }
+
+    private string GetViewNameForRelation (MemberInfo relationMember)
+    {
+      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (relationMember);
+      if (relationData == null)
+        return null;
+
+      RelationDefinition relationDefinition = relationData.A;
+      ClassDefinition classDefinition = relationData.B;
+      string propertyIdentifier = relationData.C;
+
+      return relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier).GetViewName ();
     }
   }
 }
