@@ -107,10 +107,12 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    public JoinColumnNames GetJoinColumnNames (MemberInfo relationMember)
+    public SingleJoin GetJoinForMember (MemberInfo relationMember, IColumnSource leftSource, IColumnSource rightSource)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-
+      ArgumentUtility.CheckNotNull ("leftSource", leftSource);
+      ArgumentUtility.CheckNotNull ("rightSource", rightSource);
+      
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (relationMember);
       if (relationData == null)
       {
@@ -126,10 +128,10 @@ namespace Remotion.Data.DomainObjects.Linq
       var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
       var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
      
-      string leftColumn = GetJoinColumn (leftEndPoint);
-      string rightColumn = GetJoinColumn (rightEndPoint);
+      var leftColumn = new Column (leftSource, GetJoinColumnName (leftEndPoint));
+      var rightColumn = new Column (rightSource, GetJoinColumnName (rightEndPoint));
 
-      return new JoinColumnNames (leftColumn, rightColumn);
+      return new SingleJoin (leftColumn, rightColumn);
     }
 
     public object ProcessWhereParameter (object parameter)
@@ -169,7 +171,7 @@ namespace Remotion.Data.DomainObjects.Linq
         return Tuple.NewTuple (relationDefinition, classDefinition, propertyIdentifier);
     }
 
-    private string GetJoinColumn (IRelationEndPointDefinition endPoint)
+    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
       ClassDefinition classDefinition = endPoint.ClassDefinition;
       return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;

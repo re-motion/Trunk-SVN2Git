@@ -36,14 +36,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     private DatabaseInfo _databaseInfo;
     private SqlServerGenerator _sqlGenerator;
-    private IColumnSource _columnSourceStub;
+    private IColumnSource _columnSourceStub1;
+    private IColumnSource _columnSourceStub2;
 
     [SetUp]
     public void SetUp ()
     {
       _databaseInfo = DatabaseInfo.Instance;
       _sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
-      _columnSourceStub = MockRepository.GenerateStub<IColumnSource> ();
+      _columnSourceStub1 = MockRepository.GenerateStub<IColumnSource> ();
+      _columnSourceStub2 = MockRepository.GenerateStub<IColumnSource> ();
     }
 
     [Test]
@@ -176,15 +178,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void GetColumnForMember_ID ()
     {
-      var column = _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("ID"));
-      Assert.That (column, Is.EqualTo (new Column (_columnSourceStub, "ID")));
+      var column = _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (Order).GetProperty ("ID"));
+      Assert.That (column, Is.EqualTo (new Column (_columnSourceStub1, "ID")));
     }
 
     [Test]
     public void GetColumnForMember_ForID ()
     {
-      var column = _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("ID"));
-      Assert.That (column, Is.EqualTo (new Column (_columnSourceStub, "ID")));
+      var column = _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (Order).GetProperty ("ID"));
+      Assert.That (column, Is.EqualTo (new Column (_columnSourceStub1, "ID")));
     }
 
     [Test]
@@ -192,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' does not identify a queryable column.")]
     public void GetColumnForMember_VirtualSide ()
     {
-      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("OrderTicket"));
+      _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (Order).GetProperty ("OrderTicket"));
     }
 
     [Test]
@@ -200,44 +202,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMapping' does not identify a queryable column.")]
     public void GetColumnForMember_UnmappedProperty ()
     {
-      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("NotInMapping"));
+      _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (Order).GetProperty ("NotInMapping"));
     }
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException))]
     public void GetColumnForMember_UnmappedType ()
     {
-      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (string).GetProperty ("Length"));
+      _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (string).GetProperty ("Length"));
     }
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException))]
     public void GetColumnForMember_Method ()
     {
-      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (DatabaseInfoTest).GetMethod ("SetUp"));
+      _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (DatabaseInfoTest).GetMethod ("SetUp"));
     }
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException))]
     public void GetColumnForMember_Field ()
     {
-      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance));
+      _databaseInfo.GetColumnForMember (_columnSourceStub1, typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance));
     }
  
     [Test]
     public void GetJoinColumns_FK_Right()
     {
-      var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderItems"));
-      Assert.That (columns.PrimaryKey, Is.EqualTo ("ID"));
-      Assert.That (columns.ForeignKey, Is.EqualTo ("OrderID"));
+      var join = _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("OrderItems"), _columnSourceStub1, _columnSourceStub2);
+      Assert.That (join.LeftColumn, Is.EqualTo (new Column (_columnSourceStub1, "ID")));
+      Assert.That (join.RightColumn, Is.EqualTo (new Column (_columnSourceStub2, "OrderID")));
     }
 
     [Test]
     public void GetJoinColumns_FK_Left ()
     {
-      var columns = _databaseInfo.GetJoinColumnNames (typeof (OrderItem).GetProperty ("Order"));
-      Assert.That (columns.PrimaryKey, Is.EqualTo ("OrderID"));
-      Assert.That (columns.ForeignKey, Is.EqualTo ("ID"));
+      var join = _databaseInfo.GetJoinForMember (typeof (OrderItem).GetProperty ("Order"), _columnSourceStub1, _columnSourceStub2);
+
+      Assert.That (join.LeftColumn, Is.EqualTo (new Column (_columnSourceStub1, "OrderID")));
+      Assert.That (join.RightColumn, Is.EqualTo (new Column (_columnSourceStub2, "ID")));
     }
 
     [Test]
@@ -245,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMapping' does not identify a relation.")]
     public void GetJoinColumns_NotInMapping ()
     {
-      _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("NotInMapping"));
+      _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("NotInMapping"), _columnSourceStub1, _columnSourceStub2);
     }
 
     [Test]
@@ -253,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' does not identify a relation.")]
     public void GetJoinColumns_NoRelationProperty ()
     {
-      _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderNumber"));
+      _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("OrderNumber"), _columnSourceStub1, _columnSourceStub2);
     }
 
     [Test]
