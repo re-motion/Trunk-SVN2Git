@@ -85,32 +85,26 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public bool HasAssociatedColumn (MemberInfo member)
     {
+      ArgumentUtility.CheckNotNull ("member", member);
+
       return GetColumnName (member) != null;
     }
 
-    public string GetColumnName (MemberInfo member)
+    public Column GetColumnForMember (IColumnSource columnSource, MemberInfo member)
     {
+      ArgumentUtility.CheckNotNull ("columnSource", columnSource);
       ArgumentUtility.CheckNotNull ("member", member);
-      PropertyInfo property = member as PropertyInfo;
-      if (property == null)
-        return null;
 
-      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return "ID";
-
-      //fix this if something is not in the MappingConfiguration -> go to derived classes (entity <T>) and look for property
-      //new parameter needed to get type (<T>) of entity<T>
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
-      if (classDefinition == null)
-        return null;
-
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
-      PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
-
-      if (propertyDefinition != null)
-        return propertyDefinition.StorageSpecificName;
+      var columnName = GetColumnName (member);
+      if (columnName == null)
+      {
+        var message = string.Format ("The member '{0}.{1}' does not identify a queryable column.", member.DeclaringType, member.Name);
+        throw new UnmappedItemException (message);
+      }
       else
-        return null;
+      {
+        return new Column (columnSource, columnName);
+      }
     }
 
     public JoinColumnNames? GetJoinColumnNames (MemberInfo relationMember)
@@ -188,6 +182,31 @@ namespace Remotion.Data.DomainObjects.Linq
       string propertyIdentifier = relationData.C;
 
       return relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier).GetViewName ();
+    }
+
+    private string GetColumnName (MemberInfo member)
+    {
+      ArgumentUtility.CheckNotNull ("member", member);
+      var property = member as PropertyInfo;
+      if (property == null)
+        return null;
+
+      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
+        return "ID";
+
+      //fix this if something is not in the MappingConfiguration -> go to derived classes (entity <T>) and look for property
+      //new parameter needed to get type (<T>) of entity<T>
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
+      if (classDefinition == null)
+        return null;
+
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
+      PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
+
+      if (propertyDefinition != null)
+        return propertyDefinition.StorageSpecificName;
+      else
+        return null;
     }
   }
 }

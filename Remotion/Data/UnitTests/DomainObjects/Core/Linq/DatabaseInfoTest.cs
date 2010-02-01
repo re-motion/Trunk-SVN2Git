@@ -23,9 +23,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -34,12 +36,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     private DatabaseInfo _databaseInfo;
     private SqlServerGenerator _sqlGenerator;
+    private IColumnSource _columnSourceStub;
 
     [SetUp]
     public void SetUp ()
     {
       _databaseInfo = DatabaseInfo.Instance;
       _sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
+      _columnSourceStub = MockRepository.GenerateStub<IColumnSource> ();
     }
 
     [Test]
@@ -106,16 +110,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void GetTableForRelation_FK_Right ()
     {
       var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("OrderItems"), "x");
-      Assert.AreEqual ("OrderItemView", table.Name);
-      Assert.AreEqual ("x", table.Alias);
+      Assert.That (table.Name, Is.EqualTo ("OrderItemView"));
+      Assert.That (table.Alias, Is.EqualTo ("x"));
     }
 
     [Test]
     public void GetTableForRelation_FK_Left ()
     {
       var table = _databaseInfo.GetTableForRelation (typeof (OrderItem).GetProperty ("Order"), "y");
-      Assert.AreEqual ("OrderView", table.Name);
-      Assert.AreEqual ("y", table.Alias);
+      Assert.That (table.Name, Is.EqualTo ("OrderView"));
+      Assert.That (table.Alias, Is.EqualTo ("y"));
     }
 
     [Test]
@@ -156,60 +160,99 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void GetColumnName()
+    public void GetColumnForMember ()
     {
-      Assert.AreEqual ("OrderNo", _databaseInfo.GetColumnName (typeof (Order).GetProperty ("OrderNumber")));
-      Assert.AreEqual ("DeliveryDate", _databaseInfo.GetColumnName (typeof (Order).GetProperty ("DeliveryDate")));
-      Assert.AreEqual ("OrderID", _databaseInfo.GetColumnName (typeof (OrderTicket).GetProperty ("Order")));
+      var columnSource = MockRepository.GenerateStub<IColumnSource> ();
+
+      var column1 = _databaseInfo.GetColumnForMember (columnSource, typeof (Order).GetProperty ("OrderNumber"));
+      var column2 = _databaseInfo.GetColumnForMember (columnSource, typeof (Order).GetProperty ("DeliveryDate"));
+      var column3 = _databaseInfo.GetColumnForMember (columnSource, typeof (OrderTicket).GetProperty ("Order"));
+
+      Assert.That (column1, Is.EqualTo (new Column (columnSource, "OrderNo")));
+      Assert.That (column2, Is.EqualTo (new Column (columnSource, "DeliveryDate")));
+      Assert.That (column3, Is.EqualTo (new Column (columnSource, "OrderID")));
     }
 
     [Test]
-    public void GetColumnName_ForID ()
+    public void GetColumnForMember_ID ()
     {
-      Assert.AreEqual ("ID", _databaseInfo.GetColumnName (typeof (Order).GetProperty ("ID")));
+      var column = _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("ID"));
+      Assert.That (column, Is.EqualTo (new Column (_columnSourceStub, "ID")));
     }
 
     [Test]
-    public void GetColumnName_Null ()
+    public void GetColumnForMember_ForID ()
     {
-      Assert.IsNull (_databaseInfo.GetColumnName (typeof (Order).GetProperty ("OrderTicket")));
-      Assert.IsNull (_databaseInfo.GetColumnName (typeof (Order).GetProperty ("NotInMapping")));
-      Assert.IsNull (_databaseInfo.GetColumnName (typeof (string).GetProperty ("Length")));
-      Assert.IsNull (_databaseInfo.GetColumnName (typeof (DatabaseInfoTest).GetMethod ("SetUp")));
-      Assert.IsNull (_databaseInfo.GetColumnName (typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance)));
+      var column = _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("ID"));
+      Assert.That (column, Is.EqualTo (new Column (_columnSourceStub, "ID")));
     }
 
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' does not identify a queryable column.")]
+    public void GetColumnForMember_VirtualSide ()
+    {
+      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("OrderTicket"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
+        "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMapping' does not identify a queryable column.")]
+    public void GetColumnForMember_UnmappedProperty ()
+    {
+      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (Order).GetProperty ("NotInMapping"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException))]
+    public void GetColumnForMember_UnmappedType ()
+    {
+      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (string).GetProperty ("Length"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException))]
+    public void GetColumnForMember_Method ()
+    {
+      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (DatabaseInfoTest).GetMethod ("SetUp"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException))]
+    public void GetColumnForMember_Field ()
+    {
+      _databaseInfo.GetColumnForMember (_columnSourceStub, typeof (DatabaseInfoTest).GetField ("_databaseInfo", BindingFlags.NonPublic | BindingFlags.Instance));
+    }
+ 
     [Test]
     public void GetJoinColumns_FK_Right()
     {
       var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderItems"));
-      Assert.AreEqual ("ID", columns.Value.PrimaryKey);
-      Assert.AreEqual ("OrderID", columns.Value.ForeignKey);
+      Assert.That (columns.Value.PrimaryKey, Is.EqualTo ("ID"));
+      Assert.That (columns.Value.ForeignKey, Is.EqualTo ("OrderID"));
     }
 
     [Test]
     public void GetJoinColumns_FK_Left ()
     {
       var columns = _databaseInfo.GetJoinColumnNames (typeof (OrderItem).GetProperty ("Order"));
-      Assert.AreEqual ("OrderID", columns.Value.PrimaryKey);
-      Assert.AreEqual ("ID", columns.Value.ForeignKey);
+      Assert.That (columns.Value.PrimaryKey, Is.EqualTo ("OrderID"));
+      Assert.That (columns.Value.ForeignKey, Is.EqualTo ("ID"));
     }
 
     [Test]
     public void GetJoinColumns_NotInMapping ()
     {
       var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("NotInMapping"));
-      Assert.IsNull (columns);
+      Assert.That (columns, Is.Null);
     }
 
     [Test]
     public void GetJoinColumns_NoRelationProperty ()
     {
       var columns = _databaseInfo.GetJoinColumnNames (typeof (Order).GetProperty ("OrderNumber"));
-      Assert.IsNull (columns);
+      Assert.That (columns, Is.Null);
     }
-
-   
 
     [Test]
     public void ProcessWhereParameter_Entity ()
@@ -218,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       {
         Order order = Order.NewObject();
         object processed = _databaseInfo.ProcessWhereParameter (order);
-        Assert.AreEqual (order.ID, processed);
+        Assert.That (processed, Is.EqualTo (order.ID));
       }
     }
 
@@ -226,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ProcessWhereParameter_NoEntity ()
     {
       object processed = _databaseInfo.ProcessWhereParameter (5);
-      Assert.AreEqual (5, processed);
+      Assert.That (processed, Is.EqualTo (5));
     }
 
     [Test]
@@ -234,14 +277,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       MemberInfo actual = _databaseInfo.GetPrimaryKeyMember (typeof (Computer));
       MemberInfo expected = typeof (DomainObject).GetProperty ("ID");
-      Assert.AreEqual (expected, actual);
+      Assert.That (actual, Is.EqualTo (expected));
     }
 
     [Test]
     public void GetPrimaryKeyMember_NoEntity ()
     {
       MemberInfo actual = _databaseInfo.GetPrimaryKeyMember (typeof (string));
-      Assert.IsNull (actual);
+      Assert.That (actual, Is.Null);
     }
 
     private FromClauseBase CreateFromClause<T> ()
