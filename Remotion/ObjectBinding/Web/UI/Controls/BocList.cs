@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -1725,6 +1726,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           int listIndex = rowMenuTuple.B;
           DropDownMenu dropDownMenu = rowMenuTuple.C;
           PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
+          dropDownMenu.Visible = dropDownMenu.MenuItems.Cast<WebMenuItem>().Any (item => item.EvaluateVisible());
         }
       }
     }

@@ -95,7 +95,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
-      Html.AssertChildElementCount (td, 0);
+      var div = Html.GetAssertedChildElement (td, "div", 0);
+      Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
+
+      Html.AssertTextNode (div, "mocked dropdown menu", 0);
     }
 
     [Test]
