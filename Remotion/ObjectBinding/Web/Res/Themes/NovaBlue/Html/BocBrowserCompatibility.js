@@ -117,11 +117,13 @@ BocBrowserCompatibility.AdjustDateTimeValueLayout = function(element)
 
 
 
-BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element) {
-  BocBrowserCompatibility.AutoCompleteReferenceValueLayoutFixIE6(element);
+BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element) 
+{
+  BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
 }
 
-BocBrowserCompatibility.AdjustReferenceValueLayout = function(element) {
+BocBrowserCompatibility.AdjustReferenceValueLayout = function(element) 
+{
   BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
 }
 
