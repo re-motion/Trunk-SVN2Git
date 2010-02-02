@@ -168,7 +168,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       string cssClassTableRow = GetCssClassTableRow (isChecked);
       string cssClassTableCell = GetCssClassTableCell (isOddRow);
 
-      AddRowOnClickScript (rowIndex);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
@@ -208,18 +207,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         IBocColumnRenderer columnRenderer = GetColumnRenderer (column);
 
         columnRenderer.RenderDataCell (rowIndex, showIcon, dataRowRenderEventArgs);
-      }
-    }
-
-    private void AddRowOnClickScript (int rowIndex)
-    {
-      if (List.IsSelectionEnabled && !List.EditModeController.IsRowEditModeActive)
-      {
-        if (List.AreDataRowsClickSensitive())
-        {
-          string script = string.Format("{0}_OnRowClick_{1}", List.ClientID, rowIndex);
-          // Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-        }
       }
     }
 

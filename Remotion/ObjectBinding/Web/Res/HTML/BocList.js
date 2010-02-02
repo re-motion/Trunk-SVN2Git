@@ -74,8 +74,9 @@ function BocList_InitializeGlobals (trClassName, trClassNameSelected)
 //  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
 //  count: The number of data rows in the BocList.
 //  selection: The RowSelection enum value defining the selection mode (disabled/single/multiple)
+//  hasClickSensitiveRows: true if the click event handler is bound to the data rows.
 //  listMenu: The BocList's ListMenu, which has to be notified of the new selection count
-function BocList_InitializeList (bocList, selectorControlPrefix, count, selection, listMenu)
+function BocList_InitializeList(bocList, selectorControlPrefix, count, selection, hasClickSensitiveRows, listMenu)
 {
   var selectedRows = new BocList_SelectedRows (selection);
   if (   selectedRows.Selection != _bocList_rowSelectionUndefined
@@ -88,7 +89,10 @@ function BocList_InitializeList (bocList, selectorControlPrefix, count, selectio
       if (selectorControl == null)
         continue;
       var row = selectorControl.parentNode.parentNode;
-      BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu);
+  
+      if (hasClickSensitiveRows)
+        BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu);
+  
       if (selectorControl.checked)      
       {
         var rowBlock = new BocList_RowBlock (row, selectorControl);
@@ -110,7 +114,8 @@ function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMen
 {
   $(row).click( function(evt)
   {
-    BocList_OnRowClick(evt, bocList, row, selectorControl, listMenu);
+    BocList_OnRowClick(evt, bocList, row, selectorControl);
+    ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
   });
 }
 
@@ -122,7 +127,7 @@ function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMen
 //  bocList: The BocList to which the row belongs.
 //  currentRow: The row that fired the click event.
 //  selectorControl: The selection selectorControl in this row.
-function BocList_OnRowClick (evt, bocList, currentRow, selectorControl, listMenu)
+function BocList_OnRowClick (evt, bocList, currentRow, selectorControl)
 {
   if (_bocList_isCommandClick)
   {
@@ -187,8 +192,6 @@ function BocList_OnRowClick (evt, bocList, currentRow, selectorControl, listMenu
   {
   }  
   _bocList_isSelectorControlClick = false;
-
-  ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
 }
 
 //  Selects a row.

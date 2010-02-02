@@ -172,14 +172,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
           count = List.PageSize.Value;
         else if (List.Value != null)
           count = List.Value.Count;
+        
+        bool hasClickSensitiveRows = List.IsSelectionEnabled && !List.EditModeController.IsRowEditModeActive && List.AreDataRowsClickSensitive();
 
-        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, $('#{4}')[0] );";
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, $('#{5}')[0] );";
         string script = string.Format (
             scriptTemplate,
             List.ClientID,
             List.GetSelectorControlClientId(null),
             count,
             (int) List.Selection,
+            hasClickSensitiveRows ? "true" : "false",
             List.ListMenu.ClientID);
 
         List.Page.ClientScript.RegisterStartupScriptBlock (
