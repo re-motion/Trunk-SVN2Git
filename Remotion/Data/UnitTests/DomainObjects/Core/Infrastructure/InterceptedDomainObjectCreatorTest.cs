@@ -121,6 +121,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void CreateObjectReference_UsesFactoryGeneratedType ()
+    {
+      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, null);
+      Assert.That (order, Is.InstanceOfType (typeof (Order)));
+      var factory = InterceptedDomainObjectCreator.Instance.Factory;
+      Assert.That (factory.WasCreatedByFactory ((((object) order).GetType ())), Is.True);
+    }
+
+    [Test]
+    public void CreateObjectReference_CallsNoCtor ()
+    {
+      var order = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, null);
+      Assert.That (order.CtorCalled, Is.False);
+    }
+
+    [Test]
+    public void CreateObjectReference_PreparesMixins ()
+    {
+      var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, null);
+      Assert.That (Mixin.Get<MixinAddingPersistentProperties> (instance), Is.Not.Null);
+    }
+
+    [Test]
+    public void CreateObjectReference_InitializesObjectID ()
+    {
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, null);
+      Assert.That (instance.ID, Is.EqualTo (DomainObjectIDs.Order1));
+    }
+
+    [Test]
+    public void CreateObjectReference_BindingTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction ();
+
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, transaction);
+
+      Assert.That (instance.HasBindingTransaction, Is.True);
+      Assert.That (instance.GetBindingTransaction (), Is.SameAs (transaction));
+    }
+
+    [Test]
+    public void CreateObjectReference_NoBindingTransaction ()
+    {
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, null);
+      Assert.That (instance.HasBindingTransaction, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "mixin", MatchType = MessageMatch.Contains)]
+    public void CreateObjectReference_ValidatesMixinConfiguration ()
+    {
+      using (MixinConfiguration.BuildNew ().EnterScope ())
+      {
+        var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
+        InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, null);
+      }
+    }
+
+    [Test]
     public void GetConstructorLookupInfo_UsesFactoryGeneratedType ()
     {
       var info = InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));

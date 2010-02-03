@@ -43,17 +43,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      dataContainer.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
+      var clientTransaction = dataContainer.ClientTransaction;
 
-      Type concreteType = Factory.GetConcreteDomainObjectType(dataContainer.DomainObjectType);
+      var instance = CreateObjectReference (dataContainer.ID, clientTransaction as BindingClientTransaction);
+      dataContainer.SetDomainObject (instance);
+      clientTransaction.EnlistDomainObject (instance);
+
+      return instance;
+    }
+
+    public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction bindingTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      objectID.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
+
+      var concreteType = Factory.GetConcreteDomainObjectType (objectID.ClassDefinition.ClassType);
 
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       Factory.PrepareUnconstructedInstance (instance);
-      dataContainer.SetDomainObject (instance);
 
-      var clientTransaction = dataContainer.ClientTransaction;
-      instance.Initialize (dataContainer.ID, clientTransaction as BindingClientTransaction);
-      clientTransaction.EnlistDomainObject (instance);
+      instance.Initialize (objectID, bindingTransaction);
 
       return instance;
     }

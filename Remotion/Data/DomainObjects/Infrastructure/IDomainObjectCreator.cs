@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Reflection;
 
@@ -32,6 +31,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="dataContainer">The data container to initialize the <see cref="DomainObject"/> with.</param>
     /// <returns>A new <see cref="DomainObject"/> initialized with the given <see cref="DataContainer"/>.</returns>
     DomainObject CreateWithDataContainer (DataContainer dataContainer);
+
+    /// <summary>
+    /// Creates a new <see cref="DomainObject"/> instance and initializes it with the given <paramref name="objectID"/> and 
+    /// <paramref name="bindingTransaction"/>. The object is not enlisted with a transaction and no <see cref="DataContainer"/> is created for it.
+    /// The instance is created without a constructor being called.
+    /// </summary>
+    /// <param name="objectID">The <see cref="ObjectID"/> to assign to the object.</param>
+    /// <param name="bindingTransaction">The transaction to bind the object to, or <see langword="null" /> if the object should not be bound to
+    /// a transaction.</param>
+    /// <returns>A <see cref="DomainObject"/> instance with the given <paramref name="objectID"/>, optionally bound to 
+    /// <paramref name="bindingTransaction"/>, that is not enlisted in any transaction.</returns>
+    DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction bindingTransaction);
 
     /// <summary>
     /// Gets a <see cref="ConstructorLookupInfo"/> that can be used to construct a <see cref="DomainObject"/> of the given 
