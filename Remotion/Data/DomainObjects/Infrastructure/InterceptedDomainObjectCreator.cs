@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
@@ -51,7 +50,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       Factory.PrepareUnconstructedInstance (instance);
       dataContainer.SetDomainObject (instance);
-      instance.Initialize (dataContainer.ID, dataContainer.ClientTransaction);
+
+      var clientTransaction = dataContainer.ClientTransaction;
+      instance.Initialize (dataContainer.ID, clientTransaction as BindingClientTransaction);
+      clientTransaction.EnlistDomainObject (instance);
+
       return instance;
     }
 

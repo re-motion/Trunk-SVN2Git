@@ -29,7 +29,6 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSam
 using Remotion.Development.UnitTesting;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -763,16 +762,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void CreateNewObjectWithTransaction ()
+    public void CreateNewObject_EnlistsInTransaction ()
     {
       var clientTransactionMock = new ClientTransactionMock ();
-      Order order;
-      using (clientTransactionMock.EnterDiscardingScope())
-      {
-        order = Order.NewObject ();
-      }
+      Order order = clientTransactionMock.Execute (() => Order.NewObject ());
+
       Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
-      Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
+      Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
+    }
+
+    [Test]
+    public void CreateNewObject_BindsToBindingClientTransaction ()
+    {
+      var transaction = ClientTransaction.CreateBindingTransaction ();
+      Order order = transaction.Execute (() => Order.NewObject ());
+
+      Assert.That (transaction.IsEnlisted (order), Is.True);
+      Assert.That (order.HasBindingTransaction, Is.True);
+      Assert.That (order.GetBindingTransaction(), Is.SameAs (transaction));
+    }
+
+    [Test]
+    public void CreateNewObject_DoesNotBindToOtherClientTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      Order order = transaction.Execute (() => Order.NewObject ());
+
+      Assert.That (transaction.IsEnlisted (order), Is.True);
+      Assert.That (order.HasBindingTransaction, Is.False);
     }
 
     [Test]
@@ -955,7 +972,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Initialize_ThrowsForNewObject ()
     {
       var orderItem = OrderItem.NewObject ("Test Toast");
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
 
     [Test]
@@ -963,7 +980,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Initialize_ThrowsForLoadedObject ()
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
 
     [Test]
@@ -972,7 +989,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var deserializedOrderItem = Serializer.SerializeAndDeserialize (orderItem);
-      deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+      deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
 
     [Test]
@@ -983,17 +1000,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
 
       Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1));
-    }
-
-    [Test]
-    public void Initialize_WithEmptyHull_EnlistsObject ()
-    {
-      var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
-      var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
-
-      Assert.That (ClientTransactionMock.IsEnlisted (orderItem));
-      Assert.That (ClientTransactionMock.GetObject (DomainObjectIDs.OrderItem1, false), Is.SameAs (orderItem));
     }
   }
 }

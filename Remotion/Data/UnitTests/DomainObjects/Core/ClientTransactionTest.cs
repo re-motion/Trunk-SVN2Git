@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var orderType = creator.Factory.GetConcreteDomainObjectType (typeof (Order));
 
       var enlisted = (DomainObject) FormatterServices.GetSafeUninitializedObject (orderType);
-      enlisted.Initialize (DomainObjectIDs.Order1, ClientTransactionMock);
+      enlisted.Initialize (DomainObjectIDs.Order1, null);
       ClientTransactionMock.EnlistDomainObject (enlisted);
 
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);

@@ -247,7 +247,9 @@ namespace Remotion.Data.DomainObjects
       DataContainer firstDataContainer = ClientTransactionScope.CurrentTransaction.CreateNewDataContainer (publicDomainObjectType);
       firstDataContainer.SetDomainObject (this);
 
-      Initialize (firstDataContainer.ID, firstDataContainer.ClientTransaction);
+      var clientTransaction = firstDataContainer.ClientTransaction;
+      Initialize (firstDataContainer.ID, clientTransaction as BindingClientTransaction);
+      clientTransaction.EnlistDomainObject (this);
 
       _needsLoadModeDataContainerOnly = true;
     }
@@ -466,24 +468,21 @@ namespace Remotion.Data.DomainObjects
     /// is automatically called by the framework and should not normally be invoked by user code.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> to associate the new <see cref="DomainObject"/> with.</param>
-    /// <param name="clientTransaction">The <see cref="DomainObjects.ClientTransaction"/> to associate the new <see cref="DomainObject"/> with.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="id"/> or <paramref name="clientTransaction"/> parameter is null.</exception>
+    /// <param name="bindingTransaction">The <see cref="DomainObjects.ClientTransaction"/> to bind the new <see cref="DomainObject"/> to, or 
+    /// <see langword="null" /> if the object should not be bound.</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="id"/> or <paramref name="bindingTransaction"/> parameter is null.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="DomainObject"/> has already been initialized.</exception>
     /// <remarks>This method is always called exactly once per <see cref="DomainObject"/> instance by the framework. It sets the object's 
     /// <see cref="ID"/> and enlists it with the given <see cref="DomainObjects.ClientTransaction"/>.</remarks>
-    public void Initialize (ObjectID id, ClientTransaction clientTransaction)
+    public void Initialize (ObjectID id, ClientTransaction bindingTransaction)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       if (_id != null)
         throw new InvalidOperationException ("The object cannot be initialized, it already has an ID.");
 
       _id = id;
-      if (clientTransaction is BindingClientTransaction)
-        _bindingTransaction = clientTransaction;
-
-      clientTransaction.EnlistDomainObject (this);
+      _bindingTransaction = bindingTransaction;
     }
 
     /// <summary>
@@ -492,8 +491,8 @@ namespace Remotion.Data.DomainObjects
     /// the <see cref="Type"/> object for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.
     /// </summary>
     [Obsolete ("GetType might return a Type object for a generated class, which is usually not what is expected. "
-        + "DomainObject.GetPublicDomainObjectType can be used to get the Type object of the original underlying domain object type. If the Type object"
-        + "for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.", true)]
+               + "DomainObject.GetPublicDomainObjectType can be used to get the Type object of the original underlying domain object type. If the Type object"
+               + "for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.", true)]
     public new Type GetType ()
     {
       throw new InvalidOperationException ("DomainObject.GetType should not be used.");
