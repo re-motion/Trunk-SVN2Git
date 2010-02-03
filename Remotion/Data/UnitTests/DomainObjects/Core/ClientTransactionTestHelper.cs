@@ -30,14 +30,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DataManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "DataManager");
     }
 
-    public static DomainObject[] CallLoadRelatedObjects (ClientTransaction clientTransactionPartialMock, RelationEndPointID endPointID)
+    public static DomainObject[] CallLoadRelatedObjects (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      return (DomainObject[]) PrivateInvoke.InvokeNonPublicMethod (clientTransactionPartialMock, "LoadRelatedObjects", endPointID);
+      return (DomainObject[]) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedObjects", endPointID);
     }
 
-    public static object CallLoadRelatedDataContainers (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public static DataContainerCollection CallLoadRelatedDataContainers (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      return PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedDataContainers", endPointID);
+      return (DataContainerCollection) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedDataContainers", endPointID);
+    }
+
+    public static DomainObject CallGetObjectForDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
+    {
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObjectForDataContainer", dataContainer);
     }
 
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)

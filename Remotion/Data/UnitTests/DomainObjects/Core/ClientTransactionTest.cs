@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetObjectForDataContainer_NoEnlistedObject_UsesCreator ()
+    public void GetObjectForDataContainer_NotEnlistedObject_UsesCreator ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       dataContainer.RegisterWithTransaction (ClientTransactionMock);
@@ -97,6 +97,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var expectedCreator = (InterceptedDomainObjectCreator) MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).GetDomainObjectCreator ();
       expectedCreator.Factory.WasCreatedByFactory (((object) retrieved).GetType ());
+    }
+
+    [Test]
+    public void GetObjectForDataContainer_NotEnlistedObject_EnlistsObject ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      var retrieved = ClientTransactionMock.GetObjectForDataContainer (dataContainer);
+
+      Assert.That (ClientTransactionMock.IsEnlisted (retrieved), Is.True);
+    }
+
+    [Test]
+    public void GetObjectForDataContainer_NotEnlistedObject_SetsDomainObjectOfDataContainer ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      var retrieved = ClientTransactionMock.GetObjectForDataContainer (dataContainer);
+
+      Assert.That (dataContainer.DomainObject, Is.SameAs (retrieved));
+    }
+
+    [Test]
+    public void GetObjectForDataContainer_NotEnlistedObject_BindsNewObjectToBindingClientTransaction ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      dataContainer.RegisterWithTransaction (bindingTransaction);
+
+      var retrieved = ClientTransactionTestHelper.CallGetObjectForDataContainer (bindingTransaction, dataContainer);
+
+      Assert.That (retrieved.HasBindingTransaction, Is.True);
+      Assert.That (retrieved.GetBindingTransaction(), Is.SameAs (bindingTransaction));
+    }
+
+    [Test]
+    public void GetObjectForDataContainer_NotEnlistedObject_DoesntBindNewObjectToOrdinaryTransaction ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      dataContainer.RegisterWithTransaction (ClientTransactionMock);
+
+      var retrieved = ClientTransactionTestHelper.CallGetObjectForDataContainer (ClientTransactionMock, dataContainer);
+
+      Assert.That (retrieved.HasBindingTransaction, Is.False);
     }
 
     [Test]

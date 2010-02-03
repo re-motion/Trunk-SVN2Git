@@ -795,13 +795,20 @@ public abstract class ClientTransaction
     if (!dataContainer.IsRegistered)
       throw new InvalidOperationException("The data container must be registered with the ClientTransaction before an object is retrieved for it.");
     
-    DomainObject enlistedObject = _enlistedObjectManager.GetEnlistedDomainObject (dataContainer.ID);
+    var enlistedObject = _enlistedObjectManager.GetEnlistedDomainObject (dataContainer.ID);
     if (enlistedObject != null)
+    {
       return enlistedObject;
+    }
     else
     {
       var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (dataContainer.DomainObjectType).GetDomainObjectCreator ();
-      return creator.CreateWithDataContainer (dataContainer);
+
+      var instance = creator.CreateObjectReference (dataContainer.ID, this as BindingClientTransaction);
+      EnlistDomainObject (instance);
+
+      dataContainer.SetDomainObject (instance);
+      return instance;
     }
   }
 
