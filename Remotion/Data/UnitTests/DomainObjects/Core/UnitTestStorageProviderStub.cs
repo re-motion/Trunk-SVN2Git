@@ -17,10 +17,13 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -57,6 +60,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var previous = _innerMockStorageProvider.Current;
       _innerMockStorageProvider.SetCurrent (mock);
       return new MockStorageProviderScope (previous);
+    }
+
+    public static T ExecuteWithMock<T> (StorageProvider mockedStorageProvider, Func<T> func)
+    {
+      using (EnterMockStorageProviderScope (mockedStorageProvider))
+      {
+        return func();
+      }
+    }
+
+    public static StorageProvider CreateStorageProviderMockForOfficial ()
+    {
+      var storageProviderID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Official)).StorageProviderID;
+      var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
+      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition);
     }
 
     public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition)
