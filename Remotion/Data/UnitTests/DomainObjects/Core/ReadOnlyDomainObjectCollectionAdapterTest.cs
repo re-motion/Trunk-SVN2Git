@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock, 
           associatedCollection.AssociatedEndPoint.ID, 
-          UnloadService.TransactionMode.ThisTransactionOnly);
+          UnloadTransactionMode.ThisTransactionOnly);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
       Assert.That (readOnlyAdapter.IsDataAvailable, Is.False);
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock,
           associatedCollection.AssociatedEndPoint.ID,
-          UnloadService.TransactionMode.ThisTransactionOnly);
+          UnloadTransactionMode.ThisTransactionOnly);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
       Assert.That (associatedCollection.IsDataAvailable, Is.False);

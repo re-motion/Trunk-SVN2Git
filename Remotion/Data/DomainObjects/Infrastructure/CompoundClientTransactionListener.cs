@@ -68,12 +68,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectsUnloaded (unloadedDomainObjects);
     }
 
-    public void ObjectGotID (DomainObject instance, ObjectID id)
-    {
-      foreach (var listener in _listeners)
-        listener.ObjectGotID (instance, id);
-    }
-
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)

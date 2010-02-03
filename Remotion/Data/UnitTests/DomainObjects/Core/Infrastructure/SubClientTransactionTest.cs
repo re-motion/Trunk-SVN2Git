@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock, 
           order.OrderItems.AssociatedEndPoint.ID, 
-          UnloadService.TransactionMode.ThisTransactionOnly); 
+          UnloadTransactionMode.ThisTransactionOnly); 
       
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
       {

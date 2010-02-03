@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ListenerIsSerializable ()
     {
-      InvalidatedTransactionListener listener = new InvalidatedTransactionListener();
+      var listener = new InvalidatedTransactionListener();
       InvalidatedTransactionListener deserializedListener = Serializer.SerializeAndDeserialize (listener);
       Assert.IsNotNull (deserializedListener);
     }
@@ -38,23 +38,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void AllMethodsMustThrow ()
     {
-      InvalidatedTransactionListener listener = new InvalidatedTransactionListener();
-      MethodInfo[] methods = typeof (InvalidatedTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-      Assert.AreEqual (30, methods.Length);
+      var listener = new InvalidatedTransactionListener();
+      MethodInfo[] methods =
+          typeof (InvalidatedTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+      Assert.AreEqual (29, methods.Length);
 
-      foreach (MethodInfo method in methods)
+      foreach (var method in methods)
       {
         var concreteMethod = method.Name == "FilterQueryResult" ? method.MakeGenericMethod (typeof (Order)) : method;
 
         object[] arguments = Array.ConvertAll (concreteMethod.GetParameters(), p => GetDefaultValue (p.ParameterType));
 
-        ExpectException (typeof (InvalidOperationException), "The transaction can no longer be used because it has been discarded.",
-            listener, concreteMethod, arguments);
+        ExpectException (
+            typeof (InvalidOperationException),
+            "The transaction can no longer be used because it has been discarded.",
+            listener,
+            concreteMethod,
+            arguments);
       }
     }
 
-    private void ExpectException (Type expectedExceptionType, string expectedMessage, InvalidatedTransactionListener listener,
-        MethodInfo method, object[] arguments)
+    private void ExpectException (
+        Type expectedExceptionType,
+        string expectedMessage,
+        InvalidatedTransactionListener listener,
+        MethodInfo method,
+        object[] arguments)
     {
       try
       {
@@ -64,29 +73,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       catch (TargetInvocationException tex)
       {
         Exception ex = tex.InnerException;
-        if (ex.GetType () == expectedExceptionType)
+        if (ex.GetType() == expectedExceptionType)
         {
           if (ex.Message == expectedMessage)
             return;
           else
+          {
             Assert.Fail (
                 BuildErrorMessage (
                     expectedExceptionType,
                     method,
                     arguments,
                     string.Format ("the message was incorrect.\nExpected: {0}\nWas:      {1}", expectedMessage, ex.Message)));
+          }
         }
         else
-        {
-          Assert.Fail (BuildErrorMessage (expectedExceptionType, method, arguments, "the exception type was " + ex.GetType() + ".\n" + ex.ToString ()));
-        }
+          Assert.Fail (BuildErrorMessage (expectedExceptionType, method, arguments, "the exception type was " + ex.GetType() + ".\n" + ex));
       }
     }
 
     private string BuildErrorMessage (Type expectedExceptionType, MethodInfo method, object[] arguments, string problem)
     {
-      return string.Format ("Expected {0} when calling {1}({2}), but {3}", expectedExceptionType, method.Name,
-         ReflectionUtility.GetSignatureForArguments (arguments), problem);
+      return string.Format (
+          "Expected {0} when calling {1}({2}), but {3}",
+          expectedExceptionType,
+          method.Name,
+          ReflectionUtility.GetSignatureForArguments (arguments),
+          problem);
     }
 
     private object GetDefaultValue (Type t)

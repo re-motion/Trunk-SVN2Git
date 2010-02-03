@@ -70,11 +70,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
     }
 
-    public void ObjectGotID (DomainObject instance, ObjectID id)
-    {
-      // not handled by this listener
-    }
-
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Extensions.ObjectsLoaded (_clientTransaction, domainObjects);

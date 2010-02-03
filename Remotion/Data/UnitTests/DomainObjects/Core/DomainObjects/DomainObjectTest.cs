@@ -995,22 +995,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (ClientTransactionMock.IsEnlisted (orderItem));
       Assert.That (ClientTransactionMock.GetObject (DomainObjectIDs.OrderItem1, false), Is.SameAs (orderItem));
     }
-
-    [Test]
-    public void Initialize_WithEmptyHull_TriggersEvent ()
-    {
-      var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
-      var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
-
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock
-          .Expect (mock => mock.ObjectGotID (orderItem, DomainObjectIDs.OrderItem1))
-          .WhenCalled (invocation => Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1), "ID must have been set when event is raised"));
-      ClientTransactionMock.AddListener (listenerMock);
-
-      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
-
-      listenerMock.VerifyAllExpectations ();
-    }
   }
 }

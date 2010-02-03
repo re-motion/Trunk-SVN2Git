@@ -470,8 +470,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ArgumentNullException">The <paramref name="id"/> or <paramref name="clientTransaction"/> parameter is null.</exception>
     /// <exception cref="InvalidOperationException">This <see cref="DomainObject"/> has already been initialized.</exception>
     /// <remarks>This method is always called exactly once per <see cref="DomainObject"/> instance by the framework. It sets the object's 
-    /// <see cref="ID"/> and enlists it with the given <see cref="DomainObjects.ClientTransaction"/>. It also causes the 
-    /// <see cref="IClientTransactionListener.ObjectGotID"/> event to be .</remarks>
+    /// <see cref="ID"/> and enlists it with the given <see cref="DomainObjects.ClientTransaction"/>.</remarks>
     public void Initialize (ObjectID id, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("id", id);
@@ -484,7 +483,6 @@ namespace Remotion.Data.DomainObjects
       if (clientTransaction is BindingClientTransaction)
         _bindingTransaction = clientTransaction;
 
-      clientTransaction.TransactionEventSink.ObjectGotID (this, _id);
       clientTransaction.EnlistDomainObject (this);
     }
 

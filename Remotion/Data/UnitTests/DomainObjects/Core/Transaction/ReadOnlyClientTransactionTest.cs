@@ -424,7 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var endPoint = customer.Orders.AssociatedEndPoint;
 
       ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, UnloadService.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -436,7 +436,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
 
       ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadService.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.Order1, UnloadTransactionMode.ThisTransactionOnly);
     }
 
     [Test]
@@ -448,7 +448,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.ClassWithAllDataTypes1);
 
       ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1, UnloadService.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1, UnloadTransactionMode.ThisTransactionOnly);
     }
   }
 }

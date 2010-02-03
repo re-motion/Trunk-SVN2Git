@@ -1554,7 +1554,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadService.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadTransactionMode.ThisTransactionOnly);
 
       _mockRepository.VerifyAll ();
     }
@@ -1589,7 +1589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadService.TransactionMode.RecurseToRoot);
+      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadTransactionMode.RecurseToRoot);
 
       _mockRepository.VerifyAll ();
     }

@@ -63,12 +63,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("ObjectsUnloaded: {0}", GetDomainObjectsString (unloadedDomainObjects));
     }
 
-    public void ObjectGotID (DomainObject instance, ObjectID id)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("ObjectGotID: {0}", id);
-    }
-
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)

@@ -1479,7 +1479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (ClientTransactionMock, _order1.ID, UnloadService.TransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadData (ClientTransactionMock, _order1.ID, UnloadTransactionMode.ThisTransactionOnly);
 
       _mockRepository.VerifyAll ();
     }

@@ -73,11 +73,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public void ObjectGotID (DomainObject instance, ObjectID id)
-    {
-      EnsureWriteable ("ObjectGotID");
-    }
-
     public virtual void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);

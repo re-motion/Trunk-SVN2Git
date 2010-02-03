@@ -54,11 +54,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException ();
     }
 
-    public void ObjectGotID (DomainObject instance, ObjectID id)
-    {
-      throw CreateException();
-    }
-
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();

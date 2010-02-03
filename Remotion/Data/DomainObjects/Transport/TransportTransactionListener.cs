@@ -70,11 +70,6 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void ObjectGotID (DomainObject instance, ObjectID id)
-    {
-      
-    }
-
     public void ObjectDeleting (DomainObject domainObject)
     {
       

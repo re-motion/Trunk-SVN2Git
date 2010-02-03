@@ -46,8 +46,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
     void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
 
-    void ObjectGotID (DomainObject instance, ObjectID id);
-
     void ObjectDeleting (DomainObject domainObject);
     void ObjectDeleted (DomainObject domainObject);
 
