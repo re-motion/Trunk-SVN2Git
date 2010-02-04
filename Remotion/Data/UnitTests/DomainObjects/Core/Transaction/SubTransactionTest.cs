@@ -898,8 +898,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException),
-        ExpectedMessage = "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is already deleted.")]
     public void GetObjects_Deleted ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
