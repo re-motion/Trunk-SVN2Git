@@ -865,7 +865,6 @@ public abstract class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
-  /// <exception cref="ObjectDeletedException">One of the retrieved objects has already been deleted.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] GetObjects<T> (params ObjectID[] objectIDs) 
@@ -885,7 +884,6 @@ public abstract class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
-  /// <exception cref="ObjectDeletedException">One of the retrieved objects has already been deleted.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
@@ -907,7 +905,6 @@ public abstract class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="ArgumentTypeException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
-  /// <exception cref="ObjectDeletedException">One of the retrieved objects has already been deleted.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   protected internal virtual T[] GetObjects<T> (ObjectID[] objectIDs, bool throwOnNotFound) 
