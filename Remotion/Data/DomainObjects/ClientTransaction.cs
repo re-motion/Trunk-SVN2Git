@@ -809,6 +809,7 @@ public abstract class ClientTransaction
   /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
   /// <exception cref="DataManagement.ObjectDeletedException"><paramref name="includeDeleted"/> is false and the DomainObject with <paramref name="id"/> has been deleted.</exception>
+  /// <exception cref="ObjectNotFoundException">The object could not be found in the database (or it has been discarded in this transaction).</exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
@@ -817,7 +818,19 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject GetObject (ObjectID id, bool includeDeleted)
   {
     ArgumentUtility.CheckNotNull ("id", id);
-    return _dataManager.DataContainerMap.GetObjectWithoutLoading (id, includeDeleted) ?? LoadObject (id);
+
+    if (DataManager.IsDiscarded (id))
+      throw new ObjectNotFoundException (id);
+
+    var objectReference = GetObjectReference (id);
+    EnsureDataAvailable (id);
+
+    var state = objectReference.TransactionContext[this].State;
+    Assertion.IsFalse (state == StateType.NotLoadedYet);
+    if (state == StateType.Deleted && !includeDeleted)
+      throw new ObjectDeletedException (id);
+
+    return objectReference;
   }
   
   protected internal virtual DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)

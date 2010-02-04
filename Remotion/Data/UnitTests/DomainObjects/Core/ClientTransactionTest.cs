@@ -16,57 +16,126 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
-  public class ClientTransactionTest : ClientTransactionBaseTest
+  public class ClientTransactionTest : StandardMappingTest
   {
+    private ClientTransaction _transaction;
+    private DataManager _dataManager;
     private RelationEndPointID _orderItemsEndPointID;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
+      _transaction = ClientTransaction.CreateRootTransaction ();
+      _dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
       _orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+    }
+
+    [Test]
+    public void GetObject_UnknownObject_IsLoaded ()
+    {
+      var result = ClientTransactionTestHelper.CallGetObject (_transaction, DomainObjectIDs.Order1, false);
+
+      Assert.That (result, Is.InstanceOfType (typeof (Order)));
+      Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void GetObject_KnownObject_IsReturned ()
+    {
+      var order = _transaction.Execute (() => Order.NewObject ());
+
+      var result = ClientTransactionTestHelper.CallGetObject (_transaction, order.ID, false);
+
+      Assert.That (result, Is.SameAs (order));
     }
 
     [Test]
     public void GetObject_EnlistedButNotLoadedObject_LoadsObject ()
     {
-      var order1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      ClientTransactionMock.EnlistDomainObject (order1);
+      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      _transaction.EnlistDomainObject (order);
 
-      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (order.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
 
-      var order1Again = ClientTransactionMock.GetObject (order1.ID, false);
+      var result = ClientTransactionTestHelper.CallGetObject (_transaction, order.ID, false);
 
-      Assert.That (order1Again, Is.SameAs (order1));
-      Assert.That (order1Again.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (result, Is.SameAs (order));
+      Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void GetObject_DiscardedObject_ThrowsWithoutGoingToDatabase ()
+    {
+      var discardedObject = _transaction.Execute (() => Official.NewObject ());
+      LifetimeService.DeleteObject (_transaction, discardedObject);
+
+      Assert.That (discardedObject.TransactionContext[_transaction].IsDiscarded, Is.True);
+
+      var storageProviderMock = UnitTestStorageProviderStub.CreateStorageProviderMockForOfficial ();
+      try
+      {
+        UnitTestStorageProviderStub.ExecuteWithMock (storageProviderMock, () => 
+            ClientTransactionTestHelper.CallGetObject (_transaction, discardedObject.ID, false));
+        Assert.Fail ("Expected ObjectNotFoundException.");
+      }
+      catch (ObjectNotFoundException)
+      {
+        // ok
+      }
+
+      storageProviderMock.AssertWasNotCalled (mock => mock.LoadDataContainer (discardedObject.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void GetObject_DeletedObject_IncludeDeletedFalse_Throws ()
+    {
+      var deletedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      LifetimeService.DeleteObject (_transaction, deletedObject);
+
+      Assert.That (deletedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.Deleted));
+
+      ClientTransactionTestHelper.CallGetObject (_transaction, deletedObject.ID, false);
+    }
+
+    [Test]
+    public void GetObject_DeletedObject_IncludeDeletedTrue_Returns ()
+    {
+      var deletedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      LifetimeService.DeleteObject (_transaction, deletedObject);
+
+      Assert.That (deletedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.Deleted));
+
+      var result = ClientTransactionTestHelper.CallGetObject (_transaction, deletedObject.ID, true);
+
+      Assert.That (result, Is.SameAs (deletedObject));
     }
 
     [Test]
     public void EnsureDataAvailable_AlreadyLoaded ()
     {
-      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnsureDataAvailable (domainObject.ID);
+      _transaction.EnsureDataAvailable (domainObject.ID);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
@@ -76,28 +145,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var domainObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
-      ClientTransactionMock.EnlistDomainObject (domainObject);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Null);
+      _transaction.EnlistDomainObject (domainObject);
+      Assert.That (_dataManager.DataContainerMap[domainObject.ID], Is.Null);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnsureDataAvailable (domainObject.ID);
+      _transaction.EnsureDataAvailable (domainObject.ID);
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1 })));
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject })));
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID].DomainObject, Is.SameAs (domainObject));
+      Assert.That (_dataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
+      Assert.That (_dataManager.DataContainerMap[domainObject.ID].DomainObject, Is.SameAs (domainObject));
     }
 
     [Test]
     [ExpectedException (typeof (ObjectDiscardedException))]
     public void EnsureDataAvailable_Discarded ()
     {
-      Order domainObject = Order.NewObject ();
-      domainObject.Delete ();
+      Order domainObject = _transaction.Execute (() =>Order.NewObject ());
+      _transaction.Execute (domainObject.Delete);
 
-      ClientTransactionMock.EnsureDataAvailable (domainObject.ID);
+      _transaction.EnsureDataAvailable (domainObject.ID);
     }
 
     [Test]
@@ -106,30 +174,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
 
-      ClientTransactionMock.EnlistDomainObject (domainObject);
-      ClientTransactionMock.EnsureDataAvailable (domainObject.ID);
+      _transaction.EnlistDomainObject (domainObject);
+      _transaction.EnsureDataAvailable (domainObject.ID);
     }
 
     [Test]
     public void EnsureDataAvailable_NotEnlisted ()
     {
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
 
-      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+      _transaction.EnsureDataAvailable (DomainObjectIDs.Order1);
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
     }
 
     [Test]
     public void EnsureDataAvailable_Many_AlreadyLoaded ()
     {
-      var domainObject1 = Order.GetObject (DomainObjectIDs.Order1);
-      var domainObject2 = Order.GetObject (DomainObjectIDs.Order2);
+      var domainObject1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var domainObject2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
+      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
@@ -140,13 +207,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
 
-      ClientTransactionMock.EnlistDomainObject (domainObject1);
-      ClientTransactionMock.EnlistDomainObject (domainObject2);
+      _transaction.EnlistDomainObject (domainObject1);
+      _transaction.EnlistDomainObject (domainObject2);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
+      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
           Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })));
@@ -157,15 +223,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      var domainObject3 = Order.GetObject (DomainObjectIDs.Order3);
+      var domainObject3 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
 
-      ClientTransactionMock.EnlistDomainObject (domainObject1);
-      ClientTransactionMock.EnlistDomainObject (domainObject2);
+      _transaction.EnlistDomainObject (domainObject1);
+      _transaction.EnlistDomainObject (domainObject2);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
+      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
           Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })));
@@ -178,15 +243,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      var domainObject3 = Order.GetObject (DomainObjectIDs.Order3);
+      var domainObject3 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
 
-      ClientTransactionMock.EnlistDomainObject (domainObject1);
-      ClientTransactionMock.EnlistDomainObject (domainObject2);
+      _transaction.EnlistDomainObject (domainObject1);
+      _transaction.EnlistDomainObject (domainObject2);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
+      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
           Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject1, domainObject2 })));
@@ -196,10 +260,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (ObjectDiscardedException))]
     public void EnsureDataAvailable_Many_Discarded ()
     {
-      Order domainObject = Order.NewObject ();
-      domainObject.Delete ();
+      var domainObject = _transaction.Execute (() => Order.NewObject ());
+      _transaction.Execute (domainObject.Delete);
 
-      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject.ID });
+      _transaction.EnsureDataAvailable (new[] { domainObject.ID });
     }
 
     [Test]
@@ -208,121 +272,120 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
 
-      ClientTransactionMock.EnlistDomainObject (domainObject);
-      ClientTransactionMock.EnsureDataAvailable (new[] { domainObject.ID });
+      _transaction.EnlistDomainObject (domainObject);
+      _transaction.EnsureDataAvailable (new[] { domainObject.ID });
     }
 
     [Test]
     public void EnsureDataAvailable_Many_NotEnlisted ()
     {
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
 
-      ClientTransactionMock.EnsureDataAvailable (new[] { DomainObjectIDs.Order1 });
+      _transaction.EnsureDataAvailable (new[] { DomainObjectIDs.Order1 });
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (_dataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
     }
 
     [Test]
     public void EnsureDataAvailable_EndPoint_Virtual ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
 
-      ClientTransactionMock.EnsureDataAvailable (endPointID);
+      _transaction.EnsureDataAvailable (endPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
 
     [Test]
     public void EnsureDataAvailable_EndPoint_Real ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Null);
 
-      ClientTransactionMock.EnsureDataAvailable (endPointID);
+      _transaction.EnsureDataAvailable (endPointID);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
 
     [Test]
     public void EnsureDataAvailable_EndPoint_Loaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Dev.Null = Customer.GetObject (DomainObjectIDs.Customer1).Orders;
+      _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
 
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
 
-      ClientTransactionMock.EnsureDataAvailable (endPointID);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      _transaction.EnsureDataAvailable (endPointID);
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
 
     [Test]
     public void EnsureDataAvailable_EndPoint_Unloaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
-      Dev.Null = Customer.GetObject (DomainObjectIDs.Customer1).Orders;
+      _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1).Orders);
       
-      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID];
+      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap[endPointID];
       Assert.That (endPoint, Is.Not.Null);
       endPoint.Unload ();
       Assert.That (endPoint.IsDataAvailable, Is.False);
 
-      ClientTransactionMock.EnsureDataAvailable (endPointID);
+      _transaction.EnsureDataAvailable (endPointID);
       Assert.That (endPoint.IsDataAvailable, Is.True);
     }
 
     [Test]
     public void GetEnlistedDomainObjects ()
     {
-      var order1 = Order.NewObject ();
-      var order2 = Order.NewObject ();
-      Assert.That (ClientTransactionMock.GetEnlistedDomainObjects ().ToArray (), Is.EquivalentTo (new[] { order1, order2 }));
+      var order1 = _transaction.Execute(() => Order.NewObject ());
+      var order2 = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (_transaction.GetEnlistedDomainObjects ().ToArray (), Is.EquivalentTo (new[] { order1, order2 }));
     }
 
     [Test]
     public void EnlistedDomainObjectCount ()
     {
-      Order.NewObject ();
-      Order.NewObject ();
-      Assert.That (ClientTransactionMock.EnlistedDomainObjectCount, Is.EqualTo (2));
+      _transaction.Execute (() => Order.NewObject ());
+      _transaction.Execute (() => Order.NewObject ());
+      Assert.That (_transaction.EnlistedDomainObjectCount, Is.EqualTo (2));
     }
 
     [Test]
     public void IsEnlisted ()
     {
-      var order = Order.NewObject ();
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
-      Assert.That (ClientTransaction.CreateRootTransaction ().IsEnlisted (order), Is.False);
+      var order = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (_transaction.IsEnlisted (order), Is.True);
+      Assert.That (ClientTransaction.CreateRootTransaction().IsEnlisted (order), Is.False);
     }
 
     [Test]
     public void GetEnlistedDomainObject ()
     {
-      var order = Order.NewObject ();
-      Assert.That (ClientTransactionMock.GetEnlistedDomainObject (order.ID), Is.SameAs (order));
+      var order = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (_transaction.GetEnlistedDomainObject (order.ID), Is.SameAs (order));
     }
 
     [Test]
     public void EnlistDomainObject ()
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
+      Assert.That (_transaction.IsEnlisted (order), Is.False);
 
-      ClientTransactionMock.EnlistDomainObject (order);
+      _transaction.EnlistDomainObject (order);
 
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (_transaction.IsEnlisted (order), Is.True);
     }
 
     [Test]
     public void EnlistDomainObject_DoesntLoad ()
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
+      Assert.That (_transaction.IsEnlisted (order), Is.False);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      ClientTransactionMock.EnlistDomainObject (order);
+      _transaction.EnlistDomainObject (order);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
@@ -330,12 +393,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnlistDomainObject_DiscardedObjects ()
     {
-      Order discardedObject = Order.NewObject ();
-      discardedObject.Delete ();
-      Assert.That (discardedObject.IsDiscarded, Is.True);
+      var discardedObject = _transaction.Execute (() => Order.NewObject ());
+      _transaction.Execute (discardedObject.Delete);
+      Assert.That (discardedObject.TransactionContext[_transaction].IsDiscarded, Is.True);
 
-      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-
+      var newTransaction = ClientTransaction.CreateRootTransaction();
       newTransaction.EnlistDomainObject (discardedObject);
 
       Assert.That (newTransaction.IsEnlisted (discardedObject), Is.True);
@@ -344,21 +406,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void CopyCollectionEventHandlers ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       
       bool orderItemAdded = false;
-      order.OrderItems.Added += delegate { orderItemAdded = true; };
-      
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        Assert.That (orderItemAdded, Is.False);
+      _transaction.Execute (() => order.OrderItems.Added += delegate { orderItemAdded = true; });
 
-        ClientTransaction.Current.EnlistDomainObject (order);
-        ClientTransaction.Current.CopyCollectionEventHandlers (order, ClientTransactionMock);
+      var otherTransaction = ClientTransaction.CreateRootTransaction ();
+      Assert.That (orderItemAdded, Is.False);
 
-        order.OrderItems.Add (OrderItem.NewObject ());
-        Assert.That (orderItemAdded, Is.True);
-      }
+      otherTransaction.EnlistDomainObject (order);
+      otherTransaction.CopyCollectionEventHandlers (order, _transaction);
+
+      otherTransaction.Execute (() => order.OrderItems.Add (OrderItem.NewObject ()));
+      Assert.That (orderItemAdded, Is.True);
     }
 
     [Test]
@@ -562,9 +622,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
     {
-      dataContainer.SetDomainObject (OrderItem.GetObject (dataContainer.ID));
+      var objectReference = DomainObjectMother.GetObjectReference<OrderItem> (clientTransaction, dataContainer.ID);
+      dataContainer.SetDomainObject (objectReference);
       dataContainer.RegisterWithTransaction (clientTransaction);
-      clientTransaction.EnlistDomainObject (dataContainer.DomainObject);
     }
 
     private ClientTransaction CreateStubForLoadRelatedObjects (RelationEndPointID endPointID, params DataContainer[] dataContainers)

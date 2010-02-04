@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Reflection;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -48,6 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var objectID = new ObjectID (typeof (T), Guid.NewGuid());
       return (T) objectID.ClassDefinition.GetDomainObjectCreator ().CreateObjectReference (objectID, null);
+    }
+
+    public static T GetObjectReference<T> (ClientTransaction clientTransaction, ObjectID objectID) where T : DomainObject
+    {
+      return (T) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, typeof (ClientTransaction), "GetObjectReference", objectID);
     }
   }
 }

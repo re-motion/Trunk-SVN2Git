@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DataContainerCollection) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedDataContainers", endPointID);
     }
 
-    public static DomainObject CallGetObjectForDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
+    public static DomainObject CallGetObject (ClientTransaction clientTransaction, ObjectID objectID, bool includeDeleted)
     {
-      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObjectForDataContainer", dataContainer);
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObject", objectID, includeDeleted);
     }
 
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)
