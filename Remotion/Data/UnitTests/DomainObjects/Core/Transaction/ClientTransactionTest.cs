@@ -461,12 +461,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException),
-        ExpectedMessage = "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is already deleted.")]
     public void GetObjects_Deleted ()
     {
-      Order.GetObject (DomainObjectIDs.Order1).Delete ();
-      ClientTransactionMock.GetObjects<OrderItem> (DomainObjectIDs.Order1);
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      order.Delete ();
+
+      var result = ClientTransactionMock.GetObjects<Order> (DomainObjectIDs.Order1);
+
+      Assert.That (result[0], Is.SameAs (order));
     }
 
     [Test]

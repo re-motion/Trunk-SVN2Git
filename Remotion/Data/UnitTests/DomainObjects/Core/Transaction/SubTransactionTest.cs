@@ -905,8 +905,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
       {
-        Order.GetObject (DomainObjectIDs.Order1).Delete();
-        subTransaction.GetObjects<OrderItem> (DomainObjectIDs.Order1);
+        var order = Order.GetObject (DomainObjectIDs.Order1);
+        order.Delete ();
+
+        var result = subTransaction.GetObjects<Order> (DomainObjectIDs.Order1);
+
+        Assert.That (result[0], Is.SameAs (order));
       }
     }
 

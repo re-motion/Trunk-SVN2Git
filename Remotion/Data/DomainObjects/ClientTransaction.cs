@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -639,11 +640,16 @@ public abstract class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
+    EnsureDataAvailable (objectIDs, true);
+  }
+
+  private void EnsureDataAvailable (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
+  {
     var idsToBeLoaded = from objectID in objectIDs
                         where GetDataContainerWithoutLoading (objectID) == null
                         select objectID;
 
-    LoadObjects (idsToBeLoaded.ToList (), true);
+    LoadObjects (idsToBeLoaded.ToList (), throwOnNotFound);
   }
 
   /// <summary>
@@ -909,36 +915,13 @@ public abstract class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-    using (EnterNonDiscardingScope ())
-    {
-      var loadedObjects = new T[objectIDs.Length];
-      var idsToBeLoaded = new List<ObjectID> ();
+    EnsureDataAvailable (objectIDs, throwOnNotFound); // this performs a bulk load operation
 
-      for (int i = 0; i < objectIDs.Length; i++)
-      {
-        var alreadyLoadedObject = (T) DataManager.DataContainerMap.GetObjectWithoutLoading (objectIDs[i], false);
-        if (alreadyLoadedObject != null)
-          loadedObjects[i] = alreadyLoadedObject;
-        else
-          idsToBeLoaded.Add (objectIDs[i]);
-      }
-
-      if (idsToBeLoaded.Count > 0)
-      {
-        var additionalObjects = LoadObjects (idsToBeLoaded, throwOnNotFound);
-
-        var additionalObjectIndex = 0;
-        for (int i = 0; i < objectIDs.Length; i++)
-        {
-          if (loadedObjects[i] == null)
-          {
-            loadedObjects[i] = (T) additionalObjects[additionalObjectIndex];
-            ++additionalObjectIndex;
-          }
-        }
-      }
-      return loadedObjects;
-    }
+    var result = from id in objectIDs
+                 let maybeDataContainer = Maybe.ForValue (DataManager.DataContainerMap[id])
+                 let maybeDomainObject = maybeDataContainer.Select (dc => (T) dc.DomainObject)
+                 select maybeDomainObject.ValueOrDefault ();
+    return result.ToArray ();
   }
 
   internal DataContainer CreateNewDataContainer (Type type)
