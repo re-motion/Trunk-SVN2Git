@@ -22,12 +22,10 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -37,94 +35,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class InterceptedDomainObjectCreatorTest : ClientTransactionBaseTest
   {
     [Test]
-    public void CreateWithDataContainer_UsesFactoryGeneratedType ()
+    public void CreateObjectReference ()
     {
-      var dataContainer = CreateDataContainer (typeof (Order), ClientTransactionMock);
-      var order = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, null);
+
       Assert.That (order, Is.InstanceOfType (typeof (Order)));
-      var factory = InterceptedDomainObjectCreator.Instance.Factory;
-      Assert.That (factory.WasCreatedByFactory ((((object) order).GetType ())), Is.True);
-    }
-
-    [Test]
-    public void CreateWithDataContainer_CallsNoCtor ()
-    {
-      var dataContainer = CreateDataContainer (typeof (Order), ClientTransactionMock);
-      var order = (Order) InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (order.CtorCalled, Is.False);
-    }
-
-    [Test]
-    public void CreateWithDataContainer_PreparesMixins ()
-    {
-      var dataContainer = CreateDataContainer (typeof (TargetClassForPersistentMixin), ClientTransactionMock);
-      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (Mixin.Get <MixinAddingPersistentProperties>(instance), Is.Not.Null);
-    }
-
-    [Test]
-    public void CreateWithDataContainer_SetsDataContainerDomainObject ()
-    {
-      var dataContainer = CreateDataContainer (typeof (Order), ClientTransactionMock);
-      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
-    }
-
-    [Test]
-    public void CreateWithDataContainer_InitializesDomainObject ()
-    {
-      var dataContainer = CreateDataContainer (typeof (Order), ClientTransactionMock);
-      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (instance.ID, Is.EqualTo(dataContainer.ID));
-    }
-
-    [Test]
-    public void CreateWithDataContainer_EnlistsDomainObject ()
-    {
-      var dataContainer = CreateDataContainer (typeof (Order), ClientTransactionMock);
-      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (dataContainer.ClientTransaction.IsEnlisted (instance), Is.True);
-    }
-
-    [Test]
-    public void CreateWithDataContainer_BindsDomainObjectToBindingClientTransaction ()
-    {
-      var transaction = ClientTransaction.CreateBindingTransaction ();
-      var dataContainer = CreateDataContainer (typeof (Order), transaction);
-
-      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (dataContainer.ClientTransaction.IsEnlisted (instance), Is.True);
-      Assert.That (instance.HasBindingTransaction, Is.True);
-      Assert.That (instance.GetBindingTransaction(), Is.SameAs (transaction));
-    }
-
-    [Test]
-    public void CreateWithDataContainer_DoesntBindDomainObjectToOtherTransaction ()
-    {
-      var transaction = ClientTransaction.CreateRootTransaction ();
-      var dataContainer = CreateDataContainer (typeof (Order), transaction);
-
-      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      Assert.That (dataContainer.ClientTransaction.IsEnlisted (instance), Is.True);
-      Assert.That (instance.HasBindingTransaction, Is.False);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "mixin", MatchType = MessageMatch.Contains)]
-    public void CreateWithDataContainer_ValidatesMixinConfiguration ()
-    {
-      var dataContainer = CreateDataContainer (typeof (TargetClassForPersistentMixin), ClientTransactionMock);
-      using (MixinConfiguration.BuildNew ().EnterScope ())
-      {
-        InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
-      }
+      Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
     public void CreateObjectReference_UsesFactoryGeneratedType ()
     {
       var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, null);
-      Assert.That (order, Is.InstanceOfType (typeof (Order)));
+
       var factory = InterceptedDomainObjectCreator.Instance.Factory;
       Assert.That (factory.WasCreatedByFactory ((((object) order).GetType ())), Is.True);
     }
@@ -210,11 +133,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo(typeof (TargetClassForPersistentMixin));
       }
-    }
-
-    private DataContainer CreateDataContainer (Type type, ClientTransaction clientTransaction)
-    {
-      return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "CreateNewDataContainer", type);
     }
   }
 }

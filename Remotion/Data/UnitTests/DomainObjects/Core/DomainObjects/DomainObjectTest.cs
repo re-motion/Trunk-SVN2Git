@@ -855,23 +855,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainer.RegisterWithTransaction (ClientTransactionMock);
-
-      var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, null);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
     }
 
     [Test]
     public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-
-      dataContainer.RegisterWithTransaction (ClientTransactionMock);
-
-      var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, null);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
+
       PrivateInvoke.InvokeNonPublicMethod (order, typeof (DomainObject), "OnLoaded");
+      
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
@@ -888,11 +885,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-
-      dataContainer.RegisterWithTransaction (ClientTransactionMock);
-
-      var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, null);
+      
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
       var deserializedOrder = Serializer.SerializeAndDeserialize (order);
@@ -912,11 +907,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.ClassWithAllDataTypes1);
-
-      dataContainer.RegisterWithTransaction (ClientTransactionMock);
-
-      var classWithAllDataTypes = (ClassWithAllDataTypes) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, null);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
 
