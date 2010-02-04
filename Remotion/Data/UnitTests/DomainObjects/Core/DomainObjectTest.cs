@@ -19,14 +19,69 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
   public class DomainObjectTest : ClientTransactionBaseTest
   {
+    [Test]
+    public void Ctor_RaisesNewObjectCreating ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      var instance = Order.NewObject ();
+
+      listenerMock.AssertWasCalled (mock => mock.NewObjectCreating (typeof (Order), instance));
+    }
+
+    [Test]
+    public void Ctor_CreatesObjectID ()
+    {
+      var instance = Order.NewObject ();
+
+      Assert.That (instance.ID, Is.Not.Null);
+      Assert.That (instance.ID.ClassDefinition, Is.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
+    }
+
+    [Test]
+    public void Ctor_Binding ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var boundInstance = bindingTransaction.Execute (() => Order.NewObject ());
+
+      Assert.That (boundInstance.HasBindingTransaction, Is.True);
+      Assert.That (boundInstance.GetBindingTransaction(), Is.SameAs (bindingTransaction));
+
+      var nonBindingTransaction = ClientTransaction.CreateRootTransaction ();
+      var nonBoundInstance = nonBindingTransaction.Execute (() => Order.NewObject ());
+
+      Assert.That (nonBoundInstance.HasBindingTransaction, Is.False);
+    }
+
+    [Test]
+    public void Ctor_CreatesAndRegistersDataContainer ()
+    {
+      var instance = Order.NewObject ();
+
+      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[instance.ID];
+      Assert.That (dataContainer, Is.Not.Null);
+      Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void Ctor_EnlistsObjectInTransaction ()
+    {
+      var instance = Order.NewObject ();
+
+      Assert.That (ClientTransactionMock.IsEnlisted (instance), Is.True);
+    }
+
     [Test]
     public void HasBindingTransaction_BoundObject ()
     {

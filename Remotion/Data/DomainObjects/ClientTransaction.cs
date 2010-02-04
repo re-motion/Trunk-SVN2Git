@@ -924,26 +924,6 @@ public abstract class ClientTransaction
     return result.ToArray ();
   }
 
-  internal DataContainer CreateNewDataContainer (Type type)
-  {
-    ArgumentUtility.CheckNotNull ("type", type);
-    ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (type);
-
-    ObjectID newObjectID = CreateNewObjectID (classDefinition);
-    return CreateNewDataContainer (newObjectID);
-  }
-
-  internal DataContainer CreateNewDataContainer (ObjectID id)
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-    using (EnterNonDiscardingScope ())
-    {
-      DataContainer newDataContainer = DataContainer.CreateNew (id);
-      newDataContainer.RegisterWithTransaction (this);
-      return newDataContainer;
-    }
-  }
-
   /// <summary>
   /// Evaluates if any relations of the given <see cref="DomainObject"/> have changed since instantiation, loading, commit or rollback.
   /// </summary>

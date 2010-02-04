@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -241,14 +242,19 @@ namespace Remotion.Data.DomainObjects
       PerformConstructorCheck ();
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
-      Type publicDomainObjectType = GetPublicDomainObjectType ();
+      var publicDomainObjectType = GetPublicDomainObjectType ();
 
-      ClientTransactionScope.CurrentTransaction.TransactionEventSink.NewObjectCreating (publicDomainObjectType, this);
-      DataContainer firstDataContainer = ClientTransactionScope.CurrentTransaction.CreateNewDataContainer (publicDomainObjectType);
-      firstDataContainer.SetDomainObject (this);
+      var clientTransaction = ClientTransaction.Current;
+      clientTransaction.TransactionEventSink.NewObjectCreating (publicDomainObjectType, this);
 
-      var clientTransaction = firstDataContainer.ClientTransaction;
-      Initialize (firstDataContainer.ID, clientTransaction as BindingClientTransaction);
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (publicDomainObjectType);
+      var objectID = clientTransaction.CreateNewObjectID (classDefinition);
+
+      Initialize (objectID, clientTransaction as BindingClientTransaction);
+
+      var newDataContainer = DataContainer.CreateNew (objectID);
+      newDataContainer.SetDomainObject (this);
+      newDataContainer.RegisterWithTransaction (clientTransaction);
       clientTransaction.EnlistDomainObject (this);
 
       _needsLoadModeDataContainerOnly = true;
