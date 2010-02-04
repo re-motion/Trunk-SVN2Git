@@ -78,10 +78,20 @@ namespace Remotion.Data.DomainObjects.Cloning
     public virtual T CreateCloneHull<T> (T source)
         where T : DomainObject
     {
-      Type classType = source.ID.ClassDefinition.ClassType;
-      // Use NewObjectFromDataContainer in order to avoid calling a ctor
-      DataContainer cloneDataContainer = CloneTransaction.CreateNewDataContainer (classType);
-      return (T) CloneTransaction.GetObjectForDataContainer (cloneDataContainer);
+      var classType = source.ID.ClassDefinition.ClassType;
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classType);
+
+      var cloneObjectID = CloneTransaction.CreateNewObjectID (classDefinition);
+
+      var creator = classDefinition.GetDomainObjectCreator ();
+      var instance = creator.CreateObjectReference (cloneObjectID, CloneTransaction as BindingClientTransaction);
+
+      var cloneDataContainer = DataContainer.CreateNew (cloneObjectID);
+      cloneDataContainer.RegisterWithTransaction (CloneTransaction);
+      cloneDataContainer.SetDomainObject (instance);
+
+      CloneTransaction.EnlistDomainObject (instance);
+      return (T) instance;
     }
 
     /// <summary>

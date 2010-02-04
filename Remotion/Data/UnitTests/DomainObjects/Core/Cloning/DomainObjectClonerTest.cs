@@ -88,15 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     }
 
     [Test]
-    public void CreateCloneHull_CreatesNewObjectInCorrectTransaction ()
-    {
-      ClientTransaction cloneTransaction = ClientTransaction.CreateBindingTransaction ();
-      _cloner.CloneTransaction = cloneTransaction;
-      DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
-      Assert.That (clone.GetBindingTransaction(), Is.SameAs (cloneTransaction));
-    }
-
-    [Test]
     public void CreateCloneHull_CreatesObjectOfSameType ()
     {
       var clone = _cloner.CreateCloneHull<DomainObject> (_classWithAllDataTypes);
@@ -104,19 +95,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     }
 
     [Test]
-    public void CreateCloneHull_CallsNoCtor ()
+    public void CreateCloneHull_CallsNoCtor_UsesFactory ()
     {
       Order clone = _cloner.CreateCloneHull (_order1);
       Assert.That (clone.CtorCalled, Is.False);
+      Assert.That (InterceptedDomainObjectCreator.Instance.Factory.WasCreatedByFactory (((object) clone).GetType()));
     }
 
     [Test]
     public void CreateCloneHull_RegistersDataContainer ()
     {
-      ClassWithAllDataTypes clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
-      Assert.That (clone.InternalDataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      _cloner.CloneTransaction = transaction;
+      var clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
+      Assert.That (clone.GetInternalDataContainerForTransaction (transaction).ClientTransaction, Is.SameAs (transaction));
     }
 
+    [Test]
+    public void CreateCloneHull_SetsDomainObjectOfDataContainer ()
+    {
+      ClassWithAllDataTypes clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
+      Assert.That (clone.InternalDataContainer.DomainObject, Is.SameAs (clone));
+    }
+
+    [Test]
+    public void CreateCloneHull_BindsObjectToBindingClientTransaction ()
+    {
+      var cloneTransaction = ClientTransaction.CreateBindingTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
+      Assert.That (clone.HasBindingTransaction, Is.True);
+      Assert.That (clone.GetBindingTransaction (), Is.SameAs (cloneTransaction));
+    }
+
+    [Test]
+    public void CreateCloneHull_DoesntBindObjectToOtherClientTransaction ()
+    {
+      var cloneTransaction = ClientTransaction.CreateRootTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
+      Assert.That (clone.HasBindingTransaction, Is.False);
+    }
+
+    [Test]
+    public void CreateCloneHull_EnlistsObjectInCorrectTransaction ()
+    {
+      var cloneTransaction = ClientTransaction.CreateRootTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
+      Assert.That (cloneTransaction.IsEnlisted (clone), Is.True);
+    }
+    
     [Test]
     public void CreateCloneHull_TouchesNoProperties ()
     {
@@ -338,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     {
       strategyMock.HandleReference (new PropertyAccessor(), new PropertyAccessor(), null);
       LastCall.Constraints (
-          Mocks_Is.Equal (original.Properties[original.GetPublicDomainObjectType (), propertyName]),
+          Mocks_Is.Equal (original.Properties[original.GetPublicDomainObjectType (), propertyName, sourceTransaction]),
           Mocks_Is.Equal (clone.Properties[clone.GetPublicDomainObjectType (), propertyName, cloneTransaction]),
           Mocks_Is.Anything ());
     }
