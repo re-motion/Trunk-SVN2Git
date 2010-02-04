@@ -42,6 +42,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Creates an empty <see cref="DataContainer"/> for a new <see cref="Remotion.Data.DomainObjects.DomainObject"/>. The <see cref="DataContainer"/>
     /// contains a new <see cref="PropertyValue"/> object for every <see cref="PropertyDefinition"/> in the respective <see cref="ClassDefinition"/>.
+    /// The <see cref="DataContainer"/> has be be <see cref="RegisterWithTransaction">registered</see> with a <see cref="ClientTransaction"/> and 
+    /// its <see cref="DomainObject"/> must <see cref="SetDomainObject">be set</see> before it can be used.
     /// </summary>
     /// <remarks>
     /// The new <see cref="DataContainer"/> has a <see cref="State"/> of <see cref="StateType.New"/>. All <see cref="PropertyValue"/>s for the class specified by <see cref="ObjectID.ClassID"/> are created.
@@ -61,6 +63,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Creates an empty <see cref="DataContainer"/> for an existing <see cref="Remotion.Data.DomainObjects.DomainObject"/>. The <see cref="DataContainer"/>
     /// contain all <see cref="PropertyValue"/> objects, just as if it had been created with <see cref="CreateNew"/>, but the values for persistent 
     /// properties are set as returned by a lookup method.
+    /// The <see cref="DataContainer"/> has be be <see cref="RegisterWithTransaction">registered</see> with a <see cref="ClientTransaction"/> and 
+    /// its <see cref="DomainObject"/> must <see cref="SetDomainObject">be set</see> before it can be used.
     /// </summary>
     /// <remarks>
     /// The new <see cref="DataContainer"/> has a <see cref="State"/> of <see cref="StateType.Unchanged"/>. All <see cref="PropertyValue"/>s for the class specified by <see cref="ObjectID.ClassID"/> are created.

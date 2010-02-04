@@ -795,7 +795,7 @@ public abstract class ClientTransaction
     if (!dataContainer.IsRegistered)
       throw new InvalidOperationException("The data container must be registered with the ClientTransaction before an object is retrieved for it.");
     
-    var enlistedObject = _enlistedObjectManager.GetEnlistedDomainObject (dataContainer.ID);
+    var enlistedObject = GetEnlistedDomainObject (dataContainer.ID);
     if (enlistedObject != null)
     {
       return enlistedObject;

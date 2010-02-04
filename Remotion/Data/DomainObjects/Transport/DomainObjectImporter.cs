@@ -51,31 +51,31 @@ namespace Remotion.Data.DomainObjects.Transport
 
     public TransportedDomainObjects GetImportedObjects ()
     {
-      ClientTransaction targetTransaction = ClientTransaction.CreateBindingTransaction ();
-      List<Tuple<TransportItem, DataContainer>> dataContainerMapping = GetTargetDataContainersForSourceObjects (targetTransaction);
+      var bindingTargetTransaction = ClientTransaction.CreateBindingTransaction ();
+      var dataContainerMapping = GetTargetDataContainersForSourceObjects (bindingTargetTransaction);
 
       // grab enlisted objects _before_ properties are synchronized, as synchronizing might load some additional objects
-      var transportedObjects = new List<DomainObject> (targetTransaction.GetEnlistedDomainObjects());
+      var transportedObjects = new List<DomainObject> (bindingTargetTransaction.GetEnlistedDomainObjects());
       SynchronizeData (dataContainerMapping);
 
-      return new TransportedDomainObjects (targetTransaction, transportedObjects);
+      return new TransportedDomainObjects (bindingTargetTransaction, transportedObjects);
     }
 
-    private List<Tuple<TransportItem, DataContainer>> GetTargetDataContainersForSourceObjects (ClientTransaction targetTransaction)
+    private List<Tuple<TransportItem, DataContainer>> GetTargetDataContainersForSourceObjects (ClientTransaction bindingTargetTransaction)
     {
       var result = new List<Tuple<TransportItem, DataContainer>> ();
       if (_transportItems.Length > 0)
       {
-        using (targetTransaction.EnterNonDiscardingScope())
+        using (bindingTargetTransaction.EnterNonDiscardingScope())
         {
           var transportedObjectIDs = GetIDs (_transportItems);
 
-          var existingObjects = targetTransaction.TryGetObjects<DomainObject> (transportedObjectIDs);
+          var existingObjects = bindingTargetTransaction.TryGetObjects<DomainObject> (transportedObjectIDs);
           var existingObjectDictionary = existingObjects.Where (obj => obj != null).ToDictionary (obj => obj.ID);
 
           foreach (TransportItem transportItem in _transportItems)
           {
-            DataContainer targetDataContainer = GetTargetDataContainer (transportItem, existingObjectDictionary, targetTransaction);
+            DataContainer targetDataContainer = GetTargetDataContainer (transportItem, existingObjectDictionary, bindingTargetTransaction);
             result.Add (Tuple.NewTuple (transportItem, targetDataContainer));
           }
         }
@@ -83,20 +83,26 @@ namespace Remotion.Data.DomainObjects.Transport
       return result;
     }
 
-    private DataContainer GetTargetDataContainer (TransportItem transportItem, Dictionary<ObjectID, DomainObject> existingObjects, ClientTransaction targetTransaction)
+    private DataContainer GetTargetDataContainer (TransportItem transportItem, Dictionary<ObjectID, DomainObject> existingObjects, ClientTransaction bindingTargetTransaction)
     {
       DomainObject existingObject;
       if (existingObjects.TryGetValue (transportItem.ID, out existingObject))
       {
-        return targetTransaction.GetDataContainer (existingObject);
+        return bindingTargetTransaction.GetDataContainer (existingObject);
       }
       else
       {
-        DataContainer targetDataContainer = targetTransaction.CreateNewDataContainer (transportItem.ID);
-        var domainObject = targetTransaction.GetObjectForDataContainer (targetDataContainer);
-        targetDataContainer.SetDomainObject (domainObject);
-        targetTransaction.EnlistDomainObject (domainObject);
-        return targetDataContainer;
+        var id = transportItem.ID;
+
+        var creator = id.ClassDefinition.GetDomainObjectCreator ();
+        var instance = creator.CreateObjectReference (id, bindingTargetTransaction);
+
+        var newDataContainer = DataContainer.CreateNew (id);
+        newDataContainer.RegisterWithTransaction (bindingTargetTransaction);
+        newDataContainer.SetDomainObject (instance);
+
+        bindingTargetTransaction.EnlistDomainObject (instance);
+        return newDataContainer;
       }
     }
 
