@@ -132,10 +132,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2, domainObject2 });
 
       Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.True);
-      Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject1.ID, false), Is.Not.Null);
+      Assert.That (secondClientTransaction.DataManager.DataContainerMap[domainObject1.ID], Is.Not.Null);
 
       Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.True);
-      Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject2.ID, false), Is.Not.Null);
+      Assert.That (secondClientTransaction.DataManager.DataContainerMap[domainObject2.ID], Is.Not.Null);
     }
 
     [Test]

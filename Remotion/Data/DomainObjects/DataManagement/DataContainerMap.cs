@@ -76,22 +76,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
       dataContainer.RollbackState();
   }
 
-  public DomainObject GetObjectWithoutLoading (ObjectID id, bool includeDeleted)
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-    if (_dataContainers.Contains (id))
-    {
-      DataContainer dataContainer = this[id];
-
-      if (!includeDeleted && dataContainer.State == StateType.Deleted)
-        throw new ObjectDeletedException (id);
-
-      return dataContainer.DomainObject;
-    }
-    else
-      return null;
-  }
-
   public void Register (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
@@ -112,21 +96,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
 
     _transactionEventSink.DataContainerMapUnregistering (dataContainer);
     _dataContainers.Remove (dataContainer);
-  }
-
-  private void CheckClientTransactionForDeletion (DataContainer dataContainer)
-  {
-    if (dataContainer.ClientTransaction != _clientTransaction)
-    {
-      throw CreateClientTransactionsDifferException (
-          "Cannot remove DataContainer '{0}' from DataContainerMap, because it belongs to a different ClientTransaction.",
-          dataContainer.ID);
-    }
-  }
-
-  private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
-  {
-    return new ClientTransactionsDifferException (string.Format (message, args));
   }
 
   #region IEnumerable Members

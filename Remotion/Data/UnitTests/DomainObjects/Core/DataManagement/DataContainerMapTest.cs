@@ -78,37 +78,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetObjectWithoutLoading_LoadedObject ()
-    {
-      ClassWithAllDataTypes loadedOrder = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap.GetObjectWithoutLoading (DomainObjectIDs.ClassWithAllDataTypes1, false), Is.SameAs (
-                  loadedOrder));
-    }
-
-    [Test]
-    public void GetObjectWithoutLoading_NonLoadedObject ()
-    {
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap.GetObjectWithoutLoading (DomainObjectIDs.ClassWithAllDataTypes1, false), Is.Null);
-    }
-
-    [Test]
-    public void GetObjectWithoutLoading_IncludeDeletedTrue ()
-    {
-      Order deletedOrder = Order.GetObject (DomainObjectIDs.Order1);
-      deletedOrder.Delete();
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap.GetObjectWithoutLoading (DomainObjectIDs.Order1, true), Is.SameAs (deletedOrder));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void GetObjectWithoutLoading_IncludeDeletedFalse ()
-    {
-      Order deletedOrder = Order.GetObject (DomainObjectIDs.Order1);
-      deletedOrder.Delete();
-      ClientTransactionMock.DataManager.DataContainerMap.GetObjectWithoutLoading (DomainObjectIDs.Order1, false);
-    }
-
-    [Test]
     public void CommitAllDataContainers_CommitsDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
