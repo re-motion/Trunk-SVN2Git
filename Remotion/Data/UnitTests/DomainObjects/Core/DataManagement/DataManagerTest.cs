@@ -587,49 +587,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DataContainer CreateOrder1DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
-
+      RegisterContainerAndSetDomainObject (dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateOrderTicket1DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      RegisterContainerAndSetDomainObject (dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateOrderTicket2DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderTicket2DataContainer ();
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      RegisterContainerAndSetDomainObject(dataContainer);
       return dataContainer;
     }
 
     private DataContainer CreateOrder2DataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrder2DataContainer ();
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      RegisterContainerAndSetDomainObject (dataContainer);
       return dataContainer;
     }
 
     private void CreateOrderWithoutOrderItemDataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      RegisterContainerAndSetDomainObject (dataContainer);
     }
 
     private DataContainer CreateClassWithAllDataTypesDataContainer ()
     {
       var dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      RegisterContainerAndSetDomainObject (dataContainer);
       return dataContainer;
+    }
+
+    private void RegisterContainerAndSetDomainObject (DataContainer dataContainer)
+    {
+      var creator = dataContainer.ClassDefinition.GetDomainObjectCreator ();
+      var instance = creator.CreateObjectReference (dataContainer.ID, null);
+
+      dataContainer.SetDomainObject (instance);
+      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
+      ClientTransactionMock.EnlistDomainObject (instance);
     }
   }
 }

@@ -26,13 +26,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public interface IDomainObjectCreator
   {
     /// <summary>
-    /// Creates a <see cref="DomainObject"/> instance and initializes is from the given existing data container.
-    /// </summary>
-    /// <param name="dataContainer">The data container to initialize the <see cref="DomainObject"/> with.</param>
-    /// <returns>A new <see cref="DomainObject"/> initialized with the given <see cref="DataContainer"/>.</returns>
-    DomainObject CreateWithDataContainer (DataContainer dataContainer);
-
-    /// <summary>
     /// Creates a new <see cref="DomainObject"/> instance and initializes it with the given <paramref name="objectID"/> and 
     /// <paramref name="bindingTransaction"/>. The object is not enlisted with a transaction and no <see cref="DataContainer"/> is created for it.
     /// The instance is created without a constructor being called.

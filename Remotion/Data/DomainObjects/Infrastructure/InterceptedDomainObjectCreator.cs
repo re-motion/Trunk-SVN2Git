@@ -39,19 +39,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public InterceptedDomainObjectTypeFactory Factory { get; set; }
 
-    public DomainObject CreateWithDataContainer (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      var clientTransaction = dataContainer.ClientTransaction;
-
-      var instance = CreateObjectReference (dataContainer.ID, clientTransaction as BindingClientTransaction);
-      dataContainer.SetDomainObject (instance);
-      clientTransaction.EnlistDomainObject (instance);
-
-      return instance;
-    }
-
     public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction bindingTransaction)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

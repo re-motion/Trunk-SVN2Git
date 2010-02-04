@@ -782,32 +782,21 @@ public abstract class ClientTransaction
     }
   }
 
-  /// <summary>
-  /// Retrieves a <see cref="DomainObject"/> to be used with the given <paramref name="dataContainer"/>.
-  /// </summary>
-  /// <param name="dataContainer">The data container for which to retrieve a <see cref="DomainObject"/>.</param>
-  /// <returns>The <see cref="DomainObject"/> enlisted with the given <paramref name="dataContainer"/>'s <see cref="ObjectID"/>, or
-  /// a newly loaded <see cref="DomainObject"/> if none has been enlisted.</returns>
-  protected internal virtual DomainObject GetObjectForDataContainer (DataContainer dataContainer)
+  private DomainObject GetObjectReference (ObjectID objectID)
   {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
     
-    if (!dataContainer.IsRegistered)
-      throw new InvalidOperationException("The data container must be registered with the ClientTransaction before an object is retrieved for it.");
-    
-    var enlistedObject = GetEnlistedDomainObject (dataContainer.ID);
+    var enlistedObject = GetEnlistedDomainObject (objectID);
     if (enlistedObject != null)
     {
       return enlistedObject;
     }
     else
     {
-      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (dataContainer.DomainObjectType).GetDomainObjectCreator ();
+      var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
+      var instance = creator.CreateObjectReference (objectID, this as BindingClientTransaction);
 
-      var instance = creator.CreateObjectReference (dataContainer.ID, this as BindingClientTransaction);
       EnlistDomainObject (instance);
-
-      dataContainer.SetDomainObject (instance);
       return instance;
     }
   }
@@ -1537,8 +1526,10 @@ public abstract class ClientTransaction
 
   private void InitializeLoadedDataContainer (DataContainer dataContainer)
   {
+    var domainObjectReference = GetObjectReference (dataContainer.ID);
+
     dataContainer.RegisterWithTransaction (this);
-    dataContainer.SetDomainObject (GetObjectForDataContainer (dataContainer));
+    dataContainer.SetDomainObject (domainObjectReference);
 
     Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
     Assertion.IsTrue (dataContainer.ClientTransaction == this);

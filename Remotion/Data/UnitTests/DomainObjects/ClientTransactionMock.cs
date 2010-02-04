@@ -20,7 +20,9 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects
 {
@@ -83,11 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new DomainObjectCollection GetRelatedObjects (RelationEndPointID relationEndPointID)
     {
       return base.GetRelatedObjects (relationEndPointID);
-    }
-
-    public new DomainObject GetObjectForDataContainer (DataContainer dataContainer)
-    {
-      return base.GetObjectForDataContainer (dataContainer);
     }
 
     public int NumberOfCallsToLoadDataContainer
