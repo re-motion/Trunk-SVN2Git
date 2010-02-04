@@ -318,7 +318,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void GetCollection_ReturnsDiscardedObjects ()
+    [ExpectedException (typeof (ObjectNotFoundException))]
+    public void GetCollection_ThrowsOnDiscardedObjects ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
