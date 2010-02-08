@@ -158,6 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       var order = orderTicket1.Order;
+      order.EnsureDataAvailable ();
 
       Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
@@ -184,6 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var orderTicket = order1.OrderTicket;
       var customer = order1.Customer;
       var customerOrders = customer.Orders;
+
+      customer.EnsureDataAvailable ();
 
       Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItems.IsDataAvailable, Is.True);
@@ -722,6 +725,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (order1.OrderItems, Is.EquivalentTo (new[] { orderItemA, orderItemB })); // does not reload the object
       Assert.That (orderItemA.Order, Is.SameAs (order1)); // does not reload the object
       Assert.That (orderItemB.Order, Is.SameAs (order1)); // does not reload the object
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    [Ignore ("TODO 2204")]
+    public void ReadingOriginalVirtualRelationEndPoints_DoesNotReloadObject ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+      var orderTicket = order1.OrderTicket;
+
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      EnsureTransactionThrowsOnLoad ();
+
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      Assert.That (order1.Properties.Find ("OrderTicket").GetOriginalValueWithoutTypeCheck(), Is.SameAs (orderTicket)); // does not reload the object
+      Assert.That (orderTicket.Properties.Find ("Order").GetOriginalValueWithoutTypeCheck (), Is.SameAs (order1)); // does not reload the object
+      Assert.That (order1.Properties.Find ("OrderItems").GetOriginalValueWithoutTypeCheck (), Is.EquivalentTo (new[] { orderItemA, orderItemB })); // does not reload the object
+      Assert.That (orderItemA.Properties.Find ("Order").GetOriginalValueWithoutTypeCheck (), Is.SameAs (order1)); // does not reload the object
+      Assert.That (orderItemB.Properties.Find ("Order").GetOriginalValueWithoutTypeCheck (), Is.SameAs (order1)); // does not reload the object
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
     }
