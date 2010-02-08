@@ -101,6 +101,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void GetObjectReference ()
+    {
+      var result = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+
+      Assert.That (result, Is.InstanceOfType (typeof (Order)));
+      Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (result.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void GetObjectReference_Discarded ()
+    {
+      var instance = Order.NewObject ();
+      instance.Delete();
+      Assert.That (instance.IsDiscarded, Is.True);
+      
+      LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID);
+    }
+
+    [Test]
     public void DeleteObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);

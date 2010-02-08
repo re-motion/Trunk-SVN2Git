@@ -318,27 +318,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectDiscardedException))]
     public void GetCollection_ThrowsOnDiscardedObjects ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
       ClientTransactionMock.DataManager.Discard (order1.InternalDataContainer);
       
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
-
       var query = QueryFactory.CreateCollectionQuery (
           "test",
           order1.ID.StorageProviderID,
           "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
-      var result = ClientTransaction.Current.QueryManager.GetCollection (query);
-
-      Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order2 }));
-      Assert.That (order1.State, Is.EqualTo (StateType.Discarded));
-      Assert.That (order2.State, Is.EqualTo (StateType.Unchanged));
+      ClientTransaction.Current.QueryManager.GetCollection (query);
     }
   }
 }

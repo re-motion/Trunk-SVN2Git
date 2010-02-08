@@ -788,25 +788,6 @@ public abstract class ClientTransaction
     }
   }
 
-  private DomainObject GetObjectReference (ObjectID objectID)
-  {
-    ArgumentUtility.CheckNotNull ("objectID", objectID);
-    
-    var enlistedObject = GetEnlistedDomainObject (objectID);
-    if (enlistedObject != null)
-    {
-      return enlistedObject;
-    }
-    else
-    {
-      var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
-      var instance = creator.CreateObjectReference (objectID, this as BindingClientTransaction);
-
-      EnlistDomainObject (instance);
-      return instance;
-    }
-  }
-
   /// <summary>
   /// Gets a <see cref="DomainObject"/> that is already loaded or attempts to load it from the datasource.
   /// </summary>
@@ -837,6 +818,47 @@ public abstract class ClientTransaction
       throw new ObjectDeletedException (id);
 
     return objectReference;
+  }
+
+  /// <summary>
+  /// Gets a reference to a <see cref="DomainObject"/> with the given <see cref="ObjectID"/> from this <see cref="ClientTransaction"/>. If the
+  /// transaction does not currently hold an object with this <see cref="ObjectID"/>, an object reference representing that <see cref="ObjectID"/> 
+  /// is created without calling a constructor and without loading the object's data from the data source. This method does not check whether an
+  /// object with the given <see cref="ObjectID"/> actually exists in the data source.
+  /// </summary>
+  /// <param name="objectID">The <see cref="ObjectID"/> to get an object reference for.</param>
+  /// <returns>An object with the given <see cref="ObjectID"/>, possibly in <see cref="StateType.NotLoadedYet"/> state.</returns>
+  /// <remarks>
+  /// <para>
+  /// When an object with the given <paramref name="objectID"/> has already been enlisted in the transaction, that object is returned. Otherwise,
+  /// an object in <see cref="StateType.NotLoadedYet"/> state is created and enlisted without loading its data from the data source. In such a case,
+  /// the object's data is loaded when it's first needed; e.g., when one of its properties is accessed or when 
+  /// <see cref="EnsureDataAvailable(Remotion.Data.DomainObjects.ObjectID)"/> is called for its <see cref="ObjectID"/>. At that point, an
+  /// <see cref="ObjectNotFoundException"/> may be triggered when the object's data cannot be found.
+  /// </para>
+  /// </remarks>
+  /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
+  /// <exception cref="ObjectDiscardedException">The object with the given <paramref name="objectID"/> has already been discarded.</exception>
+  protected internal virtual DomainObject GetObjectReference (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+    if (DataManager.IsDiscarded (objectID))
+      throw new ObjectDiscardedException (objectID);
+
+    var enlistedObject = GetEnlistedDomainObject (objectID);
+    if (enlistedObject != null)
+    {
+      return enlistedObject;
+    }
+    else
+    {
+      var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
+      var instance = creator.CreateObjectReference (objectID, this as BindingClientTransaction);
+
+      EnlistDomainObject (instance);
+      return instance;
+    }
   }
   
   protected internal virtual DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
@@ -1523,7 +1545,7 @@ public abstract class ClientTransaction
   }
 
   [Obsolete ("This method has been removed. Please implement the desired behavior yourself, using GetEnlistedDomainObjects(), EnlistDomainObject(), "
-    + "and CopyCollectionEventHandlers(). (1.13.41)", false)]
+             + "and CopyCollectionEventHandlers(). (1.13.41)", false)]
   public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
   {
     throw new NotImplementedException ();

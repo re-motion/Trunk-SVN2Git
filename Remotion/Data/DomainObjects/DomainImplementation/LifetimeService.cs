@@ -85,9 +85,35 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      // TODO: Check behavior with discarded objects.
-
       return clientTransaction.GetObject (objectID, includeDeleted);
+    }
+
+    /// <summary>
+    /// Gets a reference to a <see cref="DomainObject"/> with the given <see cref="ObjectID"/> in a specific <see cref="ClientTransaction"/>. If the
+    /// transaction does not currently hold an object with this <see cref="ObjectID"/>, an object reference representing that <see cref="ObjectID"/>
+    /// is created without calling a constructor and without loading the object's data from the data source. This method does not check whether an
+    /// object with the given <see cref="ObjectID"/> actually exists in the data source.
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to get the reference from.</param>
+    /// <param name="objectID">The <see cref="ObjectID"/> to get an object reference for.</param>
+    /// <returns>
+    /// An object with the given <see cref="ObjectID"/>, possibly in <see cref="StateType.NotLoadedYet"/> state.
+    /// </returns>
+    /// <remarks>
+    /// When an object with the given <paramref name="objectID"/> has already been enlisted in the transaction, that object is returned. Otherwise,
+    /// an object in <see cref="StateType.NotLoadedYet"/> state is created and enlisted without loading its data from the data source. In such a case,
+    /// the object's data is loaded when it's first needed; e.g., when one of its properties is accessed or when
+    /// <see cref="DomainObject.EnsureDataAvailable"/> is called on it. At that point, an
+    /// <see cref="ObjectNotFoundException"/> may be triggered when the object's data cannot be found.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
+    /// <exception cref="ObjectDiscardedException">The object with the given <paramref name="objectID"/> has already been discarded.</exception>
+    public static DomainObject GetObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      return clientTransaction.GetObjectReference (objectID);
     }
 
     /// <summary>

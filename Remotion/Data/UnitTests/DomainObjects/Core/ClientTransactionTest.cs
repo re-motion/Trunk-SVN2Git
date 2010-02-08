@@ -129,6 +129,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void GetObjectReference_KnownObject_ReturnedWithoutLoading ()
+    {
+      var instance = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
+      _transaction.EnlistDomainObject (instance);
+
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
+          _transaction, 
+          mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+
+      var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
+
+      Assert.That (result, Is.SameAs (instance));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void GetObjectReference_KnownObject_Discarded_Throws ()
+    {
+      var instance = DomainObjectMother.CreateObjectInTransaction<Order> (_transaction);
+      LifetimeService.DeleteObject (_transaction, instance);
+      Assert.That (instance.TransactionContext[_transaction].IsDiscarded, Is.True);
+
+      ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
+    }
+
+    [Test]
+    public void GetObjectReference_UnknownObject_ReturnsUnloadedObject ()
+    {
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
+        _transaction,
+        mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      
+      var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, DomainObjectIDs.Order1);
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.InstanceOfType (typeof (Order)));
+      Assert.That (InterceptedDomainObjectCreator.Instance.Factory.WasCreatedByFactory (((object) result).GetType()), Is.True);
+      Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (_transaction.IsEnlisted (result), Is.True);
+      Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    public void GetObjectReference_UnknownObject_BindsToBindingClientTransactionOnly ()
+    {
+      var unboundResult = ClientTransactionTestHelper.CallGetObjectReference (_transaction, DomainObjectIDs.Order1);
+      Assert.That (unboundResult.HasBindingTransaction, Is.False);
+
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var boundResult = ClientTransactionTestHelper.CallGetObjectReference (bindingTransaction, DomainObjectIDs.Order1);
+      Assert.That (boundResult.HasBindingTransaction, Is.True);
+      Assert.That (boundResult.GetBindingTransaction(), Is.SameAs (bindingTransaction));
+    }
+
+    [Test]
     public void EnsureDataAvailable_AlreadyLoaded ()
     {
       var domainObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
