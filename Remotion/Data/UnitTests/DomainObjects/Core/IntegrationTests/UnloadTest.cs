@@ -61,7 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2209: LoggingClientTransactionListener will reload collection.")]
     public void UnloadCollectionEndPoint_AccessingEndPoint ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
