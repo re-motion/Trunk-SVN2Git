@@ -163,6 +163,7 @@
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />
     <Compile Include="DataManagement\StateValueSet.cs" />
     <Compile Include="DataManagement\VirtualObjectEndPoint.cs" />
+    <Compile Include="DomainImplementation\RepositoryAccessor.cs" />
     <Compile Include="DomainImplementation\UnloadTransactionMode.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />
     <Compile Include="DomainObjectCollection.Transformer.cs" />
