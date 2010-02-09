@@ -704,7 +704,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2204")]
+    [Ignore ("TODO 2264")]
     public void ReadingVirtualRelationEndPoints_DoesNotReloadObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -730,7 +730,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2204")]
+    [Ignore ("TODO 2264")]
     public void ReadingOriginalVirtualRelationEndPoints_DoesNotReloadObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -754,7 +754,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2204")]
+    [Ignore ("TODO 2263")]
     public void ChangingVirtualRelationEndPoints_DoesNotReloadObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -776,6 +776,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (orderItemA.Order, Is.SameAs (order1));
       Assert.That (orderItemB.Order, Is.Null);
 
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
+    [Ignore ("TODO 2263")]
+    public void ChangingRealRelationEndPoints_DoesNotReloadOppositeObjects ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderItemA = order1.OrderItems[0];
+      var orderTicket = order1.OrderTicket;
+
+      UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
+
+      EnsureTransactionThrowsOnLoad ();
+
+      orderTicket.Order = Order.NewObject ();
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      orderItemA.Order = Order.NewObject ();
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
@@ -828,19 +847,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void ChangingOppositeCollectionEndPoints_ReloadsObject ()
+    [Ignore ("TODO 2263")]
+    public void AddingToCollectionEndPoint_DoesntReloadOtherItems ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var customer = order1.Customer;
+      Console.WriteLine (customer.State);
 
       UnloadService.UnloadData (ClientTransactionMock, order1.ID, UnloadTransactionMode.ThisTransactionOnly);
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      customer.Orders.Add (Order.NewObject()); // reloads the relation contents because the foreign key is stored in order1
+      Console.WriteLine (customer.State);
+      EnsureTransactionThrowsOnLoad ();
+      
+      customer.Orders.Add (Order.NewObject()); // does not reload order1 because that object's foreign key is not involved
 
-      AssertObjectWasLoadedAmongOthers (listenerMock, order1);
-      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+    
+    [Test]
+    public void AddingToCollectionEndPoint_ReloadsObjectBeingAdded ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      UnloadService.UnloadData (ClientTransactionMock, order2.ID, UnloadTransactionMode.ThisTransactionOnly);
+      Assert.That (order2.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      customer.Orders.Add (order2); // reloads order2 because order2's foreign key is changed
+
+      AssertObjectWasLoaded (listenerMock, order2);
+      Assert.That (order2.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
