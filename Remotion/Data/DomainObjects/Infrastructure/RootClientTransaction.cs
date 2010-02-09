@@ -124,9 +124,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (var persistenceManager = new PersistenceManager (_id))
       {
-        var dataContainer = persistenceManager.LoadDataContainer (id);
-        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { id }));
-        return dataContainer;
+        return persistenceManager.LoadDataContainer (id);
       }
     }
 

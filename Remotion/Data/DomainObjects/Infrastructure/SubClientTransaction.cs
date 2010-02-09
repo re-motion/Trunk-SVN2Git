@@ -116,8 +116,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
       else
       {
-        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { id }));
-
         using (TransactionUnlocker.MakeWriteable (ParentTransaction))
         {
           DomainObject parentObject = ParentTransaction.GetObject (id, false);
@@ -164,7 +162,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         parentRelatedObject = ParentTransaction.GetRelatedObject (relationEndPointID);
       }
-      return parentRelatedObject != null ? LoadDataContainer (parentRelatedObject.ID) : null;
+      if (parentRelatedObject != null)
+      {
+        var dataContainer = LoadDataContainer (parentRelatedObject.ID);
+        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { dataContainer.ID }));
+        return dataContainer;
+      }
+      else
+        return null;
     }
 
 

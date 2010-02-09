@@ -203,15 +203,13 @@ public abstract class ClientTransaction
   /// <returns>A <see cref="DataContainer"/> with the given <paramref name="id"/>.</returns>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectsLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
-  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in the 
+  /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
+  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>. 
   /// </para>
   /// <para>
-  /// This method should not 
-  ///   set the <see cref="ClientTransaction"/> of the loaded data container,
-  ///   register the container in the <see cref="DataContainerMap"/>,
-  ///   or set the  <see cref="DomainObject"/> of the container.
-  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
+  /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
+  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
   /// </para>
   /// </remarks>
   protected abstract DataContainer LoadDataContainer (ObjectID id);
@@ -1089,6 +1087,8 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       var dataContainer = LoadDataContainer (id);
+      TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { id }));
+
       InitializeLoadedDataContainer (dataContainer);
 
       var loadedDomainObject = dataContainer.DomainObject;
