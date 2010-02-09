@@ -39,25 +39,26 @@ namespace Remotion.Data.DomainObjects.Transport
 
     public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      Assertion.IsTrue (ClientTransaction.Current == _transaction);
-
-      foreach (var domainObject in domainObjects)
+      using (_transaction.EnterNonDiscardingScope ())
       {
-        if (!_filter (domainObject))
+        foreach (var domainObject in domainObjects)
         {
-          // Note that we do not roll back any end points - this will cause us to create dangling end points. Doesn't matter, though, the transaction
-          // is discarded after transport anyway.
+          if (!_filter (domainObject))
+          {
+            // Note that we do not roll back any end points - this will cause us to create dangling end points. Doesn't matter, though, the transaction
+            // is discarded after transport anyway.
 
-          var dataContainer = _transaction.GetDataContainer (domainObject);
-          if (dataContainer.State == StateType.New)
-          {
-            var deleteCommand = _transaction.DataManager.CreateDeleteCommand (domainObject);
-            deleteCommand.Perform (); // no events, no bidirectional changes
-            Assertion.IsTrue (dataContainer.IsDiscarded);
-          }
-          else
-          {
-            dataContainer.RollbackState();
+            var dataContainer = _transaction.GetDataContainer (domainObject);
+            if (dataContainer.State == StateType.New)
+            {
+              var deleteCommand = _transaction.DataManager.CreateDeleteCommand (domainObject);
+              deleteCommand.Perform(); // no events, no bidirectional changes
+              Assertion.IsTrue (dataContainer.IsDiscarded);
+            }
+            else
+            {
+              dataContainer.RollbackState();
+            }
           }
         }
       }
