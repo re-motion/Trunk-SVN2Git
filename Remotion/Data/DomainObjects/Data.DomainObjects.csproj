@@ -180,6 +180,8 @@
     <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionEventRaiser.cs" />
+    <Compile Include="Infrastructure\IObjectLoader.cs" />
+    <Compile Include="Infrastructure\ObjectLoader.cs" />
     <Compile Include="Linq\MappedTable.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />

@@ -160,29 +160,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void FilterQueryResultCalledInCorrectScope ()
-    {
-      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
-
-      ClientTransactionMock.Extensions.Add ("mock", extensionMock);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
-        query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
-
-        var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
-        extensionMock
-            .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
-            .WhenCalled (mi => Assert.AreSame (ClientTransactionMock, ClientTransaction.Current))
-            .Return (newQueryResult);
-
-        extensionMock.Replay ();
-        ClientTransaction.Current.QueryManager.GetCollection (query);
-        extensionMock.VerifyAllExpectations ();
-      }
-    }
-
-    [Test]
     public void AccessObjectInFilterQueryResult ()
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())

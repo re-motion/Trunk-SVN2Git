@@ -19,26 +19,32 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Logging;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
   public class QueryTest : ClientTransactionBaseTest
   {
+    private IQueryManager _queryManager;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _queryManager = ClientTransactionMock.QueryManager;
+    }
+
     [Test]
     public void GetCollectionWithExistingObjects ()
     {
       var computer2 = Computer.GetObject (DomainObjectIDs.Computer2);
       var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
 
-      IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
+      IQueryManager queryManager = _queryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderID,
           "SELECT [Computer].* FROM [Computer] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
@@ -56,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void GetCollectionWithNullValues ()
     {
-      IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
+      IQueryManager queryManager = _queryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderID,
           "SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
@@ -77,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', which is not supported.")]
     public void GetCollectionWithDuplicates ()
     {
-      IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
+      IQueryManager queryManager = _queryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderID,
           "SELECT [Order].* FROM [OrderItem] INNER JOIN [Order] ON [OrderItem].[OrderID] = [Order].[ID] WHERE [Order].[OrderNo] = 1",
           new QueryParameterCollection (), typeof (DomainObjectCollection));
@@ -126,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void QueryWithExtensibleEnums ()
     {
-      IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
+      IQueryManager queryManager = _queryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageProviderID,
           "SELECT [TableWithAllDataTypes].* FROM [TableWithAllDataTypes] WHERE ([TableWithAllDataTypes].[ExtensibleEnum] = @1)",
           new QueryParameterCollection (), typeof (DomainObjectCollection));

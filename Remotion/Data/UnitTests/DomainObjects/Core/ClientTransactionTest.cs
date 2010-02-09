@@ -514,26 +514,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void LoadRelatedObjects_SignalsOnLoading_InScope ()
-    {
-      var newlyLoadedDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderItem2);
-
-      var clientTransaction = CreateStubForLoadRelatedObjects (_orderItemsEndPointID, newlyLoadedDataContainer);
-
-      var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
-
-      eventListenerMock
-          .Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.OrderItem2 })))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (clientTransaction)));
-      eventListenerMock.Replay ();
-
-      ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
-
-      eventListenerMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void LoadRelatedObjects_SignalsOnLoading_BeforeRegisteringAnything ()
     {
       var newlyLoadedDataContainer1 = DataContainer.CreateNew (DomainObjectIDs.OrderItem1);

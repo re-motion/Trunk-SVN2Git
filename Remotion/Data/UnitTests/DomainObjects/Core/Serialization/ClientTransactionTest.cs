@@ -126,9 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void QueryManagerTest ()
     {
-      RootQueryManager queryManager = new RootQueryManager ((RootClientTransaction) ClientTransactionScope.CurrentTransaction);
+      var queryManager = ClientTransactionScope.CurrentTransaction.QueryManager;
 
-      RootQueryManager deserializedQueryManager = (RootQueryManager) SerializeAndDeserialize (queryManager);
+      var deserializedQueryManager = SerializeAndDeserialize (queryManager);
 
       Assert.IsNotNull (deserializedQueryManager);
     }

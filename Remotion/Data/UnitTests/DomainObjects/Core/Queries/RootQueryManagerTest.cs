@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
@@ -47,7 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       base.SetUp ();
 
-      _queryManager = new RootQueryManager (ClientTransactionMock);
+      // TODO 2244
+      var objectLoader = (IObjectLoader) PrivateInvoke.GetNonPublicField (ClientTransactionMock, "_objectLoader");
+      _queryManager = new RootQueryManager (ClientTransactionMock, objectLoader);
 
       _unitTestStorageProviderStubID = DomainObjectIDs.Official1.StorageProviderID;
       _unitTestStorageProviderStubDefinition = (UnitTestStorageProviderStubDefinition)

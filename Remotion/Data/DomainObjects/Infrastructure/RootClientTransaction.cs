@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
@@ -25,7 +24,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Reflection;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -87,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         if (_queryManager == null)
-          _queryManager = new RootQueryManager (this);
+          _queryManager = new RootQueryManager (this, ObjectLoader);
 
         return _queryManager;
       }
@@ -118,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return newObjectID;
     }
 
-    protected override DataContainer LoadDataContainer (ObjectID id)
+    protected internal override DataContainer LoadDataContainer (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -128,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    protected internal override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -147,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    protected internal override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
@@ -166,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    protected internal override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 

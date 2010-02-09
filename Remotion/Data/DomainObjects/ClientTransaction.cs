@@ -129,13 +129,15 @@ public abstract class ClientTransaction
   public event ClientTransactionEventHandler RolledBack;
 
   private readonly DataManager _dataManager;
+  private readonly IObjectLoader _objectLoader;
+
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly CompoundClientTransactionListener _listeners;
   private readonly ClientTransactionExtensionCollection _extensions;
   private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
 
   private bool _isDiscarded;
-  
+
   // construction and disposing
 
   protected ClientTransaction (
@@ -161,6 +163,7 @@ public abstract class ClientTransaction
 
     _applicationData = applicationData;
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
+    _objectLoader = new ObjectLoader (this, _dataManager, TransactionEventSink);
     _enlistedObjectManager = enlistedObjectManager;
   }
 
@@ -179,6 +182,14 @@ public abstract class ClientTransaction
   /// <remarks>When this transaction is an instance of <see cref="RootClientTransaction"/>, this property returns the transaction itself. If it
   /// is an instance of <see cref="SubClientTransaction"/>, it returns the parent's root transaction. </remarks>
   public abstract ClientTransaction RootTransaction { get; }
+
+  /// <summary>
+  /// Temporary, will be removed at a later point of time. TODO 2246
+  /// </summary>
+  protected IObjectLoader ObjectLoader
+  {
+    get { return _objectLoader; }
+  }
 
   /// <summary>Initializes a new instance of this transaction.</summary>
   public abstract ClientTransaction CreateEmptyTransactionOfSameType ();
@@ -212,7 +223,7 @@ public abstract class ClientTransaction
   /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
   /// </para>
   /// </remarks>
-  protected abstract DataContainer LoadDataContainer (ObjectID id);
+  protected internal abstract DataContainer LoadDataContainer (ObjectID id);
 
   /// <summary>
   /// Loads a number of data containers from the underlying storage or the <see cref="ParentTransaction"/>.
@@ -235,7 +246,7 @@ public abstract class ClientTransaction
   /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
   /// </para>
   /// </remarks>
-  protected abstract DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
+  protected internal abstract DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
 
   /// <summary>
   /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
@@ -268,7 +279,7 @@ public abstract class ClientTransaction
   ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
+  protected internal abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
 
   /// <summary>
   /// Loads all related <see cref="DataContainer"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
@@ -296,7 +307,7 @@ public abstract class ClientTransaction
   /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
   /// The StorageProvider for the related objects could not be initialized.
   /// </exception>
-  protected abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
+  protected internal abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
 
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.
@@ -1080,22 +1091,10 @@ public abstract class ClientTransaction
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal virtual DomainObject LoadObject (ObjectID id)
+  protected virtual DomainObject LoadObject (ObjectID id)
   {
     ArgumentUtility.CheckNotNull ("id", id);
-
-    using (EnterNonDiscardingScope ())
-    {
-      var dataContainer = LoadDataContainer (id);
-      TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { id }));
-
-      InitializeLoadedDataContainer (dataContainer);
-
-      var loadedDomainObject = dataContainer.DomainObject;
-      OnLoaded (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (new[] { loadedDomainObject })));
-
-      return loadedDomainObject;
-    }
+    return _objectLoader.LoadObject (id);
   }
 
   /// <summary>
@@ -1119,27 +1118,10 @@ public abstract class ClientTransaction
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+  protected virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
   {
     ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
-
-    using (EnterNonDiscardingScope ())
-    {
-      var dataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-      if (dataContainers.Count != 0)
-        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (idsToBeLoaded));
-      
-      foreach (DataContainer dataContainer in dataContainers)
-        InitializeLoadedDataContainer (dataContainer);
-
-      var loadedDomainObjectsWithoutNulls = dataContainers.Cast<DataContainer> ().Select (dc => dc.DomainObject).ToList();
-      OnLoaded (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (loadedDomainObjectsWithoutNulls)));
-
-      var loadedDomainObjectsInCorrectOrder = (from id in idsToBeLoaded
-                                               let dataContainer = dataContainers[id]
-                                               select dataContainer != null ? dataContainer.DomainObject : null).ToArray ();
-      return loadedDomainObjectsInCorrectOrder;
-    }
+    return _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
   }
 
   /// <summary>
@@ -1168,31 +1150,7 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-
-    if (!relationEndPointID.Definition.IsVirtual)
-      throw new ArgumentException ("LoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
-
-    using (EnterNonDiscardingScope ())
-    {
-      DataContainer relatedDataContainer = LoadRelatedDataContainer (relationEndPointID);
-
-      if (relatedDataContainer != null)
-      {
-        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { relatedDataContainer.ID }));
-
-        InitializeLoadedDataContainer (relatedDataContainer);
-
-        var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { relatedDataContainer.DomainObject });
-        OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
-
-        return relatedDataContainer.DomainObject;
-      }
-      else
-      {
-        DataManager.RelationEndPointMap.RegisterVirtualObjectEndPoint (relationEndPointID, null);
-        return null;
-      }
-    }
+    return _objectLoader.LoadRelatedObject (relationEndPointID);
   }
 
   /// <summary>
@@ -1211,19 +1169,7 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-
-    using (EnterNonDiscardingScope ())
-    {
-      var relatedDataContainers = LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
-
-      FindNewDataContainersAndInitialize (relatedDataContainers);
-
-      var relatedObjects = from loadedDataContainer in relatedDataContainers
-                           let relatedID = loadedDataContainer.ID
-                           let registeredDataContainer = Assertion.IsNotNull (_dataManager.DataContainerMap[relatedID])
-                           select registeredDataContainer.DomainObject;
-      return relatedObjects.ToArray();
-    }
+    return _objectLoader.LoadRelatedObjects (relationEndPointID);
   }
 
   /// <summary>
@@ -1298,19 +1244,10 @@ public abstract class ClientTransaction
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
   protected internal virtual void OnLoaded (ClientTransactionEventArgs args)
   {
-    using (EnterNonDiscardingScope ())
-    {
-      foreach (DomainObject loadedDomainObject in args.DomainObjects)
-        loadedDomainObject.OnLoaded ();
+    ArgumentUtility.CheckNotNull ("args", args);
 
-      if (args.DomainObjects.Count != 0)
-      {
-        TransactionEventSink.ObjectsLoaded (args.DomainObjects);
-
-        if (Loaded != null)
-          Loaded (this, args);
-      }
-    }
+    if (Loaded != null)
+      Loaded (this, args);
   }
 
   /// <summary>
@@ -1524,18 +1461,6 @@ public abstract class ClientTransaction
     OnRolledBack (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (changedDomainObjects.AsList<DomainObject> ())));
   }
 
-  private void InitializeLoadedDataContainer (DataContainer dataContainer)
-  {
-    var domainObjectReference = GetObjectReference (dataContainer.ID);
-
-    dataContainer.RegisterWithTransaction (this);
-    dataContainer.SetDomainObject (domainObjectReference);
-
-    Assertion.IsTrue (dataContainer.DomainObject.ID == dataContainer.ID);
-    Assertion.IsTrue (dataContainer.ClientTransaction == this);
-    Assertion.IsTrue (DataManager.DataContainerMap[dataContainer.ID] == dataContainer);
-  }
-
   private DataContainer GetDataContainerWithoutLoading (ObjectID id)
   {
     if (DataManager.IsDiscarded (id))
@@ -1560,25 +1485,6 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject GetObject (ObjectID id)
   {
     throw new NotImplementedException ();
-  }
-
-  internal void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers)
-  {
-    var newlyLoadedDataContainers = (from dataContainer in dataContainers
-                                     where dataContainer != null && _dataManager.DataContainerMap[dataContainer.ID] == null
-                                     select dataContainer).ToList ();
-
-    if (newlyLoadedDataContainers.Count == 0)
-      return;
-
-    TransactionEventSink.ObjectsLoading (newlyLoadedDataContainers.Select (dc => dc.ID).ToList ().AsReadOnly ());
-
-    foreach (var dataContainer in newlyLoadedDataContainers)
-      InitializeLoadedDataContainer (dataContainer);
-
-    var newlyLoadedDomainObjects = from dataContainer in newlyLoadedDataContainers
-                                   select dataContainer.DomainObject;
-    OnLoaded (new ClientTransactionEventArgs (newlyLoadedDomainObjects.ToList ().AsReadOnly ()));
   }
 }
 }

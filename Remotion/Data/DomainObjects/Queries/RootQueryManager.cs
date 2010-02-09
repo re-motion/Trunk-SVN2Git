@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects.Queries
     // member fields
 
     private readonly RootClientTransaction _clientTransaction;
+    private readonly IObjectLoader _objectLoader;
 
     // construction and disposing
 
@@ -45,12 +46,15 @@ namespace Remotion.Data.DomainObjects.Queries
     /// All <see cref="DomainObject"/>s that are loaded by the <b>RootQueryManager</b> will exist within the given <see cref="Remotion.Data.DomainObjects.ClientTransaction"/>.
     /// </remarks>
     /// <param name="clientTransaction">The <see cref="RootClientTransaction"/> to be used in the <b>RootQueryManager</b>. Must not be <see langword="null"/>.</param>
+    /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects into the <paramref name="clientTransaction"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> is <see langword="null"/>.</exception>
-    public RootQueryManager (RootClientTransaction clientTransaction)
+    public RootQueryManager (RootClientTransaction clientTransaction, IObjectLoader objectLoader)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
 
       _clientTransaction = clientTransaction;
+      _objectLoader = objectLoader;
     }
 
     // methods and properties
@@ -144,21 +148,18 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      using (_clientTransaction.EnterNonDiscardingScope())
+      T[] resultArray = ExecuteCollectionAndMergeResult<T> (query);
+      if (resultArray.Length > 0)
       {
-        T[] resultArray = ExecuteCollectionAndMergeResult<T> (query);
-        if (resultArray.Length > 0)
+        var fetcher = new EagerFetcher (this, resultArray);
+        foreach (var fetchQuery in query.EagerFetchQueries)
         {
-          var fetcher = new EagerFetcher (this, resultArray);
-          foreach (var fetchQuery in query.EagerFetchQueries)
-          {
-            fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
-          }
+          fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
         }
-
-        var queryResult = new QueryResult<T> (query, resultArray);
-        return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
       }
+
+      var queryResult = new QueryResult<T> (query, resultArray);
+      return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
     }
 
     private T[] ExecuteCollectionAndMergeResult<T> (IQuery query) where T: DomainObject
@@ -168,10 +169,7 @@ namespace Remotion.Data.DomainObjects.Queries
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         var dataContainers = provider.ExecuteCollectionQuery (query);
 
-        using (ClientTransaction.EnterNonDiscardingScope ())
-        {
-          ClientTransaction.FindNewDataContainersAndInitialize (dataContainers);
-        }
+        _objectLoader.FindNewDataContainersAndInitialize (dataContainers);
 
         return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID, true)));
       }

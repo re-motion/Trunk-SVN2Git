@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
@@ -106,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ParentTransaction.CreateNewObjectID (classDefinition);
     }
 
-    protected override DataContainer LoadDataContainer (ObjectID id)
+    protected internal override DataContainer LoadDataContainer (ObjectID id)
     {
       if (DataManager.IsDiscarded (id))
       {
@@ -125,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    protected internal override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -152,7 +151,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    protected internal override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       DomainObject parentRelatedObject;
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
@@ -167,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
 
-    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    protected internal override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
