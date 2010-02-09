@@ -165,10 +165,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         Assertion.IsTrue (relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null, 
             "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
             + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
-        if (relatedDataContainer != null)
-          TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { relatedDataContainer.ID }));
+        return relatedDataContainer;
       }
-      return relatedDataContainer;
     }
 
     protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)

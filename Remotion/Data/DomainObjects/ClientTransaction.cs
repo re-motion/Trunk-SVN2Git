@@ -1175,6 +1175,8 @@ public abstract class ClientTransaction
 
       if (relatedDataContainer != null)
       {
+        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { relatedDataContainer.ID }));
+
         InitializeLoadedDataContainer (relatedDataContainer);
 
         var loadedDomainObjects = new ReadOnlyCollection<DomainObject> (new[] { relatedDataContainer.DomainObject });

@@ -162,12 +162,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         parentRelatedObject = ParentTransaction.GetRelatedObject (relationEndPointID);
       }
+
       if (parentRelatedObject != null)
-      {
-        var dataContainer = LoadDataContainer (parentRelatedObject.ID);
-        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new[] { dataContainer.ID }));
-        return dataContainer;
-      }
+        return LoadDataContainer (parentRelatedObject.ID);
       else
         return null;
     }
