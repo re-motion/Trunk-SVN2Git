@@ -128,15 +128,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
+    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      var objectIDList = objectIDs.ToList();
-      if (objectIDList.Count == 0)
+      if (objectIDs.Count == 0)
         return new DataContainerCollection();
 
-      foreach (ObjectID id in objectIDList)
+      foreach (var id in objectIDs)
       {
         if (DataManager.IsDiscarded (id))
           throw new ObjectDiscardedException (id);
@@ -144,9 +143,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (var persistenceManager = new PersistenceManager (_id))
       {
-        var newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
-        TransactionEventSink.ObjectsLoading (objectIDList.AsReadOnly());
-        return newLoadedDataContainers;
+        return persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
       }
     }
 

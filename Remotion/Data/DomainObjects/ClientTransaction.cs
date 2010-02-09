@@ -235,7 +235,7 @@ public abstract class ClientTransaction
   /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
   /// </para>
   /// </remarks>
-  protected abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
+  protected abstract DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
 
   /// <summary>
   /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
@@ -927,7 +927,7 @@ public abstract class ClientTransaction
   /// <exception cref="ObjectDiscardedException">One of the retrieved objects has already been discarded.</exception>
   /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
   /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
-  protected internal virtual T[] GetObjects<T> (ObjectID[] objectIDs, bool throwOnNotFound) 
+  protected internal virtual T[] GetObjects<T> (ICollection<ObjectID> objectIDs, bool throwOnNotFound) 
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -1119,13 +1119,16 @@ public abstract class ClientTransaction
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal virtual DomainObject[] LoadObjects (ICollection<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+  protected internal virtual DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound)
   {
     ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
     using (EnterNonDiscardingScope ())
     {
       var dataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
+      if (dataContainers.Count != 0)
+        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (idsToBeLoaded));
+      
       foreach (DataContainer dataContainer in dataContainers)
         InitializeLoadedDataContainer (dataContainer);
 

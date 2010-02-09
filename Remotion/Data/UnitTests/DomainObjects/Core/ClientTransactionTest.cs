@@ -675,6 +675,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (result, Is.EquivalentTo (new[] { alreadyRegisteredDataContainer.DomainObject }));
     }
 
+    [Test]
+    public void LoadObjects_NoEventsIfNoObjects ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+
+      var result = ClientTransactionTestHelper.CallLoadObjects (_transaction, new ObjectID[0], false);
+      Assert.That (result, Is.Empty);
+
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+    }
+
     private void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
     {
       var objectReference = DomainObjectMother.GetObjectReference<OrderItem> (clientTransaction, dataContainer.ID);

@@ -125,15 +125,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected override DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
+    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      var objectIDArray = objectIDs.ToArray();
-      if (objectIDArray.Length == 0)
+      if (objectIDs.Count == 0)
         return new DataContainerCollection();
 
-      foreach (ObjectID id in objectIDArray)
+      foreach (ObjectID id in objectIDs)
       {
         if (DataManager.IsDiscarded (id))
           throw new ObjectDiscardedException (id);
@@ -141,15 +140,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        var parentObjects = ParentTransaction.GetObjects<DomainObject> (objectIDArray, throwOnNotFound).Where (obj => obj != null);
+        var parentObjects = ParentTransaction.GetObjects<DomainObject> (objectIDs, throwOnNotFound).Where (obj => obj != null);
         var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
           DataContainer thisDataContainer = TransferParentObject (parentObject);
           loadedDataContainers.Add (thisDataContainer);
         }
-
-        TransactionEventSink.ObjectsLoading (new ReadOnlyCollection<ObjectID> (objectIDArray));
 
         return loadedDataContainers;
       }
