@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -236,7 +235,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         // loading the related object will automatically register the related's real end points via RegisterEndPointsForExistingDataContainer, 
         // which also registers the opposite virtual end point; see assertion below
-        _clientTransaction.LoadRelatedObject (endPointID);
+        var relatedObject = _clientTransaction.LoadRelatedObject (endPointID);
+        if (relatedObject == null)
+          RegisterVirtualObjectEndPoint (endPointID, null);
+
+        Assertion.IsNotNull (
+            _relationEndPoints[endPointID], 
+            "Loading related object should have indirectly registered this end point because that object holds the foreign key");
       }
       else
       {

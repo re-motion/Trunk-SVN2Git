@@ -101,7 +101,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
       else
       {
-        _clientTransaction.DataManager.RelationEndPointMap.RegisterVirtualObjectEndPoint (relationEndPointID, null);
         return null;
       }
     }

@@ -209,6 +209,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void GetRelationEndPointWithLazyLoad_RegistersVirtualObjectEndPointWithNull ()
+    {
+      _map.ClientTransaction.EnsureDataAvailable (DomainObjectIDs.Employee1); // preload Employee before lazily loading its virtual end point
+
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
+      Assert.That (_map[endPointID], Is.Null);
+
+      var endPoint = _map.GetRelationEndPointWithLazyLoad (endPointID);
+      Assert.That (endPoint, Is.Not.Null);
+      Assert.That (_map[endPointID], Is.SameAs (endPoint));
+      Assert.That (((ObjectEndPoint) endPoint).OppositeObjectID, Is.Null);
+    }
+
+    [Test]
     public void GetRelationEndPointWithLazyLoad_LoadsData_OfObjectsWithRealEndPointNotYetRegistered ()
     {
       var locationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
