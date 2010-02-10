@@ -55,5 +55,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       return (T) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, typeof (ClientTransaction), "GetObjectReference", objectID);
     }
+
+    public static T CreateObjectReference<T> (ObjectID objectID) where T : DomainObject
+    {
+      return (T) objectID.ClassDefinition.GetDomainObjectCreator ().CreateObjectReference (objectID, null);
+    }
   }
 }

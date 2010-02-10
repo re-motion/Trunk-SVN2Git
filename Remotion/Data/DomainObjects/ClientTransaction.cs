@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects
 /// </para>
 /// </remarks>
 [Serializable]
-public abstract class ClientTransaction
+public abstract class ClientTransaction : IDataSource
 {
   // types
 
@@ -163,7 +163,7 @@ public abstract class ClientTransaction
 
     _applicationData = applicationData;
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
-    _objectLoader = new ObjectLoader (this, _dataManager, TransactionEventSink);
+    _objectLoader = new ObjectLoader (this, this, TransactionEventSink);
     _enlistedObjectManager = enlistedObjectManager;
   }
 
@@ -1485,6 +1485,38 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject GetObject (ObjectID id)
   {
     throw new NotImplementedException ();
+  }
+
+
+
+  DataContainer IDataSource.LoadDataContainer (ObjectID id)
+  {
+    return LoadDataContainer (id);
+  }
+
+  DataContainerCollection IDataSource.LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+  {
+    return LoadDataContainers (objectIDs, throwOnNotFound);
+  }
+
+  DataContainer IDataSource.LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+  {
+    return LoadRelatedDataContainer (relationEndPointID);
+  }
+
+  DataContainerCollection IDataSource.LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+  {
+    return LoadRelatedDataContainers (relationEndPointID);
+  }
+
+  void IDataSource.PersistData (DataContainerCollection changedDataContainers)
+  {
+    PersistData (changedDataContainers);
+  }
+
+  ObjectID IDataSource.CreateNewObjectID (ClassDefinition classDefinition)
+  {
+    return CreateNewObjectID (classDefinition);
   }
 }
 }
