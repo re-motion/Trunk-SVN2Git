@@ -46,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     public readonly bool CtorCalled = false;
     public bool OnLoadedCalled = false;
+    public ClientTransaction LoadTransaction;
     public LoadMode LastLoadMode;
 
     public bool UnloadingCalled = false;
@@ -127,6 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
       base.OnLoaded (loadMode);
       OnLoadedCalled = true;
+      LoadTransaction = ClientTransaction.Current;
       LastLoadMode = loadMode;
       if (ProtectedLoaded != null)
         ProtectedLoaded (this, EventArgs.Empty);

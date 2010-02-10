@@ -21,9 +21,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -77,19 +79,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       using (_mockRepository.Ordered ())
       {
         _dataSourceMock.Expect (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
-        _eventSinkMock
-            .Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 })))
-            .WhenCalled (mi => Assert.That (_clientTransaction.DataManager.DataContainerMap[_dataContainer1.ID], Is.Null));
-
-        _eventSinkMock
-            .Expect (mock => mock.ObjectsLoaded (
-                Arg<ReadOnlyCollection<DomainObject>>.Matches (list => list.Count == 1 && list[0].ID == _dataContainer1.ID)))
-            .WhenCalled (mi =>
-            {
-              Assert.That (_clientTransaction.DataManager.DataContainerMap[_dataContainer1.ID], Is.SameAs (_dataContainer1));
-              Assert.That (((Order) ((ReadOnlyCollection<DomainObject>) mi.Arguments[0])[0]).OnLoadedCalled, Is.True);
-              Assert.That (transactionEventReceiver.LoadedDomainObjects, Is.Empty);
-            });
+        
+        ExpectObjectsLoading (DomainObjectIDs.Order1);
+        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
       }
 
       _mockRepository.ReplayAll ();
@@ -164,31 +156,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
             .Expect (mock => mock.LoadDataContainers (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
           .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
 
-        _eventSinkMock
-            .Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })))
-            .WhenCalled (mi =>
-            {
-              Assert.That (_clientTransaction.DataManager.DataContainerMap[_dataContainer1.ID], Is.Null);
-              Assert.That (_clientTransaction.DataManager.DataContainerMap[_dataContainer2.ID], Is.Null);
-            });
-
-        _eventSinkMock
-            .Expect (mock => mock.ObjectsLoaded (
-                Arg<ReadOnlyCollection<DomainObject>>.Matches (list => 
-                    list.Count == 2 
-                    && list[0].ID == _dataContainer1.ID 
-                    && list[1].ID == _dataContainer2.ID)))
-            .WhenCalled (mi =>
-            {
-              Assert.That (_clientTransaction.DataManager.DataContainerMap[_dataContainer1.ID], Is.SameAs (_dataContainer1));
-              Assert.That (_clientTransaction.DataManager.DataContainerMap[_dataContainer2.ID], Is.SameAs (_dataContainer2));
-              
-              var list = ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]);
-              Assert.That (((Order) list[0]).OnLoadedCalled, Is.True);
-              Assert.That (((Order) list[1]).OnLoadedCalled, Is.True);
-              
-              Assert.That (transactionEventReceiver.LoadedDomainObjects, Is.Empty);
-            });
+        ExpectObjectsLoading (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1, _dataContainer2);
       }
 
       _mockRepository.ReplayAll ();
@@ -200,6 +169,219 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[0], result[1] }));
     }
 
+    [Test]
+    public void LoadObjects_EmptyResult_Events ()
+    {
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      _dataSourceMock
+          .Expect (mock => mock.LoadDataContainers (new ObjectID[0], true))
+        .Return (new DataContainerCollection (new DataContainer[0], true));
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadObjects (new ObjectID[0], true);
+      Assert.That (result, Is.Empty);
+
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void LoadRelatedObject ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      _dataSourceMock
+          .Stub (mock => mock.LoadRelatedDataContainer (endPointID))
+          .Return (_dataContainer1);
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadRelatedObject (endPointID);
+
+      CheckLoadedObject (result, _dataContainer1);
+    }
+
+    [Test]
+    public void LoadRelatedObject_Null ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+
+      _dataSourceMock
+          .Stub (mock => mock.LoadRelatedDataContainer (endPointID))
+          .Return (null);
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadRelatedObject (endPointID);
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void LoadRelatedObject_Events ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      using (_mockRepository.Ordered ())
+      {
+        _dataSourceMock.Expect (mock => mock.LoadRelatedDataContainer (endPointID)).Return (_dataContainer1);
+
+        ExpectObjectsLoading (DomainObjectIDs.Order1);
+        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadRelatedObject (endPointID);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "LoadRelatedObject can only be used with virtual end points.\r\nParameter name: relationEndPointID")]
+    public void LoadRelatedObject_NonVirtualID ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
+      _objectLoader.LoadRelatedObject (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "LoadRelatedObject can only be used with one-valued end points.\r\nParameter name: relationEndPointID")]
+    public void LoadRelatedObject_WrongCardinality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      _objectLoader.LoadRelatedObject (endPointID);
+    }
+
+    [Test]
+    public void LoadRelatedObjects ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      _dataSourceMock
+          .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
+          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadRelatedObjects (endPointID);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      CheckLoadedObject (result[0], _dataContainer1);
+      CheckLoadedObject (result[1], _dataContainer2);
+    }
+
+    [Test]
+    public void LoadRelatedObjects_Events ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      using (_mockRepository.Ordered ())
+      {
+        _dataSourceMock
+            .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
+          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+
+        ExpectObjectsLoading (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer1, _dataContainer2);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadRelatedObjects (endPointID);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[0], result[1] }));
+    }
+
+    [Test]
+    public void LoadRelatedObjects_EmptyResult_Events ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      _dataSourceMock
+          .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
+        .Return (new DataContainerCollection (new DataContainer[0], true));
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadRelatedObjects (endPointID);
+      Assert.That (result, Is.Empty);
+
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "LoadRelatedObjects can only be used with many-valued end points.\r\nParameter name: relationEndPointID")]
+    public void LoadRelatedObjects_WrongCardinality ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      _objectLoader.LoadRelatedObjects (endPointID);
+    }
+
+    [Test]
+    public void LoadRelatedObjects_MergedResult ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+
+      var domainObject1 = PreregisterDataContainer(_dataContainer1);
+
+      _dataSourceMock
+          .Stub (mock => mock.LoadRelatedDataContainers (endPointID))
+          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadRelatedObjects (endPointID);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (result[0], Is.SameAs (domainObject1));
+      CheckLoadedObject (result[1], _dataContainer2);
+    }
+
+    [Test]
+    public void LoadRelatedObjects_MergedResult_Events ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      PreregisterDataContainer (_dataContainer1);
+
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      using (_mockRepository.Ordered ())
+      {
+        _dataSourceMock
+            .Expect (mock => mock.LoadRelatedDataContainers (endPointID))
+          .Return (new DataContainerCollection (new[] { _dataContainer1, _dataContainer2 }, true));
+
+        ExpectObjectsLoading (DomainObjectIDs.Order2);
+        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer2);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadRelatedObjects (endPointID);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[1] }));
+    }
+
     private void CheckLoadedObject (DomainObject loadedObject, DataContainer dataContainer)
     {
       Assert.That (loadedObject, Is.InstanceOfType (dataContainer.DomainObjectType));
@@ -209,5 +391,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (dataContainer.DomainObject, Is.SameAs (loadedObject));
     }
 
+    private void ExpectObjectsLoading (params ObjectID[] expectedIDs)
+    {
+      _eventSinkMock
+          .Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (expectedIDs)))
+          .WhenCalled (mi => Assert.That (
+              expectedIDs.All (id => _clientTransaction.DataManager.DataContainerMap[id] == null), 
+              "ObjectsLoading must be raised before IDs are registered"));
+    }
+
+    private void ExpectObjectsLoaded (ClientTransactionEventReceiver transactionEventReceiver, params DataContainer[] expectedDataContainers)
+    {
+      _eventSinkMock
+          .Expect (mock => mock.ObjectsLoaded (
+              Arg<ReadOnlyCollection<DomainObject>>.Matches (list =>
+                  list.Select (item => item.ID).SequenceEqual (expectedDataContainers.Select (dc => dc.ID)))))
+          .WhenCalled (mi =>
+          {
+            Assert.That (
+                expectedDataContainers.All (dc => _clientTransaction.DataManager.DataContainerMap[dc.ID] == dc),
+                "ObjectsLoaded must be raised after IDs are registered");
+            Assert.That (
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).OnLoadedCalled),
+                "ObjectsLoaded must be raised after OnLoaded is called");
+            Assert.That (
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).LoadTransaction == _clientTransaction),
+                "ObjectsLoaded must be raised after OnLoaded is called");
+            Assert.That (
+                transactionEventReceiver.LoadedDomainObjects, 
+                Is.Empty, 
+                "ObjectsLoaded must be raised before transaction OnLoaded is called");
+          });
+    }
+
+    private DomainObject PreregisterDataContainer (DataContainer dataContainer)
+    {
+      var domainObject = ClientTransactionTestHelper.CallGetObjectReference (_clientTransaction, dataContainer.ID);
+      dataContainer.SetDomainObject (domainObject);
+      dataContainer.RegisterWithTransaction (_clientTransaction);
+      return domainObject;
+    }
   }
 }

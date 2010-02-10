@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -86,6 +87,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (!relationEndPointID.Definition.IsVirtual)
         throw new ArgumentException ("LoadRelatedObject can only be used with virtual end points.", "relationEndPointID");
 
+      if (relationEndPointID.Definition.Cardinality != CardinalityType.One)
+        throw new ArgumentException ("LoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
+
       DataContainer relatedDataContainer = _dataSource.LoadRelatedDataContainer (relationEndPointID);
 
       if (relatedDataContainer != null)
@@ -109,6 +113,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
+      if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
+        throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
+
       var relatedDataContainers = _dataSource.LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
 
       FindNewDataContainersAndInitialize (relatedDataContainers);
@@ -128,16 +135,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void RaiseLoadedNotifications (ReadOnlyCollection<DomainObject> loadedObjects)
     {
-      using (_clientTransaction.EnterNonDiscardingScope ())
+      if (loadedObjects.Count != 0)
       {
-        if (loadedObjects.Count != 0)
+        using (_clientTransaction.EnterNonDiscardingScope ())
         {
           foreach (var loadedDomainObject in loadedObjects)
-            loadedDomainObject.OnLoaded ();
-
-          _eventSink.ObjectsLoaded (loadedObjects);
-          _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
+            loadedDomainObject.OnLoaded();
         }
+
+        _eventSink.ObjectsLoaded (loadedObjects);
+        _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
       }
     }
 
