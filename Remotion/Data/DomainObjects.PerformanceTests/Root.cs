@@ -51,42 +51,41 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       LogManager.Initialize ();
 
-      ServiceLocator.SetLocatorProvider (() => null);
+      LoadObjectsTest test1 = new LoadObjectsTest ();
+      test1.TestFixtureSetUp ();
 
-      //LoadObjectsTest test1 = new LoadObjectsTest();
-      //test1.TestFixtureSetUp();
+      // Have all xml files loaded, so if the code is instrumented by a profiler, 
+      // the loading does not falsify the method run times during the first call of GetObject.
+      MappingConfiguration mapping = MappingConfiguration.Current;
+      QueryConfiguration queryConfiguration = DomainObjectsConfiguration.Current.Query;
 
-      //// Have all xml files loaded, so if the code is instrumented by a profiler, 
-      //// the loading does not falsify the method run times during the first call of GetObject.
-      //MappingConfiguration mapping = MappingConfiguration.Current;
-      //QueryConfiguration queryConfiguration = DomainObjectsConfiguration.Current.Query;
+      test1.SetUp ();
+      test1.LoadObjectsOverRelationTest ();
+      test1.TearDown ();
 
-      //test1.SetUp();
-      //test1.LoadObjectsOverRelationTest();
-      //test1.TearDown();
+      test1.SetUp ();
+      test1.LoadObjectsOverRelationWithAbstractBaseClass ();
+      test1.TearDown ();
 
-      //test1.SetUp ();
-      //test1.LoadObjectsOverRelationWithAbstractBaseClass ();
-      //test1.TearDown ();
+      test1.TestFixtureTearDown ();
 
-      //test1.TestFixtureTearDown();
+      //var test2 = new SerializationTest();
+      //test2.TestFixtureSetUp();
 
-      var test2 = new SerializationTest();
-      test2.TestFixtureSetUp();
+      //var testMethods = from m in test2.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance)
+      //                  where m.IsDefined (typeof (TestAttribute), true) && !m.IsDefined (typeof (IgnoreAttribute), true)
+      //                  orderby m.Name
+      //                  select m;
+      //foreach (MethodInfo testMethod in testMethods)
+      //{
+      //  test2.SetUp ();
+      //  testMethod.Invoke (test2, new object[0]);
+      //  test2.TearDown ();
+      //}
 
-      var testMethods = from m in test2.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance)
-                        where m.IsDefined (typeof (TestAttribute), true) && !m.IsDefined (typeof (IgnoreAttribute), true)
-                        orderby m.Name
-                        select m;
-      foreach (MethodInfo testMethod in testMethods)
-      {
-        test2.SetUp ();
-        testMethod.Invoke (test2, new object[0]);
-        test2.TearDown ();
-      }
+      //test2.TestFixtureTearDown();
 
-      test2.TestFixtureTearDown();
-
+      Console.WriteLine ("Test compelte");
       Console.ReadLine();
     }
   }
