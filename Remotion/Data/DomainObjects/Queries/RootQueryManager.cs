@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// A collection containing the <see cref="DomainObject"/>s returned by the query.
     /// </returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
-    /// <exception cref="InvalidTypeException">The objects returned by the <paramref name="query"/> do not match the expected type
+    /// <exception cref="UnexpectedQueryResultException">The objects returned by the <paramref name="query"/> do not match the expected type
     /// <typeparamref name="T"/> or the configured collection type is not assignable to <see cref="ObjectList{T}"/> with the given <typeparamref name="T"/>.</exception>
     /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="Configuration.QueryType"/> of <see cref="Configuration.QueryType.Collection"/>.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
@@ -148,47 +148,16 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      T[] resultArray = ExecuteCollectionAndMergeResult<T> (query);
+      var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query);
       if (resultArray.Length > 0)
       {
         var fetcher = new EagerFetcher (this, resultArray);
         foreach (var fetchQuery in query.EagerFetchQueries)
-        {
           fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
-        }
       }
 
       var queryResult = new QueryResult<T> (query, resultArray);
       return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
-    }
-
-    private T[] ExecuteCollectionAndMergeResult<T> (IQuery query) where T: DomainObject
-    {
-      using (var storageProviderManager = new StorageProviderManager (_clientTransaction.ID))
-      {
-        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
-        var dataContainers = provider.ExecuteCollectionQuery (query);
-
-        _objectLoader.FindNewDataContainersAndInitialize (dataContainers);
-
-        return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID, true)));
-      }
-    }
-
-    private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
-    {
-      var castDomainObject = domainObject as T;
-      if (castDomainObject != null)
-        return castDomainObject;
-      else
-      {
-        string message = string.Format (
-            "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
-            domainObject.GetPublicDomainObjectType ().FullName,
-            typeof (T).FullName);
-
-        throw new UnexpectedQueryResultException (message);
-      }
     }
   }
 }

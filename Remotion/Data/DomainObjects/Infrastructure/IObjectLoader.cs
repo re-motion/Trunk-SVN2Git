@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -29,7 +30,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DomainObject[] LoadObjects (IList<ObjectID> idsToBeLoaded, bool throwOnNotFound);
     DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID);
     DomainObject[] LoadRelatedObjects (RelationEndPointID relationEndPointID);
-    // TODO 2244: Make nonpublic
-    void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers);
+    T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject;
   }
 }

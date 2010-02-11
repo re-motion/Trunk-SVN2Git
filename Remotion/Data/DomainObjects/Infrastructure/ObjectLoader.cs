@@ -20,6 +20,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -117,14 +119,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         throw new ArgumentException ("LoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var relatedDataContainers = _dataSource.LoadRelatedDataContainers (relationEndPointID).Cast<DataContainer> ();
+      return MergeQueryResult<DomainObject> (relatedDataContainers);
+    }
 
-      FindNewDataContainersAndInitialize (relatedDataContainers);
+    public T[] LoadCollectionQueryResult<T> (IQuery query) where T : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
 
-      var relatedObjects = from loadedDataContainer in relatedDataContainers
-                           let relatedID = loadedDataContainer.ID
-                           let registeredDataContainer = Assertion.IsNotNull (_clientTransaction.DataManager.DataContainerMap[relatedID])
-                           select registeredDataContainer.DomainObject;
-      return relatedObjects.ToArray ();
+      var dataContainers = _dataSource.LoadDataContainersForQuery (query);
+      return MergeQueryResult<T> (dataContainers);
     }
 
     private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)
@@ -141,14 +144,30 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         {
           foreach (var loadedDomainObject in loadedObjects)
             loadedDomainObject.OnLoaded();
-        }
 
-        _eventSink.ObjectsLoaded (loadedObjects);
-        _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
+          _eventSink.ObjectsLoaded (loadedObjects);
+
+          _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
+        }
       }
     }
 
-    public void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers)
+    private T[] MergeQueryResult<T> (IEnumerable<DataContainer> queryResult) 
+        where T : DomainObject
+    {
+      FindNewDataContainersAndInitialize (queryResult);
+
+      var relatedObjects = from loadedDataContainer in queryResult
+                           let maybeDataContainer = Maybe
+                               .ForValue (loadedDataContainer)
+                               .Select (dc => Assertion.IsNotNull (_clientTransaction.DataManager.DataContainerMap[dc.ID]))
+                           let maybeDomainObject = maybeDataContainer.Select (dc => GetCastQueryResultObject<T> (dc.DomainObject))
+                           select maybeDomainObject.ValueOrDefault();
+
+      return relatedObjects.ToArray ();
+    }
+
+    private void FindNewDataContainersAndInitialize (IEnumerable<DataContainer> dataContainers)
     {
       var newlyLoadedDataContainers = (from dataContainer in dataContainers
                                        where dataContainer != null && _clientTransaction.DataManager.DataContainerMap[dataContainer.ID] == null
@@ -162,6 +181,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var newlyLoadedDomainObjects = from dataContainer in newlyLoadedDataContainers
                                      select dataContainer.DomainObject;
       RaiseLoadedNotifications (newlyLoadedDomainObjects.ToList ().AsReadOnly ());
+    }
+
+    private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
+    {
+      var castDomainObject = domainObject as T;
+      if (castDomainObject != null)
+        return castDomainObject;
+      else
+      {
+        string message = string.Format (
+            "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
+            domainObject.GetPublicDomainObjectType ().FullName,
+            typeof (T).FullName);
+
+        throw new UnexpectedQueryResultException (message);
+      }
     }
 
     private void InitializeLoadedDataContainer (DataContainer dataContainer)

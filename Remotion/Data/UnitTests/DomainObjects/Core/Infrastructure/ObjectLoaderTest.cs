@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -43,6 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private DataContainer _dataContainer1;
     private DataContainer _dataContainer2;
 
+    private IQuery _queryStub;
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -57,6 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _dataContainer1 = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       _dataContainer2 = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+
+      _queryStub = _mockRepository.Stub<IQuery> ();
     }
 
     [Test]
@@ -380,6 +385,119 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _mockRepository.VerifyAll ();
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
       Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[1] }));
+    }
+
+    [Test]
+    public void LoadCollectionQueryResult ()
+    {
+      _dataSourceMock
+          .Stub (mock => mock.LoadDataContainersForQuery (_queryStub))
+          .Return (new[] { _dataContainer1, _dataContainer2 });
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadCollectionQueryResult<Order> (_queryStub);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      CheckLoadedObject (result[0], _dataContainer1);
+      CheckLoadedObject (result[1], _dataContainer2);
+    }
+
+    [Test]
+    public void LoadCollectionQueryResult_EmptyResult_Events ()
+    {
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      _dataSourceMock
+          .Stub (mock => mock.LoadDataContainersForQuery (_queryStub))
+        .Return (new DataContainer[0]);
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadCollectionQueryResult<Order> (_queryStub);
+      Assert.That (result, Is.Empty);
+
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void LoadCollectionQueryResult_MergedResult ()
+    {
+      var domainObject1 = PreregisterDataContainer (_dataContainer1);
+
+      _dataSourceMock
+          .Stub (mock => mock.LoadDataContainersForQuery (_queryStub))
+          .Return (new []{ _dataContainer1, _dataContainer2 });
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadCollectionQueryResult<Order> (_queryStub);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (result[0], Is.SameAs (domainObject1));
+      CheckLoadedObject (result[1], _dataContainer2);
+    }
+
+    [Test]
+    public void LoadCollectionQueryResult_MergedResult_Events ()
+    {
+      PreregisterDataContainer (_dataContainer1);
+
+      var transactionEventReceiver = new ClientTransactionEventReceiver (_clientTransaction);
+
+      using (_mockRepository.Ordered ())
+      {
+        _dataSourceMock
+            .Expect (mock => mock.LoadDataContainersForQuery (_queryStub))
+          .Return (new[] { _dataContainer1, _dataContainer2 });
+
+        ExpectObjectsLoading (DomainObjectIDs.Order2);
+        ExpectObjectsLoaded (transactionEventReceiver, _dataContainer2);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var result = _objectLoader.LoadCollectionQueryResult<Order> (_queryStub);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (transactionEventReceiver.LoadedDomainObjects[0], Is.EqualTo (new[] { result[1] }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = 
+        "The query returned an object of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order', but a query result of type "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer' was expected.")]
+    public void LoadCollectionQueryResult_CastError ()
+    {
+      _dataSourceMock
+          .Stub (mock => mock.LoadDataContainersForQuery (_queryStub))
+          .Return (new[] { _dataContainer1, _dataContainer2 });
+
+      _dataSourceMock.Replay ();
+
+      var result = _objectLoader.LoadCollectionQueryResult<Customer> (_queryStub);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      CheckLoadedObject (result[0], _dataContainer1);
+      CheckLoadedObject (result[1], _dataContainer2);
+    }
+
+    [Test]
+    public void ClientTransactionLoadedEvent_Transaction ()
+    {
+      ClientTransaction loadTransaction = null;
+      _clientTransaction.Loaded += delegate { loadTransaction = ClientTransaction.Current; };
+
+      _dataSourceMock.Stub (mock => mock.LoadDataContainer (DomainObjectIDs.Order1)).Return (_dataContainer1);
+      _mockRepository.ReplayAll ();
+
+      _objectLoader.LoadObject (DomainObjectIDs.Order1);
+
+      Assert.That (loadTransaction, Is.SameAs (_clientTransaction));
     }
 
     private void CheckLoadedObject (DomainObject loadedObject, DataContainer dataContainer)

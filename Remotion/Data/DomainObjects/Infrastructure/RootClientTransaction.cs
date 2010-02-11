@@ -168,12 +168,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      DataContainerCollection relatedDataContainers;
       using (var persistenceManager = new PersistenceManager (_id))
       {
-        relatedDataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
+        return persistenceManager.LoadRelatedDataContainers (relationEndPointID);
       }
-      return relatedDataContainers;
+    }
+
+    protected override DataContainer[] LoadDataContainersForQuery (IQuery query)
+    {
+      using (var storageProviderManager = new StorageProviderManager (ID))
+      {
+        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
+        return provider.ExecuteCollectionQuery (query);
+      }
     }
   }
 }

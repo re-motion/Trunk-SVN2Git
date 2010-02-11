@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -36,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
     /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-    /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>. 
+    /// All of these activities are performed by the caller. 
     /// </para>
     /// <para>
     /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
@@ -57,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
     /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-    /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>. 
+    /// All of these activities are performed by the caller. 
     /// </para>
     /// <para>
     /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
@@ -73,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
     /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-    /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>. 
+    /// All of these activities are performed by the caller. 
     /// </para>
     /// <para>
     /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
@@ -103,13 +105,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
     /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
     /// <returns>
-    /// A <see cref="DomainObjectCollection"/> containing all related <see cref="DomainObject"/>s.
+    /// A <see cref="DataContainerCollection"/> containing all related <see cref="DataContainer"/>s.
     /// </returns>
     /// <remarks>
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
     /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
-    /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>. 
+    /// All of these activities are performed by the caller. 
     /// </para>
     /// <para>
     /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
@@ -122,6 +124,37 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The StorageProvider for the related objects could not be initialized.
     /// </exception>
     DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
+
+    /// <summary>
+    /// Executes the given <see cref="IQuery"/> and returns its results as an array of <see cref="DataContainer"/> instances.
+    /// </summary>
+    /// <param name="query">The <see cref="IQuery"/> to be executed.</param>
+    /// <returns>
+    /// An array of <see cref="DataContainer"/> representing the result of the query.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
+    /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
+    /// All of these activities are performed by the caller. 
+    /// </para>
+    /// <para>
+    /// The caller should also raise the <see cref="IClientTransactionListener.ObjectsLoading"/> and 
+    /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
+    /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Collection"/>.</exception>
+    /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
+    /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
+    /// </exception>
+    /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
+    /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.
+    /// </exception>
+    /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
+    /// An error occurred while executing the query.
+    /// </exception>
+    DataContainer[] LoadDataContainersForQuery (IQuery query);
 
     /// <summary>
     /// Persists the changed data stored by the given <see cref="DataContainer"/> instances.

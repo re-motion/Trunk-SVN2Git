@@ -183,6 +183,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    protected override DataContainer[] LoadDataContainersForQuery (IQuery query)
+    {
+      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
+      {
+        var parentObjects = ParentTransaction.QueryManager.GetCollection (query).AsEnumerable();
+
+        var transferredContainers = new List<DataContainer>();
+        foreach (var parentObject in parentObjects)
+        {
+          DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer (parentObject));
+          transferredContainers.Add (transferredContainer);
+          Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
+        }
+        return transferredContainers.ToArray();
+      }
+    }
+
     private DataContainer TransferParentObject (DomainObject parentObject)
     {
       DataContainer parentDataContainer = ParentTransaction.GetDataContainer (parentObject);
