@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.ComponentModel.Design;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
@@ -49,6 +50,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       MappingConfiguration mappingConfiguration = new MappingConfiguration (new MappingReflector (typeDiscoveryService));
       MappingConfiguration.SetCurrent (mappingConfiguration);
+
+      ServiceLocator.SetLocatorProvider (() => null);
     }
   }
 }
