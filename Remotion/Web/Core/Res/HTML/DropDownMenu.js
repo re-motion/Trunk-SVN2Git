@@ -122,7 +122,7 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt)
       ul.appendChild(item);
   }
 
-  var titleDiv = $(context).children(':first');
+  var titleDiv = $(context).children().eq(0);
   var space_top = Math.round(titleDiv.offset().top - $(document).scrollTop());
   var space_bottom = Math.round($(window).height() - titleDiv.offset().top - titleDiv.height() + $(document).scrollTop());
   var space_left = titleDiv.offset().left;

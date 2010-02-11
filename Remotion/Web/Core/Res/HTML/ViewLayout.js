@@ -33,7 +33,7 @@ ViewLayout.AdjustSingleView = function(containerElement)
 {
   ViewLayout.SetParentUpdatePanelHeight(containerElement);
 
-  var contentElement = containerElement.children('div:first');
+  var contentElement = containerElement.children('div:eq(0)');
 
   ViewLayout.AdjustHeight(contentElement);
   ViewLayout.AdjustWidth(contentElement);
@@ -41,7 +41,7 @@ ViewLayout.AdjustSingleView = function(containerElement)
   var top = contentElement.children('div:eq(0)');
   var view = contentElement.children('div:eq(1)');
   var bottom = contentElement.children('div:eq(2)');
-  var viewContentBorder = view.children(':first');
+  var viewContentBorder = view.children().eq(0);
 
   top.css('top', '0');
   bottom.css('bottom', '0');
@@ -56,7 +56,7 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement)
 {
   ViewLayout.SetParentUpdatePanelHeight(containerElement);
 
-  var contentElement = containerElement.children('div:first');
+  var contentElement = containerElement.children('div:eq(0)');
 
   ViewLayout.AdjustHeight(contentElement);
   ViewLayout.AdjustWidth(contentElement);
@@ -65,7 +65,7 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement)
   var tabs = contentElement.children('div:eq(1)');
   var view = contentElement.children('div:eq(2)');
   var bottom = contentElement.children('div:eq(3)');
-  var viewContentBorder = view.children(':first');
+  var viewContentBorder = view.children().eq(0);
 
   top.css('top', '0');
   bottom.css('bottom', '0');
@@ -119,7 +119,7 @@ ViewLayout.FixIE6 = function(view, bottom)
 
   view.width(contentElement.innerWidth());
 
-  var contentBorder = view.children(':first');
+  var contentBorder = view.children().eq(0);
   var marginH = (contentBorder.outerHeight(true) - contentBorder.innerHeight()) * 4;
   var marginV = (contentBorder.outerWidth(true) - contentBorder.innerWidth()) * 4;
   contentBorder.css('top', 0);

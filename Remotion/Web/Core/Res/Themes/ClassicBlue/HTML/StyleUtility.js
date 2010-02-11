@@ -38,8 +38,8 @@ StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRig
 {
   var scrollDiv = element;
   while (scrollDiv.css('overflow') != 'auto' && scrollDiv.css('overflow') != 'scroll' && (scrollDiv.length > 0))
-    scrollDiv = scrollDiv.children(':first');
-  var scrolledDiv = scrollDiv.children(':first');
+      scrollDiv = scrollDiv.children().eq(0);
+  var scrolledDiv = scrollDiv.children().eq(0);
 
   var hasScrollbarsOnOverflow = scrollDiv.css('overflow') == 'auto' || scrollDiv.css('overflow') == 'scroll';
 
