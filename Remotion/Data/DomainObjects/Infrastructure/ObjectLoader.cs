@@ -31,6 +31,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Implements the mechanisms for loading a set of <see cref="DomainObject"/> objects into a <see cref="ClientTransaction"/>.
   /// This class should only be used by <see cref="ClientTransaction"/> and its subclasses.
   /// </summary>
+  /// <remarks>
+  /// This class signals all load-related events, but it does not signal the <see cref="IClientTransactionListener.FilterQueryResult{T}"/> event.
+  /// </remarks>
   [Serializable]
   public class ObjectLoader : IObjectLoader
   {
