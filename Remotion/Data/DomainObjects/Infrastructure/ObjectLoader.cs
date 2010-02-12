@@ -127,7 +127,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("query", query);
 
       var dataContainers = _dataSource.LoadDataContainersForQuery (query);
-      return MergeQueryResult<T> (dataContainers);
+      var resultArray = MergeQueryResult<T> (dataContainers);
+      
+      if (resultArray.Length > 0)
+      {
+        var fetcher = new EagerFetcher (this, _clientTransaction.DataManager.RelationEndPointMap, resultArray);
+        foreach (var fetchQuery in query.EagerFetchQueries)
+          fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
+      }
+
+      return resultArray;
     }
 
     private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)

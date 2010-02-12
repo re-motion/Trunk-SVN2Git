@@ -62,6 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _dataContainer2 = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
 
       _queryStub = _mockRepository.Stub<IQuery> ();
+      _queryStub.Stub (stub => stub.EagerFetchQueries).Return (new EagerFetchQueryCollection ());
     }
 
     [Test]

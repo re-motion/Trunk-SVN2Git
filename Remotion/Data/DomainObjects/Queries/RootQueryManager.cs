@@ -149,13 +149,6 @@ namespace Remotion.Data.DomainObjects.Queries
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
       var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query);
-      if (resultArray.Length > 0)
-      {
-        var fetcher = new EagerFetcher (this, resultArray);
-        foreach (var fetchQuery in query.EagerFetchQueries)
-          fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
-      }
-
       var queryResult = new QueryResult<T> (query, resultArray);
       return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
     }
