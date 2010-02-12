@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
+using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -33,12 +34,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public class ObjectLoader : IObjectLoader
   {
-    private readonly IDataSource _dataSource;
-    private readonly ClientTransaction _clientTransaction
-      ;
-    private readonly IClientTransactionListener _eventSink;
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ObjectLoader));
 
-    public ObjectLoader (ClientTransaction clientTransaction, IDataSource dataSource, IClientTransactionListener eventSink)
+    private readonly IDataSource _dataSource;
+    private readonly ClientTransaction _clientTransaction;
+    private readonly IClientTransactionListener _eventSink;
+    private readonly IEagerFetcher _fetcher;
+
+    public ObjectLoader (ClientTransaction clientTransaction, IDataSource dataSource, IClientTransactionListener eventSink, IEagerFetcher fetcher)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("dataSource", dataSource);
@@ -47,6 +50,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _dataSource = dataSource;
       _clientTransaction = clientTransaction;
       _eventSink = eventSink;
+      
+      _fetcher = fetcher;
     }
 
     public DomainObject LoadObject (ObjectID id)
@@ -131,12 +136,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       
       if (resultArray.Length > 0)
       {
-        var fetcher = new EagerFetcher (this, _clientTransaction.DataManager.RelationEndPointMap, resultArray);
         foreach (var fetchQuery in query.EagerFetchQueries)
-          fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
+          PerformEagerFetching (resultArray, fetchQuery.Key, fetchQuery.Value);
       }
 
       return resultArray;
+    }
+
+    private void PerformEagerFetching (DomainObject[] originalObjects, IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
+    {
+      s_log.DebugFormat (
+          "Eager fetching objects for {0} via query {1} ('{2}').", 
+          relationEndPointDefinition.PropertyName, 
+          fetchQuery.ID, 
+          fetchQuery.Statement);
+
+      var fetchedObjects = LoadCollectionQueryResult<DomainObject> (fetchQuery);
+      s_log.DebugFormat (
+          "The eager fetch query yielded {0} related objects for {1} original objects.", 
+          fetchedObjects.Length, 
+          originalObjects.Length);
+
+      _fetcher.CorrelateAndRegisterFetchResults(originalObjects, fetchedObjects, relationEndPointDefinition);
     }
 
     private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)

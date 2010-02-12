@@ -164,7 +164,7 @@ public abstract class ClientTransaction : IDataSource
 
     _applicationData = applicationData;
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
-    _objectLoader = new ObjectLoader (this, this, TransactionEventSink);
+    _objectLoader = new ObjectLoader (this, this, TransactionEventSink, new EagerFetcher (_dataManager));
     _enlistedObjectManager = enlistedObjectManager;
   }
 

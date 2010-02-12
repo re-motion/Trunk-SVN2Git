@@ -19,7 +19,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -30,9 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   [TestFixture]
   public class EagerFetcherTest : StandardMappingTest
   {
-    private IObjectLoader _objectLoaderMock;
     private RelationEndPointMap _relationEndPointMap;
-    private IQuery _fetchTestQuery;
     private IRelationEndPointDefinition _orderOrderItemsRelationEndPointDefinition;
     private IRelationEndPointDefinition _objectEndPointDefinitionReal;
     private IRelationEndPointDefinition _objectEndPointDefinitionVirtual;
@@ -46,16 +43,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     private OrderItem _orderItem4; // Order3
     private OrderItem _orderItemWithoutOrder; // no Order
     private OrderTicket _orderTicket1;
+    private EagerFetcher _fetcher;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _objectLoaderMock = MockRepository.GenerateMock<IObjectLoader> ();
-      var transaction = ClientTransaction.CreateRootTransaction ();
-      _relationEndPointMap = ClientTransactionTestHelper.GetDataManager (transaction).RelationEndPointMap;
 
-      var storageProviderID = DomainObjectIDs.Official1.StorageProviderID;
-      _fetchTestQuery = QueryFactory.CreateCollectionQuery ("fetch query", storageProviderID, "FETCH QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      var dataManager = ClientTransactionTestHelper.GetDataManager (transaction);
+      _relationEndPointMap = dataManager.RelationEndPointMap;
+
+      _fetcher = new EagerFetcher (dataManager);
+
       _orderOrderItemsRelationEndPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
       _objectEndPointDefinitionVirtual = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       _objectEndPointDefinitionReal = DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
@@ -75,17 +74,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void PerformEagerFetching_ExecutesFetchQuery ()
-    {
-      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_fetchTestQuery)).Return (new DomainObject[0]);
-
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.PerformEagerFetching (_orderOrderItemsRelationEndPointDefinition, _fetchTestQuery);
-
-      _objectLoaderMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void RelationLoad_Normally_RegistersEndPoint ()
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointMap.ClientTransaction);
@@ -98,12 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void RelationLoad_AfterFetching_DoesntRegisterEndPoint ()
     {
-      _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_fetchTestQuery))
-          .Return (new DomainObject[] { _orderItem1 });
-
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.PerformEagerFetching (_orderOrderItemsRelationEndPointDefinition, _fetchTestQuery);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointMap.ClientTransaction);
 
@@ -113,13 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_RegistersQueryResult ()
+    public void CorrelateAndRegisterFetchResults_RegistersQueryResult ()
     {
       var id = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
       Assert.That (_relationEndPointMap[id], Is.Null);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem2 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem2 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (_relationEndPointMap[id], Is.Not.Null);
       Assert.That (
@@ -128,13 +110,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_RegistersQueryResult_WithCorrectCollectionType ()
+    public void CorrelateAndRegisterFetchResults_RegistersQueryResult_WithCorrectCollectionType ()
     {
       var id = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
       Assert.That (_relationEndPointMap[id], Is.Null);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem2 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem2 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (_relationEndPointMap[id], Is.Not.Null);
       Assert.That (((CollectionEndPoint) _relationEndPointMap[id]).OppositeDomainObjects.GetType(), Is.EqualTo (typeof (ObjectList<OrderItem>)));
@@ -142,14 +123,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
     
     [Test]
-    public void CollateAndRegisterFetchResults_CollatesQueryResult ()
+    public void CorrelateAndRegisterFetchResults_CollatesQueryResult ()
     {
-      _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_fetchTestQuery))
-          .Return (new DomainObject[] { _orderItem4, _orderItem1, _orderItem3, _orderItem2 });
-
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1, _order2, _order3 });
-      fetcher.CollateAndRegisterFetchResults (
+      _fetcher.CorrelateAndRegisterFetchResults (
           new[] { _order1, _order2, _order3 },
           new[] { _orderItem4, _orderItem1, _orderItem3, _orderItem2 },
           _orderOrderItemsRelationEndPointDefinition);
@@ -160,60 +136,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_IgnoresResultsWithoutOriginalObject ()
+    public void CorrelateAndRegisterFetchResults_IgnoresResultsWithoutOriginalObject ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (_relationEndPointMap[id1], Is.Null);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order2 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order2 }, new[] { _orderItem2, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order2 }, new[] { _orderItem2, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
       
       Assert.That (_relationEndPointMap[id1], Is.Null);
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_IgnoresResultsWithNullObject ()
+    public void CorrelateAndRegisterFetchResults_IgnoresResultsWithNullObject ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1 }, new[] { null, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { null, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (_relationEndPointMap[id1], Is.Not.Null);
       Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_IgnoresResultsWithDuplicates ()
+    public void CorrelateAndRegisterFetchResults_IgnoresResultsWithDuplicates ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
-
-
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
+      
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItem1, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (_relationEndPointMap[id1], Is.Not.Null);
       Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_IgnoresOriginalNullObject ()
+    public void CorrelateAndRegisterFetchResults_IgnoresOriginalNullObject ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { null, _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { null, _order1 }, new[] { null, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { null, _order1 }, new[] { null, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (_relationEndPointMap[id1], Is.Not.Null);
       Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_WithoutOriginalObject_CausesRelationToBeLoadedOnAccess ()
+    public void CorrelateAndRegisterFetchResults_WithoutOriginalObject_CausesRelationToBeLoadedOnAccess ()
     {
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order2 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order2 }, new[] { _orderItem2, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order2 }, new[] { _orderItem2, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointMap.ClientTransaction);
       
@@ -225,49 +195,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_RegistersEmptyCollectionIfNoRelated ()
+    public void CorrelateAndRegisterFetchResults_RegistersEmptyCollectionIfNoRelated ()
     {
-      _objectLoaderMock
-          .Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_fetchTestQuery))
-          .Return (new DomainObject[] { _orderItem1 });
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1, _order2, _order3 }, new[] { _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1, _order2, _order3 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1, _order2, _order3 }, new[] { _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
+      Assert.That (GetOrderItemsInFetchTransaction (_order1), Is.EqualTo (new[] { _orderItem1 }));
+      Assert.That (GetOrderItemsInFetchTransaction (_order2), Is.Empty);
+      Assert.That (GetOrderItemsInFetchTransaction (_order3), Is.Empty);
     }
 
     [Test]
     [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "An eager fetch query returned an "
         + "object of an unexpected type. For relation end point 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems', an object of "
         + "class 'OrderItem' was expected, but an object of class 'Order' was returned.")]
-    public void CollateAndRegisterFetchResults_ThrowsOnInvalidResultType ()
+    public void CorrelateAndRegisterFetchResults_ThrowsOnInvalidResultType ()
     {
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order3 }, new[] { _order1 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order3 }, new[] { _order1 }, _orderOrderItemsRelationEndPointDefinition);
     }
 
     [Test]
     [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "Eager fetching cannot be performed for query result object "
         + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' and relation end point 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
         + "Order.OrderItems'. The end point belongs to an object of class 'Order' but the query result has class 'OrderItem'.")]
-    public void CollateAndRegisterFetchResults_ThrowsOnInvalidOriginalType ()
+    public void CorrelateAndRegisterFetchResults_ThrowsOnInvalidOriginalType ()
     {
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _orderItem1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _orderItem1 }, new[] { _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _orderItem1 }, new[] { _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_IgnoresResultObjectsWithoutOriginalObject ()
+    public void CorrelateAndRegisterFetchResults_IgnoresResultObjectsWithoutOriginalObject ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItemWithoutOrder, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
+      var fetcher = _fetcher;
+      fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderItemWithoutOrder, _orderItem1 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects, Is.EqualTo (new[] { _orderItem1 }));
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_IgnoresResultObjectsWithAlreadyRegisteredEndPoints ()
+    public void CorrelateAndRegisterFetchResults_IgnoresResultObjectsWithAlreadyRegisteredEndPoints ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);
       var id2 = new RelationEndPointID (_order2.ID, _orderOrderItemsRelationEndPointDefinition);
@@ -276,8 +243,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (_relationEndPointMap[id1], Is.Not.Null);
       Assert.That (_relationEndPointMap[id2], Is.Null);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1, _order2 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1, _order2 }, new[] { _orderItem1, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
+      var fetcher = _fetcher;
+      fetcher.CorrelateAndRegisterFetchResults (new[] { _order1, _order2 }, new[] { _orderItem1, _orderItem3 }, _orderOrderItemsRelationEndPointDefinition);
 
       Assert.That (
           ((CollectionEndPoint) _relationEndPointMap[id1]).OppositeDomainObjects,
@@ -288,61 +255,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void PerformEagerFetching_ObjectEndPoint_ExecutesQuery ()
-    {
-      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_fetchTestQuery)).Return (new DomainObject[0]);
-
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.PerformEagerFetching (_objectEndPointDefinitionVirtual, _fetchTestQuery);
-
-      _objectLoaderMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void CollateAndRegisterFetchResults_ObjectEndPoint_Virtual_EndPointIsRegistered ()
+    public void CorrelateAndRegisterFetchResults_ObjectEndPoint_Virtual_EndPointIsRegistered ()
     {
       var endPointID = new RelationEndPointID (_order1.ID, _objectEndPointDefinitionVirtual);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _order1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderTicket1 }, _objectEndPointDefinitionVirtual);
-
-      _objectLoaderMock.VerifyAllExpectations();
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _order1 }, new[] { _orderTicket1 }, _objectEndPointDefinitionVirtual);
 
       Assert.That (_relationEndPointMap[endPointID], Is.Not.Null);
       Assert.That (((ObjectEndPoint) _relationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_orderTicket1.ID));
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_ObjectEndPoint_Real_EndPointIsRegistered ()
+    public void CorrelateAndRegisterFetchResults_ObjectEndPoint_Real_EndPointIsRegistered ()
     {
       var endPointID = new RelationEndPointID (_orderTicket1.ID, _objectEndPointDefinitionReal);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _orderTicket1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _orderTicket1 }, new[] { _order1 }, _objectEndPointDefinitionReal);
-
-      _objectLoaderMock.VerifyAllExpectations();
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _orderTicket1 }, new[] { _order1 }, _objectEndPointDefinitionReal);
 
       Assert.That (_relationEndPointMap[endPointID], Is.Not.Null);
       Assert.That (((ObjectEndPoint) _relationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
     }
 
     [Test]
-    public void CollateAndRegisterFetchResults_ObjectEndPoint_OneMany_EndPointIsRegistered ()
+    public void CorrelateAndRegisterFetchResults_ObjectEndPoint_OneMany_EndPointIsRegistered ()
     {
       var endPointID = new RelationEndPointID (_orderItem1.ID, _objectEndPointDefinitionOneMany);
 
-      var fetcher = CreateEagerFetcher (new DomainObject[] { _orderItem1 });
-      fetcher.CollateAndRegisterFetchResults (new[] { _orderItem1 }, new[] { _order1 }, _objectEndPointDefinitionOneMany);
-
-      _objectLoaderMock.VerifyAllExpectations();
+      _fetcher.CorrelateAndRegisterFetchResults (new[] { _orderItem1 }, new[] { _order1 }, _objectEndPointDefinitionOneMany);
 
       Assert.That (_relationEndPointMap[endPointID], Is.Not.Null);
       Assert.That (((ObjectEndPoint) _relationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
-    }
-
-    private EagerFetcher CreateEagerFetcher (DomainObject[] originalResult)
-    {
-      return new EagerFetcher (_objectLoaderMock, _relationEndPointMap, originalResult);
     }
 
     private ObjectList<OrderItem> GetOrderItemsInFetchTransaction (Order order)

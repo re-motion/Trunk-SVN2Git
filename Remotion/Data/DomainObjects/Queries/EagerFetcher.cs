@@ -27,43 +27,23 @@ using Remotion.Logging;
 namespace Remotion.Data.DomainObjects.Queries
 {
   /// <summary>
-  /// Used by the <see cref="IQueryManager"/> implementations in order to perform eager fetching of collection queries.
+  /// Used by the <see cref="ObjectLoader"/> in order to perform eager fetching of collection queries.
   /// See <see cref="IQuery.EagerFetchQueries"/> for more information on eager fetching.
   /// </summary>
-  public class EagerFetcher
+  [Serializable]
+  public class EagerFetcher : IEagerFetcher
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (EagerFetcher));
 
-    private readonly IObjectLoader _objectLoader;
-    private readonly RelationEndPointMap _relationEndPointMap;
-    private readonly DomainObject[] _originalResults;
+    private readonly DataManager _dataManager;
 
-    public EagerFetcher (IObjectLoader objectLoader, RelationEndPointMap relationEndPointMap, DomainObject[] originalResults)
+    public EagerFetcher (DataManager dataManager)
     {
-      ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
-      ArgumentUtility.CheckNotNull ("relationEndPointMap", relationEndPointMap);
-      ArgumentUtility.CheckNotNull ("originalResults", originalResults);
-
-      _objectLoader = objectLoader;
-      _relationEndPointMap = relationEndPointMap;
-      _originalResults = originalResults;
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      _dataManager = dataManager;
     }
 
-    public void PerformEagerFetching (IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
-    {
-      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
-      ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
-
-      s_log.DebugFormat (
-          "Eager fetching objects for {0} via query {1} ('{2}').", relationEndPointDefinition.PropertyName, fetchQuery.ID, fetchQuery.Statement);
-
-      var fetchedResult = _objectLoader.LoadCollectionQueryResult<DomainObject> (fetchQuery);
-      s_log.DebugFormat ("The eager fetch query yielded {0} related objects for {1} original objects.", fetchedResult.Length, _originalResults.Length);
-
-      CollateAndRegisterFetchResults(_originalResults, fetchedResult, relationEndPointDefinition);
-    }
-
-    public void CollateAndRegisterFetchResults (
+    public void CorrelateAndRegisterFetchResults (
         IEnumerable<DomainObject> originalObjects, 
         IEnumerable<DomainObject> fetchedObjects, 
         IRelationEndPointDefinition relationEndPointDefinition)
@@ -98,7 +78,8 @@ namespace Remotion.Data.DomainObjects.Queries
         {
           CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
 
-          var originatingObject = _relationEndPointMap.GetRelatedObject (new RelationEndPointID (relatedObject.ID, oppositeEndPointDefinition), true);
+          var relationEndPointID = new RelationEndPointID (relatedObject.ID, oppositeEndPointDefinition);
+          var originatingObject = _dataManager.RelationEndPointMap.GetRelatedObject (relationEndPointID, true);
           if (originatingObject != null)
             result.Add (originatingObject, relatedObject);
           else
@@ -115,9 +96,9 @@ namespace Remotion.Data.DomainObjects.Queries
 
     private void RegisterRelationResult (RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
     {
-      if (_relationEndPointMap[relationEndPointID] == null)
+      if (_dataManager.RelationEndPointMap[relationEndPointID] == null)
       {
-        _relationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, relatedObjects);
+        _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, relatedObjects);
       }
       else
       {
@@ -133,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Queries
           relationEndPointID.Definition.PropertyName,
           relatedObjects.Count(),
           relationEndPointID.ObjectID,
-          ((ICollectionEndPoint) _relationEndPointMap[relationEndPointID]).OppositeDomainObjects.Count);
+          ((ICollectionEndPoint) _dataManager.RelationEndPointMap[relationEndPointID]).OppositeDomainObjects.Count);
     }
 
     private void LogNullRelatedObject (IRelationEndPointDefinition relationEndPointDefinition)

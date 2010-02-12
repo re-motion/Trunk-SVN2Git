@@ -184,6 +184,7 @@
     <Compile Include="Infrastructure\IObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectLoader.cs" />
     <Compile Include="Linq\MappedTable.cs" />
+    <Compile Include="Queries\IEagerFetcher.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommand.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommand.cs" />
