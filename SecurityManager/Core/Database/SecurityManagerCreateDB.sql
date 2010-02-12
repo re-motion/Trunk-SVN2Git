@@ -21,5 +21,4 @@ LOG ON (
 GO
 
 ALTER DATABASE RemotionSecurityManager SET RECOVERY SIMPLE
-BACKUP LOG RemotionSecurityManager WITH TRUNCATE_ONLY
 GO
