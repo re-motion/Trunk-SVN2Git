@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects
     {
       var visited = new Set<DomainObject> ();
       var resultSet = new Set<DomainObject> ();
-      var objectsToBeProcessed = new Set<Tuple<DomainObject, int>> (Tuple.NewTuple (_rootObject, 0));
+      var objectsToBeProcessed = new Set<Tuple<DomainObject, int>> (Tuple.Create (_rootObject, 0));
 
       while (objectsToBeProcessed.Count > 0)
       {
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects
             {
               var relatedObject = (DomainObject) property.GetValueWithoutTypeCheck ();
               if (relatedObject != null)
-                yield return Tuple.NewTuple (relatedObject, currentDepth + 1);
+                yield return Tuple.Create (relatedObject, currentDepth + 1);
             }
             break;
           case PropertyKind.RelatedObjectCollection:
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects
               foreach (DomainObject relatedObject in (DomainObjectCollection) property.GetValueWithoutTypeCheck ())
               {
                 if (relatedObject != null)
-                  yield return Tuple.NewTuple (relatedObject, currentDepth + 1);
+                  yield return Tuple.Create (relatedObject, currentDepth + 1);
               }
             }
             break;

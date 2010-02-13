@@ -20,19 +20,37 @@ namespace Remotion.Collections
 {
   public static class Tuple
   {
-    public static Tuple<TA, TB> NewTuple<TA, TB> (TA a, TB b)
+    public static Tuple<TA, TB> Create<TA, TB> (TA a, TB b)
     {
       return new Tuple<TA, TB> (a, b);
     }
 
-    public static Tuple<TA, TB, TC> NewTuple<TA, TB, TC> (TA a, TB b, TC c)
+    public static Tuple<TA, TB, TC> Create<TA, TB, TC> (TA a, TB b, TC c)
     {
       return new Tuple<TA, TB, TC> (a, b, c);
     }
 
-    public static Tuple<TA, TB, TC, TD> NewTuple<TA, TB, TC, TD> (TA a, TB b, TC c, TD d)
+    public static Tuple<TA, TB, TC, TD> Create<TA, TB, TC, TD> (TA a, TB b, TC c, TD d)
     {
       return new Tuple<TA, TB, TC, TD> (a, b, c, d);
+    }
+
+    [Obsolete ("Use Tuple.Create instead. (Version 1.13.47)")]
+    public static Tuple<TA, TB> NewTuple<TA, TB> (TA a, TB b)
+    {
+      return Tuple.Create (a, b);
+    }
+
+    [Obsolete ("Use Tuple.Create instead. (Version 1.13.47)")]
+    public static Tuple<TA, TB, TC> NewTuple<TA, TB, TC> (TA a, TB b, TC c)
+    {
+      return Tuple.Create (a, b, c);
+    }
+
+    [Obsolete ("Use Tuple.Create instead. (Version 1.13.47)")]
+    public static Tuple<TA, TB, TC, TD> NewTuple<TA, TB, TC, TD> (TA a, TB b, TC c, TD d)
+    {
+      return Tuple.Create (a, b, c, d);
     }
   }
 }

@@ -380,7 +380,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void SelectMany_FirstNothing_ReturnsNothing ()
     {
-      var result = _stringNothing.SelectMany (s => _intNonNothingFour, (s, i) => Tuple.NewTuple (s, i));
+      var result = _stringNothing.SelectMany (s => _intNonNothingFour, (s, i) => Tuple.Create (s, i));
 
       Assert.That (result, Is.EqualTo (Maybe<Tuple<string, int>>.Nothing));
     }
@@ -397,7 +397,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       }, (s, i) =>
       {
         secondSelectorCalled = true;
-        return Tuple.NewTuple (s, i);
+        return Tuple.Create (s, i);
       });
 
       Assert.That (firstSelectorCalled, Is.False);
@@ -407,7 +407,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void SelectMany_SecondNothing_ReturnsNothing ()
     {
-      var result = _stringNonNothingTest.SelectMany (s => _intNothing, (s, i) => Tuple.NewTuple (s, i));
+      var result = _stringNonNothingTest.SelectMany (s => _intNothing, (s, i) => Tuple.Create (s, i));
 
       Assert.That (result, Is.EqualTo (Maybe<Tuple<string, int>>.Nothing));
     }
@@ -424,7 +424,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       }, (s, i) =>
       {
         secondSelectorCalled = true;
-        return Tuple.NewTuple (s, i);
+        return Tuple.Create (s, i);
       });
 
       Assert.That (firstSelectorCalled, Is.True);

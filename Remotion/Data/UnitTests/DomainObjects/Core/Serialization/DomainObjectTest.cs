@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       instance.IntProperty = 6;
       Tuple<ClientTransaction, ClassDerivedFromSimpleDomainObject> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransaction.Current, instance));
+          Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
       ClassDerivedFromSimpleDomainObject deserializedInstance = deserializedData.B;
       using (deserializedData.A.EnterNonDiscardingScope ())
       {
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassWithAllDataTypes instance = ClassWithAllDataTypes.NewObject ();
       instance.Int32Property = 5;
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransaction.Current, instance));
+          Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
       ClassWithAllDataTypes deserializedInstance = deserializedData.B;
       using (deserializedData.A.EnterNonDiscardingScope ())
       {
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       instance.Int32Property = 5;
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.NewTuple (instance.GetBindingTransaction(), instance));
+          Serializer.SerializeAndDeserialize (Tuple.Create (instance.GetBindingTransaction(), instance));
       
       ClassWithAllDataTypes deserializedInstance = deserializedData.B;
       Assert.IsTrue (deserializedInstance.HasBindingTransaction);
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, instance.OnLoadedLoadMode);
 
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransaction.Current, instance));
+          Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
 
       using (deserializedData.A.EnterNonDiscardingScope ())
       {
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       var eventReceiver = new DomainObjectEventReceiver (instance);
 
-      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (instance, eventReceiver));
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (instance, eventReceiver));
       AssertEventRegistered (deserializedData.A, "RelationChanging", deserializedData.B, GetEventHandlerMethod (instance, "RelationChanging"));
       AssertEventRegistered (deserializedData.A, "RelationChanged", deserializedData.B, GetEventHandlerMethod (instance, "RelationChanged"));
       AssertEventRegistered (deserializedData.A, "PropertyChanging", deserializedData.B, GetEventHandlerMethod (instance, "PropertyChanging"));

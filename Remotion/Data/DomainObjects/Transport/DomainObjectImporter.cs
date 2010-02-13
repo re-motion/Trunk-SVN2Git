@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Transport
           foreach (TransportItem transportItem in _transportItems)
           {
             DataContainer targetDataContainer = GetTargetDataContainer (transportItem, existingObjectDictionary, bindingTargetTransaction);
-            result.Add (Tuple.NewTuple (transportItem, targetDataContainer));
+            result.Add (Tuple.Create (transportItem, targetDataContainer));
           }
         }
       }

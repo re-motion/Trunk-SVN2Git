@@ -65,7 +65,7 @@ namespace Remotion.Mixins.Samples.UnitTests
       _invocationHandler = delegate (object instance, MethodInfo method, object[] args, BaseMethodInvoker baseMethod)
       {
         object result = baseMethod (args);
-        _calls.Add (Tuple.NewTuple (instance, method, args, result));
+        _calls.Add (Tuple.Create (instance, method, args, result));
         return "Intercepted: " + result;
       };
       

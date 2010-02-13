@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var endPointID = new RelationEndPointID (customer1.ID, collection.AssociatedEndPoint.Definition);
       var relatedIDs = collection.Select (obj => obj.ID).ToArray();
 
-      var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.NewTuple (collection, ClientTransactionMock));
+      var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.Create (collection, ClientTransactionMock));
       var deserializedCollection = deserializedCollectionAndTransaction.A;
       var deserializedTransaction = deserializedCollectionAndTransaction.B;
 
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var eventReceiver = new DomainObjectCollectionEventReceiver (collection);
 
-      var deserializedCollectionAndEventReceiver = Serializer.SerializeAndDeserialize (Tuple.NewTuple (collection, eventReceiver));
+      var deserializedCollectionAndEventReceiver = Serializer.SerializeAndDeserialize (Tuple.Create (collection, eventReceiver));
       var deserializedCollection = deserializedCollectionAndEventReceiver.A;
       var deserializedEventReceiver = deserializedCollectionAndEventReceiver.B;
 

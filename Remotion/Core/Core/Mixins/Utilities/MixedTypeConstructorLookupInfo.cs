@@ -153,7 +153,7 @@ namespace Remotion.Mixins.Utilities
 
     protected override object GetCacheKey (Type delegateType)
     {
-      return Tuple.NewTuple (_allowNonPublic, _targetType, base.GetCacheKey (delegateType));
+      return Tuple.Create (_allowNonPublic, _targetType, base.GetCacheKey (delegateType));
     }
   }
 }

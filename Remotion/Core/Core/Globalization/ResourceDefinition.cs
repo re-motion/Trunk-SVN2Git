@@ -71,7 +71,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("attributes", attributes);
 
-      _supplementingAttributes.Add (Tuple.NewTuple (type, attributes));
+      _supplementingAttributes.Add (Tuple.Create (type, attributes));
     }
 
     public void AddSupplementingAttributes (IEnumerable<Tuple<Type, TAttribute[]>> attributePairs)

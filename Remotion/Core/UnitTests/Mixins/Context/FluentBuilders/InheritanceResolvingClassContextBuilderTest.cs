@@ -58,8 +58,8 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _classContextBuilderWithParent.AddMixin (typeof (BT4Mixin1));
 
       _buildersWithParentContexts = new Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> ();
-      _buildersWithParentContexts.Add (_classContextBuilderWithParent.TargetType, Tuple.NewTuple (_classContextBuilderWithParent, _parentContextWithBuilder));
-      _buildersWithParentContexts.Add (_classContextBuilderWithoutParent.TargetType, Tuple.NewTuple (_classContextBuilderWithoutParent, (ClassContext) null));
+      _buildersWithParentContexts.Add (_classContextBuilderWithParent.TargetType, Tuple.Create (_classContextBuilderWithParent, _parentContextWithBuilder));
+      _buildersWithParentContexts.Add (_classContextBuilderWithoutParent.TargetType, Tuple.Create (_classContextBuilderWithoutParent, (ClassContext) null));
 
       _parentContextWithoutBuilder = new ClassContext (typeof (BaseType1));
       _parentContexts = new ClassContextCollection (_parentContextWithoutBuilder, _parentContextWithBuilder);

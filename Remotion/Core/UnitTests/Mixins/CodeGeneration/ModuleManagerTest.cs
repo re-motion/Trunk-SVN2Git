@@ -214,8 +214,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
               Assert.That (loadedAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
             }
           },
-          Tuple.NewTuple (_signedSavedModulePath, _signedSavedType.FullName),
-          Tuple.NewTuple (_unsignedSavedModulePath, _unsignedSavedType.FullName));
+          Tuple.Create (_signedSavedModulePath, _signedSavedType.FullName),
+          Tuple.Create (_unsignedSavedModulePath, _unsignedSavedType.FullName));
     }
 
     [Test]

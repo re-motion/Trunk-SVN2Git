@@ -27,7 +27,7 @@ namespace Remotion.Mixins.Validation.Rules
     public IEnumerable<TMemberDefinition> GetCachedMembersByName (IDataStore<object, object> contextStore, TargetClassDefinition targetClass, string name)
     {
       Tuple<string, TargetClassDefinition> cacheKey =
-          Tuple.NewTuple (typeof (ContextStoreMemberLookupUtility<TMemberDefinition>).FullName + ".GetCachedMembersByName", targetClass);
+          Tuple.Create (typeof (ContextStoreMemberLookupUtility<TMemberDefinition>).FullName + ".GetCachedMembersByName", targetClass);
 
       var methodDefinitions = (MultiDictionary<string, TMemberDefinition>)
           contextStore.GetOrCreateValue (cacheKey, delegate { return GetUncachedMethodDefinitions (targetClass); });

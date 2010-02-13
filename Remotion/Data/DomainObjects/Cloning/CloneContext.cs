@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Cloning
       return (T) _clones.GetOrCreateValue (domainObject, delegate (DomainObject cloneTemplate)
       {
         DomainObject clone = _cloner.CreateCloneHull (cloneTemplate);
-        CloneHulls.Enqueue (Tuple.NewTuple (cloneTemplate, clone));
+        CloneHulls.Enqueue (Tuple.Create (cloneTemplate, clone));
         return clone;
       });
     }

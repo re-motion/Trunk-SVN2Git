@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var newOpposites = industrialSector.Companies.Clone ();
       industrialSector.Companies = newOpposites;
 
-      var tuple = Tuple.NewTuple (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
+      var tuple = Tuple.Create (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
       var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
       using (deserializedTuple.A.EnterDiscardingScope())
       {
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var newOpposites = industrialSector.Companies.Clone ();
       industrialSector.Companies = newOpposites;
 
-      var tuple = Tuple.NewTuple (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
+      var tuple = Tuple.Create (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
       var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
       using (deserializedTuple.A.EnterDiscardingScope ())
       {

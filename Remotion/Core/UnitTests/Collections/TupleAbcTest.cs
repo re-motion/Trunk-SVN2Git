@@ -37,6 +37,16 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void EasyInitialize ()
     {
+      TestTuple tuple = Tuple.Create (1, "X", 2.5);
+      Assert.AreEqual (1, tuple.A);
+      Assert.AreEqual ("X", tuple.B);
+      Assert.AreEqual (2.5, tuple.C);
+    }
+
+    [Test]
+    [Obsolete]
+    public void EasyInitialize_Obsolete ()
+    {
       TestTuple tuple = Tuple.NewTuple (1, "X", 2.5);
       Assert.AreEqual (1, tuple.A);
       Assert.AreEqual ("X", tuple.B);

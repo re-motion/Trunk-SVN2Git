@@ -143,7 +143,7 @@ namespace Remotion.UnitTests.Mixins
       var thisMock = new SerializableBaseType32Mock ();
 
       BT3Mixin2 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin2, IBaseType32> (thisMock);
-      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (thisMock, mixin));
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (thisMock, mixin));
 
       MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.B, deserializedData.A);
       Assert.That (deserializedData.B.This, Is.Not.Null);
@@ -157,7 +157,7 @@ namespace Remotion.UnitTests.Mixins
       var baseMock = new SerializableBaseType31Mock ();
 
       BT3Mixin1 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin1, IBaseType31, IBaseType31> (thisMock, baseMock);
-      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (thisMock, baseMock, mixin));
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (thisMock, baseMock, mixin));
 
       MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.C, deserializedData.A, deserializedData.B);
       Assert.That (deserializedData.C.This, Is.Not.Null);

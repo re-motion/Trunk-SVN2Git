@@ -87,7 +87,7 @@ namespace Remotion.Mixins.Context
         MixinContext overrideForMixin;
         if ((overrideForMixin = MixinContextCollection.GetOverrideForMixin (potentialOverrides, mixin.MixinType)) != null
             && !MixinContextCollection.ContainsOverrideForMixin (baseMixins, overrideForMixin.MixinType))
-          return Tuple.NewTuple (mixin, overrideForMixin);
+          return Tuple.Create (mixin, overrideForMixin);
       }
       return null;
     }

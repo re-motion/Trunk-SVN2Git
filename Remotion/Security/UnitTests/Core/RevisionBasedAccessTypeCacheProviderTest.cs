@@ -142,7 +142,7 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext securityContext = SecurityContext.CreateStateless(typeof (SecurableObject));
       AccessType[] accessTypes = new[] { AccessType.Get (TestAccessTypes.Fifth) };
       ISecurityPrincipal securityPrincipal = new SecurityPrincipal ("foo", null, null, null);
-      provider.GetCache().GetOrCreateValue (Tuple.NewTuple ((ISecurityContext) securityContext, securityPrincipal), delegate { return accessTypes; });
+      provider.GetCache().GetOrCreateValue (Tuple.Create ((ISecurityContext) securityContext, securityPrincipal), delegate { return accessTypes; });
 
       RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
 
@@ -153,7 +153,7 @@ namespace Remotion.Security.UnitTests.Core
       Assert.IsFalse (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
 
       AccessType[] newAccessTypes;
-      bool result = deserializedProvider.GetCache().TryGetValue (Tuple.NewTuple ((ISecurityContext) securityContext, securityPrincipal), out newAccessTypes);
+      bool result = deserializedProvider.GetCache().TryGetValue (Tuple.Create ((ISecurityContext) securityContext, securityPrincipal), out newAccessTypes);
       Assert.IsTrue (result);
       Assert.AreNotSame (accessTypes, newAccessTypes);
       Assert.AreEqual (1, newAccessTypes.Length);

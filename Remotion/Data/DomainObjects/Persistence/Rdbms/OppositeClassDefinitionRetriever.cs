@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       bool hasClassIDColumn =
           s_hasClassIDColumnCache.GetOrCreateValue (
-              Tuple.NewTuple (_classDefinition, _propertyDefinition),
+              Tuple.Create (_classDefinition, _propertyDefinition),
               delegate
               {
                 int classIDColumnOrdinal;

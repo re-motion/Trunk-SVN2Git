@@ -602,7 +602,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var newCompanies = new ObjectList<Company> { Company.NewObject(), Company.NewObject()};
       industrialSector.Companies = newCompanies;
 
-      var serializationTuple = Tuple.NewTuple (ClientTransactionMock, industrialSector, oldCompanies, newCompanies);
+      var serializationTuple = Tuple.Create (ClientTransactionMock, industrialSector, oldCompanies, newCompanies);
       var deserializedTuple = Serializer.SerializeAndDeserialize (serializationTuple);
       using (deserializedTuple.A.EnterDiscardingScope ())
       {

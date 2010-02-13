@@ -34,7 +34,7 @@ namespace Remotion.Mixins.Globalization
 
     protected override object GetResourceManagerSetCacheKey (Type definingType, bool includeHierarchy)
     {
-      return Tuple.NewTuple (
+      return Tuple.Create (
           base.GetResourceManagerSetCacheKey (definingType, includeHierarchy),
           MixinConfiguration.ActiveConfiguration.GetContext (definingType));
     }

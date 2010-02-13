@@ -124,11 +124,11 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     public void SortAlphabetically ()
     {
       var mixinsByTypeName = new List<Tuple<string, MixinDefinition>>();
-      Tuple<string, MixinDefinition> zebra = Tuple.NewTuple ("Zebra", _independent1);
-      Tuple<string, MixinDefinition> bravo = Tuple.NewTuple ("Bravo", _independent1);
-      Tuple<string, MixinDefinition> charlie = Tuple.NewTuple ("Charlie", _independent1);
-      Tuple<string, MixinDefinition> alpha = Tuple.NewTuple ("Alpha", _independent1);
-      Tuple<string, MixinDefinition> delta = Tuple.NewTuple ("Delta", _independent1);
+      Tuple<string, MixinDefinition> zebra = Tuple.Create ("Zebra", _independent1);
+      Tuple<string, MixinDefinition> bravo = Tuple.Create ("Bravo", _independent1);
+      Tuple<string, MixinDefinition> charlie = Tuple.Create ("Charlie", _independent1);
+      Tuple<string, MixinDefinition> alpha = Tuple.Create ("Alpha", _independent1);
+      Tuple<string, MixinDefinition> delta = Tuple.Create ("Delta", _independent1);
 
       mixinsByTypeName.Add (zebra);
       mixinsByTypeName.Add (bravo);
@@ -150,9 +150,9 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo ("de-de");
 
         var mixinsByTypeName = new List<Tuple<string, MixinDefinition>> ();
-        Tuple<string, MixinDefinition> a = Tuple.NewTuple ("A", _independent1);
-        Tuple<string, MixinDefinition> ae = Tuple.NewTuple ("Ä", _independent1);
-        Tuple<string, MixinDefinition> b = Tuple.NewTuple ("B", _independent1);
+        Tuple<string, MixinDefinition> a = Tuple.Create ("A", _independent1);
+        Tuple<string, MixinDefinition> ae = Tuple.Create ("Ä", _independent1);
+        Tuple<string, MixinDefinition> b = Tuple.Create ("B", _independent1);
 
         mixinsByTypeName.Add (a);
         mixinsByTypeName.Add (ae);

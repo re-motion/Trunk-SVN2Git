@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Utilities
     public void Checkpoint ()
     {
       var times = new List<Tuple<string, TimeSpan, TimeSpan>> ();
-      using (var scope = StopwatchScope.CreateScope ((context, s) => times.Add (Tuple.NewTuple (context, s.ElapsedTotal, s.ElapsedSinceLastCheckpoint))))
+      using (var scope = StopwatchScope.CreateScope ((context, s) => times.Add (Tuple.Create (context, s.ElapsedTotal, s.ElapsedSinceLastCheckpoint))))
       {
         Wait (TimeSpan.FromMilliseconds (5.0));
         scope.Checkpoint ("One");

@@ -174,7 +174,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (relationDefinition == null)
         return null;
       else
-        return Tuple.NewTuple (relationDefinition, classDefinition, propertyIdentifier);
+        return Tuple.Create (relationDefinition, classDefinition, propertyIdentifier);
     }
 
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)

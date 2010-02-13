@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreSame (discardedContainer, dataManager.GetDiscardedDataContainer (discardedContainer.ID));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransaction.Current, dataManager));
+          Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
       Assert.AreNotEqual (0, deserializedData.B.DataContainerMap.Count);
       Assert.AreNotEqual (0, deserializedData.B.RelationEndPointMap.Count);

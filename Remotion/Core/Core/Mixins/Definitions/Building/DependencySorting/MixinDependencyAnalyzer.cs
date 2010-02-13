@@ -73,7 +73,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
         if (nonAlphabetics > 1)
           return null;
 
-        mixinsByTypeName.Add (Tuple.NewTuple (mixin.FullName, mixin));
+        mixinsByTypeName.Add (Tuple.Create (mixin.FullName, mixin));
       }
       return mixinsByTypeName;
     }

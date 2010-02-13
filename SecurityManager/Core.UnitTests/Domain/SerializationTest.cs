@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       {
         T instance = creator ();
 
-        Tuple<T, ClientTransaction> deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.NewTuple (instance, ClientTransaction.Current));
+        Tuple<T, ClientTransaction> deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.Create (instance, ClientTransaction.Current));
         T deserializedT = deserializedTuple.A;
         Assert.IsNotNull (deserializedT);
 

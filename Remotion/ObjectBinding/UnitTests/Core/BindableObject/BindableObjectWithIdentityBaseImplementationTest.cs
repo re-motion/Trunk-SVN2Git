@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var wrapper = new ClassDerivedFromBindableObjectWithIdentityBase ();
       var mixin = BindableObjectWithIdentityBaseImplementation.Create (wrapper);
-      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (mixin, wrapper));
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (mixin, wrapper));
       Assert.That (deserializedData.A.BusinessObjectClass, Is.Not.Null);
       Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.A, "This"), Is.SameAs (deserializedData.B));
     }

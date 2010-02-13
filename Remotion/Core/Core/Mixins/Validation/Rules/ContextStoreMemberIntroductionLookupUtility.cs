@@ -27,7 +27,7 @@ namespace Remotion.Mixins.Validation.Rules
 
     public IEnumerable<TMemberIntroductionDefinition> GetCachedPublicIntroductionsByName (IDataStore<object, object> contextStore, TargetClassDefinition targetClass, string name)
     {
-      Tuple<string, TargetClassDefinition> cacheKey = Tuple.NewTuple (
+      Tuple<string, TargetClassDefinition> cacheKey = Tuple.Create (
           typeof (ContextStoreMemberIntroductionLookupUtility<TMemberIntroductionDefinition>).FullName + ".GetCachedPublicIntroductionsByName",
           targetClass);
 

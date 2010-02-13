@@ -369,7 +369,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
 
 		private Tuple<Type, MultiLingualResourcesAttribute[]> TupleFor<T> ()
 		{
-			return Tuple.NewTuple (typeof (T), AttributesFor<T> ());
+			return Tuple.Create (typeof (T), AttributesFor<T> ());
 		}
 
     private void CheckDefinition (
