@@ -68,7 +68,7 @@
     <property name="build.step.run-tests" value="true" />
     <property name="project.config" value="debug" />
     <property name="build.debug" value="Full" />
-    <property name="build.csc.define" value="DEBUG;TRACE;"/>
+    <property name="build.csc.define" value="DEBUG;TRACE;NET_3_5"/>
     <call target="init-build-version" />
   </target>
 
@@ -80,7 +80,7 @@
     <property name="build.step.run-tests" value="true" />
     <property name="project.config" value="release" />
     <property name="build.debug" value="PdbOnly" />
-    <property name="build.csc.define" value="TRACE;"/>
+    <property name="build.csc.define" value="TRACE;NET_3_5"/>
     <call target="init-build-version" />
   </target>
 
