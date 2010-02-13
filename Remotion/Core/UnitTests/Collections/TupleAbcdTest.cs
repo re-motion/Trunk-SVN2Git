@@ -33,18 +33,18 @@ namespace Remotion.UnitTests.Collections
     {
       TestTuple tuple = new TestTuple (1, "X", 2.5, date1);
 
-      Assert.AreEqual (1, tuple.A);
-      Assert.AreEqual ("X", tuple.B);
+      Assert.AreEqual (1, tuple.Item1);
+      Assert.AreEqual ("X", tuple.Item2);
     }
 
     [Test]
     public void EasyInitialize ()
     {
       TestTuple tuple = Tuple.Create (1, "X", 2.5, date1);
-      Assert.AreEqual (1, tuple.A);
-      Assert.AreEqual ("X", tuple.B);
-      Assert.AreEqual (2.5, tuple.C);
-      Assert.AreEqual (date1, tuple.D);
+      Assert.AreEqual (1, tuple.Item1);
+      Assert.AreEqual ("X", tuple.Item2);
+      Assert.AreEqual (2.5, tuple.Item3);
+      Assert.AreEqual (date1, tuple.Item4);
     }
 
     [Test]
@@ -52,10 +52,10 @@ namespace Remotion.UnitTests.Collections
     public void EasyInitialize_Obsolete ()
     {
       TestTuple tuple = Tuple.NewTuple (1, "X", 2.5, date1);
-      Assert.AreEqual (1, tuple.A);
-      Assert.AreEqual ("X", tuple.B);
-      Assert.AreEqual (2.5, tuple.C);
-      Assert.AreEqual (date1, tuple.D);
+      Assert.AreEqual (1, tuple.Item1);
+      Assert.AreEqual ("X", tuple.Item2);
+      Assert.AreEqual (2.5, tuple.Item3);
+      Assert.AreEqual (date1, tuple.Item4);
     }
 
     [Test]

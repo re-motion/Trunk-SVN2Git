@@ -39,17 +39,17 @@ namespace Remotion.Web.ExecutionEngine
 
       public string FunctionToken
       {
-        get { return A; }
+        get { return Item1; }
       }
 
       public int Lifetime
       {
-        get { return B; }
+        get { return Item2; }
       }
 
       public DateTime LastAccess
       {
-        get { return C; }
+        get { return Item3; }
       }
     }
 

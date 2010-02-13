@@ -34,7 +34,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
 
       if (Replacer == null)
       {
-        OnInitParameters.A.ReplaceAndWrap (this, this, OnInitParameters.B);
+        OnInitParameters.Item1.ReplaceAndWrap (this, this, OnInitParameters.Item2);
 
         if (IsInitialized)
         {

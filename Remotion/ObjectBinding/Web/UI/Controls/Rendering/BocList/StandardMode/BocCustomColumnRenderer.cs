@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       RenderClickWrapperBeginTag();
 
-      Control control = customColumnTuple.C;
+      Control control = customColumnTuple.Item3;
       if (control != null)
       {
         ApplyStyleDefaults (control);

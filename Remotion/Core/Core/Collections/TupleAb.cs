@@ -21,32 +21,32 @@ namespace Remotion.Collections
 {
   // TODO: Doc
    [Serializable]
-  public class Tuple<TA, TB> : IEquatable<Tuple<TA, TB>>
+  public class Tuple<T1, T2> : IEquatable<Tuple<T1, T2>>
   {
-    private readonly TA _a;
-    private readonly TB _b;
+    private readonly T1 _item1;
+    private readonly T2 _item2;
 
-    public Tuple (TA a, TB b)
+    public Tuple (T1 item1, T2 item2)
     {
-      _a = a;
-      _b = b;
+      _item1 = item1;
+      _item2 = item2;
     }
 
-    public TA A
+    public T1 Item1
     {
-      get { return _a; }
+      get { return _item1; }
     }
 
-    public TB B
+    public T2 Item2
     {
-      get { return _b; }
+      get { return _item2; }
     }
 
-    public bool Equals (Tuple<TA, TB> other)
+    public bool Equals (Tuple<T1, T2> other)
     {
       return EqualityUtility.NotNullAndSameType (this, other)
-             && EqualityUtility.Equals (_a, other._a) 
-             && EqualityUtility.Equals (_b, other._b);
+             && EqualityUtility.Equals (_item1, other._item1) 
+             && EqualityUtility.Equals (_item2, other._item2);
     }
 
     public override bool Equals (object obj)
@@ -56,12 +56,12 @@ namespace Remotion.Collections
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_a, _b);
+      return EqualityUtility.GetRotatedHashCode (_item1, _item2);
     }
 
     public override string ToString ()
     {
-      return string.Format ("<{0}, {1}>", _a, _b);
+      return string.Format ("<{0}, {1}>", _item1, _item2);
     }
   }
 }

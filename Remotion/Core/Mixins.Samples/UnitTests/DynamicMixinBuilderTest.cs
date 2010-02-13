@@ -175,9 +175,9 @@ namespace Remotion.Mixins.Samples.UnitTests
         target.StringMethod (4);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
-        Assert.AreSame (target, callInfo.A);
-        Assert.AreEqual (typeof (SampleTarget).GetMethod ("StringMethod"), callInfo.B);
-        Assert.That (callInfo.C, Is.EquivalentTo (new object[] { 4 } ));
+        Assert.AreSame (target, callInfo.Item1);
+        Assert.AreEqual (typeof (SampleTarget).GetMethod ("StringMethod"), callInfo.Item2);
+        Assert.That (callInfo.Item3, Is.EquivalentTo (new object[] { 4 } ));
       }
     }
 
@@ -193,7 +193,7 @@ namespace Remotion.Mixins.Samples.UnitTests
         target.StringMethod (4);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
-        Assert.AreEqual ("SampleTarget.StringMethod (4)", callInfo.D);
+        Assert.AreEqual ("SampleTarget.StringMethod (4)", callInfo.Item4);
       }
     }
 
@@ -224,7 +224,7 @@ namespace Remotion.Mixins.Samples.UnitTests
         Assert.IsTrue (target.VoidMethodCalled);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
-        Assert.AreEqual (null, callInfo.D);
+        Assert.AreEqual (null, callInfo.Item4);
       }
     }
   }

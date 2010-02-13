@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private void ProcessProperties (IEnumerable<Tuple<PropertyInfo, string>> properties)
     {
       foreach (Tuple<PropertyInfo, string> property in properties)
-        ProcessProperty (property.A, property.B);
+        ProcessProperty (property.Item1, property.Item2);
     }
 
     private void ProcessProperty (PropertyInfo property, string propertyIdentifier)

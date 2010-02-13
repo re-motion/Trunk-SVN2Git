@@ -79,9 +79,9 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      RelationDefinition relationDefinition = relationData.A;
-      ClassDefinition classDefinition = relationData.B;
-      string propertyIdentifier = relationData.C;
+      RelationDefinition relationDefinition = relationData.Item1;
+      ClassDefinition classDefinition = relationData.Item2;
+      string propertyIdentifier = relationData.Item3;
 
       var relatedClassDefinition = relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier);
 
@@ -127,9 +127,9 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      RelationDefinition relationDefinition = relationData.A;
-      ClassDefinition classDefinition = relationData.B;
-      string propertyIdentifier = relationData.C;
+      RelationDefinition relationDefinition = relationData.Item1;
+      ClassDefinition classDefinition = relationData.Item2;
+      string propertyIdentifier = relationData.Item3;
 
       var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
       var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);

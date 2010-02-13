@@ -57,12 +57,12 @@ namespace Remotion.Data.DomainObjects
       {
         Tuple<DomainObject, int> current = objectsToBeProcessed.GetAny ();
         objectsToBeProcessed.Remove (current);
-        if (!visited.Contains (current.A))
+        if (!visited.Contains (current.Item1))
         {
-          visited.Add (current.A);
-          if (_strategy.ShouldProcessObject (current.A))
-            resultSet.Add (current.A);
-          objectsToBeProcessed.AddRange (GetNextTraversedObjects (current.A, current.B, _strategy));
+          visited.Add (current.Item1);
+          if (_strategy.ShouldProcessObject (current.Item1))
+            resultSet.Add (current.Item1);
+          objectsToBeProcessed.AddRange (GetNextTraversedObjects (current.Item1, current.Item2, _strategy));
         }
       }
 

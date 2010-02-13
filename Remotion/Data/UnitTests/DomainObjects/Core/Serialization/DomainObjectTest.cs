@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       instance.IntProperty = 6;
       Tuple<ClientTransaction, ClassDerivedFromSimpleDomainObject> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
-      ClassDerivedFromSimpleDomainObject deserializedInstance = deserializedData.B;
-      using (deserializedData.A.EnterNonDiscardingScope ())
+      ClassDerivedFromSimpleDomainObject deserializedInstance = deserializedData.Item2;
+      using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         Assert.AreNotSame (instance, deserializedInstance);
         Assert.AreEqual (6, deserializedInstance.IntProperty);
@@ -51,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       instance.Int32Property = 5;
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
-      ClassWithAllDataTypes deserializedInstance = deserializedData.B;
-      using (deserializedData.A.EnterNonDiscardingScope ())
+      ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
+      using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
         Assert.AreNotSame (instance, deserializedInstance);
         Assert.AreEqual (5, deserializedInstance.Int32Property);
@@ -73,9 +73,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (instance.GetBindingTransaction(), instance));
       
-      ClassWithAllDataTypes deserializedInstance = deserializedData.B;
+      ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
       Assert.IsTrue (deserializedInstance.HasBindingTransaction);
-      Assert.AreSame (deserializedData.A, deserializedInstance.GetBindingTransaction());
+      Assert.AreSame (deserializedData.Item1, deserializedInstance.GetBindingTransaction());
       Assert.AreEqual (5, deserializedInstance.Int32Property);
     }
 
@@ -89,9 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, instance));
 
-      using (deserializedData.A.EnterNonDiscardingScope ())
+      using (deserializedData.Item1.EnterNonDiscardingScope ())
       {
-        ClassWithAllDataTypes deserializedInstance = deserializedData.B;
+        ClassWithAllDataTypes deserializedInstance = deserializedData.Item2;
         Assert.IsFalse (deserializedInstance.OnLoadedHasBeenCalled);
         using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
@@ -110,16 +110,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var eventReceiver = new DomainObjectEventReceiver (instance);
 
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (instance, eventReceiver));
-      AssertEventRegistered (deserializedData.A, "RelationChanging", deserializedData.B, GetEventHandlerMethod (instance, "RelationChanging"));
-      AssertEventRegistered (deserializedData.A, "RelationChanged", deserializedData.B, GetEventHandlerMethod (instance, "RelationChanged"));
-      AssertEventRegistered (deserializedData.A, "PropertyChanging", deserializedData.B, GetEventHandlerMethod (instance, "PropertyChanging"));
-      AssertEventRegistered (deserializedData.A, "PropertyChanged", deserializedData.B, GetEventHandlerMethod (instance, "PropertyChanged"));
-      AssertEventRegistered (deserializedData.A, "Deleting", deserializedData.B, GetEventHandlerMethod (instance, "Deleting"));
-      AssertEventRegistered (deserializedData.A, "Deleted", deserializedData.B, GetEventHandlerMethod (instance, "Deleted"));
-      AssertEventRegistered (deserializedData.A, "Committing", deserializedData.B, GetEventHandlerMethod (instance, "Committing"));
-      AssertEventRegistered (deserializedData.A, "Committed", deserializedData.B, GetEventHandlerMethod (instance, "Committed"));
-      AssertEventRegistered (deserializedData.A, "RollingBack", deserializedData.B, GetEventHandlerMethod (instance, "RollingBack"));
-      AssertEventRegistered (deserializedData.A, "RolledBack", deserializedData.B, GetEventHandlerMethod (instance, "RolledBack"));
+      AssertEventRegistered (deserializedData.Item1, "RelationChanging", deserializedData.Item2, GetEventHandlerMethod (instance, "RelationChanging"));
+      AssertEventRegistered (deserializedData.Item1, "RelationChanged", deserializedData.Item2, GetEventHandlerMethod (instance, "RelationChanged"));
+      AssertEventRegistered (deserializedData.Item1, "PropertyChanging", deserializedData.Item2, GetEventHandlerMethod (instance, "PropertyChanging"));
+      AssertEventRegistered (deserializedData.Item1, "PropertyChanged", deserializedData.Item2, GetEventHandlerMethod (instance, "PropertyChanged"));
+      AssertEventRegistered (deserializedData.Item1, "Deleting", deserializedData.Item2, GetEventHandlerMethod (instance, "Deleting"));
+      AssertEventRegistered (deserializedData.Item1, "Deleted", deserializedData.Item2, GetEventHandlerMethod (instance, "Deleted"));
+      AssertEventRegistered (deserializedData.Item1, "Committing", deserializedData.Item2, GetEventHandlerMethod (instance, "Committing"));
+      AssertEventRegistered (deserializedData.Item1, "Committed", deserializedData.Item2, GetEventHandlerMethod (instance, "Committed"));
+      AssertEventRegistered (deserializedData.Item1, "RollingBack", deserializedData.Item2, GetEventHandlerMethod (instance, "RollingBack"));
+      AssertEventRegistered (deserializedData.Item1, "RolledBack", deserializedData.Item2, GetEventHandlerMethod (instance, "RolledBack"));
     }
 
     private void AssertEventRegistered (DomainObject domainObject, string eventName, object receiver, MethodInfo receiverMethod)

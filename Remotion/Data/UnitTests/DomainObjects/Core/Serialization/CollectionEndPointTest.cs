@@ -164,11 +164,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var tuple = Tuple.Create (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
       var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
-      using (deserializedTuple.A.EnterDiscardingScope())
+      using (deserializedTuple.Item1.EnterDiscardingScope())
       {
-        Assert.That (deserializedTuple.B.Companies, Is.SameAs (deserializedTuple.D));
+        Assert.That (deserializedTuple.Item2.Companies, Is.SameAs (deserializedTuple.Item4));
         ClientTransaction.Current.Rollback();
-        Assert.That (deserializedTuple.B.Companies, Is.SameAs (deserializedTuple.C));
+        Assert.That (deserializedTuple.Item2.Companies, Is.SameAs (deserializedTuple.Item3));
       }
     }
 
@@ -182,15 +182,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var tuple = Tuple.Create (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
       var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
-      using (deserializedTuple.A.EnterDiscardingScope ())
+      using (deserializedTuple.Item1.EnterDiscardingScope ())
       {
         var propertyName = Configuration.NameResolver.GetPropertyName (typeof (IndustrialSector), "Companies");
         var endPointID = new RelationEndPointID (industrialSector.ID, propertyName);
         var endPoint = ((ClientTransactionMock)ClientTransaction.Current).DataManager.RelationEndPointMap[endPointID];
-        Assert.That (deserializedTuple.B.Companies.AssociatedEndPoint, Is.SameAs (endPoint));
+        Assert.That (deserializedTuple.Item2.Companies.AssociatedEndPoint, Is.SameAs (endPoint));
 
         ClientTransaction.Current.Rollback ();
-        Assert.That (deserializedTuple.B.Companies.AssociatedEndPoint, Is.SameAs (endPoint));
+        Assert.That (deserializedTuple.Item2.Companies.AssociatedEndPoint, Is.SameAs (endPoint));
       }
     }
 

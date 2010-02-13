@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
 
       ISearchAvailableObjectsService searchService = GetSearchService ();
-      Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.B.FullName);
+      Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
 
       return searchService.Search (referencingObject, this, searchArguments);
     }
@@ -165,7 +165,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private ISearchAvailableObjectsService GetSearchService ()
     {
       IBusinessObjectProvider provider;
-      switch (_searchServiceDefinition.A)
+      switch (_searchServiceDefinition.Item1)
       {
         case SearchServiceProvider.DeclaringType:
           provider = BusinessObjectProvider;
@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
           throw new InvalidOperationException();
       }
 
-      return (ISearchAvailableObjectsService) provider.GetService (_searchServiceDefinition.B);
+      return (ISearchAvailableObjectsService) provider.GetService (_searchServiceDefinition.Item2);
     }
 
     private Tuple<SearchServiceProvider, Type> GetSearchServiceType ()

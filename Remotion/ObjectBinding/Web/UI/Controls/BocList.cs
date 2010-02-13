@@ -1722,9 +1722,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
         if (rowMenuTuple != null)
         {
-          IBusinessObject businessObject = rowMenuTuple.A;
-          int listIndex = rowMenuTuple.B;
-          DropDownMenu dropDownMenu = rowMenuTuple.C;
+          IBusinessObject businessObject = rowMenuTuple.Item1;
+          int listIndex = rowMenuTuple.Item2;
+          DropDownMenu dropDownMenu = rowMenuTuple.Item3;
           PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
           dropDownMenu.Visible = dropDownMenu.MenuItems.Cast<WebMenuItem>().Any (item => item.EvaluateVisible());
         }
@@ -1754,11 +1754,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
         if (rowMenuTuple != null)
         {
-          DropDownMenu rowMenu = rowMenuTuple.C;
+          DropDownMenu rowMenu = rowMenuTuple.Item3;
           if (rowMenu == sender)
           {
-            IBusinessObject businessObject = rowMenuTuple.A;
-            int listIndex = rowMenuTuple.B;
+            IBusinessObject businessObject = rowMenuTuple.Item1;
+            int listIndex = rowMenuTuple.Item2;
             OnRowMenuItemEventCommandClick (e.Item, businessObject, listIndex);
             return;
           }
@@ -1792,11 +1792,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
         if (rowMenuTuple != null)
         {
-          DropDownMenu rowMenu = rowMenuTuple.C;
+          DropDownMenu rowMenu = rowMenuTuple.Item3;
           if (rowMenu == sender)
           {
-            IBusinessObject businessObject = rowMenuTuple.A;
-            int listIndex = rowMenuTuple.B;
+            IBusinessObject businessObject = rowMenuTuple.Item1;
+            int listIndex = rowMenuTuple.Item2;
             OnRowMenuItemWxeFunctionCommandClick (e.Item, businessObject, listIndex);
             return;
           }
@@ -2013,13 +2013,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             BocListCustomColumnTuple customColumnTuple = customColumnTuples[idxRows];
             if (customColumnTuple != null)
             {
-              int originalRowIndex = customColumnTuple.B;
+              int originalRowIndex = customColumnTuple.Item2;
               if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
                   && (_editModeController.EditableRowIndex == null
                       || _editModeController.EditableRowIndex.Value != originalRowIndex))
                 continue;
-              IBusinessObject businessObject = customColumnTuple.A;
-              Control control = customColumnTuple.C;
+              IBusinessObject businessObject = customColumnTuple.Item1;
+              Control control = customColumnTuple.Item3;
 
               BocCustomCellLoadArguments args =
                   new BocCustomCellLoadArguments (this, businessObject, customColumn, originalRowIndex, control);
@@ -2052,11 +2052,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             BocListCustomColumnTuple customColumnTuple = customColumnTuples[idxRows];
             if (customColumnTuple != null)
             {
-              int originalRowIndex = customColumnTuple.B;
+              int originalRowIndex = customColumnTuple.Item2;
               if (_editModeController.EditableRowIndex.Value == originalRowIndex)
               {
-                IBusinessObject businessObject = customColumnTuple.A;
-                Control control = customColumnTuple.C;
+                IBusinessObject businessObject = customColumnTuple.Item1;
+                Control control = customColumnTuple.Item3;
                 BocCustomCellValidationArguments args =
                     new BocCustomCellValidationArguments (this, businessObject, customColumn, control);
                 customColumn.CustomCell.Validate (args);

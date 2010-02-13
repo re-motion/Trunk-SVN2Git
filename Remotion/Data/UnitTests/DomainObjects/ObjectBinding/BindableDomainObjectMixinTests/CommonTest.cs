@@ -43,10 +43,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       value.Name = "Earl";
       Tuple<ClientTransactionMock, SampleBindableMixinDomainObject> deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransactionMock, value));
 
-      using (deserialized.A.EnterDiscardingScope ())
+      using (deserialized.Item1.EnterDiscardingScope ())
       {
-        Assert.That (deserialized.B.Name, Is.EqualTo ("Earl"));
-        Assert.That (((IBusinessObject) deserialized.B).BusinessObjectClass, Is.SameAs (((IBusinessObject) value).BusinessObjectClass));
+        Assert.That (deserialized.Item2.Name, Is.EqualTo ("Earl"));
+        Assert.That (((IBusinessObject) deserialized.Item2).BusinessObjectClass, Is.SameAs (((IBusinessObject) value).BusinessObjectClass));
       }
     }
 
@@ -58,9 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       Tuple<ClientTransactionMock, SampleBindableMixinDomainObject> deserialized = (Tuple<ClientTransactionMock, SampleBindableMixinDomainObject>) Serializer.Deserialize (serialized);
 
-      using (deserialized.A.EnterDiscardingScope ())
+      using (deserialized.Item1.EnterDiscardingScope ())
       {
-        Assert.That (((IBusinessObject) deserialized.B).BusinessObjectClass, Is.Not.SameAs (((IBusinessObject) value).BusinessObjectClass));
+        Assert.That (((IBusinessObject) deserialized.Item2).BusinessObjectClass, Is.Not.SameAs (((IBusinessObject) value).BusinessObjectClass));
       }
     }
   }

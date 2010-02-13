@@ -112,8 +112,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
       Tuple<ClassContextBuilder, ClassContext> builderWithParentContext;
       if (_buildersAndParentContexts.TryGetValue (type, out builderWithParentContext))
       {
-        inheritedContextCombiner.AddIfNotNull (builderWithParentContext.B);
-        return CreateContextWithBuilder (builderWithParentContext.A, inheritedContextCombiner.GetCombinedContexts (type));
+        inheritedContextCombiner.AddIfNotNull (builderWithParentContext.Item2);
+        return CreateContextWithBuilder (builderWithParentContext.Item1, inheritedContextCombiner.GetCombinedContexts (type));
       }
       else
       {

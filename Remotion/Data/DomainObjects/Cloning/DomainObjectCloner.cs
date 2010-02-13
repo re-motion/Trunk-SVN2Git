@@ -141,7 +141,7 @@ namespace Remotion.Data.DomainObjects.Cloning
       while (context.CloneHulls.Count > 0)
       {
         Tuple<DomainObject, DomainObject> shallowClone = context.CloneHulls.Dequeue ();
-        CopyProperties (shallowClone.A, shallowClone.B, strategy, context);
+        CopyProperties (shallowClone.Item1, shallowClone.Item2, strategy, context);
       }
       return clone;
     }

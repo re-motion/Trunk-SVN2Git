@@ -113,7 +113,7 @@ namespace Remotion.Globalization
           key =>
           {
             //  Loop through all entries in the resource managers
-            CultureInfo[] cultureHierarchy = GetCultureHierarchy (key.A);
+            CultureInfo[] cultureHierarchy = GetCultureHierarchy (key.Item1);
 
             // Loop from most neutral to current UICulture
             // Copy the resources into a collection
@@ -127,7 +127,7 @@ namespace Remotion.Globalization
                 foreach (DictionaryEntry entry in resourceSet)
                 {
                   string entryKey = (string) entry.Key;
-                  if (entryKey.StartsWith (key.B))
+                  if (entryKey.StartsWith (key.Item2))
                     result[entryKey] = (string) entry.Value;
                 }
               }

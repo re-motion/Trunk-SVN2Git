@@ -85,8 +85,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var relatedIDs = collection.Select (obj => obj.ID).ToArray();
 
       var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.Create (collection, ClientTransactionMock));
-      var deserializedCollection = deserializedCollectionAndTransaction.A;
-      var deserializedTransaction = deserializedCollectionAndTransaction.B;
+      var deserializedCollection = deserializedCollectionAndTransaction.Item1;
+      var deserializedTransaction = deserializedCollectionAndTransaction.Item2;
 
       var deserializedEndPoint = deserializedTransaction.DataManager.RelationEndPointMap[endPointID];
       Assert.That (deserializedCollection.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
@@ -105,8 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var eventReceiver = new DomainObjectCollectionEventReceiver (collection);
 
       var deserializedCollectionAndEventReceiver = Serializer.SerializeAndDeserialize (Tuple.Create (collection, eventReceiver));
-      var deserializedCollection = deserializedCollectionAndEventReceiver.A;
-      var deserializedEventReceiver = deserializedCollectionAndEventReceiver.B;
+      var deserializedCollection = deserializedCollectionAndEventReceiver.Item1;
+      var deserializedEventReceiver = deserializedCollectionAndEventReceiver.Item2;
 
       Assert.IsFalse (deserializedEventReceiver.HasAddedEventBeenCalled);
       Assert.IsFalse (deserializedEventReceiver.HasAddingEventBeenCalled);

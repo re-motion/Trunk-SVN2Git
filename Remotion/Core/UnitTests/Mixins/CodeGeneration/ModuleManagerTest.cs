@@ -209,8 +209,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           {
             foreach (Tuple<string, string> assemblyAndTypeName in args)
             {
-              Assembly loadedAssembly = Assembly.LoadFile (assemblyAndTypeName.A);
-              Assert.IsNotNull (loadedAssembly.GetType (assemblyAndTypeName.B));
+              Assembly loadedAssembly = Assembly.LoadFile (assemblyAndTypeName.Item1);
+              Assert.IsNotNull (loadedAssembly.GetType (assemblyAndTypeName.Item2));
               Assert.That (loadedAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
             }
           },

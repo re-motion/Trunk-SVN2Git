@@ -79,7 +79,7 @@ namespace Remotion.Globalization
       ArgumentUtility.CheckNotNull ("attributePairs", attributePairs);
 
       foreach (Tuple<Type, TAttribute[]> pair in attributePairs)
-        AddSupplementingAttributes (pair.A, pair.B);
+        AddSupplementingAttributes (pair.Item1, pair.Item2);
     }
   }
 }

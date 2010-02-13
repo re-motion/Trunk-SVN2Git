@@ -100,7 +100,7 @@ namespace Remotion.ObjectBinding
       if (property.IsList)
       {
         Tuple<int, string> result = GetLineCountAndFormatString (format);
-        return GetStringValues (businessObject, property, result.B, result.A);
+        return GetStringValues (businessObject, property, result.Item2, result.Item1);
       }
       else
       {
@@ -134,7 +134,7 @@ namespace Remotion.ObjectBinding
     private Tuple<int, string> GetLineCountAndFormatString (string format)
     {
       Tuple<string, string> formatStrings = GetFormatStrings (format);
-      return new Tuple<int, string> (ParseLineCount(formatStrings.A), formatStrings.B);
+      return new Tuple<int, string> (ParseLineCount(formatStrings.Item1), formatStrings.Item2);
     }
 
     private Tuple<string, string> GetFormatStrings (string format)

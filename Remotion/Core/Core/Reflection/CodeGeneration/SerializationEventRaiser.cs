@@ -39,7 +39,7 @@ namespace Remotion.Reflection.CodeGeneration
     protected virtual List<MethodInfo> FindDeserializationMethodsWithCache (Type type, Type attributeType)
     {
       return _attributedMethodCache.GetOrCreateValue (Tuple.Create (type, attributeType), delegate (Tuple<Type, Type> typeAndAttributeType) {
-          return new List<MethodInfo> (FindDeserializationMethodsNoCache (typeAndAttributeType.A, typeAndAttributeType.B)); });
+          return new List<MethodInfo> (FindDeserializationMethodsNoCache (typeAndAttributeType.Item1, typeAndAttributeType.Item2)); });
     }
 
     protected virtual IEnumerable<MethodInfo> FindDeserializationMethodsNoCache (Type type, Type attributeType)

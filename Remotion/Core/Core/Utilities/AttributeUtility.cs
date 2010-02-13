@@ -116,7 +116,7 @@ namespace Remotion.Utilities
 
       return s_attributesWithMetadataCache.GetOrCreateValue(
         new Tuple<Type, bool>(type, inherit),
-        tuple => GetCustomAttributesWithMetadataInternal (tuple.A, tuple.B));
+        tuple => GetCustomAttributesWithMetadataInternal (tuple.Item1, tuple.Item2));
     }
 
     private static AttributeWithMetadata[] GetCustomAttributesWithMetadataInternal(Type type, bool inherit)

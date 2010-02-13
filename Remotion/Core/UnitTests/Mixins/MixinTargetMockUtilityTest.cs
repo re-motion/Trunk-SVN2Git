@@ -145,9 +145,9 @@ namespace Remotion.UnitTests.Mixins
       BT3Mixin2 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin2, IBaseType32> (thisMock);
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (thisMock, mixin));
 
-      MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.B, deserializedData.A);
-      Assert.That (deserializedData.B.This, Is.Not.Null);
-      Assert.That (deserializedData.B.This, Is.SameAs (deserializedData.A));
+      MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.Item2, deserializedData.Item1);
+      Assert.That (deserializedData.Item2.This, Is.Not.Null);
+      Assert.That (deserializedData.Item2.This, Is.SameAs (deserializedData.Item1));
     }
 
     [Test]
@@ -159,11 +159,11 @@ namespace Remotion.UnitTests.Mixins
       BT3Mixin1 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin1, IBaseType31, IBaseType31> (thisMock, baseMock);
       var deserializedData = Serializer.SerializeAndDeserialize (Tuple.Create (thisMock, baseMock, mixin));
 
-      MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.C, deserializedData.A, deserializedData.B);
-      Assert.That (deserializedData.C.This, Is.Not.Null);
-      Assert.That (deserializedData.C.This, Is.SameAs (deserializedData.A));
-      Assert.That (deserializedData.C.Base, Is.Not.Null);
-      Assert.That (deserializedData.C.Base, Is.SameAs (deserializedData.B));
+      MixinTargetMockUtility.MockMixinTargetAfterDeserialization (deserializedData.Item3, deserializedData.Item1, deserializedData.Item2);
+      Assert.That (deserializedData.Item3.This, Is.Not.Null);
+      Assert.That (deserializedData.Item3.This, Is.SameAs (deserializedData.Item1));
+      Assert.That (deserializedData.Item3.Base, Is.Not.Null);
+      Assert.That (deserializedData.Item3.Base, Is.SameAs (deserializedData.Item2));
     }
   }
 }

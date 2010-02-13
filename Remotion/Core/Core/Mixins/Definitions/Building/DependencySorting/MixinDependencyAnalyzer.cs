@@ -57,7 +57,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       else
       {
         SortAlphabetically (mixinsByTypeName);
-        return mixinsByTypeName[0].B;
+        return mixinsByTypeName[0].Item2;
       }
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
 
     public void SortAlphabetically (List<Tuple<string, MixinDefinition>> mixinsByTypeName)
     {
-      mixinsByTypeName.Sort ((t1, t2) => StringComparer.Ordinal.Compare (t1.A, t2.A));
+      mixinsByTypeName.Sort ((t1, t2) => StringComparer.Ordinal.Compare (t1.Item1, t2.Item1));
     }
 
     private Exception CreateCannotResolveException (IEnumerable<MixinDefinition> equalRoots)

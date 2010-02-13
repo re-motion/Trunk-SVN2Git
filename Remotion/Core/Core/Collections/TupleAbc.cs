@@ -21,47 +21,47 @@ namespace Remotion.Collections
 {
   // TODO: Doc
   [Serializable]
-  public class Tuple<TA, TB, TC> : IEquatable<Tuple<TA, TB, TC>>
+  public class Tuple<T1, T2, T3> : IEquatable<Tuple<T1, T2, T3>>
   {
-    private readonly TA _a;
-    private readonly TB _b;
-    private readonly TC _c;
+    private readonly T1 _item1;
+    private readonly T2 _item2;
+    private readonly T3 _item3;
 
-    public Tuple (TA a, TB b, TC c)
+    public Tuple (T1 item1, T2 item2, T3 item3)
     {
-      _a = a;
-      _b = b;
-      _c = c;
+      _item1 = item1;
+      _item2 = item2;
+      _item3 = item3;
     }
 
-    public TA A
+    public T1 Item1
     {
-      get { return _a; }
+      get { return _item1; }
     }
 
-    public TB B
+    public T2 Item2
     {
-      get { return _b; }
+      get { return _item2; }
     }
 
-    public TC C
+    public T3 Item3
     {
-      get { return _c; }
+      get { return _item3; }
     }
 
-    public bool Equals (Tuple<TA, TB, TC> other)
+    public bool Equals (Tuple<T1, T2, T3> other)
     {
       if (other == null)
         return false;
 
-      return EqualityUtility.Equals (_a, other._a)
-             && EqualityUtility.Equals (_b, other._b)
-             && EqualityUtility.Equals (_c, other._c);
+      return EqualityUtility.Equals (_item1, other._item1)
+             && EqualityUtility.Equals (_item2, other._item2)
+             && EqualityUtility.Equals (_item3, other._item3);
     }
 
     public override bool Equals (object obj)
     {
-      Tuple<TA, TB, TC> other = obj as Tuple<TA, TB, TC>;
+      Tuple<T1, T2, T3> other = obj as Tuple<T1, T2, T3>;
       if (other == null)
         return false;
       return Equals (other);
@@ -69,12 +69,12 @@ namespace Remotion.Collections
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_a, _b, _c);
+      return EqualityUtility.GetRotatedHashCode (_item1, _item2, _item3);
     }
 
     public override string ToString ()
     {
-      return string.Format ("<{0}, {1}, {2}>", _a, _b, _c);
+      return string.Format ("<{0}, {1}, {2}>", _item1, _item2, _item3);
     }
   }
 }

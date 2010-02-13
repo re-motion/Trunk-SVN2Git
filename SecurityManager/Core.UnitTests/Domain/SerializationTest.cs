@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         T instance = creator ();
 
         Tuple<T, ClientTransaction> deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.Create (instance, ClientTransaction.Current));
-        T deserializedT = deserializedTuple.A;
+        T deserializedT = deserializedTuple.Item1;
         Assert.IsNotNull (deserializedT);
 
         IBusinessObject bindableOriginal = (IBusinessObject) instance;
@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
           if (propertyCanBeRetrieved)
           {
             object newValue;
-            using (deserializedTuple.B.EnterNonDiscardingScope())
+            using (deserializedTuple.Item2.EnterNonDiscardingScope())
             {
               newValue = bindableDeserialized.GetProperty (property);
             }

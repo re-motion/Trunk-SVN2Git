@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
 
       Tuple<PropertyDefinition, IRelationEndPointDefinition> propertyObjects = GetPropertyDefinitionObjects (classDefinition, propertyIdentifier);
-      return GetPropertyKind (propertyObjects.B);
+      return GetPropertyKind (propertyObjects.Item2);
     }
 
     private static PropertyKind GetPropertyKind (IRelationEndPointDefinition relationEndPointDefinition)
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Tuple<PropertyDefinition, IRelationEndPointDefinition> definitionObjects =
           GetPropertyDefinitionObjects (classDefinition, propertyIdentifier);
 
-      return GetStrategy (GetPropertyKind (definitionObjects.B)).GetPropertyType (definitionObjects.A, definitionObjects.B);
+      return GetStrategy (GetPropertyKind (definitionObjects.Item2)).GetPropertyType (definitionObjects.Item1, definitionObjects.Item2);
     }
 
     /// <summary>
@@ -148,8 +148,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _classDefinition = classDefinition;
 
       Tuple<PropertyDefinition, IRelationEndPointDefinition> propertyObjects = GetPropertyDefinitionObjects (_classDefinition, propertyIdentifier);
-      _propertyDefinition = propertyObjects.A;
-      _relationEndPointDefinition = propertyObjects.B;
+      _propertyDefinition = propertyObjects.Item1;
+      _relationEndPointDefinition = propertyObjects.Item2;
 
       _kind = GetPropertyKind (_relationEndPointDefinition);
       _strategy = GetStrategy (_kind);

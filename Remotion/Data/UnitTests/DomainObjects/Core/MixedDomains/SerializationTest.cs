@@ -69,10 +69,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         Tuple<ClientTransaction, Order> deserializedObjects =
             Serializer.SerializeAndDeserialize (new Tuple<ClientTransaction, Order> (ClientTransactionScope.CurrentTransaction, order));
 
-        using (deserializedObjects.A.EnterDiscardingScope ())
+        using (deserializedObjects.Item1.EnterDiscardingScope ())
         {
-          Assert.AreEqual (5, deserializedObjects.B.OrderNumber);
-          Assert.IsTrue (deserializedObjects.B.OrderItems.Contains (DomainObjectIDs.OrderItem4));
+          Assert.AreEqual (5, deserializedObjects.Item2.OrderNumber);
+          Assert.IsTrue (deserializedObjects.Item2.OrderItems.Contains (DomainObjectIDs.OrderItem4));
         }
       }
     }
@@ -87,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         Tuple<ClientTransaction, Order> deserializedObjects =
             Serializer.SerializeAndDeserialize (new Tuple<ClientTransaction, Order> (ClientTransactionScope.CurrentTransaction, order));
 
-        Assert.AreNotSame (Mixin.Get<MixinWithState> (order), Mixin.Get<MixinWithState> (deserializedObjects.B));
-        Assert.AreEqual ("Sto stas stat stamus statis stant", Mixin.Get<MixinWithState> (deserializedObjects.B).State);
+        Assert.AreNotSame (Mixin.Get<MixinWithState> (order), Mixin.Get<MixinWithState> (deserializedObjects.Item2));
+        Assert.AreEqual ("Sto stas stat stamus statis stant", Mixin.Get<MixinWithState> (deserializedObjects.Item2).State);
       }
     }
 

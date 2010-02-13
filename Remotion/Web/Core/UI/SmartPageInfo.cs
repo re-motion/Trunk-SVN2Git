@@ -264,8 +264,8 @@ namespace Remotion.Web.UI
 
         if (_htmlFormField != null) // Can only be null without an exception during design mode
         {
-          Control page = _htmlFormField.A;
-          FieldInfo htmlFormField = _htmlFormField.B;
+          Control page = _htmlFormField.Item1;
+          FieldInfo htmlFormField = _htmlFormField.Item2;
           return (HtmlForm) htmlFormField.GetValue (page);
         }
         else
@@ -277,8 +277,8 @@ namespace Remotion.Web.UI
 
         if (_htmlFormField != null) // Can only be null without an exception during design mode
         {
-          Control page = _htmlFormField.A;
-          FieldInfo htmlFormField = _htmlFormField.B;
+          Control page = _htmlFormField.Item1;
+          FieldInfo htmlFormField = _htmlFormField.Item2;
           htmlFormField.SetValue (page, value);
         }
       }
@@ -520,7 +520,7 @@ namespace Remotion.Web.UI
       {
         script.Append ("  ");
         script.Append (array).Append ("[").Append (array).Append (".length] = '");
-        script.Append (command.A.ClientID + "|" + command.B);
+        script.Append (command.Item1.ClientID + "|" + command.Item2);
         script.AppendLine ("';");
       }
     }

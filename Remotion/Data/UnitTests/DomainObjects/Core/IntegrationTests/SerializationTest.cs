@@ -604,11 +604,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var serializationTuple = Tuple.Create (ClientTransactionMock, industrialSector, oldCompanies, newCompanies);
       var deserializedTuple = Serializer.SerializeAndDeserialize (serializationTuple);
-      using (deserializedTuple.A.EnterDiscardingScope ())
+      using (deserializedTuple.Item1.EnterDiscardingScope ())
       {
-        var deserializedIndustrialSector = deserializedTuple.B;
-        var deserializedOldCompanies = deserializedTuple.C;
-        var deserializedNewCompanies = deserializedTuple.D;
+        var deserializedIndustrialSector = deserializedTuple.Item2;
+        var deserializedOldCompanies = deserializedTuple.Item3;
+        var deserializedNewCompanies = deserializedTuple.Item4;
         Assert.That (deserializedIndustrialSector.Companies, Is.SameAs (deserializedNewCompanies));
         ClientTransaction.Current.Rollback ();
         Assert.That (deserializedIndustrialSector.Companies, Is.SameAs (deserializedOldCompanies));

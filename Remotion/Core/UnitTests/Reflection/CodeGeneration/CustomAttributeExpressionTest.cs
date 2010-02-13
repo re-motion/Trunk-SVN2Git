@@ -49,7 +49,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       object[] attributes = typeof (ClassWithCustomAttribute).GetCustomAttributes (typeof (SimpleAttribute), true);
 
       var attributeTuple = (Tuple<SimpleAttribute, SimpleAttribute>) InvokeMethod();
-      Assert.That (new object[] { attributeTuple.A, attributeTuple.B }, Is.EquivalentTo (attributes));
+      Assert.That (new object[] { attributeTuple.Item1, attributeTuple.Item2 }, Is.EquivalentTo (attributes));
     }
 
     [Test]

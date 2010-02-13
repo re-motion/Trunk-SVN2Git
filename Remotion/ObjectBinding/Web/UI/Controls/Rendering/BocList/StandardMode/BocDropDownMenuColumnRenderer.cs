@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         return;
       }
 
-      DropDownMenu dropDownMenu = List.RowMenus[rowIndex].C;
+      DropDownMenu dropDownMenu = List.RowMenus[rowIndex].Item3;
 
       if (List.HasClientScript)
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);

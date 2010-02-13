@@ -111,7 +111,7 @@ namespace Remotion.Globalization
       {
         foreach (Tuple<Type, TAttribute[]> attributePair in definition.GetAllAttributePairs ())
         {
-          ResourceManager[] resourceManagersForAttributePair = _resourceManagerFactory.GetResourceManagers (attributePair.A.Assembly, attributePair.B);
+          ResourceManager[] resourceManagersForAttributePair = _resourceManagerFactory.GetResourceManagers (attributePair.Item1.Assembly, attributePair.Item2);
           resourceManagers.InsertRange (0, resourceManagersForAttributePair);
         }
       }

@@ -529,9 +529,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
           Serializer.SerializeAndDeserialize (
               new Tuple<ClientTransaction, DOWithVirtualProperties> (ClientTransactionScope.CurrentTransaction, instance));
 
-      using (data.A.EnterDiscardingScope ())
+      using (data.Item1.EnterDiscardingScope ())
       {
-        Assert.AreEqual (17, data.B.PropertyWithGetterAndSetter);
+        Assert.AreEqual (17, data.Item2.PropertyWithGetterAndSetter);
       }
     }
 
@@ -547,10 +547,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
           Serializer.SerializeAndDeserialize (
               new Tuple<ClientTransaction, DOImplementingISerializable> (ClientTransactionScope.CurrentTransaction, instance));
 
-      using (data.A.EnterDiscardingScope ())
+      using (data.Item1.EnterDiscardingScope ())
       {
-        Assert.AreEqual (23, data.B.PropertyWithGetterAndSetter);
-        Assert.AreEqual ("Start-GetObjectData-Ctor", data.B.MemberHeldAsField);
+        Assert.AreEqual (23, data.Item2.PropertyWithGetterAndSetter);
+        Assert.AreEqual ("Start-GetObjectData-Ctor", data.Item2.MemberHeldAsField);
       }
     }
 

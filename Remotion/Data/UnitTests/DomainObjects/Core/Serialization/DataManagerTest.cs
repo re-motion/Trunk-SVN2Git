@@ -59,14 +59,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
-      Assert.AreNotEqual (0, deserializedData.B.DataContainerMap.Count);
-      Assert.AreNotEqual (0, deserializedData.B.RelationEndPointMap.Count);
-      Assert.AreEqual (1, deserializedData.B.DiscardedObjectCount);
-      Assert.IsTrue (deserializedData.B.IsDiscarded (discardedContainer.ID));
-      Assert.IsNotNull (deserializedData.B.GetDiscardedDataContainer (discardedContainer.ID));
+      Assert.AreNotEqual (0, deserializedData.Item2.DataContainerMap.Count);
+      Assert.AreNotEqual (0, deserializedData.Item2.RelationEndPointMap.Count);
+      Assert.AreEqual (1, deserializedData.Item2.DiscardedObjectCount);
+      Assert.IsTrue (deserializedData.Item2.IsDiscarded (discardedContainer.ID));
+      Assert.IsNotNull (deserializedData.Item2.GetDiscardedDataContainer (discardedContainer.ID));
 
-      Assert.AreSame (deserializedData.A, PrivateInvoke.GetNonPublicField (deserializedData.B, "_clientTransaction"));
-      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedData.B, "_transactionEventSink"));
+      Assert.AreSame (deserializedData.Item1, PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"));
+      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"));
     }
 
     public void DumpSerializedDataManager ()

@@ -34,12 +34,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public StatePropertyDefinition Property
     {
-      get { return A; }
+      get { return Item1; }
     }
 
     public StateDefinition State
     {
-      get { return B; }
+      get { return Item2; }
     }
   }
 }

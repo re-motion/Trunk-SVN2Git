@@ -115,8 +115,8 @@ namespace Remotion.Data.DomainObjects.Transport
     {
       foreach (Tuple<TransportItem, DataContainer> sourceToTargetContainer in sourceToTargetMapping)
       {
-        TransportItem transportItem = sourceToTargetContainer.A;
-        DataContainer targetContainer = sourceToTargetContainer.B;
+        TransportItem transportItem = sourceToTargetContainer.Item1;
+        DataContainer targetContainer = sourceToTargetContainer.Item2;
         DomainObject targetObject = targetContainer.DomainObject;
         ClientTransaction targetTransaction = targetContainer.ClientTransaction;
 

@@ -384,8 +384,8 @@ namespace Remotion.UnitTests.Mixins.Globalization
 			Assert.That (definition.SupplementingAttributes.Count, Is.EqualTo (expectedSupplementing.Length));
       for (int i = 0; i < expectedSupplementing.Length; i++)
       {
-        Assert.That (definition.SupplementingAttributes[i].A, Is.EqualTo (expectedSupplementing[i].A));
-        Assert.That (definition.SupplementingAttributes[i].B, Is.EqualTo (expectedSupplementing[i].B));
+        Assert.That (definition.SupplementingAttributes[i].Item1, Is.EqualTo (expectedSupplementing[i].Item1));
+        Assert.That (definition.SupplementingAttributes[i].Item2, Is.EqualTo (expectedSupplementing[i].Item2));
       }
     }
   }

@@ -67,19 +67,19 @@ namespace Remotion.UnitTests.Utilities
       }
       Assert.That (times.Count, Is.EqualTo (3));
       
-      Assert.That (times[0].A, Is.EqualTo ("One"));
-      Assert.That (times[0].B, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // total
-      Assert.That (times[0].C, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
+      Assert.That (times[0].Item1, Is.EqualTo ("One"));
+      Assert.That (times[0].Item2, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // total
+      Assert.That (times[0].Item3, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
 
-      Assert.That (times[1].A, Is.EqualTo ("Two"));
-      Assert.That (times[1].B, Is.GreaterThan (times[0].B + TimeSpan.FromMilliseconds (5.0))); // total
-      Assert.That (times[1].C, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
-      Assert.That (times[1].C, Is.LessThan (times[1].B));
+      Assert.That (times[1].Item1, Is.EqualTo ("Two"));
+      Assert.That (times[1].Item2, Is.GreaterThan (times[0].Item2 + TimeSpan.FromMilliseconds (5.0))); // total
+      Assert.That (times[1].Item3, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
+      Assert.That (times[1].Item3, Is.LessThan (times[1].Item2));
 
-      Assert.That (times[2].A, Is.EqualTo ("end"));
-      Assert.That (times[2].B, Is.GreaterThan (times[1].B + TimeSpan.FromMilliseconds (5.0))); // total
-      Assert.That (times[2].C, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
-      Assert.That (times[2].C, Is.LessThan (times[1].B));
+      Assert.That (times[2].Item1, Is.EqualTo ("end"));
+      Assert.That (times[2].Item2, Is.GreaterThan (times[1].Item2 + TimeSpan.FromMilliseconds (5.0))); // total
+      Assert.That (times[2].Item3, Is.GreaterThan (TimeSpan.FromMilliseconds (5.0))); // since last checkpoint
+      Assert.That (times[2].Item3, Is.LessThan (times[1].Item2));
     }
 
     [Test]

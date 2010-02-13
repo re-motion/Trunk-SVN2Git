@@ -50,9 +50,9 @@ namespace Remotion.Mixins.Context
             "The class {0} inherits the mixin {1} from class {2}, but it is explicitly "
                 + "configured for the less specific mixin {3}.",
             targetClass.FullName,
-            overridden_override.B.MixinType.FullName,
+            overridden_override.Item2.MixinType.FullName,
             baseContext.Type.FullName,
-            overridden_override.A.MixinType);
+            overridden_override.Item1.MixinType);
         throw new ConfigurationException (message);
       }
 

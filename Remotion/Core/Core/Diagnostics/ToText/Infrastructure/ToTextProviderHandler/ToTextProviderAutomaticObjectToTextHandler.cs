@@ -85,7 +85,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
       Type type = obj.GetType ();
 
       // Cache the member info result
-      MemberInfo[] memberInfos = s_memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
+      MemberInfo[] memberInfos = s_memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.Item1.GetMembers (tuple.Item2));
 
       foreach (var memberInfo in memberInfos)
       {

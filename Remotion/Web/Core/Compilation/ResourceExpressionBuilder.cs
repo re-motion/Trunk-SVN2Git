@@ -66,7 +66,7 @@ namespace Remotion.Web.Compilation
       expression.Method.TargetObject = new CodeTypeReferenceExpression (base.GetType ());
       expression.Method.MethodName = "GetResourceString";
       expression.Parameters.Add (new CodeThisReferenceExpression ());
-      expression.Parameters.Add (new CodePrimitiveExpression (entryTuple.A));
+      expression.Parameters.Add (new CodePrimitiveExpression (entryTuple.Item1));
 
       return expression;
     }
