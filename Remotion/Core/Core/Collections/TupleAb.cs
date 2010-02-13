@@ -28,6 +28,22 @@ namespace Remotion.Collections
   [Serializable]
   public class Tuple<T1, T2> : IEquatable<Tuple<T1, T2>>
   {
+    #region Obsolete
+
+    [Obsolete ("Use Item1 instead. (Version 1.13.47)")]
+    public T1 A
+    {
+      get { return Item1; }
+    }
+
+    [Obsolete ("Use Item2 instead. (Version 1.13.47)")]
+    public T2 B
+    {
+      get { return Item2; }
+    }
+
+    #endregion
+
     private readonly T1 _item1;
     private readonly T2 _item2;
 

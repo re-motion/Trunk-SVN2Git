@@ -113,8 +113,8 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected override void LoadControlState (object savedState)
     {
       var controlState = (Tuple<object, int>) savedState;
-      base.LoadControlState (controlState.A);
-      ControlStateValue = controlState.B;
+      base.LoadControlState (controlState.Item1);
+      ControlStateValue = controlState.Item2;
     }
 
     protected override object SaveControlState ()

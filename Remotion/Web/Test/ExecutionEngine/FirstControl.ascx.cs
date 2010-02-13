@@ -151,9 +151,9 @@ namespace Remotion.Web.Test.ExecutionEngine
       Assertion.IsNotNull (savedState, "Missing ViewState.");
 
       var viewState = (Tuple<object, Type>) savedState;
-      base.LoadViewState (viewState.A);
+      base.LoadViewState (viewState.Item1);
 
-      Assertion.IsTrue (viewState.B == typeof (FirstControl), "Expected ViewState from 'FirstControl' but was '{0}'.", viewState.B.Name);
+      Assertion.IsTrue (viewState.Item2 == typeof (FirstControl), "Expected ViewState from 'FirstControl' but was '{0}'.", viewState.B.Name);
     }
 
     protected override object SaveViewState ()

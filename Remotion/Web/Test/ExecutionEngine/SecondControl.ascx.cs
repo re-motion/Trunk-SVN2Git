@@ -153,9 +153,9 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected override void LoadControlState (object savedState)
     {
       var controlState = (Tuple<object, int, Type>) savedState;
-      base.LoadControlState (controlState.A);
-      ControlStateValue = controlState.B;
-      Assertion.IsTrue (controlState.C == typeof (SecondControl), "Expected ControlState from 'SecondControl' but was '{0}'.", controlState.C.Name);
+      base.LoadControlState (controlState.Item1);
+      ControlStateValue = controlState.Item2;
+      Assertion.IsTrue (controlState.Item3 == typeof (SecondControl), "Expected ControlState from 'SecondControl' but was '{0}'.", controlState.C.Name);
     }
 
     protected override object SaveControlState ()
@@ -168,9 +168,9 @@ namespace Remotion.Web.Test.ExecutionEngine
       Assertion.IsNotNull (savedState, "Missing ViewState.");
 
       var  statePair =  (Tuple<object, Type>) savedState;
-      base.LoadViewState (statePair.A);
+      base.LoadViewState (statePair.Item1);
 
-      Assertion.IsTrue (statePair.B == typeof (SecondControl), "Expected ViewState from 'SecondControl' but was '{0}'.", statePair.B.Name);
+      Assertion.IsTrue (statePair.Item2 == typeof (SecondControl), "Expected ViewState from 'SecondControl' but was '{0}'.", statePair.B.Name);
     }
 
     protected override object SaveViewState ()
