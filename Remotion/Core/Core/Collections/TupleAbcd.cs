@@ -19,7 +19,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-  // TODO: Doc
+  /// <summary>
+  /// Represents a 4-tuple, or quadruple.
+  /// </summary>
+  /// <typeparam name="T1">The type of the tuple's first component.</typeparam>
+  /// <typeparam name="T2">The type of the tuple's second component.</typeparam>
+  /// <typeparam name="T3">The type of the tuple's third component.</typeparam>
+  /// <typeparam name="T4">The type of the tuple's fourth component.</typeparam>
   [Serializable]
   public class Tuple<T1, T2, T3, T4> : IEquatable<Tuple<T1, T2, T3, T4>>
   {

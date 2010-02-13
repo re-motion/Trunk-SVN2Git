@@ -18,6 +18,9 @@ using System;
 
 namespace Remotion.Collections
 {
+  /// <summary>
+  /// Provides static methods for creating tuple objects.
+  /// </summary>
   public static class Tuple
   {
     public static Tuple<TA, TB> Create<TA, TB> (TA a, TB b)

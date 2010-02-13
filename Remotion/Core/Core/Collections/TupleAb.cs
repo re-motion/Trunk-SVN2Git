@@ -19,8 +19,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-  // TODO: Doc
-   [Serializable]
+  /// <summary>
+  /// Represents a 2-tuple, or pair.
+  /// </summary>
+  /// <typeparam name="T1">The type of the tuple's first component.</typeparam>
+  /// <typeparam name="T2">The type of the tuple's second component.</typeparam>
+  [Serializable]
   public class Tuple<T1, T2> : IEquatable<Tuple<T1, T2>>
   {
     private readonly T1 _item1;
