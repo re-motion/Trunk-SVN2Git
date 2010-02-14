@@ -36,7 +36,15 @@ namespace Remotion.Development.UnitTesting
 
     public static string DefaultPEVerifyPath
     {
-      get { return Path.Combine (GetFrameworkSDKPath(), @"bin\PEVerify.exe"); }
+      get
+      {
+        string path = GetFrameworkSDKPath ();
+
+        if (Directory.Exists (Path.Combine (path, "bin")))
+          return Path.Combine (path, @"bin\PEVerify.exe");
+        else //.NET 4.0 RC1 on Windows 7
+          return Path.Combine (path, "PEVerify.exe");
+      }
     }
 
     public static string GetFrameworkSDKPath ()
@@ -67,6 +75,10 @@ namespace Remotion.Development.UnitTesting
     private static string GetWindowsSDKPathFromRegistry ()
     {
       string windowsSDKVersion = (string) Registry.LocalMachine.OpenSubKey (c_windowsSdkRegistryKey, false).GetValue (c_windowsSdkRegistryVersionValue);
+
+      if (windowsSDKVersion == "7.0.30128") //.NET 4.0 RC1 on Windows 7
+        windowsSDKVersion = "v7.0A\\WinSDK-NetFx40Tools";
+
       string installationFolder = (string) Registry.LocalMachine.OpenSubKey (c_windowsSdkRegistryKey + "\\" + windowsSDKVersion, false).GetValue (c_windowsSdkRegistryInstallationFolderValue);
       return installationFolder;
     }
