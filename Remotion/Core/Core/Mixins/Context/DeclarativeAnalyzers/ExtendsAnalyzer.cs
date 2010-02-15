@@ -51,9 +51,9 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
         catch (ArgumentException ex)
         {
           string message = string.Format (
-              "The ExtendsAttribute for target class {0} applied to mixin type {1} specified invalid generic type arguments: {2}",
-              targetType.FullName,
-              mixinType.FullName,
+              "The ExtendsAttribute for target class '{0}' applied to mixin type '{1}' specified invalid generic type arguments: {2}",
+              targetType,
+              mixinType,
               ex.Message);
           throw new ConfigurationException (message, ex);
         }
@@ -67,9 +67,10 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
       if (!mixinType.IsGenericTypeDefinition)
       {
         string message = string.Format (
-            "The ExtendsAttribute for target class {0} applied to mixin type {1} specified generic type arguments, but the mixin type already has type arguments specified.",
-            targetType.FullName,
-            mixinType.FullName);
+            "The ExtendsAttribute for target class '{0}' applied to mixin type '{1}' specified generic type arguments, but the mixin type already has "
+            + "type arguments specified.",
+            targetType,
+            mixinType);
         throw new ConfigurationException (message);
       }
     }

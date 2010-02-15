@@ -48,9 +48,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           typeof (GenericTargetClass<int>));
       string newName = nameProvider.GetNameForConcreteMixedType (definition);
 
-      Assert.That (newName, 
-          Is.EqualTo (typeof (GenericTargetClass<int>).Namespace + 
-          ".MixedTypes.GenericTargetClass`1{System_Int32/mscorlib/Version=2_0_0_0/Culture=neutral/PublicKeyToken=b77a5c561934e089}"));
+      var mscorlibAssemblyName = typeof (int).Assembly.GetName ();
+
+      var expected = string.Format (
+          "{0}.MixedTypes.GenericTargetClass`1{{System_Int32/{1}/Version={2}_{3}_{4}_{5}/Culture=neutral/PublicKeyToken=b77a5c561934e089}}",
+          typeof (GenericTargetClass<int>).Namespace,
+          mscorlibAssemblyName.Name,
+          mscorlibAssemblyName.Version.Major,
+          mscorlibAssemblyName.Version.Minor,
+          mscorlibAssemblyName.Version.Build,
+          mscorlibAssemblyName.Version.Revision);
+
+      Assert.That (newName, Is.EqualTo (expected));
     }
   }
 }

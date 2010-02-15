@@ -188,8 +188,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class System.Object applied to mixin type"
-        + " System.Nullable`1 specified invalid generic type arguments: GenericArguments[0], 'System.String', on 'System.Nullable`1[T]' violates the constraint of type 'T'.")]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
+        "The ExtendsAttribute for target class 'System.Object' applied to mixin type 'System.Nullable`1[T]' specified invalid generic type arguments: "
+        + "GenericArguments[0], 'System.String', on 'System.Nullable`1[T]' violates the constraint of type 'T'.")]
     public void AnalyzeExtendsAttribute_WrongKindOfGenericArguments ()
     {
       var attribute = new ExtendsAttribute (typeof (object));
@@ -199,8 +200,8 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class System.Object applied to mixin type "
-        + "System.Collections.Generic.List`1[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] specified "
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
+        "The ExtendsAttribute for target class 'System.Object' applied to mixin type 'System.Collections.Generic.List`1[System.String]' specified "
         + "generic type arguments, but the mixin type already has type arguments specified.")]
     public void AnalyzeExtendsAttribute_GenericArgumentsAlreadyGiven ()
     {

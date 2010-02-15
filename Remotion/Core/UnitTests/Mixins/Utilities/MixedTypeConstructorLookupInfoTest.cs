@@ -153,8 +153,9 @@ namespace Remotion.UnitTests.Mixins.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.Utilities."
-        + "MixedTypeConstructorLookupInfoTest+ConcreteTypeMock does not contain a constructor with the following arguments types: System.String.")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = 
+        "Type 'Remotion.UnitTests.Mixins.Utilities.MixedTypeConstructorLookupInfoTest+ConcreteTypeMock' does not contain a constructor with the "
+        + "following arguments types: System.String.")]
     public void CreateDelegate_CtorOnTargetType_ButNotOnConcrete ()
     {
       MixedTypeConstructorLookupInfo info = new MixedTypeConstructorLookupInfo (typeof (ConcreteTypeMock), typeof (TargetTypeMock), true);
