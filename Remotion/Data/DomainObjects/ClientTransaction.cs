@@ -1225,18 +1225,17 @@ public abstract class ClientTransaction : IDataSource
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
-
-    var dataContainer = GetDataContainerWithoutLoading (domainObject.ID);
     Assertion.IsTrue (_enlistedObjectManager.IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction.");
 
-    if (dataContainer == null)
-    {
-      var loadedObject = LoadObject (domainObject.ID);
-      dataContainer = DataManager.DataContainerMap[domainObject.ID];
-      Assertion.IsTrue (loadedObject == domainObject, "Because domainObject is enlisted, LoadObject is forced to reuse the domainObject reference.");
-    }
-
+    EnsureDataAvailable (domainObject.ID);
+    
+    var dataContainer = GetDataContainerWithoutLoading (domainObject.ID);
+    
     Assertion.IsNotNull (dataContainer);
+    Assertion.IsTrue (
+        dataContainer.DomainObject == domainObject, 
+        "Because domainObject is enlisted, LoadObject is forced to reuse the domainObject reference.");
+
     return dataContainer;
   }
 
