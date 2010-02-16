@@ -50,22 +50,22 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
 
-      RegisterAdjustViewScript (htmlHeadAppender);
-
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ViewClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }
 
     public override void PreRender ()
     {
+      RegisterAdjustViewScript ();
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.WrapperClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ViewClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.TopControl.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.BottomControl.ClientID);
     }
 
-    private void RegisterAdjustViewScript (HtmlHeadAppender htmlHeadAppender)
+    private void RegisterAdjustViewScript ()
     {
-      ScriptUtility.Instance.RegisterResizeOnElement (
-          htmlHeadAppender, Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
+      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
 
       Control.Page.ClientScript.RegisterStartupScriptBlock (
           Control,

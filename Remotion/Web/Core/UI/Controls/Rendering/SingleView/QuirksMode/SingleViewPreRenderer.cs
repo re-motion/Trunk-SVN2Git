@@ -36,10 +36,6 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ClientID + "_View > *:first");
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID + " > *:first");
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID + " > *:first");
-
       string key = typeof (ISingleView).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
@@ -47,11 +43,15 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
             Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }
 
     public override void PreRender ()
     {
-      
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ClientID + "_View > *:first");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.TopControl.ClientID + " > *:first");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.BottomControl.ClientID + " > *:first");
     }
   }
 }

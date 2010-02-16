@@ -51,22 +51,22 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
       }
 
-      RegisterAdjustViewScript (htmlHeadAppender);
-
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ActiveViewClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }
 
     public override void PreRender ()
     {
+      RegisterAdjustViewScript ();
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.WrapperClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ActiveViewClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.TopControl.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.BottomControl.ClientID);
     }
 
-    private void RegisterAdjustViewScript (HtmlHeadAppender htmlHeadAppender)
+    private void RegisterAdjustViewScript ()
     {
-      ScriptUtility.Instance.RegisterResizeOnElement (
-          htmlHeadAppender, Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustTabbedMultiView");
+      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustTabbedMultiView");
 
       Control.Page.ClientScript.RegisterStartupScriptBlock (
           Control,

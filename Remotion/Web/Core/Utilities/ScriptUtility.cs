@@ -118,11 +118,6 @@ namespace Remotion.Web.Utilities
 
     #endregion
 
-    public enum Event
-    {
-      Resize
-    }
-
     public static IScriptUtility Instance
     {
       get { return ServiceLocator.Current.GetInstance<IScriptUtility>(); }
@@ -209,43 +204,45 @@ namespace Remotion.Web.Utilities
     {
     }
 
-    public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget)
+    public void RegisterJavaScriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
 
       string key = typeof (ScriptUtility).FullName + "_StyleUtility";
-      string url = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
-      htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+        htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+      }
+    }
 
-      control.Page.ClientScript.RegisterStartupScriptBlock (
-          control,
-          typeof (Page),
-          "BorderSpans_" + jQuerySelectorForBorderSpanTarget,
-          string.Format (
-              "StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget));
+    public void RegisterElementForBorderSpans (IControl control, string jQuerySelectorForBorderSpanTarget)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
+
+      string key = "BorderSpans_" + jQuerySelectorForBorderSpanTarget;
+      string script = string.Format ("StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget);
+      control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
+    }
+
+    public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("jquerySelector", jquerySelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("eventHandler", eventHandler);
+
+      string key = control.ClientID + "_ResizeEventHandler";
+      string script = string.Format ("PageUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
+      control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
     }
 
     protected ResourceTheme ResourceTheme
     {
       get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
-    }
-
-    public void RegisterResizeOnElement (HtmlHeadAppender htmlHeadAppender, IControl control, string jquerySelector, string eventHandler)
-    {
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ArgumentUtility.CheckNotNullOrEmpty ("jquerySelector", jquerySelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("eventHandler", eventHandler);
-
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
-
-      string key = control.ClientID + "_ResizeEventHandler";
-      string script = string.Format ("PageUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
-      control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
     }
   }
 }

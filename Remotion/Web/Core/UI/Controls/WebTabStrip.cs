@@ -238,7 +238,7 @@ namespace Remotion.Web.UI.Controls
         if (string.IsNullOrEmpty (visibleTab.ItemID))
           visibleTab.ItemID = i.ToString();
 
-        ScriptUtility.Instance.RegisterElementForBorderSpans (HtmlHeadAppender.Current, this, "#" + ClientID + "_" + visibleTab.ItemID + " > *:first");
+        ScriptUtility.Instance.RegisterElementForBorderSpans (this, "#" + ClientID + "_" + visibleTab.ItemID + " > *:first");
       }
     }
 
