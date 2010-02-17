@@ -1,56 +1,147 @@
-span.bocDateTimeValue, span.bocDateValue
+input.bocDateTimeDate
 {
-  display: block;
-  text-align: left;
-  height: 1.5em;
-  white-space: nowrap;
-  vertical-align: top;
-  position: relative;
-  width: 100%;
-  display: inline-block;
-  margin-right: 2px;
+    width:100%;
 }
 
-span.bocDateTimeValue 
+input.bocDateTimeTime
 {
-  min-width: 160px;
+    width:5em;
 }
-span.bocDateValue, span.bocReferenceValue
+
+span.bocTime24HoursWithSeconds input.bocDateTimeTime,
+span.bocTime12HoursWithSeconds input.bocDateTimeTime
 {
-  min-width: 100px;
+    width:6em;
 }
 
 
-span.bocDateTimeValue span.bocDateInputWrapper
+input.bocDate24HoursWithSeconds,
+input.bocDate12HoursWithSeconds
 {
-  position: absolute;
-  left: 0; 
+    width:6em;
 }
 
-span.bocDateTimeValue span.bocTimeInputWrapper
+span.bocDate24Hours,
+span.bocDate12Hours
 {
-  position: absolute;
-  right: 0px;
+    display:inline;
+    left:0;
+    min-width:4em;
+    position:absolute;
+    right:8.8em;
+    width:auto;
 }
 
-span.bocDateTimeValue a
+span.bocDateValue span.bocDate24Hours,
+span.bocDateValue span.bocDate12Hours
 {
-  position: absolute;
-  border: 0;
-  margin-top: 2px;
+    display:inline;
+    left:0;
+    min-width:4em;
+    position:absolute;
+    right:2.9em;
+    width:auto;
 }
 
-span.bocDateTimeValue.disabled a
+span.bocDate24HoursWithSeconds,
+span.bocDate12HoursWithSeconds
+{
+    display:inline;
+    left:0;
+    min-width:4em;
+    position:absolute;
+    right:9.8em;
+    width:auto;
+}
+
+span.bocDateTimeValue,
+span.bocDateValue
+{
+    position:relative;
+    display:inline-block;
+    height:2em;
+    line-height:2em;
+    margin-right:0.2em;
+    min-width:12em;
+    overflow:hidden;
+    padding:0;
+    vertical-align:middle;
+    width:100%;
+    white-space:nowrap;
+    zoom:1;
+}
+
+span.bocDateValue
+{
+    min-width:8em;
+}
+
+
+a.bocPicker24Hours,
+a.bocPicker12Hours
+{
+    position:absolute;
+    top:0.2em;
+    right:6em;
+}
+
+a.bocPicker24HoursWithSeconds,
+a.bocPicker12HoursWithSeconds
+{
+    position:absolute;
+    top:0.2em;
+    right:7em;
+}
+
+
+span.bocDateValue a.bocPicker24Hours,
+span.bocDateValue a.bocPicker12Hours
+{
+    position:absolute;
+    top:0.2em;
+    right:0;
+}
+
+/* WebKit browsers only (Safari, Chrome) */
+@media screen and (-webkit-min-device-pixel-ratio:0)
+{
+    a.bocPicker24Hours,
+    a.bocPicker12Hours,
+    a.bocPicker24HoursWithSeconds,
+    a.bocPicker12HoursWithSeconds,
+    span.bocDateValue a.bocPicker24Hours,
+    span.bocDateValue a.bocPicker12Hours
+    {
+    	top: 0.4em;
+    }
+}
+
+/* IE6 and below */
+* html a.bocPicker24Hours,
+* html a.bocPicker12Hours,
+* html a.bocPicker24HoursWithSeconds,
+* html a.bocPicker12HoursWithSeconds,
+* html span.bocDateValue a.bocPicker24Hours,
+* html span.bocDateValue a.bocPicker12Hours
+{
+    top: 0.3em;
+}
+
+a.bocPicker24Hours img,
+a.bocPicker12Hours img,
+a.bocPicker24HoursWithSeconds img,
+a.bocPicker12HoursWithSeconds img
+{
+    border:0;
+    text-decoration:none;
+}
+
+span.disabled a
 {
   cursor: default;
 }
 
-span.bocDateTimeValue a img
-{
-  border-style: none;
-}
-
-span.bocDateTimeValue.disabled a img
+span.disabled a img
 {
   opacity: 0.4;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
@@ -58,108 +149,12 @@ span.bocDateTimeValue.disabled a img
   -moz-opacity: 0.4;
 }
 
-/* === put time, date picker and date from right to left depending on time format (24 or 12 hours, with or without seconds) === */
-span.bocDateTimeValue span.bocDate24Hours
-{
-  right: 6.5em;
-}
 
-span.bocDateTimeValue a.bocPicker24Hours
+span.bocTime24Hours,
+span.bocTime12Hours,
+span.bocTime24HoursWithSeconds,
+span.bocTime12HoursWithSeconds
 {
-  right: 3.4em;
-}
-
-span.bocDateTimeValue span.bocTime24Hours
-{
-  width: 3em;
-}
-
-span.bocDateTimeValue span.bocDate24HoursWithSeconds
-{
-  right: 7.5em;
-}
-
-span.bocDateTimeValue a.bocPicker24HoursWithSeconds
-{
-  right: 4.4em;
-}
-
-span.bocDateTimeValue span.bocTime24HoursWithSeconds
-{
-  width: 4em;
-}
-
-span.bocDateTimeValue span.bocDate12Hours
-{
-  right: 7.9em;
-}
-
-span.bocDateTimeValue a.bocPicker12Hours
-{
-  right: 5.2em;
-}
-
-span.bocDateTimeValue span.bocTime12Hours
-{
-  width: 4.8em;
-}
-
-span.bocDateTimeValue span.bocDate12HoursWithSeconds
-{
-  right: 9.4em;
-}
-
-span.bocDateTimeValue a.bocPicker12HoursWithSeconds
-{
-  right: 6.7em;
-}
-
-span.bocDateTimeValue span.bocTime12HoursWithSeconds
-{
-  width: 6.3em;
-}
-/* === === */
-
-span.bocDateValue span.bocDateInputWrapper
-{
-  position: absolute;
-  left: 0;
-  right: 2.7em;
-}
-
-span.bocDateValue a
-{
-  position: absolute;
-  right: 0;
-  margin-top: 2px;
-}
-
-span.bocDateValue a.disabled
-{
-  cursor: default;
-}
-
-span.bocDateValue a img
-{
-  border-style: none;
-}
-
-span.bocDateValue.disabled a img
-{
-  opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
-  -moz-opacity: 0.4;
-}
-
-input.bocDateTimeDate, input.bocDateTimeTime
-{
-  width: 100%; 
-  margin: 0;
-}
-
-td.bocListDataCellOdd,
-td.bocListDataCellEven
-{
-  padding-right: 5px;
+    position:absolute;
+    right:0;
 }

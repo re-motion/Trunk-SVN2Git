@@ -81,51 +81,26 @@ BocBrowserCompatibility.ReferenceValueLayoutFixIE6 = function(element)
   }
 }
 
-BocBrowserCompatibility.AdjustDateTimeValueLayout = function(element)
-{
-  try
-  {
-    var hasDateAndTimeFields = element.children().size() == 3;
-    if (hasDateAndTimeFields)
-    {
-      var maxWidth = element.width();
-      var dateField = element.children().eq(0);
-      var dateInputField = dateField.children().eq(0);
-      var dateFieldMarginPadding = dateField.outerWidth(true) - dateField.width();
-      var dateInputFieldMaxLength = dateInputField.attr('maxLength');
-      var dateInputFieldMinWidth = dateInputFieldMaxLength * 7.3; //7.3 is character width
+BocBrowserCompatibility.AdjustDateTimeValueLayoutFixIE6 = function(element) {
 
-      var calendarField = element.children().eq(1);
-      var calendarFieldWidth = calendarField.width(true);
+    if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
+        return;
 
-      var timeField = element.children().eq(2);
-      var timeFieldWidth = timeField.outerWidth(true);
+    var controlContentChildrens = element.children();
 
-      var dateInputFieldNewWidth = maxWidth - calendarFieldWidth - timeFieldWidth - dateFieldMarginPadding; // 2 is a margin
+    if (controlContentChildrens.size() > 1) {
+        var dateElement = $(controlContentChildrens.get(0));
+        var calendarElement = $(controlContentChildrens.get(1));
+        var dateLeft = dateElement.offset().left;
+        var calendarLeft = calendarElement.offset().left;
+        var dateWidth = calendarLeft - dateLeft - 8; //8 compensate default borders of the input element.
 
-      dateInputField.css('width', dateInputFieldNewWidth);
-      calendarField.css({ 'left': dateInputFieldNewWidth });
-      timeField.css({ 'left': maxWidth - timeFieldWidth });
+        dateElement.width(dateWidth);
     }
-    else
-    {
-      var maxWidth = element.innerWidth();
-      var dateField = element.children().eq(0);
-      var dateInputField = dateField.children().eq(0);
-
-      var calendarField = element.children().eq(1);
-      var calendarFieldWidth = calendarField.width(true);
-
-      if (element.css('width') != 'auto')
-      {
-        dateInputField.css('width', maxWidth - calendarFieldWidth - dateFieldMarginPadding);
-        calendarField.css({ 'left': maxWidth - calendarFieldWidth });
-      }
+    else {
+        return;
     }
-  }
-  catch (e)
-  {
-  }
+
 }
 
 BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout = function(element)

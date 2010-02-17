@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
           Control,
           typeof (BocDateTimeValuePreRenderer),
           Guid.NewGuid ().ToString (),
-          string.Format ("BocBrowserCompatibility.AdjustDateTimeValueLayout ($('#{0}'));", Control.ClientID));
+          string.Format ("BocBrowserCompatibility.AdjustDateTimeValueLayoutFixIE6 ($('#{0}'));", Control.ClientID));
     }
   }
 }
