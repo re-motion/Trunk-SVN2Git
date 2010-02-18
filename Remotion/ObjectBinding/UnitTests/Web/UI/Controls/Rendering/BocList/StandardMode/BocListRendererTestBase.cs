@@ -96,6 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
       var page = MockRepository.GenerateMock<IPage>();
+      page.Stub (stub => page.Context).Return (HttpContext);
       List.Stub (list => list.Page).Return (page);
 
       var clientScriptManager = MockRepository.GenerateMock<IClientScriptManager>();

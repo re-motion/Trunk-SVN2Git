@@ -108,7 +108,7 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeExecutor = new WxeExecutor (context, _page, this);
 
-      if (ControlHelper.IsDesignMode (_page, context))
+      if (ControlHelper.IsDesignMode (_page))
         return;
 
       _wxeForm = WxeForm.Replace (_page.HtmlForm);
@@ -119,7 +119,7 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
-      string url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
+      string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
       url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo), ResourceType.Html, ResourceTheme, c_styleFileUrl);
@@ -430,7 +430,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </remarks>
     public void Dispose ()
     {
-      if (ControlHelper.IsDesignMode ((Control)_page))
+      if (ControlHelper.IsDesignMode (_page))
         return;
 
       HttpContext httpContext = null;

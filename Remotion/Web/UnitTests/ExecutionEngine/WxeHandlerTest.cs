@@ -468,12 +468,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void ExecuteFunctionState ()
     {
+      CurrentHttpContext.Items["Test"] = new object();
       _wxeHandler.ExecuteFunctionState (CurrentHttpContext, _functionStateWithEnabledCleanUp, true);
       TestFunction function = (TestFunction) _functionStateWithEnabledCleanUp.Function;
 
       WxeContext wxeContext = function.TestStep.WxeContext;
       Assert.AreSame (WxeContext.Current, wxeContext);
-      Assert.AreEqual (CurrentHttpContext, wxeContext.HttpContext.WrappedInstance);
+      Assert.AreSame (CurrentHttpContext.Items["Test"], wxeContext.HttpContext.Items["Test"]);
       Assert.AreEqual (_functionStateWithEnabledCleanUp.FunctionToken, wxeContext.FunctionToken);
       Assert.AreEqual ("4", function.LastExecutedStepID);
     }

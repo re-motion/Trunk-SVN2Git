@@ -73,7 +73,7 @@ namespace Remotion.Web.UI.Controls
 
     public bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     /// <summary> Implements interface <see cref="IPostBackEventHandler"/>. </summary>

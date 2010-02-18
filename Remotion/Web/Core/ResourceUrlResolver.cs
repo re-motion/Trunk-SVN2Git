@@ -58,46 +58,8 @@ public sealed class ResourceUrlResolver
   /// <param name="context"> The current <see cref="HttpContext"/>. </param>
   /// <param name="definingType"> The type that this resource item is associated with. </param>
   /// <param name="resourceType"> The resource type (image, static html, etc.) </param>
-  /// <param name="fileName"> The relative URL of the item. </param>
-  public static string GetResourceUrl (
-      UI.Controls.IControl control, 
-      IHttpContext context,
-      Type definingType, 
-      ResourceType resourceType, 
-      string fileName)
-  {
-    IResourceUrlResolver resolver = null;
-    if (context != null)
-      resolver = context.ApplicationInstance as IResourceUrlResolver;
-    if (resolver != null)
-      return resolver.GetResourceUrl (control, definingType, resourceType, fileName);
-    else
-      return GetResourceUrl (control, definingType, resourceType, fileName);
-  }
-
-  public static string GetResourceUrl (
-      UI.Controls.IControl control,
-      IHttpContext context,
-      Type definingType,
-      ResourceType resourceType,
-      ResourceTheme theme,
-      string fileName)
-  {
-    IResourceUrlResolver resolver = null;
-    if (context != null)
-      resolver = context.ApplicationInstance as IResourceUrlResolver;
-    if (resolver != null)
-      return resolver.GetResourceUrl (control, definingType, resourceType, theme, fileName);
-    else
-      return GetResourceUrl (control, definingType, resourceType, theme, fileName);
-  }
-
-  public static string GetResourceUrl(
-    Control control,
-    HttpContext context,
-      Type definingType,
-      ResourceType resourceType,
-      string relativeUrl)
+  /// <param name="relativeUrl"> The relative URL of the item. </param>
+  public static string GetResourceUrl (IControl control, IHttpContext context, Type definingType, ResourceType resourceType, string relativeUrl)
   {
     IResourceUrlResolver resolver = null;
     if (context != null)
@@ -106,6 +68,23 @@ public sealed class ResourceUrlResolver
       return resolver.GetResourceUrl (control, definingType, resourceType, relativeUrl);
     else
       return GetResourceUrl (control, definingType, resourceType, relativeUrl);
+  }
+
+  public static string GetResourceUrl (
+      IControl control,
+      IHttpContext context,
+      Type definingType,
+      ResourceType resourceType,
+      ResourceTheme theme,
+      string relativeUrl)
+  {
+    IResourceUrlResolver resolver = null;
+    if (context != null)
+      resolver = context.ApplicationInstance as IResourceUrlResolver;
+    if (resolver != null)
+      return resolver.GetResourceUrl (control, definingType, resourceType, theme, relativeUrl);
+    else
+      return GetResourceUrl (control, definingType, resourceType, theme, relativeUrl);
   }
 
   /// <summary>
@@ -131,12 +110,12 @@ public sealed class ResourceUrlResolver
   ///   The type that this resource item is associated with. Must not be <see langword="null"/>.
   /// </param>
   /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
-  /// <param name="fileName"> The resource file name. Must not be <see langword="null"/> or empty.</param>
-  public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, string fileName)
+  /// <param name="relativeUrl"> The resource file name. Must not be <see langword="null"/> or empty.</param>
+  public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, string relativeUrl)
   {
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
 
-    return GetResourceUrl (isDesignMode, definingType, resourceType, fileName);
+    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
   }
 
   /// <summary>
@@ -163,40 +142,21 @@ public sealed class ResourceUrlResolver
   /// </param>
   /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
   /// <param name="theme">The <see cref="ResourceTheme"/> to which the resource belongs.</param>
-  /// <param name="fileName"> The resource file name. Must not be <see langword="null"/> or empty.</param>
-  public static string GetResourceUrl (
-      UI.Controls.IControl control,
-      Type definingType,
-      ResourceType resourceType,
-      ResourceTheme theme,
-      string fileName)
+  /// <param name="relativeUrl"> The resource file name. Must not be <see langword="null"/> or empty.</param>
+  public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, ResourceTheme theme, string relativeUrl)
   {
     ArgumentUtility.CheckNotNull ("definingType", definingType);
     ArgumentUtility.CheckNotNull ("resourceType", resourceType);
-    ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+    ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
     string assemblyRoot = GetAssemblyRoot (isDesignMode, definingType.Assembly);
     string separator = isDesignMode ? @"\" : "/";
     string themeFolder = (theme != null) ? c_themesFolder + separator + theme.Name + separator : string.Empty;
-    return assemblyRoot + themeFolder + resourceType.Name + separator + fileName;
+    return assemblyRoot + themeFolder + resourceType.Name + separator + relativeUrl;
   }
 
-  public static string GetResourceUrl (
-        Control control,
-        Type definingType,
-        ResourceType resourceType,
-        string relativeUrl)
-  {
-    bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
-    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
-  }
-
-  private static string GetResourceUrl (
-    bool isDesignMode,
-      Type definingType,
-      ResourceType resourceType,
-      string relativeUrl)
+  private static string GetResourceUrl (bool isDesignMode,Type definingType,ResourceType resourceType,string relativeUrl)
   {
     ArgumentUtility.CheckNotNull ("definingType", definingType);
     ArgumentUtility.CheckNotNull ("resourceType", resourceType);
@@ -206,7 +166,7 @@ public sealed class ResourceUrlResolver
     string separator = isDesignMode ? @"\" : "/";
     return assemblyRoot + resourceType.Name + separator + relativeUrl;
   }
-    
+
 
   /// <summary> Returns the root folder for all resources belonging to the <paramref name="assembly"/>. </summary>
   /// <param name="isDesignMode"> <see langword="true"/> if the application is in design mode. </param>

@@ -147,31 +147,13 @@ namespace Remotion.Web.Utilities
     /// <returns> 
     ///   Returns <see langword="true"/> if the <paramref name="control"/> is in design mode.
     /// </returns>
-    public static bool IsDesignMode (Control control)
+    public static bool IsDesignModeForControl (Control control)
     {
       if (control.Site != null && control.Site.DesignMode)
         return true;
       if (control.Page != null && control.Page.Site != null && control.Page.Site.DesignMode)
         return true;
       return false;
-    }
-
-    /// <summary>
-    ///   This method returns <see langword="true"/> if the <paramref name="control"/> is in 
-    ///   design mode.
-    /// </summary>
-    /// <param name="control"> 
-    ///   The <see cref="Control"/> to be tested for being in design mode. 
-    /// </param>
-    /// <param name="context"> 
-    ///   The <see cref="HttpContext"/> of the <paramref name="control"/>. 
-    /// </param>
-    /// <returns> 
-    ///   Returns <see langword="true"/> if the <paramref name="control"/> is in design mode.
-    /// </returns>
-    public static bool IsDesignMode (IControl control, HttpContext context)
-    {
-      return context == null || ControlHelper.IsDesignMode (control);
     }
 
     /// <summary>
@@ -189,6 +171,8 @@ namespace Remotion.Web.Utilities
     /// </returns>
     public static bool IsDesignMode (IControl control)
     {
+      ArgumentUtility.CheckNotNull ("control", control);
+
       if (control.Site != null && control.Site.DesignMode)
         return true;
       if (control.Page != null && control.Page.Site != null && control.Page.Site.DesignMode)
@@ -211,7 +195,7 @@ namespace Remotion.Web.Utilities
       }
       catch (HttpException)
       {
-        if (ControlHelper.IsDesignMode (namingContainer))
+        if (ControlHelper.IsDesignModeForControl (namingContainer))
           return namingContainer.FindControl (controlID);
         else
           throw;

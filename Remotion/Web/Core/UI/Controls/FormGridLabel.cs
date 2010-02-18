@@ -104,7 +104,7 @@ public class FormGridLabel: Label, ISmartControl
   {
     ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
-    if (ControlHelper.IsDesignMode ((Control) this))
+    if (ControlHelper.IsDesignMode (this))
       return;
 
     string key = ResourceManagerUtility.GetGlobalResourceKey (Text);

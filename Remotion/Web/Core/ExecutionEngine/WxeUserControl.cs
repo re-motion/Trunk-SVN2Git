@@ -125,7 +125,7 @@ namespace Remotion.Web.ExecutionEngine
 
     protected override sealed void CreateChildControls ()
     {
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (ControlHelper.IsDesignMode (this))
         _lazyContainer.Ensure (base.Controls);
     }
 

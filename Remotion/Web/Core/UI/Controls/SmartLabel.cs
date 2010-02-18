@@ -25,12 +25,13 @@ using Remotion.Utilities;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
 
 [ToolboxItemFilter("System.Web.UI")]
-public class SmartLabel: WebControl
+public class SmartLabel: WebControl, IControl
 {
   public static string FormatLabelText (string rawString, bool underlineAccessKey)
   {
@@ -244,12 +245,17 @@ public class SmartLabel: WebControl
   {
     ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
-    if (ControlHelper.IsDesignMode ((Control) this))
+    if (ControlHelper.IsDesignMode (this))
       return;
 
     string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
     if (!StringUtility.IsNullOrEmpty (key))
       Text = resourceManager.GetString (key);
+  }
+
+  public new IPage Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
   }
 }
 }

@@ -27,12 +27,6 @@ namespace Remotion.Web.Infrastructure
   public interface IHttpApplicationState : ICollection
   {
     /// <summary>
-    /// Gets the concrete instance wrapped by this <see cref="IHttpApplicationState"/> wrapper.
-    /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpApplicationState"/>. </exception>
-    HttpApplicationState WrappedInstance { get; }
-
-    /// <summary>
     /// Gets a <see cref="T:System.Collections.Specialized.NameObjectCollectionBase.KeysCollection"/> instance that contains all the keys in the <see cref="T:System.Collections.Specialized.NameObjectCollectionBase"/> instance.
     /// </summary>
     /// <returns>

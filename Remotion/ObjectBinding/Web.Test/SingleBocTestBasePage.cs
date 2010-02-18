@@ -40,7 +40,7 @@ public class SingleBocTestBasePage:
   protected override void OnInit(EventArgs e)
   {
     base.OnInit (e);
-    if (! ControlHelper.IsDesignMode (this, Context))
+    if (! ControlHelper.IsDesignMode (this))
     {
       try
       {

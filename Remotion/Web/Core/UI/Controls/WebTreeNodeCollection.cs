@@ -65,7 +65,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("node", node);
       if (StringUtility.IsNullOrEmpty (node.ItemID)
-          && _treeView != null && ControlHelper.IsDesignMode ((Control) _treeView))
+          && _treeView != null && ControlHelper.IsDesignMode (_treeView))
       {
         int index = InnerList.Count;
         do

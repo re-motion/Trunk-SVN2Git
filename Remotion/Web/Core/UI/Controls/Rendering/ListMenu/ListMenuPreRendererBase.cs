@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
-            if ((Control is Control) && !ControlHelper.IsDesignMode (Control, Context.WrappedInstance))
+            if ((Control is Control) && !ControlHelper.IsDesignMode (Control))
               href = UrlUtility.GetAbsoluteUrl (((Control) Control).Page, href);
             href = "'" + href + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";

@@ -48,7 +48,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public virtual void Initialize (HttpContext context)
     {
-      if (ControlHelper.IsDesignMode (_control, context))
+      if (ControlHelper.IsDesignMode (_control))
         return;
       ArgumentUtility.CheckNotNull ("context", context);
 

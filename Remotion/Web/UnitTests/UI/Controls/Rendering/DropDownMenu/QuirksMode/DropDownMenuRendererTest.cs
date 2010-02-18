@@ -49,6 +49,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       _control.Stub (stub => stub.MenuHeadClientID).Return ("DropDownMenu1_MenuDiv");
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.Context).Return (MockRepository.GenerateStub<IHttpContext>());
       _control.Stub (stub => stub.Page).Return (pageStub);
 
       StateBag stateBag = new StateBag ();

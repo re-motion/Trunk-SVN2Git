@@ -507,7 +507,7 @@ namespace Remotion.ObjectBinding.Sample
     /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>
     protected bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     protected override void LoadViewState(object savedState)

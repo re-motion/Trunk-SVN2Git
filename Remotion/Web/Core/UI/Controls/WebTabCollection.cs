@@ -73,7 +73,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("tab", tab);
       if (! tab.HasItemID()
-          && (_tabStrip != null && ControlHelper.IsDesignMode ((Control) _tabStrip)
+          && (_tabStrip != null && ControlHelper.IsDesignMode (_tabStrip)
               || OwnerControl != null && ControlHelper.IsDesignMode (OwnerControl)))
       {
         int index = InnerList.Count;

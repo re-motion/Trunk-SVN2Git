@@ -27,12 +27,6 @@ namespace Remotion.Web.Infrastructure
   public interface IHttpServerUtility
   {
     /// <summary>
-    /// Gets the concrete instance wrapped by this <see cref="IHttpServerUtility"/> wrapper.
-    /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpServerUtility"/>. </exception>
-    HttpServerUtility WrappedInstance { get; }
-
-    /// <summary>
     /// Gets the server's computer name.
     /// </summary>
     /// <returns>

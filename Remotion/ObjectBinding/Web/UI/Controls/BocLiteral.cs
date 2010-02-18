@@ -357,7 +357,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     protected bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     [Category ("Behavior")]

@@ -222,7 +222,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.OnInit (e);
       EnsureChildControls();
       _binding.EnsureDataSource();
-      if (!IsDesignMode)
+      if (!IsDesignMode && Page != null)
       {
         Page.RegisterRequiresControlState (this);
         RegisterHtmlHeadContents (Context, HtmlHeadAppender.Current);
@@ -416,7 +416,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     protected internal virtual bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context != null ? Context.WrappedInstance : null); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     bool ISmartControl.IsRequired

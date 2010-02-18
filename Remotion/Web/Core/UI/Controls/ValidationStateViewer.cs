@@ -121,7 +121,7 @@ public class ValidationStateViewer : WebControl, IControl
   {
     ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
-    if (ControlHelper.IsDesignMode ((Control) this))
+    if (ControlHelper.IsDesignMode (this))
       return;
 
     string key = ResourceManagerUtility.GetGlobalResourceKey (NoticeText);
@@ -131,7 +131,7 @@ public class ValidationStateViewer : WebControl, IControl
 
   protected override void RenderContents (HtmlTextWriter writer)
   {
-    if (!ControlHelper.IsDesignMode (this, this.Context))
+    if (!ControlHelper.IsDesignMode (this))
     {
       switch (_validationErrorStyle)
       {

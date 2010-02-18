@@ -25,6 +25,7 @@ using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UI.Globalization
 {
@@ -62,7 +63,7 @@ public sealed class ResourceDispatcher
  
     const string prefix = "auto:";
 
-    if (ControlHelper.IsDesignMode (control))
+    if (ControlHelper.IsDesignModeForControl (control))
       return;
 
     IDictionary autoElements = ResourceDispatcher.GetResources (resourceManager, prefix);
@@ -96,15 +97,12 @@ public sealed class ResourceDispatcher
   ///   Dispatches an IDictonary of elementID/IDictonary pairs to the specified control.
   /// </summary>
   /// <include file='doc\include\ResourceDispatcher.xml' path='/ResourceDispatcher/DispatchMain/*' />
-  public static void Dispatch (
-      Control control,
-      IDictionary elements,
-      string resourceSource)
+  public static void Dispatch (Control control, IDictionary elements, string resourceSource)
   {
     ArgumentUtility.CheckNotNull ("control", control);
     ArgumentUtility.CheckNotNull ("elements", elements);
 
-    if (ControlHelper.IsDesignMode (control))
+    if (ControlHelper.IsDesignModeForControl (control))
       return;
 
     //  Dispatch the resources to the controls
@@ -112,10 +110,10 @@ public sealed class ResourceDispatcher
     {
       string elementID = (string) elementsEntry.Key;
 
-      Control targetControl = null;
+      Control targetControl;
 
       if (elementID == c_thisElementID)
-        targetControl = control;
+        targetControl = (Control) control;
       else
         targetControl = control.FindControl (elementID);
 

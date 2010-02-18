@@ -20,14 +20,17 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
 
   [DesignTimeVisible (false)]
-  public class WxeForm : HtmlForm, IPostBackDataHandler
+  public class WxeForm : HtmlForm, IPostBackDataHandler, IControl
   {
     private static readonly object s_loadPostDataEvent = new object ();
 
@@ -177,7 +180,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       if (!ControlHelper.IsDesignMode (this))
       {
-        var scriptManager = ScriptManager.GetCurrent (Page);
+        var scriptManager = ScriptManager.GetCurrent (Page.WrappedInstance);
         if (!Remotion.Web.UI.HtmlHeadAppender.Current.HasAppended && (scriptManager == null || !scriptManager.IsInAsyncPostBack))
         {
           throw new WxeException ("The Remotion.Web.UI.Controls.HtmlHeadContents control is missing on the page. Please add this control to the 'head' section of the document or specify the runat=server attribute for the 'head' section to allow for an automatically generated HtmlHeadContents control.");
@@ -207,6 +210,11 @@ namespace Remotion.Web.ExecutionEngine
         writer.AddAttribute ("onkeypress", script);
       else
         writer.WriteAttribute ("onkeypress", script);
+    }
+
+    public new IPage Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
   }
 

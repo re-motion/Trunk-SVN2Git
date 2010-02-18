@@ -426,7 +426,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
-      if (ControlHelper.IsDesignMode ((Control) this))
+      if (ControlHelper.IsDesignMode (this))
         return;
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (AccessKey);
@@ -1029,7 +1029,7 @@ namespace Remotion.Web.UI.Controls
     [Browsable (false)]
     public bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context.WrappedInstance); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     IPage IControl.Page

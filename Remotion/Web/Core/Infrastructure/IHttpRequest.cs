@@ -29,12 +29,6 @@ namespace Remotion.Web.Infrastructure
   public interface IHttpRequest
   {
     /// <summary>
-    /// Gets the concrete instance wrapped by this <see cref="IHttpRequest"/> wrapper.
-    /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpRequest"/>. </exception>
-    HttpRequest WrappedInstance { get; }
-
-    /// <summary>
     /// Gets a value indicating whether the request is from the local computer.
     /// </summary>
     /// <returns>

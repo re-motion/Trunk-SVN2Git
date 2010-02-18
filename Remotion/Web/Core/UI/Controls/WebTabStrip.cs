@@ -297,7 +297,7 @@ namespace Remotion.Web.UI.Controls
 
     public virtual bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>

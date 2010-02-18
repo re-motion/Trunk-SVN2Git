@@ -16,18 +16,18 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
   [PersistChildren (true)]
   [ParseChildren (true, "RealControls")]
-  public class LazyContainer : Control, INamingContainer
+  public class LazyContainer : Control, INamingContainer, IControl
   {
     // types
 
@@ -76,6 +76,11 @@ namespace Remotion.Web.UI.Controls
     {
       get { return _isLazyLoadingEnabled; }
       set { _isLazyLoadingEnabled = value; }
+    }
+
+    public new IPage Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     public override ControlCollection Controls

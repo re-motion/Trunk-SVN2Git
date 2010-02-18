@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -27,7 +28,7 @@ namespace Remotion.Web.UI.Controls
 /// <include file='doc\include\UI\Controls\WebLinkButton.xml' path='WebLinkButton/Class/*' />
 [ToolboxData("<{0}:WebLinkButton runat=server></{0}:WebLinkButton>")]
 [ToolboxItem (false)]
-public class WebLinkButton : LinkButton
+public class WebLinkButton : LinkButton, IControl
 {
   private string _text = string.Empty;
 
@@ -52,6 +53,11 @@ public class WebLinkButton : LinkButton
       base.RenderContents (writer);
     else
       writer.Write (_text);
+  }
+
+  public new IPage Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
   }
 }
 

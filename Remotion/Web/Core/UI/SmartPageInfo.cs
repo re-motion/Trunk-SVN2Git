@@ -302,7 +302,7 @@ namespace Remotion.Web.UI
           _page.Header.Controls.AddAt (0, new HtmlHeadContents());
       }
 
-      if (!ControlHelper.IsDesignMode (_page, HttpContext.Current))
+      if (!ControlHelper.IsDesignMode (_page))
       {
         string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (SmartPageInfo), ResourceType.Html, c_smartNavigationScriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_smartNavigationScriptKey, url);

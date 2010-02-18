@@ -44,7 +44,7 @@ public class TestWxeBasePage:
 
   protected override void OnInit(EventArgs e)
   {
-    if (! ControlHelper.IsDesignMode (this, Context))
+    if (! ControlHelper.IsDesignMode (this))
     {
       try
       {

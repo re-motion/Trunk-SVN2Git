@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -27,7 +28,7 @@ namespace Remotion.Web.UI.Controls
 ///   A <see cref="HyperLink"/> that provides integration into the <see cref="ISmartNavigablePage"/> framework by
 ///   automatically appending the navigation URL parameters to the rendered <see cref="HyperLink.NavigateUrl"/>.
 /// </summary>
-public class SmartHyperLink : HyperLink
+public class SmartHyperLink : HyperLink, IControl
 {
 	public SmartHyperLink()
 	{
@@ -50,6 +51,11 @@ public class SmartHyperLink : HyperLink
     
     if (hasNavigateUrl)
       NavigateUrl = navigateUrlBackup;
+  }
+
+  public new IPage Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
   }
 }
 

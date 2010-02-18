@@ -350,7 +350,7 @@ namespace Remotion.Web.UI.Controls
 
     public virtual bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this); }
     }
 
     protected override void Render (HtmlTextWriter writer)

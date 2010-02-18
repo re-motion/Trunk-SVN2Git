@@ -97,7 +97,7 @@ public class DatePickerPage : Page
 
   protected bool IsDesignMode
   {
-    get { return ControlHelper.IsDesignMode(this); }
+    get { return ControlHelper.IsDesignMode (PageWrapper.CastOrCreate (this)); }
   }
 
   private void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)

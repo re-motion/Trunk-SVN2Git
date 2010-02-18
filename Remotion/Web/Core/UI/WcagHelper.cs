@@ -104,7 +104,7 @@ public class WcagHelper
   public virtual void HandleWarning (int priority, Control control)
   {
     ArgumentUtility.CheckNotNull ("control", control);
-    if (ControlHelper.IsDesignMode (control))
+    if (ControlHelper.IsDesignModeForControl (control))
       return;
 
     string message = string.Format (
@@ -116,7 +116,7 @@ public class WcagHelper
   public virtual void HandleWarning (int priority, Control control, string property)
   {
     ArgumentUtility.CheckNotNull ("control", control);
-    if (ControlHelper.IsDesignMode (control))
+    if (ControlHelper.IsDesignModeForControl (control))
       return;
 
     string message = string.Format (
@@ -141,7 +141,7 @@ public class WcagHelper
   public virtual void HandleError (int priority, Control control)
   {
     ArgumentUtility.CheckNotNull ("control", control);
-    if (ControlHelper.IsDesignMode (control))
+    if (ControlHelper.IsDesignModeForControl (control))
       return;
 
     string message = string.Format (
@@ -153,7 +153,7 @@ public class WcagHelper
   public virtual void HandleError (int priority, Control control, string property)
   {
     ArgumentUtility.CheckNotNull ("control", control);
-    if (ControlHelper.IsDesignMode (control))
+    if (ControlHelper.IsDesignModeForControl (control))
       return;
 
     string message = string.Format (

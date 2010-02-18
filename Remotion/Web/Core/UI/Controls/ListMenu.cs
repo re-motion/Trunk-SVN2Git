@@ -62,7 +62,7 @@ namespace Remotion.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-      if (!IsDesignMode)
+      if (!IsDesignMode && Page != null)
       {
         RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }

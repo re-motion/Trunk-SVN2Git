@@ -31,12 +31,6 @@ namespace Remotion.Web.Infrastructure
   public interface IHttpContext : IServiceProvider
   {
     /// <summary>
-    /// Gets the concrete instance wrapped by this <see cref="IHttpContext"/> wrapper.
-    /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpContext"/>. </exception>
-    HttpContext WrappedInstance { get; }
-
-    /// <summary>
     /// Enables you to specify a handler for the request.
     /// </summary>
     /// <param name="handler">
