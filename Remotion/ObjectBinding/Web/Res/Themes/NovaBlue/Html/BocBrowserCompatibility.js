@@ -116,3 +116,6 @@ BocBrowserCompatibility.AdjustReferenceValueLayout = function(element)
   BocBrowserCompatibility.ReferenceValueLayoutFixIE6(element);
 }
 
+BocBrowserCompatibility.AdjustDateTimeValueLayout = function(element) {
+    BocBrowserCompatibility.AdjustDateTimeValueLayoutFixIE6(element);
+}
