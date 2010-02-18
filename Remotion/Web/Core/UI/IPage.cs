@@ -19,12 +19,11 @@ using System.Collections;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Caching;
-using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.Adapters;
 using System.Web.UI.HtmlControls;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI
 {
@@ -58,9 +57,9 @@ namespace Remotion.Web.UI
     /// Gets the <see cref="T:System.Web.HttpApplicationState"/> object for the current Web request.
     /// </summary>
     /// <returns>
-    /// The current data in the <see cref="T:System.Web.HttpApplicationState"/> class wrapped in a class implementing <see cref="IHttpApplicationState"/>.
+    /// The current data in the <see cref="T:System.Web.HttpApplicationState"/> class wrapped in a class implementing <see cref="HttpApplicationStateBase"/>.
     /// </returns>
-    IHttpApplicationState Application { get; }
+    HttpApplicationStateBase Application { get; }
 
     /// <summary>
     /// Gets a <see cref="IClientScriptManager"/> object used to manage, register, and add script to the page.
@@ -91,9 +90,9 @@ namespace Remotion.Web.UI
     /// Gets the <see cref="T:System.Web.HttpContext"/> object for the current Web request.
     /// </summary>
     /// <returns>
-    /// An <see cref="HttpContext"/> wrapped in a class implementing <see cref="IHttpContext"/>.
+    /// An <see cref="HttpContext"/> wrapped in a class implementing <see cref="HttpContextBase"/>.
     /// </returns>
-    IHttpContext Context { get; }
+    HttpContextBase Context { get; }
 
     /// <summary>
     /// Gets or sets the error page to which the requesting browser is redirected in the event of an unhandled page exception.
@@ -196,30 +195,30 @@ namespace Remotion.Web.UI
     /// Gets the <see cref="T:System.Web.HttpRequest"/> object for the requested page.
     /// </summary>
     /// <returns>
-    /// The current <see cref="T:System.Web.HttpRequest"/> associated with the page wrapped in a class implementing <see cref="IHttpRequest"/>.
+    /// The current <see cref="T:System.Web.HttpRequest"/> associated with the page wrapped in a class implementing <see cref="HttpRequestBase"/>.
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">Occurs when the <see cref="T:System.Web.HttpRequest"/> object is not available. 
     /// </exception>
-    IHttpRequest Request { get; }
+    HttpRequestBase Request { get; }
 
     /// <summary>
     /// Gets the <see cref="T:System.Web.HttpResponse"/> object associated with the <see cref="T:System.Web.UI.Page"/> object. 
     /// This object allows you to send HTTP response data to a client and contains information about that response.
     /// </summary>
     /// <returns>
-    /// The current <see cref="T:System.Web.HttpResponse"/> associated with the page wrapped in a class implementing <see cref="IHttpResponse"/>.
+    /// The current <see cref="T:System.Web.HttpResponse"/> associated with the page wrapped in a class implementing <see cref="HttpResponseBase"/>.
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">The <see cref="T:System.Web.HttpResponse"/> object is not available. 
     /// </exception>
-    IHttpResponse Response { get; }
+    HttpResponseBase Response { get; }
 
     /// <summary>
-    /// Gets the Server object, which is an instance of the <see cref="T:System.Web.HttpServerUtility"/> class wrapped in a class implementing <see cref="IHttpServerUtility"/>.
+    /// Gets the Server object, which is an instance of the <see cref="T:System.Web.HttpServerUtility"/> class wrapped in a class implementing <see cref="HttpServerUtilityBase"/>.
     /// </summary>
     /// <returns>
     /// The current Server object associated with the page.
     /// </returns>
-    IHttpServerUtility Server { get; }
+    HttpServerUtilityBase Server { get; }
 
     /// <summary>
     /// Gets the <see cref="T:System.Web.Caching.Cache"/> object associated with the application in which the page resides.
@@ -239,7 +238,7 @@ namespace Remotion.Web.UI
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">Occurs when the session information is set to null. 
     /// </exception>
-    IHttpSessionState Session { get; }
+    HttpSessionStateBase Session { get; }
 
     /// <summary>
     /// Gets or sets the title for the page.

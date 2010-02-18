@@ -19,7 +19,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Design;
 
@@ -66,7 +66,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);

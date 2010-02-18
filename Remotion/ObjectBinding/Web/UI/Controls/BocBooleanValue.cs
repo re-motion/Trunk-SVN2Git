@@ -25,7 +25,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
     
-    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);

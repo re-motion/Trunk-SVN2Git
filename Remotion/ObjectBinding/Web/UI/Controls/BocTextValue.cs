@@ -17,12 +17,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -350,7 +352,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Binding.BindingChanged += Binding_BindingChanged;
     }
 
-    public override void RegisterHtmlHeadContents (Remotion.Web.Infrastructure.IHttpContext httpContext, Remotion.Web.UI.HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 

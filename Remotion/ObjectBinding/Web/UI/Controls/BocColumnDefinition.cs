@@ -23,7 +23,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, IHttpContext context, HtmlTextWriter writer, IBocList list)
+    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetRendererInternal (serviceLocator, context, writer, list);
     }
 
-    protected abstract IBocColumnRenderer GetRendererInternal (IServiceLocator locator, IHttpContext context, HtmlTextWriter writer, IBocList list);
+    protected abstract IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list);
 
 
     public override string ToString ()

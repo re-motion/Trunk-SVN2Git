@@ -18,14 +18,13 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web;
-using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI
 {
@@ -43,7 +42,7 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
     get { return this; }
   }
 
-  IHttpContext IPage.Context
+  HttpContextBase IPage.Context
   {
     get { return _httpContext; }
   }
@@ -53,27 +52,27 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
     get { return _clientScriptManager; }
   }
 
-  IHttpApplicationState IPage.Application
+  HttpApplicationStateBase IPage.Application
   {
     get { return _httpContext != null ?_httpContext.Application : null; }
   }
 
-  IHttpRequest IPage.Request
+  HttpRequestBase IPage.Request
   {
     get { return _httpContext != null ? _httpContext.Request : null; }
   }
 
-  IHttpResponse IPage.Response
+  HttpResponseBase IPage.Response
   {
     get { return _httpContext != null ? _httpContext.Response : null; }
   }
 
-  IHttpServerUtility IPage.Server
+  HttpServerUtilityBase IPage.Server
   {
     get { return _httpContext != null ? _httpContext.Server : null; }
   }
 
-  IHttpSessionState IPage.Session
+  HttpSessionStateBase IPage.Session
   {
     get { return _httpContext != null ? _httpContext.Session : null; }
   }
@@ -213,7 +212,7 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 
   #endregion
 
-  private IHttpContext _httpContext;
+  private HttpContextBase _httpContext;
   private readonly SmartPageInfo _smartPageInfo;
   private readonly ValidatableControlInitializer _validatableControlInitializer;
   private readonly PostLoadInvoker _postLoadInvoker;

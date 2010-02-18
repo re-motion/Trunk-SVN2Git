@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.SingleView;
 using Remotion.Web.Utilities;
@@ -78,7 +79,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (context, this);

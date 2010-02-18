@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Microsoft.Practices.ServiceLocation;
+using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
@@ -23,8 +23,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
   public class DatePickerPagePreRenderer : DatePickerPagePreRendererBase
   {
-    public DatePickerPagePreRenderer (IHttpContext context, DatePickerPage page)
-        : base(context, page)
+    public DatePickerPagePreRenderer (HttpContextBase context, DatePickerPage page)
+        : base (context, page)
     {
     }
 
@@ -53,7 +53,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
           ResourceType.Html,
           ResourceTheme,
           "Style.css");
-      htmlHeadAppender.RegisterStylesheetLink(typeof (DatePickerPage).FullName + "_Style", styleUrl);
+      htmlHeadAppender.RegisterStylesheetLink (typeof (DatePickerPage).FullName + "_Style", styleUrl);
     }
   }
 }

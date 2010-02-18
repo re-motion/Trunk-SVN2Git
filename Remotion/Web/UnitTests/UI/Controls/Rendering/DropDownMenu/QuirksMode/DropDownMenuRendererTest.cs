@@ -21,6 +21,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -49,7 +50,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       _control.Stub (stub => stub.MenuHeadClientID).Return ("DropDownMenu1_MenuDiv");
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
-      pageStub.Stub (stub => stub.Context).Return (MockRepository.GenerateStub<IHttpContext>());
+      pageStub.Stub (stub => stub.Context).Return (MockRepository.GenerateStub<HttpContextBase>());
       _control.Stub (stub => stub.Page).Return (pageStub);
 
       StateBag stateBag = new StateBag ();

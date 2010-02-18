@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
   [TestFixture]
   public class BocColumnRendererFactoryTest
   {
-    protected IHttpContext HttpContext { get; set; }
+    protected HttpContextBase HttpContext { get; set; }
     private HtmlHelper Html { get; set; }
     private ObjectBinding.Web.UI.Controls.BocList List { get; set; }
     private Page Page { get; set; }
@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [SetUp]
     public void SetUp ()
     {
-      HttpContext = MockRepository.GenerateMock<IHttpContext>();
+      HttpContext = MockRepository.GenerateMock<HttpContextBase>();
 
       Html = new HtmlHelper();
 

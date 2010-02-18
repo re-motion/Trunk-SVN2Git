@@ -23,7 +23,6 @@ using Remotion.Collections;
 using Remotion.Context;
 using Remotion.Logging;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -78,9 +77,9 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     private readonly Dictionary<string, WxeFunctionStateMetaData> _functionStates;
-    private readonly IHttpSessionState _session;
+    private readonly HttpSessionStateBase _session;
 
-    public WxeFunctionStateManager (IHttpSessionState session)
+    public WxeFunctionStateManager (HttpSessionStateBase session)
     {
       ArgumentUtility.CheckNotNull ("session", session);
       _session = session;

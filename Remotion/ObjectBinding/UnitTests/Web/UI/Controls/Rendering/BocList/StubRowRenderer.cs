@@ -22,13 +22,13 @@ using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubRowRenderer : BocListRendererBase, IBocRowRenderer
   {
-    public StubRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
+    public StubRowRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list)
         : base(context, writer, list, CssClassContainer.Instance)
     {
     }

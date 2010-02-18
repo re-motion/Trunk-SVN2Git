@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
@@ -26,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
   /// </summary>
   public interface IBocRowRendererFactory
   {
-    IBocRowRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);
+    IBocRowRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);
   }
 }

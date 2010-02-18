@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories
 {
@@ -25,23 +25,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// </summary>
   public class BocTextValueRendererFactory : IBocTextValueRendererFactory, IBocMultilineTextValueRendererFactory
   {
-    IBocTextValueRenderer IBocTextValueRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocTextValue control)
+    IBocTextValueRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocTextValue control)
     {
       return new BocTextValueRenderer (context, writer, control);
     }
 
-    public IBocTextValuePreRenderer CreatePreRenderer (IHttpContext context, IBocTextValue control)
+    public IBocTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocTextValue control)
     {
       return new BocTextValuePreRenderer (context, control);
     }
 
     IBocMultilineTextValueRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocMultilineTextValue control)
+        HttpContextBase context, HtmlTextWriter writer, IBocMultilineTextValue control)
     {
       return new BocMultilineTextValueRenderer (context, writer, control);
     }
 
-    public IBocMultilineTextValuePreRenderer CreatePreRenderer (IHttpContext context, IBocMultilineTextValue control)
+    public IBocMultilineTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocMultilineTextValue control)
     {
       return new BocMultilineTextValuePreRenderer (context, control);
     }

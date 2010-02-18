@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 {
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
+    public SingleViewRenderer (HttpContextBase context, HtmlTextWriter writer, ISingleView control)
         : base (context, writer, control)
     {
     }

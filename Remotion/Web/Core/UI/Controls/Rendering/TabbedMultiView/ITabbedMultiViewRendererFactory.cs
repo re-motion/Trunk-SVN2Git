@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
 {
@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
   /// </summary>
   public interface ITabbedMultiViewRendererFactory
   {
-    ITabbedMultiViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMultiView control);
-    ITabbedMultiViewPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMultiView control);
+    ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMultiView control);
+    ITabbedMultiViewPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMultiView control);
   }
 }

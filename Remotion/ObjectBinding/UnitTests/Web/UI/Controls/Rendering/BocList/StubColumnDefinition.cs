@@ -19,13 +19,13 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, IHttpContext context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       return new StubColumnRenderer (context, writer, list, this);
     }

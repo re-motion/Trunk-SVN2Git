@@ -15,14 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
   public class BocTextValuePreRenderer : BocPreRendererBase<IBocTextValue>, IBocTextValuePreRenderer
   {
-    public BocTextValuePreRenderer (IHttpContext context, IBocTextValue control)
+    public BocTextValuePreRenderer (HttpContextBase context, IBocTextValue control)
         : base (context, control)
     {
     }

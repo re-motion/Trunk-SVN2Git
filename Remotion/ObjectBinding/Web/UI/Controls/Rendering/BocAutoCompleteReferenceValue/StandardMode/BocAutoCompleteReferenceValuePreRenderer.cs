@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode
 {
   public class BocAutoCompleteReferenceValuePreRenderer : BocAutoCompleteReferenceValuePreRendererBase
   {
-    public BocAutoCompleteReferenceValuePreRenderer (IHttpContext context, IBocAutoCompleteReferenceValue control)
+    public BocAutoCompleteReferenceValuePreRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
         : base (context, control)
     {
     }

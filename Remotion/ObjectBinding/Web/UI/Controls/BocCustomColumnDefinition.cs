@@ -25,7 +25,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -174,7 +174,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _mode = value; }
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, IHttpContext context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       var factory = locator.GetInstance<IBocColumnRendererFactory<BocCustomColumnDefinition>>();
       return factory.CreateRenderer (context, writer, list, this);

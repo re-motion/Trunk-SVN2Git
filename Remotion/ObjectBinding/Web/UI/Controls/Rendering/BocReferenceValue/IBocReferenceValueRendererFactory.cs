@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
   /// </summary>
   public interface IBocReferenceValueRendererFactory
   {
-    IBocReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control);
+    IBocReferenceValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control);
 
-    IBocReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocReferenceValue control);
+    IBocReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocReferenceValue control);
   }
 }

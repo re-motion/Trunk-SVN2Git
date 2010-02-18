@@ -21,7 +21,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
+      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue);
     }
 
     [Test]

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Web;
 using System.Web.SessionState;
 using NUnit.Framework;
 using Remotion.Context;
@@ -32,7 +33,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
   public class WxeFunctionStateManagerTest
   {
     private MockRepository _mockRepository;
-    private IHttpSessionState _sessionMock;
+    private HttpSessionStateBase _sessionMock;
     private WxeFunctionState _functionState;
 
     [SetUp]
@@ -40,7 +41,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       _mockRepository = new MockRepository();
 
-      _sessionMock = _mockRepository.StrictMock<IHttpSessionState>();
+      _sessionMock = _mockRepository.StrictMock<HttpSessionStateBase>();
 
       Expect.Call (_sessionMock[GetSessionKeyForFunctionStates()]).Return (null);
       _sessionMock["key"] = null;
@@ -69,7 +70,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
           new Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData>();
       functionStates.Add (functionStateMetaData.FunctionToken, functionStateMetaData);
 
-      IHttpSessionState session = _mockRepository.StrictMock<IHttpSessionState>();
+      var session = _mockRepository.StrictMock<HttpSessionStateBase>();
 
       Expect.Call (session[GetSessionKeyForFunctionStates()]).Return (functionStates);
       _mockRepository.ReplayAll();

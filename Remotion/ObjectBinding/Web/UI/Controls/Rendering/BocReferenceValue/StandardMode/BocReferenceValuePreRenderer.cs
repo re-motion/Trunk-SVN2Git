@@ -17,7 +17,7 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode
@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     private static readonly string s_scriptFileKey = typeof (IBocReferenceValue).FullName + "_Script";
     private static readonly string s_styleFileKey = typeof (IBocReferenceValue).FullName + "_Style";
 
-    public BocReferenceValuePreRenderer (IHttpContext context, IBocReferenceValue control)
+    public BocReferenceValuePreRenderer (HttpContextBase context, IBocReferenceValue control)
         : base (context, control)
     {
     }

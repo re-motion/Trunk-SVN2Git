@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
@@ -49,11 +49,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <remarks>Each <see cref="BocList"/> renderer has to be bound to the list to render and 
     /// the <see cref="HtmlTextWriter"/> target to render it to. Therefore, these properties are <code>readonly</code>
     /// and must be set in the constructor.</remarks>
-    /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>
+    /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocListRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+    protected BocListRendererBase (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
         : base(context, writer, list)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);

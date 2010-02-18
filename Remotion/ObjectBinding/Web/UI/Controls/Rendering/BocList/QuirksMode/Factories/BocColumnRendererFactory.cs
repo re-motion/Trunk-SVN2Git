@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
 {
@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
           IBocSelectorColumnRendererFactory
   {
     public IBocColumnRenderer<BocSimpleColumnDefinition> CreateRenderer
-        (IHttpContext context, HtmlTextWriter writer, IBocList list, BocSimpleColumnDefinition columnDefinition)
+        (HttpContextBase context, HtmlTextWriter writer, IBocList list, BocSimpleColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     public IBocColumnRenderer<BocCompoundColumnDefinition> CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, BocCompoundColumnDefinition columnDefinition)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCompoundColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     public IBocColumnRenderer<BocCommandColumnDefinition> CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     public IBocColumnRenderer<BocCustomColumnDefinition> CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition columnDefinition)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     public IBocColumnRenderer<BocDropDownMenuColumnDefinition> CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -86,7 +86,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     public IBocColumnRenderer<BocRowEditModeColumnDefinition> CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
     }
 
     IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);

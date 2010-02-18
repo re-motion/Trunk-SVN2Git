@@ -19,7 +19,7 @@ using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
     public BocCommandColumnRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition, CssClassContainer cssClasses)
         : base (context, writer, list, columnDefinition, cssClasses)
     {
     }

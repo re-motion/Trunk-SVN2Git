@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
   /// </summary>
   public class SingleViewPreRenderer : PreRendererBase<ISingleView>, ISingleViewPreRenderer
   {
-    public SingleViewPreRenderer (IHttpContext context, ISingleView control)
+    public SingleViewPreRenderer (HttpContextBase context, ISingleView control)
         : base(context, control)
     {
     }

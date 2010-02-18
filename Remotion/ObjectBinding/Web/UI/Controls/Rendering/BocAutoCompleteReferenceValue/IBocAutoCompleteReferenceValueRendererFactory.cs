@@ -16,13 +16,13 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue
 {
   public interface IBocAutoCompleteReferenceValueRendererFactory
   {
-    IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocAutoCompleteReferenceValue control);
-    IBocAutoCompleteReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control);
+    IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control);
+    IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control);
   }
 }

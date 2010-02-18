@@ -19,7 +19,6 @@ using System.Collections;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Caching;
-using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.Adapters;
 using System.Web.UI.HtmlControls;
@@ -633,7 +632,7 @@ namespace Remotion.Web.Infrastructure
     /// <returns>
     /// The current data in the <see cref="T:System.Web.HttpApplicationState"/> class.
     /// </returns>
-    public IHttpApplicationState Application
+    public HttpApplicationStateBase Application
     {
       get
       {
@@ -687,9 +686,9 @@ namespace Remotion.Web.Infrastructure
     /// Gets the <see cref="HttpContext"/> object for the current Web request.
     /// </summary>
     /// <returns>
-    /// An <see cref="HttpContext"/> wrapped in a class implementing <see cref="IHttpContext"/>.
+    /// An <see cref="HttpContext"/> wrapped in a class implementing <see cref="HttpContextBase"/>.
     /// </returns>
-    public IHttpContext Context
+    public HttpContextBase Context
     {
       get
       {
@@ -850,7 +849,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">Occurs when the <see cref="T:System.Web.HttpRequest"/> object is not available. 
     /// </exception>
-    public IHttpRequest Request
+    public HttpRequestBase Request
     {
       get
       {
@@ -869,7 +868,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">The <see cref="T:System.Web.HttpResponse"/> object is not available. 
     /// </exception>
-    public IHttpResponse Response
+    public HttpResponseBase Response
     {
       get
       {
@@ -885,7 +884,7 @@ namespace Remotion.Web.Infrastructure
     /// <returns>
     /// The current Server object associated with the page.
     /// </returns>
-    public IHttpServerUtility Server
+    public HttpServerUtilityBase Server
     {
       get
       {
@@ -916,7 +915,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">Occurs when the session information is set to null. 
     /// </exception>
-    public IHttpSessionState Session
+    public HttpSessionStateBase Session
     {
       get
       {

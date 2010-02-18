@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 
     private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
 
-    protected BocDateTimeValueRendererBase (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
+    protected BocDateTimeValueRendererBase (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
         : base (context, writer, control)
     {
     }

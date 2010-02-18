@@ -20,7 +20,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode
@@ -37,13 +36,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     private const string c_nullIdentifier = "==null==";
     private const string c_defaultControlWidth = "150pt";
 
-    public BocAutoCompleteReferenceValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
+    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
         : this (context, writer, control, null)
     {
     }
 
     public BocAutoCompleteReferenceValueRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxGetter)
+        HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxGetter)
         : base (context, writer, control)
     {
       if (textBoxGetter != null)

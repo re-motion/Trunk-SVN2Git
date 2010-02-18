@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -224,7 +225,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (context, this);

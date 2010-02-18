@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
   /// </summary>
   public class BocEnumValueRendererFactory : IBocEnumValueRendererFactory
   {
-    public IBocEnumValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocEnumValue control)
+    public IBocEnumValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocEnumValue control)
     {
       return new StandardMode.BocEnumValueRenderer (context, writer, control);
     }
 
-    public IBocEnumValuePreRenderer CreatePreRenderer (IHttpContext context, IBocEnumValue control)
+    public IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control)
     {
       return new BocEnumValuePreRenderer (context, control);
     }

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
   /// </summary>
   public interface IBocBooleanValueRendererFactory
   {
-    IBocBooleanValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocBooleanValue control);
+    IBocBooleanValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocBooleanValue control);
 
-    IBocBooleanValuePreRenderer CreatePreRenderer (IHttpContext context, IBocBooleanValue control);
+    IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control);
   }
 }

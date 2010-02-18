@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   /// </summary>
   public class TabbedMultiViewPreRenderer : PreRendererBase<ITabbedMultiView>, ITabbedMultiViewPreRenderer
   {
-    public TabbedMultiViewPreRenderer (IHttpContext context, ITabbedMultiView control)
+    public TabbedMultiViewPreRenderer (HttpContextBase context, ITabbedMultiView control)
         : base (context, control)
     {
     }

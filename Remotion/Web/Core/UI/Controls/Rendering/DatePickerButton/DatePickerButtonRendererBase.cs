@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   {
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";
 
-    protected DatePickerButtonRendererBase (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
+    protected DatePickerButtonRendererBase (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control)
         : base (context, writer, control)
     {
     }

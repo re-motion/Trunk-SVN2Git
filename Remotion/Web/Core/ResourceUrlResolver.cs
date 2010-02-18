@@ -20,7 +20,6 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web
@@ -59,7 +58,7 @@ public sealed class ResourceUrlResolver
   /// <param name="definingType"> The type that this resource item is associated with. </param>
   /// <param name="resourceType"> The resource type (image, static html, etc.) </param>
   /// <param name="relativeUrl"> The relative URL of the item. </param>
-  public static string GetResourceUrl (IControl control, IHttpContext context, Type definingType, ResourceType resourceType, string relativeUrl)
+  public static string GetResourceUrl (IControl control, HttpContextBase context, Type definingType, ResourceType resourceType, string relativeUrl)
   {
     IResourceUrlResolver resolver = null;
     if (context != null)
@@ -72,7 +71,7 @@ public sealed class ResourceUrlResolver
 
   public static string GetResourceUrl (
       IControl control,
-      IHttpContext context,
+      HttpContextBase context,
       Type definingType,
       ResourceType resourceType,
       ResourceTheme theme,

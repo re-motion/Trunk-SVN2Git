@@ -19,7 +19,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode
@@ -36,13 +35,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod = () => new DropDownList();
 
-    public BocReferenceValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control) 
+    public BocReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control) 
         : this (context, writer, control, null)
     {
     }
 
     public BocReferenceValueRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
+        HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
         : base (context, writer, control)
     {
       if (dropDownListFactoryMethod != null)

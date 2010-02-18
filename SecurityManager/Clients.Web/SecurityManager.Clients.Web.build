@@ -65,6 +65,7 @@
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Drawing.dll"/>
         <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Web.Abstractions.dll"/>
         <include asis="true" name="System.Web.Extensions.dll"/>
         <include asis="true" name="System.Web.Services.dll"/>
         <include asis="true" name="System.Xml.dll"/>

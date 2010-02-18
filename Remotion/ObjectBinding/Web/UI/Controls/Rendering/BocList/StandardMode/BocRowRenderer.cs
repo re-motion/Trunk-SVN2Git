@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     private readonly IServiceLocator _serviceLocator;
 
-    public BocRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+    public BocRowRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
         : base (context, writer, list, cssClasses)
     {
       _serviceLocator = serviceLocator;

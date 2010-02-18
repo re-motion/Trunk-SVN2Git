@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
   /// </summary>
   public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
   {
-    IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
+    IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
     {
       return new BocDateTimeValueRenderer (context, writer, control);
     }
 
-    public IBocDateTimeValuePreRenderer CreatePreRenderer (IHttpContext context, IBocDateTimeValue control)
+    public IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control)
     {
       return new BocDateTimeValuePreRenderer (context, control);
     }

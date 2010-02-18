@@ -25,10 +25,10 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.WebTreeView;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -450,7 +450,7 @@ namespace Remotion.Web.UI.Controls
       _hasTreeNodeMenusCreated = true;
     }
 
-    public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IHttpContext httpContext)
+    public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, HttpContextBase httpContext)
     {
       var factory = ServiceLocator.Current.GetInstance<IWebTreeViewRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (Context, this);
@@ -855,7 +855,7 @@ namespace Remotion.Web.UI.Controls
           ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconWhite));
     }
 
-    public new IHttpContext Context
+    public new HttpContextBase Context
     {
       get { return ((IControl) this).Page.Context; }
     }

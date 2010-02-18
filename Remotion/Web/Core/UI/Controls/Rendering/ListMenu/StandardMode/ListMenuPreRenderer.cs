@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
 {
@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
   /// </summary>
   public class ListMenuPreRenderer : ListMenuPreRendererBase
   {
-    public ListMenuPreRenderer (IHttpContext context, IListMenu control)
+    public ListMenuPreRenderer (HttpContextBase context, IListMenu control)
         : base (context, control)
     {
     }

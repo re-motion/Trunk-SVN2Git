@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
@@ -28,13 +28,13 @@ namespace Remotion.Web.UI.Controls.Rendering
   public abstract class PreRendererBase<TControl> : IPreRenderer<TControl>
       where TControl: IControl
   {
-    private readonly IHttpContext _context;
+    private readonly HttpContextBase _context;
     private readonly TControl _control;
 
     /// <summary>
     /// Initializes the <see cref="Context"/> and <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected PreRendererBase (IHttpContext context, TControl control)
+    protected PreRendererBase (HttpContextBase context, TControl control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
@@ -46,8 +46,8 @@ namespace Remotion.Web.UI.Controls.Rendering
     public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
     public abstract void PreRender ();
 
-    /// <summary>Gets the <see cref="IHttpContext"/> that contains the response for which this renderer generates output.</summary>
-    public IHttpContext Context
+    /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
+    public HttpContextBase Context
     {
       get { return _context; }
     }

@@ -18,7 +18,7 @@ using System;
 using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
@@ -29,7 +29,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
   /// </summary>
   public abstract class DropDownMenuPreRendererBase : PreRendererBase<IDropDownMenu>, IDropDownMenuPreRenderer
   {
-    protected DropDownMenuPreRendererBase (IHttpContext context, IDropDownMenu control)
+    protected DropDownMenuPreRendererBase (HttpContextBase context, IDropDownMenu control)
         : base(context, control)
     {
     }

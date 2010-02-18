@@ -24,7 +24,6 @@ using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Web.Utilities;
 using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {

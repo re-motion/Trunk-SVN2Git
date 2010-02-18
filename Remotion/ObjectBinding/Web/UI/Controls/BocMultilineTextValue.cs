@@ -22,7 +22,7 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 

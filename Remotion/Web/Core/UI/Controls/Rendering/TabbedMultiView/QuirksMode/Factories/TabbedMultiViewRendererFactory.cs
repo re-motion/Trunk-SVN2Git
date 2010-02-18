@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factorie
   /// </summary>
   public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
-    public ITabbedMultiViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMultiView control)
+    public ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMultiView control)
     {
       return new TabbedMultiViewRenderer (context, writer, control);
     }
 
-    public ITabbedMultiViewPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMultiView control)
+    public ITabbedMultiViewPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMultiView control)
     {
       return new TabbedMultiViewPreRenderer (context, control);
     }

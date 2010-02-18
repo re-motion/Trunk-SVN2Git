@@ -17,11 +17,9 @@
 using System;
 using System.ComponentModel;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -382,7 +380,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       textBox.TextMode = _textMode;
     }
 
-    public void RegisterJavaScriptInclude (IControl control, IHttpContext context, HtmlHeadAppender htmlHeadAppender, bool useLegacyScriptFile)
+    public void RegisterJavaScriptInclude (IControl control, HttpContextBase context, HtmlHeadAppender htmlHeadAppender, bool useLegacyScriptFile)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("context", context);

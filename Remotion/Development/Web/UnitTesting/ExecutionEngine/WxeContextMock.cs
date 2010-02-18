@@ -18,11 +18,9 @@ using System;
 using System.Collections.Specialized;
 using System.Text;
 using System.Web;
-using System.Web.SessionState;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
 {

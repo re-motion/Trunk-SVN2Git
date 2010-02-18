@@ -16,22 +16,22 @@
 // 
 using System;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
   public abstract class DatePickerPagePreRendererBase : IDatePickerPagePreRenderer
   {
-    private readonly IHttpContext _context;
+    private readonly HttpContextBase _context;
     private readonly DatePickerPage _page;
 
-    protected DatePickerPagePreRendererBase (IHttpContext context, DatePickerPage page)
+    protected DatePickerPagePreRendererBase (HttpContextBase context, DatePickerPage page)
     {
       _context = context;
       _page = page;
     }
 
-    public IHttpContext Context
+    public HttpContextBase Context
     {
       get { return _context; }
     }

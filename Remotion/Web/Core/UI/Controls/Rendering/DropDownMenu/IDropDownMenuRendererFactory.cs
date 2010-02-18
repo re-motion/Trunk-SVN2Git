@@ -16,13 +16,13 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
 {
   public interface IDropDownMenuRendererFactory
   {
-    IDropDownMenuPreRenderer CreatePreRenderer (IHttpContext context, IDropDownMenu control);
-    IDropDownMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control);
+    IDropDownMenuPreRenderer CreatePreRenderer (HttpContextBase context, IDropDownMenu control);
+    IDropDownMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDropDownMenu control);
   }
 }

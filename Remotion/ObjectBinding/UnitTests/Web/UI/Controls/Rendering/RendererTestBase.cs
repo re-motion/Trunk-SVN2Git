@@ -19,7 +19,7 @@ using System.Collections;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
   [TestFixture]
   public class RendererTestBase
   {
-    protected IHttpContext HttpContext { get; private set; }
+    protected HttpContextBase HttpContext { get; private set; }
     protected HtmlHelper Html { get; private set; }
 
     protected RendererTestBase ()
@@ -44,8 +44,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
     {
       Html = new HtmlHelper();
 
-      HttpContext = MockRepository.GenerateMock<IHttpContext>();
-      IHttpResponse response = MockRepository.GenerateMock<IHttpResponse>();
+      HttpContext = MockRepository.GenerateMock<HttpContextBase>();
+      HttpResponseBase response = MockRepository.GenerateMock<HttpResponseBase>();
       HttpContext.Stub (mock => mock.Response).Return (response);
       response.Stub (mock => mock.ContentType).Return ("text/html");
 
@@ -54,10 +54,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
       browser.Capabilities.Add ("browser", "IE");
       browser.Capabilities.Add ("majorversion", "7");
 
-      var request = MockRepository.GenerateStub<IHttpRequest>();
-      request.Browser = browser;
+      var request = MockRepository.GenerateStub<HttpRequestBase>();
+      request.Stub (stub => stub.Browser).Return (new HttpBrowserCapabilitiesWrapper (browser));
 
-      HttpContext = MockRepository.GenerateStub<IHttpContext>();
+      HttpContext = MockRepository.GenerateStub<HttpContextBase>();
       HttpContext.Stub (stub => stub.Request).Return (request);
     }
   }

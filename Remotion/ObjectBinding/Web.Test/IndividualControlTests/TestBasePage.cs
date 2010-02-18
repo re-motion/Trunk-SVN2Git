@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
-using System.Threading;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
@@ -25,7 +23,6 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace OBWTest.IndividualControlTests
 {

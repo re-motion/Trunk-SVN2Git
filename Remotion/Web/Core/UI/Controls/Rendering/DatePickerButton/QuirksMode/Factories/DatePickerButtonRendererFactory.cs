@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factories
 {
@@ -25,17 +25,17 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factori
   /// </summary>
   public class DatePickerButtonRendererFactory : IDatePickerButtonRendererFactory
   {
-    public IDatePickerButtonRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
+    public IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control)
     {
       return new DatePickerButtonRenderer (context, writer, control);
     }
 
-    public IDatePickerButtonPreRenderer CreatePreRenderer (IHttpContext context, IDatePickerButton control)
+    public IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control)
     {
       return new DatePickerButtonPreRenderer (context, control);
     }
 
-    public IDatePickerPagePreRenderer CreatePreRenderer (IHttpContext context, DatePickerPage page)
+    public IDatePickerPagePreRenderer CreatePreRenderer (HttpContextBase context, DatePickerPage page)
     {
       return new DatePickerPagePreRenderer (context, page);
     }

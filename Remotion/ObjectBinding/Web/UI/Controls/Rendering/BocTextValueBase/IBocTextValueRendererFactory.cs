@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
 {
@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
   /// </summary>
   public interface IBocTextValueRendererFactory
   {
-    IBocTextValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocTextValue control);
+    IBocTextValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocTextValue control);
 
-    IBocTextValuePreRenderer CreatePreRenderer (IHttpContext context, IBocTextValue control);
+    IBocTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocTextValue control);
   }
 }

@@ -17,14 +17,14 @@
 using System;
 using System.Text;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
   public abstract class ListMenuPreRendererBase : PreRendererBase<IListMenu>, IListMenuPreRenderer
   {
-    protected ListMenuPreRendererBase (IHttpContext context, IListMenu control)
+    protected ListMenuPreRendererBase (HttpContextBase context, IListMenu control)
         : base(context, control)
     {
     }

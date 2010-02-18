@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
@@ -26,17 +26,17 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
   /// </summary>
   public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
-    public IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
+    public IWebTabRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
     {
       return new StandardMode.MenuTabRenderer (context, writer, control, tab);
     }
 
-    public ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control)
+    public ITabbedMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMenu control)
     {
       return new StandardMode.TabbedMenuRenderer (context, writer, control);
     }
 
-    public ITabbedMenuPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMenu menu)
+    public ITabbedMenuPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMenu menu)
     {
       return new TabbedMenuPreRenderer (context, menu);
     }

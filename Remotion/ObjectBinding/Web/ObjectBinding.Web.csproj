@@ -100,6 +100,9 @@
     <Reference Include="System.Web">
       <Name>system.web</Name>
     </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Windows.Forms">
       <Name>system.windows.forms</Name>
     </Reference>

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
@@ -27,6 +27,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
   public interface IBocColumnRendererFactory<T>
       where T: BocColumnDefinition
   {
-    IBocColumnRenderer<T> CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, T columnDefinition);
+    IBocColumnRenderer<T> CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, T columnDefinition);
   }
 }

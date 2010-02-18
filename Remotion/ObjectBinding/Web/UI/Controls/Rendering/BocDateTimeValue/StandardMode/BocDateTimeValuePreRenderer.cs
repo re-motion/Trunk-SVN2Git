@@ -17,14 +17,14 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
 {
   public class BocDateTimeValuePreRenderer : BocPreRendererBase<IBocDateTimeValue>, IBocDateTimeValuePreRenderer
   {
-    public BocDateTimeValuePreRenderer (IHttpContext context, IBocDateTimeValue control)
+    public BocDateTimeValuePreRenderer (HttpContextBase context, IBocDateTimeValue control)
         : base (context, control)
     {
     }

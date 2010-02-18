@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
@@ -30,13 +30,13 @@ namespace Remotion.Web.UI.Controls.Rendering
     where TControl : IStyledControl
   {
     private readonly HtmlTextWriter _writer;
-    private readonly IHttpContext _context;
+    private readonly HttpContextBase _context;
     private readonly TControl _control;
 
     /// <summary>
     /// Initializes the <see cref="Context"/>, <see cref="Writer"/> and <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
+    protected RendererBase (HttpContextBase context, HtmlTextWriter writer, TControl control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("writer", writer);
@@ -53,8 +53,8 @@ namespace Remotion.Web.UI.Controls.Rendering
       get { return _writer; }
     }
 
-    /// <summary>Gets the <see cref="IHttpContext"/> that contains the response for which this renderer generates output.</summary>
-    public IHttpContext Context
+    /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
+    public HttpContextBase Context
     {
       get { return _context; }
     }

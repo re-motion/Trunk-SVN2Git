@@ -23,7 +23,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _cancelIcon.Reset ();
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, IHttpContext context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       var factory = locator.GetInstance<IBocColumnRendererFactory<BocRowEditModeColumnDefinition>> ();
       return factory.CreateRenderer (context, writer, list, this);

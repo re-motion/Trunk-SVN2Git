@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
@@ -50,12 +50,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// as well as a <see cref="BocListRendererFactory"/> used to create detail renderers.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
-    /// <param name="context">The <see cref="IHttpContext"/> which contains the response to render to.</param>
+    /// <param name="context">The <see cref="HttpContextBase"/> which contains the response to render to.</param>
     /// <param name="writer">The target <see cref="HtmlTextWriter"/>.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
     /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
     /// can be obtained.</param>
-    public BocListRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+    public BocListRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
         : base (context, writer, list, cssClasses)
     {
       _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, writer, list);

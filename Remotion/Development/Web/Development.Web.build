@@ -44,6 +44,7 @@
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Core.dll"/>
         <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Web.Abstractions.dll"/>
         <include asis="true" name="System.Xml.dll"/>
       </references>
     </csc>

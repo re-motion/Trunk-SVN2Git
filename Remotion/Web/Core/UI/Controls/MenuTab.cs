@@ -21,7 +21,7 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
@@ -49,7 +49,7 @@ namespace Remotion.Web.UI.Controls
       _command = new SingleControlItemCollection (new NavigationCommand (), new[] { typeof (NavigationCommand) });
     }
 
-    public override IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, IHttpContext context, HtmlTextWriter writer, IWebTabStrip tabStrip)
+    public override IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, HtmlTextWriter writer, IWebTabStrip tabStrip)
     {
       var factory = serviceLocator.GetInstance<IMenuTabRendererFactory>();
       return factory.CreateRenderer (context, writer, tabStrip, this);

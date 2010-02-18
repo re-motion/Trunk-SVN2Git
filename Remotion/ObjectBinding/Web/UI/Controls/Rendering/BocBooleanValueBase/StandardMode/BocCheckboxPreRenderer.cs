@@ -17,7 +17,7 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
     private static readonly string s_scriptFileKey = typeof (BocCheckBox).FullName + "_Script";
     private static readonly string s_styleFileKey = typeof (BocCheckBox).FullName + "_Style";
 
-    public BocCheckboxPreRenderer (IHttpContext context, IBocCheckBox control)
+    public BocCheckboxPreRenderer (HttpContextBase context, IBocCheckBox control)
         : base (context, control)
     {
     }

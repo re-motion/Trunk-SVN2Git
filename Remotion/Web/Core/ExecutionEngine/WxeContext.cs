@@ -21,9 +21,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Context;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.Obsolete;
 using Remotion.Web.ExecutionEngine.UrlMapping;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -60,7 +58,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   <see cref="Remotion.Web.Configuration.ExecutionEngineConfiguration.DefaultWxeHandler"/> is not set. 
     /// </exception>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="httpContext" or @name="functionType" or @name="urlParameters"]' />
-    public static string GetPermanentUrl (IHttpContext httpContext, Type functionType, NameValueCollection urlParameters)
+    public static string GetPermanentUrl (HttpContextBase httpContext, Type functionType, NameValueCollection urlParameters)
     {
       return GetPermanentUrl (httpContext, functionType, urlParameters, false);
     }
@@ -70,7 +68,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   and using the <paramref name="urlParameters"/>.
     /// </summary>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="httpContext" or @name="functionType" or @name="urlParameters" or @name="fallbackOnCurrentUrl"]' />
-    protected static string GetPermanentUrl (IHttpContext httpContext, Type functionType, NameValueCollection urlParameters, bool fallbackOnCurrentUrl)
+    protected static string GetPermanentUrl (HttpContextBase httpContext, Type functionType, NameValueCollection urlParameters, bool fallbackOnCurrentUrl)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("functionType", functionType);
@@ -208,12 +206,12 @@ namespace Remotion.Web.ExecutionEngine
     }
 
 
-    private readonly IHttpContext _httpContext;
+    private readonly HttpContextBase _httpContext;
     private readonly WxeFunctionStateManager _functionStateManager;
     private readonly WxeFunctionState _functionState;
     private readonly NameValueCollection _queryString;
 
-    public WxeContext (IHttpContext context, WxeFunctionStateManager functionStateManager, WxeFunctionState functionState, NameValueCollection queryString)
+    public WxeContext (HttpContextBase context, WxeFunctionStateManager functionStateManager, WxeFunctionState functionState, NameValueCollection queryString)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("functionStateManager", functionStateManager);
@@ -235,7 +233,7 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    public IHttpContext HttpContext
+    public HttpContextBase HttpContext
     {
       get { return _httpContext; }
     }

@@ -16,18 +16,18 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode.Factories
 {
   public class BocAutoCompleteReferenceValueRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
   {
-    public IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocAutoCompleteReferenceValue control)
+    public IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
     {
       return new BocAutoCompleteReferenceValuePreRenderer (context, control);
     }
 
-    public IBocAutoCompleteReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
+    public IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
     {
       return new BocAutoCompleteReferenceValueRenderer (context, writer, control);
     }

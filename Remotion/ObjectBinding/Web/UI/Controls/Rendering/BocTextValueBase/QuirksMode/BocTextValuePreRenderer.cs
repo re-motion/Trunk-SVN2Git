@@ -16,14 +16,14 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
   public class BocTextValuePreRenderer : BocPreRendererBase<IBocTextValue>, IBocTextValuePreRenderer
   {
-    public BocTextValuePreRenderer (IHttpContext context, IBocTextValue control)
+    public BocTextValuePreRenderer (HttpContextBase context, IBocTextValue control)
         : base (context, control)
     {
     }

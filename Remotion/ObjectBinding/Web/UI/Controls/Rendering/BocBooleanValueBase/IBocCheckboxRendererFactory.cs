@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
   /// </summary>
   public interface IBocCheckboxRendererFactory
   {
-    IBocCheckboxRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocCheckBox control);
+    IBocCheckboxRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocCheckBox control);
 
-    IBocCheckboxPreRenderer CreatePreRenderer (IHttpContext context, IBocCheckBox control);
+    IBocCheckboxPreRenderer CreatePreRenderer (HttpContextBase context, IBocCheckBox control);
   }
 }

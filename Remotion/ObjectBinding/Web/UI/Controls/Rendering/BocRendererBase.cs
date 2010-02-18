@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
   public abstract class BocRendererBase<TControl> : RendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected BocRendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
+    protected BocRendererBase (HttpContextBase context, HtmlTextWriter writer, TControl control)
         : base (context, writer, control)
     {
     }

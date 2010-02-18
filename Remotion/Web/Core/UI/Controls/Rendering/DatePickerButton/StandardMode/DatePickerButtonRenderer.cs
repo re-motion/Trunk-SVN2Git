@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
   /// </summary>
   public class DatePickerButtonRenderer: DatePickerButtonRendererBase
   {
-    public DatePickerButtonRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
+    public DatePickerButtonRenderer (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control)
         : base (context, writer, control)
     {
     }

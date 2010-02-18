@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode
 {
   public class WebButtonPreRenderer : PreRendererBase<IWebButton>, IWebButtonPreRenderer
   {
-    public WebButtonPreRenderer (IHttpContext context, IWebButton control)
+    public WebButtonPreRenderer (HttpContextBase context, IWebButton control)
         : base (context, control)
     {
     }

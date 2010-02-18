@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
@@ -28,7 +28,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    public WebTabStripRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control)
         : base (context, writer, control)
     {
     }

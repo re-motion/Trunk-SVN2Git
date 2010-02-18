@@ -17,14 +17,14 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
 {
   public class BocEnumValuePreRenderer : BocPreRendererBase<IBocEnumValue>, IBocEnumValuePreRenderer
   {
-    public BocEnumValuePreRenderer (IHttpContext context, IBocEnumValue control)
+    public BocEnumValuePreRenderer (HttpContextBase context, IBocEnumValue control)
         : base (context, control)
     {
     }

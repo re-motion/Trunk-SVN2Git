@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   /// </summary>
   public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
   {
-    public WebTabStripPreRenderer (IHttpContext context, IWebTabStrip control)
+    public WebTabStripPreRenderer (HttpContextBase context, IWebTabStrip control)
         : base (context, control)
     {
     }

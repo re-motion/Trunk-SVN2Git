@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -47,12 +47,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// Constructs the renderer, initializing the List, Writer and <see cref="Column"/> properties.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
-    /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>
+    /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the cells to.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
     protected BocColumnRendererBase (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
         : base (context, writer, list, cssClasses)
     {
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);

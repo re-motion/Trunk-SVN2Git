@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories
 {
@@ -25,22 +25,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
   /// </summary>
   public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory, IBocCheckboxRendererFactory
   {
-    IBocBooleanValueRenderer IBocBooleanValueRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocBooleanValue control)
+    IBocBooleanValueRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocBooleanValue control)
     {
       return new BocBooleanValueRenderer (context, writer, control);
     }
 
-    public IBocBooleanValuePreRenderer CreatePreRenderer (IHttpContext context, IBocBooleanValue control)
+    public IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control)
     {
       return new BocBooleanValuePreRenderer (context, control);
     }
 
-    IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocCheckBox control)
+    IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocCheckBox control)
     {
       return new BocCheckboxRenderer (context, writer, control);
     }
 
-    public IBocCheckboxPreRenderer CreatePreRenderer (IHttpContext context, IBocCheckBox control)
+    public IBocCheckboxPreRenderer CreatePreRenderer (HttpContextBase context, IBocCheckBox control)
     {
       return new BocCheckboxPreRenderer (context, control);
     }

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 {
@@ -28,7 +28,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
   {
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
-    public DropDownMenuRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
+    public DropDownMenuRenderer (HttpContextBase context, HtmlTextWriter writer, IDropDownMenu control)
         : base(context, writer, control)
     {
     }

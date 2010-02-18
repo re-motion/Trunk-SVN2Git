@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
     private static readonly string s_scriptFileKey = typeof (IBocBooleanValue).FullName + "_Script";
     private static readonly string s_styleFileKey = typeof (IBocBooleanValue).FullName + "_Style";
 
-    public BocBooleanValuePreRenderer (IHttpContext context, IBocBooleanValue control)
+    public BocBooleanValuePreRenderer (HttpContextBase context, IBocBooleanValue control)
         : base (context, control)
     {
     }

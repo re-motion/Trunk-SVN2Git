@@ -32,6 +32,7 @@ using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -533,7 +534,7 @@ namespace Remotion.ObjectBinding.Sample
       base.Render (writer);
     }
 
-    void ISmartControl.RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
+    void ISmartControl.RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
     }
 

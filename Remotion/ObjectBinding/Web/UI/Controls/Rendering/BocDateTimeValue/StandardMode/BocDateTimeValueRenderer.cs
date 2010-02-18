@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
@@ -28,12 +28,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
     private readonly TextBox _dateTextBox;
     private readonly TextBox _timeTextBox;
 
-    public BocDateTimeValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
+    public BocDateTimeValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
         : this (context, writer, control, null, null)
     {
     }
 
-    public BocDateTimeValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control, TextBox dateTextBox, TextBox timeTextBox)
+    public BocDateTimeValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control, TextBox dateTextBox, TextBox timeTextBox)
         : base (context, writer, control)
     {
       _dateTextBox = dateTextBox ?? new TextBox();

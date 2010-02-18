@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView
   /// </summary>
   public interface ISingleViewRendererFactory
   {
-    ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control);
-    ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control);
+    ISingleViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ISingleView control);
+    ISingleViewPreRenderer CreatePreRenderer (HttpContextBase context, ISingleView control);
   }
 }

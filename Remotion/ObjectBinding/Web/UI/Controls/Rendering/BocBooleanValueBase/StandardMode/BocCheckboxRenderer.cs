@@ -20,7 +20,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
 {
@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
-    public BocCheckboxRenderer (IHttpContext context, HtmlTextWriter writer, IBocCheckBox control)
+    public BocCheckboxRenderer (HttpContextBase context, HtmlTextWriter writer, IBocCheckBox control)
         : base (context, writer, control)
     {
     }

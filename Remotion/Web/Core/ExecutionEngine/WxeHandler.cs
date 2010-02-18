@@ -22,7 +22,6 @@ using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {

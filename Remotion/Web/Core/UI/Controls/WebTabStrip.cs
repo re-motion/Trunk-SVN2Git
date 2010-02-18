@@ -26,6 +26,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.Utilities;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Design;
@@ -108,7 +109,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (context, this);

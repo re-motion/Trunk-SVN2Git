@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 
     private readonly CssClassContainer _cssClasses;
 
-    protected BocListPreRendererBase (IHttpContext context, IBocList control, CssClassContainer cssClassContainer)
+    protected BocListPreRendererBase (HttpContextBase context, IBocList control, CssClassContainer cssClassContainer)
         : base (context, control)
     {
       _cssClasses = cssClassContainer;

@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocDateTimeValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
+    public BocDateTimeValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
         : base (context, writer, control)
     {
     }

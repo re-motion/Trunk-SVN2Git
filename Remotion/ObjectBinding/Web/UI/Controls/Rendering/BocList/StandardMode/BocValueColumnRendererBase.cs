@@ -19,7 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       where TBocColumnDefinition: BocValueColumnDefinition
   {
     protected BocValueColumnRendererBase (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
         : base (context, writer, list, columnDefintion, cssClasses)
     {
     }

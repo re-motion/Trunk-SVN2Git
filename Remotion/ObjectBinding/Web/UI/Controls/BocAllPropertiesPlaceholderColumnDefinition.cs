@@ -20,14 +20,14 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary> A column definition that acts as a placeholder for inserting a column for each property. </summary>
   public class BocAllPropertiesPlaceholderColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, IHttpContext context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
       throw new NotSupportedException (GetType().Name + " cannot be rendered directly, but must be replaced by other column definitions.");
     }

@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
@@ -29,7 +29,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   {
     private readonly IWebTab _tab;
 
-    public WebTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
+    public WebTabRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
         : base(context, writer, control)
     {
       _tab = tab;

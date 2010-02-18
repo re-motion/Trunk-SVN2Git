@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 {
@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
     private const string c_dropDownIconDisabled = "DropDownMenuArrow_disabled.gif";
 
-    public DropDownMenuRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
+    public DropDownMenuRenderer (HttpContextBase context, HtmlTextWriter writer, IDropDownMenu control)
         : base (context, writer, control)
     {
     }

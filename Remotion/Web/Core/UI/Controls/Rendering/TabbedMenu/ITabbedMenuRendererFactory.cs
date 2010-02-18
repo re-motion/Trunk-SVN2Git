@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
   /// </summary>
   public interface ITabbedMenuRendererFactory
   {
-    ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control);
-    ITabbedMenuPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMenu menu);
+    ITabbedMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMenu control);
+    ITabbedMenuPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMenu menu);
   }
 }

@@ -18,7 +18,7 @@ using System;
 using System.Collections.Specialized;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode;
 
@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
   /// </summary>
   public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
-    public MenuTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
+    public MenuTabRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
         : base(context, writer, control, tab)
     {
     }

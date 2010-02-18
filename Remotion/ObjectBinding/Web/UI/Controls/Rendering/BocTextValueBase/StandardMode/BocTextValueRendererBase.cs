@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     protected const string c_defaultTextBoxWidth = "150pt";
     protected const int c_defaultColumns = 60;
 
-    protected BocTextValueRendererBase (IHttpContext context, HtmlTextWriter writer, T control)
+    protected BocTextValueRendererBase (HttpContextBase context, HtmlTextWriter writer, T control)
         : base(context, writer, control)
     {
     }

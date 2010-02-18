@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Specialized;
-using System.Web.SessionState;
+using System.Web;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
@@ -30,8 +29,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
     public WxeContext CreateContext (WxeFunction rootFunction)
     {
-      IHttpContext httpContext = MockRepository.GenerateStub<IHttpContext> ();
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (MockRepository.GenerateStub<IHttpSessionState> ());
+      HttpContextBase httpContext = MockRepository.GenerateStub<HttpContextBase> ();
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (MockRepository.GenerateStub<HttpSessionStateBase> ());
       WxeFunctionState functionState = new WxeFunctionState (rootFunction, false);
       NameValueCollection queryString = new NameValueCollection ();
 

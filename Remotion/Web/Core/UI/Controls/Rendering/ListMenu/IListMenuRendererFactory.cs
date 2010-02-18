@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu
   /// </summary>
   public interface IListMenuRendererFactory
   {
-    IListMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IListMenu control);
-    IListMenuPreRenderer CreatePreRenderer (IHttpContext context, IListMenu control);
+    IListMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IListMenu control);
+    IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control);
   }
 }

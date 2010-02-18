@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
 {
@@ -25,17 +25,17 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
   /// </summary>
   public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    public IWebTabStripRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control)
     {
       return new WebTabStripRenderer (context, writer, control);
     }
 
-    public IWebTabStripPreRenderer CreatePreRenderer (IHttpContext context, IWebTabStrip control)
+    public IWebTabStripPreRenderer CreatePreRenderer (HttpContextBase context, IWebTabStrip control)
     {
       return new WebTabStripPreRenderer (context, control);
     }
 
-    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
+    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
     {
       return new WebTabRenderer (context, writer, control, tab);
     }

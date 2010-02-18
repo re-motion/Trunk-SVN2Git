@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValue).FullName + "_Startup_";
 
-    public BocBooleanValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocBooleanValue control)
+    public BocBooleanValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocBooleanValue control)
         : base (context, writer, control)
     {
     }

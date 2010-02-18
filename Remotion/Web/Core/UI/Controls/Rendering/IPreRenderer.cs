@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering
     TControl Control { get; }
 
     /// <summary>Gets the context in which rendering occurs.</summary>
-    IHttpContext Context { get; }
+    HttpContextBase Context { get; }
 
     /// <summary>Registers script and stylesheet file includes, which has to be done during the initialization stage.</summary>
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);

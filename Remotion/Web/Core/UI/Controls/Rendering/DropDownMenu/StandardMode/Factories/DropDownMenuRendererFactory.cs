@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
   /// </summary>
   public class DropDownMenuRendererFactory : IDropDownMenuRendererFactory
   {
-    public IDropDownMenuPreRenderer CreatePreRenderer (IHttpContext context, IDropDownMenu control)
+    public IDropDownMenuPreRenderer CreatePreRenderer (HttpContextBase context, IDropDownMenu control)
     {
       return new DropDownMenuPreRenderer (context, control);
     }
 
-    public IDropDownMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
+    public IDropDownMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDropDownMenu control)
     {
       return new DropDownMenuRenderer (context, writer, control);
     }

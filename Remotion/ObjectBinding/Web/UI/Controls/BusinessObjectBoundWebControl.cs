@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -381,7 +382,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>Regsiteres stylesheet and script files with the <see cref="HtmlHeadAppender"/>.</summary>
-    public virtual void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
+    public virtual void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
     }
 
@@ -450,7 +451,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
     }
 
-    protected new IHttpContext Context
+    protected new HttpContextBase Context
     {
       get { return Page != null ? Page.Context : null; }
     }

@@ -95,6 +95,9 @@
     <Reference Include="System.Web">
       <Name>System.Web</Name>
     </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web.Extensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -137,9 +140,7 @@
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="Infrastructure\ClientScriptManagerWrapper.cs" />
     <Compile Include="Infrastructure\ControlWrapper.cs" />
-    <Compile Include="Infrastructure\HttpApplicationStateWrapper.cs" />
     <Compile Include="Infrastructure\IClientScriptManager.cs" />
-    <Compile Include="Infrastructure\IHttpApplicationState.cs" />
     <Compile Include="Infrastructure\PageWrapper.cs" />
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />
@@ -320,13 +321,6 @@
     <Compile Include="UI\Controls\ControlReplacing\ControlReplacer.cs" />
     <Compile Include="ExecutionEngine\WxeUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
-    <Compile Include="Infrastructure\HttpContextWrapper.cs" />
-    <Compile Include="Infrastructure\HttpRequestWrapper.cs" />
-    <Compile Include="Infrastructure\HttpResponseWrapper.cs" />
-    <Compile Include="Infrastructure\HttpSessionStateWrapper.cs" />
-    <Compile Include="Infrastructure\IHttpContext.cs" />
-    <Compile Include="Infrastructure\IHttpRequest.cs" />
-    <Compile Include="Infrastructure\IHttpResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -693,7 +687,6 @@
     <Compile Include="Utilities\HtmlUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\IHttpServerUtility.cs" />
     <Compile Include="Utilities\IScriptUtility.cs" />
     <Compile Include="Utilities\PageUtility.cs">
       <SubType>Code</SubType>
@@ -701,7 +694,6 @@
     <Compile Include="Utilities\ScriptUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\HttpServerUtilityWrapper.cs" />
     <Compile Include="Utilities\UrlUtility.cs">
       <SubType>Code</SubType>
     </Compile>

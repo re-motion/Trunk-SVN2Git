@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories
   /// </summary>
   public class ListMenuRendererFactory : IListMenuRendererFactory
   {
-    public IListMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IListMenu control)
+    public IListMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IListMenu control)
     {
       return new ListMenuRenderer (context, writer, control);
     }
 
-    public IListMenuPreRenderer CreatePreRenderer (IHttpContext context, IListMenu control)
+    public IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control)
     {
       return new ListMenuPreRenderer (context, control);
     }

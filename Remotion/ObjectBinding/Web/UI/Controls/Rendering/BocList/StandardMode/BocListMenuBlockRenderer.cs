@@ -19,7 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+    public BocListMenuBlockRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
         : base (context, writer, list, cssClasses)
     {
     }

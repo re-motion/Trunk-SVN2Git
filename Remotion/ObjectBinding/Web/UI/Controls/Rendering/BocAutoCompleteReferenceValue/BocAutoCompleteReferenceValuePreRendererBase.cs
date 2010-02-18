@@ -18,7 +18,7 @@ using System;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 
@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
   public abstract class BocAutoCompleteReferenceValuePreRendererBase
       : BocPreRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValuePreRenderer
   {
-    protected BocAutoCompleteReferenceValuePreRendererBase (IHttpContext context, IBocAutoCompleteReferenceValue control)
+    protected BocAutoCompleteReferenceValuePreRendererBase (HttpContextBase context, IBocAutoCompleteReferenceValue control)
         : base (context, control)
     {
     }

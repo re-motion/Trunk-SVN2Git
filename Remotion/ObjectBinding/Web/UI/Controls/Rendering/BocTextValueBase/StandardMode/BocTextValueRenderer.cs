@@ -19,7 +19,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
@@ -29,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// </summary>
   public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
-    public BocTextValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocTextValue control)
+    public BocTextValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocTextValue control)
         : base (context, writer, control)
     {
     }

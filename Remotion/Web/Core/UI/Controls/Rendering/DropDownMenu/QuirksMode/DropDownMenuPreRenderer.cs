@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 {
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
   /// </summary>
   public class DropDownMenuPreRenderer : DropDownMenuPreRendererBase
   {
-    public DropDownMenuPreRenderer (IHttpContext context, IDropDownMenu control)
+    public DropDownMenuPreRenderer (HttpContextBase context, IDropDownMenu control)
         : base(context, control)
     {
     }

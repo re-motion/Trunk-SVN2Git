@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Rhino.Mocks;
@@ -223,7 +224,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _checkbox);
+      _renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, _checkbox);
       _renderer.Render();
 
       var document = Html.GetResultDocument();

@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 {
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMultiView control)
+    public TabbedMultiViewRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMultiView control)
         : base(context, writer, control)
     {
     }

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
   /// </summary>
   public class BocReferenceValueRendererFactory : IBocReferenceValueRendererFactory
   {
-    public IBocReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control)
+    public IBocReferenceValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control)
     {
       return new BocReferenceValueRenderer (context, writer, control);
     }
 
-    public IBocReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocReferenceValue control)
+    public IBocReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocReferenceValue control)
     {
       return new BocReferenceValuePreRenderer (context, control);
     }

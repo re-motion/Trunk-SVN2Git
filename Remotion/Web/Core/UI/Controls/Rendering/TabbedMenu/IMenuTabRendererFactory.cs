@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
@@ -26,6 +26,6 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
   /// </summary>
   public interface IMenuTabRendererFactory
   {
-     IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab);
+     IWebTabRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab);
   }
 }

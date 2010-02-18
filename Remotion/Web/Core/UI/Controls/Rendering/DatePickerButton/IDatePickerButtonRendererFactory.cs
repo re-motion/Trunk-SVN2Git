@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
@@ -25,9 +25,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   /// </summary>
   public interface IDatePickerButtonRendererFactory
   {
-    IDatePickerButtonRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control);
-    IDatePickerButtonPreRenderer CreatePreRenderer (IHttpContext context, IDatePickerButton control);
+    IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control);
+    IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control);
 
-    IDatePickerPagePreRenderer CreatePreRenderer (IHttpContext context, DatePickerPage page);
+    IDatePickerPagePreRenderer CreatePreRenderer (HttpContextBase context, DatePickerPage page);
   }
 }

@@ -16,16 +16,11 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Reflection;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Utilities
@@ -237,19 +232,19 @@ namespace Remotion.Web.Utilities
       s_memberCaller.SetChildControlState(control, newControlState);
     }
 
-    public static bool IsResponseTextXml (IHttpContext context)
+    public static bool IsResponseTextXml (HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       return context.Response.ContentType.Equals ("TEXT/XML", StringComparison.OrdinalIgnoreCase);
     }
 
-    public static bool IsResponseTextXHtml (IHttpContext context)
+    public static bool IsResponseTextXHtml (HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       return context.Response.ContentType.Equals ("TEXT/XHTML", StringComparison.OrdinalIgnoreCase);
     }
 
-    public static bool IsXmlConformResponseTextRequired (IHttpContext context)
+    public static bool IsXmlConformResponseTextRequired (HttpContextBase context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 

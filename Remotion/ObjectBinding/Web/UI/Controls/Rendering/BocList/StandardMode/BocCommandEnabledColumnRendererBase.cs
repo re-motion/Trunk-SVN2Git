@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using Remotion.Security;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
     protected BocCommandEnabledColumnRendererBase (
-        IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
+        HttpContextBase context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
         : base (context, writer, list, columnDefintion, cssClasses)
     {
     }

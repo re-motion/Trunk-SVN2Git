@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
@@ -22,8 +23,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
   public class DatePickerPagePreRenderer : DatePickerPagePreRendererBase
   {
-    public DatePickerPagePreRenderer (IHttpContext context, DatePickerPage page)
-        : base(context, page)
+    public DatePickerPagePreRenderer (HttpContextBase context, DatePickerPage page)
+        : base (context, page)
     {
     }
 

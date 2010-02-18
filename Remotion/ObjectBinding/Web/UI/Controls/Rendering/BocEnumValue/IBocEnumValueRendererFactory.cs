@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
 {
@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
   /// </summary>
   public interface IBocEnumValueRendererFactory
   {
-    IBocEnumValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocEnumValue control);
+    IBocEnumValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocEnumValue control);
 
-    IBocEnumValuePreRenderer CreatePreRenderer (IHttpContext context, IBocEnumValue control);
+    IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control);
   }
 }

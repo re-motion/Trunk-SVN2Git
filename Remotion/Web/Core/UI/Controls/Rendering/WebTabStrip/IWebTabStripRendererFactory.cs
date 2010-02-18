@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   /// </summary>
   public interface IWebTabStripRendererFactory
   {
-    IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control);
-    IWebTabStripPreRenderer CreatePreRenderer (IHttpContext context, IWebTabStrip control);
+    IWebTabStripRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control);
+    IWebTabStripPreRenderer CreatePreRenderer (HttpContextBase context, IWebTabStrip control);
   }
 }

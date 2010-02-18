@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.QuirksMode
 {
   public class WebTreeViewPreRenderer : PreRendererBase<IWebTreeView>, IWebTreeViewPreRenderer
   {
-    public WebTreeViewPreRenderer (IHttpContext context, IWebTreeView control)
+    public WebTreeViewPreRenderer (HttpContextBase context, IWebTreeView control)
         : base (context, control)
     {
     }

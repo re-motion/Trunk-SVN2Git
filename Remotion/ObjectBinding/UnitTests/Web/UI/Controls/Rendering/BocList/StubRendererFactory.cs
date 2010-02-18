@@ -19,25 +19,25 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
     public class StubRendererFactory : IBocListTableBlockRendererFactory, IBocListMenuBlockRendererFactory, IBocListNavigationBlockRendererFactory
     {
         IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
-                IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
+                HttpContextBase context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
         {
             return new StubRenderer (writer);
         }
 
-        IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
+        IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list)
         {
             return new StubRenderer (writer);
         }
 
         IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (
-                IHttpContext context, HtmlTextWriter writer, IBocList list)
+                HttpContextBase context, HtmlTextWriter writer, IBocList list)
         {
             return new StubRenderer (writer);
         }

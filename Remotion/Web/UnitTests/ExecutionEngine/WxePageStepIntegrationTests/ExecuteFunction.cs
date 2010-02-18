@@ -18,7 +18,6 @@ using System;
 using System.Collections.Specialized;
 using System.Text;
 using System.Threading;
-using System.Web.SessionState;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -26,8 +25,7 @@ using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
@@ -38,7 +36,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
   {
     private MockRepository _mockRepository;
     private WxePageStep _pageStep;
-    private IHttpContext _httpContextMock;
+    private HttpContextBase _httpContextMock;
     private WxeContext _wxeContext;
     private IWxePageExecutor _pageExecutorMock;
     private IWxePage _pageMock;
@@ -57,7 +55,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _rootFunction = new TestFunction();
       _subFunction = _mockRepository.PartialMock<TestFunction>();
 
-      _httpContextMock = _mockRepository.DynamicMock<IHttpContext>();
+      _httpContextMock = _mockRepository.DynamicMock<HttpContextBase>();
       _pageExecutorMock = _mockRepository.StrictMock<IWxePageExecutor>();
       _functionState = new WxeFunctionState (_rootFunction, true);
 
@@ -71,7 +69,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_rootFunction.GetType(), "~/root.wxe"));
       UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_subFunction.GetType(), "~/sub.wxe"));
 
-      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState> ();
+      var sessionStub = _mockRepository.DynamicMock<HttpSessionStateBase> ();
       sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior ();
 
       _functionStateManager = new WxeFunctionStateManager (sessionStub);
@@ -201,7 +199,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       WxeContextMock.SetCurrent (_wxeContext);
       Uri uri = new Uri ("http://localhost/root.wxe");
 
-      IHttpResponse responseMock = _mockRepository.StrictMock<IHttpResponse>();
+      HttpResponseBase responseMock = _mockRepository.StrictMock<HttpResponseBase>();
       responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
       responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
       responseMock.Stub (stub => stub.ApplyAppPathModifier ("/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
@@ -209,7 +207,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       responseMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
       _httpContextMock.Stub (stub => stub.Response).Return (responseMock).Repeat.Any();
 
-      IHttpRequest requestMock = _mockRepository.StrictMock<IHttpRequest>();
+      HttpRequestBase requestMock = _mockRepository.StrictMock<HttpRequestBase>();
       requestMock.Stub (stub => stub.Url).Return (uri).Repeat.Any();
       _httpContextMock.Stub (stub => stub.Request).Return (requestMock).Repeat.Any();
 

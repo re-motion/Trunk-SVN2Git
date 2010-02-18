@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
   public abstract class BocReferenceValuePreRendererBase : BocPreRendererBase<IBocReferenceValue>, IBocReferenceValuePreRenderer
   {
-    protected BocReferenceValuePreRendererBase (IHttpContext context, IBocReferenceValue control)
+    protected BocReferenceValuePreRendererBase (HttpContextBase context, IBocReferenceValue control)
         : base (context, control)
     {
     }

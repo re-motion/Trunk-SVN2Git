@@ -19,7 +19,7 @@ using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
 {
@@ -29,7 +29,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
   /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control)
+    public TabbedMenuRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMenu control)
         : base (context, writer, control)
     {
     }

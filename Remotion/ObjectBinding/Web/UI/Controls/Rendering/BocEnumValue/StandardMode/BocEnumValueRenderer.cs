@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
 
     private const string c_defaultListControlWidth = "150pt";
 
-    public BocEnumValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocEnumValue control)
+    public BocEnumValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocEnumValue control)
         : base (context, writer, control)
     {
     }

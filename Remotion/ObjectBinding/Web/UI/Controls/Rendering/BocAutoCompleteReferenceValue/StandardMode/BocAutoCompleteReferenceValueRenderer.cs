@@ -20,7 +20,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode
@@ -30,13 +29,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocAutoCompleteReferenceValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
+    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
         : this (context, writer, control, () => new TextBox())
     {
     }
 
     public BocAutoCompleteReferenceValueRenderer (
-        IHttpContext context,
+        HttpContextBase context,
         HtmlTextWriter writer,
         IBocAutoCompleteReferenceValue control,
         Func<TextBox> textBoxGetter)

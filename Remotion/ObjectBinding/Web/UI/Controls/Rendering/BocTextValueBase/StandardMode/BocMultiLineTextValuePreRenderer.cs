@@ -17,14 +17,14 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
   public class BocMultilineTextValuePreRenderer : BocPreRendererBase<IBocMultilineTextValue>, IBocMultilineTextValuePreRenderer
   {
-    public BocMultilineTextValuePreRenderer (IHttpContext context, IBocMultilineTextValue control)
+    public BocMultilineTextValuePreRenderer (HttpContextBase context, IBocMultilineTextValue control)
         : base (context, control)
     {
     }

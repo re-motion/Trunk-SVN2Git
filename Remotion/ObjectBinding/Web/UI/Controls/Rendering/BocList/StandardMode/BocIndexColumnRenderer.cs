@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// </summary>
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
-    public BocIndexColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+    public BocIndexColumnRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
         : base (context, writer, list, cssClasses)
     {
     }

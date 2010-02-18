@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
@@ -28,7 +28,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
     private static readonly string s_datePickerScriptFileKey = typeof (IDatePickerButton).FullName + "_Script";
     private static readonly string s_datePickerStyleFileKey = typeof (IDatePickerButton).FullName + "_Style";
 
-    public DatePickerButtonPreRenderer (IHttpContext context, IDatePickerButton control)
+    public DatePickerButtonPreRenderer (HttpContextBase context, IDatePickerButton control)
         : base (context, control)
     {
     }

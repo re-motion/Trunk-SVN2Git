@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.StandardMode.Factories
 {
   public class WebTreeViewRendererFactory : IWebTreeViewRendererFactory
   {
-    public IWebTreeViewPreRenderer CreatePreRenderer (IHttpContext context, IWebTreeView control)
+    public IWebTreeViewPreRenderer CreatePreRenderer (HttpContextBase context, IWebTreeView control)
     {
       return new WebTreeViewPreRenderer (context, control);
     }

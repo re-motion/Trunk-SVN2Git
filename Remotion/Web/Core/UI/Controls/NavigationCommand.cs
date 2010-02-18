@@ -22,7 +22,6 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {

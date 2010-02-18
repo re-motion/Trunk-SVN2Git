@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
 {
@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
     // statics
     private static readonly string s_styleFileKey = typeof (ITabbedMenu).FullName + "_Style";
 
-    public TabbedMenuPreRenderer (IHttpContext context, ITabbedMenu control)
+    public TabbedMenuPreRenderer (HttpContextBase context, ITabbedMenu control)
         : base(context, control)
     {
     }

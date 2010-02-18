@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
@@ -33,7 +33,7 @@ namespace Remotion.Web.UI.Controls.Rendering
     HtmlTextWriter Writer { get; }
 
     /// <summary>Gets the context in which rendering occurs.</summary>
-    IHttpContext Context { get; }
+    HttpContextBase Context { get; }
 
     /// <summary>Renders the <see cref="Control"/> using the <see cref="Writer"/> in the given <see cref="Context"/>.</summary>
     void Render();

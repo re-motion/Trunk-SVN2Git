@@ -18,14 +18,14 @@ using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubColumnRendererFactory : IBocColumnRendererFactory<StubColumnDefinition>
   {
     public IBocColumnRenderer<StubColumnDefinition> CreateRenderer (
-      IHttpContext context, 
+      HttpContextBase context, 
       HtmlTextWriter writer, 
       IBocList list, 
       StubColumnDefinition columnDefinition)

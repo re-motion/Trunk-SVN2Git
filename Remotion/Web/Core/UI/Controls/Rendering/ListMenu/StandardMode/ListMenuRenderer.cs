@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
   {
     protected const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuRenderer (IHttpContext context, HtmlTextWriter writer, IListMenu control)
+    public ListMenuRenderer (HttpContextBase context, HtmlTextWriter writer, IListMenu control)
         : base (context, writer, control)
     {
     }

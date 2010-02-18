@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
@@ -33,6 +33,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
     bool IsSelected { get; }
     bool EvaluateEnabled ();
 
-    IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, IHttpContext context, HtmlTextWriter writer, IWebTabStrip tabStrip);
+    IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, HtmlTextWriter writer, IWebTabStrip tabStrip);
   }
 }

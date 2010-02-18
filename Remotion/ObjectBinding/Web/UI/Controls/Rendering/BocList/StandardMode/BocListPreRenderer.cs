@@ -17,7 +17,7 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     private static readonly string s_scriptFileKey = typeof (IBocList).FullName + "_Script";
     private static readonly string s_styleFileKey = typeof (IBocList).FullName + "_Style";
 
-    public BocListPreRenderer (IHttpContext context, IBocList control, CssClassContainer cssClassContainer)
+    public BocListPreRenderer (HttpContextBase context, IBocList control, CssClassContainer cssClassContainer)
         : base(context, control, cssClassContainer)
     {
     }

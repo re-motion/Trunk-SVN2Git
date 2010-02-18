@@ -18,8 +18,6 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -77,7 +75,7 @@ namespace Remotion.Web.UI.Controls
     string DisplayName { get; }
 
     /// <summary>Regsiteres stylesheet and script files with the <see cref="HtmlHeadAppender"/>.</summary>
-    void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender);
+    void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender);
   }
 
 }

@@ -16,14 +16,12 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.Web.SessionState;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Context;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
-using Remotion.Web.Infrastructure;
+using System.Web;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
@@ -35,11 +33,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     private IExecutionStateContext _executionStateContextMock;
     private TestFunction _rootFunction;
     private OtherTestFunction _subFunction;
-    private IHttpContext _httpContextMock;
+    private HttpContextBase _httpContextMock;
     private WxeFunctionState _functionState;
     private WxeContext _wxeContext;
-    private IHttpResponse _responseMock;
-    private IHttpRequest _requestMock;
+    private HttpResponseBase _responseMock;
+    private HttpRequestBase _requestMock;
     private NameValueCollection _postBackCollection;
     private WxeFunctionStateManager _functionStateManager;
 
@@ -52,18 +50,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       _rootFunction = new TestFunction ("Value");
       _subFunction = CreateSubFunction();
 
-      _httpContextMock = MockRepository.DynamicMock<IHttpContext>();
+      _httpContextMock = MockRepository.DynamicMock<HttpContextBase>();
       _functionState = new WxeFunctionState (_rootFunction, true);
 
-      _responseMock = MockRepository.StrictMock<IHttpResponse>();
+      _responseMock = MockRepository.StrictMock<HttpResponseBase>();
       _httpContextMock.Stub (stub => stub.Response).Return (_responseMock).Repeat.Any();
 
-      _requestMock = MockRepository.StrictMock<IHttpRequest>();
+      _requestMock = MockRepository.StrictMock<HttpRequestBase>();
       _httpContextMock.Stub (stub => stub.Request).Return (_requestMock).Repeat.Any();
 
       _postBackCollection = new NameValueCollection();
 
-      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState>();
+      var sessionStub = _mockRepository.DynamicMock<HttpSessionStateBase>();
       sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
 
       _functionStateManager = new WxeFunctionStateManager (sessionStub);
@@ -112,17 +110,17 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       get { return _wxeContext; }
     }
 
-    protected IHttpContext HttpContextMock
+    protected HttpContextBase HttpContextMock
     {
       get { return _httpContextMock; }
     }
 
-    protected IHttpRequest RequestMock
+    protected HttpRequestBase RequestMock
     {
       get { return _requestMock; }
     }
 
-    protected IHttpResponse ResponseMock
+    protected HttpResponseBase ResponseMock
     {
       get { return _responseMock; }
     }

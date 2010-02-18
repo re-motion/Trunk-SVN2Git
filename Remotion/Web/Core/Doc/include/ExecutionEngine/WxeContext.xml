@@ -44,7 +44,7 @@
   </ExecuteFunctionExternal>
   <GetPermanentUrl>
     <param name="httpContext"> 
-      The <see cref="IHttpContext"/> used for resolving the path. Must not be <see langword="null"/>. 
+      The <see cref="HttpContextBase"/> used for resolving the path. Must not be <see langword="null"/>. 
     </param>
     <param name="functionType"> 
       The type of the <see cref="WxeFunction"/> for which to create the permanent URL. 

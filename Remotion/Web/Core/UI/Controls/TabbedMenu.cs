@@ -25,6 +25,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
@@ -97,7 +98,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (context, this);

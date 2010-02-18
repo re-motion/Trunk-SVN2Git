@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
 {
@@ -25,12 +25,12 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
   /// </summary>
   public class SingleViewRendererFactory : ISingleViewRendererFactory
   {
-    public ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
+    public ISingleViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ISingleView control)
     {
       return new SingleViewRenderer (context, writer, control);
     }
 
-    public ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control)
+    public ISingleViewPreRenderer CreatePreRenderer (HttpContextBase context, ISingleView control)
     {
       return new SingleViewPreRenderer (context, control);
     }
