@@ -114,6 +114,19 @@ span.bocDateValue a.bocPicker12Hours
     {
     	top: 0.2em;
     }
+    
+    span.bocDate24Hours,
+    span.bocDate12Hours
+    {
+        right:9.1em;
+    }
+    
+    span.bocDate24HoursWithSeconds,
+    span.bocDate12HoursWithSeconds
+    {
+        right:10.1em;
+    }
+    
 }
 
 /* IE6 and below */
