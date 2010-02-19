@@ -114,7 +114,7 @@
     <property name="build.step.run-tests" value="false" />
     <property name="project.config" value="documentation" />
     <property name="build.debug" value="None" />
-    <property name="build.csc.define" value="TRACE;"/>
+    <property name="build.csc.define" value="TRACE;NET_3_5"/>
     <call target="init-build-version" />
   </target>
 
