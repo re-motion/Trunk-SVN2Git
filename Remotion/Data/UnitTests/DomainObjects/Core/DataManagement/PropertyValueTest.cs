@@ -47,12 +47,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The property 'test' (declared on class 'Order') is invalid because its "
-                                                                          +
-                                                                          "values cannot be copied. Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's "
-                                                                          +
-                                                                          "type is 'System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]'."
-        )]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        @"The property 'test' \(declared on class 'Order'\) is invalid because its values cannot be copied\. "
+        + @"Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is "
+        + @"'System\.Collections\.Generic\.List`1\[\[System\.Object, mscorlib, Version=*",
+        MatchType = MessageMatch.Regex)]
     public void PropertyValue_WithReferenceType_NotAllowed ()
     {
       PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (List<object>), null);
