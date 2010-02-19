@@ -39,15 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithContains_Like ()
-    {
-      var ceos = from c in QueryFactory.CreateLinqQuery<Ceo>()
-                 where c.Name.Contains ("Sepp Fischer")
-                 select c;
-      CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
-    }
-
-    [Test]
     public void QueryWithContainsObject ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);

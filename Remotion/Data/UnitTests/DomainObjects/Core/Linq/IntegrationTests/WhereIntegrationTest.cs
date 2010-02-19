@@ -85,6 +85,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void QueryWithContains_Like ()
+    {
+      var ceos = from c in QueryFactory.CreateLinqQuery<Ceo> ()
+                 where c.Name.Contains ("Sepp Fischer")
+                 select c;
+      CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
+    }
+
+    [Test]
     public void QueryWithWhere_OuterObject ()
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
@@ -259,7 +268,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1157")]
     public void QueryWithContainsInWhere_OnEmptyCollection ()
     {
       var possibleItems = new ObjectID[] {  };

@@ -26,14 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
   [TestFixture]
   public class SubQueryIntegrationTest : IntegrationTestBase
   {
-    [Test]
-    public void QueryWithContains_Like ()
-    {
-      var ceos = from c in QueryFactory.CreateLinqQuery<Ceo>()
-                 where c.Name.Contains ("Sepp Fischer")
-                 select c;
-      CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
-    }
+
 
     [Test]
     public void QueryWithSubQuery_InWhere ()
@@ -112,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
 
     [Test]
-    [Ignore ("TODO 1445: Should generate SELECT DISTINCT [oi].* FROM [OrderView] [o1] CROSS APPLY [OrderView] [o2] CROSS APPLY (SELECT [oi].* FROM [OrderItemView] [oi] WHERE ((([oi].[OrderID] IS NULL AND [o1].[ID] IS NULL) OR [oi].[OrderID] = [o1].[ID]) OR (([oi].[OrderID] IS NULL AND [o2].[ID] IS NULL) OR [oi].[OrderID] = [o2].[ID]))) [oi]")]
+    [Ignore ("TODO 1445: Should generate SELECT DISTINCT [oi].* FROM [OrderView] [o1] CROSS JOIN [OrderView] [o2] CROSS APPLY (SELECT [oi].* FROM [OrderItemView] [oi] WHERE ((([oi].[OrderID] IS NULL AND [o1].[ID] IS NULL) OR [oi].[OrderID] = [o1].[ID]) OR (([oi].[OrderID] IS NULL AND [o2].[ID] IS NULL) OR [oi].[OrderID] = [o2].[ID]))) [oi]")]
     public void QueryWithSubQuery_InThirdFrom ()
     {
       var orders =

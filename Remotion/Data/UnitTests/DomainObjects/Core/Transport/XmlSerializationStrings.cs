@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
             @"<?xml version=""1.0""?>
 <XmlTransportItem ID=""Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid"">
   <Properties>
-    <Property Name=""Custom"" Type=""System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"">
+    <Property Name=""Custom"" Type=""" + typeof (int).AssemblyQualifiedName + @""">
       <int>5</int>
     </Property>
   </Properties>
