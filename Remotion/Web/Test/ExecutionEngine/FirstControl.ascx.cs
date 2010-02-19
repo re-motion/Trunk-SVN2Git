@@ -153,7 +153,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       var viewState = (Tuple<object, Type>) savedState;
       base.LoadViewState (viewState.Item1);
 
-      Assertion.IsTrue (viewState.Item2 == typeof (FirstControl), "Expected ViewState from 'FirstControl' but was '{0}'.", viewState.B.Name);
+      Assertion.IsTrue (viewState.Item2 == typeof (FirstControl), "Expected ViewState from 'FirstControl' but was '{0}'.", viewState.Item2.Name);
     }
 
     protected override object SaveViewState ()
