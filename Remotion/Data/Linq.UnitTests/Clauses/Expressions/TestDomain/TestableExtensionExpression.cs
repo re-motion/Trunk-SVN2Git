@@ -16,10 +16,8 @@
 // 
 using System;
 using Remotion.Data.Linq.Clauses.Expressions;
-using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.UnitTests.Clauses.Expressions
+namespace Remotion.Data.Linq.UnitTests.Clauses.Expressions.TestDomain
 {
   public class TestableExtensionExpression : ExtensionExpression
   {
