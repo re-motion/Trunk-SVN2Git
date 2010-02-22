@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (IsDataAvailable)
       {
-        OriginalOppositeDomainObjectsContents.Commit (DataStore);
+        _originalOppositeDomainObjectsContents.Commit (DataStore);
         _dataStore.InvalidateCache ();
       }
     }
