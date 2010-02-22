@@ -74,6 +74,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       {
         PEVerifier.VerifyPEFile (path);
         FileUtility.DeleteAndWaitForCompletion (path);
+        FileUtility.DeleteAndWaitForCompletion (path.Replace (".dll", ".pdb"));
       }
 #endif
     }

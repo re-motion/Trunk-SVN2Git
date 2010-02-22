@@ -108,9 +108,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [TestFixtureTearDown]
     public void TeastFixtureTearDown ()
     {
-      ResetDirectory (_relativeSearchPathDirectoryForDlls);
-      ResetDirectory (_relativeSearchPathDirectoryForExes);
-      ResetDirectory (_dynamicDirectory);
+      DeleteDirectory (_relativeSearchPathDirectoryForDlls);
+      DeleteDirectory (_relativeSearchPathDirectoryForExes);
+      DeleteDirectory (_dynamicDirectory);
 
       FileUtility.DeleteAndWaitForCompletion (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, _markedReferencedAssemblyName + ".dll"));
       FileUtility.DeleteAndWaitForCompletion (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, _markedAssemblyName + ".dll"));
@@ -320,9 +320,14 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
     private void ResetDirectory (string directory)
     {
+      DeleteDirectory(directory);
+      Directory.CreateDirectory (directory);
+    }
+
+    private void DeleteDirectory (string directory)
+    {
       if (Directory.Exists (directory))
         Directory.Delete (directory, true);
-      Directory.CreateDirectory (directory);
     }
   }
 }

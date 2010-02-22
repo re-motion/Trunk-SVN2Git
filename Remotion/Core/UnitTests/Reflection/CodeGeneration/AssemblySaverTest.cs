@@ -45,6 +45,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.AreEqual (1, paths.Length);
       Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, scope.StrongNamedModuleName), paths[0]);
       File.Delete (paths[0]);
+      File.Delete (paths[0].Replace (".dll", ".pdb"));
     }
 
     [Test]
@@ -57,6 +58,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.AreEqual (1, paths.Length);
       Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, scope.WeakNamedModuleName), paths[0]);
       File.Delete (paths[0]);
+      File.Delete (paths[0].Replace (".dll", ".pdb"));
     }
   }
 }

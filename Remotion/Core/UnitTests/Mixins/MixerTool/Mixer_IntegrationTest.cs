@@ -42,6 +42,13 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       _assemblyOutputDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Mixer_IntegrationTest");
     }
 
+    [TearDown]
+    public void TearDown ()
+    {
+      if (Directory.Exists (_assemblyOutputDirectory))
+        Directory.Delete (_assemblyOutputDirectory, true);
+    }
+
     [Test]
     public void SavesMixedTypes ()
     {

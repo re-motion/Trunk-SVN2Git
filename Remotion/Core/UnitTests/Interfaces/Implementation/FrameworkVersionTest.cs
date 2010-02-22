@@ -106,6 +106,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
         Type versionAccessorType = versionAccessorTypeBuilder.BuildType ();
         var assemblyPath = scope.SaveAssembly (true);
         File.Move (assemblyPath, Path.Combine (tempPath, Path.GetFileName (assemblyPath)));
+        File.Delete (assemblyPath.Replace (".dll", ".pdb"));
 
         var interfaceAssemblyPath = typeof (FrameworkVersion).Assembly.Location;
         File.Copy (interfaceAssemblyPath, Path.Combine (tempPath, Path.GetFileName (interfaceAssemblyPath)));

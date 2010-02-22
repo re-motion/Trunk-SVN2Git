@@ -118,6 +118,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       finally
       {
         File.Delete (paths[0]);
+        File.Delete (paths[0].Replace (".dll", ".pdb"));
       }
     }
 

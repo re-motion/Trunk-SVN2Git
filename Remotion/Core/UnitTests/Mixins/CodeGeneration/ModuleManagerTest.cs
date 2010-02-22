@@ -62,9 +62,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private void DeleteSavedAssemblies ()
     {
       if (File.Exists (c_signedAssemblyFileName))
+      {
         File.Delete (c_signedAssemblyFileName);
+        File.Delete (c_signedAssemblyFileName.Replace (".dll", ".pdb"));
+      }
       if (File.Exists (c_unsignedAssemblyFileName))
+      {
         File.Delete (c_unsignedAssemblyFileName);
+        File.Delete (c_unsignedAssemblyFileName.Replace (".dll", ".pdb"));
+      }
     }
 
     [TestFixtureSetUp]
