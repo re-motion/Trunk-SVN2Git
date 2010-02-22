@@ -39,30 +39,36 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
     private readonly DebuggerDisplayAttributeGenerator _debuggerDisplayAttributeGenerator;
+    private readonly InitializationCodeGenerator _initializationCodeGenerator;
 
     public MixinTargetCodeGenerator (
         string targetClassName, 
         FieldReference classContextField, 
         FieldReference extensionsField, 
         FieldReference firstField, 
-        DebuggerDisplayAttributeGenerator debuggerDisplayAttributeGenerator)
+        DebuggerDisplayAttributeGenerator debuggerDisplayAttributeGenerator,
+        InitializationCodeGenerator initializationCodeGenerator)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("targetClassName", targetClassName);
       ArgumentUtility.CheckNotNull ("classContextField", classContextField);
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
       ArgumentUtility.CheckNotNull ("firstField", firstField);
       ArgumentUtility.CheckNotNull ("debuggerDisplayAttributeGenerator", debuggerDisplayAttributeGenerator);
+      ArgumentUtility.CheckNotNull ("initializationCodeGenerator", initializationCodeGenerator);
 
       _targetClassName = targetClassName;
       _classContextField = classContextField;
       _extensionsField = extensionsField;
       _firstField = firstField;
       _debuggerDisplayAttributeGenerator = debuggerDisplayAttributeGenerator;
+      _initializationCodeGenerator = initializationCodeGenerator;
     }
 
     public void ImplementIMixinTarget (IClassEmitter emitter)
     {
       ArgumentUtility.CheckNotNull ("emitter", emitter);
+
+      var initializationStatement = _initializationCodeGenerator.GetInitializationStatement ();
 
       CustomPropertyEmitter configurationProperty = emitter.CreateInterfacePropertyImplementation (s_classContextProperty);
       configurationProperty.GetMethod = emitter.CreateInterfaceMethodImplementation (s_classContextGetter);
@@ -71,11 +77,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
       CustomPropertyEmitter mixinsProperty = emitter.CreateInterfacePropertyImplementation (s_mixinProperty);
       mixinsProperty.GetMethod = emitter.CreateInterfaceMethodImplementation (s_mixinsGetter);
+
+      // initialize this instance in case we're being called before the ctor has finished running
+      mixinsProperty.GetMethod.AddStatement (initializationStatement);
       mixinsProperty.ImplementWithBackingField (_extensionsField);
       _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (mixinsProperty, "Count = {__extensions.Length}", "Mixins");
 
       CustomPropertyEmitter firstProperty = emitter.CreateInterfacePropertyImplementation (s_firstProperty);
       firstProperty.GetMethod = emitter.CreateInterfaceMethodImplementation (s_firstGetter);
+
+      // initialize this instance in case we're being called before the ctor has finished running
+      firstProperty.GetMethod.AddStatement (initializationStatement);
       firstProperty.ImplementWithBackingField (_firstField);
       _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (firstProperty, "Generated proxy", "FirstBaseCallProxy");
     }

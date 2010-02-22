@@ -124,5 +124,44 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Assert.That (mixin.MyThis, Is.SameAs (instance));
       Assert.That (mixin.MyBase, Is.Not.Null);
     }
+
+    [Test]
+    public void MixinGet_CalledFromCtor ()
+    {
+      var instance = CreateMixedObject<TargetClassGettingMixinFromCtor> (typeof (NullMixin));
+
+      var mixin = Mixin.Get<NullMixin> (instance);
+      Assert.That (instance.MixinInstance, Is.SameAs (mixin));
+    }
+
+    [Test]
+    public void MixinTarget_FirstCallProxy_AccessedFromCtor ()
+    {
+      var instance = CreateMixedObject<TargetClassAccessingFirstCallProxyFromCtor> (typeof (NullMixin));
+
+      Assert.That (instance.FirstBaseCallProxy, Is.Not.Null);
+
+      // other assertions are performed by TargetClassAccessingFirstCallProxyFromCtor
+    }
+
+    [Test]
+    public void MixinTarget_ClassContext_AccessedFromCtor ()
+    {
+      var instance = CreateMixedObject<TargetClassAccessingClassContextFromCtor> (typeof (NullMixin));
+
+      Assert.That (instance.ClassContext, Is.Not.Null);
+
+      // other assertions are performed by TargetClassAccessingClassContextFromCtor
+    }
+
+    [Test]
+    public void MixinTarget_Mixins_AccessedFromCtor ()
+    {
+      var instance = CreateMixedObject<TargetClassAccessingMixinsFromCtor> (typeof (NullMixin));
+
+      Assert.That (instance.Mixins, Is.Not.Null);
+
+      // other assertions are performed by TargetClassAccessingMixinsFromCtor
+    }
   }
 }

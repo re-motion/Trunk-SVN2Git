@@ -233,7 +233,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           _classContextField, 
           _extensionsField, 
           _firstField, 
-          _debuggerDisplayAttributeGenerator);
+          _debuggerDisplayAttributeGenerator,
+          _initializationCodeGenerator);
       codeGenerator.ImplementIMixinTarget (Emitter);
     }
 
@@ -267,6 +268,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           ? Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember) 
           : Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
+      // initialize this instance in case we're being called before the ctor has finished running
       var initializationStatement = _initializationCodeGenerator.GetInitializationStatement ();
       methodEmitter.AddStatement (initializationStatement);
 
@@ -396,8 +398,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       MethodInfo proxyMethod = _baseCallGenerator.GetProxyMethodForOverriddenMethod (method);
       IMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
+
+      // initialize this instance in case we're being called before the ctor has finished running
       var initializationStatement = _initializationCodeGenerator.GetInitializationStatement ();
       methodOverride.AddStatement (initializationStatement);
+      
       methodOverride.ImplementByDelegating (new TypeReferenceWrapper (_firstField, _firstField.Reference.FieldType), proxyMethod);
       return methodOverride;
     }
