@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
@@ -24,23 +23,21 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="SelectProjection"/> holds expression of select part of an expression query.
+  /// <see cref="SqlTableExpression"/> holds source of a from expression.
   /// </summary>
-  public class SelectProjection : ExtensionExpression
+  public class SqlTableExpression : ExtensionExpression
   {
-    private Expression _expression;
+    private SqlTableSource _sqlTableSource;
 
-    public SelectProjection (Type type, Expression expression)
+    public SqlTableExpression (Type type)
         : base (type)
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      _expression = expression;
     }
-
-    public Expression Expression
+    
+    public SqlTableSource SqlTableSource
     {
-      get { return _expression; }
-      set { _expression = ArgumentUtility.CheckNotNull ("value", value); }
+      get { return _sqlTableSource; }
+      set { _sqlTableSource = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
@@ -50,6 +47,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
+      //cast visitor to needed implementation of ExpressionTreeVisitor
+      //check if casted visitor supports method to call
+      //call correct VisitMethod of visitor
       throw new NotImplementedException();
     }
   }

@@ -15,36 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Clauses;
+using System.Linq.Expressions;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="SqlQueryModelVisitor"/> generates a <see cref="SqlStatement"/> from a query model.
+  /// <see cref="ConstantTableSource"/> holds the constant from the original FromExpression.
   /// </summary>
-  public class SqlQueryModelVisitor : QueryModelVisitorBase
+  public class ConstantTableSource : SqlTableSource
   {
-    private readonly SqlStatement _sqlStatement;
-
-    public SqlQueryModelVisitor ()
+    public ConstantTableSource (ConstantExpression constantExpression)
     {
-      _sqlStatement = new SqlStatement();
+      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
+
+      ConstantExpression = constantExpression;
     }
 
-    public SqlStatement SqlStatement
-    {
-      get { return _sqlStatement; }
-    }
-
-    public override void VisitSelectClause (SelectClause selectClause, QueryModel queryModel)
-    {
-      _sqlStatement.SelectProjection = selectClause.Selector;
-    }
-
-    public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
-    {
-      _sqlStatement.FromExpression = SqlFromExpressionVisitor.TranslateFromExpression (fromClause.FromExpression);
-    }
+    public ConstantExpression ConstantExpression { get; private set; }
+    
 
   }
 }
