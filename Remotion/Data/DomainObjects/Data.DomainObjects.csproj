@@ -662,6 +662,7 @@
     <Compile Include="ValueTooLongException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Configuration\DomainObjectsConfiguration.xsd">
       <SubType>
       </SubType>
