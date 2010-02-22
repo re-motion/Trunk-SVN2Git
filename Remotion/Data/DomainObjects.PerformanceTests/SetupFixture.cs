@@ -16,33 +16,20 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.PerformanceTests.Database;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
-  public class DatabaseTest
+  [SetUpFixture]
+  public class SetUpFixture
   {
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp()
-    {
-    }
-
-    [TestFixtureTearDown]
-    public virtual void TestFixtureTearDown()
-    {
-    }
-
     [SetUp]
-    public virtual void SetUp()
+    public void SetUp ()
     {
-      using (TestDataLoader loader = new TestDataLoader (StandardConfiguration.ConnectionString))
-      {
-        loader.Load();
-      }
+      StandardConfiguration.Initialize();
     }
 
     [TearDown]
-    public virtual void TearDown()
+    public void TearDown ()
     {
     }
   }

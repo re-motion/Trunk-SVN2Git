@@ -131,8 +131,13 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Linq\Data.Linq.csproj">
+      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
+      <Name>Data.Linq</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HasRelationChangedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -149,6 +154,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SerializationTest.cs" />
+    <Compile Include="SetupFixture.cs" />
     <Compile Include="StandardConfiguration.cs" />
     <Compile Include="TestDomain\ClassWithValueProperties.cs" />
     <Compile Include="TestDomain\Client.cs">

@@ -16,12 +16,11 @@
 // 
 using System;
 using System.Linq;
-using Microsoft.Practices.ServiceLocation;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Queries.Configuration;
-using System.Reflection;
+using Remotion.Development.UnitTesting;
 using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
@@ -32,61 +31,80 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   /// </summary>
   public class Root
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    private Root()
+    private Root ()
     {
     }
-
-    // methods and properties
 
     [STAThread]
     public static void Main (string[] args)
     {
-      LogManager.Initialize ();
+      LogManager.Initialize();
 
-      LoadObjectsTest test1 = new LoadObjectsTest ();
-      test1.TestFixtureSetUp ();
+      var setUpFixture = new SetUpFixture();
+      setUpFixture.SetUp();
 
       // Have all xml files loaded, so if the code is instrumented by a profiler, 
       // the loading does not falsify the method run times during the first call of GetObject.
-      MappingConfiguration mapping = MappingConfiguration.Current;
-      QueryConfiguration queryConfiguration = DomainObjectsConfiguration.Current.Query;
+      Dev.Null = MappingConfiguration.Current;
+      Dev.Null = DomainObjectsConfiguration.Current.Query;
 
-      test1.SetUp ();
-      test1.LoadObjectsOverRelationTest ();
-      test1.TearDown ();
+      //RunLoadObjectsTest();
 
-      test1.SetUp ();
-      test1.LoadObjectsOverRelationWithAbstractBaseClass ();
-      test1.TearDown ();
+      //RunSerializationTest();
 
-      test1.TestFixtureTearDown ();
+      RunHasRelationChangedTest();
 
-      //var test2 = new SerializationTest();
-      //test2.TestFixtureSetUp();
-
-      //var testMethods = from m in test2.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance)
-      //                  where m.IsDefined (typeof (TestAttribute), true) && !m.IsDefined (typeof (IgnoreAttribute), true)
-      //                  orderby m.Name
-      //                  select m;
-      //foreach (MethodInfo testMethod in testMethods)
-      //{
-      //  test2.SetUp ();
-      //  testMethod.Invoke (test2, new object[0]);
-      //  test2.TearDown ();
-      //}
-
-      //test2.TestFixtureTearDown();
+      setUpFixture.TearDown();
 
       Console.WriteLine ("Test compelte");
       Console.ReadLine();
+    }
+
+    private static void RunHasRelationChangedTest ()
+    {
+      var test = new HasRelationChangedTest();
+      test.TestFixtureSetUp();
+
+      test.SetUp();
+      test.AskChanged();
+      test.TearDown();
+
+      test.TestFixtureTearDown();
+    }
+
+    private static void RunLoadObjectsTest ()
+    {
+      var test = new LoadObjectsTest();
+      test.TestFixtureSetUp();
+
+      test.SetUp();
+      test.LoadObjectsOverRelationTest();
+      test.TearDown();
+
+      test.SetUp();
+      test.LoadObjectsOverRelationWithAbstractBaseClass();
+      test.TearDown();
+
+      test.TestFixtureTearDown();
+    }
+
+    private static void RunSerializationTest ()
+    {
+      var test = new SerializationTest();
+      test.TestFixtureSetUp();
+
+      var testMethods = from m in test.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance)
+                        where m.IsDefined (typeof (TestAttribute), true) && !m.IsDefined (typeof (IgnoreAttribute), true)
+                        orderby m.Name
+                        select m;
+      foreach (MethodInfo testMethod in testMethods)
+      {
+        test.SetUp();
+        testMethod.Invoke (test, new object[0]);
+        test.TearDown();
+      }
+
+      test.TestFixtureTearDown();
     }
   }
 }
