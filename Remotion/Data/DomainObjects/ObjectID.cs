@@ -66,9 +66,9 @@ namespace Remotion.Data.DomainObjects
     /// <returns><see langword="true"/> if the both <see cref="ObjectID"/>s are equal; otherwise, <see langword="false"/>.</returns>
     public static bool Equals (ObjectID id1, ObjectID id2)
     {
-      if (object.ReferenceEquals (id1, id2))
+      if (ReferenceEquals (id1, id2))
         return true;
-      if (object.ReferenceEquals (id1, null))
+      if (ReferenceEquals (id1, null))
         return false;
 
       return id1.Equals (id2);
@@ -118,11 +118,13 @@ namespace Remotion.Data.DomainObjects
 
     // member fields
 
-    [NonSerialized]
-    private ClassDefinition _classDefinition;
-
-    private string _classDefinitionID;
+    private string _classID;
     private object _value;
+
+    [NonSerialized]
+    private ClassDefinition _cachedClassDefinition;
+    [NonSerialized]
+    private int? _cachedHashCode;
 
     // construction and disposing
 
@@ -210,7 +212,7 @@ namespace Remotion.Data.DomainObjects
       ClassDefinition classDefinitionByClassType = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ClassType);
       ClassDefinition classDefinitionByClassID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinition.ID);
 
-      if (!object.ReferenceEquals (classDefinitionByClassID, classDefinitionByClassType))
+      if (!ReferenceEquals (classDefinitionByClassID, classDefinitionByClassType))
       {
         throw CreateArgumentException (
             "classDefinition",
@@ -219,7 +221,7 @@ namespace Remotion.Data.DomainObjects
             classDefinition.ClassType);
       }
 
-      if (!object.ReferenceEquals (classDefinitionByClassID, classDefinition))
+      if (!ReferenceEquals (classDefinitionByClassID, classDefinition))
       {
         throw CreateArgumentException (
             "classDefinition",
@@ -250,8 +252,8 @@ namespace Remotion.Data.DomainObjects
 
       storageProviderDefinition.CheckIdentityType (value.GetType());
 
-      _classDefinition = classDefinition;
-      _classDefinitionID = _classDefinition.ID;
+      _cachedClassDefinition = classDefinition;
+      _classID = classDefinition.ID;
       _value = value;
     }
 
@@ -281,7 +283,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public string ClassID
     {
-      get { return ClassDefinition.ID; }
+      get { return _classID; }
     }
 
     /// <summary>
@@ -289,11 +291,12 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public ClassDefinition ClassDefinition
     {
-      get
-      {
-        if (_classDefinition == null)
-          _classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classDefinitionID);
-        return _classDefinition;
+      get 
+      { 
+        if (_cachedClassDefinition == null)
+          _cachedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classID);
+
+        return _cachedClassDefinition;
       }
     }
 
@@ -312,7 +315,10 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A 32-bit signed integer hash code.</returns>
     public override int GetHashCode ()
     {
-      return ClassID.GetHashCode() ^ Value.GetHashCode();
+      if (!_cachedHashCode.HasValue)
+        _cachedHashCode = _classID.GetHashCode () ^ _value.GetHashCode ();
+      
+      return _cachedHashCode.Value;
     }
 
     /// <summary>
@@ -328,9 +334,9 @@ namespace Remotion.Data.DomainObjects
         return false;
 
       var other = (ObjectID) obj;
-      if (!object.Equals (ClassID, other.ClassID))
+      if (!Equals (ClassID, other.ClassID))
         return false;
-      if (!object.Equals (Value, other.Value))
+      if (!Equals (Value, other.Value))
         return false;
 
       return true;

@@ -48,5 +48,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Assert.AreEqual (id.ClassDefinition, deserializedID.ClassDefinition);
     }
+
+    [Test]
+    public void DeserializedContent_HashCode ()
+    {
+      ObjectID id = DomainObjectIDs.Order1;
+      ObjectID deserializedID = Serializer.SerializeAndDeserialize (id);
+
+      Assert.AreEqual (id.GetHashCode(), deserializedID.GetHashCode());
+    }
   }
 }
