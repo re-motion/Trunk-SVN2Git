@@ -108,6 +108,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void HashCode_AnonymousEndPoint ()
+    {
+      var anonymousDefinition = new AnonymousRelationEndPointDefinition (DomainObjectIDs.Client1.ClassDefinition);
+      var anonymousEndPointID = new RelationEndPointID (DomainObjectIDs.Client1, anonymousDefinition);
+      
+      int expectedHashCode = DomainObjectIDs.Client1.GetHashCode ();
+      Assert.That (anonymousEndPointID.GetHashCode (), Is.EqualTo (expectedHashCode));
+    }
+
+    [Test]
     public void Equals ()
     {
       var endPointID2 = new RelationEndPointID (_objectID, _propertyName);

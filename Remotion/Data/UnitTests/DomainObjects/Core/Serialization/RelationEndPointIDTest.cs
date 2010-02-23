@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -49,16 +49,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void RelationEndPointIDIsFlattenedSerializable ()
     {
       RelationEndPointID deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_id);
-      Assert.IsNotNull (deserializedEndPoint);
-      Assert.AreNotSame (_id, deserializedEndPoint);
+      Assert.That (deserializedEndPoint, Is.Not.Null);
+      Assert.That (deserializedEndPoint, Is.Not.SameAs (_id));
     }
 
     [Test]
     public void RelationEndPointID_Content ()
     {
       RelationEndPointID deserializedID = FlattenedSerializer.SerializeAndDeserialize (_id);
-      Assert.AreEqual (DomainObjectIDs.Computer1, deserializedID.ObjectID);
-      Assert.AreSame (_id.Definition, deserializedID.Definition);
+      Assert.That (deserializedID.ObjectID, Is.EqualTo (DomainObjectIDs.Computer1));
+      Assert.That (deserializedID.Definition, Is.SameAs (_id.Definition));
+    }
+
+    [Test]
+    public void RelationEndPointID_GetHashCode ()
+    {
+      RelationEndPointID deserializedID = FlattenedSerializer.SerializeAndDeserialize (_id);
+      Assert.That (deserializedID.GetHashCode (), Is.EqualTo (_id.GetHashCode ()));
     }
   }
 }

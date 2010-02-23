@@ -60,12 +60,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly IRelationEndPointDefinition _definition;
     private readonly ObjectID _objectID;
 
+    private readonly int _cachedHashCode;
+
     public RelationEndPointID (ObjectID objectID, IRelationEndPointDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
       _objectID = objectID;
       _definition = definition;
+
+      _cachedHashCode = CalculateHashCode();
     }
 
     public RelationEndPointID (ObjectID objectID, string propertyName)
@@ -92,33 +96,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _objectID; }
     }
 
-    #region Serialization
-
-// ReSharper disable UnusedMember.Local
-    private RelationEndPointID (FlattenedDeserializationInfo info)
-    {
-      var classDefinitionID = info.GetValueForHandle<string>();
-      var propertyName = info.GetValueForHandle<string>();
-      _definition =
-          MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
-      _objectID = info.GetValueForHandle<ObjectID>();
-    }
-    // ReSharper restore UnusedMember.Local
-
-    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
-    {
-      info.AddHandle (_definition.ClassDefinition.ID);
-      info.AddHandle (_definition.PropertyName);
-      info.AddHandle (_objectID);
-    }
-
-    #endregion
-
-
     public override int GetHashCode ()
     {
-      var objectIDHashCode = _objectID != null ? _objectID.GetHashCode() : 0;
-      return objectIDHashCode ^ Definition.PropertyName.GetHashCode();
+      return _cachedHashCode;
     }
 
     public override bool Equals (object obj)
@@ -141,5 +121,36 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       return string.Format ("{0}/{1}", _objectID != null ? _objectID.ToString() : "null", Definition.PropertyName);
     }
+
+    private int CalculateHashCode ()
+    {
+      var propertyName = Definition.PropertyName;
+      return (_objectID != null ? _objectID.GetHashCode () : 0) ^ (propertyName != null ? propertyName.GetHashCode () : 0);
+    }
+
+    #region Serialization
+
+    // ReSharper disable UnusedMember.Local
+    private RelationEndPointID (FlattenedDeserializationInfo info)
+    {
+      var classDefinitionID = info.GetValueForHandle<string> ();
+      var propertyName = info.GetValueForHandle<string> ();
+      
+      _definition =
+          MappingConfiguration.Current.ClassDefinitions.GetMandatory (classDefinitionID).GetMandatoryRelationEndPointDefinition (propertyName);
+      _objectID = info.GetValueForHandle<ObjectID> ();
+
+      _cachedHashCode = CalculateHashCode ();
+    }
+    // ReSharper restore UnusedMember.Local
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+      info.AddHandle (_definition.ClassDefinition.ID);
+      info.AddHandle (_definition.PropertyName);
+      info.AddHandle (_objectID);
+    }
+
+    #endregion
   }
 }
