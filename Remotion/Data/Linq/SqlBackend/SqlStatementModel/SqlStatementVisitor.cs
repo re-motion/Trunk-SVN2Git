@@ -19,12 +19,17 @@ using System.Linq.Expressions;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
-  /// <summary>
-  /// <see cref="SqlStatementResolver"/> provides methods to resolve expressions and return database-specific information.
-  /// </summary>
-  public abstract class SqlStatementResolver
+  public abstract class SqlStatementVisitor
   {
-    public abstract SqlTableSource ResolveTableSource (AbstractTableSource tableSource);
-    public abstract Expression ResolveSelectProjection (Expression expression);
+    public virtual void VisitSqlStatement (SqlStatement sqlStatement)
+    {
+      throw new NotImplementedException();
+
+      // sqlStatement.SelectProjection = VisitSelectProjection (selectProjection);
+      // VisitFromExpression (sqlStatement.FromExpression);
+    }
+
+    protected abstract Expression VisitSelectProjection (Expression selectProjection);
+    protected abstract void VisitFromExpression (SqlTableExpression fromExpression);
   }
 }
