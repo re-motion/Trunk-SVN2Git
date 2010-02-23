@@ -15,43 +15,36 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
+using System.Collections.Generic;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="SqlStatement"/> holds modified expressions for select and from part. The <see cref="QueryModel"/> is translated  to this model.
+  /// <see cref="SqlGenerationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTableExpression"/>.
   /// </summary>
-  public class SqlStatement
+  public class SqlGenerationContext
   {
-    private Expression _selectProjection;
-    private Expression _fromExpression;
-    private SqlGenerationContext _sqlGenerationContext;
+    private readonly Dictionary<IQuerySource, SqlTableExpression> _mapping;
 
-    public SqlStatement ()
+    public SqlGenerationContext ()
     {
-      _sqlGenerationContext = new SqlGenerationContext();
+      _mapping = new Dictionary<IQuerySource, SqlTableExpression>();
     }
 
-    public Expression SelectProjection
+    public Dictionary<IQuerySource, SqlTableExpression> Mapping
     {
-      get { return _selectProjection; }
-      set { _selectProjection = ArgumentUtility.CheckNotNull("value",value); }
+      get { return _mapping; }
     }
 
-    public Expression FromExpression
+    public void Add (IQuerySource source, SqlTableExpression tableExpression)
     {
-      get { return _fromExpression; }
-      set { _fromExpression = ArgumentUtility.CheckNotNull("value",value); }
-    }
-    
-    public SqlGenerationContext SqlGenerationContext
-    {
-      get { return _sqlGenerationContext; }
-      set { _sqlGenerationContext = ArgumentUtility.CheckNotNull ("value", value); }
+      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("tableExpression", tableExpression);
+
+      _mapping.Add (source, tableExpression);
     }
 
-   
   }
 }

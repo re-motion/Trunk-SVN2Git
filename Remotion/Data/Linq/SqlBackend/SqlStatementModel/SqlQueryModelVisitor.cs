@@ -29,6 +29,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public SqlQueryModelVisitor ()
     {
       _sqlStatement = new SqlStatement();
+
     }
 
     public SqlStatement SqlStatement
@@ -44,6 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     public override void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel)
     {
       _sqlStatement.FromExpression = SqlFromExpressionVisitor.TranslateFromExpression (fromClause.FromExpression);
+      _sqlStatement.SqlGenerationContext.Add (fromClause, (SqlTableExpression)_sqlStatement.FromExpression);
     }
 
   }
