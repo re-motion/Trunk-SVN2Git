@@ -105,11 +105,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="writer">The writer used to render the control.</param>
     protected override void Render (HtmlTextWriter writer)
     {
-      EvaluateWaiConformity();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      EvaluateWaiConformity ();
 
       var factory = ServiceLocator.GetInstance<IBocCheckboxRendererFactory>();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     /// <summary>

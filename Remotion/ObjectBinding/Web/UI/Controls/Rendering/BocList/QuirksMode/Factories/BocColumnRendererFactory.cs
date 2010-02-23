@@ -35,64 +35,64 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
           IBocIndexColumnRendererFactory,
           IBocSelectorColumnRendererFactory
   {
-    public IBocColumnRenderer<BocSimpleColumnDefinition> CreateRenderer
+    public IBocColumnRenderer CreateRenderer
         (HttpContextBase context, HtmlTextWriter writer, IBocList list, BocSimpleColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new StandardMode.BocSimpleColumnRenderer (context, writer, list, columnDefinition, CssClassContainer.Instance);
+      return new StandardMode.BocSimpleColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer<BocCompoundColumnDefinition> CreateRenderer (
+    public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCompoundColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new StandardMode.BocCompoundColumnRenderer (context, writer, list, columnDefinition, CssClassContainer.Instance);
+      return new StandardMode.BocCompoundColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer<BocCommandColumnDefinition> CreateRenderer (
+    public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new StandardMode.BocCommandColumnRenderer (context, writer, list, columnDefinition, CssClassContainer.Instance);
+      return new StandardMode.BocCommandColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer<BocCustomColumnDefinition> CreateRenderer (
+    public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new StandardMode.BocCustomColumnRenderer (context, writer, list, columnDefinition, CssClassContainer.Instance);
+      return new StandardMode.BocCustomColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer<BocDropDownMenuColumnDefinition> CreateRenderer (
+    public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, HtmlTextWriter writer, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new StandardMode.BocDropDownMenuColumnRenderer (context, writer, list, columnDefinition, CssClassContainer.Instance);
+      return new StandardMode.BocDropDownMenuColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer<BocRowEditModeColumnDefinition> CreateRenderer (
+    public IBocColumnRenderer CreateRenderer (
         HttpContextBase context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new StandardMode.BocRowEditModeColumnRenderer (context, writer, list, columnDefinition, CssClassContainer.Instance);
+      return new StandardMode.BocRowEditModeColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
     IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (

@@ -67,9 +67,10 @@ namespace Remotion.Web.UI.Controls
     
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     IControl IDatePickerButton.Parent

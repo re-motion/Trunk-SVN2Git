@@ -156,7 +156,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
       PopulateMenu ();
       _control.Stub (stub => stub.Enabled).Return (true);
-      _control.Stub (stub => stub.RenderHeadTitleMethod).Return (() => { });
+      _control.Stub (stub => stub.RenderHeadTitleMethod).Return (writer => { });
 
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
@@ -324,7 +324,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       var preRenderer = new DropDownMenuPreRenderer (HttpContext, _control);
       preRenderer.PreRender();
       var renderer = new DropDownMenuRenderer (HttpContext, Html.Writer, _control);
-      renderer.Render();
+      renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
       document.AssertChildElementCount (1);

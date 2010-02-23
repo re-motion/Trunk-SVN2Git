@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI.WebControls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
@@ -30,6 +31,36 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
     {
       get { return s_instance.Value; }
       set { s_instance.Value = value; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>bocTextValue</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
+    /// </remarks>
+    public virtual string Base
+    {
+      get { return "bocList"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed in read-only mode. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>readOnly</c>. </para>
+    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.readOnly</c> as a selector. </para>
+    /// </remarks>
+    public virtual string ReadOnly
+    {
+      get { return "readOnly"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed disabled. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>disabled</c>. </para>
+    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.disabled</c> as a selector.</para>
+    /// </remarks>
+    public virtual string Disabled
+    {
+      get { return "disabled"; }
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>table</c> tag. </summary>
@@ -137,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
       get { return "bocListAvailableViewsListLabel"; }
     }
 
-    public string MenuBlock
+    public virtual string MenuBlock
     {
       get { return "bocListMenuBlock"; }
     }

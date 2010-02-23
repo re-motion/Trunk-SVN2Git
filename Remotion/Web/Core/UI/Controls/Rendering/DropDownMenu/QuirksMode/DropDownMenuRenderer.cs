@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 {
@@ -33,48 +34,50 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender();
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddStandardAttributesToRender (writer);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //  Menu-Div filling the control's div is required to apply internal css attributes
       //  for position, width and height. This allows the Head and th popup-div to align themselves
-      Writer.AddStyleAttribute ("position", "relative");
-      Writer.AddAttribute ("id", Control.MenuHeadClientID);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Menu-Div
+      writer.AddStyleAttribute ("position", "relative");
+      writer.AddAttribute ("id", Control.MenuHeadClientID);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Menu-Div
 
-      RenderHead ();
+      RenderHead (writer);
 
-      Writer.RenderEndTag (); // End Menu-Div
-      Writer.RenderEndTag (); // End outer div
+      writer.RenderEndTag (); // End Menu-Div
+      writer.RenderEndTag (); // End outer div
     }
 
-    private void RenderHead ()
+    private void RenderHead (HtmlTextWriter writer)
     {
       //  Head-Div is used to group the title and the button, providing a single point of reference
       //  for the popup-div.
-      Writer.AddStyleAttribute ("position", "relative");
-      Writer.AddAttribute ("id", Control.ClientID + "_HeadDiv");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
-      Writer.AddAttribute ("OnMouseOver", "DropDownMenu_OnHeadMouseOver (this)");
-      Writer.AddAttribute ("OnMouseOut", "DropDownMenu_OnHeadMouseOut (this)");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Drop Down Head-Div
+      writer.AddStyleAttribute ("position", "relative");
+      writer.AddAttribute ("id", Control.ClientID + "_HeadDiv");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
+      writer.AddAttribute ("OnMouseOver", "DropDownMenu_OnHeadMouseOver (this)");
+      writer.AddAttribute ("OnMouseOut", "DropDownMenu_OnHeadMouseOut (this)");
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Drop Down Head-Div
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddStyleAttribute ("display", "inline");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin Drop Down Button table
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddStyleAttribute ("display", "inline");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin Drop Down Button table
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      RenderHeadTitle (Writer);
-      RenderHeadButton (Writer);
+      RenderHeadTitle (writer);
+      RenderHeadButton (writer);
 
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag (); // End Drop Down Button table
+      writer.RenderEndTag();
+      writer.RenderEndTag(); // End Drop Down Button table
 
-      Writer.RenderEndTag (); // End Drop Down Head-Div
+      writer.RenderEndTag(); // End Drop Down Head-Div
     }
 
     private void RenderHeadTitle (HtmlTextWriter writer)
@@ -101,20 +104,20 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
           }
           RenderIcon (writer, Control.TitleIcon);
           writer.Write (Control.TitleText);
-          writer.RenderEndTag (); // End title tag
+          writer.RenderEndTag(); // End title tag
 
-          writer.RenderEndTag (); // End td
+          writer.RenderEndTag(); // End td
         }
       }
       else
-        Control.RenderHeadTitleMethod();
+        Control.RenderHeadTitleMethod (writer);
 
       if (hasHeadTitleContents)
       {
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
         writer.AddStyleAttribute ("padding-right", "0.3em");
         writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-        writer.RenderEndTag ();
+        writer.RenderEndTag();
       }
     }
 
@@ -126,14 +129,14 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
       writer.AddAttribute (HtmlTextWriterAttribute.Src, icon.Url);
       if (!icon.Width.IsEmpty && !icon.Height.IsEmpty)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Width, icon.Width.ToString ());
-        writer.AddAttribute (HtmlTextWriterAttribute.Height, icon.Height.ToString ());
+        writer.AddAttribute (HtmlTextWriterAttribute.Width, icon.Width.ToString());
+        writer.AddAttribute (HtmlTextWriterAttribute.Height, icon.Height.ToString());
       }
       writer.AddStyleAttribute ("vertical-align", "middle");
       writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
       writer.AddStyleAttribute ("margin-right", "0.3em");
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
     }
 
     private void RenderHeadButton (HtmlTextWriter writer)
@@ -153,11 +156,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
       writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag (); // End img
+      writer.RenderEndTag(); // End img
 
-      writer.RenderEndTag (); // End anchor
+      writer.RenderEndTag(); // End anchor
 
-      writer.RenderEndTag (); // End td
+      writer.RenderEndTag(); // End td
     }
 
     protected virtual string CssClassHead

@@ -107,11 +107,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="writer">The writer used to render the control.</param>
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       EvaluateWaiConformity ();
 
       var factory = ServiceLocator.GetInstance<IBocBooleanValueRendererFactory> ();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>

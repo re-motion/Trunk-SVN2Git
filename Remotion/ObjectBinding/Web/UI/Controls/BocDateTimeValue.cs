@@ -262,9 +262,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory> ();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     protected override void LoadControlState (object savedState)

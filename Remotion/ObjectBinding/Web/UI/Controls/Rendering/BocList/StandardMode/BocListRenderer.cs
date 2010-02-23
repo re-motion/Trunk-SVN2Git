@@ -19,6 +19,7 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
@@ -38,8 +39,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";
-
-    private delegate void RenderMethodDelegate ();
 
     private readonly IBocListMenuBlockRenderer _menuBlockRenderer;
     private readonly IBocListNavigationBlockRenderer _navigationBlockRenderer;
@@ -87,7 +86,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       get { return _tableBlockRenderer; }
     }
 
-    private RenderMethodDelegate RenderTopLevelColumnGroup { get; set; }
+    private Action<HtmlTextWriter> RenderTopLevelColumnGroup { get; set; }
 
     /// <summary>
     /// Renders the <see cref="BocList"/> in the <see cref="BocListRendererBase.List"/> property 
@@ -103,85 +102,87 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// </remarks>
     /// <seealso cref="BocListMenuBlockRenderer"/>
     /// <seealso cref="BocListNavigationBlockRenderer"/>
-    public virtual void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender(false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, false);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //  Render list block / menu block
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      RenderTopLevelColumnGroup();
+      RenderTopLevelColumnGroup (writer);
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
       //  List Block
-      Writer.AddStyleAttribute ("vertical-align", "top");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      writer.AddStyleAttribute ("vertical-align", "top");
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
-      TableBlockRenderer.Render();
+      TableBlockRenderer.Render (writer);
 
       if (List.HasNavigator)
-        NavigationBlockRenderer.Render();
+        NavigationBlockRenderer.Render (writer);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
 
       if (List.HasMenuBlock)
       {
         //  Menu Block
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
-        Writer.AddStyleAttribute ("vertical-align", "top");
-        Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        MenuBlockRenderer.Render();
-        Writer.RenderEndTag();
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
+        writer.AddStyleAttribute ("vertical-align", "top");
+        writer.RenderBeginTag (HtmlTextWriterTag.Td);
+        MenuBlockRenderer.Render (writer);
+        writer.RenderEndTag();
       }
 
-      Writer.RenderEndTag(); //  TR
-      Writer.RenderEndTag(); //  Table
-      Writer.RenderEndTag(); //  div
+      writer.RenderEndTag(); //  TR
+      writer.RenderEndTag(); //  Table
+      writer.RenderEndTag(); //  div
     }
 
-    private void RenderTopLevelColumnGroupForLegacyBrowser ()
+    private void RenderTopLevelColumnGroupForLegacyBrowser (HtmlTextWriter writer)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
+      writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       //  Left: list block
-      Writer.WriteBeginTag ("col"); //  Required because RenderBeginTag(); RenderEndTag();
+      writer.WriteBeginTag ("col"); //  Required because RenderBeginTag(); RenderEndTag();
       //  writes empty tags, which is not valid for col in HTML 4.01
-      Writer.Write (">");
+      writer.Write (">");
 
       if (List.HasMenuBlock)
       {
         //  Right: menu block
-        Writer.WriteBeginTag ("col");
-        Writer.Write (" style=\"");
+        writer.WriteBeginTag ("col");
+        writer.Write (" style=\"");
 
         string menuBlockWidth = c_defaultMenuBlockWidth;
         if (!List.MenuBlockWidth.IsEmpty)
           menuBlockWidth = List.MenuBlockWidth.ToString();
-        Writer.WriteStyleAttribute ("width", menuBlockWidth);
+        writer.WriteStyleAttribute ("width", menuBlockWidth);
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
         if (!List.MenuBlockOffset.IsEmpty)
           menuBlockOffset = List.MenuBlockOffset.ToString();
-        Writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
+        writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
 
-        Writer.Write ("\">");
+        writer.Write ("\">");
       }
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private void RenderTopLevelColumnGroupForXmlBrowser ()
+    private void RenderTopLevelColumnGroupForXmlBrowser (HtmlTextWriter writer)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
+      writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       // Left: list block
-      Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-      Writer.RenderEndTag();
+      writer.RenderBeginTag (HtmlTextWriterTag.Col);
+      writer.RenderEndTag();
 
       if (List.HasMenuBlock)
       {
@@ -194,18 +195,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         if (!List.MenuBlockOffset.IsEmpty)
           menuBlockOffset = List.MenuBlockOffset.ToString();
 
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.PaddingLeft, menuBlockOffset);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-        Writer.RenderEndTag();
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);
+        writer.AddStyleAttribute (HtmlTextWriterStyle.PaddingLeft, menuBlockOffset);
+        writer.RenderBeginTag (HtmlTextWriterTag.Col);
+        writer.RenderEndTag();
       }
 
-      Writer.RenderEndTag();
-    }
-
-    public override string CssClassBase
-    {
-      get { return "bocList"; }
+      writer.RenderEndTag();
     }
   }
 }

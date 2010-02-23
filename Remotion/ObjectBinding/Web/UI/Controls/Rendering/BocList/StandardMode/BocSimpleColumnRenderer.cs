@@ -37,9 +37,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRendererFactory"/> should use a
     /// <see cref="BocRowRenderer"/> to obtain instances of this class.
     /// </remarks>
-    public BocSimpleColumnRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocSimpleColumnDefinition columnDefinition, CssClassContainer cssClasses)
-        : base (context, writer, list, columnDefinition, cssClasses)
+    public BocSimpleColumnRenderer (HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, list, columnDefinition, cssClasses)
     {
     }
 
@@ -47,19 +46,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// Renders either the string value of the <paramref name="businessObject"/> or the edit mode controls, 
     /// depending on <paramref name="showEditModeControl"/>
     /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>. </param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> for the current row.</param>
     /// <param name="showEditModeControl">Specifies if the edit controls will be rendered (<see langword="true"/>) or
     /// a string representation of <paramref name="businessObject"/> will be displayed (<see langword="false"/>).</param>
     /// <param name="editableRow">The <see cref="EditableRow"/> object used to actually render the edit row controls.
     /// May be <see langword="null"/> if <paramref name="showEditModeControl"/> is <see langword="false"/>.</param>
-    protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
+    protected override void RenderCellText (HtmlTextWriter writer, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       if (showEditModeControl)
-        RenderEditModeControl (businessObject, editableRow);
+        RenderEditModeControl (writer, businessObject, editableRow);
       else
-        RenderValueColumnCellText (Column.GetStringValue (businessObject));
+        RenderValueColumnCellText (writer, Column.GetStringValue (businessObject));
     }
 
     /// <summary>
@@ -68,8 +69,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <seealso cref="BocSimpleColumnDefinition.GetDynamicPropertyPath"/>
     /// <seealso cref="BocSimpleColumnDefinition.IsDynamic"/>
     /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> that acts as a starting point for the property path.</param>
-    protected override void RenderOtherIcons (IBusinessObject businessObject)
+    protected override void RenderOtherIcons (HtmlTextWriter writer, IBusinessObject businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
@@ -83,11 +85,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
         IBusinessObject value = propertyPath.GetValue (businessObject, false, true) as IBusinessObject;
         if (value != null)
-          RenderCellIcon (value);
+          RenderCellIcon (writer, value);
       }
     }
 
-    private void RenderEditModeControl (IBusinessObject businessObject, IEditableRow editableRow)
+    private void RenderEditModeControl (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow)
     {
       EditModeValidator editModeValidator = null;
       for (int i = 0; i < List.Validators.Count; i++)
@@ -98,11 +100,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       }
 
       if (List.HasClientScript)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
 
       editableRow.RenderSimpleColumnCellEditModeControl (
-          Writer,
+          writer,
           Column,
           businessObject,
           ColumnIndex,
@@ -110,7 +112,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
           List.EditModeController.ShowEditModeValidationMarkers,
           List.EditModeController.DisableEditModeValidationMessages);
 
-      Writer.RenderEndTag(); // End span
+      writer.RenderEndTag(); // End span
     }
   }
 }

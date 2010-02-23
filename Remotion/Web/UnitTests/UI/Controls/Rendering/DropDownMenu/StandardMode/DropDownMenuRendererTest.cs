@@ -150,7 +150,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     private XmlNode GetAssertedContainerSpan ()
     {
       var renderer = new DropDownMenuRenderer (HttpContext, Html.Writer, _control);
-      renderer.Render ();
+      renderer.Render (Html.Writer);
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
       containerDiv.AssertAttributeValueEquals ("id", _control.ClientID);

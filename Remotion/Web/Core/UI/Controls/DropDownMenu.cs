@@ -37,7 +37,7 @@ namespace Remotion.Web.UI.Controls
     private bool _enableGrouping = true;
     private bool _isBrowserCapableOfScripting;
 
-    private Action _renderHeadTitleMethod;
+    private Action<HtmlTextWriter> _renderHeadTitleMethod;
 
     public DropDownMenu (IControl ownerControl, Type[] supportedMenuItemTypes)
       :base(ownerControl, supportedMenuItemTypes)
@@ -87,12 +87,14 @@ namespace Remotion.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     public string GetBindOpenEventScript (string elementReference, string menuIDReference, bool moveToMousePosition)
@@ -124,7 +126,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Only used by control developers. </summary>
-    public void SetRenderHeadTitleMethodDelegate (Action renderHeadTitleMethod)
+    public void SetRenderHeadTitleMethodDelegate (Action<HtmlTextWriter> renderHeadTitleMethod)
     {
       _renderHeadTitleMethod = renderHeadTitleMethod;
     }
@@ -138,7 +140,7 @@ namespace Remotion.Web.UI.Controls
       set { _titleText = value; }
     }
 
-    Action IDropDownMenu.RenderHeadTitleMethod
+    Action<HtmlTextWriter> IDropDownMenu.RenderHeadTitleMethod
     {
       get { return _renderHeadTitleMethod; }
     }

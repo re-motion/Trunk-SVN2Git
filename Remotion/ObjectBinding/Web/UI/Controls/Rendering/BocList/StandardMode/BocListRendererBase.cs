@@ -29,12 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   public abstract class BocListRendererBase : BocRendererBase<IBocList>
   {
     private readonly CssClassContainer _cssClasses;
-    // constants
-
-    /// <summary>Name of the JavaScript function to call when a command control has been clicked.</summary>
-    protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
-
-    // unused protected const string c_styleFileUrl = "BocList.css";
 
     /// <summary>Entity definition for whitespace separating controls, e.g. icons from following text</summary>
     protected const string c_whiteSpace = "&nbsp;";
@@ -76,11 +70,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// </summary>
     /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load
     /// the alternate text from the resources file, using <code>alternateTextID</code> as key.</remarks>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
     /// <param name="alternateTextID">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> used to load 
     /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
-    protected void RenderIcon (IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
+    //TODO: Remove code duplication with BocColumnRendererBase
+    protected void RenderIcon (HtmlTextWriter writer, IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("icon", icon);
 
       bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
@@ -90,13 +87,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
           icon.AlternateText = List.GetResourceManager().GetString (alternateTextID);
       }
 
-      icon.Render (Writer);
+      icon.Render (writer);
 
       if (!hasAlternateText)
         icon.AlternateText = string.Empty;
     }
 
     /// <summary> Renders a <see cref="CheckBox"/> or <see cref="RadioButton"/> used for row selection. </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="id"> The <see cref="string"/> rendered into the <c>id</c> and <c>name</c> attributes. </param>
     /// <param name="value"> The value of the <see cref="CheckBox"/> or <see cref="RadioButton"/>. </param>
     /// <param name="isChecked"> 
@@ -106,6 +104,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     ///   <see langword="true"/> if the rendered <see cref="CheckBox"/> or <see cref="RadioButton"/> is in the title row.
     /// </param>
     protected void RenderSelectorControl (
+        HtmlTextWriter writer,
         string id,
         string value,
         bool isChecked,
@@ -115,44 +114,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       ArgumentUtility.CheckNotNullOrEmpty ("value", value);
 
       if (List.Selection == RowSelection.SingleRadioButton)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
+        writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
       else
-        Writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
+        writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
+      writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
 
       if (isChecked)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Checked, "checked");
+        writer.AddAttribute (HtmlTextWriterAttribute.Checked, "checked");
       if (List.EditModeController.IsRowEditModeActive)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
+        writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
+      writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
 
       if (isSelectAllSelectorControl)
-        AddSelectAllSelectorAttributes();
+        AddSelectAllSelectorAttributes (writer);
       else
-        AddRowSelectorAttributes();
+        AddRowSelectorAttributes (writer);
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Input);
-      Writer.RenderEndTag();
+      writer.RenderBeginTag (HtmlTextWriterTag.Input);
+      writer.RenderEndTag();
     }
 
-    private void AddRowSelectorAttributes ()
+    private void AddRowSelectorAttributes (HtmlTextWriter writer)
     {
       string alternateText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.SelectRowAlternateText);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
 
       if (List.HasClientScript)
       {
         const string script = "BocList_OnSelectionSelectorControlClick();";
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
       }
     }
 
-    private void AddSelectAllSelectorAttributes ()
+    private void AddSelectAllSelectorAttributes (HtmlTextWriter writer)
     {
       string alternateText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.SelectAllRowsAlternateText);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
 
       int count = 0;
       if (List.IsPagingEnabled)
@@ -168,10 +167,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
                         + List.GetSelectorControlClientId(null) + "', "
                         + count + ", "
                         + "document.getElementById ('" + List.ListMenu.ClientID + "'));";
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
       }
     }
 
+    //TODO: Remove code duplication with BocColumnRendererBase
     protected string GetCssClassTableCell (bool isOddRow)
     {
       string cssClassTableCell;
@@ -182,9 +182,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       return cssClassTableCell;
     }
 
-    public override string CssClassBase
+    public override sealed string CssClassBase
     {
-      get { throw new NotImplementedException (); }
+      get { return CssClasses.Base; }
+    }
+
+    public override sealed string CssClassDisabled
+    {
+      get { return CssClasses.Disabled; }
+    }
+
+    public override sealed string CssClassReadOnly
+    {
+      get { return CssClasses.ReadOnly; }
     }
   }
 }

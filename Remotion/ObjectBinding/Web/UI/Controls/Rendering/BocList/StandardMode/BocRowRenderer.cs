@@ -48,19 +48,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     /// <summary>Fetches a column renderer from the factory the first time it is called with a specific column argument,
     /// returns the cached renderer on subsequent calls with the same column.</summary>
-    private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
+    private IBocColumnRenderer GetColumnRenderer (HtmlTextWriter writer, BocColumnDefinition column)
     {
-      return column.GetRenderer (ServiceLocator, Context, Writer, List);
+      return column.GetRenderer (ServiceLocator, Context, writer, List);
     }
 
-    /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>
-    /// <remarks> Title format: &lt;span&gt;label button &lt;span&gt;sort order&lt;/span&gt;&lt;/span&gt; </remarks>
-    public void RenderTitlesRow ()
-    {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      GetIndexColumnRenderer().RenderTitleCell();
-      GetSelectorColumnRenderer().RenderTitleCell();
+    public override void Render (HtmlTextWriter writer)
+    {
+      throw new NotImplementedException ();
+    }
+
+    public void RenderTitlesRow (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+
+      GetIndexColumnRenderer(writer).RenderTitleCell (writer);
+      GetSelectorColumnRenderer(writer).RenderTitleCell (writer);
 
       var sortingDirections = new Dictionary<int, SortingDirection>();
       var sortingOrder = new List<int>();
@@ -75,22 +81,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         }
       }
 
-      RenderTitleCells (sortingDirections, sortingOrder);
+      RenderTitleCells (writer, sortingDirections, sortingOrder);
 
       if (ControlHelper.IsDesignMode (List) && List.GetColumns().Length == 0)
       {
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {
-          Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-          Writer.Write (string.Format (c_designModeDummyColumnTitle, i + 1));
-          Writer.RenderEndTag();
+          writer.RenderBeginTag (HtmlTextWriterTag.Td);
+          writer.Write (string.Format (c_designModeDummyColumnTitle, i + 1));
+          writer.RenderEndTag();
         }
       }
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private void RenderTitleCells (IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
+    private void RenderTitleCells (HtmlTextWriter writer, IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
       BocColumnDefinition[] renderColumns = List.GetColumns();
       for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
@@ -99,25 +105,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         if (!List.IsColumnVisible (column))
           continue;
 
-        IBocColumnRenderer renderer = GetColumnRenderer (column);
+        IBocColumnRenderer renderer = GetColumnRenderer (writer, column);
         SortingDirection sortingDirection = SortingDirection.None;
         if (sortingDirections.ContainsKey (idxColumns))
           sortingDirection = sortingDirections[idxColumns];
 
-        renderer.RenderTitleCell (sortingDirection, sortingOrder.IndexOf (idxColumns));
+        renderer.RenderTitleCell (writer, sortingDirection, sortingOrder.IndexOf (idxColumns));
       }
     }
 
-    /// <summary>
-    /// Renders a row containing the empty list message in <see cref="BocListRendererBase.List"/>'s 
-    /// <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.EmptyListMessage"/> protperty.
-    /// </summary>
-    /// <remarks>
-    /// If the property is not set, a default message will be loaded from the resource file, using 
-    /// <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier.EmptyListMessage"/> as key. 
-    /// </remarks>
-    public void RenderEmptyListDataRow ()
+    public void RenderEmptyListDataRow (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       BocColumnDefinition[] renderColumns = List.GetColumns();
       int columnCount = 0;
 
@@ -134,9 +134,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
           columnCount++;
       }
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Colspan, columnCount.ToString());
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      writer.AddAttribute (HtmlTextWriterAttribute.Colspan, columnCount.ToString());
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
       string emptyListMessage;
       if (StringUtility.IsNullOrEmpty (List.EmptyListMessage))
@@ -144,55 +144,46 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       else
         emptyListMessage = List.EmptyListMessage;
       // Do not HTML encode
-      Writer.Write (emptyListMessage);
+      writer.Write (emptyListMessage);
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    /// <summary>Renders a table row containing the data of <paramref name="businessObject"/>. </summary>
-    /// <param name="businessObject"> The <see cref="IBusinessObject"/> whose data will be rendered. </param>
-    /// <param name="rowIndex"> The row number in the current view. </param>
-    /// <param name="absoluteRowIndex"> The position of <paramref name="businessObject"/> in the list of values. </param>
-    /// <param name="originalRowIndex"> The position of <paramref name="businessObject"/> in the list of values before sorting. </param>
-    public void RenderDataRow (
-        IBusinessObject businessObject,
-        int rowIndex,
-        int absoluteRowIndex,
-        int originalRowIndex)
+    public void RenderDataRow (HtmlTextWriter writer,IBusinessObject businessObject,int rowIndex,int absoluteRowIndex,int originalRowIndex)
     {
-      string selectorControlID = List.GetSelectorControlClientId(rowIndex);
-      bool isChecked = (List.SelectorControlCheckedState.Contains(originalRowIndex));
+      string selectorControlID = List.GetSelectorControlClientId (rowIndex);
+      bool isChecked = (List.SelectorControlCheckedState.Contains (originalRowIndex));
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
       string cssClassTableRow = GetCssClassTableRow (isChecked);
       string cssClassTableCell = GetCssClassTableCell (isOddRow);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      GetIndexColumnRenderer().RenderDataCell (originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
-      GetSelectorColumnRenderer().RenderDataCell (originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
+      GetIndexColumnRenderer(writer).RenderDataCell (writer, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
+      GetSelectorColumnRenderer(writer).RenderDataCell (writer, originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
 
       var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject) { IsOddRow = isOddRow };
       List.OnDataRowRendering (dataRowRenderEventArgs);
 
-      RenderDataCells (rowIndex, dataRowRenderEventArgs);
+      RenderDataCells (writer, rowIndex, dataRowRenderEventArgs);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private IBocSelectorColumnRenderer GetSelectorColumnRenderer ()
+    private IBocSelectorColumnRenderer GetSelectorColumnRenderer (HtmlTextWriter writer)
     {
-      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory>().CreateRenderer (Context, Writer, List);
+      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory>().CreateRenderer (Context, writer, List);
     }
 
-    private IBocIndexColumnRenderer GetIndexColumnRenderer ()
+    private IBocIndexColumnRenderer GetIndexColumnRenderer (HtmlTextWriter writer)
     {
-      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer (Context, Writer, List);
+      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer (Context, writer, List);
     }
 
-    private void RenderDataCells (int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
       foreach (BocColumnDefinition column in List.GetColumns())
@@ -204,9 +195,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
           showIcon = List.EnableIcon;
         }
 
-        IBocColumnRenderer columnRenderer = GetColumnRenderer (column);
+        IBocColumnRenderer columnRenderer = GetColumnRenderer (writer, column);
 
-        columnRenderer.RenderDataCell (rowIndex, showIcon, dataRowRenderEventArgs);
+        columnRenderer.RenderDataCell (writer, rowIndex, showIcon, dataRowRenderEventArgs);
       }
     }
 

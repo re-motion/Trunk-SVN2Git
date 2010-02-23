@@ -33,42 +33,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRendererBase (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
-        : base (context, writer, list, columnDefintion, cssClasses)
+    protected BocCommandEnabledColumnRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
+        : base (context, list, columnDefintion, cssClasses)
     {
     }
 
-    protected void RenderCellIcon (IBusinessObject businessObject)
+    protected void RenderCellIcon (HtmlTextWriter writer, IBusinessObject businessObject)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       IconInfo icon = BusinessObjectBoundWebControl.GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
 
       if (icon != null)
       {
-        RenderIcon (icon, null);
-        Writer.Write (c_whiteSpace);
+        RenderIcon (writer, icon, null);
+        writer.Write (c_whiteSpace);
       }
     }
 
-    protected void RenderValueColumnCellText (string contents)
+    protected void RenderValueColumnCellText (HtmlTextWriter writer, string contents)
     {
-      Writer.AddAttribute ("class", CssClasses.CommandText);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.AddAttribute ("class", CssClasses.CommandText);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
       
       contents = HtmlUtility.HtmlEncode (contents);
       if (StringUtility.IsNullOrEmpty (contents))
         contents = c_whiteSpace;
-      Writer.Write (contents);
+      writer.Write (contents);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    protected bool RenderBeginTagDataCellCommand (
-        IBusinessObject businessObject,
-        int originalRowIndex)
+    protected bool RenderBeginTagDataCellCommand (HtmlTextWriter writer, IBusinessObject businessObject, int originalRowIndex)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       BocListItemCommand command = Column.Command;
@@ -94,8 +95,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
         string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
         if (command.Type == CommandType.None)
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDisabled);
-        command.RenderBegin (Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Disabled);
+        command.RenderBegin (writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 
         return true;
         
@@ -103,9 +104,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       return false;
     }
 
-    protected void RenderEndTagDataCellCommand ()
+    protected void RenderEndTagDataCellCommand (HtmlTextWriter writer)
     {
-      Column.Command.RenderEnd (Writer);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      Column.Command.RenderEnd (writer);
     }
   }
 }

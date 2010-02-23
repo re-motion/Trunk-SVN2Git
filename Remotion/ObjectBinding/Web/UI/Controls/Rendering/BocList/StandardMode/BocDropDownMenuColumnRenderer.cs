@@ -36,9 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocDropDownMenuColumnRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocDropDownMenuColumnDefinition column, CssClassContainer cssClasses)
-        : base (context, writer, list, column, cssClasses)
+    public BocDropDownMenuColumnRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition column, CssClassContainer cssClasses)
+        : base (context, list, column, cssClasses)
     {
     }
 
@@ -52,31 +51,33 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// the <see cref="IBocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
     /// </remarks>
     protected override void RenderCellContents (
+        HtmlTextWriter writer, 
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       if (List.RowMenus == null || List.RowMenus.Length < rowIndex || List.RowMenus[rowIndex] == null)
       {
-        Writer.Write (c_whiteSpace);
+        writer.Write (c_whiteSpace);
         return;
       }
 
       DropDownMenu dropDownMenu = List.RowMenus[rowIndex].Item3;
 
       if (List.HasClientScript)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin div
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin div
 
       dropDownMenu.Enabled = !List.EditModeController.IsRowEditModeActive;
 
       dropDownMenu.TitleText = Column.MenuTitleText;
       dropDownMenu.TitleIcon = Column.MenuTitleIcon;
-      dropDownMenu.RenderControl (Writer);
+      dropDownMenu.RenderControl (writer);
 
-      Writer.RenderEndTag(); // End div
+      writer.RenderEndTag(); // End div
     }
   }
 }

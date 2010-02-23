@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
@@ -44,12 +45,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
     /// scripted to respond to clicks and change the "checkbox" state accordingly; 
     /// in addition, the state is put into an additional hidden field.
     /// </summary>
-    public override void Render()
+    public override void Render(HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       var resourceSet = Control.CreateResourceSet();
 
-      AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      AddAttributesToRender (writer, false);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Label labelControl = new Label { ID = Control.GetLabelClientID() };
       Image imageControl = new Image { ID = Control.GetImageClientID() };
@@ -71,12 +74,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
       PrepareHiddenControl (hiddenFieldControl, Control.IsReadOnly);
       PrepareVisibleControls (imageControl, labelControl, resourceSet);
 
-      hiddenFieldControl.RenderControl (Writer);
+      hiddenFieldControl.RenderControl (writer);
       linkControl.Controls.Add (imageControl);
-      linkControl.RenderControl (Writer);
-      labelControl.RenderControl (Writer);
+      linkControl.RenderControl (writer);
+      labelControl.RenderControl (writer);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private bool DetermineClientScriptLevel ()

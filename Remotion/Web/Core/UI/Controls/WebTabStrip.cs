@@ -262,7 +262,7 @@ namespace Remotion.Web.UI.Controls
 
       var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     private List<WebTab> GetVisibleTabs ()

@@ -29,13 +29,10 @@ namespace Remotion.Web.UI.Controls.Rendering
     /// <summary>Gets the control to render.</summary>
     TControl Control { get; }
 
-    /// <summary>Gets the writer to use for rendering.</summary>
-    HtmlTextWriter Writer { get; }
-
     /// <summary>Gets the context in which rendering occurs.</summary>
     HttpContextBase Context { get; }
 
-    /// <summary>Renders the <see cref="Control"/> using the <see cref="Writer"/> in the given <see cref="Context"/>.</summary>
-    void Render();
+    /// <summary>Renders the <see cref="Control"/> using the <paramref name="writer"/> in the given <see cref="Context"/>.</summary>
+    void Render (HtmlTextWriter writer);
   }
 }

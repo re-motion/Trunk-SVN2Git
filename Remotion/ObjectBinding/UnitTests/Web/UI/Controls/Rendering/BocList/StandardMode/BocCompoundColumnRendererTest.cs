@@ -46,9 +46,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
 
-      renderer.RenderDataCell (0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -64,9 +64,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
 
-      renderer.RenderDataCell (0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -85,9 +85,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
 
-      renderer.RenderDataCell (0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);

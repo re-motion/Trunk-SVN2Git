@@ -25,24 +25,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubColumnRenderer : BocColumnRendererBase<StubColumnDefinition>
   {
-    public StubColumnRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, StubColumnDefinition columnDefinition)
-        : base (context, writer, list, columnDefinition, CssClassContainer.Instance)
+    public StubColumnRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
+        : base (context, list, columnDefinition, CssClassContainer.Instance)
     {
     }
 
-    public override void RenderTitleCell (SortingDirection sortingDirection, int orderIndex)
+    public override void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      Writer.RenderEndTag();
+      writer.RenderBeginTag (HtmlTextWriterTag.Th);
+      writer.RenderEndTag();
     }
 
-    public override void RenderDataCell (int rowIndex, bool showIcon, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    public override void RenderDataCell (HtmlTextWriter writer, int rowIndex, bool showIcon, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      Writer.RenderEndTag();
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      writer.RenderEndTag();
     }
 
-    protected override void RenderCellContents (BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+    protected override void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
     {
       throw new NotImplementedException();
     }

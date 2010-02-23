@@ -19,7 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using System.Web;
-using Remotion.Web.UI.Controls;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
@@ -46,14 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
       get { return _formatter; }
     }
 
-    /// <summary>
-    /// Renders an inline table consisting of one row with up to three cells, depending on <see cref="IBocDateTimeValue.ActualValueType"/>.
-    /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
-    /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
-    /// </summary>
-    public abstract void Render();
-
-    protected abstract void RenderEditModeControls ();
+    protected abstract void RenderEditModeControls (HtmlTextWriter writer);
 
     protected abstract bool DetermineClientScriptLevel (IDatePickerButton datePickerButton);
 
@@ -122,8 +115,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
       return dateTextBoxWidthPercentage;
     }
 
-    protected virtual void RenderReadOnlyValue ()
+    protected virtual void RenderReadOnlyValue (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Label label = new Label();
 
       if (Control.IsDesignMode && string.IsNullOrEmpty (label.Text))
@@ -157,19 +152,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
       bool isLabelHeightEmpty = label.Height.IsEmpty && string.IsNullOrEmpty (label.Style["height"]);
       if (!isControlHeightEmpty && isLabelHeightEmpty)
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
       bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
       bool isLabelWidthEmpty = label.Width.IsEmpty && string.IsNullOrEmpty (label.Style["width"]);
       if (!isControlWidthEmpty && isLabelWidthEmpty)
       {
         if (!Control.Width.IsEmpty)
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
         else
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
       }
 
-      label.RenderControl (Writer);
+      label.RenderControl (writer);
     }
   }
 }

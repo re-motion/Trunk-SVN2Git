@@ -96,15 +96,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <summary> 
     /// Renders the navigation bar consisting of the move buttons and the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.PageInfo"/>. 
     /// </summary>
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       bool isFirstPage = List.CurrentPage == 0;
       bool isLastPage = List.CurrentPage + 1 >= List.PageCount;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
-      Writer.AddStyleAttribute ("position", "relative");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
+      writer.AddStyleAttribute ("position", "relative");
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //  Page info
       string pageInfo;
@@ -115,27 +117,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       string navigationText = string.Format (pageInfo, List.CurrentPage + 1, List.PageCount);
       // Do not HTML encode.
-      Writer.Write (navigationText);
+      writer.Write (navigationText);
 
       if (List.HasClientScript)
       {
-        Writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
+        writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
 
-        RenderNavigationIcon (isFirstPage, GoToOption.First);
-        RenderNavigationIcon (isFirstPage, GoToOption.Previous);
-        RenderNavigationIcon (isLastPage, GoToOption.Next);
-        RenderNavigationIcon (isLastPage, GoToOption.Last);
+        RenderNavigationIcon (writer, isFirstPage, GoToOption.First);
+        RenderNavigationIcon (writer, isFirstPage, GoToOption.Previous);
+        RenderNavigationIcon (writer, isLastPage, GoToOption.Next);
+        RenderNavigationIcon (writer, isLastPage, GoToOption.Last);
       }
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     /// <summary>Renders the appropriate icon for the given <paramref name="command"/>, depending on <paramref name="isInactive"/>.</summary>
-    private void RenderNavigationIcon (bool isInactive, GoToOption command)
+    private void RenderNavigationIcon (HtmlTextWriter writer, bool isInactive, GoToOption command)
     {
       if (isInactive || List.EditModeController.IsRowEditModeActive)
       {
         string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
-        RenderIcon (new IconInfo (imageUrl), null);
+        RenderIcon (writer, new IconInfo (imageUrl), null);
       }
       else
       {
@@ -143,14 +145,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
         string argument = Controls.BocList.c_goToCommandPrefix + command;
         string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        Writer.RenderBeginTag (HtmlTextWriterTag.A);
-        RenderIcon (new IconInfo (imageUrl), s_alternateTexts[command]);
-        Writer.RenderEndTag();
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
+        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        writer.RenderBeginTag (HtmlTextWriterTag.A);
+        RenderIcon (writer, new IconInfo (imageUrl), s_alternateTexts[command]);
+        writer.RenderEndTag();
       }
       
-      Writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
+      writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
     }
 
     private string GetResolvedImageUrl (string imageUrl)

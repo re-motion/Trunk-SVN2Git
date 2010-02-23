@@ -33,7 +33,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
   /// </remarks>
   public class BocAutoCompleteReferenceValueRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValueRenderer
   {
-    private const string c_nullIdentifier = "==null==";
     private const string c_defaultControlWidth = "150pt";
 
     public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
@@ -53,10 +52,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     private Func<TextBox> TextBoxGetter { get; set; }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, false);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       TextBox textBox = GetTextbox();
       textBox.Page = Control.Page.WrappedInstance;
@@ -66,11 +67,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
       if (Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
           || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu)
-        RenderContentsWithIntegratedOptionsMenu (textBox, hiddenField, label);
+        RenderContentsWithIntegratedOptionsMenu (writer, textBox, label);
       else
-        RenderContentsWithSeparateOptionsMenu (textBox, hiddenField, label, icon);
+        RenderContentsWithSeparateOptionsMenu (writer, textBox, hiddenField, label, icon);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private TextBox GetTextbox ()
@@ -141,10 +142,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       return icon;
     }
 
-    protected override void AddAdditionalAttributes ()
+    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
     {
-      base.AddAdditionalAttributes();
-      Writer.AddStyleAttribute ("display", "inline");
+      base.AddAdditionalAttributes(writer);
+      writer.AddStyleAttribute ("display", "inline");
     }
 
     public override string CssClassBase
@@ -159,7 +160,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       get { return "bocAutoCompleteReferenceValueContent"; }
     }
 
-    private void RenderContentsWithSeparateOptionsMenu (TextBox textBox, HiddenField hiddenField, Label label, Image icon)
+    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer, TextBox textBox, HiddenField hiddenField, Label label, Image icon)
     {
       bool isReadOnly = Control.IsReadOnly;
 
@@ -174,28 +175,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       if (isReadOnly)
       {
         if (isLabelWidthEmpty && !isControlWidthEmpty)
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       }
       else
       {
         if (!isControlHeightEmpty && isTextboxHeightEmpty)
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
         if (isTextboxWidthEmpty)
         {
           if (isControlWidthEmpty)
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
           else
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
         }
       }
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-      Writer.AddStyleAttribute ("display", "inline");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr); //  Begin tr
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
+      writer.AddStyleAttribute ("display", "inline");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); //  Begin tr
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
 
@@ -206,41 +207,41 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
-        RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
+        RenderReadOnlyValue (writer, icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
       else
       {
         if (icon.Visible)
-          RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
-        RenderEditModeValue (textBox, hiddenField, isControlHeightEmpty, isTextboxHeightEmpty, isTextboxWidthEmpty);
+          RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
+        RenderEditModeValue (writer, textBox, hiddenField, isControlHeightEmpty, isTextboxHeightEmpty, isTextboxWidthEmpty);
       }
 
       bool hasOptionsMenu = Control.HasOptionsMenu;
       if (hasOptionsMenu)
       {
-        Writer.AddStyleAttribute ("padding-left", "0.3em");
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-        //Writer.AddAttribute ("align", "right");
-        Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+        writer.AddStyleAttribute ("padding-left", "0.3em");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+        //writer.AddAttribute ("align", "right");
+        writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
         Control.OptionsMenu.Width = Control.OptionsMenuWidth;
-        Control.OptionsMenu.RenderControl (Writer);
-        Writer.RenderEndTag(); //  End td
+        Control.OptionsMenu.RenderControl (writer);
+        writer.RenderEndTag(); //  End td
       }
 
       //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
       if (!Control.IsDesignMode && !isReadOnly && !hasOptionsMenu && !icon.Visible
           && Context.Request.Browser.Browser == "Opera")
       {
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-        Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-        Writer.Write ("&nbsp;");
-        Writer.RenderEndTag(); // End td
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+        writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+        writer.Write ("&nbsp;");
+        writer.RenderEndTag(); // End td
       }
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private void RenderContentsWithIntegratedOptionsMenu (TextBox textBox, HiddenField hiddenField, Label label)
+    private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer, TextBox textBox, Label label)
     {
       bool isReadOnly = Control.IsReadOnly;
 
@@ -272,12 +273,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       }
 
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
-      Control.OptionsMenu.RenderControl (Writer);
+      Control.OptionsMenu.RenderControl (writer);
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
 
-    public void RenderOptionsMenuTitle ()
+    public void RenderOptionsMenuTitle (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       var textbox = GetTextbox();
       var hiddenField = GetHiddenField();
       textbox.Page = Control.Page.WrappedInstance;
@@ -299,108 +302,109 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
       if (isReadOnly)
       {
-        RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+        RenderReadOnlyValue (writer, icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         if (!isControlWidthEmpty)
         {
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
-          Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-          Writer.RenderEndTag();
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
+          writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+          writer.RenderEndTag();
         }
       }
       else
       {
         if (icon.Visible)
-          RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        RenderEditModeValue (textbox, hiddenField, isControlHeightEmpty, isTextboxHeightEmpty, isTextboxWidthEmpty);
+          RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+        RenderEditModeValue (writer, textbox, hiddenField, isControlHeightEmpty, isTextboxHeightEmpty, isTextboxWidthEmpty);
       }
     }
 
-    private void RenderSeparateIcon (Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderSeparateIcon (HtmlTextWriter writer, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-      Writer.AddStyleAttribute ("padding-right", "0.3em");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+      writer.AddStyleAttribute ("padding-right", "0.3em");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
       if (isCommandEnabled)
       {
-        Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
+        Control.Command.RenderBegin (writer, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (Control.Command.ToolTip))
           icon.ToolTip = Control.Command.ToolTip;
       }
-      icon.RenderControl (Writer);
+      icon.RenderControl (writer);
       if (isCommandEnabled)
-        Control.Command.RenderEnd (Writer);
+        Control.Command.RenderEnd (writer);
 
-      Writer.RenderEndTag(); //  End td
+      writer.RenderEndTag(); //  End td
     }
 
-    private void RenderReadOnlyValue (Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderReadOnlyValue (HtmlTextWriter writer, Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
       if (isCommandEnabled)
-        Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
+        Control.Command.RenderBegin (writer, postBackEvent, onClick, objectID, null);
       if (icon.Visible)
       {
-        icon.RenderControl (Writer);
-        Writer.Write ("&nbsp;");
+        icon.RenderControl (writer);
+        writer.Write ("&nbsp;");
       }
-      label.RenderControl (Writer);
+      label.RenderControl (writer);
       if (isCommandEnabled)
-        Control.Command.RenderEnd (Writer);
+        Control.Command.RenderEnd (writer);
 
-      Writer.RenderEndTag(); //  End td
+      writer.RenderEndTag(); //  End td
     }
 
     private void RenderEditModeValue (
+        HtmlTextWriter writer,
         TextBox textBox,
         HiddenField hiddenField,
         bool isControlHeightEmpty,
         bool isDropDownListHeightEmpty,
         bool isDropDownListWidthEmpty)
     {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
 
       if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
       if (isDropDownListWidthEmpty)
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      textBox.RenderControl (Writer);
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      textBox.RenderControl (writer);
 
-      hiddenField.RenderControl (Writer);
+      hiddenField.RenderControl (writer);
 
-      Writer.RenderEndTag(); //  End td
+      writer.RenderEndTag(); //  End td
 
-      RenderEditModeValueExtension();
+      RenderEditModeValueExtension (writer);
     }
 
     /// <summary> Called after the edit mode value's cell is rendered. </summary>
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
-    protected virtual void RenderEditModeValueExtension ()
+    protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
       if( !Control.Enabled )
         return;
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderDropdownButton();
-      Writer.RenderEndTag ();
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      RenderDropdownButton (writer);
+      writer.RenderEndTag ();
     }
 
-    private void RenderDropdownButton ()
+    private void RenderDropdownButton (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       string imgUrl = ResourceUrlResolver.GetResourceUrl (
           Control, Context, typeof (IBocAutoCompleteReferenceValue), ResourceType.Image, ResourceTheme, "DropDownMenuArrow.gif");
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl));
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      IconInfo.Spacer.Render (Writer);
-      Writer.RenderEndTag ();
+      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl));
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      IconInfo.Spacer.Render (writer);
+      writer.RenderEndTag ();
     }
 
     protected string CssClassButton

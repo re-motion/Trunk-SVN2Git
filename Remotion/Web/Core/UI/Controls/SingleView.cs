@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.SingleView;
 using Remotion.Web.Utilities;
@@ -136,9 +137,11 @@ namespace Remotion.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     protected string ViewClientID

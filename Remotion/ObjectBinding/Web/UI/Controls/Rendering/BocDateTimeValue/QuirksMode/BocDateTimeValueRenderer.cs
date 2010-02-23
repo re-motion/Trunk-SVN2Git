@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
@@ -43,21 +44,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
     /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
     /// </summary>
-    public override void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender (true);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, true);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       if (Control.IsReadOnly)
-        RenderReadOnlyValue ();
+        RenderReadOnlyValue (writer);
       else
-        RenderEditModeControls ();
+        RenderEditModeControls (writer);
 
-      Writer.RenderEndTag ();
+      writer.RenderEndTag ();
     }
 
-    protected override void RenderEditModeControls ()
+    protected override void RenderEditModeControls (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       var dateTextBox = new TextBox { ID = Control.DateTextboxID };
       Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
       dateTextBox.Text = Control.Value.HasValue ? Formatter.FormatDateValue (Control.Value.Value) : Control.DateString;
@@ -72,8 +77,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       datePickerButton.AlternateText = Control.GetDatePickerText();
       datePickerButton.IsDesignMode = Control.IsDesignMode;
 
-      RenderTableBeginTag (dateTextBox, timeTextBox); // Begin table
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin tr
+      RenderTableBeginTag (writer, dateTextBox, timeTextBox); // Begin table
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin tr
 
       bool hasDateField = false;
       bool hasTimeField = false;
@@ -95,102 +100,102 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       string dateTextBoxSize = GetDateTextBoxSize (dateTextBoxWidthPercentage);
       string timeTextBoxSize = GetTimeTextBoxSize (100 - dateTextBoxWidthPercentage);
 
-      RenderDateCell (hasDateField, dateTextBox, dateTextBoxSize);
-      RenderDatePickerCell (hasDatePicker, datePickerButton);
+      RenderDateCell (writer, hasDateField, dateTextBox, dateTextBoxSize);
+      RenderDatePickerCell (writer, hasDatePicker, datePickerButton);
 
       //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
-      InsertDummyCellForOpera (hasDatePicker);
+      InsertDummyCellForOpera (writer, hasDatePicker);
 
-      RenderTimeCell (hasDateField, hasTimeField, timeTextBox, timeTextBoxSize);
+      RenderTimeCell (writer, hasDateField, hasTimeField, timeTextBox, timeTextBoxSize);
 
-      Writer.RenderEndTag(); // End tr
-      Writer.RenderEndTag(); // End table
+      writer.RenderEndTag(); // End tr
+      writer.RenderEndTag(); // End table
     }
 
-    private void RenderTimeCell (bool hasDateField, bool hasTimeField, TextBox timeTextBox, string timeTextBoxSize)
+    private void RenderTimeCell (HtmlTextWriter writer, bool hasDateField, bool hasTimeField, TextBox timeTextBox, string timeTextBoxSize)
     {
       if (!hasTimeField)
         return;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, timeTextBoxSize);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, timeTextBoxSize);
 
       if (hasDateField)
-        Writer.AddStyleAttribute ("padding-left", "0.3em");
+        writer.AddStyleAttribute ("padding-left", "0.3em");
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
       if (!IsControlHeightEmpty (Control) && IsControlHeightEmpty (timeTextBox))
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      timeTextBox.RenderControl (Writer);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      timeTextBox.RenderControl (writer);
 
-      Writer.RenderEndTag(); // End td
+      writer.RenderEndTag(); // End td
     }
 
-    private void RenderDatePickerCell (bool hasDatePicker, IDatePickerButton datePickerButton)
+    private void RenderDatePickerCell (HtmlTextWriter writer, bool hasDatePicker, IDatePickerButton datePickerButton)
     {
       if (!hasDatePicker)
         return;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-      Writer.AddStyleAttribute ("padding-left", "0.3em");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-      datePickerButton.RenderControl (Writer);
-      Writer.RenderEndTag(); // End td
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+      writer.AddStyleAttribute ("padding-left", "0.3em");
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+      datePickerButton.RenderControl (writer);
+      writer.RenderEndTag(); // End td
     }
 
-    private void InsertDummyCellForOpera (bool hasDatePicker)
+    private void InsertDummyCellForOpera (HtmlTextWriter writer, bool hasDatePicker)
     {
       if (hasDatePicker || Context.Request.Browser.Browser != "Opera")
         return;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-      Writer.Write ("&nbsp;");
-      Writer.RenderEndTag(); // End td
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+      writer.Write ("&nbsp;");
+      writer.RenderEndTag(); // End td
     }
 
-    private void RenderDateCell (bool hasDateField, TextBox dateTextBox, string dateTextBoxSize)
+    private void RenderDateCell (HtmlTextWriter writer ,bool hasDateField, TextBox dateTextBox, string dateTextBoxSize)
     {
       if (!hasDateField)
         return;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, dateTextBoxSize);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, dateTextBoxSize);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
       if (!IsControlHeightEmpty (Control) && IsControlHeightEmpty (dateTextBox))
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      dateTextBox.RenderControl (Writer);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      dateTextBox.RenderControl (writer);
 
-      Writer.RenderEndTag(); // End td
+      writer.RenderEndTag(); // End td
     }
 
-    private void RenderTableBeginTag (TextBox dateTextBox, TextBox timeTextBox)
+    private void RenderTableBeginTag (HtmlTextWriter writer, TextBox dateTextBox, TextBox timeTextBox)
     {
       if (!IsControlHeightEmpty (Control) && IsControlHeightEmpty (dateTextBox) && IsControlHeightEmpty (timeTextBox))
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
       if (IsControlWidthEmpty (dateTextBox) && IsControlWidthEmpty (timeTextBox))
       {
         if (IsControlWidthEmpty (Control))
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
         else
         {
           if (!Control.Width.IsEmpty)
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
           else
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
         }
       }
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-      Writer.AddStyleAttribute ("display", "inline");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
+      writer.AddStyleAttribute ("display", "inline");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
     }
 
     private bool IsControlWidthEmpty (WebControl control)
@@ -213,10 +218,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       return control.Height.IsEmpty && string.IsNullOrEmpty (control.Style["height"]);
     }
 
-    protected override void AddAdditionalAttributes ()
+    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
     {
-      base.AddAdditionalAttributes ();
-      Writer.AddStyleAttribute ("display", "inline");
+      base.AddAdditionalAttributes (writer);
+      writer.AddStyleAttribute ("display", "inline");
     }
 
     protected override bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)

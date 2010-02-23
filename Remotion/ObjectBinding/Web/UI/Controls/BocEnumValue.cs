@@ -106,9 +106,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       var factory = ServiceLocator.GetInstance<IBocEnumValueRendererFactory>();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>

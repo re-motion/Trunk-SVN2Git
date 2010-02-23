@@ -35,15 +35,17 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
     /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
     /// into the control specified by <see cref="P:Control.TargetControlID"/>.
     /// </summary>
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      bool hasClientScript = DetermineClientScriptLevel();
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      bool hasClientScript = DetermineClientScriptLevel ();
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
 
       string cssClass = string.IsNullOrEmpty(Control.CssClass) ? CssClassBase : Control.CssClass;
       if (!Control.Enabled)
         cssClass += " " + CssClassDisabled;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
       // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
 
@@ -52,13 +54,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
       {
         string script = GetClickScript (hasClientScript);
 
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       }
       if (!Control.Enabled)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
+        writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.A);
+      writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       if (canScript)
       {
@@ -66,13 +68,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
         if (imageUrl == null)
           imageUrl = ImageFileName;
 
-        Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
-        Writer.RenderBeginTag (HtmlTextWriterTag.Img);
-        Writer.RenderEndTag();
+        writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
+        writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
+        writer.RenderBeginTag (HtmlTextWriterTag.Img);
+        writer.RenderEndTag();
       }
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     public string GetDatePickerUrl ()

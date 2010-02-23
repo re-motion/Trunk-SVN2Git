@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 {
@@ -32,59 +33,67 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender();
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      RenderTopControls();
-      RenderTabStrip();
-      RenderActiveView();
-      RenderBottomControls();
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag ();
+      RenderTopControls (writer);
+      RenderTabStrip (writer);
+      RenderActiveView (writer);
+      RenderBottomControls (writer);
+
+      writer.RenderEndTag();
+      writer.RenderEndTag ();
     }
 
-    protected void AddAttributesToRender ()
+    protected void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddStandardAttributesToRender (writer);
       if (Control.IsDesignMode)
       {
-        Writer.AddStyleAttribute ("width", "100%");
-        Writer.AddStyleAttribute ("height", "75%");
+        writer.AddStyleAttribute ("width", "100%");
+        writer.AddStyleAttribute ("height", "75%");
       }
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
-    protected virtual void RenderTabStrip ()
+    protected virtual void RenderTabStrip (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Control.TabStrip.CssClass = CssClassTabStrip;
-      Control.TabStrip.RenderControl (Writer);
+      Control.TabStrip.RenderControl (writer);
     }
 
-    protected virtual void RenderActiveView ()
+    protected virtual void RenderActiveView (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       if (Control.IsDesignMode)
-        Writer.AddStyleAttribute ("border", "solid 1px black");
+        writer.AddStyleAttribute ("border", "solid 1px black");
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID);
-      Control.ActiveViewStyle.AddAttributesToRender (Writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID);
+      Control.ActiveViewStyle.AddAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewContentClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewContentClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       var view = Control.GetActiveView();
       if (view != null)
@@ -92,32 +101,36 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         for (int i = 0; i < view.Controls.Count; i++)
         {
           Control control = view.Controls[i];
-          control.RenderControl (Writer);
+          control.RenderControl (writer);
         }
       }
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
-      Writer.RenderEndTag ();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    protected virtual void RenderTopControls ()
+    protected virtual void RenderTopControls (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Style style = Control.TopControlsStyle;
       PlaceHolder placeHolder = Control.TopControl;
       string cssClass = CssClassTopControls;
-      RenderPlaceHolder (style, placeHolder, cssClass);
+      RenderPlaceHolder (writer, style, placeHolder, cssClass);
     }
 
-    protected virtual void RenderBottomControls ()
+    protected virtual void RenderBottomControls (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Style style = Control.BottomControlsStyle;
       PlaceHolder placeHolder = Control.BottomControl;
       string cssClass = CssClassBottomControls;
-      RenderPlaceHolder (style, placeHolder, cssClass);
+      RenderPlaceHolder (writer, style, placeHolder, cssClass);
     }
 
-    private void RenderPlaceHolder (Style style, PlaceHolder placeHolder, string defaultCssClass)
+    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string defaultCssClass)
     {
       string cssClass = defaultCssClass;
       if (!string.IsNullOrEmpty (style.CssClass))
@@ -128,19 +141,19 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
       string backupCssClass = style.CssClass;
       style.CssClass = cssClass;
-      style.AddAttributesToRender (Writer);
+      style.AddAttributesToRender (writer);
       style.CssClass = backupCssClass;
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      placeHolder.RenderControl (Writer);
+      placeHolder.RenderControl (writer);
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     #region protected virtual string CssClass...

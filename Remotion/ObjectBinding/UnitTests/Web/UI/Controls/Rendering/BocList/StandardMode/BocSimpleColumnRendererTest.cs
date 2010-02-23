@@ -47,9 +47,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
 
-      renderer.RenderDataCell (0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -67,9 +67,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
 
-      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
 
-      renderer.RenderDataCell (0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -86,9 +86,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
 
-      renderer.RenderDataCell (0, true, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -126,8 +126,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
-      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 

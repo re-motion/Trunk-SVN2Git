@@ -38,9 +38,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCustomColumnRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition column, CssClassContainer cssClasses)
-        : base (context, writer, list, column, cssClasses)
+    public BocCustomColumnRenderer (HttpContextBase context, IBocList list, BocCustomColumnDefinition column, CssClassContainer cssClasses)
+        : base (context, list, column, cssClasses)
     {
     }
 
@@ -58,6 +57,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <see cref="BocListRendererBase.List"/>'s <see cref="IBocList.CustomColumns"/> property.
     /// </remarks>
     protected override void RenderCellContents (
+        HtmlTextWriter writer, 
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
@@ -73,43 +73,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       if (Column.Mode == BocCustomColumnDefinitionMode.NoControls
           || (Column.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow))
-        RenderCustomCellDirectly (businessObject, ColumnIndex, originalRowIndex);
+        RenderCustomCellDirectly (writer, businessObject, ColumnIndex, originalRowIndex);
       else
-        RenderCustomCellInnerControls (rowIndex);
+        RenderCustomCellInnerControls (writer, rowIndex);
     }
 
-    private void RenderCustomCellInnerControls (int rowIndex)
+    private void RenderCustomCellInnerControls (HtmlTextWriter writer, int rowIndex)
     {
       BocListCustomColumnTuple[] customColumnTuples = List.CustomColumns[Column];
       BocListCustomColumnTuple customColumnTuple = customColumnTuples[rowIndex];
       if (customColumnTuple == null)
       {
-        Writer.Write (c_whiteSpace);
+        writer.Write (c_whiteSpace);
         return;
       }
 
-      RenderClickWrapperBeginTag();
+      RenderClickWrapperBeginTag (writer);
 
       Control control = customColumnTuple.Item3;
       if (control != null)
       {
         ApplyStyleDefaults (control);
-        control.RenderControl (Writer);
+        control.RenderControl (writer);
       }
 
-      RenderClickWrapperEndTag();
+      RenderClickWrapperEndTag (writer);
     }
 
-    private void RenderClickWrapperBeginTag ()
+    private void RenderClickWrapperBeginTag (HtmlTextWriter writer)
     {
       string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
     }
 
-    private void RenderClickWrapperEndTag ()
+    private void RenderClickWrapperEndTag (HtmlTextWriter writer)
     {
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private void ApplyStyleDefaults (Control control)
@@ -139,12 +139,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       return controlStyle;
     }
 
-    private void RenderCustomCellDirectly (IBusinessObject businessObject, int columnIndex, int originalRowIndex)
+    private void RenderCustomCellDirectly (HtmlTextWriter writer, IBusinessObject businessObject, int columnIndex, int originalRowIndex)
     {
       string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
       BocCustomCellRenderArguments arguments = new BocCustomCellRenderArguments (
           List, businessObject, Column, columnIndex, originalRowIndex, onClick);
-      Column.CustomCell.RenderInternal (Writer, arguments);
+      Column.CustomCell.RenderInternal (writer, arguments);
     }
   }
 }

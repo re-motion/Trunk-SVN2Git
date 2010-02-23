@@ -115,9 +115,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.GetInstance<IBocMultilineTextValueRendererFactory>();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      var factory = ServiceLocator.GetInstance<IBocMultilineTextValueRendererFactory> ();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     // ReSharper disable RedundantOverridenMember

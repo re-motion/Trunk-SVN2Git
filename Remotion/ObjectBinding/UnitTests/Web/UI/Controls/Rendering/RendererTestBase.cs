@@ -19,7 +19,6 @@ using System.Collections;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using System.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering

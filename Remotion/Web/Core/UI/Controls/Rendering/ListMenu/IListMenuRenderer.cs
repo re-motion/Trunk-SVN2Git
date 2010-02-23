@@ -21,8 +21,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu
   /// <summary>
   /// Interface for classes able to render <see cref="ListMenu"/> controls.
   /// </summary>
-  public interface IListMenuRenderer
+  public interface IListMenuRenderer : IRenderer<IListMenu>
   {
-    void Render ();
   }
 }

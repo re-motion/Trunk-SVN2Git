@@ -99,7 +99,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.StandardMode
     private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
     {
       var renderer = new TabbedMenuRenderer (HttpContext, Html.Writer, _control);
-      renderer.Render();
+      renderer.Render (Html.Writer);
       // _control.RenderControl (Html.Writer);
 
       var document = Html.GetResultDocument();

@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 {
@@ -35,63 +36,65 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender();
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RenderTitle();
+      AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Writer.RenderEndTag();
+      RenderTitle (writer);
+
+      writer.RenderEndTag();
     }
 
-    private void RenderTitle ()
+    private void RenderTitle (HtmlTextWriter writer)
     {
       string cssClass = CssClassHead;
       if (!Control.Enabled)
         cssClass += " " + CssClassDisabled;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (Control.RenderHeadTitleMethod != null)
-        Control.RenderHeadTitleMethod ();
+        Control.RenderHeadTitleMethod (writer);
       else
-        RenderDefaultTitle();
+        RenderDefaultTitle (writer);
 
-      RenderDropdownButton ();
+      RenderDropdownButton (writer);
 
-      Writer.RenderEndTag ();
+      writer.RenderEndTag ();
     }
 
-    private void RenderDefaultTitle ()
+    private void RenderDefaultTitle (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
-      Writer.RenderBeginTag (HtmlTextWriterTag.A);
+      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+      writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       if (Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url))
-        Control.TitleIcon.Render (Writer);
+        Control.TitleIcon.Render (writer);
 
       if (!string.IsNullOrEmpty (Control.TitleText))
       {
-        Writer.Write (Control.TitleText);
-        Writer.Write (c_whiteSpace);
+        writer.Write (Control.TitleText);
+        writer.Write (c_whiteSpace);
       }
-      Writer.RenderEndTag ();
+      writer.RenderEndTag ();
     }
 
-    private void RenderDropdownButton ()
+    private void RenderDropdownButton (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
       string imageUrl = ResourceUrlResolver.GetResourceUrl (
           Control, typeof (IDropDownMenu), ResourceType.Image, ResourceTheme, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url({0})", imageUrl));
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url({0})", imageUrl));
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      IconInfo.Spacer.Render (Writer);
+      IconInfo.Spacer.Render (writer);
       
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     protected string CssClassDropDownButton
@@ -99,11 +102,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       get { return "DropDownMenuButton"; }
     }
 
-    private void AddAttributesToRender ()
+    private void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender();
+      AddStandardAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 
       if (Control.ControlStyle.Width.IsEmpty)
       {
@@ -111,7 +114,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
         if (!Control.Width.IsEmpty)
           width = Control.Width.ToString();
 
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, width);
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, width);
       }
     }
 

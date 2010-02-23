@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
-      renderer.RenderTitleCell();
+      renderer.RenderTitleCell (Html.Writer);
 
       var document = Html.GetResultDocument();
 
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, "checkboxControl", false, "bocListTableCell");
+      renderer.RenderDataCell (Html.Writer, 0, "checkboxControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
-      renderer.RenderTitleCell();
+      renderer.RenderTitleCell (Html.Writer);
 
       var document = Html.GetResultDocument();
 
@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, "radioControl", false, "bocListTableCell");
+      renderer.RenderDataCell (Html.Writer, 0, "radioControl", false, "bocListTableCell");
 
       var document = Html.GetResultDocument();
 

@@ -306,7 +306,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle ();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag ();
 
       var document = Html.GetResultDocument ();
@@ -322,7 +322,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubDropDownList ());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle ();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag ();
 
 
@@ -390,7 +390,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
       var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => DropDownList);
-      renderer.Render();
+      renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

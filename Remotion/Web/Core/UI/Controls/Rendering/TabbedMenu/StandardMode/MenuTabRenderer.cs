@@ -30,12 +30,12 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
   /// </summary>
   public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
-    public MenuTabRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
-        : base(context, writer, control, tab)
+    public MenuTabRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
+        : base(context, control, tab)
     {
     }
 
-    protected override void RenderBeginTagForCommand (bool isEnabled, WebTabStyle style)
+    protected override void RenderBeginTagForCommand (HtmlTextWriter writer, bool isEnabled, WebTabStyle style)
     {
       ArgumentUtility.CheckNotNull ("style", style);
 
@@ -46,23 +46,23 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
       {
         NameValueCollection additionalUrlParameters = menuTab.GetUrlParameters();
         RenderingCommand.RenderBegin (
-            Writer, Tab.GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
+            writer, Tab.GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
       }
       else
       {
-        style.AddAttributesToRender (Writer);
-        Writer.RenderBeginTag (HtmlTextWriterTag.A);
+        style.AddAttributesToRender (writer);
+        writer.RenderBeginTag (HtmlTextWriterTag.A);
       }
     }
 
     protected Command RenderingCommand { get; set; }
 
-    protected override void RenderEndTagForCommand ()
+    protected override void RenderEndTagForCommand (HtmlTextWriter writer)
     {
       if (RenderingCommand != null)
-        RenderingCommand.RenderEnd (Writer);
+        RenderingCommand.RenderEnd (writer);
       else
-        Writer.RenderEndTag ();
+        writer.RenderEndTag ();
     }
 
     private Command GetRenderingCommand (bool isEnabled, IMenuTab activeTab)

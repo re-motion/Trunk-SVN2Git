@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
@@ -46,10 +47,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,
     /// a textbox in edit mode.
     /// </summary>
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender (true);
-      Writer.RenderBeginTag ("span");
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, true);
+      writer.RenderBeginTag ("span");
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
 
@@ -63,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
       bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
 
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
 
       if (isInnerControlWidthEmpty)
@@ -72,14 +75,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
         {
           bool needsColumnCount = Control.TextBoxStyle.TextMode != TextBoxMode.MultiLine || Control.TextBoxStyle.Columns == null;
           if (!Control.IsReadOnly && needsColumnCount)
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
         }
         else
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
       }
-      innerControl.RenderControl (Writer);
+      innerControl.RenderControl (writer);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     /// <summary>

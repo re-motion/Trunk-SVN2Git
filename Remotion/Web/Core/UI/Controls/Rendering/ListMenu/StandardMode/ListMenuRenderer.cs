@@ -35,15 +35,17 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
       bool isFirstItem = true;
       for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
       {
@@ -59,57 +61,57 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
 
         if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isFirstCategoryItem) || isFirstItem)
         {
-          Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
-          Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+          writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
+          writer.RenderBeginTag (HtmlTextWriterTag.Td);
         }
-        RenderListMenuItem (currentItem, Control.ClientID, Control.MenuItems.IndexOf (currentItem));
+        RenderListMenuItem (writer, currentItem, Control.ClientID, Control.MenuItems.IndexOf (currentItem));
         if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isLastCategoryItem) || isLastItem)
         {
-          Writer.RenderEndTag();
-          Writer.RenderEndTag();
+          writer.RenderEndTag();
+          writer.RenderEndTag();
         }
 
         if (isFirstItem)
           isFirstItem = false;
       }
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private void RenderListMenuItem (WebMenuItem menuItem, string menuID, int index)
+    private void RenderListMenuItem (HtmlTextWriter writer, WebMenuItem menuItem, string menuID, int index)
     {
       bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
       bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      if (!menuItem.IsDisabled )
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      if (!menuItem.IsDisabled)
       {
         menuItem.Command.RenderBegin (
-            Writer, Control.Page.ClientScript.GetPostBackClientHyperlink (Control, index.ToString ()), new[] { index.ToString () }, "", null);
+            writer, Control.Page.ClientScript.GetPostBackClientHyperlink (Control, index.ToString()), new[] { index.ToString() }, "", null);
       }
       else
       {
-        Writer.RenderBeginTag (HtmlTextWriterTag.A);
+        writer.RenderBeginTag (HtmlTextWriterTag.A);
       }
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
-        Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (menuItem.Icon.AlternateText));
-        Writer.AddStyleAttribute ("vertical-align", "middle");
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-        Writer.RenderBeginTag (HtmlTextWriterTag.Img);
-        Writer.RenderEndTag ();
+        writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
+        writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (menuItem.Icon.AlternateText));
+        writer.AddStyleAttribute ("vertical-align", "middle");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
+        writer.RenderBeginTag (HtmlTextWriterTag.Img);
+        writer.RenderEndTag();
         if (showText)
-          Writer.Write (c_whiteSpace);
+          writer.Write (c_whiteSpace);
       }
       if (showText)
-        Writer.Write (menuItem.Text); // Do not HTML encode.
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag ();
+        writer.Write (menuItem.Text); // Do not HTML encode.
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
   }
 }

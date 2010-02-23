@@ -38,9 +38,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition, CssClassContainer cssClasses)
-        : base (context, writer, list, columnDefinition, cssClasses)
+    public BocRowEditModeColumnRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, list, columnDefinition, cssClasses)
     {
     }
 
@@ -55,10 +54,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// Since the "Save", "Cancel" and "Edit" controls are structurally identical, their actual rendering is done by <see cref="RenderCommandControl"/>
     /// </remarks>
     protected override void RenderCellContents (
+        HtmlTextWriter writer, 
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       bool isEditableRow = dataRowRenderEventArgs.IsEditableRow;
@@ -67,19 +68,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
                          && List.EditModeController.EditableRowIndex == dataRowRenderEventArgs.ListIndex;
 
       if (isEditedRow)
-        RenderEditedRowCellContents (originalRowIndex);
+        RenderEditedRowCellContents (writer, originalRowIndex);
       else
       {
         if (isEditableRow)
-          RenderEditableRowCellContents (originalRowIndex);
+          RenderEditableRowCellContents (writer, originalRowIndex);
         else
-          Writer.Write (c_whiteSpace);
+          writer.Write (c_whiteSpace);
       }
     }
 
-    private void RenderEditableRowCellContents (int originalRowIndex)
+    private void RenderEditableRowCellContents (HtmlTextWriter writer, int originalRowIndex)
     {
       RenderCommandControl (
+          writer, 
           originalRowIndex,
           Controls.BocList.RowEditModeCommand.Edit,
           Controls.BocList.ResourceIdentifier.RowEditModeEditAlternateText,
@@ -87,18 +89,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
           Column.EditText);
     }
 
-    private void RenderEditedRowCellContents (int originalRowIndex)
+    private void RenderEditedRowCellContents (HtmlTextWriter writer, int originalRowIndex)
     {
       RenderCommandControl (
+          writer,
           originalRowIndex,
           Controls.BocList.RowEditModeCommand.Save,
           Controls.BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
           Column.SaveIcon,
           Column.SaveText);
 
-      Writer.Write (" ");
+      writer.Write (" ");
 
       RenderCommandControl (
+          writer,
           originalRowIndex,
           Controls.BocList.RowEditModeCommand.Cancel,
           Controls.BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
@@ -109,6 +113,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <summary>
     /// Renders a command control as link with an icon, a text or both.
     /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListRendererBase.List"/></param>
     /// <param name="command">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCommand"/> that is issued 
     /// when the control is clicked. Must not be <see langword="null" />.</param>
@@ -118,12 +123,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// To skip the icon, set <see cref="IconInfo.Url"/> to <see langword="null" />.</param>
     /// <param name="text">The text to render after the icon. May be <see langword="null"/>, in which case no text is rendered.</param>
     protected virtual void RenderCommandControl (
+        HtmlTextWriter writer, 
         int originalRowIndex,
         Controls.BocList.RowEditModeCommand command,
         Controls.BocList.ResourceIdentifier alternateText,
         IconInfo icon,
         string text)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("icon", icon);
 
@@ -131,25 +138,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       {
         string argument = c_eventRowEditModePrefix + originalRowIndex + "," + command;
         string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
-        Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
+        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
       }
-      Writer.RenderBeginTag (HtmlTextWriterTag.A);
+      writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       bool hasIcon = icon.HasRenderingInformation;
       bool hasText = !StringUtility.IsNullOrEmpty (text);
 
       if (hasIcon && hasText)
       {
-        RenderIcon (icon, null);
-        Writer.Write (c_whiteSpace);
+        RenderIcon (writer, icon, null);
+        writer.Write (c_whiteSpace);
       }
       else if (hasIcon)
-        RenderIcon (icon, alternateText);
+        RenderIcon (writer, icon, alternateText);
       if (hasText)
-        Writer.Write (text); // Do not HTML encode.
+        writer.Write (text); // Do not HTML encode.
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
   }
 }

@@ -21,66 +21,31 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
-    public class StubRenderer : IBocListTableBlockRenderer, IBocListMenuBlockRenderer, IBocListNavigationBlockRenderer
+  public class StubRenderer : IBocListTableBlockRenderer, IBocListMenuBlockRenderer, IBocListNavigationBlockRenderer
+  {
+    public StubRenderer ()
     {
-        public StubRenderer (HtmlTextWriter writer)
-        {
-            Writer = writer;
-            List = null;
-        }
-
-        public HtmlTextWriter Writer { get; private set; }
-        public IBocList List { get; private set; }
-
-        public void Render ()
-        {
-            Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-            Writer.RenderEndTag();
-        }
-
-        void IBocListTableBlockRenderer.Render ()
-        {
-            Render();
-        }
-
-        IBocList IBocListNavigationBlockRenderer.List
-        {
-            get { return List; }
-        }
-
-        HtmlTextWriter IBocListNavigationBlockRenderer.Writer
-        {
-            get { return Writer; }
-        }
-
-        void IBocListNavigationBlockRenderer.Render ()
-        {
-            Render();
-        }
-
-        IBocList IBocListMenuBlockRenderer.List
-        {
-            get { return List; }
-        }
-
-        HtmlTextWriter IBocListMenuBlockRenderer.Writer
-        {
-            get { return Writer; }
-        }
-
-        void IBocListMenuBlockRenderer.Render ()
-        {
-            Render();
-        }
-
-        IBocList IBocListTableBlockRenderer.List
-        {
-            get { return List; }
-        }
-
-        HtmlTextWriter IBocListTableBlockRenderer.Writer
-        {
-            get { return Writer; }
-        }
     }
+
+    public void Render (HtmlTextWriter writer)
+    {
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.RenderEndTag();
+    }
+
+    void IBocListTableBlockRenderer.Render (HtmlTextWriter writer)
+    {
+      Render( writer);
+    }
+
+    void IBocListNavigationBlockRenderer.Render (HtmlTextWriter writer)
+    {
+      Render ( writer);
+    }
+
+    void IBocListMenuBlockRenderer.Render (HtmlTextWriter writer)
+    {
+      Render (writer);
+    }
+  }
 }

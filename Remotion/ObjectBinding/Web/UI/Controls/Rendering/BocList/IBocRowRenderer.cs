@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
   {
     /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>
     /// <remarks> Title format: &lt;span&gt;label button &lt;span&gt;sort order&lt;/span&gt;&lt;/span&gt; </remarks>
-    void RenderTitlesRow ();
+    void RenderTitlesRow (HtmlTextWriter writer);
 
     /// <summary>
     /// Renders a row containing the empty list message in <see cref="BocListRendererBase.List"/>'s 
@@ -34,23 +34,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
     /// If the property is not set, a default message will be loaded from the resource file, using 
     /// <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier.EmptyListMessage"/> as key. 
     /// </remarks>
-    void RenderEmptyListDataRow ();
+    void RenderEmptyListDataRow (HtmlTextWriter writer);
 
     /// <summary>Renders a table row containing the data of <paramref name="businessObject"/>. </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="businessObject"> The <see cref="IBusinessObject"/> whose data will be rendered. </param>
     /// <param name="rowIndex"> The row number in the current view. </param>
     /// <param name="absoluteRowIndex"> The position of <paramref name="businessObject"/> in the list of values. </param>
     /// <param name="originalRowIndex"> The position of <paramref name="businessObject"/> in the list of values before sorting. </param>
-    void RenderDataRow (
-        IBusinessObject businessObject,
-        int rowIndex,
-        int absoluteRowIndex,
-        int originalRowIndex);
-
-    /// <summary>The <see cref="BocList"/> containing the data to render.</summary>
-    IBocList List { get; }
-
-    /// <summary>The <see cref="HtmlTextWriter"/> that is used to render the table cells.</summary>
-    HtmlTextWriter Writer { get; }
+    void RenderDataRow (HtmlTextWriter writer, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex);
   }
 }

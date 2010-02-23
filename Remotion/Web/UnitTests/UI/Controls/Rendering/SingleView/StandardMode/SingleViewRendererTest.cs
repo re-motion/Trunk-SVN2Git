@@ -154,7 +154,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
       var renderer = new SingleViewRenderer (HttpContext, Html.Writer, _control);
-      renderer.Render();
+      renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
       document.AssertChildElementCount (1);

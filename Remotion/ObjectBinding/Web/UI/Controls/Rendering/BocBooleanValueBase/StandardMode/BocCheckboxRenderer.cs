@@ -44,31 +44,33 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
     /// <summary>
     /// Renders an image and label in readonly mode, a checkbox and label in edit mode.
     /// </summary>
-    public override void Render()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, false);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Label labelControl = new Label { ID = Control.GetLabelUniqueID() };
       HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = Control.GetCheckboxUniqueID() };
       Image imageControl = new Image { ID = Control.GetImageUniqueID() };
 
-      string description = GetDescription ();
+      string description = GetDescription();
 
       if (Control.IsReadOnly)
       {
-        PrepareImage(imageControl, description);
+        PrepareImage (imageControl, description);
         PrepareLabel (description, labelControl);
 
-        imageControl.RenderControl (Writer);
-        labelControl.RenderControl (Writer);
+        imageControl.RenderControl (writer);
+        labelControl.RenderControl (writer);
       }
       else
       {
         bool hasClientScript = DetermineClientScriptLevel();
         if (hasClientScript)
         {
-          PrepareScripts(checkBoxControl, labelControl);
+          PrepareScripts (checkBoxControl, labelControl);
         }
 
         checkBoxControl.Checked = Control.Value.Value;
@@ -76,11 +78,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
 
         PrepareLabel (description, labelControl);
 
-        checkBoxControl.RenderControl (Writer);
-        labelControl.RenderControl (Writer);
+        checkBoxControl.RenderControl (writer);
+        labelControl.RenderControl (writer);
       }
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private bool DetermineClientScriptLevel ()

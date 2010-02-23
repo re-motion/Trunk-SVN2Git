@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
@@ -33,25 +34,33 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
     {
     }
 
-    public void RenderTitlesRow ()
+    public override void Render (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, "titleStub");
-      Writer.RenderBeginTag ("tr");
-      Writer.RenderEndTag();
+      throw new NotImplementedException();
     }
 
-    public void RenderEmptyListDataRow ()
+    public void RenderTitlesRow (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, "emptyStub");
-      Writer.RenderBeginTag ("tr");
-      Writer.RenderEndTag ();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "titleStub");
+      writer.RenderBeginTag ("tr");
+      writer.RenderEndTag();
     }
 
-    public void RenderDataRow (IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
+    public void RenderEmptyListDataRow (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, "dataStub");
-      Writer.RenderBeginTag ("tr");
-      Writer.RenderEndTag ();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "emptyStub");
+      writer.RenderBeginTag ("tr");
+      writer.RenderEndTag ();
+    }
+
+    public void RenderDataRow (HtmlTextWriter writer, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "dataStub");
+      writer.RenderBeginTag ("tr");
+      writer.RenderEndTag ();
     }
   }
 }

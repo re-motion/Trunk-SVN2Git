@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       _serviceLocator = serviceLocator;
-      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (Context, Writer, List, _serviceLocator);
+      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (Context, writer, List, _serviceLocator);
     }
 
     private IBocRowRenderer RowRenderer
@@ -61,55 +61,57 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// </remarks>
     /// <seealso cref="RenderTableBlockColumnGroup"/>
     /// <seealso cref="RenderTableBody"/>
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       bool isDesignMode = ControlHelper.IsDesignMode (List);
       bool isReadOnly = List.IsReadOnly;
       bool showForEmptyList = isReadOnly && List.ShowEmptyListReadOnlyMode
                               || !isReadOnly && List.ShowEmptyListEditMode;
 
       if (List.IsEmptyList && !showForEmptyList)
-        RenderTable (isDesignMode, false);
+        RenderTable (writer, isDesignMode, false);
       else
-        RenderTable (true, true);
+        RenderTable (writer, true, true);
 
       RenderClientSelectionScript();
     }
 
-    private void RenderTable (bool tableHead, bool tableBody)
+    private void RenderTable (HtmlTextWriter writer, bool tableHead, bool tableBody)
     {
       if (!tableHead && !tableBody)
       {
-        RenderEmptyTable();
+        RenderEmptyTable (writer);
         return;
       }
 
-      RenderTableOpeningTag();
-      RenderTableBlockColumnGroup();
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableHead);
+      RenderTableOpeningTag (writer);
+      RenderTableBlockColumnGroup (writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableHead);
 
       if (tableHead)
-        RenderTableHead();
+        RenderTableHead (writer);
 
       if (tableBody)
-        RenderTableBody();
+        RenderTableBody (writer);
 
-      RenderTableClosingTag();
+      RenderTableClosingTag (writer);
     }
 
-    private void RenderEmptyTable ()
+    private void RenderEmptyTable (HtmlTextWriter writer)
     {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      Writer.Write ("&nbsp;");
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      writer.Write ("&nbsp;");
+      writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     /// <summary>
@@ -121,11 +123,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// The rows are nested within a &lt;thead&gt; element.
     /// </remarks>
     /// <seealso cref="BocRowRenderer"/>
-    protected virtual void RenderTableHead ()
+    protected virtual void RenderTableHead (HtmlTextWriter writer)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Thead);
-      RowRenderer.RenderTitlesRow();
-      Writer.RenderEndTag();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Thead);
+      RowRenderer.RenderTitlesRow (writer);
+      writer.RenderEndTag();
     }
 
     /// <summary>
@@ -137,13 +141,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// The rows are nested within a &lt;tbody&gt; element.
     /// </remarks>
     /// <seealso cref="BocRowRenderer"/>
-    protected virtual void RenderTableBody ()
+    protected virtual void RenderTableBody (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableBody);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableBody);
+      writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
 
       if (List.IsEmptyList && List.ShowEmptyListMessage)
-        RowRenderer.RenderEmptyListDataRow();
+        RowRenderer.RenderEmptyListDataRow (writer);
       else
       {
         int firstRow;
@@ -155,11 +161,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         {
           BocListRow row = rows[idxRelativeRows];
           int originalRowIndex = row.Index;
-          RowRenderer.RenderDataRow (row.BusinessObject, idxRelativeRows, idxAbsoluteRows, originalRowIndex);
+          RowRenderer.RenderDataRow (writer, row.BusinessObject, idxRelativeRows, idxAbsoluteRows, originalRowIndex);
         }
       }
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private void RenderClientSelectionScript ()
@@ -191,40 +197,40 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     }
 
     /// <summary> Renderes the opening tag of the table. </summary>
-    private void RenderTableOpeningTag ()
+    private void RenderTableOpeningTag (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Table);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, List.ClientID + "_Table");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Table);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, List.ClientID + "_Table");
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Table);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Table);
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
     }
 
     /// <summary> Renderes the closing tag of the table. </summary>
-    private void RenderTableClosingTag ()
+    private void RenderTableClosingTag (HtmlTextWriter writer)
     {
-      Writer.RenderEndTag(); // table
-      Writer.RenderEndTag(); // div
+      writer.RenderEndTag(); // table
+      writer.RenderEndTag(); // div
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
-    private void RenderTableBlockColumnGroup ()
+    private void RenderTableBlockColumnGroup (HtmlTextWriter writer)
     {
       BocColumnDefinition[] renderColumns = List.GetColumns();
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
+      writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       bool isTextXml = false;
 
       if (!List.IsDesignMode)
         isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Context);
 
-      RenderIndexColumnDeclaration (isTextXml);
-      RenderSelectorColumnDeclaration (isTextXml);
+      RenderIndexColumnDeclaration (writer, isTextXml);
+      RenderSelectorColumnDeclaration (writer, isTextXml);
 
       //bool isFirstColumnUndefinedWidth = true;
       for (int i = 0; i < renderColumns.Length; i++)
@@ -234,7 +240,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         if (!List.IsColumnVisible (column))
           continue;
 
-        RenderDataColumnDeclaration (isTextXml, column);
+        RenderDataColumnDeclaration (writer, isTextXml, column);
       }
 
       //  Design-mode and empty table
@@ -242,65 +248,65 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       {
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {
-          Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-          Writer.RenderEndTag();
+          writer.RenderBeginTag (HtmlTextWriterTag.Col);
+          writer.RenderEndTag();
         }
       }
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     /// <summary>Renders a single col element for the given column.</summary>
-    private void RenderDataColumnDeclaration (bool isTextXml, BocColumnDefinition column)
+    private void RenderDataColumnDeclaration (HtmlTextWriter writer, bool isTextXml, BocColumnDefinition column)
     {
-      Writer.WriteBeginTag ("col");
+      writer.WriteBeginTag ("col");
       if (!column.Width.IsEmpty)
       {
-        Writer.Write (" style=\"");
+        writer.Write (" style=\"");
         string width;
         BocValueColumnDefinition valueColumn = column as BocValueColumnDefinition;
         if (valueColumn != null && valueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
           width = "2em";
         else
           width = column.Width.ToString();
-        Writer.WriteStyleAttribute ("width", width);
-        Writer.Write ("\"");
+        writer.WriteStyleAttribute ("width", width);
+        writer.Write ("\"");
       }
       if (isTextXml)
-        Writer.Write (" />");
+        writer.Write (" />");
       else
-        Writer.Write (">");
+        writer.Write (">");
     }
 
     /// <summary>Renders the col element for the selector column</summary>
-    private void RenderSelectorColumnDeclaration (bool isTextXml)
+    private void RenderSelectorColumnDeclaration (HtmlTextWriter writer, bool isTextXml)
     {
       if (List.IsSelectionEnabled)
       {
-        Writer.WriteBeginTag ("col");
-        Writer.Write (" style=\"");
-        Writer.WriteStyleAttribute ("width", "1.6em");
-        Writer.Write ("\"");
+        writer.WriteBeginTag ("col");
+        writer.Write (" style=\"");
+        writer.WriteStyleAttribute ("width", "1.6em");
+        writer.Write ("\"");
         if (isTextXml)
-          Writer.Write (" />");
+          writer.Write (" />");
         else
-          Writer.Write (">");
+          writer.Write (">");
       }
     }
 
     /// <summary>Renders the col element for the index column</summary>
-    private void RenderIndexColumnDeclaration (bool isTextXml)
+    private void RenderIndexColumnDeclaration (HtmlTextWriter writer, bool isTextXml)
     {
       if (List.IsIndexEnabled)
       {
-        Writer.WriteBeginTag ("col");
-        Writer.Write (" style=\"");
-        Writer.WriteStyleAttribute ("width", "1.6em");
-        Writer.Write ("\"");
+        writer.WriteBeginTag ("col");
+        writer.Write (" style=\"");
+        writer.WriteStyleAttribute ("width", "1.6em");
+        writer.Write ("\"");
         if (isTextXml)
-          Writer.Write (" />");
+          writer.Write (" />");
         else
-          Writer.Write (">");
+          writer.Write (">");
       }
     }
   }

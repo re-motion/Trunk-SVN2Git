@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     WebMenuItemCollection MenuItems { get; }
     bool IsReadOnly { get; }
     bool IsDesignMode { get; }
-    Action RenderHeadTitleMethod { get; }
+    Action<HtmlTextWriter> RenderHeadTitleMethod { get; }
     IconInfo TitleIcon { get; }
     string TitleText { get; }
     Unit Width { get; }

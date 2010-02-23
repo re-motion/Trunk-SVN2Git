@@ -21,14 +21,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
   public interface IBocSelectorColumnRenderer
   {
-    void RenderDataCell (int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell);
+    /// <summary>
+    /// Renders the cell for the title row.
+    /// </summary>
+    void RenderTitleCell (HtmlTextWriter writer);
 
-    void RenderTitleCell ();
-
-    /// <summary>The <see cref="BocList"/> containing the data to render.</summary>
-    IBocList List { get; }
-
-    /// <summary>The <see cref="HtmlTextWriter"/> that is used to render the table cells.</summary>
-    HtmlTextWriter Writer { get; }
+    /// <summary>
+    /// Renders a cell containing the selector control specified by <see cref="IBocList.Selection"/> for the row
+    /// identified by <paramref name="originalRowIndex"/>
+    /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="originalRowIndex">The absollute index of the row in the original (unsorted) collection.</param>
+    /// <param name="selectorControlID">The ID to apply to the selector control.</param>
+    /// <param name="isChecked">Indicates whether the row is selected.</param>
+    /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
+    void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell);
   }
 }

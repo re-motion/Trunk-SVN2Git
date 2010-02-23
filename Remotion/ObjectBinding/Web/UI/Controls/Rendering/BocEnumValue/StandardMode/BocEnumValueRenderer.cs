@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
@@ -48,11 +49,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
     /// as long as no value has been selected, <see cref="DropDownList"/> and <see cref="ListBox"/> have a "null item" inserted
     /// even when <see cref="ISmartControl.IsRequired"/> is <see langword="true"/>.
     /// </remarks>
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender (false);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, false);
       var tag = Control.ListControlStyle.ControlType == ListControlType.RadioButtonList ? HtmlTextWriterTag.Div : HtmlTextWriterTag.Span;
-      Writer.RenderBeginTag (tag);
+      writer.RenderBeginTag (tag);
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
       bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
@@ -63,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
 
       bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
 
@@ -72,25 +75,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
         if (isControlWidthEmpty)
         {
           if (!Control.IsReadOnly)
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultListControlWidth);
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultListControlWidth);
         }
         else
         {
           if (Control.IsReadOnly)
           {
             if (!Control.Width.IsEmpty)
-              Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
             else
-              Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
+              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Style["width"]);
           }
           else
-            Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
         }
       }
 
-      innerControl.RenderControl (Writer);
+      innerControl.RenderControl (writer);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private ListControl GetListControl ()

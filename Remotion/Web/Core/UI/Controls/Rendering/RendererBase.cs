@@ -29,28 +29,19 @@ namespace Remotion.Web.UI.Controls.Rendering
   public abstract class RendererBase<TControl>
     where TControl : IStyledControl
   {
-    private readonly HtmlTextWriter _writer;
     private readonly HttpContextBase _context;
     private readonly TControl _control;
 
     /// <summary>
-    /// Initializes the <see cref="Context"/>, <see cref="Writer"/> and <see cref="Control"/> properties from the arguments.
+    /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
     protected RendererBase (HttpContextBase context, HtmlTextWriter writer, TControl control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("control", control);
 
-      _writer = writer;
       _control = control;
       _context = context;
-    }
-
-    /// <summary>Gets the <see cref="HtmlTextWriter"/> object used to render the <see cref="IControl"/>.</summary>
-    public HtmlTextWriter Writer
-    {
-      get { return _writer; }
     }
 
     /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
@@ -58,6 +49,8 @@ namespace Remotion.Web.UI.Controls.Rendering
     {
       get { return _context; }
     }
+
+    public abstract void Render (HtmlTextWriter writer);
 
     /// <summary>Gets the control that will be rendered.</summary>
     public TControl Control
@@ -70,24 +63,26 @@ namespace Remotion.Web.UI.Controls.Rendering
       get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
-    protected void AddStandardAttributesToRender ()
+    protected void AddStandardAttributesToRender (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
 
       if (!string.IsNullOrEmpty (Control.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
 
       CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
       foreach (string style in styles.Keys)
       {
-        Writer.AddStyleAttribute (style, styles[style]);
+        writer.AddStyleAttribute (style, styles[style]);
       }
 
       foreach (string attribute in Control.Attributes.Keys)
       {
         string value = Control.Attributes[attribute];
         if (!string.IsNullOrEmpty (value))
-          Writer.AddAttribute (attribute, value);
+          writer.AddAttribute (attribute, value);
       }
     }
   }

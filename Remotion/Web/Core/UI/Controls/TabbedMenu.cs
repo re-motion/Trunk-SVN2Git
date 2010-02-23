@@ -243,7 +243,7 @@ namespace Remotion.Web.UI.Controls
 
       var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     /// <summary> Overrides the <see cref="Control.Controls"/> property. </summary>

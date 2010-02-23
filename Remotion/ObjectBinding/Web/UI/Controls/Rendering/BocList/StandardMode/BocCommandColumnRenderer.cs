@@ -36,9 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition, CssClassContainer cssClasses)
-        : base (context, writer, list, columnDefinition, cssClasses)
+    public BocCommandColumnRenderer (HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, list, columnDefinition, cssClasses)
     {
     }
 
@@ -50,8 +49,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <paramref name="showIcon"/>, the latter if the column defintion's <see cref="BocCommandColumnDefinition.Icon"/> property contains
     /// an URL. Furthermore, the command text in <see cref="BocCommandColumnDefinition.Text"/> is rendered after any icons.
     /// </remarks>
-    protected override void RenderCellContents (BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+    protected override void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
@@ -61,46 +61,46 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
 
-      bool isCommandEnabled = RenderBeginTag (originalRowIndex, businessObject);
+      bool isCommandEnabled = RenderBeginTag (writer, originalRowIndex, businessObject);
 
-      RenderCellIcon (businessObject, hasEditModeControl, showIcon);
-      RenderCellCommand();
+      RenderCellIcon (writer, businessObject, hasEditModeControl, showIcon);
+      RenderCellCommand (writer);
 
-      RenderEndTag (isCommandEnabled);
+      RenderEndTag (writer, isCommandEnabled);
     }
 
-    private void RenderCellCommand ()
+    private void RenderCellCommand (HtmlTextWriter writer)
     {
       if (Column.Icon.HasRenderingInformation)
-        Column.Icon.Render (Writer);
+        Column.Icon.Render (writer);
 
       if (!StringUtility.IsNullOrEmpty (Column.Text))
-        Writer.Write (Column.Text); // Do not HTML encode
+        writer.Write (Column.Text); // Do not HTML encode
     }
 
-    private void RenderCellIcon (IBusinessObject businessObject, bool hasEditModeControl, bool showIcon)
+    private void RenderCellIcon (HtmlTextWriter writer, IBusinessObject businessObject, bool hasEditModeControl, bool showIcon)
     {
       if (!hasEditModeControl && showIcon)
-        RenderCellIcon (businessObject);
+        RenderCellIcon (writer, businessObject);
     }
 
-    private bool RenderBeginTag (int originalRowIndex, IBusinessObject businessObject)
+    private bool RenderBeginTag (HtmlTextWriter writer, int originalRowIndex, IBusinessObject businessObject)
     {
-      bool isCommandEnabled = RenderBeginTagDataCellCommand (businessObject, originalRowIndex);
+      bool isCommandEnabled = RenderBeginTagDataCellCommand (writer, businessObject, originalRowIndex);
       if (!isCommandEnabled)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       return isCommandEnabled;
     }
 
-    protected void RenderEndTag (bool isCommandEnabled)
+    protected void RenderEndTag (HtmlTextWriter writer, bool isCommandEnabled)
     {
       if (isCommandEnabled)
-        RenderEndTagDataCellCommand();
+        RenderEndTagDataCellCommand (writer);
       else
-        Writer.RenderEndTag();
+        writer.RenderEndTag();
     }
   }
 }

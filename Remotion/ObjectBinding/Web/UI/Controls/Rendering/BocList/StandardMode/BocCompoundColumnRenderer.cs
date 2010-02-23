@@ -36,27 +36,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCompoundColumnRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCompoundColumnDefinition columnDefinition, CssClassContainer cssClasses)
-        : base (context, writer, list, columnDefinition, cssClasses)
+    public BocCompoundColumnRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, list, columnDefinition, cssClasses)
     {
     }
 
     /// <summary>
     /// Renders a string representation of the property of <paramref name="businessObject"/> that is shown in the column.
     /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
     /// <param name="showEditModeControl">Prevents rendering if <see langword="true"/>.</param>
     /// <param name="editableRow">Ignored.</param>
-    protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
+    protected override void RenderCellText (HtmlTextWriter writer, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       string valueColumnText = null;
       if (!showEditModeControl)
         valueColumnText = Column.GetStringValue (businessObject);
 
-      RenderValueColumnCellText (valueColumnText);
+      RenderValueColumnCellText (writer, valueColumnText);
     }
   }
 }

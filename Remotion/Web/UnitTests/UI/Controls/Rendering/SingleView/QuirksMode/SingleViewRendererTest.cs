@@ -171,7 +171,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
         _singleView.ViewStyle.CssClass = viewCssClass;
       }
 
-      renderer.Render();
+      renderer.Render (Html.Writer);
       //_singleView.RenderControl (Html.Writer);
 
       var document = Html.GetResultDocument();

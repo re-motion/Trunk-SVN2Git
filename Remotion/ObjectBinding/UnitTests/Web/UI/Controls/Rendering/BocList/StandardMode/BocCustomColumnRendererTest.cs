@@ -60,9 +60,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -78,9 +78,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -96,9 +96,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);

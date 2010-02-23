@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 {
@@ -32,28 +33,30 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddStandardAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
       if (Control.IsDesignMode)
       {
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "75%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "75%");
       }
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      RenderTopControls();
-      RenderView ();
-      RenderBottomControls();
+      RenderTopControls (writer);
+      RenderView (writer);
+      RenderBottomControls (writer);
       
-      Writer.RenderEndTag();
-      Writer.RenderEndTag ();
+      writer.RenderEndTag();
+      writer.RenderEndTag ();
     }
 
     public string CssClassWrapper
@@ -61,57 +64,57 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       get { return "wrapper"; }
     }
 
-    private void RenderTopControls ()
+    private void RenderTopControls (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TopControl.ClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTopControls);
-      Control.TopControlsStyle.AddAttributesToRender (Writer);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TopControl.ClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTopControls);
+      Control.TopControlsStyle.AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Control.TopControl.RenderControl (Writer);
+      Control.TopControl.RenderControl (writer);
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private void RenderBottomControls ()
+    private void RenderBottomControls (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.BottomControl.ClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBottomControls);
-      Control.BottomControlsStyle.AddAttributesToRender (Writer);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.BottomControl.ClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBottomControls);
+      Control.BottomControlsStyle.AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Control.BottomControl.RenderControl (Writer);
+      Control.BottomControl.RenderControl (writer);
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    private void RenderView ()
+    private void RenderView (HtmlTextWriter writer)
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
-      Control.ViewStyle.AddAttributesToRender (Writer);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
+      Control.ViewStyle.AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Control.View.RenderControl (Writer);
+      Control.View.RenderControl (writer);
 
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
-      Writer.RenderEndTag ();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
+      writer.RenderEndTag ();
     }
 
     #region protected virtual string CssClass...

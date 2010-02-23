@@ -37,7 +37,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
 
     IWebTabRenderer IWebTabRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
     {
-      return new WebTabRenderer (context, writer, control, tab);
+      return new WebTabRenderer (context, control, tab);
     }
   }
 }

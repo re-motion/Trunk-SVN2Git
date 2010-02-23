@@ -46,67 +46,69 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     /// <summary> Renders the menu block of the control. </summary>
     /// <remarks> Contains the drop down list for selcting a column configuration and the options menu.  </remarks> 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       string menuBlockItemOffset = c_defaultMenuBlockItemOffset;
       if (! List.MenuBlockItemOffset.IsEmpty)
         menuBlockItemOffset = List.MenuBlockItemOffset.ToString();
 
-      RenderAvailableViewsList (menuBlockItemOffset);
+      RenderAvailableViewsList (writer, menuBlockItemOffset);
 
-      RenderOptionsMenu (menuBlockItemOffset);
+      RenderOptionsMenu (writer, menuBlockItemOffset);
 
-      RenderListMenu (menuBlockItemOffset);
+      RenderListMenu (writer, menuBlockItemOffset);
     }
 
-    private void RenderListMenu (string menuBlockItemOffset)
+    private void RenderListMenu (HtmlTextWriter writer, string menuBlockItemOffset)
     {
       if (!List.HasListMenu)
         return;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      Control.ListMenu.RenderControl (Writer);
-      Writer.RenderEndTag();
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Control.ListMenu.RenderControl (writer);
+      writer.RenderEndTag();
     }
 
-    private void RenderOptionsMenu (string menuBlockItemOffset)
+    private void RenderOptionsMenu (HtmlTextWriter writer, string menuBlockItemOffset)
     {
       if (!List.HasOptionsMenu)
         return;
 
       List.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
-      List.OptionsMenu.RenderControl (Writer);
+      List.OptionsMenu.RenderControl (writer);
     }
 
-    private void RenderAvailableViewsList (string menuBlockItemOffset)
+    private void RenderAvailableViewsList (HtmlTextWriter writer, string menuBlockItemOffset)
     {
       if (!List.HasAvailableViewsList)
         return;
 
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.AvailableViewsListLabel);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+      writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.AvailableViewsListLabel);
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string availableViewsListTitle;
       if (StringUtility.IsNullOrEmpty (List.AvailableViewsListTitle))
         availableViewsListTitle = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.AvailableViewsListTitle);
       else
         availableViewsListTitle = List.AvailableViewsListTitle;
       // Do not HTML encode.
-      Writer.Write (availableViewsListTitle);
-      Writer.RenderEndTag();
+      writer.Write (availableViewsListTitle);
+      writer.RenderEndTag();
 
-      Writer.Write (c_whiteSpace);
+      writer.Write (c_whiteSpace);
       if (List.IsDesignMode)
         List.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
       List.AvailableViewsList.Enabled = !List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive;
       List.AvailableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
-      List.AvailableViewsList.RenderControl (Writer);
-      Writer.RenderEndTag();
+      List.AvailableViewsList.RenderControl (writer);
+      writer.RenderEndTag();
     }
   }
 }

@@ -66,9 +66,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
               false,
               new Command()));
 
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -86,9 +86,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       InitializeRowMenus();
 
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -104,9 +104,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderCellWithNullMenu ()
     {
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 

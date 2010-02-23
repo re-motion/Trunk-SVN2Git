@@ -356,11 +356,13 @@ namespace Remotion.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       EnsureChildControls();
 
       var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     protected string ActiveViewClientID

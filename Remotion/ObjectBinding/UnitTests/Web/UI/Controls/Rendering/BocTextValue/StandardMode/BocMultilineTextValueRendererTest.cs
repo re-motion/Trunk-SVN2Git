@@ -144,7 +144,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       TextValue.Stub (mock => mock.Enabled).Return (!isDisabled);
 
-      Renderer.Render();
+      Renderer.Render (Html.Writer);
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      Renderer.Render();;
+      Renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);

@@ -36,19 +36,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
     {
     }
 
-    public abstract void Render();
-
-    protected override void AddAdditionalAttributes()
+    protected override void AddAdditionalAttributes(HtmlTextWriter writer)
     {
-      base.AddAdditionalAttributes ();
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-      Writer.AddStyleAttribute ("white-space", "nowrap");
+      base.AddAdditionalAttributes (writer);
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
+      writer.AddStyleAttribute ("white-space", "nowrap");
       if (!Control.IsReadOnly)
       {
         bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
         bool isLabelWidthEmpty = Control.LabelStyle.Width.IsEmpty;
         if (isLabelWidthEmpty && isControlWidthEmpty)
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
       }
     }
   }

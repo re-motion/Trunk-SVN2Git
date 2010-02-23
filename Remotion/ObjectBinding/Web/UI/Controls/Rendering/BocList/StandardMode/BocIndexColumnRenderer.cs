@@ -31,74 +31,73 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     {
     }
 
-    /// <summary>
-    /// Renders the index cell for the data row identified by <paramref name="originalRowIndex"/>.
-    /// </summary>
-    /// <param name="originalRowIndex">The absolute row index in the original (unsorted) item collection.</param>
-    /// <param name="selectorControlID">The ID of the control used for selecting the row. See <see cref="BocSelectorColumnRenderer"/>.</param>
-    /// <param name="absoluteRowIndex">The absolute row index (including previous pages) after sorting.</param>
-    /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    public void RenderDataCell (int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
+    public override void Render (HtmlTextWriter writer)
     {
+      throw new NotImplementedException ();
+    }
+
+    public void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
+
       if (!List.IsIndexEnabled)
         return;
 
       string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
       if (List.Index == RowIndex.InitialOrder)
-        RenderRowIndex (originalRowIndex, selectorControlID);
+        RenderRowIndex (writer, originalRowIndex, selectorControlID);
       else if (List.Index == RowIndex.SortedOrder)
-        RenderRowIndex (absoluteRowIndex, selectorControlID);
-      Writer.RenderEndTag();
+        RenderRowIndex (writer, absoluteRowIndex, selectorControlID);
+      writer.RenderEndTag();
     }
 
-    /// <summary>
-    /// Renders the index cell for the title row.
-    /// </summary>
-    public void RenderTitleCell ()
+    public void RenderTitleCell (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       if (!List.IsIndexEnabled)
         return;
 
       string cssClass = CssClasses.TitleCell + " " + CssClasses.TitleCellIndex;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      writer.RenderBeginTag (HtmlTextWriterTag.Th);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string indexColumnTitle = List.IndexColumnTitle;
       if (StringUtility.IsNullOrEmpty (List.IndexColumnTitle))
         indexColumnTitle = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.IndexColumnTitle);
 
       // Do not HTML encode.
-      Writer.Write (indexColumnTitle);
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      writer.Write (indexColumnTitle);
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     /// <summary> Renders the zero-based row index normalized to a one-based format
     /// (Optionally as a label for the selector control). </summary>
-    private void RenderRowIndex (int index, string selectorControlID)
+    private void RenderRowIndex (HtmlTextWriter writer, int index, string selectorControlID)
     {
       bool hasSelectorControl = selectorControlID != null;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
       if (hasSelectorControl)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);
+        writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);
         if (List.HasClientScript)
         {
           const string script = "BocList_OnSelectorControlLabelClick();";
-          Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+          writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
         }
-        Writer.RenderBeginTag (HtmlTextWriterTag.Label);
+        writer.RenderBeginTag (HtmlTextWriterTag.Label);
       }
       else
-        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
       int renderedIndex = index + 1;
       if (List.IndexOffset != null)
         renderedIndex += List.IndexOffset.Value;
-      Writer.Write (renderedIndex);
-      Writer.RenderEndTag();
+      writer.Write (renderedIndex);
+      writer.RenderEndTag();
     }
 
 

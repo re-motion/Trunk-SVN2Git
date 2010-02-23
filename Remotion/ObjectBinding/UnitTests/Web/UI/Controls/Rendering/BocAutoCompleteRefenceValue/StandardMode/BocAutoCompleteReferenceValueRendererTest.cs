@@ -382,7 +382,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocAutoCompleteReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle ();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag ();
 
       var document = Html.GetResultDocument ();
@@ -398,7 +398,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubTextBox ());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocAutoCompleteReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.RenderOptionsMenuTitle ();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag ();
 
 
@@ -545,7 +545,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
       var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Html.Writer, Control, () => TextBox);
-      renderer.Render ();
+      renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument ();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 {
@@ -32,129 +33,131 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender();
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       if (!string.IsNullOrEmpty (Control.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
       else if (!string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.Attributes["class"]);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.Attributes["class"]);
       else
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      RenderTopControls();
-      RenderView();
-      RenderBottomControls();
+      RenderTopControls (writer);
+      RenderView (writer);
+      RenderBottomControls (writer);
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
 
-      Writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
-    protected void AddAttributesToRender ()
+    protected void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender();
+      AddStandardAttributesToRender (writer);
 
       if (Control.IsDesignMode)
       {
-        Writer.AddStyleAttribute ("width", "100%");
-        Writer.AddStyleAttribute ("height", "75%");
+        writer.AddStyleAttribute ("width", "100%");
+        writer.AddStyleAttribute ("height", "75%");
       }
 
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
-    protected virtual void RenderView ()
+    protected virtual void RenderView (HtmlTextWriter writer)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
 
       if (Control.IsDesignMode)
-        Writer.AddStyleAttribute ("border", "solid 1px black");
-      Control.ViewStyle.AddAttributesToRender (Writer);
+        writer.AddStyleAttribute ("border", "solid 1px black");
+      Control.ViewStyle.AddAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.ViewStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
-      Control.ViewStyle.AddAttributesToRender (Writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
+      Control.ViewStyle.AddAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.ViewStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID + "_View_Content");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID + "_View_Content");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
 
-      //_viewTemplateContainer.RenderControl (Writer);
-      Control.View.RenderControl (Writer);
+      //_viewTemplateContainer.RenderControl (writer);
+      Control.View.RenderControl (writer);
 
-      Writer.RenderEndTag (); // end content div
-      Writer.RenderEndTag (); // end body div
-      Writer.RenderEndTag (); // end outer div
+      writer.RenderEndTag(); // end content div
+      writer.RenderEndTag(); // end body div
+      writer.RenderEndTag(); // end outer div
 
-      Writer.RenderEndTag (); // end td
-      Writer.RenderEndTag (); // end tr
+      writer.RenderEndTag(); // end td
+      writer.RenderEndTag(); // end tr
     }
 
-    protected virtual void RenderTopControls ()
+    protected virtual void RenderTopControls (HtmlTextWriter writer)
     {
       Style style = Control.TopControlsStyle;
       PlaceHolder placeHolder = Control.TopControl;
       string cssClass = CssClassTopControls;
-      RenderPlaceHolder (style, placeHolder, cssClass);
+      RenderPlaceHolder (writer, style, placeHolder, cssClass);
     }
 
-    protected virtual void RenderBottomControls ()
+    protected virtual void RenderBottomControls (HtmlTextWriter writer)
     {
       Style style = Control.BottomControlsStyle;
       PlaceHolder placeHolder = Control.BottomControl;
       string cssClass = CssClassBottomControls;
-      RenderPlaceHolder (style, placeHolder, cssClass);
+      RenderPlaceHolder (writer, style, placeHolder, cssClass);
     }
 
-    private void RenderPlaceHolder (Style style, PlaceHolder placeHolder, string cssClass)
+    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string cssClass)
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
       if (string.IsNullOrEmpty (style.CssClass))
       {
         if (placeHolder.Controls.Count > 0)
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
         else
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + CssClassEmpty);
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + CssClassEmpty);
       }
       else
       {
         if (placeHolder.Controls.Count > 0)
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass);
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass);
         else
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + CssClassEmpty);
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + CssClassEmpty);
       }
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      style.AddAttributesToRender (Writer);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
+      style.AddAttributesToRender (writer);
       if (string.IsNullOrEmpty (style.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
 
-      placeHolder.RenderControl (Writer);
+      placeHolder.RenderControl (writer);
 
-      Writer.RenderEndTag (); // end content div
-      Writer.RenderEndTag (); // end outer div
+      writer.RenderEndTag(); // end content div
+      writer.RenderEndTag(); // end outer div
 
-      Writer.RenderEndTag (); // end td
-      Writer.RenderEndTag (); // end tr
+      writer.RenderEndTag(); // end td
+      writer.RenderEndTag(); // end tr
     }
 
     #region protected virtual string CssClass...

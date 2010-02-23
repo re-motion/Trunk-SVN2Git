@@ -50,10 +50,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
       EventArgs.IsEditableRow = true;
-      renderer.RenderDataCell (0, false, EventArgs);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
@@ -71,9 +71,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
-      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (
-          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
-      renderer.RenderDataCell (0, false, EventArgs);
+      IBocColumnRenderer renderer = new BocRowEditModeColumnRenderer (
+          HttpContext, List, Column, CssClassContainer.Instance);
+      renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 

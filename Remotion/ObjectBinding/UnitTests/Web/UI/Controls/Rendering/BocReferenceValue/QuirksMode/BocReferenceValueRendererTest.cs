@@ -315,7 +315,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     {
       var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
 
 
@@ -331,7 +331,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
 
 
@@ -347,7 +347,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      renderer.RenderOptionsMenuTitle();
+      renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();
@@ -357,7 +357,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
       var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => DropDownList);
-      renderer.Render();
+      renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
       var div = document.GetAssertedChildElement ("div", 0);

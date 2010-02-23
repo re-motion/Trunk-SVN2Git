@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
   {
     protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
     {
-      return new StubColumnRenderer (context, writer, list, this);
+      return new StubColumnRenderer (context, list, this);
     }
   }
 }

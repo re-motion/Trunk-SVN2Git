@@ -33,47 +33,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     {
     }
 
-    /// <summary>
-    /// Renders a cell containing the selector control specified by <see cref="IBocList.Selection"/> for the row
-    /// identified by <paramref name="originalRowIndex"/>
-    /// </summary>
-    /// <param name="originalRowIndex">The absollute index of the row in the original (unsorted) collection.</param>
-    /// <param name="selectorControlID">The ID to apply to the selector control.</param>
-    /// <param name="isChecked">Indicates whether the row is selected.</param>
-    /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    public void RenderDataCell (int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell)
+    public override void Render (HtmlTextWriter writer)
     {
+      throw new NotImplementedException();
+    }
+
+    public void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNullOrEmpty ("selectorControlID", selectorControlID);
       ArgumentUtility.CheckNotNullOrEmpty ("cssClassTableCell", cssClassTableCell);
 
       if (!List.IsSelectionEnabled)
         return;
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderSelectorControl (selectorControlID, originalRowIndex.ToString(), isChecked, false);
-      Writer.RenderEndTag();
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      RenderSelectorControl (writer, selectorControlID, originalRowIndex.ToString(), isChecked, false);
+      writer.RenderEndTag();
     }
 
-    /// <summary>
-    /// Renders the cell for the title row.
-    /// </summary>
-    public void RenderTitleCell ()
+    public void RenderTitleCell (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       if (!List.IsSelectionEnabled)
         return;
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TitleCell);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Th);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TitleCell);
+      writer.RenderBeginTag (HtmlTextWriterTag.Th);
       if (List.Selection == RowSelection.Multiple)
       {
         string selectorControlName = List.GetSelectAllControlClientID();
         bool isChecked = (List.SelectorControlCheckedState.Contains (c_titleRowIndex));
-        RenderSelectorControl (selectorControlName, c_titleRowIndex.ToString(), isChecked, true);
+        RenderSelectorControl (writer, selectorControlName, c_titleRowIndex.ToString(), isChecked, true);
       }
       else
-        Writer.Write (c_whiteSpace);
-      Writer.RenderEndTag();
+        writer.Write (c_whiteSpace);
+      writer.RenderEndTag();
     }
   }
 }

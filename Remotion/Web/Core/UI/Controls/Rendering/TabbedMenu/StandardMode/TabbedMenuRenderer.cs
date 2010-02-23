@@ -34,60 +34,64 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
     {
     }
 
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender();
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      ArgumentUtility.CheckNotNull ("writer", writer);
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin main menu row
+      AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Colspan, "2");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassMainMenuCell);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin main menu cell
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin main menu row
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Colspan, "2");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassMainMenuCell);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin main menu cell
       Control.MainMenuTabStrip.CssClass = CssClassMainMenu;
       Control.MainMenuTabStrip.Width = Unit.Percentage (100);
-      Control.MainMenuTabStrip.RenderControl (Writer);
-      Writer.RenderEndTag(); // End main menu cell
+      Control.MainMenuTabStrip.RenderControl (writer);
+      writer.RenderEndTag(); // End main menu cell
 
-      Writer.RenderEndTag(); // End main menu row
+      writer.RenderEndTag(); // End main menu row
 
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSubMenuCell);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSubMenuCell);
       if (!Control.SubMenuBackgroundColor.IsEmpty)
       {
         string backGroundColor = ColorTranslator.ToHtml (Control.SubMenuBackgroundColor);
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, backGroundColor);
+        writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, backGroundColor);
       }
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin sub menu cell
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin sub menu cell
       Control.SubMenuTabStrip.Style["width"] = "auto";
       Control.SubMenuTabStrip.CssClass = CssClassSubMenu;
-      Control.SubMenuTabStrip.RenderControl (Writer);
-      Writer.RenderEndTag(); // End sub menu cell
+      Control.SubMenuTabStrip.RenderControl (writer);
+      writer.RenderEndTag(); // End sub menu cell
 
-      Control.StatusStyle.AddAttributesToRender (Writer);
+      Control.StatusStyle.AddAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.StatusStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassStatusCell);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin status cell
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassStatusCell);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin status cell
 
       if (string.IsNullOrEmpty (Control.StatusText))
-        Writer.Write ("&nbsp;");
+        writer.Write ("&nbsp;");
       else
-        Writer.Write (Control.StatusText); // Do not HTML encode
+        writer.Write (Control.StatusText); // Do not HTML encode
 
-      Writer.RenderEndTag(); // End status cell
-      Writer.RenderEndTag(); // End sub menu row
-      Writer.RenderEndTag(); // End table
+      writer.RenderEndTag(); // End status cell
+      writer.RenderEndTag(); // End sub menu row
+      writer.RenderEndTag(); // End table
     }
 
-    protected void AddAttributesToRender ()
+    protected void AddAttributesToRender (HtmlTextWriter writer)
     {
-      AddStandardAttributesToRender();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddStandardAttributesToRender (writer);
 
       if (Control.IsDesignMode)
-        Writer.AddStyleAttribute ("width", "100%");
+        writer.AddStyleAttribute ("width", "100%");
       if (StringUtility.IsNullOrEmpty (Control.CssClass) && StringUtility.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
     #region protected virtual string CssClass...

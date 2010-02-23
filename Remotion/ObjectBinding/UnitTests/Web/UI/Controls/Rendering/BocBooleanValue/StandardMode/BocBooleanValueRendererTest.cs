@@ -262,7 +262,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private void CheckRendering (string value, string iconUrl, string description)
     {
       _renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, _booleanValue);
-      _renderer.Render();
+      _renderer.Render (Html.Writer);
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
       CheckOuterSpanAttributes (outerSpan);

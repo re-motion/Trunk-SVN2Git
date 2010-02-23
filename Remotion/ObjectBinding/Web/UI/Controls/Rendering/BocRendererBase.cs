@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
@@ -36,35 +37,38 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 
     /// <summary>
     /// Adds class and style attributes found in the <see cref="RendererBase{TControl}.Control"/> 
-    /// to the <see cref="RendererBase{TControl}.Writer"/> so that they are rendered in the next begin tag.
+    /// to the <paramref name="writer"/> so that they are rendered in the next begin tag.
     /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="overrideWidth">When <see langword="true"/>, the 'width' style attribute is rendered with a value of 'auto'
     /// without changing the contents of the actual style.</param>
     /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
     /// and <see cref="CssClassDisabled"/> if appropriate.</remarks>
-    protected void AddAttributesToRender (bool overrideWidth)
+    protected void AddAttributesToRender (HtmlTextWriter writer, bool overrideWidth)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       Unit backUpWidth;
       string backUpStyleWidth;
-      OverrideWidth(overrideWidth, "auto", out backUpWidth, out backUpStyleWidth);
+      OverrideWidth (overrideWidth, "auto", out backUpWidth, out backUpStyleWidth);
 
       string backUpCssClass;
       string backUpAttributeCssClass;
-      OverrideCssClass(out backUpCssClass, out backUpAttributeCssClass);
+      OverrideCssClass (out backUpCssClass, out backUpAttributeCssClass);
 
-      AddStandardAttributesToRender ();
+      AddStandardAttributesToRender (writer);
 
-      RestoreClass(backUpCssClass, backUpAttributeCssClass);
-      RestoreWidth(backUpStyleWidth, backUpWidth);
+      RestoreClass (backUpCssClass, backUpAttributeCssClass);
+      RestoreWidth (backUpStyleWidth, backUpWidth);
 
-      AddAdditionalAttributes();
+      AddAdditionalAttributes (writer);
     }
 
     /// <summary>
     /// Called after all attributes have been added by <see cref="AddAttributesToRender"/>.
     /// Use this to render style attributes without putting them into the control's <see cref="IBocRenderableControl.Style"/> property.
     /// </summary>
-    protected virtual void AddAdditionalAttributes ()
+    protected virtual void AddAdditionalAttributes (HtmlTextWriter writer)
     {
     }
 

@@ -19,6 +19,7 @@ using System.Web.UI;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
 using Rhino.Mocks;
@@ -99,9 +100,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocIndexColumnRendererFactory factory = new BocColumnRendererFactory();
       IBocIndexColumnRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.IsInstanceOfType (typeof (BocIndexColumnRenderer), renderer);
+      Assert.AreSame (List, ((BocIndexColumnRenderer) renderer).List);
     }
 
     [Test]
@@ -110,9 +110,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocSelectorColumnRendererFactory factory = new BocColumnRendererFactory();
       IBocSelectorColumnRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.IsInstanceOfType (typeof (BocSelectorColumnRenderer), renderer);
+      Assert.AreSame (List, ((BocSelectorColumnRenderer) renderer).List);
     }
 
     private void CreateRenderer<T> (T column, IBocColumnRendererFactory<T> rendererFactory)
@@ -121,12 +120,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       column.ColumnTitle = "TestColumn1";
       List.FixedColumns.Add (column);
 
-      IBocColumnRenderer<T> renderer = rendererFactory.CreateRenderer (HttpContext, Html.Writer, List, column);
+      IBocColumnRenderer renderer = rendererFactory.CreateRenderer (HttpContext, Html.Writer, List, column);
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
-      Assert.AreSame (column, renderer.Column);
+      Assert.IsInstanceOfType (typeof (BocColumnRendererBase<T>), renderer);
+      Assert.AreSame (List, ((BocColumnRendererBase<T>) renderer).List);
+      Assert.AreSame (column, ((BocColumnRendererBase<T>) renderer).Column);
     }
   }
 }

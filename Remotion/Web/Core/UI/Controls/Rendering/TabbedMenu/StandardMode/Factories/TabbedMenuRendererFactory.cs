@@ -28,7 +28,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories
   {
     public IWebTabRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
     {
-      return new MenuTabRenderer (context, writer, control, tab);
+      return new MenuTabRenderer (context, control, tab);
     }
 
     public ITabbedMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMenu control)

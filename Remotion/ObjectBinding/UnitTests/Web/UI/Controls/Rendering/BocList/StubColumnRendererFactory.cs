@@ -24,13 +24,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubColumnRendererFactory : IBocColumnRendererFactory<StubColumnDefinition>
   {
-    public IBocColumnRenderer<StubColumnDefinition> CreateRenderer (
+    public IBocColumnRenderer CreateRenderer (
       HttpContextBase context, 
       HtmlTextWriter writer, 
       IBocList list, 
       StubColumnDefinition columnDefinition)
     {
-      return new StubColumnRenderer (context, writer, list, columnDefinition);
+      return new StubColumnRenderer (context, list, columnDefinition);
     }
   }
 }

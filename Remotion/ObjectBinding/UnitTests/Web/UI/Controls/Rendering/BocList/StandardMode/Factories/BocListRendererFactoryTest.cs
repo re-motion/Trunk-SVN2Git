@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
 using Rhino.Mocks;
@@ -46,9 +47,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocListTableBlockRendererFactory factory = new BocListRendererFactory();
       IBocListTableBlockRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.IsInstanceOfType (typeof (BocListTableBlockRenderer), renderer);
+      Assert.AreSame (List, ((BocListTableBlockRenderer)renderer).List);
     }
 
     [Test]
@@ -57,9 +57,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocRowRendererFactory factory = new BocListRendererFactory();
       IBocRowRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.IsInstanceOfType (typeof (BocRowRenderer), renderer);
+      Assert.AreSame (List, ((BocRowRenderer)renderer).List);
     }
 
     [Test]
@@ -68,9 +67,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocListMenuBlockRendererFactory factory = new BocListRendererFactory();
       IBocListMenuBlockRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.IsInstanceOfType (typeof (BocListMenuBlockRenderer), renderer);
+      Assert.AreSame (List, ((BocListMenuBlockRenderer) renderer).List);
     }
 
     [Test]
@@ -79,9 +77,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocListNavigationBlockRendererFactory factory = new BocListRendererFactory();
       IBocListNavigationBlockRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.IsInstanceOfType (typeof (BocListNavigationBlockRenderer), renderer);
+      Assert.AreSame (List, ((BocListNavigationBlockRenderer) renderer).List);
     }
 
     [Test]
@@ -90,9 +87,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       IBocListRendererFactory factory = new BocListRendererFactory();
       IBocListRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
 
-      Assert.IsNotNull (renderer);
-      Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.Control);
+      Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);
+      Assert.AreSame (List, ((BocListRenderer) renderer).List);
     }
   }
 }

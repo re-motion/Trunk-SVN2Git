@@ -28,18 +28,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
         IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
                 HttpContextBase context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
         {
-            return new StubRenderer (writer);
+            return new StubRenderer ();
         }
 
         IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list)
         {
-            return new StubRenderer (writer);
+            return new StubRenderer ();
         }
 
         IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (
                 HttpContextBase context, HtmlTextWriter writer, IBocList list)
         {
-            return new StubRenderer (writer);
+            return new StubRenderer ();
         }
     }
 }

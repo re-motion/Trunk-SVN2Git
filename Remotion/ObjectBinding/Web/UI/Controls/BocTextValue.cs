@@ -142,9 +142,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
-      var factory = !IsDesignMode ? ServiceLocator.GetInstance<IBocTextValueRendererFactory>() : new BocTextValueRendererFactory();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      var factory = !IsDesignMode ? ServiceLocator.GetInstance<IBocTextValueRendererFactory> () : new BocTextValueRendererFactory ();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     /// <summary> Gets or sets the current value. </summary>

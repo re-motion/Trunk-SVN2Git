@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
-using Remotion.Web.UI.Controls;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
@@ -40,25 +40,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
       _timeTextBox = timeTextBox ?? new TextBox();
     }
 
-    /// <summary>
-    /// Renders an inline table consisting of one row with up to three cells, depending on <see cref="IBocDateTimeValue.ActualValueType"/>.
-    /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
-    /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
-    /// </summary>
-    public override void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer, false);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (Control.IsReadOnly)
-        RenderReadOnlyValue ();
+        RenderReadOnlyValue (writer);
       else
-        RenderEditModeControls ();
+        RenderEditModeControls (writer);
 
-      Writer.RenderEndTag ();
+      writer.RenderEndTag ();
     }
 
-    protected override void RenderEditModeControls ()
+    protected override void RenderEditModeControls (HtmlTextWriter writer)
     {
       var dateTextBox = _dateTextBox;
       dateTextBox.ID = Control.DateTextboxID;
@@ -96,24 +93,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
 
       if (hasDateField)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper + " " + GetPositioningCssClass(DateTimeValuePart.Date));
-        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        dateTextBox.RenderControl (Writer);
-        Writer.RenderEndTag();
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper + " " + GetPositioningCssClass(DateTimeValuePart.Date));
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        dateTextBox.RenderControl (writer);
+        writer.RenderEndTag();
       }
 
       if (hasDatePicker)
       {
         datePickerButton.CssClass = GetPositioningCssClass (DateTimeValuePart.Picker);
-        datePickerButton.RenderControl (Writer);
+        datePickerButton.RenderControl (writer);
       }
 
       if (hasTimeField)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper + " " + GetPositioningCssClass (DateTimeValuePart.Time));
-        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        timeTextBox.RenderControl (Writer);
-        Writer.RenderEndTag ();
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper + " " + GetPositioningCssClass (DateTimeValuePart.Time));
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        timeTextBox.RenderControl (writer);
+        writer.RenderEndTag ();
       }
     }
 

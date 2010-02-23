@@ -348,11 +348,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
-      EvaluateWaiConformity();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      EvaluateWaiConformity ();
 
       var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
       var renderer = factory.CreateRenderer (Context, writer, this);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     protected override void LoadControlState (object savedState)

@@ -144,7 +144,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu.StandardMode
     private XmlNode GetAssertedTable ()
     {
       var renderer = new ListMenuRenderer (HttpContext, Html.Writer, _control);
-      renderer.Render();
+      renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 

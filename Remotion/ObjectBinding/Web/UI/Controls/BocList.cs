@@ -1144,6 +1144,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       if (Page != null)
         Page.VerifyRenderingInServerForm (this);
 
@@ -1159,7 +1161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
       var renderer = factory.CreateRenderer (Context, writer, this, ServiceLocator);
-      renderer.Render();
+      renderer.Render (writer);
     }
 
     public bool HasNavigator

@@ -185,7 +185,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
       var renderer = new TabbedMultiViewRenderer (HttpContext, Html.Writer, _control);
-      renderer.Render();
+      renderer.Render (Html.Writer);
 
       var container = GetAssertedContainerElement (withCssClass, inAttributes, isDesignMode, renderer);
       AssertTopControls (container, withCssClass, isEmpty, renderer);
