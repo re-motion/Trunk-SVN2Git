@@ -40,16 +40,16 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
 
-      string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
-      string keyScript = typeof (ITabbedMultiView).FullName + "_Script";
+      string keyStyle = typeof (TabbedMultiViewRenderer).FullName + "_Style";
+      string keyScript = typeof (TabbedMultiViewRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (keyStyle))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme, "TabbedMultiView.css");
+            Control, Context, typeof (TabbedMultiViewRenderer), ResourceType.Html, ResourceTheme, "TabbedMultiView.css");
         htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
         string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, "ViewLayout.js");
+            Control, Context, typeof (TabbedMultiViewRenderer), ResourceType.Html, "ViewLayout.js");
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
       }
 
