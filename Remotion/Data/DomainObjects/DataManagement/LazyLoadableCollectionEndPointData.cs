@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void SetContents (IEnumerable<DomainObject> initialContents)
     {
       var collectionType = _endPointID.Definition.PropertyType;
-      _originalOppositeDomainObjectsContents = new DomainObjectCollectionFactory ().CreateCollection (collectionType, initialContents).AsReadOnly ();
+      _originalOppositeDomainObjectsContents = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, initialContents).AsReadOnly ();
       _dataStore = new ChangeCachingCollectionDataDecorator (new DomainObjectCollectionData (initialContents), _originalOppositeDomainObjectsContents);
     }
 

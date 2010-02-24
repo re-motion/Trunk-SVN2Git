@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Utilities;
 
@@ -145,6 +146,34 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("collection", collection);
 
       return new DomainObjectCollectionWrapper<T> (collection);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="ReadOnlyCollection{T}"/> representing the data of the <see cref="DomainObjectCollection"/>.
+    /// The data is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
+    /// any changes made to the original.
+    /// </summary>
+    /// <returns>A <see cref="ReadOnlyCollection{T}"/> representing the data of the <see cref="DomainObjectCollection"/>.</returns>
+    public static ReadOnlyCollection<DomainObject> AsReadOnlyCollection (this DomainObjectCollection collection)
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+
+      var listAdapter = collection.AsList<DomainObject> ();
+      return new ReadOnlyCollection<DomainObject> (listAdapter);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="ReadOnlyCollection{T}"/> representing the data of the <see cref="ObjectList{T}"/>.
+    /// The data is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
+    /// any changes made to the original.
+    /// </summary>
+    /// <returns>A <see cref="ReadOnlyCollection{T}"/> representing the data of the <see cref="ObjectList{T}"/>.</returns>
+    public static ReadOnlyCollection<T> AsReadOnlyCollection<T> (this ObjectList<T> collection) where T: DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+
+      var listAdapter = collection.AsList<T> ();
+      return new ReadOnlyCollection<T> (listAdapter);
     }
   }
 }

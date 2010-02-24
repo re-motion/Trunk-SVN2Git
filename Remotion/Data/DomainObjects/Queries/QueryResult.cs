@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.Queries
       var collectionType = Query.CollectionType ?? typeof (DomainObjectCollection);
       try
       {
-        return new DomainObjectCollectionFactory ().CreateCollection (collectionType, _queryResult);
+        return DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, _queryResult);
       }
       catch (Exception ex)
       {

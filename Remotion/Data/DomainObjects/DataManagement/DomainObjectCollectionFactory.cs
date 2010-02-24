@@ -28,6 +28,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public class DomainObjectCollectionFactory
   {
+    public static readonly DomainObjectCollectionFactory Instance = new DomainObjectCollectionFactory ();
+
+    private DomainObjectCollectionFactory ()
+    {
+    }
+
     /// <summary>
     /// Creates a collection of the given <paramref name="collectionType"/> via reflection, passing in the given 
     /// <see cref="IDomainObjectCollectionData"/> object as the data storage strategy.

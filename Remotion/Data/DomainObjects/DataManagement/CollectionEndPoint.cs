@@ -48,10 +48,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       
       _data = new LazyLoadableCollectionEndPointData (clientTransaction, id, initialContents);
 
-      var factory = new DomainObjectCollectionFactory ();
       var collectionType = id.Definition.PropertyType;
       var dataStrategy = CreateDelegatingCollectionData ();
-      _oppositeDomainObjects = factory.CreateCollection (collectionType, dataStrategy);
+      _oppositeDomainObjects = DomainObjectCollectionFactory.Instance.CreateCollection (collectionType, dataStrategy);
 
       _originalCollectionReference = _oppositeDomainObjects;
       

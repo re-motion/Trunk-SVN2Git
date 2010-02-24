@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;

@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -602,7 +603,7 @@ namespace Remotion.Data.DomainObjects
     public virtual DomainObjectCollection Clone (bool makeCloneReadOnly)
     {
       IEnumerable<DomainObject> contents = _dataStrategy;
-      var clone = new DomainObjectCollectionFactory ().CreateCollection (GetType (), contents, RequiredItemType);
+      var clone = DomainObjectCollectionFactory.Instance.CreateCollection (GetType (), contents, RequiredItemType);
 
       Assertion.IsTrue (clone._dataStrategy != _dataStrategy);
       Assertion.IsTrue (clone.RequiredItemType == RequiredItemType);
@@ -678,9 +679,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A read-only <see cref="DomainObjectCollection"/> that holds the same data as this <see cref="DomainObjectCollection"/>.</returns>
     public DomainObjectCollection AsReadOnly ()
     {
-      var factory = new DomainObjectCollectionFactory ();
-
-      var newCollection = factory.CreateCollection (GetType(), new ReadOnlyCollectionDataDecorator (_dataStrategy));
+      var newCollection = DomainObjectCollectionFactory.Instance.CreateCollection (GetType(), new ReadOnlyCollectionDataDecorator (_dataStrategy));
       newCollection.SetIsReadOnly (true);
       return newCollection;
     }

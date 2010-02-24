@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -164,6 +165,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (list, Is.InstanceOfType (typeof (DomainObjectCollectionWrapper<Customer>)));
       Assert.That (((DomainObjectCollectionWrapper<Customer>) list).WrappedCollection, Is.SameAs (_collection));
+    }
+
+    [Test]
+    public void AsReadOnlyCollection ()
+    {
+      var readOnlyCollection = _collection.AsReadOnlyCollection ();
+
+      Assert.That (readOnlyCollection, Is.InstanceOfType (typeof (ReadOnlyCollection<DomainObject>)));
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
+    }
+
+    [Test]
+    public void AsReadOnlyCollection_ResultReflectsChangesToOriginalCollection ()
+    {
+      var readOnlyCollection = _collection.AsReadOnlyCollection ();
+
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
+
+      _collection.Add (_customer3NotInCollection);
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2, _customer3NotInCollection }));
+    }
+
+    [Test]
+    public void AsReadOnlyCollection_ObjectList ()
+    {
+      var objectList = new ObjectList<Customer> { _customer1, _customer2 };
+      var readOnlyCollection = objectList.AsReadOnlyCollection ();
+
+      Assert.That (readOnlyCollection, Is.InstanceOfType (typeof (ReadOnlyCollection<Customer>)));
+      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
     }
   }
 }
