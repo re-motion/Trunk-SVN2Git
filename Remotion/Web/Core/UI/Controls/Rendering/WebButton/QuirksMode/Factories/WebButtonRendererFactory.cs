@@ -19,9 +19,12 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating quirks mode renderers for <see cref="IWebButton"/> controls.
+  /// </summary>
   public class WebButtonRendererFactory : IWebButtonRendererFactory
   {
-    public IWebButtonPreRenderer CreatePreRenderer (HttpContextBase context, IWebButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control)
     {
       return new WebButtonPreRenderer (context, control);
     }

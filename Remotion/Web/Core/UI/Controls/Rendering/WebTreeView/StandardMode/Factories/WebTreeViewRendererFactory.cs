@@ -19,11 +19,14 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.StandardMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating standard mode renderers for <see cref="IWebTreeView"/> controls.
+  /// </summary>
   public class WebTreeViewRendererFactory : IWebTreeViewRendererFactory
   {
-    public IWebTreeViewPreRenderer CreatePreRenderer (HttpContextBase context, IWebTreeView control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control)
     {
-      return new WebTreeViewPreRenderer (context, control);
+      return new WebTreeViewRenderer (context, control);
     }
   }
 }

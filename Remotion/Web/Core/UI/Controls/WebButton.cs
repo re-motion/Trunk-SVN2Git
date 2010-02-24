@@ -63,7 +63,7 @@ namespace Remotion.Web.UI.Controls
       base.OnInit (e);
 
       var factory = ServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
+      var preRenderer = factory.CreateRenderer (Page.Context, this);
       preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
     }
 

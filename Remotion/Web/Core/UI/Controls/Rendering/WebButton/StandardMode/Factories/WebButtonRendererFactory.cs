@@ -19,11 +19,14 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating standard mode renderers for <see cref="IWebButton"/> controls.
+  /// </summary>
   public class WebButtonRendererFactory : IWebButtonRendererFactory
   {
-    public IWebButtonPreRenderer CreatePreRenderer (HttpContextBase context, IWebButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control)
     {
-      return new WebButtonPreRenderer (context, control);
+      return new WebButtonRenderer (context, control);
     }
   }
 }

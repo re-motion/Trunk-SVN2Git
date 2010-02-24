@@ -19,8 +19,11 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton
 {
+  /// <summary>
+  /// Defines a factory method for creating renderers for <see cref="IWebButton"/> controls.
+  /// </summary>
   public interface IWebButtonRendererFactory
   {
-    IWebButtonPreRenderer CreatePreRenderer (HttpContextBase context, IWebButton control);
+    IRenderer CreateRenderer (HttpContextBase context, IWebButton control);
   }
 }

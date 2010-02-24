@@ -16,10 +16,15 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode
 {
-  public class WebButtonPreRenderer : PreRendererBase<IWebButton>, IWebButtonPreRenderer
+  /// <summary>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="IWebButton"/> controls.
+  /// </summary>
+  public class WebButtonPreRenderer : RendererBase<IWebButton>
   {
     public WebButtonPreRenderer (HttpContextBase context, IWebButton control)
         : base (context, control)
@@ -28,26 +33,28 @@ namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       string scriptKey = typeof (IWebButton).FullName + "_Script";
-      if (!HtmlHeadAppender.Current.IsRegistered (scriptKey))
+      if (!htmlHeadAppender.IsRegistered (scriptKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (IWebButton), ResourceType.Html, ResourceTheme.Legacy, "WebButton.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (scriptKey, url);
+        htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
       }
 
       string styleKey = typeof (IWebButton).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (styleKey))
+      if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (IWebButton), ResourceType.Html, ResourceTheme.Legacy, "WebButton.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
 
-    public override void PreRender ()
+    public override void Render (HtmlTextWriter writer)
     {
-
+      throw new NotSupportedException ("The WebButton does not support customized rendering.");
     }
   }
 }

@@ -16,12 +16,16 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.StandardMode
 {
-  public class WebTreeViewPreRenderer : PreRendererBase<IWebTreeView>, IWebTreeViewPreRenderer
+  /// <summary>
+  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="IWebTreeView"/> controls.
+  /// </summary>
+  public class WebTreeViewRenderer : RendererBase<IWebTreeView>
   {
-    public WebTreeViewPreRenderer (HttpContextBase context, IWebTreeView control)
+    public WebTreeViewRenderer (HttpContextBase context, IWebTreeView control)
         : base (context, control)
     {
     }
@@ -37,8 +41,9 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.QuirksMode
       }
     }
 
-    public override void PreRender ()
+    public override void Render (HtmlTextWriter writer)
     {
+      throw new NotSupportedException ("The WebTreeView does not support customized rendering.");
     }
   }
 }

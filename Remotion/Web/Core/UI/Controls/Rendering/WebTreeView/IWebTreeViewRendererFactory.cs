@@ -19,8 +19,11 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTreeView
 {
+  /// <summary>
+  /// Defines a factory method for creating renderers for <see cref="IWebTreeView"/> controls.
+  /// </summary>
   public interface IWebTreeViewRendererFactory
   {
-    IWebTreeViewPreRenderer CreatePreRenderer (HttpContextBase context, IWebTreeView control);
+    IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control);
   }
 }
