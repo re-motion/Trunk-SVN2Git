@@ -186,11 +186,10 @@
     <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\ListMenuPreRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\ListMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\ListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\Factories\ListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\NullPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />

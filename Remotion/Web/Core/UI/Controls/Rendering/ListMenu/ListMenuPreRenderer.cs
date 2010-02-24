@@ -22,11 +22,16 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
-  public abstract class ListMenuPreRendererBase : PreRendererBase<IListMenu>, IListMenuPreRenderer
+  public class ListMenuPreRenderer : PreRendererBase<IListMenu>, IListMenuPreRenderer
   {
-    protected ListMenuPreRendererBase (HttpContextBase context, IListMenu control)
+    public ListMenuPreRenderer (HttpContextBase context, IListMenu control)
         : base(context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      throw new NotImplementedException();
     }
 
     public override void PreRender ()

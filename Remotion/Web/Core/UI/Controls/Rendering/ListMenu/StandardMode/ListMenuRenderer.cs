@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
@@ -33,6 +33,21 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
     public ListMenuRenderer (HttpContextBase context, IListMenu control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+
+      string scriptFileKey = typeof (ListMenuRenderer).FullName + "_Script";
+      string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
+
+      string styleSheetKey = typeof (ListMenuRenderer).FullName + "_Style";
+      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, typeof (ListMenuRenderer), ResourceType.Html, ResourceTheme, "ListMenu.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public override void Render (HtmlTextWriter writer)
@@ -93,9 +108,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
             writer, Control.Page.ClientScript.GetPostBackClientHyperlink (Control, index.ToString()), new[] { index.ToString() }, "", null);
       }
       else
-      {
         writer.RenderBeginTag (HtmlTextWriterTag.A);
-      }
 
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {

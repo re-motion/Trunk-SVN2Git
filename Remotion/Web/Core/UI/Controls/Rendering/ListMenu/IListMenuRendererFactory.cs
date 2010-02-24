@@ -20,7 +20,7 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
   /// <summary>
-  /// Interface for factories creating renderers and prerenderers for <see cref="ListMenu"/> controls.
+  /// Defines a factory method for creating renderers and prerenderers for <see cref="IListMenu"/> controls.
   /// </summary>
   public interface IListMenuRendererFactory
   {
