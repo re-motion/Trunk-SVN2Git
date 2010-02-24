@@ -36,19 +36,19 @@ namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string scriptKey = typeof (IWebButton).FullName + "_Script";
+      string scriptKey = typeof (WebButtonRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IWebButton), ResourceType.Html, ResourceTheme.Legacy, "WebButton.js");
+            Control, Context, typeof (WebButtonRenderer), ResourceType.Html, ResourceTheme.Legacy, "WebButton.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
       }
 
-      string styleKey = typeof (IWebButton).FullName + "_Style";
+      string styleKey = typeof (WebButtonRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IWebButton), ResourceType.Html, ResourceTheme.Legacy, "WebButton.css");
+            Control, Context, typeof (WebButtonRenderer), ResourceType.Html, ResourceTheme.Legacy, "WebButton.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

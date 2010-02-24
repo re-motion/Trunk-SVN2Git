@@ -36,17 +36,18 @@ namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string scriptKey = typeof (IWebButton).FullName + "_Script";
+      string scriptKey = typeof (WebButtonRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IWebButton), ResourceType.Html, "WebButton.js");
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (WebButtonRenderer), ResourceType.Html, "WebButton.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
       }
 
-      string styleKey = typeof (IWebButton).FullName + "_Style";
+      string styleKey = typeof (WebButtonRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IWebButton), ResourceType.Html, ResourceTheme, "WebButton.css");
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (WebButtonRenderer), ResourceType.Html, ResourceTheme, "WebButton.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
