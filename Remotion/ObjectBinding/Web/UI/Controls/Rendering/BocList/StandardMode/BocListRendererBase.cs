@@ -30,9 +30,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   {
     private readonly CssClassContainer _cssClasses;
 
-    /// <summary>Entity definition for whitespace separating controls, e.g. icons from following text</summary>
-    protected const string c_whiteSpace = "&nbsp;";
-
     /// <summary>
     /// Constructor initializing the renderer with the <see cref="BocList"/> rendering object and the
     /// <see cref="HtmlTextWriter"/> rendering target.
@@ -59,34 +56,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     public IBocList List
     {
       get { return Control; }
-    }
-
-    /// <summary>
-    /// Renders an <see cref="IconInfo"/> control with an alternate text.
-    /// </summary>
-    /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load
-    /// the alternate text from the resources file, using <code>alternateTextID</code> as key.</remarks>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
-    /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
-    /// <param name="alternateTextID">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> used to load 
-    /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
-    //TODO: Remove code duplication with BocColumnRendererBase
-    protected void RenderIcon (HtmlTextWriter writer, IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("icon", icon);
-
-      bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
-      if (!hasAlternateText)
-      {
-        if (alternateTextID.HasValue)
-          icon.AlternateText = List.GetResourceManager().GetString (alternateTextID);
-      }
-
-      icon.Render (writer);
-
-      if (!hasAlternateText)
-        icon.AlternateText = string.Empty;
     }
 
     public override sealed string CssClassBase

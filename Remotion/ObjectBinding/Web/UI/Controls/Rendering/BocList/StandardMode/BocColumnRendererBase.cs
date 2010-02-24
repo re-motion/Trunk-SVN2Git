@@ -274,7 +274,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
     /// <param name="alternateTextID">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> used to load 
     /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
-    //TODO: Remove code duplication with BocListRendererBase
+    //TODO: Remove code duplication with BocListNavigationBlockRenderer
     protected void RenderIcon (HtmlTextWriter writer, IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
@@ -288,9 +288,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       }
 
       icon.Render (writer);
-
-      if (!hasAlternateText)
-        icon.AlternateText = string.Empty;
     }
   }
 }

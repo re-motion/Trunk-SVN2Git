@@ -15,25 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
-  public class StubRowRenderer : BocListRendererBase, IBocRowRenderer
+  public class StubRowRenderer : IBocRowRenderer
   {
-    public StubRowRenderer (HttpContextBase context, IBocList list)
-        : base (context, list, CssClassContainer.Instance)
+    public StubRowRenderer ()
     {
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      throw new NotImplementedException();
     }
 
     public void RenderTitlesRow (HtmlTextWriter writer)

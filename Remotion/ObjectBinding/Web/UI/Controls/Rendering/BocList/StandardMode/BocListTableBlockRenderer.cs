@@ -27,18 +27,41 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// <summary>
   /// Responsible for rendering the table (consisting of title and data rows) that shows the items contained in the <see cref="IBocList"/>.
   /// </summary>
-  public class BocListTableBlockRenderer : BocListRendererBase, IBocListTableBlockRenderer
+  public class BocListTableBlockRenderer : IBocListTableBlockRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly IBocList _list;
+    private readonly CssClassContainer _cssClasses;
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
     public BocListTableBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
-        : base (context, list, cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
+      _context = context;
+      _list = list;
+      _cssClasses = cssClasses;
       _serviceLocator = serviceLocator;
-      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (Context, List, _serviceLocator);
+      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory> ().CreateRenderer (Context, List, _serviceLocator);
+    }
+
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    public IBocList List
+    {
+      get { return _list; }
+    }
+
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
     }
 
     private IBocRowRenderer RowRenderer
@@ -60,7 +83,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// </remarks>
     /// <seealso cref="RenderTableBlockColumnGroup"/>
     /// <seealso cref="RenderTableBody"/>
-    public override void Render (HtmlTextWriter writer)
+    public void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 

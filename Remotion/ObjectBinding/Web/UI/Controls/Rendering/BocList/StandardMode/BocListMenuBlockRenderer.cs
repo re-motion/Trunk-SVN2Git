@@ -27,10 +27,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// Responsible for rendering the menu block of a <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocListMenuBlockRenderer : BocListRendererBase, IBocListMenuBlockRenderer
+  public class BocListMenuBlockRenderer : IBocListMenuBlockRenderer
   {
+    private const string c_whiteSpace = "&nbsp;";
     protected const string c_defaultMenuBlockItemOffset = "5pt";
     protected const int c_designModeAvailableViewsListWidthInPoints = 40;
+
+    private readonly HttpContextBase _context;
+    private readonly IBocList _list;
+    private readonly CssClassContainer _cssClasses;
 
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render and an <see cref="HtmlTextWriter"/> to render to.
@@ -40,13 +45,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
     public BocListMenuBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
-        : base (context, list, cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+
+      _context = context;
+      _list = list;
+      _cssClasses = cssClasses;
+    }
+
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    public IBocList List
+    {
+      get { return _list; }
+    }
+
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
     }
 
     /// <summary> Renders the menu block of the control. </summary>
     /// <remarks> Contains the drop down list for selcting a column configuration and the options menu.  </remarks> 
-    public override void Render (HtmlTextWriter writer)
+    public void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
@@ -69,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      Control.ListMenu.RenderControl (writer);
+      List.ListMenu.RenderControl (writer);
       writer.RenderEndTag();
     }
 

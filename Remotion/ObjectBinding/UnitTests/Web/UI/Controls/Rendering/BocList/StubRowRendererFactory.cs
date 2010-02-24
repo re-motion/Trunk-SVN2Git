@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
   {
     public IBocRowRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
-      return new StubRowRenderer (context, list);
+      return new StubRowRenderer ();
     }
   }
 }
