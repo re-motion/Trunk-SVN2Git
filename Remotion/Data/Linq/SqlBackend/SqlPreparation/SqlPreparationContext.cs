@@ -23,13 +23,13 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
 {
   /// <summary>
-  /// <see cref="SqlGenerationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTable"/>.
+  /// <see cref="SqlPreparationContext"/> is a helper class which maps <see cref="IQuerySource"/> to <see cref="SqlTable"/>.
   /// </summary>
-  public class SqlGenerationContext
+  public class SqlPreparationContext
   {
     private readonly Dictionary<IQuerySource, SqlTable> _mapping;
 
-    public SqlGenerationContext ()
+    public SqlPreparationContext ()
     {
       _mapping = new Dictionary<IQuerySource, SqlTable>();
     }
@@ -50,10 +50,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlPreparation
     public SqlTable GetSqlTableForQuerySource (IQuerySource source)
     {
       ArgumentUtility.CheckNotNull ("source", source);
-
-      if (_mapping.ContainsKey (source))
-        return _mapping[source];
-      throw new KeyNotFoundException(); // TODO: Remove this and ContainsKey check - Dictionary will throw KeyNotFoundException anyway.
+      return _mapping[source];
     }
   }
 }
