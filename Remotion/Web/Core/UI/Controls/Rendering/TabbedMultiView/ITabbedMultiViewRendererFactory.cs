@@ -20,7 +20,7 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
 {
   /// <summary>
-  /// Interface for factories creating renderers and prerenderers for <see cref="TabbedMultiView"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="ITabbedMultiView"/> controls.
   /// </summary>
   public interface ITabbedMultiViewRendererFactory
   {

@@ -20,7 +20,7 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="TabbedMultiView"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="TabbedMultiView"/> controls.
   /// </summary>
   public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
