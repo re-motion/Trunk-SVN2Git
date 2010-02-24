@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
@@ -28,8 +27,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
   public class DropDownMenuPreRenderer : DropDownMenuPreRendererBase
   {
     public DropDownMenuPreRenderer (HttpContextBase context, IDropDownMenu control)
-        : base(context, control)
+        : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      throw new NotImplementedException();
     }
 
     public override bool GetBrowserCapableOfScripting ()
@@ -40,63 +44,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     private bool IsInternetExplorer55OrHigher ()
     {
       bool isVersionGreaterOrEqual55 =
-              Context.Request.Browser.MajorVersion >= 6
+          Context.Request.Browser.MajorVersion >= 6
           || Context.Request.Browser.MajorVersion == 5
-              && Context.Request.Browser.MinorVersion >= 0.5;
+             && Context.Request.Browser.MinorVersion >= 0.5;
       bool isInternetExplorer55AndHigher =
           Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
       return isInternetExplorer55AndHigher;
-    }
-
-    public override void PreRender ()
-    {
-      base.PreRender ();
-      string key = typeof (IDropDownMenu).FullName + "_Startup";
-
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRenderer), key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
-        string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
-      }
-
-      if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
-      {
-        key = Control.ClientID + "_ClickEventHandlerBindScript";
-        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRenderer), key))
-        {
-          string elementReference = string.Format ("document.getElementById('{0}')", Control.MenuHeadClientID);
-          string menuIDReference = string.Format ("'{0}'", Control.ClientID);
-          string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
-          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
-        }
-      }
-    }
-
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
-
-      string key = typeof (IDropDownMenu).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
-      }
-
-
-      key = typeof (IDropDownMenu).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
     }
   }
 }

@@ -34,9 +34,33 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+
+      string key = typeof (DropDownMenuRenderer).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+      }
+
+      key = typeof (DropDownMenuRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
+
+      RegisterEventHandlerScripts();
 
       AddStandardAttributesToRender (writer);
       writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
@@ -161,6 +185,31 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
       writer.RenderEndTag(); // End anchor
 
       writer.RenderEndTag(); // End td
+    }
+
+    private void RegisterEventHandlerScripts ()
+    {
+      string key = typeof (IDropDownMenu).FullName + "_Startup";
+
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRenderer), key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
+        string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
+      }
+
+      if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
+      {
+        key = Control.ClientID + "_ClickEventHandlerBindScript";
+        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRenderer), key))
+        {
+          string elementReference = string.Format ("document.getElementById('{0}')", Control.MenuHeadClientID);
+          string menuIDReference = string.Format ("'{0}'", Control.ClientID);
+          string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
+          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
+        }
+      }
     }
 
     protected virtual string CssClassHead

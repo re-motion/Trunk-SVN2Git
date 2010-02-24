@@ -36,9 +36,34 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+
+      string key = typeof (DropDownMenuRenderer).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+      }
+
+      key = typeof (DropDownMenuRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
+
+      RegisterEventHandlerScripts();
 
       AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -115,6 +140,30 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
           width = Control.Width.ToString();
 
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, width);
+      }
+    }
+
+    private void RegisterEventHandlerScripts ()
+    {
+      if (!Control.Enabled)
+        return;
+
+      string key = Control.ClientID + "_KeyDownEventHandlerBindScript";
+      string getSelectionCount = (string.IsNullOrEmpty (Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
+      string script = string.Format (
+          "$('#{0}').keydown( function(event){{ DropDownMenu_OnKeyDown(event, document.getElementById('{0}'), {1}); }} );",
+          Control.ClientID,
+          getSelectionCount);
+
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
+
+      if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
+      {
+        key = Control.ClientID + "_ClickEventHandlerBindScript";
+        string elementReference = string.Format ("$('#{0}')", Control.ClientID);
+        string menuIDReference = string.Format ("'{0}'", Control.ClientID);
+        script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
       }
     }
 
