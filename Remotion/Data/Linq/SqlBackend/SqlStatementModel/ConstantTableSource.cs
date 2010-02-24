@@ -21,7 +21,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="ConstantTableSource"/> holds the constant from the original SqlTable.
+  /// <see cref="ConstantTableSource"/> holds a <see cref="ConstantExpression"/> representing the data source defined by a LINQ query.
   /// </summary>
   public class ConstantTableSource : AbstractTableSource
   {
@@ -33,7 +33,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     }
 
     public ConstantExpression ConstantExpression { get; private set; }
-    
 
+    // TODO: Implement and test. (Call visitor.VisitConstantTableSource.)
+    public override AbstractTableSource Accept (ITableSourceVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
+      throw new NotImplementedException();
+    }
   }
 }

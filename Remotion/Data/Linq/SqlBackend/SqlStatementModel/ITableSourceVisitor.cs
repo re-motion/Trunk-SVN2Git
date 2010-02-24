@@ -14,18 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-
-namespace Remotion.Data.Linq.SqlBackend.MappingResolution
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
 {
   /// <summary>
-  /// <see cref="ISqlStatementResolver"/> provides methods to resolve expressions and return database-specific information.
+  /// Provides a visitor for implementations of <see cref="AbstractTableSource"/>.
   /// </summary>
-  public interface ISqlStatementResolver
+  public interface ITableSourceVisitor
   {
-    SqlTableSource ResolveTableSource (ConstantTableSource tableSource); // TODO: Rename to ResolveConstantTableSource
-    Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression);
+    AbstractTableSource VisitConstantTableSource (ConstantTableSource tableSource);
+    AbstractTableSource VisitSqlTableSource (SqlTableSource tableSource);
   }
 }
