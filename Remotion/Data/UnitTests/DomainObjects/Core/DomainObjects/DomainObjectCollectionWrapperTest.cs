@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Assert.That (_wrapper.IsReadOnly, Is.False);
 
-      var readOnlyCollection = new DomainObjectCollection ().AsReadOnly ();
+      var readOnlyCollection = new DomainObjectCollection ().Clone (true);
       var readOnlyWrapper = new DomainObjectCollectionWrapper<DomainObject> (readOnlyCollection);
       Assert.That (readOnlyWrapper.IsReadOnly, Is.True);
     }

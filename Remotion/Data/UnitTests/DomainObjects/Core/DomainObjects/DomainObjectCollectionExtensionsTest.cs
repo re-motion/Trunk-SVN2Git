@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Test")]
     public void CheckNotReadOnly_ReadOnly ()
     {
-      var readOnlyCollection = _collection.AsReadOnly();
+      var readOnlyCollection = _collection.Clone (true);
       readOnlyCollection.CheckNotReadOnly ("Test");
     }
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A read-only collection cannot be combined with another collection.")]
     public void UnionWith_ChecksNotReadOnly ()
     {
-      var readOnlyCollection = _collection.AsReadOnly();
+      var readOnlyCollection = _collection.Clone (true);
       readOnlyCollection.UnionWith (_collection);
     }
 

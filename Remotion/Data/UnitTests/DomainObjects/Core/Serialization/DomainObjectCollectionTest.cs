@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DomainObjectCollection_ReadOnlyContents ()
     {
       var collection = new DomainObjectCollection (typeof (Order));
-      collection = collection.AsReadOnly();
+      collection = collection.Clone (true);
 
       var deserializedCollection = SerializeAndDeserialize (collection);
       Assert.IsTrue (deserializedCollection.IsReadOnly);

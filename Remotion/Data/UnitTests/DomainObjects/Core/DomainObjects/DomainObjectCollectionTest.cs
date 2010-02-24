@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.Collections.ObjectModel;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -40,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private Customer _customer3NotInCollection;
 
     private DomainObjectCollection _collection;
+    private DomainObjectCollection _readOnlyCollection;
 
     private IDomainObjectCollectionData _dataStrategyMock;
     private DomainObjectCollection _collectionWithDataStrategyMock;
@@ -53,6 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
 
       _collection = CreateCustomerCollection ();
+      _readOnlyCollection = DomainObjectCollectionFactory.Instance.CreateReadOnlyCollection (
+          typeof (DomainObjectCollection), 
+          new[] { _customer1, _customer2 });
 
       _dataStrategyMock = MockRepository.GenerateMock<IDomainObjectCollectionData> ();
       _collectionWithDataStrategyMock = new DomainObjectCollection (_dataStrategyMock);
@@ -298,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot modify a read-only collection.")]
     public void Item_Set_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly ()[0] = _customer3NotInCollection;
+      _readOnlyCollection[0] = _customer3NotInCollection;
     }
 
     [Test]
@@ -314,7 +316,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot add an item to a read-only collection.")]
     public void Add_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly().Add (_customer3NotInCollection);
+      _readOnlyCollection.Add (_customer3NotInCollection);
     }
 
     [Test]
@@ -338,7 +340,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot add items to a read-only collection.")]
     public void AddRange_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly ().AddRange (new[] { _customer3NotInCollection });
+      _readOnlyCollection.AddRange (new[] { _customer3NotInCollection });
     }
     
     [Test]
@@ -354,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void RemoveAt_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly ().RemoveAt (0);
+      _readOnlyCollection.RemoveAt (0);
     }
 
     [Test]
@@ -369,7 +371,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_ID_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly ().Remove (_customer1.ID);
+      _readOnlyCollection.Remove (_customer1.ID);
     }
 
     [Test]
@@ -384,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void Remove_Object_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly ().Remove (_customer1);
+      _readOnlyCollection.Remove (_customer1);
     }
 
     [Test]
@@ -399,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException))]
     public void Clear_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly().Clear();
+      _readOnlyCollection.Clear ();
     }
 
     [Test]
@@ -414,7 +416,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
     public void Insert_Object_ReadOnly_Throws ()
     {
-      _collection.AsReadOnly ().Insert (0, _customer3NotInCollection);
+      _readOnlyCollection.Insert (0, _customer3NotInCollection);
     }
 
     [Test]
@@ -479,15 +481,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void Clone_ReadOnly ()
-    {
-      var clonedCollection = _collection.AsReadOnly().Clone ();
-
-      Assert.That (clonedCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
-      Assert.That (clonedCollection.IsReadOnly, Is.True);
-    }
-
-    [Test]
     public void Clone_DecouplesFromOriginalDataStore ()
     {
       var clonedCollection = _collection.Clone ();
@@ -521,22 +514,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void Clone_MakeReadOnly_False ()
+    public void Clone_ReadOnly ()
     {
-      var readOnlyCollection = _collection.AsReadOnly();
-      DomainObjectCollection clonedCollection = readOnlyCollection.Clone (false);
+      var clonedCollection = _collection.Clone (true);
 
-      Assert.That (clonedCollection, Is.EqualTo (readOnlyCollection));
-      Assert.That (clonedCollection.IsReadOnly, Is.False);
+      Assert.That (clonedCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
+      Assert.That (clonedCollection.IsReadOnly, Is.True);
     }
 
     [Test]
-    public void Clone_MakeReadOnly_True ()
+    public void Clone_ReadOnly_DecouplesFromOriginalDataStore ()
     {
-      DomainObjectCollection clonedCollection = _collection.Clone (true);
+      var clonedCollection = _collection.Clone (true);
 
-      Assert.That (clonedCollection, Is.EqualTo (_collection));
-      Assert.That (clonedCollection.IsReadOnly, Is.True);
+      _collection.Remove (_customer1);
+
+      Assert.That (_collection, Is.EqualTo (new[] { _customer2 }));
+      Assert.That (clonedCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
+    }
+
+    [Test]
+    public void Clone_ReadOnly_DataStrategy ()
+    {
+      OrderCollection associatedCollection = CreateAssociatedCollectionWithEndPointStub ();
+      var clonedCollection = associatedCollection.Clone (true);
+
+      // clone is always stand-alone, even when source is associated with end point
+      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (clonedCollection);
+    }
+
+    [Test]
+    public void Clone_ReadOnly_IsOfSameType_AsOriginal ()
+    {
+      var orderCollection = new OrderCollection ();
+
+      var clone = (OrderCollection) orderCollection.Clone (true);
+
+      Assert.That (clone.GetType (), Is.EqualTo (typeof (OrderCollection)));
+      Assert.That (clone.RequiredItemType, Is.Null);
     }
 
     [Test]
@@ -602,47 +617,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (command.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
       Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
       Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
-    }
-
-    [Test]
-    public void AsReadOnly ()
-    {
-      var readOnlyCollection = _collection.AsReadOnly ();
-
-      Assert.That (readOnlyCollection.IsReadOnly, Is.True);
-      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
-    }
-
-    [Test]
-    public void AsReadOnly_ResultReflectsChangesToOriginalCollection ()
-    {
-      var readOnlyCollection = _collection.AsReadOnly ();
-
-      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2 }));
-
-      _collection.Add (_customer3NotInCollection);
-      Assert.That (readOnlyCollection, Is.EqualTo (new[] { _customer1, _customer2, _customer3NotInCollection }));
-    }
-
-    [Test]
-    public void AsReadOnly_DecoratorChain ()
-    {
-      var readOnlyCollection = _collection.AsReadOnly ();
-
-      var originalData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (_collection);
-      var readOnlyData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ReadOnlyCollectionDataDecorator> (readOnlyCollection);
-
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (readOnlyData);
-      Assert.That (wrappedData, Is.SameAs (originalData));
-    }
-
-    [Test]
-    public void AsReadOnly_DerivedType ()
-    {
-      var collection = new OrderCollection ();
-      var readOnlyCollection = collection.AsReadOnly ();
-
-      Assert.That (readOnlyCollection, Is.InstanceOfType (typeof (OrderCollection)));
     }
 
     [Test]

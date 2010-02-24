@@ -602,13 +602,10 @@ namespace Remotion.Data.DomainObjects
     public virtual DomainObjectCollection Clone (bool makeCloneReadOnly)
     {
       IEnumerable<DomainObject> contents = _dataStrategy;
-      var clone = DomainObjectCollectionFactory.Instance.CreateCollection (GetType (), contents, RequiredItemType);
-
-      Assertion.IsTrue (clone._dataStrategy != _dataStrategy);
-      Assertion.IsTrue (clone.RequiredItemType == RequiredItemType);
-
-      clone.SetIsReadOnly (makeCloneReadOnly);
-      return clone;
+      if (makeCloneReadOnly)
+        return DomainObjectCollectionFactory.Instance.CreateReadOnlyCollection (GetType (), contents);
+      else
+        return DomainObjectCollectionFactory.Instance.CreateCollection (GetType (), contents, RequiredItemType);
     }
 
     object ICloneable.Clone ()
@@ -667,20 +664,6 @@ namespace Remotion.Data.DomainObjects
           new Transformer (endPoint.OppositeDomainObjects),
           new Transformer (this),
           endPoint.OppositeDomainObjects._dataStrategy.GetDataStore());
-    }
-
-    /// <summary>
-    /// Returns a read-only <see cref="DomainObjectCollection"/> of the same type as this collection and holding the same data as this 
-    /// <see cref="DomainObjectCollection"/>.
-    /// The data is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
-    /// any changes made to the original.
-    /// </summary>
-    /// <returns>A read-only <see cref="DomainObjectCollection"/> that holds the same data as this <see cref="DomainObjectCollection"/>.</returns>
-    public DomainObjectCollection AsReadOnly ()
-    {
-      var newCollection = DomainObjectCollectionFactory.Instance.CreateCollection (GetType(), new ReadOnlyCollectionDataDecorator (_dataStrategy));
-      newCollection.SetIsReadOnly (true);
-      return newCollection;
     }
 
     /// <summary>

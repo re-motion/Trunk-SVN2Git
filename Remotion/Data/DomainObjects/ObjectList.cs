@@ -105,17 +105,6 @@ namespace Remotion.Data.DomainObjects
       return (ObjectList<T>) base.Clone (makeCloneReadOnly);
     }
 
-    /// <summary>
-    /// Returns a read-only <see cref="ObjectList{T}"/> that holds the same data as this <see cref="DomainObjectCollection"/>. The data
-    /// is not copied; instead, the returned collection holds the same data store as the original collection and will therefore reflect
-    /// any changes made to the original.
-    /// </summary>
-    /// <returns>A read-only <see cref="ObjectList{T}"/> that holds the same data as this <see cref="DomainObjectCollection"/>.</returns>
-    public new ObjectList<T> AsReadOnly ()
-    {
-      return (ObjectList<T>) base.AsReadOnly ();
-    }
-
     public void Add (T item)
     {
       base.Add (item);

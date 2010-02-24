@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
     public void IList_InsertThrowsIfReadOnly ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().Clone (true);
       readOnlyList.Insert (0, _orderItem2);
     }
 
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot modify a read-only collection.")]
     public void IList_ItemSetThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = ((ObjectList<OrderItem>)_orderItemListAsIList).AsReadOnly();
+      IList<OrderItem> readOnlyList = ((ObjectList<OrderItem>)_orderItemListAsIList).Clone (true);
       readOnlyList[0] = null;
     }
 
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot add an item to a read-only collection.")]
     public void IList_AddThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().Clone (true);
       readOnlyList.Add (_orderItem1);
     }
 
@@ -279,7 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void IList_RemoveThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().Clone (true);
       readOnlyList.Remove (_orderItem1);
     }
 
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
     public void IList_RemoveInexistentThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().AsReadOnly();
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ().Clone (true);
       readOnlyList.Remove (_orderItem3);
     }
 
