@@ -177,12 +177,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.SortingOrder);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Controls.BocList.ResourceIdentifier? alternateTextID;
+      Controls.BocList.ResourceIdentifier alternateTextID;
       if (sortingDirection == SortingDirection.Ascending)
         alternateTextID = Controls.BocList.ResourceIdentifier.SortAscendingAlternateText;
       else
         alternateTextID = Controls.BocList.ResourceIdentifier.SortDescendingAlternateText;
-      RenderIcon (writer, new IconInfo (imageUrl), alternateTextID);
+
+      var icon = new IconInfo (imageUrl);
+      icon.AlternateText = List.GetResourceManager().GetString (alternateTextID);
+      icon.Render (writer);
 
       if (List.IsShowSortingOrderEnabled && orderIndex >= 0)
         writer.Write (c_whiteSpace + (orderIndex + 1));
@@ -261,33 +264,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="dataRowRenderEventArgs">The row-specific rendering arguments.</param>
-    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRendererBase.List"/>.</param>
+    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRenderer.List"/>.</param>
     /// <param name="showIcon">Specifies if the cell should contain an icon of the current <see cref="IBusinessObject"/>.</param>
     protected abstract void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon);
-
-    /// <summary>
-    /// Renders an <see cref="IconInfo"/> control with an alternate text.
-    /// </summary>
-    /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load
-    /// the alternate text from the resources file, using <code>alternateTextID</code> as key.</remarks>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
-    /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
-    /// <param name="alternateTextID">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> used to load 
-    /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
-    //TODO: Remove code duplication with BocListNavigationBlockRenderer
-    protected void RenderIcon (HtmlTextWriter writer, IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("icon", icon);
-
-      bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
-      if (!hasAlternateText)
-      {
-        if (alternateTextID.HasValue)
-          icon.AlternateText = List.GetResourceManager ().GetString (alternateTextID);
-      }
-
-      icon.Render (writer);
-    }
   }
 }

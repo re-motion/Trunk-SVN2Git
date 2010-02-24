@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// <seealso cref="BocListNavigationBlockRenderer"/>
   /// <seealso cref="BocListRendererFactory"/>
   /// <seealso cref="BocListMenuBlockRenderer"/>
-  public class BocListRenderer : BocListRendererBase
+  public class BocListRenderer : BocRendererBase<IBocList>
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";
@@ -43,6 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     private readonly IBocListMenuBlockRenderer _menuBlockRenderer;
     private readonly IBocListNavigationBlockRenderer _navigationBlockRenderer;
     private readonly IBocListTableBlockRenderer _tableBlockRenderer;
+    private readonly CssClassContainer _cssClasses;
 
     /// <summary>
     /// Initializes the renderer with the <see cref="BocList"/> to render and the <see cref="HtmlTextWriter"/> to render it to,
@@ -54,9 +55,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
     /// can be obtained.</param>
     public BocListRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
-        : base (context, list, cssClasses)
+        : base (context, list)
     {
-      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, list);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+
+      _cssClasses = cssClasses;
+      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory> ().CreateRenderer (context, list);
       _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (context, list);
       _tableBlockRenderer = serviceLocator.GetInstance<IBocListTableBlockRendererFactory>().CreateRenderer (context, list, serviceLocator);
 
@@ -87,8 +92,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     private Action<HtmlTextWriter> RenderTopLevelColumnGroup { get; set; }
 
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
+    }
+
+    /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
+    public IBocList List
+    {
+      get { return Control; }
+    }
+
+    public override sealed string CssClassBase
+    {
+      get { return CssClasses.Base; }
+    }
+
+    public override sealed string CssClassDisabled
+    {
+      get { return CssClasses.Disabled; }
+    }
+
+    public override sealed string CssClassReadOnly
+    {
+      get { return CssClasses.ReadOnly; }
+    }
+
     /// <summary>
-    /// Renders the <see cref="BocList"/> in the <see cref="BocListRendererBase.List"/> property 
+    /// Renders the <see cref="BocList"/> in the <see cref="List"/> property 
     /// to the <see cref="HtmlTextWriter"/> in the Writer property.
     /// </summary>
     /// <remarks>

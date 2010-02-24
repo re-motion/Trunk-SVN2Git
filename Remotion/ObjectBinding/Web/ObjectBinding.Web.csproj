@@ -382,7 +382,6 @@
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListMenuBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListNavigationBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocRowRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocRowEditModeColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSimpleColumnRenderer.cs" />

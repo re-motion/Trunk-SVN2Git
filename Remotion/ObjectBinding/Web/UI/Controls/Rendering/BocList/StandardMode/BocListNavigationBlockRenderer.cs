@@ -169,7 +169,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       if (isInactive || List.EditModeController.IsRowEditModeActive)
       {
         string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
-        RenderIcon (writer, new IconInfo (imageUrl), null);
+        new IconInfo (imageUrl).Render (writer);
       }
       else
       {
@@ -180,10 +180,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
         writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         writer.RenderBeginTag (HtmlTextWriterTag.A);
-        RenderIcon (writer, new IconInfo (imageUrl), s_alternateTexts[command]);
+
+        var icon = new IconInfo (imageUrl);
+        icon.AlternateText = List.GetResourceManager().GetString (s_alternateTexts[command]);
+        icon.Render (writer);
+
         writer.RenderEndTag();
       }
-      
+
       writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
     }
 
@@ -191,31 +195,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     {
       imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (Controls.BocList), ResourceType.Image, ResourceTheme, imageUrl);
       return imageUrl;
-    }
-
-    /// <summary>
-    /// Renders an <see cref="IconInfo"/> control with an alternate text.
-    /// </summary>
-    /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load
-    /// the alternate text from the resources file, using <code>alternateTextID</code> as key.</remarks>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
-    /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
-    /// <param name="alternateTextID">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> used to load 
-    /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
-    //TODO: Remove code duplication with BocColumnRendererBase
-    protected void RenderIcon (HtmlTextWriter writer, IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("icon", icon);
-
-      bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
-      if (!hasAlternateText)
-      {
-        if (alternateTextID.HasValue)
-          icon.AlternateText = List.GetResourceManager ().GetString (alternateTextID);
-      }
-
-      icon.Render (writer);
     }
   }
 }

@@ -105,8 +105,8 @@ public sealed class IconInfo
     Url = url;
     AlternateText = alternateText;
     ToolTip = toolTip;
-    _width = width;
-    _height = height;
+    Width = width;
+    Height = height;
   }
 
   public IconInfo (string url, Unit width, Unit height)
@@ -115,7 +115,7 @@ public sealed class IconInfo
   }
 
   public IconInfo (string url, string alternateText, string toolTip, string width, string height)
-    : this (url, null, toolTip, new Unit (width), new Unit (height))
+    : this (url, alternateText, toolTip, new Unit (width), new Unit (height))
   {
   }
 

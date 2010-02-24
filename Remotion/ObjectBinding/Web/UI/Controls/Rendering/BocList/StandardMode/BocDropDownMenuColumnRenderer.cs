@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <remarks>
     /// The menu title is generated from the <see cref="DropDownMenu.TitleText"/> and <see cref="DropDownMenu.TitleText"/> properties of
     /// the column definition in <see cref="BocColumnRendererBase{TBocColumnDefinition}.Column"/>, and populated with the menu items in
-    /// the <see cref="IBocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
+    /// the <see cref="IBocList.RowMenus"/> property of <see cref="BocListRenderer.List"/>.
     /// </remarks>
     protected override void RenderCellContents (
         HtmlTextWriter writer, 

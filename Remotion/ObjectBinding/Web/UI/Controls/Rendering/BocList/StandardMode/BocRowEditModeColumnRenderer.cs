@@ -114,7 +114,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// Renders a command control as link with an icon, a text or both.
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
-    /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListRendererBase.List"/></param>
+    /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListRenderer.List"/></param>
     /// <param name="command">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCommand"/> that is issued 
     /// when the control is clicked. Must not be <see langword="null" />.</param>
     /// <param name="alternateText">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> 
@@ -148,11 +148,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       if (hasIcon && hasText)
       {
-        RenderIcon (writer, icon, null);
+        icon.Render (writer);
         writer.Write (c_whiteSpace);
       }
       else if (hasIcon)
-        RenderIcon (writer, icon, alternateText);
+      {
+        bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
+        if (!hasAlternateText)
+          icon.AlternateText = List.GetResourceManager().GetString (alternateText);
+
+        icon.Render (writer);
+      }
       if (hasText)
         writer.Write (text); // Do not HTML encode.
 

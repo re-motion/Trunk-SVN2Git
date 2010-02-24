@@ -70,15 +70,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     }
 
     /// <summary>
-    /// Renders the data contained in <see cref="BocListRendererBase.List"/> as a table.
+    /// Renders the data contained in <see cref="BocListRenderer.List"/> as a table.
     /// </summary>
     /// <remarks>
     /// The table consists of a title row showing the column titles, and a data row for each <see cref="IBusinessObject"/>
-    /// in <see cref="BocListRendererBase.List"/>. If there is no data, the table will be completely hidden (only one cell containing only whitespace)
+    /// in <see cref="BocListRenderer.List"/>. If there is no data, the table will be completely hidden (only one cell containing only whitespace)
     /// if <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ShowEmptyListEditMode"/> is <see langword="false"/> and 
-    /// <see cref="BocListRendererBase.List"/> is editable
+    /// <see cref="BocListRenderer.List"/> is editable
     /// or if <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ShowEmptyListReadOnlyMode"/> is <see langword="false"/> and 
-    /// <see cref="BocListRendererBase.List"/> is read-only.
+    /// <see cref="BocListRenderer.List"/> is read-only.
     /// Exception: at design time, the title row will always be visible.
     /// </remarks>
     /// <seealso cref="RenderTableBlockColumnGroup"/>

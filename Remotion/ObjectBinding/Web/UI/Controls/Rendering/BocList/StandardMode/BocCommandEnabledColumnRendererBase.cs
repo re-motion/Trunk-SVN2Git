@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       if (icon != null)
       {
-        RenderIcon (writer, icon, null);
+        icon.Render (writer);
         writer.Write (c_whiteSpace);
       }
     }
