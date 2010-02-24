@@ -19,11 +19,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="SingleView"/> control in standard mode.
+  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="SingleView"/> controls.
   /// <seealso cref="ISingleView"/>
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>
@@ -33,9 +34,32 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+
+      string keyStyle = typeof (ISingleView).FullName + "_Style";
+      string keyScript = typeof (ISingleView).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (keyStyle))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme, "SingleView.css");
+        htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (ISingleView), ResourceType.Html, "ViewLayout.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
+      }
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
+  
+      RegisterAdjustViewScript ();
 
       AddStandardAttributesToRender (writer);
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
@@ -47,6 +71,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       }
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.WrapperClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -64,40 +89,58 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       get { return "wrapper"; }
     }
 
-    private void RenderTopControls (HtmlTextWriter writer)
+    protected virtual void RenderTopControls (HtmlTextWriter writer)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TopControl.ClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTopControls);
-      Control.TopControlsStyle.AddAttributesToRender (writer);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      ArgumentUtility.CheckNotNull ("writer", writer);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      Control.TopControl.RenderControl (writer);
-
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      Style style = Control.TopControlsStyle;
+      PlaceHolder placeHolder = Control.TopControl;
+      string cssClass = CssClassTopControls;
+      RenderPlaceHolder (writer, style, placeHolder, cssClass);
     }
 
-    private void RenderBottomControls (HtmlTextWriter writer)
+    protected virtual void RenderBottomControls (HtmlTextWriter writer)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.BottomControl.ClientID);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBottomControls);
-      Control.BottomControlsStyle.AddAttributesToRender (writer);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      Style style = Control.BottomControlsStyle;
+      PlaceHolder placeHolder = Control.BottomControl;
+      string cssClass = CssClassBottomControls;
+      RenderPlaceHolder (writer, style, placeHolder, cssClass);
+    }
+
+    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string defaultCssClass)
+    {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID);
+
+      string cssClass = defaultCssClass;
+      if (!string.IsNullOrEmpty (style.CssClass))
+        cssClass = style.CssClass;
+
+      if (placeHolder.Controls.Count == 0)
+        cssClass += " " + CssClassEmpty;
+
+      string backupCssClass = style.CssClass;
+      style.CssClass = cssClass;
+      style.AddAttributesToRender (writer);
+      style.CssClass = backupCssClass;
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Control.BottomControl.RenderControl (writer);
+      placeHolder.RenderControl (writer);
 
-      writer.RenderEndTag();
-      writer.RenderEndTag();
+      writer.RenderEndTag ();
+      writer.RenderEndTag ();
     }
 
     private void RenderView (HtmlTextWriter writer)
     {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ViewClientID);
+
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
       Control.ViewStyle.AddAttributesToRender (writer);
@@ -115,6 +158,17 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       writer.RenderEndTag();
       writer.RenderEndTag();
       writer.RenderEndTag ();
+    }
+
+    private void RegisterAdjustViewScript ()
+    {
+      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
+
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (SingleViewRenderer),
+          Guid.NewGuid ().ToString (),
+          string.Format ("ViewLayout.AdjustSingleView ($('#{0}'));", Control.ClientID));
     }
 
     #region protected virtual string CssClass...

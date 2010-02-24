@@ -83,8 +83,8 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (context, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (context, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     //private void CreateTemplatedControls (bool recreate)
@@ -124,15 +124,6 @@ namespace Remotion.Web.UI.Controls
     protected override HtmlTextWriterTag TagKey
     {
       get { return HtmlTextWriterTag.Div; }
-    }
-
-    protected override void OnPreRender (EventArgs e)
-    {
-      base.OnPreRender (e);
-
-      var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
-      preRenderer.PreRender();
     }
 
     protected override void Render (HtmlTextWriter writer)

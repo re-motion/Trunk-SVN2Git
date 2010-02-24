@@ -19,11 +19,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="SingleView"/> control in quirks mode.
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="SingleView"/> controls.
   /// <seealso cref="ISingleView"/>
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>
@@ -31,6 +32,21 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     public SingleViewRenderer (HttpContextBase context, ISingleView control)
         : base(context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      string key = typeof (ISingleView).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }
 
     public override void Render (HtmlTextWriter writer)
@@ -74,6 +90,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 
     protected virtual void RenderView (HtmlTextWriter writer)
     {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ClientID + "_View > *:first");
+
       writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
 
       if (Control.IsDesignMode)
@@ -125,6 +143,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 
     private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string cssClass)
     {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID + " > *:first");
+      
       writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
       if (string.IsNullOrEmpty (style.CssClass))
       {

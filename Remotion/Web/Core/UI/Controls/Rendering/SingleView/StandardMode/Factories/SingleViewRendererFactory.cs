@@ -20,18 +20,13 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating standard mode renderers and prerenderers for <see cref="SingleView"/> controls.
+  /// Responsible for creating standard mode renderers for <see cref="SingleView"/> controls.
   /// </summary>
   public class SingleViewRendererFactory : ISingleViewRendererFactory
   {
     public IRenderer CreateRenderer (HttpContextBase context, ISingleView control)
     {
       return new SingleViewRenderer (context, control);
-    }
-
-    public ISingleViewPreRenderer CreatePreRenderer (HttpContextBase context, ISingleView control)
-    {
-      return new SingleViewPreRenderer (context, control);
     }
   }
 }

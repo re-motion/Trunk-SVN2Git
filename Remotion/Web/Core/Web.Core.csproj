@@ -196,14 +196,11 @@
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />
     <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\Factories\SingleViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />

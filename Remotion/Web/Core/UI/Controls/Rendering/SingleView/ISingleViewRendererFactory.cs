@@ -20,11 +20,10 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
   /// <summary>
-  /// Interface for factories that create renderers and prerenderers for <see cref="ISingleView"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="ISingleView"/> controls.
   /// </summary>
   public interface ISingleViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ISingleView control);
-    ISingleViewPreRenderer CreatePreRenderer (HttpContextBase context, ISingleView control);
   }
 }

@@ -174,13 +174,17 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
 
       var topControls = contentDiv.GetAssertedChildElement ("div", 0);
       topControls.AssertAttributeValueEquals ("id", _control.TopControl.ClientID);
-      topControls.AssertAttributeValueEquals ("class", renderer.CssClassTopControls);
+      topControls.AssertAttributeValueContains ("class", renderer.CssClassTopControls);
+      if (isEmpty)
+        topControls.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
       var topContent = topControls.GetAssertedChildElement ("div", 0);
-      topContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
+      topContent.AssertAttributeValueContains ("class", renderer.CssClassContent);
 
       var bottomControls = contentDiv.GetAssertedChildElement ("div", 2);
       bottomControls.AssertAttributeValueEquals ("id", _control.BottomControl.ClientID);
-      bottomControls.AssertAttributeValueEquals ("class", renderer.CssClassBottomControls);
+      bottomControls.AssertAttributeValueContains ("class", renderer.CssClassBottomControls);
+      if (isEmpty)
+        bottomControls.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
       var bottomContent = bottomControls.GetAssertedChildElement ("div", 0);
       bottomContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
 
