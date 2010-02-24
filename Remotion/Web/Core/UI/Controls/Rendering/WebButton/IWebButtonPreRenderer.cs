@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton
 {
-  public interface IWebButtonPreRenderer : IPreRenderer<IWebButton>
+  public interface IWebButtonPreRenderer : IPreRenderer
   {
   }
 }

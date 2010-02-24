@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
   /// Interface for classes that handle markup-related actions for <see cref="TabbedMultiView"/> controls,
   /// such as registering HTML head contents, which have to be executed before the rendering stage.
   /// </summary>
-  public interface ITabbedMultiViewPreRenderer : IPreRenderer<ITabbedMultiView>
+  public interface ITabbedMultiViewPreRenderer : IPreRenderer
   {
   }
 }

@@ -19,7 +19,7 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
 {
-  public interface IBocMultilineTextValuePreRenderer : IPreRenderer<IBocMultilineTextValue>
+  public interface IBocMultilineTextValuePreRenderer : IPreRenderer
   {
   }
 }

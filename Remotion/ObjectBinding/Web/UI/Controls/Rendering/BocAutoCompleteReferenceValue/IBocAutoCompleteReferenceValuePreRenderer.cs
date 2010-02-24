@@ -19,7 +19,7 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue
 {
-  public interface IBocAutoCompleteReferenceValuePreRenderer : IPreRenderer<IBocAutoCompleteReferenceValue>
+  public interface IBocAutoCompleteReferenceValuePreRenderer : IPreRenderer
   {
   }
 }

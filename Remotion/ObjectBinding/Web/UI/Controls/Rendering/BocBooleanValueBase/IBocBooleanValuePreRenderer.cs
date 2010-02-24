@@ -19,7 +19,7 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
-  public interface IBocBooleanValuePreRenderer : IPreRenderer<IBocBooleanValue>
+  public interface IBocBooleanValuePreRenderer : IPreRenderer
   {
   }
 }

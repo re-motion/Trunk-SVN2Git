@@ -18,7 +18,7 @@ using System;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTreeView
 {
-  public interface IWebTreeViewPreRenderer : IPreRenderer<IWebTreeView>
+  public interface IWebTreeViewPreRenderer : IPreRenderer
   {
   }
 }

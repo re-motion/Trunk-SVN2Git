@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
@@ -23,15 +22,8 @@ namespace Remotion.Web.UI.Controls.Rendering
   /// Base interface for classes that handle markup-related actions, such as registering HTML head contents,
   /// which have to be executed before the rendering stage.
   /// </summary>
-  public interface IPreRenderer<TControl>
-      where TControl: IControl
+  public interface IPreRenderer
   {
-    /// <summary>Gets the control to render.</summary>
-    TControl Control { get; }
-
-    /// <summary>Gets the context in which rendering occurs.</summary>
-    HttpContextBase Context { get; }
-
     /// <summary>Registers script and stylesheet file includes, which has to be done during the initialization stage.</summary>
     void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
 

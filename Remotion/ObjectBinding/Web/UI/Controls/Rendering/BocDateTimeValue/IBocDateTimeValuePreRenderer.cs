@@ -19,7 +19,7 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 {
-  public interface IBocDateTimeValuePreRenderer : IPreRenderer<IBocDateTimeValue>
+  public interface IBocDateTimeValuePreRenderer : IPreRenderer
   {
   }
 }

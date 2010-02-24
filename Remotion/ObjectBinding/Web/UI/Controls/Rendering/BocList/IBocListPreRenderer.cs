@@ -19,7 +19,7 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
-  public interface IBocListPreRenderer : IPreRenderer<IBocList>
+  public interface IBocListPreRenderer : IPreRenderer
   {
     bool IsBrowserCapableOfScripting { get; }
   }

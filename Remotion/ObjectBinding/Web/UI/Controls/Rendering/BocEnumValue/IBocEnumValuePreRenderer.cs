@@ -19,7 +19,7 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
 {
-  public interface IBocEnumValuePreRenderer : IPreRenderer<IBocEnumValue>
+  public interface IBocEnumValuePreRenderer : IPreRenderer
   {
   }
 }

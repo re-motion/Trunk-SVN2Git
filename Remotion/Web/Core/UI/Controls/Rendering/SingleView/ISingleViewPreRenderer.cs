@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView
   /// Interface for classes that handle markup-related actions for <see cref="SingleView"/> controls,
   /// such as registering HTML head contents, which have to be executed before the rendering stage.
   /// </summary>
-  public interface ISingleViewPreRenderer : IPreRenderer<ISingleView>
+  public interface ISingleViewPreRenderer : IPreRenderer
   { 
   }
 }

@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
   /// Interface for classes that handle markup-related actions for <see cref="TabbedMenu"/> controls,
   /// such as registering HTML head contents, which have to be executed before the rendering stage.
   /// </summary>
-  public interface ITabbedMenuPreRenderer : IPreRenderer<ITabbedMenu>
+  public interface ITabbedMenuPreRenderer : IPreRenderer
   {
   }
 }
