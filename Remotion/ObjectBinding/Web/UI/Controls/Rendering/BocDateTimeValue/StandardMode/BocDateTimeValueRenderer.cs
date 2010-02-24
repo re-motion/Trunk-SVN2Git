@@ -28,13 +28,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
     private readonly TextBox _dateTextBox;
     private readonly TextBox _timeTextBox;
 
-    public BocDateTimeValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
-        : this (context, writer, control, null, null)
+    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control)
+        : this (context, control, null, null)
     {
     }
 
-    public BocDateTimeValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control, TextBox dateTextBox, TextBox timeTextBox)
-        : base (context, writer, control)
+    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control, TextBox dateTextBox, TextBox timeTextBox)
+        : base (context, control)
     {
       _dateTextBox = dateTextBox ?? new TextBox();
       _timeTextBox = timeTextBox ?? new TextBox();

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView
@@ -25,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView
   /// </summary>
   public interface ISingleViewRendererFactory
   {
-    ISingleViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ISingleView control);
+    ISingleViewRenderer CreateRenderer (HttpContextBase context, ISingleView control);
     ISingleViewPreRenderer CreatePreRenderer (HttpContextBase context, ISingleView control);
   }
 }

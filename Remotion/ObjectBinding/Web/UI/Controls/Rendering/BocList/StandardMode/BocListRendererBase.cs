@@ -45,10 +45,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// and must be set in the constructor.</remarks>
     /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocListRendererBase (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
-        : base(context, writer, list)
+    protected BocListRendererBase (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+        : base(context, list)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       _cssClasses = cssClasses;

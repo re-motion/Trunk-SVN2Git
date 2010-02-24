@@ -28,8 +28,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// </summary>
   public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IBocMultilineTextValueRenderer
   {
-    public BocMultilineTextValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocMultilineTextValue control)
-        : base (context, writer, control)
+    public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control)
+        : base (context, control)
     {
     }
 

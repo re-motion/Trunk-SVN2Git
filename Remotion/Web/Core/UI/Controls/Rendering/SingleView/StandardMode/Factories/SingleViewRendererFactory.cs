@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode.Factories
@@ -25,9 +24,9 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode.Factories
   /// </summary>
   public class SingleViewRendererFactory : ISingleViewRendererFactory
   {
-    public ISingleViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ISingleView control)
+    public ISingleViewRenderer CreateRenderer (HttpContextBase context, ISingleView control)
     {
-      return new SingleViewRenderer (context, writer, control);
+      return new SingleViewRenderer (context, control);
     }
 
     public ISingleViewPreRenderer CreatePreRenderer (HttpContextBase context, ISingleView control)

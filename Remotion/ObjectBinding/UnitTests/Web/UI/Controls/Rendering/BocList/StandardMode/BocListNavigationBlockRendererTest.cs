@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

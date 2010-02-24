@@ -25,9 +25,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
   /// </summary>
   public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
   {
-    IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
+    IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (HttpContextBase context, IBocDateTimeValue control)
     {
-      return new BocDateTimeValueRenderer (context, writer, control);
+      return new BocDateTimeValueRenderer (context, control);
     }
 
     public IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control)

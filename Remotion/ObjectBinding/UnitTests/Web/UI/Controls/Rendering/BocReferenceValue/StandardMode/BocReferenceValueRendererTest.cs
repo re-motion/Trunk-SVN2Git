@@ -302,7 +302,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubDropDownList ());
+      var renderer = new BocReferenceValueRenderer (HttpContext, Control, () => new StubDropDownList ());
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -319,7 +319,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubDropDownList ());
+      var renderer = new BocReferenceValueRenderer (HttpContext, Control, () => new StubDropDownList ());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (Html.Writer);
@@ -389,7 +389,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => DropDownList);
+      var renderer = new BocReferenceValueRenderer (HttpContext, Control, () => DropDownList);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

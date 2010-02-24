@@ -28,8 +28,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewRenderer (HttpContextBase context, HtmlTextWriter writer, ISingleView control)
-        : base (context, writer, control)
+    public SingleViewRenderer (HttpContextBase context, ISingleView control)
+        : base (context, control)
     {
     }
 

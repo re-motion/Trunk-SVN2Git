@@ -50,16 +50,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
     /// <param name="context">The <see cref="HttpContextBase"/> which contains the response to render to.</param>
-    /// <param name="writer">The target <see cref="HtmlTextWriter"/>.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
     /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
     /// can be obtained.</param>
-    public BocListRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
-        : base (context, writer, list, cssClasses)
+    public BocListRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+        : base (context, list, cssClasses)
     {
-      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, writer, list);
-      _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (context, writer, list);
-      _tableBlockRenderer = serviceLocator.GetInstance<IBocListTableBlockRendererFactory>().CreateRenderer (context, writer, list, serviceLocator);
+      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, list);
+      _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (context, list);
+      _tableBlockRenderer = serviceLocator.GetInstance<IBocListTableBlockRendererFactory>().CreateRenderer (context, list, serviceLocator);
 
       RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForLegacyBrowser;
 

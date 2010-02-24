@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
@@ -25,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu
   /// </summary>
   public interface IListMenuRendererFactory
   {
-    IListMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IListMenu control);
+    IListMenuRenderer CreateRenderer (HttpContextBase context, IListMenu control);
     IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control);
   }
 }

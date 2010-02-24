@@ -29,8 +29,8 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control)
-        : base (context, writer, control)
+    public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
+        : base (context, control)
     {
     }
 
@@ -92,7 +92,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 
     private void RenderTab (HtmlTextWriter writer, IWebTab tab, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer (ServiceLocator.Current, Context, writer, Control);
+      var tabRenderer = tab.GetRenderer (ServiceLocator.Current, Context, Control);
 
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;

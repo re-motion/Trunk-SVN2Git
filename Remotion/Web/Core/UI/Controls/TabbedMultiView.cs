@@ -361,7 +361,7 @@ namespace Remotion.Web.UI.Controls
       EnsureChildControls();
 
       var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }
 

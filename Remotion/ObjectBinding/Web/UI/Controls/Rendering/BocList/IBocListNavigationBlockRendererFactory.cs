@@ -25,6 +25,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
   /// </summary>
   public interface IBocListNavigationBlockRendererFactory
   {
-    IBocListNavigationBlockRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list);
+    IBocListNavigationBlockRenderer CreateRenderer (HttpContextBase context, IBocList list);
   }
 }

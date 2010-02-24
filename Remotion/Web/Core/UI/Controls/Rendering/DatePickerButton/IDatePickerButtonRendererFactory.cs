@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
@@ -25,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   /// </summary>
   public interface IDatePickerButtonRendererFactory
   {
-    IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control);
+    IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control);
     IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control);
 
     IDatePickerPagePreRenderer CreatePreRenderer (HttpContextBase context, DatePickerPage page);

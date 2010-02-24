@@ -35,8 +35,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValue).FullName + "_Startup_";
 
-    public BocBooleanValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocBooleanValue control)
-        : base (context, writer, control)
+    public BocBooleanValueRenderer (HttpContextBase context, IBocBooleanValue control)
+        : base (context, control)
     {
     }
 

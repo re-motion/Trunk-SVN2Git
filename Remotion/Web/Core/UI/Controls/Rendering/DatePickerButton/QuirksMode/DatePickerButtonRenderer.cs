@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Web;
+using System.Web.UI.WebControls;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
@@ -25,12 +24,12 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonRenderer: DatePickerButtonRendererBase
+  public class DatePickerButtonRenderer : DatePickerButtonRendererBase
   {
     private const int c_defaultDatePickerLengthInPoints = 150;
 
-    public DatePickerButtonRenderer (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control)
-        : base (context, writer, control)
+    public DatePickerButtonRenderer (HttpContextBase context, IDatePickerButton control)
+        : base (context, control)
     {
     }
 
@@ -51,7 +50,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 
     protected override Unit PopUpWidth
     {
-      get { return Unit.Point(c_defaultDatePickerLengthInPoints); }
+      get { return Unit.Point (c_defaultDatePickerLengthInPoints); }
     }
 
     protected override Unit PopUpHeight

@@ -14,23 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
-using System.Web;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubRowRenderer : BocListRendererBase, IBocRowRenderer
   {
-    public StubRowRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list)
-        : base(context, writer, list, CssClassContainer.Instance)
+    public StubRowRenderer (HttpContextBase context, IBocList list)
+        : base (context, list, CssClassContainer.Instance)
     {
     }
 
@@ -52,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
       ArgumentUtility.CheckNotNull ("writer", writer);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, "emptyStub");
       writer.RenderBeginTag ("tr");
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
     }
 
     public void RenderDataRow (HtmlTextWriter writer, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
@@ -60,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
       ArgumentUtility.CheckNotNull ("writer", writer);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, "dataStub");
       writer.RenderBeginTag ("tr");
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
     }
   }
 }

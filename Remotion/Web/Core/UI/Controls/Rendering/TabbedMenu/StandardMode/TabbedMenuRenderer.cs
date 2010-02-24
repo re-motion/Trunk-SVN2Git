@@ -29,8 +29,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
   /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMenu control)
-        : base (context, writer, control)
+    public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
+        : base (context, control)
     {
     }
 

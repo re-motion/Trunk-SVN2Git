@@ -1160,7 +1160,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, writer, this, ServiceLocator);
+      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
       renderer.Render (writer);
     }
 

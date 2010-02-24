@@ -35,22 +35,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
-        : this (context, writer, control, null)
+    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+      : base (context, control)
     {
     }
-
-    public BocAutoCompleteReferenceValueRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxGetter)
-        : base (context, writer, control)
-    {
-      if (textBoxGetter != null)
-        TextBoxGetter = textBoxGetter;
-      else
-        TextBoxGetter = () => new TextBox();
-    }
-
-    private Func<TextBox> TextBoxGetter { get; set; }
 
     public override void Render (HtmlTextWriter writer)
     {
@@ -76,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     private TextBox GetTextbox ()
     {
-      var textbox = TextBoxGetter();
+      var textbox = new TextBox ();
       textbox.ID = Control.TextBoxUniqueID;
       textbox.EnableViewState = false;
       textbox.Text = Control.BusinessObjectDisplayName;

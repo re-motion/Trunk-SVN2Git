@@ -145,7 +145,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewRenderer (HttpContext, Html.Writer, _singleView);
+      var renderer = new SingleViewRenderer (HttpContext, _singleView);
 
       string controlCssClass = renderer.CssClassBase;
       string topControlsCssClass = renderer.CssClassTopControls;

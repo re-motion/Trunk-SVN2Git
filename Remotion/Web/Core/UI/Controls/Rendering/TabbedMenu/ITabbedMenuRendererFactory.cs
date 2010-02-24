@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
@@ -25,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
   /// </summary>
   public interface ITabbedMenuRendererFactory
   {
-    ITabbedMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMenu control);
+    ITabbedMenuRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control);
     ITabbedMenuPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMenu menu);
   }
 }

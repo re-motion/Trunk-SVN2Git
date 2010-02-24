@@ -378,7 +378,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubTextBox ());
+      var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Control, () => new StubTextBox ());
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocAutoCompleteReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -395,7 +395,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubTextBox ());
+      var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Control, () => new StubTextBox ());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "bocAutoCompleteReferenceValueContent");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (Html.Writer);
@@ -544,7 +544,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Html.Writer, Control, () => TextBox);
+      var renderer = new BocAutoCompleteReferenceValueRenderer (HttpContext, Control, () => TextBox);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument ();

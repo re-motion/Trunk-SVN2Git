@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
@@ -25,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
   /// </summary>
   public interface ITabbedMultiViewRendererFactory
   {
-    ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMultiView control);
+    ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control);
     ITabbedMultiViewPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMultiView control);
   }
 }

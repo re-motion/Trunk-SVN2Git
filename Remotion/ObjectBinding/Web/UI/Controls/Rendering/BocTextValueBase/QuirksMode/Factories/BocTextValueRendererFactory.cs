@@ -25,9 +25,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
   /// </summary>
   public class BocTextValueRendererFactory : IBocTextValueRendererFactory, IBocMultilineTextValueRendererFactory
   {
-    IBocTextValueRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocTextValue control)
+    IBocTextValueRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocTextValue control)
     {
-      return new StandardMode.BocTextValueRenderer (context, writer, control);
+      return new StandardMode.BocTextValueRenderer (context, control);
     }
 
     public IBocTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocTextValue control)
@@ -36,9 +36,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     }
 
     IBocMultilineTextValueRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocMultilineTextValue control)
+        HttpContextBase context, IBocMultilineTextValue control)
     {
-      return new StandardMode.BocMultilineTextValueRenderer (context, writer, control);
+      return new StandardMode.BocMultilineTextValueRenderer (context, control);
     }
 
     public IBocMultilineTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocMultilineTextValue control)

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
@@ -26,6 +25,6 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
   /// </summary>
   public interface IMenuTabRendererFactory
   {
-     IWebTabRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab);
+    IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab);
   }
 }

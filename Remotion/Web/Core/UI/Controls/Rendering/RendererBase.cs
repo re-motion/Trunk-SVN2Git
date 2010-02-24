@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering
   /// Base class for all renderers. Contains the essential properties used in rendering.
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
-  public abstract class RendererBase<TControl>
+  public abstract class RendererBase<TControl> : IRenderer<TControl>
     where TControl : IStyledControl
   {
     private readonly HttpContextBase _context;
@@ -35,7 +35,7 @@ namespace Remotion.Web.UI.Controls.Rendering
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (HttpContextBase context, HtmlTextWriter writer, TControl control)
+    protected RendererBase (HttpContextBase context, TControl control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);

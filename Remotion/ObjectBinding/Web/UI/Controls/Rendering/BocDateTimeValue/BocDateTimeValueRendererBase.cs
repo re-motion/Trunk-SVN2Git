@@ -31,8 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 
     private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
 
-    protected BocDateTimeValueRendererBase (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
-        : base (context, writer, control)
+    protected BocDateTimeValueRendererBase (HttpContextBase context, IBocDateTimeValue control)
+        : base (context, control)
     {
     }
 

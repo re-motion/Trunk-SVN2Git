@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Utilities;
 using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
@@ -35,82 +33,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.
           IBocIndexColumnRendererFactory,
           IBocSelectorColumnRendererFactory
   {
-    public IBocColumnRenderer CreateRenderer
-        (HttpContextBase context, HtmlTextWriter writer, IBocList list, BocSimpleColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
-
       return new BocSimpleColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCompoundColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
-
       return new BocCompoundColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
-
       return new BocCommandColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCustomColumnDefinition columnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
-
       return new BocCustomColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
-
       return new BocDropDownMenuColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
-
       return new BocRowEditModeColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
-    IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list)
+    IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-
-      return new BocIndexColumnRenderer(context, writer, list, CssClassContainer.Instance);
+      return new BocIndexColumnRenderer (context, list, CssClassContainer.Instance);
     }
 
-    IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list)
+    IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("list", list);
-
-      return new BocSelectorColumnRenderer(context, writer, list, CssClassContainer.Instance);
+      return new BocSelectorColumnRenderer (context, list, CssClassContainer.Instance);
     }
   }
 }

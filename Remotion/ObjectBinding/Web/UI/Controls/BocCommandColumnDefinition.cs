@@ -37,10 +37,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list)
     {
       var factory = locator.GetInstance<IBocColumnRendererFactory<BocCommandColumnDefinition>>();
-      return factory.CreateRenderer (context, writer, list, this);
+      return factory.CreateRenderer (context, list, this);
     }
 
     /// <summary> Returns a <see cref="string"/> that represents this <see cref="BocColumnDefinition"/>. </summary>

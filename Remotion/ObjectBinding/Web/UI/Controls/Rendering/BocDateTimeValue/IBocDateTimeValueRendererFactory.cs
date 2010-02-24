@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
   /// </summary>
   public interface IBocDateTimeValueRendererFactory
   {
-    IBocDateTimeValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control);
+    IBocDateTimeValueRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control);
     IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control);
   }
 }

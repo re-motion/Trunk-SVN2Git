@@ -116,10 +116,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _propertyPathBindings; }
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list)
     {
       var factory = locator.GetInstance<IBocColumnRendererFactory<BocCompoundColumnDefinition>>();
-      return factory.CreateRenderer (context, writer, list, this);
+      return factory.CreateRenderer (context, list, this);
     }
 
     /// <summary> Gets or sets the text displayed in the column title. Must not be empty or <see langword="null"/>. </summary>

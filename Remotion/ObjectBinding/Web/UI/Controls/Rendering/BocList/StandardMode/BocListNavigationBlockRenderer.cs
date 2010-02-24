@@ -88,8 +88,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
-        : base (context, writer, list, cssClasses)
+    public BocListNavigationBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+        : base (context, list, cssClasses)
     {
     }
 

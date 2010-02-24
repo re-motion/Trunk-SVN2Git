@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
@@ -23,6 +22,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
   public interface IDropDownMenuRendererFactory
   {
     IDropDownMenuPreRenderer CreatePreRenderer (HttpContextBase context, IDropDownMenu control);
-    IDropDownMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDropDownMenu control);
+    IDropDownMenuRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control);
   }
 }

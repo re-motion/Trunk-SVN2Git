@@ -27,9 +27,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       return new BocAutoCompleteReferenceValuePreRenderer (context, control);
     }
 
-    public IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
+    public IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
     {
-      return new BocAutoCompleteReferenceValueRenderer (context, writer, control);
+      return new BocAutoCompleteReferenceValueRenderer (context, control);
     }
   }
 }

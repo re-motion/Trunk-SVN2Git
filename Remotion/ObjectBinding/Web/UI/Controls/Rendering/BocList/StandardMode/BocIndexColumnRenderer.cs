@@ -26,8 +26,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// </summary>
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
-    public BocIndexColumnRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
-        : base (context, writer, list, cssClasses)
+    public BocIndexColumnRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+        : base (context, list, cssClasses)
     {
     }
 

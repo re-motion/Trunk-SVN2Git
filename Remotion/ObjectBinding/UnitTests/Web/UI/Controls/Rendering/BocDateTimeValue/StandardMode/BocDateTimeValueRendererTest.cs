@@ -140,7 +140,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
     private XmlNode GetAssertedContainer (out BocDateTimeValueRenderer renderer, bool isDateOnly)
     {
-      renderer = new BocDateTimeValueRenderer (HttpContext, Html.Writer, _control, _dateTextBox, _timeTextBox);
+      renderer = new BocDateTimeValueRenderer (HttpContext, _control, _dateTextBox, _timeTextBox);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument ();

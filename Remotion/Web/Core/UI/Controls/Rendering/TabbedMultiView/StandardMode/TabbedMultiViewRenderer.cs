@@ -28,8 +28,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMultiView control)
-        : base (context, writer, control)
+    public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control)
+        : base (context, control)
     {
     }
 

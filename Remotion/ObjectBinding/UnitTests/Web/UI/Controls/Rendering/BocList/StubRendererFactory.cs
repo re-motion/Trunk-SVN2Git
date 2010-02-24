@@ -15,31 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using System.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
-    public class StubRendererFactory : IBocListTableBlockRendererFactory, IBocListMenuBlockRendererFactory, IBocListNavigationBlockRendererFactory
+  public class StubRendererFactory : IBocListTableBlockRendererFactory, IBocListMenuBlockRendererFactory, IBocListNavigationBlockRendererFactory
+  {
+    IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
+        HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
-        IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
-                HttpContextBase context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        {
-            return new StubRenderer ();
-        }
-
-        IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list)
-        {
-            return new StubRenderer ();
-        }
-
-        IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (
-                HttpContextBase context, HtmlTextWriter writer, IBocList list)
-        {
-            return new StubRenderer ();
-        }
+      return new StubRenderer();
     }
+
+    IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
+    {
+      return new StubRenderer();
+    }
+
+    IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
+    {
+      return new StubRenderer();
+    }
+  }
 }

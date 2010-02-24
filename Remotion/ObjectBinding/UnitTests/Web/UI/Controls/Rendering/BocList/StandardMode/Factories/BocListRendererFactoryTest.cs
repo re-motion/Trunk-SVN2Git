@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateTableBlockRenderer ()
     {
       IBocListTableBlockRendererFactory factory = new BocListRendererFactory();
-      IBocListTableBlockRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
+      IBocListTableBlockRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
 
       Assert.IsInstanceOfType (typeof (BocListTableBlockRenderer), renderer);
       Assert.AreSame (List, ((BocListTableBlockRenderer)renderer).List);
@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateRowRenderer ()
     {
       IBocRowRendererFactory factory = new BocListRendererFactory();
-      IBocRowRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
+      IBocRowRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
 
       Assert.IsInstanceOfType (typeof (BocRowRenderer), renderer);
       Assert.AreSame (List, ((BocRowRenderer)renderer).List);
@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateMenuBlockRenderer ()
     {
       IBocListMenuBlockRendererFactory factory = new BocListRendererFactory();
-      IBocListMenuBlockRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
+      IBocListMenuBlockRenderer renderer = factory.CreateRenderer (HttpContext, List);
 
       Assert.IsInstanceOfType (typeof (BocListMenuBlockRenderer), renderer);
       Assert.AreSame (List, ((BocListMenuBlockRenderer) renderer).List);
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateNavigationBlockRenderer ()
     {
       IBocListNavigationBlockRendererFactory factory = new BocListRendererFactory();
-      IBocListNavigationBlockRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
+      IBocListNavigationBlockRenderer renderer = factory.CreateRenderer (HttpContext, List);
 
       Assert.IsInstanceOfType (typeof (BocListNavigationBlockRenderer), renderer);
       Assert.AreSame (List, ((BocListNavigationBlockRenderer) renderer).List);
@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateBocListRenderer ()
     {
       IBocListRendererFactory factory = new BocListRendererFactory();
-      IBocListRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
+      IBocListRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
 
       Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);
       Assert.AreSame (List, ((BocListRenderer) renderer).List);

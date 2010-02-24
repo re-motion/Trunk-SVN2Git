@@ -224,7 +224,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, _checkbox);
+      _renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<HttpContextBase>(), _checkbox);
       _renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

@@ -33,19 +33,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
   public class BocReferenceValueRenderer : BocRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
     private const string c_defaultControlWidth = "150pt";
-    private readonly Func<DropDownList> _dropDownListFactoryMethod = () => new DropDownList();
+    private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control) 
-        : this (context, writer, control, null)
+    public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control)
+      : this (context, control, () => new DropDownList ())
     {
     }
 
     public BocReferenceValueRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
-        : base (context, writer, control)
+        HttpContextBase context, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
+        : base (context, control)
     {
-      if (dropDownListFactoryMethod != null)
-        _dropDownListFactoryMethod = dropDownListFactoryMethod;
+      ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
+      _dropDownListFactoryMethod = dropDownListFactoryMethod;
     }
 
     public override void Render (HtmlTextWriter writer)

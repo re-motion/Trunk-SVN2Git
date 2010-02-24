@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
   /// </summary>
   public interface IBocBooleanValueRendererFactory
   {
-    IBocBooleanValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocBooleanValue control);
+    IBocBooleanValueRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control);
 
     IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control);
   }

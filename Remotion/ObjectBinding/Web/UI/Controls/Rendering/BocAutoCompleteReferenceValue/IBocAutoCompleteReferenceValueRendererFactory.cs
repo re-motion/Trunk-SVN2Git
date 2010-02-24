@@ -23,6 +23,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
   public interface IBocAutoCompleteReferenceValueRendererFactory
   {
     IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control);
-    IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control);
+    IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control);
   }
 }

@@ -32,14 +32,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (
-        HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
-        : base (context, writer, list, cssClasses)
+    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+        : base (context, list, cssClasses)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       _serviceLocator = serviceLocator;
-      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (Context, writer, List, _serviceLocator);
+      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (Context, List, _serviceLocator);
     }
 
     private IBocRowRenderer RowRenderer

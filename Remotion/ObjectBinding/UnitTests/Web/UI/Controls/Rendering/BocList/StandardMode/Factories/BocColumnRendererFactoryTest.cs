@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateBocIndexColumnRenderer ()
     {
       IBocIndexColumnRendererFactory factory = new BocColumnRendererFactory();
-      IBocIndexColumnRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
+      IBocIndexColumnRenderer renderer = factory.CreateRenderer (HttpContext, List);
 
       Assert.IsInstanceOfType (typeof (BocIndexColumnRenderer), renderer);
       Assert.AreSame (List, ((BocIndexColumnRenderer) renderer).List);
@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateBocSelectorColumnRenderer ()
     {
       IBocSelectorColumnRendererFactory factory = new BocColumnRendererFactory();
-      IBocSelectorColumnRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
+      IBocSelectorColumnRenderer renderer = factory.CreateRenderer (HttpContext, List);
 
       Assert.IsInstanceOfType (typeof (BocSelectorColumnRenderer), renderer);
       Assert.AreSame (List, ((BocSelectorColumnRenderer) renderer).List);
@@ -120,7 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       column.ColumnTitle = "TestColumn1";
       List.FixedColumns.Add (column);
 
-      IBocColumnRenderer renderer = rendererFactory.CreateRenderer (HttpContext, Html.Writer, List, column);
+      IBocColumnRenderer renderer = rendererFactory.CreateRenderer (HttpContext, List, column);
 
       Assert.IsInstanceOfType (typeof (BocColumnRendererBase<T>), renderer);
       Assert.AreSame (List, ((BocColumnRendererBase<T>) renderer).List);

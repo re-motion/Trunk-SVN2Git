@@ -57,7 +57,7 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }
 

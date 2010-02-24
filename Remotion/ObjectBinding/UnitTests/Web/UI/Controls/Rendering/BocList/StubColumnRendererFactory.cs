@@ -15,20 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using System.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {
   public class StubColumnRendererFactory : IBocColumnRendererFactory<StubColumnDefinition>
   {
-    public IBocColumnRenderer CreateRenderer (
-      HttpContextBase context, 
-      HtmlTextWriter writer, 
-      IBocList list, 
-      StubColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
     {
       return new StubColumnRenderer (context, list, columnDefinition);
     }

@@ -26,8 +26,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   {
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";
 
-    protected DatePickerButtonRendererBase (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control)
-        : base (context, writer, control)
+    protected DatePickerButtonRendererBase (HttpContextBase context, IDatePickerButton control)
+        : base (context, control)
     {
     }
 

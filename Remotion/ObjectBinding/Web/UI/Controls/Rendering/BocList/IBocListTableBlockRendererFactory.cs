@@ -26,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
   /// </summary>
   public interface IBocListTableBlockRendererFactory
   {
-    IBocListTableBlockRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);
+    IBocListTableBlockRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);
   }
 }

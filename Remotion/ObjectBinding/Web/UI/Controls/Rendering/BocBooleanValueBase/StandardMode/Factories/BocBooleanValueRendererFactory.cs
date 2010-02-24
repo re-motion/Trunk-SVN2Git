@@ -25,9 +25,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
   /// </summary>
   public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory, IBocCheckboxRendererFactory
   {
-    IBocBooleanValueRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocBooleanValue control)
+    IBocBooleanValueRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, IBocBooleanValue control)
     {
-      return new BocBooleanValueRenderer (context, writer, control);
+      return new BocBooleanValueRenderer (context, control);
     }
 
     public IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control)
@@ -35,9 +35,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
       return new BocBooleanValuePreRenderer (context, control);
     }
 
-    IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocCheckBox control)
+    IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, IBocCheckBox control)
     {
-      return new BocCheckboxRenderer (context, writer, control);
+      return new BocCheckboxRenderer (context, control);
     }
 
     public IBocCheckboxPreRenderer CreatePreRenderer (HttpContextBase context, IBocCheckBox control)

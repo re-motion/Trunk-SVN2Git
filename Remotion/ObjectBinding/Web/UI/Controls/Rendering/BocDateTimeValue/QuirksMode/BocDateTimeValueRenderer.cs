@@ -34,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocDateTimeValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocDateTimeValue control)
-        : base (context, writer, control)
+    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control)
+        : base (context, control)
     {
     }
 

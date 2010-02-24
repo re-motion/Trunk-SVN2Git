@@ -172,7 +172,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewRenderer (HttpContext, Html.Writer, _control);
+      var renderer = new TabbedMultiViewRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
 
       var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode, renderer);

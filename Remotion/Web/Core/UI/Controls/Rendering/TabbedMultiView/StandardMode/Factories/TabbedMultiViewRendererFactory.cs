@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode.Factories
@@ -25,9 +24,9 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode.Factor
   /// </summary>
   public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
-    public ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, ITabbedMultiView control)
+    public ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control)
     {
-      return new TabbedMultiViewRenderer (context, writer, control);
+      return new TabbedMultiViewRenderer (context, control);
     }
 
     public ITabbedMultiViewPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMultiView control)

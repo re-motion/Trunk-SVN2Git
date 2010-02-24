@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
@@ -25,9 +24,9 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
   /// </summary>
   public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IWebTabStripRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control)
+    public IWebTabStripRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control)
     {
-      return new StandardMode.WebTabStripRenderer (context, writer, control);
+      return new StandardMode.WebTabStripRenderer (context, control);
     }
 
     public IWebTabStripPreRenderer CreatePreRenderer (HttpContextBase context, IWebTabStrip control)
@@ -35,7 +34,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
       return new WebTabStripPreRenderer (context, control);
     }
 
-    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
+    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)
     {
       return new StandardMode.WebTabRenderer (context, control, tab);
     }

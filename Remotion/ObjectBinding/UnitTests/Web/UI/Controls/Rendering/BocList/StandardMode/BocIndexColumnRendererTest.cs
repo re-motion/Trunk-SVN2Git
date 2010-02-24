@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
 
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.RenderTitleCell (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
     private void RenderIndexDataCell (int indexOffset)
     {
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, List, CssClassContainer.Instance);
       const string cssClassTableCell = "bocListTableCell";
       renderer.RenderDataCell (Html.Writer, 0, "selectorID", 0, cssClassTableCell);
 

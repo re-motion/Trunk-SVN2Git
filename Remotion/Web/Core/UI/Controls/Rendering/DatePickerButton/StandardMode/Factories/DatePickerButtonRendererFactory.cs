@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode.Factories
@@ -25,9 +24,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode.Facto
   /// </summary>
   public class DatePickerButtonRendererFactory : IDatePickerButtonRendererFactory
   {
-    public IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IDatePickerButton control)
+    public IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control)
     {
-      return new DatePickerButtonRenderer (context, writer, control);
+      return new DatePickerButtonRenderer (context, control);
     }
 
     public IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control)

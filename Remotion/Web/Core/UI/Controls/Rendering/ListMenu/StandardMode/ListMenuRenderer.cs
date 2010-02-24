@@ -30,8 +30,8 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
   {
     protected const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuRenderer (HttpContextBase context, HtmlTextWriter writer, IListMenu control)
-        : base (context, writer, control)
+    public ListMenuRenderer (HttpContextBase context, IListMenu control)
+        : base (context, control)
     {
     }
 

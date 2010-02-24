@@ -33,19 +33,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
   public class BocReferenceValueRenderer : BocRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
     private const string c_defaultControlWidth = "150pt";
-    private readonly Func<DropDownList> _dropDownListFactoryMethod = () => new DropDownList();
+    private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control) 
-      : this (context, writer, control, null)
+    public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control)
+        : this (context, control, () => new DropDownList())
     {
     }
 
-    public BocReferenceValueRenderer (
-      HttpContextBase context, HtmlTextWriter writer, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
-      : base (context, writer, control)
+    public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
+        : base (context, control)
     {
-      if (dropDownListFactoryMethod != null)
-        _dropDownListFactoryMethod = dropDownListFactoryMethod;
+      ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
+      _dropDownListFactoryMethod = dropDownListFactoryMethod;
     }
 
     public override void Render (HtmlTextWriter writer)
@@ -62,13 +61,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
 
       if (Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
           || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu)
-      {
         RenderContentsWithIntegratedOptionsMenu (writer, dropDownList, label);
-      }
       else
-      {
         RenderContentsWithSeparateOptionsMenu (writer, dropDownList, label, icon);
-      }
 
       writer.RenderEndTag();
     }
@@ -149,7 +144,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
     /// <remarks> Class: <c>bocReferenceValueContent</c> </remarks>
     public virtual string CssClassContent
     {
-      get { return "bocReferenceValueContent"; } 
+      get { return "bocReferenceValueContent"; }
     }
 
     private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer, DropDownList dropDownList, Label label, Image icon)
@@ -158,7 +153,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
       bool isDropDownListHeightEmpty = dropDownList.Height.IsEmpty
-                                      && string.IsNullOrEmpty (dropDownList.Style["height"]);
+                                       && string.IsNullOrEmpty (dropDownList.Style["height"]);
       bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
       bool isLabelWidthEmpty = label.Width.IsEmpty
                                && string.IsNullOrEmpty (label.Style["width"]);
@@ -187,7 +182,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
       writer.AddStyleAttribute ("display", "inline");
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);  // Begin table
+      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
       writer.RenderBeginTag (HtmlTextWriterTag.Tr); //  Begin tr
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
@@ -199,9 +194,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       string objectID = StringUtility.NullToEmpty (Control.BusinessObjectUniqueIdentifier);
 
       if (isReadOnly)
-      {
         RenderReadOnlyValue (writer, icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
-      }
       else
       {
         if (icon.Visible)
@@ -218,7 +211,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
         writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
         Control.OptionsMenu.Width = Control.OptionsMenuWidth;
         Control.OptionsMenu.RenderControl (writer);
-        writer.RenderEndTag ();  //  End td
+        writer.RenderEndTag(); //  End td
       }
 
       //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
@@ -228,11 +221,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
         writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
         writer.Write ("&nbsp;");
-        writer.RenderEndTag (); // End td
+        writer.RenderEndTag(); // End td
       }
 
-      writer.RenderEndTag ();
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
+      writer.RenderEndTag();
     }
 
     private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer, DropDownList dropDownList, Label label)
@@ -299,7 +292,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
         {
           writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
           writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-          writer.RenderEndTag ();
+          writer.RenderEndTag();
         }
       }
       else
@@ -328,10 +321,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       if (isCommandEnabled)
         Control.Command.RenderEnd (writer);
 
-      writer.RenderEndTag ();  //  End td
+      writer.RenderEndTag(); //  End td
     }
 
-    private void RenderReadOnlyValue (HtmlTextWriter writer, Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderReadOnlyValue (
+        HtmlTextWriter writer, Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
@@ -348,10 +342,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       if (isCommandEnabled)
         Control.Command.RenderEnd (writer);
 
-      writer.RenderEndTag ();  //  End td
+      writer.RenderEndTag(); //  End td
     }
 
-    private void RenderEditModeValue (HtmlTextWriter writer, DropDownList dropDownList, bool isControlHeightEmpty, bool isDropDownListHeightEmpty, bool isDropDownListWidthEmpty)
+    private void RenderEditModeValue (
+        HtmlTextWriter writer, DropDownList dropDownList, bool isControlHeightEmpty, bool isDropDownListHeightEmpty, bool isDropDownListWidthEmpty)
     {
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
@@ -363,7 +358,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       dropDownList.RenderControl (writer);
 
-      writer.RenderEndTag ();  //  End td
+      writer.RenderEndTag(); //  End td
 
       RenderEditModeValueExtension (writer);
     }

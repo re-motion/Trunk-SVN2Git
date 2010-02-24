@@ -411,7 +411,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
     private void AssertDocument (bool isReadOnly, bool isDisabled, bool withStyle)
     {
-      _renderer = new BocDateTimeValueRenderer (HttpContext, Html.Writer, _dateTimeValue);
+      _renderer = new BocDateTimeValueRenderer (HttpContext, _dateTimeValue);
       _renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

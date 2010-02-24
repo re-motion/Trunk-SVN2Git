@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       dropDownList.Stub (mock => mock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown list"));
 
-      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListMenuBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       optionsMenu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
 
-      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListMenuBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       Assert.That (Html.GetDocumentText().StartsWith ("mocked dropdown menu"));
@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Unit menuBlockOffset = new Unit (3, UnitType.Pixel);
       List.Stub (mock => mock.MenuBlockItemOffset).Return (menuBlockOffset);
 
-      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
+      var renderer = new BocListMenuBlockRenderer (HttpContext, List, CssClassContainer.Instance);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

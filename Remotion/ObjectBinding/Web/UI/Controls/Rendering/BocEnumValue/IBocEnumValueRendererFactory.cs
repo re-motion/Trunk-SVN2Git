@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
   /// </summary>
   public interface IBocEnumValueRendererFactory
   {
-    IBocEnumValueRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IBocEnumValue control);
+    IBocEnumValueRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control);
 
     IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control);
   }

@@ -36,8 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
 
     private static readonly string s_startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
-    public BocCheckboxRenderer (HttpContextBase context, HtmlTextWriter writer, IBocCheckBox control)
-        : base (context, writer, control)
+    public BocCheckboxRenderer (HttpContextBase context, IBocCheckBox control)
+        : base (context, control)
     {
     }
 

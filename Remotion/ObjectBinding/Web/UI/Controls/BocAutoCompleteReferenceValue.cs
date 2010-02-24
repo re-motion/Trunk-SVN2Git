@@ -201,7 +201,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EvaluateWaiConformity ();
 
       var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
-      var renderer = factory.CreateRenderer (Context, writer, this);
+      var renderer = factory.CreateRenderer (Context, this);
       renderer.Render (writer);
     }
 

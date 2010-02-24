@@ -38,8 +38,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     protected const string c_defaultTextBoxWidth = "150pt";
     protected const int c_defaultColumns = 60;
 
-    protected BocTextValueRendererBase (HttpContextBase context, HtmlTextWriter writer, T control)
-        : base(context, writer, control)
+    protected BocTextValueRendererBase (HttpContextBase context, T control)
+        : base(context, control)
     {
     }
 

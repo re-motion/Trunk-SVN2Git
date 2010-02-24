@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> A column definition that acts as a placeholder for inserting a column for each property. </summary>
   public class BocAllPropertiesPlaceholderColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, HtmlTextWriter writer, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list)
     {
       throw new NotSupportedException (GetType().Name + " cannot be rendered directly, but must be replaced by other column definitions.");
     }

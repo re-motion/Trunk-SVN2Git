@@ -69,7 +69,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var renderer = factory.CreateRenderer (Page.Context, writer, this);
+      var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }
 

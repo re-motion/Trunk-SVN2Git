@@ -153,7 +153,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewRenderer (HttpContext, Html.Writer, _control);
+      var renderer = new SingleViewRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

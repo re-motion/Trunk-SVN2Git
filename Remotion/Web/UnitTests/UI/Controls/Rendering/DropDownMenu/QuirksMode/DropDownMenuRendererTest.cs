@@ -323,7 +323,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
       var preRenderer = new DropDownMenuPreRenderer (HttpContext, _control);
       preRenderer.PreRender();
-      var renderer = new DropDownMenuRenderer (HttpContext, Html.Writer, _control);
+      var renderer = new DropDownMenuRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

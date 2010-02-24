@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode.Factories
@@ -25,9 +24,9 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode.Factories
   /// </summary>
   public class ListMenuRendererFactory : IListMenuRendererFactory
   {
-    public IListMenuRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IListMenu control)
+    public IListMenuRenderer CreateRenderer (HttpContextBase context, IListMenu control)
     {
-      return new StandardMode.ListMenuRenderer (context, writer, control);
+      return new StandardMode.ListMenuRenderer (context, control);
     }
 
     public IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control)

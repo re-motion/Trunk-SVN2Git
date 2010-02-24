@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderTitlesRow ()
     {
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, new StubServiceLocator());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator());
       renderer.RenderTitlesRow (Html.Writer);
 
 
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, new StubServiceLocator());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator());
       renderer.RenderTitlesRow (Html.Writer);
 
 
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, new StubServiceLocator());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator());
       renderer.RenderTitlesRow (Html.Writer);
 
 
@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     [Test]
     public void RenderDataRow ()
     {
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, new StubServiceLocator());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator());
       renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
 
       var document = Html.GetResultDocument();
@@ -114,7 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     {
       List.SelectorControlCheckedState.Add (0);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, new StubServiceLocator());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator());
       renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
 
       var document = Html.GetResultDocument();
@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, new StubServiceLocator());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, new StubServiceLocator());
       renderer.RenderEmptyListDataRow (Html.Writer);
 
       var document = Html.GetResultDocument();

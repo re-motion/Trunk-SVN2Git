@@ -31,8 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
   {
     private const string c_defaultControlWidth = "100pt";
 
-    protected BocBooleanValueRendererBase (HttpContextBase context, HtmlTextWriter writer, T control)
-        : base (context, writer, control)
+    protected BocBooleanValueRendererBase (HttpContextBase context, T control)
+        : base (context, control)
     {
     }
 

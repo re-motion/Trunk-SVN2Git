@@ -28,8 +28,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   {
     private const int c_titleRowIndex = -1;
 
-    public BocSelectorColumnRenderer (HttpContextBase context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
-        : base (context, writer, list, cssClasses)
+    public BocSelectorColumnRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+        : base (context, list, cssClasses)
     {
     }
 

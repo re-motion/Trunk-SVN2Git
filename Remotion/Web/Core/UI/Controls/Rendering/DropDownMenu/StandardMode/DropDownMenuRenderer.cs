@@ -31,8 +31,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
     private const string c_dropDownIconDisabled = "DropDownMenuArrow_disabled.gif";
 
-    public DropDownMenuRenderer (HttpContextBase context, HtmlTextWriter writer, IDropDownMenu control)
-        : base (context, writer, control)
+    public DropDownMenuRenderer (HttpContextBase context, IDropDownMenu control)
+        : base (context, control)
     {
     }
 

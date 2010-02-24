@@ -74,7 +74,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.QuirksMo
       var preRenderer = new DatePickerButtonPreRenderer (HttpContext, _datePickerButton);
       preRenderer.PreRender();
 
-      var renderer = new DatePickerButtonRenderer (HttpContext, Html.Writer, _datePickerButton);
+      var renderer = new DatePickerButtonRenderer (HttpContext, _datePickerButton);
       renderer.Render (Html.Writer);
       var buttonDocument = Html.GetResultDocument();
 

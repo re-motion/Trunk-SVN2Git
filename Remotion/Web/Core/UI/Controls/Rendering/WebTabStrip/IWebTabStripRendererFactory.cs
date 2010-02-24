@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
@@ -25,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   /// </summary>
   public interface IWebTabStripRendererFactory
   {
-    IWebTabStripRenderer CreateRenderer (HttpContextBase context, HtmlTextWriter writer, IWebTabStrip control);
+    IWebTabStripRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control);
     IWebTabStripPreRenderer CreatePreRenderer (HttpContextBase context, IWebTabStrip control);
   }
 }

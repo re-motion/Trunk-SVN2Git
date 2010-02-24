@@ -33,6 +33,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
     bool IsSelected { get; }
     bool EvaluateEnabled ();
 
-    IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, HtmlTextWriter writer, IWebTabStrip tabStrip);
+    IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, IWebTabStrip tabStrip);
   }
 }
