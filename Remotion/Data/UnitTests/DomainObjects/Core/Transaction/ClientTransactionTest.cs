@@ -596,7 +596,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
       customer.Orders.Add (Order.GetObject (DomainObjectIDs.Order2));
 
-      customer.Orders.SetIsReadOnly (true);
+      DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly (customer.Orders);
       ClientTransactionMock.Rollback ();
 
       Assert.IsTrue (customer.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders").IsReadOnly);

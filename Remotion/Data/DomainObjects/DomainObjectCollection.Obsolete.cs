@@ -109,6 +109,7 @@ namespace Remotion.Data.DomainObjects
         + "contents of a collection without raising events. To hook commit or rollback events, override Commit or Rollback. (1.13.37)", true)]
     protected internal virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
+      throw new NotImplementedException ();
     }
 
     [Obsolete (
@@ -116,6 +117,14 @@ namespace Remotion.Data.DomainObjects
         + "wrapper for a DomainObjectCollection. To create a new read-only DomainObjectCollection, use Clone (true) or "
         + "DomainObjectCollectionFactory.CreateReadOnlyCollection. (1.13.48)", true)]
     public DomainObjectCollection AsReadOnly ()
+    {
+      throw new NotImplementedException ();
+    }
+
+    [Obsolete (
+        "This method has been removed. Create a new DomainObjectCollection via Clone (true) or Clone (false) rather than changing the read-only "
+        + "property of an existing collection. (1.13.48)", true)]
+    protected void SetIsReadOnly (bool isReadOnly)
     {
       throw new NotImplementedException ();
     }

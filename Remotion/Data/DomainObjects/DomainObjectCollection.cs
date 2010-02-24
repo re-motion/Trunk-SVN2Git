@@ -168,7 +168,6 @@ namespace Remotion.Data.DomainObjects
     public event EventHandler Deleted;
 
     private IDomainObjectCollectionData _dataStrategy; // holds the actual data represented by this collection
-    private bool _isReadOnly;
     
     /// <summary>
     /// Initializes a new <see cref="DomainObjectCollection" />.
@@ -240,7 +239,7 @@ namespace Remotion.Data.DomainObjects
     /// </returns>
     public bool IsReadOnly
     {
-      get { return _isReadOnly || _dataStrategy.IsReadOnly; }
+      get { return _dataStrategy.IsReadOnly; }
     }
 
     /// <summary>
@@ -646,7 +645,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType)
+      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType && !IsReadOnly && !endPoint.OppositeDomainObjects.IsReadOnly)
         throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
 
       if (GetType () != endPoint.OppositeDomainObjects.GetType ())
@@ -664,16 +663,6 @@ namespace Remotion.Data.DomainObjects
           new Transformer (endPoint.OppositeDomainObjects),
           new Transformer (this),
           endPoint.OppositeDomainObjects._dataStrategy.GetDataStore());
-    }
-
-    /// <summary>
-    /// Changes the <see cref="IsReadOnly"/> flag which controls whether this collection is read-only.
-    /// </summary>
-    /// <param name="isReadOnly">If set to <see langword="true"/>, the collection is made read-only. If set to <see langword="false" />,
-    /// the collection is made modifiable.</param>
-    protected void SetIsReadOnly (bool isReadOnly)
-    {
-      _isReadOnly = isReadOnly;
     }
 
     /// <summary>

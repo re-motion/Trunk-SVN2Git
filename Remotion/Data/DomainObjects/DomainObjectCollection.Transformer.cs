@@ -40,8 +40,6 @@ namespace Remotion.Data.DomainObjects
       public void TransformToAssociated (ICollectionEndPoint endPoint)
       {
         var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData ();
-        Assertion.IsTrue (endPointDelegatingCollectionData.RequiredItemType == Collection.RequiredItemType);
-
         Collection._dataStrategy = endPointDelegatingCollectionData;
       }
 

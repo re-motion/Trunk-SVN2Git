@@ -65,14 +65,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
 
       var dataStore = (DomainObjectCollectionData) 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection).GetDataStore();
+          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection).GetDataStore();
       long version = dataStore.Version;
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (deserializedCollection, typeof (Order));
       var deserializedDataStore = (DomainObjectCollectionData)
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (deserializedCollection).GetDataStore ();
+          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (deserializedCollection).GetDataStore ();
       Assert.AreEqual (version, deserializedDataStore.Version);
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedEndPoint = deserializedTransaction.DataManager.RelationEndPointMap[endPointID];
       Assert.That (deserializedCollection.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
 
-      var deserializedData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (deserializedCollection);
+      var deserializedData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (deserializedCollection);
       DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (deserializedData);
 
       Assert.That (collection.Select (obj => obj.ID).ToArray (), Is.EqualTo (relatedIDs));

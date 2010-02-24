@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       // old collection got a new data store...
       var dataStoreOfOldOpposites = 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldOpposites).GetDataStore();
+          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (oldOpposites).GetDataStore();
       Assert.That (dataStoreOfOldOpposites, Is.Not.SameAs (originalDataStoreOfOldOpposites));
 
       // with the data it had before!
@@ -166,10 +166,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetOppositeCollectionAndNotify_SourceCollection_IsReadOnly ()
     {
+      DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly (_customerEndPoint.OppositeDomainObjects);
+
       var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2 };
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
+      Assert.That (oldOpposites.IsReadOnly, Is.True);
 
-      ((OrderCollection) _customerEndPoint.OppositeDomainObjects).SetIsReadOnly (true);
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
@@ -179,10 +181,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetOppositeCollectionAndNotify_TargetCollection_IsReadOnly ()
     {
-      var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2 };
+      var newOpposites = new OrderCollection { _orderWithoutOrderItem, _order2 }.Clone (true);
+      Assert.That (newOpposites.IsReadOnly, Is.True);
       var oldOpposites = _customerEndPoint.OppositeDomainObjects;
 
-      newOpposites.SetIsReadOnly (true);
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
@@ -271,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
       var oldCollectionDataStore = 
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
+          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
 
       var newCollection = new OrderCollection { _order2 };
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
@@ -308,7 +310,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_ReadOnly ()
     {
       _customerEndPoint.OppositeDomainObjects.Add (_order2);
-      ((OrderCollection) _customerEndPoint.OppositeDomainObjects).SetIsReadOnly (true);
+      DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly(_customerEndPoint.OppositeDomainObjects);
+
+      Assert.That (_customerEndPoint.OppositeDomainObjects.IsReadOnly, Is.True);
 
       _customerEndPoint.Rollback();
 
@@ -343,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var oldCollection = _customerEndPoint.OppositeDomainObjects;
       var oldCollectionDataStore =
-          DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
+          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
 
       var newCollection = new OrderCollection { _order2 };
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
@@ -362,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_ReadOnly ()
     {
       _customerEndPoint.OppositeDomainObjects.Add (_order2);
-      ((OrderCollection) _customerEndPoint.OppositeDomainObjects).SetIsReadOnly (true);
+      DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly(_customerEndPoint.OppositeDomainObjects);
 
       _customerEndPoint.Commit ();
 
@@ -374,7 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private IDomainObjectCollectionData GetDomainObjectCollectionData (DomainObjectCollection collection)
     {
-      var decorator = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var decorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
       return DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (decorator);
     }
   }

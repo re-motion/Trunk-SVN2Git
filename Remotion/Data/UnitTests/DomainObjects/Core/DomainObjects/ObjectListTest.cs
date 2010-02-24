@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var givenData = new ArgumentCheckingCollectionDataDecorator (typeof (Customer), new DomainObjectCollectionData ());
       var collection = new ObjectList<Customer> (givenData);
 
-      var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
       Assert.That (actualData, Is.SameAs (givenData));
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var givenData = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData ());
       var collection = new ObjectList<Customer> (givenData);
 
-      var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
       Assert.That (actualData, Is.SameAs (givenData));
     }
 

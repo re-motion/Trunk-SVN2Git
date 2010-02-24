@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (collection.IsReadOnly, Is.False);
       Assert.That (collection.AssociatedEndPoint, Is.Null);
 
-      var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);
+      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
       Assert.That (actualData, Is.SameAs (givenData));
     }
 
@@ -559,7 +559,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
       IDomainObjectCollectionData endPointDataStore = DomainObjectCollectionDataTestHelper
-          .GetCollectionDataAndCheckType<IDomainObjectCollectionData> (endPoint.OppositeDomainObjects)
+          .GetDataStrategyAndCheckType<IDomainObjectCollectionData> (endPoint.OppositeDomainObjects)
           .GetDataStore ();
 
       var newCollection = new OrderCollection ();
@@ -577,9 +577,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       CollectionEndPoint endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
 
-      var newCollection = new OrderCollection ();
-      newCollection.SetIsReadOnly (true);
-      newCollection.CreateAssociationCommand (endPoint);
+      var newCollection = new OrderCollection ().Clone (true);
+      var result = newCollection.CreateAssociationCommand (endPoint);
+
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -617,16 +618,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (command.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
       Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
       Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
-    }
-
-    [Test]
-    public void SetIsReadOnly ()
-    {
-      Assert.That (_collection.IsReadOnly, Is.False);
-
-      PrivateInvoke.InvokeNonPublicMethod (_collection, "SetIsReadOnly", true);
-
-      Assert.That (_collection.IsReadOnly, Is.True);
     }
 
     [Test]

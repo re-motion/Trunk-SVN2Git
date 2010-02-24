@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -26,11 +27,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class DomainObjectCollectionDataTestHelper
   {
-    public static T GetCollectionDataAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
+    public static T GetDataStrategyAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
     {
       var data = PrivateInvoke.GetNonPublicField (collection, "_dataStrategy");
       Assert.That (data, Is.InstanceOfType (typeof (T)));
       return (T) data;
+    }
+
+    public static void SetDataStrategy (DomainObjectCollection collection, IDomainObjectCollectionData dataStrategy)
+    {
+      PrivateInvoke.SetNonPublicField (collection, "_dataStrategy", dataStrategy);
     }
 
     public static T GetWrappedDataAndCheckType<T> (ArgumentCheckingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
@@ -64,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       // collection => argument checking decorator => end point data => actual data store
 
-      var argCheckingDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var argCheckingDecorator = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
       Assert.That (argCheckingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (argCheckingDecorator);
@@ -78,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       // collection => argument decorator => event decorator => actual data store
 
-      var argCheckingDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var argCheckingDecorator = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
       Assert.That (argCheckingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
       var eventRaisingDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (argCheckingDecorator);
@@ -97,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       // collection => argument decorator => event decorator => actual data store
 
-      var argCheckingDecorator = GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var argCheckingDecorator = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
       Assert.That (argCheckingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
       var eventRaisingDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (argCheckingDecorator);
@@ -115,9 +121,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       // collection => read-only decorator => actual data store
 
-      var readOnlyDecorator = GetCollectionDataAndCheckType<ReadOnlyCollectionDataDecorator> (collection);
+      var readOnlyDecorator = GetDataStrategyAndCheckType<ReadOnlyCollectionDataDecorator> (collection);
 
       GetWrappedDataAndCheckType<DomainObjectCollectionData> (readOnlyDecorator);
+    }
+
+    public static void MakeCollectionReadOnly (DomainObjectCollection collection)
+    {
+      // strip off all decorators
+      var argCheckingStrategy = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> (argCheckingStrategy);
+      if (originalStrategy is EventRaisingCollectionDataDecorator)
+        originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> ((EventRaisingCollectionDataDecorator) originalStrategy);
+
+      var newStrategy = new ReadOnlyCollectionDataDecorator (originalStrategy);
+      SetDataStrategy (collection, newStrategy);
     }
   }
 }

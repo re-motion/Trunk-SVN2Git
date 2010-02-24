@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var deserializedArgumentCheckingData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<ArgumentCheckingCollectionDataDecorator> (
+      var deserializedArgumentCheckingData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (
           deserializedEndPoint.OppositeDomainObjects);
       var deserializedDelegatingData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (
           deserializedArgumentCheckingData);

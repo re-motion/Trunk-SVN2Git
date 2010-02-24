@@ -38,10 +38,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
         : base(dataStrategy)
     {
     }
-
-    public new void SetIsReadOnly (bool isReadOnly)
-    {
-      base.SetIsReadOnly (isReadOnly);
-    }
   }
 }
