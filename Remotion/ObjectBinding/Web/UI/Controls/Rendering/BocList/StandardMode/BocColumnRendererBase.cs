@@ -244,7 +244,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       if (!List.IsColumnVisible (Column))
         return;
 
-      string cssClassTableCell = GetCssClassTableCell (dataRowRenderEventArgs.IsOddRow);
+      string cssClassTableCell = CssClasses.GetDataCell (dataRowRenderEventArgs.IsOddRow);
 
       if (!StringUtility.IsNullOrEmpty (Column.CssClass))
         cssClassTableCell += " " + Column.CssClass;
@@ -291,17 +291,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       if (!hasAlternateText)
         icon.AlternateText = string.Empty;
-    }
-
-    //TODO: Remove code duplication with BocListRendererBase
-    protected string GetCssClassTableCell (bool isOddRow)
-    {
-      string cssClassTableCell;
-      if (isOddRow)
-        cssClassTableCell = CssClasses.DataCellOdd;
-      else
-        cssClassTableCell = CssClasses.DataCellEven;
-      return cssClassTableCell;
     }
   }
 }

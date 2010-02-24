@@ -33,9 +33,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <summary>Entity definition for whitespace separating controls, e.g. icons from following text</summary>
     protected const string c_whiteSpace = "&nbsp;";
 
-    /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
-    protected const int c_designModeDummyColumnCount = 3;
-
     /// <summary>
     /// Constructor initializing the renderer with the <see cref="BocList"/> rendering object and the
     /// <see cref="HtmlTextWriter"/> rendering target.
@@ -90,17 +87,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       if (!hasAlternateText)
         icon.AlternateText = string.Empty;
-    }
-
-    //TODO: Remove code duplication with BocColumnRendererBase
-    protected string GetCssClassTableCell (bool isOddRow)
-    {
-      string cssClassTableCell;
-      if (isOddRow)
-        cssClassTableCell = CssClasses.DataCellOdd;
-      else
-        cssClassTableCell = CssClasses.DataCellEven;
-      return cssClassTableCell;
     }
 
     public override sealed string CssClassBase

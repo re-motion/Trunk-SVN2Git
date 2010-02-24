@@ -28,17 +28,45 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// Responsible for rendering single data rows or the title row of a specific <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocRowRenderer : BocListRendererBase, IBocRowRenderer
+  public class BocRowRenderer : IBocRowRenderer
   {
     /// <summary>Text displayed when control is displayed in desinger and is read-only has no contents.</summary>
-    private const string c_designModeDummyColumnTitle = "Column Title {0}";
+    public const string DesignModeDummyColumnTitle = "Column Title {0}";
 
+    /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
+    public const int DesignModeDummyColumnCount = 3;
+
+    private readonly HttpContextBase _context;
+    private readonly IBocList _list;
+    private readonly CssClassContainer _cssClasses;
     private readonly IServiceLocator _serviceLocator;
 
     public BocRowRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
-        : base (context, list, cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      _context = context;
+      _list = list;
+      _cssClasses = cssClasses;
       _serviceLocator = serviceLocator;
+    }
+
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    public IBocList List
+    {
+      get { return _list; }
+    }
+
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
     }
 
     public IServiceLocator ServiceLocator
@@ -51,12 +79,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
     {
       return column.GetRenderer (ServiceLocator, Context, List);
-    }
-
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      throw new NotImplementedException ();
     }
 
     public void RenderTitlesRow (HtmlTextWriter writer)
@@ -85,10 +107,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       if (ControlHelper.IsDesignMode (List) && List.GetColumns().Length == 0)
       {
-        for (int i = 0; i < c_designModeDummyColumnCount; i++)
+        for (int i = 0; i < DesignModeDummyColumnCount; i++)
         {
           writer.RenderBeginTag (HtmlTextWriterTag.Td);
-          writer.Write (string.Format (c_designModeDummyColumnTitle, i + 1));
+          writer.Write (String.Format (DesignModeDummyColumnTitle, i + 1));
           writer.RenderEndTag();
         }
       }
@@ -157,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
       string cssClassTableRow = GetCssClassTableRow (isChecked);
-      string cssClassTableCell = GetCssClassTableCell (isOddRow);
+      string cssClassTableCell = CssClasses.GetDataCell (isOddRow);
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       writer.RenderBeginTag (HtmlTextWriterTag.Tr);

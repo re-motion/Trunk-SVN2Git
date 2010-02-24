@@ -245,7 +245,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       //  Design-mode and empty table
       if (ControlHelper.IsDesignMode (List) && renderColumns.Length == 0)
       {
-        for (int i = 0; i < c_designModeDummyColumnCount; i++)
+        for (int i = 0; i < BocRowRenderer.DesignModeDummyColumnCount; i++)
         {
           writer.RenderBeginTag (HtmlTextWriterTag.Col);
           writer.RenderEndTag();

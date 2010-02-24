@@ -177,5 +177,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
     {
       get { return "bocListCommandText"; }
     }
+
+    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s data rows. </summary>
+    /// <param name="isOddRow"><see langword="true" /> for rows with an odd row-index, otherwise <see langword="false" />.</param>
+    /// <returns><see cref="DataCellOdd"/> if <paramref name="isOddRow"/> is <see langword="true" />, otherwise <see cref="DataCellEven"/>.</returns>
+    public string GetDataCell (bool isOddRow)
+    {
+      if (isOddRow)
+        return DataCellOdd;
+      else
+        return DataCellEven;
+    }
   }
 }
