@@ -24,16 +24,36 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// <summary>
   /// Responsible for rendering the index column of a <see cref="IBocList"/>.
   /// </summary>
-  public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
+  public class BocIndexColumnRenderer : IBocIndexColumnRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly IBocList _list;
+    private readonly CssClassContainer _cssClasses;
+
     public BocIndexColumnRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
-        : base (context, list, cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+
+      _context = context;
+      _list = list;
+      _cssClasses = cssClasses;
     }
 
-    public override void Render (HtmlTextWriter writer)
+    public HttpContextBase Context
     {
-      throw new NotImplementedException ();
+      get { return _context; }
+    }
+
+    public IBocList List
+    {
+      get { return _list; }
+    }
+
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
     }
 
     public void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)

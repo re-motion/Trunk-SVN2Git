@@ -15,27 +15,48 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
-using System.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
   /// <summary>
   /// Responsible for rendering the cells containing the row selector controls.
   /// </summary>
-  public class BocSelectorColumnRenderer : BocListRendererBase, IBocSelectorColumnRenderer
+  public class BocSelectorColumnRenderer : IBocSelectorColumnRenderer
   {
     private const int c_titleRowIndex = -1;
+    protected const string c_whiteSpace = "&nbsp;";
+
+    private readonly HttpContextBase _context;
+    private readonly IBocList _list;
+    private readonly CssClassContainer _cssClasses;
 
     public BocSelectorColumnRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
-        : base (context, list, cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+
+      _context = context;
+      _list = list;
+      _cssClasses = cssClasses;
     }
 
-    public override void Render (HtmlTextWriter writer)
+    public HttpContextBase Context
     {
-      throw new NotImplementedException();
+      get { return _context; }
+    }
+
+    public IBocList List
+    {
+      get { return _list; }
+    }
+
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
     }
 
     public void RenderDataCell (HtmlTextWriter writer, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell)
@@ -71,6 +92,80 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       else
         writer.Write (c_whiteSpace);
       writer.RenderEndTag();
+    }
+
+    /// <summary> Renders a check-box or a radio-button used for row selection. </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="id"> The <see cref="string"/> rendered into the <c>id</c> and <c>name</c> attributes. </param>
+    /// <param name="value"> The value of the check-box or radio-button. </param>
+    /// <param name="isChecked"> 
+    ///   <see langword="true"/> if the check-box or radio-button is checked. 
+    /// </param>
+    /// <param name="isSelectAllSelectorControl"> 
+    ///   <see langword="true"/> if the rendered check-box or radio-button is in the title row.
+    /// </param>
+    private void RenderSelectorControl (HtmlTextWriter writer, string id, string value, bool isChecked, bool isSelectAllSelectorControl)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
+
+      if (List.Selection == RowSelection.SingleRadioButton)
+        writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
+      else
+        writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
+      writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
+
+      if (isChecked)
+        writer.AddAttribute (HtmlTextWriterAttribute.Checked, "checked");
+      if (List.EditModeController.IsRowEditModeActive)
+        writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
+
+      if (isSelectAllSelectorControl)
+        AddSelectAllSelectorAttributes (writer);
+      else
+        AddRowSelectorAttributes (writer);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Input);
+      writer.RenderEndTag();
+    }
+
+    private void AddRowSelectorAttributes (HtmlTextWriter writer)
+    {
+      string alternateText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.SelectRowAlternateText);
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
+
+      if (List.HasClientScript)
+      {
+        const string script = "BocList_OnSelectionSelectorControlClick();";
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+      }
+    }
+
+    private void AddSelectAllSelectorAttributes (HtmlTextWriter writer)
+    {
+      string alternateText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.SelectAllRowsAlternateText);
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
+
+      int count = 0;
+      if (List.IsPagingEnabled)
+        count = List.PageSize.Value;
+      else if (!List.IsEmptyList)
+        count = List.Value.Count;
+
+      if (List.HasClientScript)
+      {
+        string script = "BocList_OnSelectAllSelectorControlClick ("
+                        + "document.getElementById ('" + List.ClientID + "'), "
+                        + "this , '"
+                        + List.GetSelectorControlClientId (null) + "', "
+                        + count + ", "
+                        + "document.getElementById ('" + List.ListMenu.ClientID + "'));";
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+      }
     }
   }
 }
