@@ -60,6 +60,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return DataStore.RequiredItemType; }
     }
 
+    public bool IsReadOnly
+    {
+      get { return DataStore.IsReadOnly; }
+    }
+
     public ICollectionEndPoint AssociatedEndPoint
     {
       get { return _associatedEndPoint; }

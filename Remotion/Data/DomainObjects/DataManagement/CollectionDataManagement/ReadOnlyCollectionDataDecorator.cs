@@ -15,9 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
@@ -31,6 +28,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
       : base (wrappedData)
     {
+    }
+
+    public override bool IsReadOnly
+    {
+      get { return true; }
     }
 
     public override void  Clear()

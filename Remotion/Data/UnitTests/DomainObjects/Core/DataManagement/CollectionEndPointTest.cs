@@ -262,8 +262,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OriginalOppositeDomainObjectsContents.IsReadOnly, Is.True);
 
       Assert.That (
-                  _customerEndPoint.OriginalOppositeDomainObjectsContents.RequiredItemType, Is.EqualTo (
-                            _customerEndPoint.OppositeDomainObjects.RequiredItemType));
+          _customerEndPoint.OriginalOppositeDomainObjectsContents.RequiredItemType,
+          Is.Null);
     }
 
     [Test]

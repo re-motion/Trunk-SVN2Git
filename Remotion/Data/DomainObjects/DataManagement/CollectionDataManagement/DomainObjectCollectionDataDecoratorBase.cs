@@ -35,6 +35,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       get { return _wrappedData.RequiredItemType; }
     }
 
+    public virtual bool IsReadOnly
+    {
+      get { return _wrappedData.IsReadOnly; }
+    }
+
     public virtual ICollectionEndPoint AssociatedEndPoint
     {
       get { return _wrappedData.AssociatedEndPoint; }

@@ -110,5 +110,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       GetWrappedDataAndCheckType<DomainObjectCollectionData> (eventRaisingDecorator);
     }
+
+    public static void CheckReadOnlyCollectionStrategy (DomainObjectCollection collection)
+    {
+      // collection => read-only decorator => actual data store
+
+      var readOnlyDecorator = GetCollectionDataAndCheckType<ReadOnlyCollectionDataDecorator> (collection);
+
+      GetWrappedDataAndCheckType<DomainObjectCollectionData> (readOnlyDecorator);
+    }
   }
 }

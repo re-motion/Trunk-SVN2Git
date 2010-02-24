@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   {
     int Count { get; }
     Type RequiredItemType { get; }
+    bool IsReadOnly { get; }
+
     ICollectionEndPoint AssociatedEndPoint { get; }
     bool IsDataAvailable { get; }
 

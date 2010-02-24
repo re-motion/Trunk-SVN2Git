@@ -27,11 +27,13 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class DomainObjectCollectionFactoryTest : ClientTransactionBaseTest
+  public class DomainObjectCollectionFactoryTest : StandardMappingTest
   {
     private DomainObjectCollectionFactory _factory;
     private DomainObjectCollectionData _data;
     private ArgumentCheckingCollectionDataDecorator _dataWithOrderType;
+    private Order _orderA;
+    private Order _orderB;
 
     public override void SetUp ()
     {
@@ -40,6 +42,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _factory = DomainObjectCollectionFactory.Instance;
       _data = new DomainObjectCollectionData ();
       _dataWithOrderType = new ArgumentCheckingCollectionDataDecorator (typeof (Order), _data);
+
+      _orderA = DomainObjectMother.CreateFakeObject<Order> ();
+      _orderB = DomainObjectMother.CreateFakeObject<Order> ();
     }
 
     [Test]
@@ -89,10 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateCollection_ForStandaloneCollection ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
-      
-      DomainObjectCollection collection = _factory.CreateCollection (typeof (ObjectList<Order>), new[] { order1, order2 }, typeof (Order));
+      DomainObjectCollection collection = _factory.CreateCollection (typeof (ObjectList<Order>), new[] { _orderA, _orderB }, typeof (Order));
 
       Assert.That (collection, Is.Not.Null);
       Assert.That (collection.RequiredItemType, Is.EqualTo (typeof (Order)));
@@ -126,6 +128,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObjectCollection collection = _factory.CreateCollection (typeof (DomainObjectCollection), new Order[0]);
 
       Assert.That (collection.RequiredItemType, Is.Null);
+    }
+
+    [Test]
+    public void CreateReadOnlyCollection ()
+    {
+      var collection = _factory.CreateReadOnlyCollection (typeof (OrderCollection), new Order[0]);
+
+      Assert.That (collection, Is.TypeOf (typeof (OrderCollection)));
+      Assert.That (collection.IsReadOnly, Is.True);
+      Assert.That (collection, Is.Empty);
+    }
+
+    [Test]
+    public void CreateReadOnlyCollection_Contents ()
+    {
+      var collection = _factory.CreateReadOnlyCollection (typeof (OrderCollection), new[] { _orderA, _orderB });
+
+      Assert.That (collection, Is.EqualTo (new[] { _orderA, _orderB }));
+    }
+
+    [Test]
+    public void CreateReadOnlyCollection_DataStrategy ()
+    {
+      var collection = _factory.CreateReadOnlyCollection (typeof (OrderCollection), new Order[0]);
+
+      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (collection);
     }
 
     private void CheckDataStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedData)

@@ -69,6 +69,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsReadOnly ()
+    {
+      Assert.That (_readOnlyDecorator.IsReadOnly, Is.True);
+    }
+
+    [Test]
     public void AssociatedEndPoint ()
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();

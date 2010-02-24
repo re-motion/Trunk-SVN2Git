@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("dataStrategy", dataStrategy);
 
-      if (!typeof (T).IsAssignableFrom (dataStrategy.RequiredItemType))
+      if (!typeof (T).IsAssignableFrom (dataStrategy.RequiredItemType) && !dataStrategy.IsReadOnly)
       {
         var message = string.Format (
             "The given data strategy must have a required item type of '{0}' in order to be used with this collection type.",

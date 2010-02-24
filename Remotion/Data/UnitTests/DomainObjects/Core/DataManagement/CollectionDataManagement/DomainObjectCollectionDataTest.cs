@@ -66,6 +66,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsReadOnly ()
+    {
+      Assert.That (_data.IsReadOnly, Is.False);
+    }
+
+    [Test]
     public void IsDataAvailable ()
     {
       Assert.That (((IDomainObjectCollectionData) _data).IsDataAvailable, Is.True);

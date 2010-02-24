@@ -111,6 +111,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateCollection (collectionType, content, requiredItemType);
     }
 
+    /// <summary>
+    /// Creates a stand-alone read-only collection of the given <paramref name="collectionType"/> via reflection. Read-onlyness is enforced by a
+    /// <see cref="ReadOnlyCollectionDataDecorator"/>. The collection is initialized to have the given initial <paramref name="content"/>.
+    /// The collection must provide a constructor that takes a single parameter of type <see cref="IDomainObjectCollectionData"/>.
+    /// </summary>
+    /// <param name="collectionType">The type of the collection to create.</param>
+    /// <param name="content">The initial content of the collection. This must not contain duplicates or <see langword="null" /> values.</param>
+    /// <returns>A stand-alone read-only instance of <paramref name="collectionType"/>.</returns>
+    /// <remarks>
+    /// The <see cref="DomainObjectCollection"/> returned is read-only, its public APIs cannot be used to change its contents. Its contents can be
+    /// changed via <see cref="DomainObjectCollection.GetNonNotifyingData"/>, however. The collection will not raise any add/remove events.
+    /// </remarks>
+    public DomainObjectCollection CreateReadOnlyCollection (Type collectionType, IEnumerable<DomainObject> content)
+    {
+      ArgumentUtility.CheckNotNull ("collectionType", collectionType);
+      ArgumentUtility.CheckNotNull ("content", content);
+
+      var dataStrategy = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (content));
+      return CreateCollection (collectionType, dataStrategy);
+    }
+
     private Type GetRequiredItemType (Type collectionType)
     {
       if (Utilities.ReflectionUtility.CanAscribe (collectionType, typeof (IEnumerable<>)))

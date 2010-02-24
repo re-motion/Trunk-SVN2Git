@@ -79,6 +79,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsReadOnly ()
+    {
+      _wrappedDataMock.Expect (mock => mock.IsReadOnly).Return (true);
+      _wrappedDataMock.Replay ();
+
+      var result = _decorator.IsReadOnly;
+
+      _wrappedDataMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (true));
+    }
+
+    [Test]
     public void AssociatedEndPoint ()
     {
       var fakeEndPoint = _mockRepository.Stub<ICollectionEndPoint> ();

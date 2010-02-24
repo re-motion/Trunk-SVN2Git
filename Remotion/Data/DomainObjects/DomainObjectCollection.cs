@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -241,11 +240,11 @@ namespace Remotion.Data.DomainObjects
     /// </returns>
     public bool IsReadOnly
     {
-      get { return _isReadOnly; }
+      get { return _isReadOnly || _dataStrategy.IsReadOnly; }
     }
 
     /// <summary>
-    /// Gets the required <see cref="Type"/> for all members of the collection.
+    /// Gets the required <see cref="Type"/> for all elements of the collection. If the collection is read-only, this is <see langword="null" />.
     /// </summary>
     public Type RequiredItemType
     {

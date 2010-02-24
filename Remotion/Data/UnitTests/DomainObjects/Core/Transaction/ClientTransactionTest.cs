@@ -587,7 +587,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (typeof (OrderCollection), originalOrders.GetType ());
       Assert.IsTrue (originalOrders.IsReadOnly);
 
-      Assert.AreEqual (customer.Orders.RequiredItemType, originalOrders.RequiredItemType);
+      Assert.IsNull (originalOrders.RequiredItemType);
     }
 
     [Test]

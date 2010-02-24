@@ -65,6 +65,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Initialization_WithData_InvalidRequiredItemType ()
     {
       var givenData = new ArgumentCheckingCollectionDataDecorator (null, new DomainObjectCollectionData ());
+      new ObjectList<Customer> (givenData);
+    }
+
+    [Test]
+    public void Initialization_WithData_NoRequiredItemType_ReadOnly ()
+    {
+      var givenData = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData ());
       var collection = new ObjectList<Customer> (givenData);
 
       var actualData = DomainObjectCollectionDataTestHelper.GetCollectionDataAndCheckType<IDomainObjectCollectionData> (collection);

@@ -97,6 +97,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void IsReadOnly ()
+    {
+      _dataStoreStub.Stub (stub => stub.IsReadOnly).Return (false);
+      Assert.That (_data.IsReadOnly, Is.False);
+
+      _dataStoreStub.BackToRecord ();
+      _dataStoreStub.Stub (stub => stub.IsReadOnly).Return (true);
+      _dataStoreStub.Replay ();
+
+      Assert.That (_data.IsReadOnly, Is.True);
+    }
+
+    [Test]
     public void AssociatedEndPoint ()
     {
       Assert.That (_data.AssociatedEndPoint, Is.SameAs (_collectionEndPointMock));
@@ -110,6 +123,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _endPointDataStub.BackToRecord();
       _endPointDataStub.Stub (stub => stub.IsDataAvailable).Return (false);
+      _dataStoreStub.Replay ();
+
       Assert.That (_data.IsDataAvailable, Is.False);
     }
 
