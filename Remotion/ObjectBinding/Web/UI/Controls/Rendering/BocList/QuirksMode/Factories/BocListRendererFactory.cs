@@ -19,6 +19,7 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
 {
@@ -54,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       return new StandardMode.BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance);
     }
 
-    public IBocListRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
       return new StandardMode.BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
     }

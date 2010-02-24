@@ -15,10 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
 {
@@ -54,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.
       return new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance);
     }
 
-    public IBocListRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
       return new BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
     }

@@ -22,7 +22,6 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
@@ -36,7 +35,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private const string c_defaultControlWidth = "150pt";
 
     private IBocDateTimeValue _dateTimeValue;
-    private IBocDateTimeValueRenderer _renderer;
+    private BocDateTimeValueRenderer _renderer;
 
     [SetUp]
     public void SetUp ()

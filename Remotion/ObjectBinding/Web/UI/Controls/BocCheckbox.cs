@@ -98,11 +98,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       preRenderer.RegisterHtmlHeadContents(htmlHeadAppender);
     }
 
-    /// <summary>
-    /// Obtains a renderer factory from <see cref="ServiceLocator.Current"/>, creates a renderer and
-    /// calls the <see cref="IRenderer{TControl}.Render"/> method.
-    /// </summary>
-    /// <param name="writer">The writer used to render the control.</param>
     protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);

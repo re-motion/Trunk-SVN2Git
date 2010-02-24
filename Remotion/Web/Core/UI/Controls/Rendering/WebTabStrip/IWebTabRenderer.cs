@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
@@ -25,15 +24,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   /// </summary>
   public interface IWebTabRenderer
   {
-    /// <summary> Gets the <see cref="IWebTab"/> to render. </summary>
-    IWebTab Tab { get; }
-
-    /// <summary>Gets the control the <see cref="Tab"/> belongs to.</summary>
-    IWebTabStrip Control { get; }
-
-    /// <summary>Gets the context in which rendering occurs.</summary>
-    HttpContextBase Context { get; }
-
     void Render (HtmlTextWriter writer, bool isEnabled, bool isLast, WebTabStyle style);
   }
 }

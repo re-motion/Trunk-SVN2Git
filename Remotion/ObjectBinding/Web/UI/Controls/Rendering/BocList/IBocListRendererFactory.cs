@@ -16,17 +16,17 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocListRenderer"/> renderers.
+  /// Interface for factory creating renderers and prerenderers for <see cref="IBocList"/> controls.
   /// </summary>
   public interface IBocListRendererFactory
   {
-    IBocListRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);
+    IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);
     IBocListPreRenderer CreatePreRenderer (HttpContextBase context, IBocList list);
   }
 }

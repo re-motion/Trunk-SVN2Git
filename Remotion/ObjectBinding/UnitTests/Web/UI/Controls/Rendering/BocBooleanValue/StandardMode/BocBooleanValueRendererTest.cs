@@ -21,7 +21,6 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode;
 using System.Web;
 using Remotion.Web.Infrastructure;
@@ -46,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private string _keyDownScript;
     private const string _dummyScript = "return false;";
     private IBocBooleanValue _booleanValue;
-    private IBocBooleanValueRenderer _renderer;
+    private BocBooleanValueRenderer _renderer;
 
     [SetUp]
     public void SetUp ()

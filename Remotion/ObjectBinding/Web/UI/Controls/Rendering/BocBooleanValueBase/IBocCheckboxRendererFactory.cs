@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocCheckboxRenderer"/> renderers.
+  /// Interface for factory creating renderers and prerenderers for <see cref="IBocCheckBox"/> controls.
   /// </summary>
   public interface IBocCheckboxRendererFactory
   {
-    IBocCheckboxRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control);
 
     IBocCheckboxPreRenderer CreatePreRenderer (HttpContextBase context, IBocCheckBox control);
   }

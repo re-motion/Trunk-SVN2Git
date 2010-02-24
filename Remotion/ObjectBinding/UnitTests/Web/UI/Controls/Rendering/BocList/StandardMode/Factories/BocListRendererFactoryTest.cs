@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
@@ -85,7 +86,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void CreateBocListRenderer ()
     {
       IBocListRendererFactory factory = new BocListRendererFactory();
-      IBocListRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
+      IRenderer renderer = factory.CreateRenderer (HttpContext, List, new StubServiceLocator());
 
       Assert.IsInstanceOfType (typeof (BocListRenderer), renderer);
       Assert.AreSame (List, ((BocListRenderer) renderer).List);

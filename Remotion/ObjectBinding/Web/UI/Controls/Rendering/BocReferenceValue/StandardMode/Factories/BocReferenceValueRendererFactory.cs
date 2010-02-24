@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode.Factories
 {
@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
   /// </summary>
   public class BocReferenceValueRendererFactory : IBocReferenceValueRendererFactory
   {
-    public IBocReferenceValueRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control)
     {
       return new BocReferenceValueRenderer (context, control);
     }

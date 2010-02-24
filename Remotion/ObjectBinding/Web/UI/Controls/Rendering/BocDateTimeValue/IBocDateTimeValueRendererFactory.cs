@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocDateTimeValueRenderer"/> renderers.
+  /// Interface for factory creating renderers and prerenderers for <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
   public interface IBocDateTimeValueRendererFactory
   {
-    IBocDateTimeValueRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control);
     IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control);
   }
 }

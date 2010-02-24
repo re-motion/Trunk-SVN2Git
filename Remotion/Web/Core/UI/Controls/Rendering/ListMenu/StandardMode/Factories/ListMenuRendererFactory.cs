@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories
   /// </summary>
   public class ListMenuRendererFactory : IListMenuRendererFactory
   {
-    public IListMenuRenderer CreateRenderer (HttpContextBase context, IListMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IListMenu control)
     {
       return new ListMenuRenderer (context, control);
     }

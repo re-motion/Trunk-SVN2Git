@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
       return new StandardMode.MenuTabRenderer (context, control, tab);
     }
 
-    public ITabbedMenuRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
     {
       return new StandardMode.TabbedMenuRenderer (context, control);
     }

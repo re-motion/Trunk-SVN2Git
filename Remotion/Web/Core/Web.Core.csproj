@@ -167,7 +167,6 @@
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRenderer.cs" />
@@ -175,7 +174,6 @@
     <Compile Include="UI\Controls\Rendering\DropDownMenu\DropDownMenuPreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenu.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRenderer.cs" />
@@ -187,7 +185,6 @@
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\ListMenuPreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\ListMenuRendererFactory.cs" />
@@ -199,7 +196,6 @@
     <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
@@ -210,7 +206,6 @@
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuPreRenderer.cs" />
@@ -219,7 +214,6 @@
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\TabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewPreRenderer.cs" />
@@ -228,7 +222,6 @@
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTab.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButton.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButtonPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButtonRendererFactory.cs" />
@@ -241,7 +234,6 @@
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStrip.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\WebTabStripRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripPreRenderer.cs" />

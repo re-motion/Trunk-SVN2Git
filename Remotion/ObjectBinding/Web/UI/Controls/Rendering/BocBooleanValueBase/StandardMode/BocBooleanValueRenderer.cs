@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
   /// <seealso cref="IBocBooleanValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocBooleanValueRenderer.xml' path='BocBooleanValueRenderer/Class'/>
-  public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>, IBocBooleanValueRenderer
+  public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>
   {
     private const string c_nullString = "null";
 

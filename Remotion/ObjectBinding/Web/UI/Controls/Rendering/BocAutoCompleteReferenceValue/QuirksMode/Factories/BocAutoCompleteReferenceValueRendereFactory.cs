@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode.Factories
 {
@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       return new BocAutoCompleteReferenceValuePreRenderer (context, control);
     }
 
-    public IBocAutoCompleteReferenceValueRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
     {
       return new BocAutoCompleteReferenceValueRenderer (context, control);
     }

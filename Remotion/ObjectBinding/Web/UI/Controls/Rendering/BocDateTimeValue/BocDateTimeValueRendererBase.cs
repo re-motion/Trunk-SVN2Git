@@ -24,7 +24,7 @@ using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 {
-  public abstract class BocDateTimeValueRendererBase : BocRendererBase<IBocDateTimeValue>, IBocDateTimeValueRenderer
+  public abstract class BocDateTimeValueRendererBase : BocRendererBase<IBocDateTimeValue>
   {
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";

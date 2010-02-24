@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
   /// </summary>
   public class SingleViewRendererFactory : ISingleViewRendererFactory
   {
-    public ISingleViewRenderer CreateRenderer (HttpContextBase context, ISingleView control)
+    public IRenderer CreateRenderer (HttpContextBase context, ISingleView control)
     {
       return new SingleViewRenderer (context, control);
     }

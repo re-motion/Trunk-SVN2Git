@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode.Factories
 {
@@ -25,9 +26,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
   /// </summary>
   public class BocEnumValueRendererFactory : IBocEnumValueRendererFactory
   {
-    public IBocEnumValueRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
     {
-      return new StandardMode.BocEnumValueRenderer (context, control);
+      return new BocEnumValueRenderer (context, control);
     }
 
     public IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control)

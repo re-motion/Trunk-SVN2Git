@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories
       return new MenuTabRenderer (context, control, tab);
     }
 
-    public ITabbedMenuRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
     {
       return new TabbedMenuRenderer (context, control);
     }

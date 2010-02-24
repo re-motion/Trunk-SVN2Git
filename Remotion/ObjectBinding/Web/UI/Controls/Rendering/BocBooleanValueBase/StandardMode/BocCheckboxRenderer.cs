@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
-  public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>, IBocCheckboxRenderer
+  public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 
@@ -26,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IBocTextValueRenderer
+  public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>
   {
     public BocTextValueRenderer (HttpContextBase context, IBocTextValue control)
         : base (context, control)
@@ -36,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     protected override Label GetLabel ()
     {
       Label label = new Label { Text = Control.Text };
-      label.ID = Control.GetTextBoxClientID ();
+      label.ID = Control.GetTextBoxClientID();
       label.EnableViewState = false;
 
       string text;
@@ -57,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
       {
         if (Control.IsDesignMode)
         {
-          text = BocTextValueRendererBase<IBocTextValue>.c_designModeEmptyLabelContents;
+          text = c_designModeEmptyLabelContents;
           //  Too long, can't resize in designer to less than the content's width
           //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
         }

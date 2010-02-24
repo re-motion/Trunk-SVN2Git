@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
   /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="BocReferenceValue"/> controls.
+  /// Interface for factory creating renderers and prerenderers for <see cref="IBocReferenceValue"/> controls.
   /// </summary>
   public interface IBocReferenceValueRendererFactory
   {
-    IBocReferenceValueRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control);
 
     IBocReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocReferenceValue control);
   }

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 
@@ -26,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// Provides a label for rendering a <see cref="BocMultilineTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IBocMultilineTextValueRenderer
+  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>
   {
     public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control)
         : base (context, control)
@@ -51,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
       {
         if (Control.IsDesignMode)
         {
-          text = BocTextValueRendererBase<IBocMultilineTextValue>.c_designModeEmptyLabelContents;
+          text = c_designModeEmptyLabelContents;
           //  Too long, can't resize in designer to less than the content's width
           //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
         }

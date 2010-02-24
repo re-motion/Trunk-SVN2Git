@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factorie
   /// </summary>
   public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
-    public ITabbedMultiViewRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control)
     {
       return new TabbedMultiViewRenderer (context, control);
     }

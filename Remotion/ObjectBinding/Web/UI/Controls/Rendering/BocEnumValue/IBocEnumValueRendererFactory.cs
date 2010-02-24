@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocEnumValueRenderer"/> renderers.
+  /// Interface for factory creating renderers and prerenderers for <see cref="IBocEnumValue"/> controls.
   /// </summary>
   public interface IBocEnumValueRendererFactory
   {
-    IBocEnumValueRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control);
 
     IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control);
   }

@@ -20,7 +20,6 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode;
 using System.Web;
 using Remotion.Web.Infrastructure;
@@ -41,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private IBocCheckBox _checkbox;
     private string _startupScript;
-    private IBocCheckboxRenderer _renderer;
+    private BocCheckboxRenderer _renderer;
 
     [SetUp]
     public void SetUp ()

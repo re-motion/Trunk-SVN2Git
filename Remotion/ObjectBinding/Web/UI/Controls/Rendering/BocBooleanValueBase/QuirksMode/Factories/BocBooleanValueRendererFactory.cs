@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode.Factories
 {
@@ -25,9 +26,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
   /// </summary>
   public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory, IBocCheckboxRendererFactory
   {
-    IBocBooleanValueRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, IBocBooleanValue control)
+    IRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, IBocBooleanValue control)
     {
-      return new StandardMode.BocBooleanValueRenderer (context, control);
+      return new BocBooleanValueRenderer (context, control);
     }
 
     public IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control)
@@ -35,9 +36,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       return new BocBooleanValuePreRenderer (context, control);
     }
 
-    IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, IBocCheckBox control)
+    IRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, IBocCheckBox control)
     {
-      return new StandardMode.BocCheckboxRenderer (context, control);
+      return new BocCheckboxRenderer (context, control);
     }
 
     public IBocCheckboxPreRenderer CreatePreRenderer (HttpContextBase context, IBocCheckBox control)

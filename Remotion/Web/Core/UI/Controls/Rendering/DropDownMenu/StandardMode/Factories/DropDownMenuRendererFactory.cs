@@ -29,7 +29,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
       return new DropDownMenuPreRenderer (context, control);
     }
 
-    public IDropDownMenuRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control)
     {
       return new DropDownMenuRenderer (context, control);
     }

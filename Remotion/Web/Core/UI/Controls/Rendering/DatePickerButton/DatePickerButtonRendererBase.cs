@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
-  public abstract class DatePickerButtonRendererBase : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer
+  public abstract class DatePickerButtonRendererBase : RendererBase<IDatePickerButton>
   {
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";
 

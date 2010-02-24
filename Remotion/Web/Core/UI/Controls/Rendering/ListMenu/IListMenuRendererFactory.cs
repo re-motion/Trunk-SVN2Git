@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu
   /// </summary>
   public interface IListMenuRendererFactory
   {
-    IListMenuRenderer CreateRenderer (HttpContextBase context, IListMenu control);
+    IRenderer CreateRenderer (HttpContextBase context, IListMenu control);
     IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control);
   }
 }

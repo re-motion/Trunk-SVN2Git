@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
   /// </summary>
   public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IWebTabStripRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control)
     {
       return new StandardMode.WebTabStripRenderer (context, control);
     }

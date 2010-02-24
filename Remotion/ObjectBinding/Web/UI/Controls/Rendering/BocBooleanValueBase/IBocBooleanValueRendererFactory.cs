@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocBooleanValueRenderer"/> renderers.
+  /// Interface for factory creating renderers and prerenderers for <see cref="IBocBooleanValue"/> controls.
   /// </summary>
   public interface IBocBooleanValueRendererFactory
   {
-    IBocBooleanValueRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control);
 
     IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control);
   }

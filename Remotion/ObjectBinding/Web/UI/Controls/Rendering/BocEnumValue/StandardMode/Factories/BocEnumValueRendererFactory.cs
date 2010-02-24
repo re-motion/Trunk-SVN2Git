@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode.Factories
 {
@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
   /// </summary>
   public class BocEnumValueRendererFactory : IBocEnumValueRendererFactory
   {
-    public IBocEnumValueRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
     {
       return new BocEnumValueRenderer (context, control);
     }

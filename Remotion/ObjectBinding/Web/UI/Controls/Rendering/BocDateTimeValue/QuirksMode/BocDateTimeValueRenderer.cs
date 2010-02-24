@@ -21,12 +21,13 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocDateTimeValue"/> controls, but not for the included <see cref="IDatePickerButton"/>.
-  /// For that, see <see cref="IDatePickerButtonRenderer"/>.
+  /// For that, see <see cref="DatePickerButtonRenderer"/>.
   /// <seealso cref="IBocDateTimeValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>

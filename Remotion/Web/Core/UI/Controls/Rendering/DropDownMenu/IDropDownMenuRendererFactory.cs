@@ -22,6 +22,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
   public interface IDropDownMenuRendererFactory
   {
     IDropDownMenuPreRenderer CreatePreRenderer (HttpContextBase context, IDropDownMenu control);
-    IDropDownMenuRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control);
+    IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control);
   }
 }

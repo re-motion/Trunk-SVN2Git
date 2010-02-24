@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// <seealso cref="BocListNavigationBlockRenderer"/>
   /// <seealso cref="BocListRendererFactory"/>
   /// <seealso cref="BocListMenuBlockRenderer"/>
-  public class BocListRenderer : BocListRendererBase, IBocListRenderer
+  public class BocListRenderer : BocListRendererBase
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";

@@ -16,23 +16,15 @@
 // 
 using System;
 using System.Web.UI;
-using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
   /// <summary>
-  /// Base interface for all renderers able to render <see cref="IControl"/> objects.
+  /// Declares the interface needed to provide a spcific rendering implementation for <see cref="IControl"/>.
   /// </summary>
-  public interface IRenderer<TControl>
-      where TControl : IControl
+  public interface IRenderer
   {
-    /// <summary>Gets the control to render.</summary>
-    TControl Control { get; }
-
-    /// <summary>Gets the context in which rendering occurs.</summary>
-    HttpContextBase Context { get; }
-
-    /// <summary>Renders the <see cref="Control"/> using the <paramref name="writer"/> in the given <see cref="Context"/>.</summary>
+    /// <summary>Renders the markup for the control into the <paramref name="writer"/> provided during the invocation.</summary>
     void Render (HtmlTextWriter writer);
   }
 }

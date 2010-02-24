@@ -98,7 +98,7 @@
         is required to save the value back into the data source.
       </para>
       <para>
-        Rendering of the control is done by the <see cref="IBocBooleanValueRenderer" /> obtained from the
+        Rendering of the control is done by the <see cref="Remotion.Web.UI.Controls.Rendering.IRenderer" /> obtained from the
         <see cref="IBocBooleanValueRendererFactory" /> registered in <see cref="BusinessObjectBoundWebControl.ServiceLocator"/>.
       </para>
       <list type="table">
@@ -136,7 +136,7 @@
         changed.
       </para><para>
         Evaluates the value of the <see cref="HiddenField"/> rendered in edit mode 
-        (<see cref="Remotion.Web.UI.Controls.Rendering.IRenderer{TControl}.Render"/>);
+        (<see cref="Remotion.Web.UI.Controls.Rendering.IRenderer.Render"/>);
       </para>
       <note type="inheritinfo">
         Overrive this method to change the way of detecting a changed value when read from the 

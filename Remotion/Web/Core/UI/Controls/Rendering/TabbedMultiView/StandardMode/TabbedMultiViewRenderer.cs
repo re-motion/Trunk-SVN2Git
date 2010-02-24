@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   /// Responsible for rendering <see cref="TabbedMultiView"/> controls in standard mode.
   /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
-  public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
+  public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>
   {
     public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control)
         : base (context, control)

@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocBooleanValue"/> and <see cref="IBocCheckBox"/> controls;
+  /// Responsible for creating quirks mode renderers for <see cref="IBocBooleanValue"/> and <see cref="IBocCheckBox"/> controls.
   /// </summary>
   public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory, IBocCheckboxRendererFactory
   {
-    IBocBooleanValueRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, IBocBooleanValue control)
+    IRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, IBocBooleanValue control)
     {
       return new BocBooleanValueRenderer (context, control);
     }
@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
       return new BocBooleanValuePreRenderer (context, control);
     }
 
-    IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, IBocCheckBox control)
+    IRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, IBocCheckBox control)
     {
       return new BocCheckboxRenderer (context, control);
     }

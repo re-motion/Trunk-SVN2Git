@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories
 {
@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// </summary>
   public class BocTextValueRendererFactory : IBocTextValueRendererFactory, IBocMultilineTextValueRendererFactory
   {
-    IBocTextValueRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocTextValue control)
+    IRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocTextValue control)
     {
       return new BocTextValueRenderer (context, control);
     }
@@ -35,8 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
       return new BocTextValuePreRenderer (context, control);
     }
 
-    IBocMultilineTextValueRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (
-        HttpContextBase context, IBocMultilineTextValue control)
+    IRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
     {
       return new BocMultilineTextValueRenderer (context, control);
     }

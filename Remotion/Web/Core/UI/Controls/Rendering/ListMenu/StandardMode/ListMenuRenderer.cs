@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
   /// Responsible for rendering a <see cref="ListMenu"/> control in quirks mode.
   /// <seealso cref="IListMenu"/>
   /// </summary>
-  public class ListMenuRenderer : RendererBase<IListMenu>, IListMenuRenderer
+  public class ListMenuRenderer : RendererBase<IListMenu>
   {
     protected const string c_whiteSpace = "&nbsp;";
 

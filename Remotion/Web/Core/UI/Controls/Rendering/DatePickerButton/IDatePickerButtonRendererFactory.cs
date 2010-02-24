@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   /// </summary>
   public interface IDatePickerButtonRendererFactory
   {
-    IDatePickerButtonRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control);
+    IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control);
     IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control);
 
     IDatePickerPagePreRenderer CreatePreRenderer (HttpContextBase context, DatePickerPage page);

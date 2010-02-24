@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
   /// </summary>
   public interface ITabbedMenuRendererFactory
   {
-    ITabbedMenuRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control);
+    IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control);
     ITabbedMenuPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMenu menu);
   }
 }

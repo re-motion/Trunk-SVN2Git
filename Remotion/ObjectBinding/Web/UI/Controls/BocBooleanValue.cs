@@ -100,11 +100,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    /// <summary>
-    /// Obtains a renderer factory from <see cref="BusinessObjectBoundWebControl.ServiceLocator"/>, 
-    /// creates a renderer and calls the <see cref="IRenderer{TControl}.Render"/> method.
-    /// </summary>
-    /// <param name="writer">The writer used to render the control.</param>
     protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);

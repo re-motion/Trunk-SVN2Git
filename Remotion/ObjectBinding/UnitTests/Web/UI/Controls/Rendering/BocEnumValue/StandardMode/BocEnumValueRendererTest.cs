@@ -25,7 +25,6 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode;
 using System.Web;
 using Remotion.Web.UI;
@@ -339,7 +338,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       Html.AssertTextNode (span, value.HasValue ? value.Value.ToString() : HtmlHelper.WhiteSpace, 0);
     }
 
-    private XmlNode GetAssertedSpan (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, IBocEnumValueRenderer renderer)
+    private XmlNode GetAssertedSpan (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, BocEnumValueRenderer renderer)
     {
       var div = Html.GetAssertedChildElement (document, "span", 0);
       string cssClass = _enumValue.CssClass;

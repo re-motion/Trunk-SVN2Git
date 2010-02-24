@@ -304,7 +304,6 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\BocAutoCompleteReferenceValuePreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\BocAutoCompleteReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\BocAutocompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
@@ -313,10 +312,8 @@
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocBooleanValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocCheckboxPreRenderer.cs" />
@@ -329,7 +326,6 @@
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\Factories\BocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\BocDateTimeValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValueRendererFactory.cs" />
@@ -338,7 +334,6 @@
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\Factories\BocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\BocEnumValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\Factories\BocEnumValueRendererFactory.cs" />
@@ -352,7 +347,6 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocListMenuBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRendererFactory.cs" />
@@ -399,16 +393,13 @@
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\Factories\BocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultiLineTextValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValuePreRenderer.cs" />
@@ -417,7 +408,6 @@
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\IBocRenderableControlRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValueRenderer.cs" />

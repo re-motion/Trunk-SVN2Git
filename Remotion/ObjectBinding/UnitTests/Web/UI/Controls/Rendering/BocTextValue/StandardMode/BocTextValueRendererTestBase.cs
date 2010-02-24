@@ -19,7 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.StandardMode
@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     private readonly Unit _height = new Unit (17, UnitType.Point);
     private readonly Unit _width = new Unit (123, UnitType.Point);
     protected T TextValue { get; set; }
-    protected IBocRenderableControlRenderer<T> Renderer { get; set; }
+    protected BocTextValueRendererBase<T> Renderer { get; set; }
 
     protected Unit Height
     {

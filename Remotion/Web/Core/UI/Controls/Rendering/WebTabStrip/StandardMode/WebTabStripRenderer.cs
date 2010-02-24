@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   /// Responsible for rendering <see cref="WebTabStrip"/> controls in quirks mode.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
-  public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
+  public class WebTabStripRenderer : RendererBase<IWebTabStrip>
   {
     public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
         : base (context, control)

@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
   /// Responsible for rendering a <see cref="TabbedMenu"/> control in quirks mode.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
+  public class TabbedMenuRenderer : RendererBase<ITabbedMenu>
   {
     public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
         : base (context, control)

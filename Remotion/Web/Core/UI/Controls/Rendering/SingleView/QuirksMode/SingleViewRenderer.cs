@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
   /// Responsible for rendering a <see cref="SingleView"/> control in quirks mode.
   /// <seealso cref="ISingleView"/>
   /// </summary>
-  public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
+  public class SingleViewRenderer : RendererBase<ISingleView>
   {
     public SingleViewRenderer (HttpContextBase context, ISingleView control)
         : base(context, control)
