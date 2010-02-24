@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialization_WithData ()
     {
-      var givenData = new ArgumentCheckingCollectionDataDecorator (typeof (Customer), new DomainObjectCollectionData ());
+      var givenData = new ModificationCheckingCollectionDataDecorator (typeof (Customer), new DomainObjectCollectionData ());
       var collection = new ObjectList<Customer> (givenData);
 
       var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "with this collection type.\r\nParameter name: dataStrategy")]
     public void Initialization_WithData_InvalidRequiredItemType ()
     {
-      var givenData = new ArgumentCheckingCollectionDataDecorator (null, new DomainObjectCollectionData ());
+      var givenData = new ModificationCheckingCollectionDataDecorator (null, new DomainObjectCollectionData ());
       new ObjectList<Customer> (givenData);
     }
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialization_WithData_DerivedRequiredItemType ()
     {
-      var givenData = new ArgumentCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData ());
+      var givenData = new ModificationCheckingCollectionDataDecorator (typeof (Order), new DomainObjectCollectionData ());
       var collection = new ObjectList<DomainObject> (givenData);
 
       Assert.That (collection.RequiredItemType, Is.SameAs (typeof (Order)));

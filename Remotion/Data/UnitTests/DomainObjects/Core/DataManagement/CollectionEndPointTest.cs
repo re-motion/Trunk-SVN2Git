@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialize_UsesEndPointDelegatingData ()
     {
-      var dataDecorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (
+      var dataDecorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (
           _customerEndPoint.OppositeDomainObjects);
       Assert.That (dataDecorator.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
       

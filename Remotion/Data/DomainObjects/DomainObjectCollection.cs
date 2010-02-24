@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("dataStore", dataStore);
       ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
 
-      return new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EventRaisingCollectionDataDecorator (eventRaiser, dataStore));
+      return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EventRaisingCollectionDataDecorator (eventRaiser, dataStore));
     }
 
     /// <summary>
@@ -553,7 +553,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected IDomainObjectCollectionData GetNonNotifyingData ()
     {
-      return new ArgumentCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore());
+      return new ModificationCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore());
     }
 
     /// <summary>

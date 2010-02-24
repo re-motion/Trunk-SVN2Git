@@ -127,10 +127,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var deserializedArgumentCheckingData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (
+      var deserializedCheckingDecorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (
           deserializedEndPoint.OppositeDomainObjects);
       var deserializedDelegatingData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (
-          deserializedArgumentCheckingData);
+          deserializedCheckingDecorator);
 
       Assert.That (deserializedDelegatingData.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedDelegatingData, "_endPointData"), 

@@ -378,7 +378,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private IDomainObjectCollectionData GetDomainObjectCollectionData (DomainObjectCollection collection)
     {
-      var decorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
+      var decorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
       return DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (decorator);
     }
   }

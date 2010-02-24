@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private DomainObjectCollectionFactory _factory;
     private DomainObjectCollectionData _data;
-    private ArgumentCheckingCollectionDataDecorator _dataWithOrderType;
+    private ModificationCheckingCollectionDataDecorator _dataWithOrderType;
     private Order _orderA;
     private Order _orderB;
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _factory = DomainObjectCollectionFactory.Instance;
       _data = new DomainObjectCollectionData ();
-      _dataWithOrderType = new ArgumentCheckingCollectionDataDecorator (typeof (Order), _data);
+      _dataWithOrderType = new ModificationCheckingCollectionDataDecorator (typeof (Order), _data);
 
       _orderA = DomainObjectMother.CreateFakeObject<Order> ();
       _orderB = DomainObjectMother.CreateFakeObject<Order> ();

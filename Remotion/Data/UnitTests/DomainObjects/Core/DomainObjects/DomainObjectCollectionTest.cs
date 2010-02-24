@@ -66,13 +66,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var dataStoreStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       var eventRaiserStub = MockRepository.GenerateStub<IDomainObjectCollectionEventRaiser> ();
       
-      var argumentCheckingDecorator = 
+      var modificationCheckingDecorator = 
           DomainObjectCollection.CreateDataStrategyForStandAloneCollection (dataStoreStub, typeof (Order), eventRaiserStub);
-      Assert.That (argumentCheckingDecorator, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
-      Assert.That (argumentCheckingDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
+      Assert.That (modificationCheckingDecorator, Is.InstanceOfType (typeof (ModificationCheckingCollectionDataDecorator)));
+      Assert.That (modificationCheckingDecorator.RequiredItemType, Is.SameAs (typeof (Order)));
 
       var eventRaisingDecorator = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (
-          (ArgumentCheckingCollectionDataDecorator) argumentCheckingDecorator);
+          (ModificationCheckingCollectionDataDecorator) modificationCheckingDecorator);
       Assert.That (eventRaisingDecorator.EventRaiser, Is.SameAs (eventRaiserStub));
       
       var dataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (eventRaisingDecorator);
@@ -460,11 +460,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var collection = new DomainObjectCollection (originalDataStub);
 
       var nonNotifyingData = (IDomainObjectCollectionData) PrivateInvoke.InvokeNonPublicMethod (collection, "GetNonNotifyingData");
-      Assert.That (nonNotifyingData, Is.InstanceOfType (typeof (ArgumentCheckingCollectionDataDecorator)));
+      Assert.That (nonNotifyingData, Is.InstanceOfType (typeof (ModificationCheckingCollectionDataDecorator)));
       Assert.That (nonNotifyingData.RequiredItemType, Is.SameAs (typeof (Customer)));
 
       var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (
-          (ArgumentCheckingCollectionDataDecorator) nonNotifyingData);
+          (ModificationCheckingCollectionDataDecorator) nonNotifyingData);
       Assert.That (wrappedData, Is.SameAs (dataStore));
     }
 
@@ -761,7 +761,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           new DomainObject[0]);
 
       var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, endPointDataStub);
-      var associatedCollection = new OrderCollection (new ArgumentCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
+      var associatedCollection = new OrderCollection (new ModificationCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
       Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));
       return associatedCollection;
     }

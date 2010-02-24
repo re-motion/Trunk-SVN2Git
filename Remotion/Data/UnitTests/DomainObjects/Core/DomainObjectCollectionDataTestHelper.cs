@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -39,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       PrivateInvoke.SetNonPublicField (collection, "_dataStrategy", dataStrategy);
     }
 
-    public static T GetWrappedDataAndCheckType<T> (ArgumentCheckingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
+    public static T GetWrappedDataAndCheckType<T> (ModificationCheckingCollectionDataDecorator decorator) where T : IDomainObjectCollectionData
     {
       var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
       Assert.That (data, Is.InstanceOfType (typeof (T)));
@@ -68,12 +67,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
     {
-      // collection => argument checking decorator => end point data => actual data store
+      // collection => checking checking decorator => end point data => actual data store
 
-      var argCheckingDecorator = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      Assert.That (argCheckingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
+      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+      Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
-      var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (argCheckingDecorator);
+      var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
 
       var endPointData = GetData (delegator);
@@ -82,12 +81,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)
     {
-      // collection => argument decorator => event decorator => actual data store
+      // collection => checking decorator => event decorator => actual data store
 
-      var argCheckingDecorator = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      Assert.That (argCheckingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
+      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+      Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
-      var eventRaisingDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (argCheckingDecorator);
+      var eventRaisingDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (checkingDecorator);
       var eventRaiserAsIndirectRaiser = eventRaisingDecorator.EventRaiser as IndirectDomainObjectCollectionEventRaiser;
 
       if (eventRaiserAsIndirectRaiser == null)
@@ -101,12 +100,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType)
     {
-      // collection => argument decorator => event decorator => actual data store
+      // collection => checking decorator => event decorator => actual data store
 
-      var argCheckingDecorator = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      Assert.That (argCheckingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
+      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+      Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
-      var eventRaisingDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (argCheckingDecorator);
+      var eventRaisingDecorator = GetWrappedDataAndCheckType<EventRaisingCollectionDataDecorator> (checkingDecorator);
       var eventRaiserAsIndirectRaiser = eventRaisingDecorator.EventRaiser as IndirectDomainObjectCollectionEventRaiser;
       
       if (eventRaiserAsIndirectRaiser == null)
@@ -129,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static void MakeCollectionReadOnly (DomainObjectCollection collection)
     {
       // strip off all decorators
-      var argCheckingStrategy = GetDataStrategyAndCheckType<ArgumentCheckingCollectionDataDecorator> (collection);
-      var originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> (argCheckingStrategy);
+      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+      var originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> (checkingDecorator);
       if (originalStrategy is EventRaisingCollectionDataDecorator)
         originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> ((EventRaisingCollectionDataDecorator) originalStrategy);
 

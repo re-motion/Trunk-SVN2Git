@@ -212,7 +212,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()
     {
       var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
-      var dataStrategy = new ArgumentCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _data));
+      var dataStrategy = new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (this, _data));
 
       return dataStrategy;
     }

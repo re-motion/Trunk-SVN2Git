@@ -21,14 +21,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
   /// Implements a decorator for <see cref="IDomainObjectCollectionData"/> that performs semantic checks on the arguments passed to 
-  /// <see cref="Insert"/>, <see cref="Replace"/>, and <see cref="Remove(Remotion.Data.DomainObjects.DomainObject)"/>.
+  /// <see cref="Insert"/>, <see cref="Replace"/>, and <see cref="Remove(Remotion.Data.DomainObjects.DomainObject)"/>. Those checks are
+  /// performed in a decorator so that they lead to exceptions before any events are raised by <see cref="EventRaisingCollectionDataDecorator"/>.
   /// </summary>
   [Serializable]
-  public class ArgumentCheckingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
+  public class ModificationCheckingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
     private readonly Type _requiredItemType;
 
-    public ArgumentCheckingCollectionDataDecorator (Type requiredItemType, IDomainObjectCollectionData wrappedData)
+    public ModificationCheckingCollectionDataDecorator (Type requiredItemType, IDomainObjectCollectionData wrappedData)
       : base (wrappedData)
     {
       _requiredItemType = requiredItemType;
