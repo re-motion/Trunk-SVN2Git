@@ -28,10 +28,5 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode.Factor
     {
       return new TabbedMultiViewRenderer (context, control);
     }
-
-    public ITabbedMultiViewPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMultiView control)
-    {
-      return new TabbedMultiViewPreRenderer (context, control);
-    }
   }
 }

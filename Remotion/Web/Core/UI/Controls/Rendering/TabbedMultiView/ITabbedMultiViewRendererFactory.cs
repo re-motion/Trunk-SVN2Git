@@ -25,6 +25,5 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
   public interface ITabbedMultiViewRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control);
-    ITabbedMultiViewPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMultiView control);
   }
 }

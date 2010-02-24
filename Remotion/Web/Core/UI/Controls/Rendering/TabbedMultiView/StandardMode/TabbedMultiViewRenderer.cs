@@ -19,11 +19,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 {
   /// <summary>
-  /// Responsible for rendering <see cref="TabbedMultiView"/> controls in standard mode.
+  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMultiView"/> controls.
   /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>
@@ -33,13 +34,38 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+
+      string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
+      string keyScript = typeof (ITabbedMultiView).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (keyStyle))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme, "TabbedMultiView.css");
+        htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+
+        string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, "ViewLayout.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
+      }
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
+      RegisterAdjustViewScript ();
+      
       AddAttributesToRender (writer);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.WrapperClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -79,6 +105,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ActiveViewClientID);
+      
       if (Control.IsDesignMode)
         writer.AddStyleAttribute ("border", "solid 1px black");
 
@@ -132,6 +160,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
     private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string defaultCssClass)
     {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID);
+      
       string cssClass = defaultCssClass;
       if (!string.IsNullOrEmpty (style.CssClass))
         cssClass = style.CssClass;
@@ -154,6 +184,17 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
       writer.RenderEndTag();
       writer.RenderEndTag();
+    }
+
+    private void RegisterAdjustViewScript ()
+    {
+      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustTabbedMultiView");
+
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (TabbedMultiViewRenderer),
+          Guid.NewGuid ().ToString (),
+          string.Format ("ViewLayout.AdjustTabbedMultiView ($('#{0}'));", Control.ClientID));
     }
 
     #region protected virtual string CssClass...

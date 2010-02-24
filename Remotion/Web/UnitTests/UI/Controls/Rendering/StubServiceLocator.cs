@@ -24,6 +24,8 @@ using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories;
+using Remotion.Web.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {
@@ -39,6 +41,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
       _instances.Add (typeof (IWebTabRendererFactory), new WebTabStripRendererFactory());
       _instances.Add (typeof (IMenuTabRendererFactory), new TabbedMenuRendererFactory ());
       _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
+      _instances.Add (typeof (IScriptUtility), MockRepository.GenerateStub<IScriptUtility>());
     }
 
     public void SetFactory<T> (T factory)

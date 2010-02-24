@@ -19,11 +19,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 {
   /// <summary>
-  /// Responsible for rendering <see cref="TabbedMultiView"/> controls in quirks mode.
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMultiView"/> controls.
   /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>
@@ -31,6 +32,21 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
     public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control)
         : base(context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      string key = typeof (ITabbedMultiView).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }
 
     public override void Render (HtmlTextWriter writer)
@@ -94,6 +110,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
     protected virtual void RenderActiveView (HtmlTextWriter writer)
     {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ActiveViewClientID + " > *:first");
+
       if (Control.IsDesignMode)
         writer.AddStyleAttribute ("border", "solid 1px black");
       Control.ActiveViewStyle.AddAttributesToRender (writer);
@@ -149,6 +167,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
     private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string cssClass)
     {
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID + " > *:first");
+
       if (string.IsNullOrEmpty (style.CssClass))
       {
         if (placeHolder.Controls.Count > 0)

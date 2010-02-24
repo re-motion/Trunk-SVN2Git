@@ -228,8 +228,8 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (context, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (context, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -343,10 +343,6 @@ namespace Remotion.Web.UI.Controls
         Views.Add (_placeHolderTabView);
 
       base.OnPreRender (e);
-
-      var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
-      preRenderer.PreRender();
     }
 
     public virtual bool IsDesignMode

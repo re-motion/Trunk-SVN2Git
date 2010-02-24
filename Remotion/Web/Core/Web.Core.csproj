@@ -214,13 +214,10 @@
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\TabbedMultiViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\Factories\TabbedMultiViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTab.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButton.cs" />
