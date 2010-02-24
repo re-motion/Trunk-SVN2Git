@@ -40,15 +40,15 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
 
-      string keyStyle = typeof (ISingleView).FullName + "_Style";
-      string keyScript = typeof (ISingleView).FullName + "_Script";
+      string keyStyle = typeof (SingleViewRenderer).FullName + "_Style";
+      string keyScript = typeof (SingleViewRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (keyStyle))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme, "SingleView.css");
+            Control, Context, typeof (SingleViewRenderer), ResourceType.Html, ResourceTheme, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (ISingleView), ResourceType.Html, "ViewLayout.js");
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (SingleViewRenderer), ResourceType.Html, "ViewLayout.js");
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
 

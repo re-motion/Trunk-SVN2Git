@@ -38,11 +38,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string key = typeof (ISingleView).FullName + "_Style";
+      string key = typeof (SingleViewRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
+            Control, Context, typeof (SingleViewRenderer), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
 
