@@ -223,7 +223,7 @@
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButton.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\QuirksMode\Factories\WebButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebButton\QuirksMode\WebButtonPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebButton\QuirksMode\WebButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\StandardMode\Factories\WebButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\StandardMode\WebButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTab.cs" />

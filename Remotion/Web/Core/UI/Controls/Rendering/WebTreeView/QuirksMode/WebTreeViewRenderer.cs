@@ -21,7 +21,8 @@ using System.Web.UI;
 namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.QuirksMode
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="IWebTreeView"/> controls.
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.
+  /// <seealso cref="IWebTreeView"/>
   /// </summary>
   public class WebTreeViewRenderer : RendererBase<IWebTreeView>
   {

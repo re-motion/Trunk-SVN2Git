@@ -22,11 +22,12 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="IWebButton"/> controls.
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebButton"/> controls.
+  /// <seealso cref="IWebButton"/>
   /// </summary>
-  public class WebButtonPreRenderer : RendererBase<IWebButton>
+  public class WebButtonRenderer : RendererBase<IWebButton>
   {
-    public WebButtonPreRenderer (HttpContextBase context, IWebButton control)
+    public WebButtonRenderer (HttpContextBase context, IWebButton control)
         : base (context, control)
     {
     }

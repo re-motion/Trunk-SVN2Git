@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode.Factories
   {
     public IRenderer CreateRenderer (HttpContextBase context, IWebButton control)
     {
-      return new WebButtonPreRenderer (context, control);
+      return new WebButtonRenderer (context, control);
     }
   }
 }

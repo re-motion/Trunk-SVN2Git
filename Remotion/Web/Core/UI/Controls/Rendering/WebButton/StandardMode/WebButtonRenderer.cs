@@ -22,7 +22,8 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="IWebButton"/> controls.
+  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebButton"/> controls.
+  /// <seealso cref="IWebButton"/>
   /// </summary>
   public class WebButtonRenderer : RendererBase<IWebButton>
   {
