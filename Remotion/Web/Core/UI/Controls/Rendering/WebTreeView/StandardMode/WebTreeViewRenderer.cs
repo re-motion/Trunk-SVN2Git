@@ -33,11 +33,11 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.StandardMode
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      string styleKey = typeof (IWebTreeView).FullName + "_Style";
+      string styleKey = typeof (WebTreeViewRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IWebTreeView), ResourceType.Html, ResourceTheme, "TreeView.css");
+            Control, Context, typeof (WebTreeViewRenderer), ResourceType.Html, ResourceTheme, "TreeView.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
