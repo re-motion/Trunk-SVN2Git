@@ -16,36 +16,21 @@
 // 
 using System;
 using System.Linq.Expressions;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.SqlBackend
 {
-  [TestFixture]
-  public class SqlTableReferenceExpressionTest
+  public class NotSupportedExpression : ExtensionExpression
   {
-    private SqlTableReferenceExpression _tableReferenceExpression;
-
-    [SetUp]
-    public void SetUp ()
+    public NotSupportedExpression (Type type)
+        : base (type)
     {
-      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTable());
     }
 
-    [Test]
-    public void Initialize ()
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTable();
-      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.Type));
-    }
-
-
-    [Test]
-    public void Accept ()
-    {
-      var expression = _tableReferenceExpression.Accept (new ExpressionTreeVisitorTest());
-      Assert.That (expression, Is.SameAs (_tableReferenceExpression));
+      return this;
     }
   }
 }
