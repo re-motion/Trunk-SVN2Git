@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -48,6 +49,9 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly RelationDefinitionCollection _relationDefinitions;
 
+    [NonSerialized]
+    private readonly DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>>  _cachedAccessorData;
+
     // construction and disposing
 
     protected ClassDefinition (string id, string entityName, string storageProviderID)
@@ -63,6 +67,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _propertyDefinitions = new PropertyDefinitionCollection (this);
       _relationDefinitions = new RelationDefinitionCollection();
+
+      _cachedAccessorData = new DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> (BuildAccessorDataDictionary);
     }
 
     // methods and properties
@@ -368,6 +374,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     
     public abstract ClassDefinition BaseClass { get; }
     public abstract ClassDefinitionCollection DerivedClasses { get; }
+    public abstract IDomainObjectCreator GetDomainObjectCreator ();
 
     public string StorageProviderID
     {
@@ -399,6 +406,13 @@ namespace Remotion.Data.DomainObjects.Mapping
     public virtual ClassDefinitionValidator GetValidator ()
     {
       return new ClassDefinitionValidator (this);
+    }
+
+    public PropertyAccessorData GetPropertyAccessorData (string propertyIdentifier)
+    {
+      PropertyAccessorData result;
+      _cachedAccessorData.Value.TryGetValue (propertyIdentifier, out result);
+      return result;
     }
 
     internal void PropertyDefinitions_Adding (object sender, PropertyDefinitionAddingEventArgs args)
@@ -484,8 +498,23 @@ namespace Remotion.Data.DomainObjects.Mapping
         derivedClass.FillAllDerivedClasses (allDerivedClasses);
       }
     }
+    
+    private Dictionary<string, PropertyAccessorData> BuildAccessorDataDictionary ()
+    {
+      var propertyDefinitions = GetPropertyDefinitions ();
+      var relationEndPointDefinitions = GetRelationEndPointDefinitions ();
 
-    public abstract IDomainObjectCreator GetDomainObjectCreator ();
+      var propertyDefinitionNames = from PropertyDefinition pd in propertyDefinitions
+                                    select pd.PropertyName;
+      var virtualRelationEndPointNames =
+          from IRelationEndPointDefinition repd in relationEndPointDefinitions
+          where repd.IsVirtual
+          select repd.PropertyName;
+
+      var allPropertyNames = propertyDefinitionNames.Concat (virtualRelationEndPointNames);
+      var allPropertyAccessorData = allPropertyNames.Select (name => new PropertyAccessorData (this, name));
+      return allPropertyAccessorData.ToDictionary (data => data.PropertyIdentifier);
+    }
 
     #region Serialization
 

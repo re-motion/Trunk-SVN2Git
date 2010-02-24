@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,7 +25,6 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTest
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
@@ -473,8 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       RelationDefinition parentClient =
           MappingConfiguration.Current.RelationDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Client.ParentClient"];
-      AnonymousRelationEndPointDefinition clientAnonymousEndPointDefinition =
-          (AnonymousRelationEndPointDefinition) parentClient.GetEndPointDefinition ("Client", null);
+      var clientAnonymousEndPointDefinition = (AnonymousRelationEndPointDefinition) parentClient.GetEndPointDefinition ("Client", null);
 
       Assert.IsFalse (clientDefinition.IsRelationEndPoint (clientAnonymousEndPointDefinition));
     }
@@ -834,7 +831,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void PropertyInfoWithSimpleProperty ()
     {
       PropertyInfo property = typeof (Order).GetProperty ("OrderNumber");
-      ReflectionBasedPropertyDefinition propertyDefinition =
+      var propertyDefinition = 
           (ReflectionBasedPropertyDefinition) _orderClass.GetPropertyDefinition (property.DeclaringType.FullName + "." + property.Name);
       Assert.AreEqual (property, propertyDefinition.PropertyInfo);
     }
@@ -905,6 +902,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var mixins = new[] { typeof (MixinA), typeof (MixinB) };
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
+    }
+
+    [Test]
+    public void GetPropertyAccessorData_ValueProperty ()
+    {
+      var data = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".OrderNumber");
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data.PropertyIdentifier, Is.EqualTo (typeof (Order) + ".OrderNumber"));
+      Assert.That (data.Kind, Is.EqualTo (PropertyKind.PropertyValue));
+    }
+
+    [Test]
+    public void GetPropertyAccessorData_RelatedObjectProperty_RealSide ()
+    {
+      var data = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".Customer");
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data.PropertyIdentifier, Is.EqualTo (typeof (Order) + ".Customer"));
+      Assert.That (data.Kind, Is.EqualTo (PropertyKind.RelatedObject));
+      Assert.That (data.RelationEndPointDefinition.IsVirtual, Is.False);
+    }
+
+    [Test]
+    public void GetPropertyAccessorData_RelatedObjectProperty_VirtualSide ()
+    {
+      var data = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".OrderTicket");
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data.PropertyIdentifier, Is.EqualTo (typeof (Order) + ".OrderTicket"));
+      Assert.That (data.Kind, Is.EqualTo (PropertyKind.RelatedObject));
+      Assert.That (data.RelationEndPointDefinition.IsVirtual, Is.True);
+    }
+
+    [Test]
+    public void GetPropertyAccessorData_RelatedCollectionProperty()
+    {
+      var data = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".OrderItems");
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data.PropertyIdentifier, Is.EqualTo (typeof (Order) + ".OrderItems"));
+      Assert.That (data.Kind, Is.EqualTo (PropertyKind.RelatedObjectCollection));
+      Assert.That (data.RelationEndPointDefinition.IsVirtual, Is.True);
+    }
+
+    [Test]
+    public void GetPropertyAccessorData_Unknown ()
+    {
+      var data = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".OrderSmell");
+
+      Assert.That (data, Is.Null);
+    }
+
+    [Test]
+    public void GetPropertyAccessorData_ItemsAreCached ()
+    {
+      var data1 = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".OrderNumber");
+      var data2 = DomainObjectIDs.Order1.ClassDefinition.GetPropertyAccessorData (typeof (Order) + ".OrderNumber");
+
+      Assert.That (data1, Is.Not.Null);
+      Assert.That (data1, Is.SameAs (data2));
     }
   }
 }

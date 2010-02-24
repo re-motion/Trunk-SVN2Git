@@ -268,15 +268,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void IsValidProperty ()
-    {
-      Assert.IsFalse (PropertyAccessorData.IsValidProperty (MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)], "Bla"));
-      Assert.IsFalse (PropertyAccessorData.IsValidProperty (MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)], "Companies"));
-      Assert.IsTrue (PropertyAccessorData.IsValidProperty (MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)],
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
-    }
-
-    [Test]
     public void Equals_True()
     {
       var data1 = CreateAccessorData (typeof (IndustrialSector), "Name");

@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -29,7 +28,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class PropertyIndexer
   {
     private readonly DomainObject _domainObject;
-    private readonly Cache<string, PropertyAccessorData> _dataCache = new Cache<string, PropertyAccessorData> ();
 
     /// <summary>
     /// Initializes a new <see cref="PropertyIndexer"/> instance. This is usually not called from the outside; instead, <see cref="PropertyIndexer"/>
@@ -65,9 +63,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-        PropertyAccessorData data = _dataCache.GetOrCreateValue (propertyName, CreatePropertyAccessorData);
-        return new PropertyAccessor (_domainObject, data, _domainObject.DefaultTransactionContext.ClientTransaction);
+        return this[propertyName, _domainObject.DefaultTransactionContext.ClientTransaction];
       }
     }
 
@@ -108,7 +104,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         ArgumentUtility.CheckNotNull ("propertyName", propertyName);
         ArgumentUtility.CheckNotNull ("transaction", transaction);
-        PropertyAccessorData data = _dataCache.GetOrCreateValue (propertyName, CreatePropertyAccessorData);
+
+        var data = _domainObject.ID.ClassDefinition.GetPropertyAccessorData (propertyName);
+        if (data == null)
+        {
+          var message = string.Format (
+              "The domain object type '{0}' does not have a mapping property named '{1}'.",
+              _domainObject.ID.ClassDefinition.ClassType, 
+              propertyName);
+          throw new ArgumentException (message, "propertyName");
+        }
+
         return new PropertyAccessor (_domainObject, data, transaction);
       }
     }
@@ -133,22 +139,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("transaction", transaction);
 
         return this[GetIdentifierFromTypeAndShortName (domainObjectType, shortPropertyName), transaction];
-      }
-    }
-
-    private PropertyAccessorData CreatePropertyAccessorData (string propertyName)
-    {
-      try
-      {
-        return new PropertyAccessorData (_domainObject.ID.ClassDefinition,
-                                         propertyName);
-      }
-      catch (ArgumentException ex)
-      {
-        throw new ArgumentException (
-            string.Format (
-                "The domain object type {0} does not have a mapping property named '{1}'.",
-                _domainObject.ID.ClassDefinition.ClassType.FullName, propertyName), "propertyName", ex);
       }
     }
 
@@ -220,7 +210,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public bool Contains (string propertyIdentifier)
     {
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
-      return PropertyAccessorData.IsValidProperty (classDefinition, propertyIdentifier);
+      return classDefinition.GetPropertyAccessorData (propertyIdentifier) != null;
     }
 
 
@@ -315,7 +305,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="PropertyKind.RelatedObject"/> and <see cref="PropertyKind.RelatedObjectCollection"/> properties.</returns>
     public IEnumerable<DomainObject> GetAllRelatedObjects ()
     {
-      foreach (PropertyAccessor property in AsEnumerable())
+      foreach (var property in AsEnumerable())
       {
         switch (property.PropertyData.Kind)
         {
@@ -326,7 +316,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             break;
           case PropertyKind.RelatedObjectCollection:
             var values = (DomainObjectCollection) property.GetValueWithoutTypeCheck ();
-            foreach (DomainObject relatedObject in values)
+            foreach (var relatedObject in values)
               yield return relatedObject;
             break;
         }

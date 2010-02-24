@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
@@ -368,8 +367,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order " 
-        + "does not have a mapping property named 'Bla'.\r\nParameter name: propertyName")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named 'Bla'.\r\n"
+        + "Parameter name: propertyName")]
     public void CurrentProperty_ThrowsOnInvalidPropertyName ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);

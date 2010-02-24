@@ -117,18 +117,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         return new Tuple<PropertyDefinition, IRelationEndPointDefinition> (propertyDefinition, relationEndPointDefinition);
     }
 
-    /// <summary>
-    /// Checks whether the given property identifier denotes an existing property on the given <see cref="Mapping.ClassDefinition"/>.
-    /// </summary>
-    /// <param name="classDefinition">The class definition to be checked.</param>
-    /// <param name="propertyID">The property to be looked for.</param>
-    /// <returns>True if <paramref name="classDefinition"/> contains a simple, related object, or related object collection property
-    /// with the given identifier; false otherwise.</returns>
-    public static bool IsValidProperty (ClassDefinition classDefinition, string propertyID)
-    {
-      return classDefinition.GetPropertyDefinition (propertyID) != null || classDefinition.GetRelationEndPointDefinition (propertyID) != null;
-    }
-
     private readonly string _propertyIdentifier;
     private readonly PropertyKind _kind;
 
