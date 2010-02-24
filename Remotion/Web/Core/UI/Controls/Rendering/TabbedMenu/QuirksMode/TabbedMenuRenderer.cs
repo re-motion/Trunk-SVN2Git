@@ -16,34 +16,35 @@
 // 
 using System;
 using System.Web;
+using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
   /// <summary>
-  /// Responsible for registering the style sheet for <see cref="WebTabStrip"/> controls in quirks mode.
-  /// <seealso cref="IWebTabStrip"/>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMenu"/> controls.
+  /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
+  public class TabbedMenuRenderer : StandardMode.TabbedMenuRenderer
   {
-    public WebTabStripPreRenderer (HttpContextBase context, IWebTabStrip control)
-        : base (context, control)
+    public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
+        : base(context, control)
     {
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      string key = typeof (IWebTabStrip).FullName + "_Style";
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      // Do not call base implementation
+      //base.RegisterHtmlHeadContents
+
+      string key = typeof (TabbedMenuRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (TabbedMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabbedMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
-    }
-
-    public override void PreRender ()
-    {
-
     }
   }
 }

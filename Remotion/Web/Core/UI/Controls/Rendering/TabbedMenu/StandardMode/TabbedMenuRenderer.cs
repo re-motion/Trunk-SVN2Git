@@ -24,7 +24,7 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="TabbedMenu"/> control in quirks mode.
+  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMenu"/> controls.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>
@@ -32,6 +32,18 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
     public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      string key = typeof (TabbedMenuRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (TabbedMenuRenderer), ResourceType.Html, ResourceTheme, "TabbedMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+      }
     }
 
     public override void Render (HtmlTextWriter writer)

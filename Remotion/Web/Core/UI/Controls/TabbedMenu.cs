@@ -101,8 +101,8 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (context, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (context, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary> Overrides the <see cref="Control.CreateChildControls"/> method. </summary>

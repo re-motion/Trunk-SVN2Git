@@ -20,11 +20,10 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
   /// <summary>
-  /// Interface for factories creating renderers and prerenderers for <see cref="WebTabStrip"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IWebTabStrip"/> controls.
   /// </summary>
   public interface IWebTabStripRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control);
-    IWebTabStripPreRenderer CreatePreRenderer (HttpContextBase context, IWebTabStrip control);
   }
 }

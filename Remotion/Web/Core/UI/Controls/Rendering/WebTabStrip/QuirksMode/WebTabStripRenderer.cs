@@ -16,35 +16,35 @@
 // 
 using System;
 using System.Web;
+using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
+namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
 {
-  public class TabbedMenuPreRenderer : PreRendererBase<ITabbedMenu>, ITabbedMenuPreRenderer
+  /// <summary>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTabStrip"/> controls.
+  /// <seealso cref="IWebTabStrip"/>
+  /// </summary>
+  public class WebTabStripRenderer : StandardMode.WebTabStripRenderer
   {
-    // constants
-    private const string c_styleFileUrl = "TabbedMenu.css";
-
-    // statics
-    private static readonly string s_styleFileKey = typeof (ITabbedMenu).FullName + "_Style";
-
-    public TabbedMenuPreRenderer (HttpContextBase context, ITabbedMenu control)
-        : base(context, control)
+    public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
+        : base (context, control)
     {
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMenu), ResourceType.Html, ResourceTheme, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
-    }
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-    public override void PreRender ()
-    {
-      
+      // Do not call base implementation
+      //base.RegisterHtmlHeadContents
+
+      string key = typeof (WebTabStripRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (WebTabStripRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
   }
 }

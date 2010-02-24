@@ -197,7 +197,6 @@
     <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\Factories\SingleViewRendererFactory.cs" />
@@ -206,9 +205,8 @@
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\Factories\TabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRendererFactory.cs" />
@@ -227,14 +225,12 @@
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStrip.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\WebTabStripRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\WebTabStripRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\MenuTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeView\IWebTreeView.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeView\IWebTreeViewRendererFactory.cs" />

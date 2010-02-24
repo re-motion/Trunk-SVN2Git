@@ -29,12 +29,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
       return new WebTabStripRenderer (context, control);
     }
 
-    public IWebTabStripPreRenderer CreatePreRenderer (HttpContextBase context, IWebTabStrip control)
-    {
-      return new WebTabStripPreRenderer (context, control);
-    }
-
-    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)
+    public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)
     {
       return new WebTabRenderer (context, control, tab);
     }

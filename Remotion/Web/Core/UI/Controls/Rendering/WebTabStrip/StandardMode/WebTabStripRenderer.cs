@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
   /// <summary>
-  /// Responsible for rendering <see cref="WebTabStrip"/> controls in quirks mode.
+  /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>
@@ -32,6 +32,17 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
     public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      string key = typeof (WebTabStripRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (WebTabStripRenderer), ResourceType.Html, ResourceTheme, "TabStrip.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
 
     public override void Render (HtmlTextWriter writer)

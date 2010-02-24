@@ -21,7 +21,7 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="TabbedMenuRenderer"/> controls and <see cref="MenuTab"/> items.
+  /// Responsible for creating standard mode renderers for <see cref="TabbedMenuRenderer"/> controls and <see cref="MenuTab"/> items.
   /// </summary>
   public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
@@ -33,11 +33,6 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories
     public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
     {
       return new TabbedMenuRenderer (context, control);
-    }
-
-    public ITabbedMenuPreRenderer CreatePreRenderer (HttpContextBase context, ITabbedMenu menu)
-    {
-      return new TabbedMenuPreRenderer (context, menu);
     }
   }
 }
