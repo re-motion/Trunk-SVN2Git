@@ -50,9 +50,7 @@ namespace Remotion.Web.UI.Controls.Rendering
       get { return _context; }
     }
 
-    public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-    }
+    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
 
     public abstract void Render (HtmlTextWriter writer);
 

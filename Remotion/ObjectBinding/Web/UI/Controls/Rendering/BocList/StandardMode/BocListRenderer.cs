@@ -20,6 +20,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
@@ -116,6 +117,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     public override sealed string CssClassReadOnly
     {
       get { return CssClasses.ReadOnly; }
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      throw new NotImplementedException();
     }
 
     /// <summary>

@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      base.RegisterHtmlHeadContents (htmlHeadAppender);
+
       Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, false);
     }
 

@@ -55,6 +55,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
+      RegisterBrowserCompatibilityScript (htmlHeadAppender);
+
       string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {

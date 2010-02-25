@@ -46,8 +46,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (htmlHeadAppender);
-
       string key = typeof (BocEnumValueRenderer).FullName + "_Style";
       string url = ResourceUrlResolver.GetResourceUrl (
           Control, Context, typeof (BocEnumValueRenderer), ResourceType.Html, ResourceTheme, "BocEnumValue.css");

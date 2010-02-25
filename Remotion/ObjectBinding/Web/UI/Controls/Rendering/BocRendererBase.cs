@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    protected void RegisterBrowserCompatibilityScript (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 

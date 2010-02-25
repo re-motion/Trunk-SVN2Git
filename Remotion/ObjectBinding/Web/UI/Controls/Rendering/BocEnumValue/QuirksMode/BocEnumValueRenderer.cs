@@ -46,8 +46,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (htmlHeadAppender);
-
       var key = typeof (BocEnumValueRenderer).FullName + "_Style";
       string url = ResourceUrlResolver.GetResourceUrl (
           Control, Context, typeof (BocEnumValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocEnumValue.css");

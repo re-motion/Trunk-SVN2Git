@@ -49,8 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (htmlHeadAppender);
-
+      RegisterBrowserCompatibilityScript (htmlHeadAppender);
       RegisterJavaScriptFiles (htmlHeadAppender);
       RegisterStylesheets (htmlHeadAppender);
     }

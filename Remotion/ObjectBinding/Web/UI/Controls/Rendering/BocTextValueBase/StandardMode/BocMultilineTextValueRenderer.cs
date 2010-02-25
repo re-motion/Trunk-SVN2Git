@@ -38,8 +38,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      base.RegisterHtmlHeadContents (htmlHeadAppender);
-
       Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, false);
 
       string styleKey = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
