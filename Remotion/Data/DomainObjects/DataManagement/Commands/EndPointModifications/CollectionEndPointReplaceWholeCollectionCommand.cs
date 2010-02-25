@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       // only transform the old collection to stand-alone if it is still associated with this end point
       // rationale: during rollback, the old relation might have already been associated with another end-point, we must not overwrite this!
-      if (OldOppositeCollectionTransformer.Collection.IsAssociatedTo (ModifiedEndPoint))
+      if (OldOppositeCollectionTransformer.Collection.IsAssociatedWith (ModifiedEndPoint))
         OldOppositeCollectionTransformer.TransformToStandAlone();
 
       // copy over the data

@@ -246,8 +246,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           MockRepository.GenerateStub<ICollectionEndPoint> (), MockRepository.GenerateStub<ICollectionEndPointData>());
       var collectionOfDifferentEndPoint = new DomainObjectCollection (endPointData);
 
-      Assert.That (collectionOfDifferentEndPoint.IsAssociatedTo (null), Is.False);
-      Assert.That (collectionOfDifferentEndPoint.IsAssociatedTo (CollectionEndPoint), Is.False);
+      Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (null), Is.False);
+      Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (CollectionEndPoint), Is.False);
 
       _oldTransformerMock.Stub (mock => mock.Collection).Return (collectionOfDifferentEndPoint);
       // _oldTransformerMock.TransformToStandAlone is not called because collectionOfDifferentEndPoint belongs to a different end point

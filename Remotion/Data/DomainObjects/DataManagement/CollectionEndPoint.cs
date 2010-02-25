@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         ArgumentUtility.CheckNotNullAndType ("value", value, _oppositeDomainObjects.GetType ());
 
-        if (!value.IsAssociatedTo (this))
+        if (!value.IsAssociatedWith (this))
         {
           throw new ArgumentException (
               "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead.",
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
 
-      if (!oppositeDomainObjects.IsAssociatedTo (null) && !oppositeDomainObjects.IsAssociatedTo (this))
+      if (!oppositeDomainObjects.IsAssociatedWith (null) && !oppositeDomainObjects.IsAssociatedWith (this))
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
@@ -181,10 +181,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         _oppositeDomainObjects = _originalCollectionReference;
 
-        Assertion.IsTrue (_oppositeDomainObjects.IsAssociatedTo (this));
+        Assertion.IsTrue (_oppositeDomainObjects.IsAssociatedWith (this));
         Assertion.IsTrue (
             _oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback 
-            || !oppositeObjectsReferenceBeforeRollback.IsAssociatedTo (this));
+            || !oppositeObjectsReferenceBeforeRollback.IsAssociatedWith (this));
 
         _oppositeDomainObjects.Rollback (OriginalOppositeDomainObjectsContents);
       }

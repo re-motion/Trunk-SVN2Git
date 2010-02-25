@@ -174,26 +174,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void IsAssociatedTo_AssociatedCollection ()
+    public void IsAssociatedWith_AssociatedCollection ()
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
       _dataStrategyMock.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
 
-      Assert.That (_collectionWithDataStrategyMock.IsAssociatedTo (endPointStub), Is.True);
+      Assert.That (_collectionWithDataStrategyMock.IsAssociatedWith (endPointStub), Is.True);
 
       var otherEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      Assert.That (_collectionWithDataStrategyMock.IsAssociatedTo (otherEndPointStub), Is.False);
+      Assert.That (_collectionWithDataStrategyMock.IsAssociatedWith (otherEndPointStub), Is.False);
 
-      Assert.That (_collectionWithDataStrategyMock.IsAssociatedTo (null), Is.False);
+      Assert.That (_collectionWithDataStrategyMock.IsAssociatedWith (null), Is.False);
     }
 
     [Test]
-    public void IsAssociatedTo_StandAloneCollection ()
+    public void IsAssociatedWith_StandAloneCollection ()
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
-      Assert.That (_collection.IsAssociatedTo (endPointStub), Is.False);
+      Assert.That (_collection.IsAssociatedWith (endPointStub), Is.False);
 
-      Assert.That (_collection.IsAssociatedTo (null), Is.True);
+      Assert.That (_collection.IsAssociatedWith (null), Is.True);
     }
 
     [Test]

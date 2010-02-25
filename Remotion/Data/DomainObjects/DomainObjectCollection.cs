@@ -276,7 +276,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>
     /// 	<see langword="true"/> if this collection is associated to the specified end point; otherwise, <see langword="false"/>.
     /// </returns>
-    public bool IsAssociatedTo (ICollectionEndPoint endPoint)
+    public bool IsAssociatedWith (ICollectionEndPoint endPoint)
     {
       return _dataStrategy.AssociatedEndPoint == endPoint;
     }
