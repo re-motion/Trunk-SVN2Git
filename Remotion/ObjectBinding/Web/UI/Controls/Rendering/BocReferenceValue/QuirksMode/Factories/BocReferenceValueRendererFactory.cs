@@ -21,7 +21,7 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="IBocReferenceValue"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocReferenceValue"/> controls.
   /// </summary>
   public class BocReferenceValueRendererFactory : IBocReferenceValueRendererFactory
   {
