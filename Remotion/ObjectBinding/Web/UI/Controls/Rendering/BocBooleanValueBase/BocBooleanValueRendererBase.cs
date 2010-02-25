@@ -17,8 +17,9 @@
 using System;
 using System.Web.UI;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
   /// <summary>
   /// Base class for the renderers in the same namespace. Contains common constants and methods.

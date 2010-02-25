@@ -21,28 +21,13 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocBooleanValue"/> and <see cref="IBocCheckBox"/> controls.
+  /// Responsible for creating standard mode renderers for <see cref="IBocBooleanValue"/> controls.
   /// </summary>
-  public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory, IBocCheckboxRendererFactory
+  public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory
   {
-    IRenderer IBocBooleanValueRendererFactory.CreateRenderer (HttpContextBase context, IBocBooleanValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control)
     {
       return new BocBooleanValueRenderer (context, control);
-    }
-
-    public IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control)
-    {
-      return new BocBooleanValuePreRenderer (context, control);
-    }
-
-    IRenderer IBocCheckboxRendererFactory.CreateRenderer (HttpContextBase context, IBocCheckBox control)
-    {
-      return new BocCheckboxRenderer (context, control);
-    }
-
-    public IBocCheckboxPreRenderer CreatePreRenderer (HttpContextBase context, IBocCheckBox control)
-    {
-      return new BocCheckboxPreRenderer (context, control);
     }
   }
 }

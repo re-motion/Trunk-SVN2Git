@@ -94,8 +94,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocCheckboxRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents(htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this);
+      renderer.RegisterHtmlHeadContents(htmlHeadAppender);
     }
 
     protected override void Render (HtmlTextWriter writer)

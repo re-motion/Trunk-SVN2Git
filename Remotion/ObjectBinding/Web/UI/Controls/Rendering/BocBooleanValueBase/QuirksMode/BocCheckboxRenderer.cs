@@ -23,7 +23,7 @@ using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxRenderer), ResourceType.Html, "BocCheckbox.js");
+            Control, Context, typeof (BocCheckboxRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocCheckbox.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxRenderer), ResourceType.Html, ResourceTheme, "BocCheckbox.css");
+            Control, Context, typeof (BocCheckboxRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocCheckbox.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

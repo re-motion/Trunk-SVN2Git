@@ -21,12 +21,10 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
   /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="IBocBooleanValue"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IBocBooleanValue"/> controls.
   /// </summary>
   public interface IBocBooleanValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control);
-
-    IBocBooleanValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocBooleanValue control);
   }
 }
