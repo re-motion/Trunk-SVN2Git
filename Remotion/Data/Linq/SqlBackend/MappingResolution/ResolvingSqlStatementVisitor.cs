@@ -15,46 +15,38 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.Linq.SqlBackend.MappingResolution
 {
   /// <summary>
-  /// <see cref="ConstantTableSourceVisitor"/> modifies <see cref="ConstantTableSource"/>s and generates <see cref="SqlTableSource"/>s.
+  /// <see cref="ResolvingSqlStatementVisitor"/> implements <see cref="SqlStatementVisitorBase"/>.
   /// </summary>
-  public class ConstantTableSourceVisitor : ITableSourceVisitor
+  public class ResolvingSqlStatementVisitor : SqlStatementVisitorBase
   {
     private readonly ISqlStatementResolver _resolver;
 
-    public static void ReplaceTableSource (SqlTable sqlTable, ISqlStatementResolver resolver)
+    public ResolvingSqlStatementVisitor (ISqlStatementResolver resolver)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
 
-      var visitor = new ConstantTableSourceVisitor (resolver);
-      sqlTable.TableSource = visitor.VisitTableSource (sqlTable.TableSource);
-    }
-
-    protected ConstantTableSourceVisitor (ISqlStatementResolver resolver)
-    {
       _resolver = resolver;
     }
 
-    public AbstractTableSource VisitTableSource (AbstractTableSource tableSource)
+    protected override Expression VisitSelectProjection (Expression selectProjection)
     {
-      ArgumentUtility.CheckNotNull ("tableSource", tableSource);
-      return tableSource.Accept (this);
+      ArgumentUtility.CheckNotNull ("selectProjection", selectProjection);
+
+      return ResolvingExpressionVisitor.TranslateSqlTableReferenceExpressions (selectProjection, _resolver);
     }
 
-    public AbstractTableSource VisitConstantTableSource (ConstantTableSource tableSource)
+    protected override void VisitSqlTable (SqlTable sqlTable)
     {
-      return  _resolver.ResolveConstantTableSource (tableSource);
-    }
-
-    public AbstractTableSource VisitSqlTableSource (SqlTableSource tableSource)
-    {
-      return tableSource;
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      
+      ResolvingTableSourceVisitor.ResolveTableSource (sqlTable, _resolver);
     }
   }
 }
