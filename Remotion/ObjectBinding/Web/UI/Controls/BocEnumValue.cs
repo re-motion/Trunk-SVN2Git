@@ -100,8 +100,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public override void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = ServiceLocator.GetInstance<IBocEnumValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override void Render (HtmlTextWriter writer)

@@ -15,15 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocEnumValue"/> controls.
@@ -48,9 +48,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
 
       base.RegisterHtmlHeadContents (htmlHeadAppender);
 
-      string key = typeof (BocEnumValueRenderer).FullName + "_Style";
+      var key = typeof (BocEnumValueRenderer).FullName + "_Style";
       string url = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocEnumValueRenderer), ResourceType.Html, ResourceTheme, "BocEnumValue.css");
+          Control, Context, typeof (BocEnumValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocEnumValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 
@@ -121,17 +121,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
       listControl.ApplyStyle (Control.CommonStyle);
       Control.ListControlStyle.ApplyStyle (listControl);
 
-      bool needsNullValueItem = (Control.Value == null) && (Control.ListControlStyle.ControlType != ListControlType.RadioButtonList);
+      bool needsNullValueItem = (Control.Value == null) && (Control.ListControlStyle.ControlType!=ListControlType.RadioButtonList);
       if (!Control.IsRequired || needsNullValueItem)
-        listControl.Items.Add (CreateNullItem());
+        listControl.Items.Add (CreateNullItem ());
 
-      IEnumerationValueInfo[] valueInfos = Control.GetEnabledValues();
+      IEnumerationValueInfo[] valueInfos = Control.GetEnabledValues ();
 
       for (int i = 0; i < valueInfos.Length; i++)
       {
         IEnumerationValueInfo valueInfo = valueInfos[i];
         ListItem item = new ListItem (valueInfo.DisplayName, valueInfo.Identifier);
-        if (valueInfo.Value.Equals (Control.Value))
+        if (valueInfo.Value.Equals(Control.Value))
           item.Selected = true;
 
         listControl.Items.Add (item);
@@ -145,7 +145,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
     private ListItem CreateNullItem ()
     {
       ListItem emptyItem = new ListItem (Control.GetNullItemText(), Control.NullIdentifier);
-      if (Control.Value == null)
+      if (Control.Value == null )
         emptyItem.Selected = true;
 
       return emptyItem;

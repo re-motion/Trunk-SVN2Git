@@ -21,12 +21,10 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
 {
   /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="IBocEnumValue"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IBocEnumValue"/> controls.
   /// </summary>
   public interface IBocEnumValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control);
-
-    IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control);
   }
 }

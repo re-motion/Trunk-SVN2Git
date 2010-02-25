@@ -21,18 +21,13 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocEnumValue"/> controls.
+  /// Responsible for creating standard mode renderers for <see cref="IBocEnumValue"/> controls.
   /// </summary>
   public class BocEnumValueRendererFactory : IBocEnumValueRendererFactory
   {
     public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
     {
       return new BocEnumValueRenderer (context, control);
-    }
-
-    public IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control)
-    {
-      return new BocEnumValuePreRenderer (context, control);
     }
   }
 }

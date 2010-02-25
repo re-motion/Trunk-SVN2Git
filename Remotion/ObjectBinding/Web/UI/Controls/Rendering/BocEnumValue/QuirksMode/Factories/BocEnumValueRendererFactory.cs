@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode.Factories
@@ -29,11 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
     public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
     {
       return new BocEnumValueRenderer (context, control);
-    }
-
-    public IBocEnumValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocEnumValue control)
-    {
-      return new BocEnumValuePreRenderer (context, control);
     }
   }
 }

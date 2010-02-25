@@ -331,11 +331,9 @@
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\BocDateTimeValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\Factories\BocDateTimeValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\BocEnumValuePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\Factories\BocEnumValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\BocEnumValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\Factories\BocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\BocListPreRendererBase.cs" />
