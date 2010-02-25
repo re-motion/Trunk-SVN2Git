@@ -30,5 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void SetOppositeObjectAndNotify (DomainObject newRelatedObject);
 
     IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);
+    IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
   }
 }

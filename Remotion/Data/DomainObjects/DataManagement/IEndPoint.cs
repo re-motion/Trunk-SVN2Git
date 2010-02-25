@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Mapping;
 namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
-  /// Provides a common interface for objects replacing an "end point", i.e. one side of a relation between <see cref="DomainObject"/> instances.
+  /// Provides a common interface for objects representing one side of a relation between <see cref="DomainObject"/> instances.
   /// </summary>
   public interface IEndPoint : INullObject
   {
@@ -38,9 +38,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void EnsureDataAvailable ();
 
     void Touch ();
-    void Commit ();
-    void Rollback ();
-
-    IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
   }
 }

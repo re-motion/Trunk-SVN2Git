@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index);
     IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject);
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
+    IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject);
 
     IDomainObjectCollectionData CreateDelegatingCollectionData ();
   }
