@@ -18,13 +18,11 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -33,227 +31,110 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   {
     private RootQueryManager _queryManager;
 
+    private IDataSource _dataSourceMock;
+    private IObjectLoader _objectLoaderMock;
+    private IClientTransactionListener _transactionEventSinkMock;
+    
+    private IQuery _collectionQuery;
+    private IQuery _scalarQuery;
+
+    private Order _fakeOrder1;
+    private Order _fakeOrder2;
+
     public override void SetUp ()
     {
       base.SetUp ();
 
-      // TODO 2244
-      var objectLoader = (IObjectLoader) PrivateInvoke.GetNonPublicField (ClientTransactionMock, "_objectLoader");
-      _queryManager = new RootQueryManager (ClientTransactionMock, objectLoader);
+      _dataSourceMock = MockRepository.GenerateMock<IDataSource> ();
+      _objectLoaderMock = MockRepository.GenerateMock<IObjectLoader> ();
+      _transactionEventSinkMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+
+      _queryManager = new RootQueryManager (_dataSourceMock, _objectLoaderMock, _transactionEventSinkMock);
+
+      _collectionQuery =  QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      _scalarQuery = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");
+
+      _fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> ();
+      _fakeOrder2 = DomainObjectMother.CreateFakeObject<Order>();
     }
 
     [Test]
-    public void Initialize ()
+    public void GetScalar ()
     {
-      Assert.AreSame (ClientTransactionMock, _queryManager.ClientTransaction);
+      _dataSourceMock.Expect (mock => mock.LoadScalarForQuery (_scalarQuery)).Return (27);
+      _dataSourceMock.Replay ();
+
+      var result = _queryManager.GetScalar (_scalarQuery);
+
+      _dataSourceMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (27));
     }
 
     [Test]
-    public void GetScalarWithoutParameter ()
+    [ExpectedException (typeof (ArgumentException))]
+    public void GetScalar_WithCollectionQuery ()
     {
-      Assert.AreEqual (42, _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
+      _queryManager.GetScalar (_collectionQuery);
     }
 
     [Test]
     public void GetCollection ()
     {
-      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
-      query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
+      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery)).Return (new[] { _fakeOrder1, _fakeOrder2 });
+      _objectLoaderMock.Replay ();
 
-      var customers = _queryManager.GetCollection (query);
+      _queryManager.GetCollection<Order> (_collectionQuery);
 
-      Assert.IsNotNull (customers);
-      Assert.AreEqual (1, customers.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, customers.ToArray ()[0].ID);
-      Assert.AreEqual (typeof (Customer), customers.ToArray ()[0].GetPublicDomainObjectType ());
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException))]
-    public void GetCollectionWithScalarQuery ()
-    {
-      _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery"));
-    }
-
-    [Test]
-    public void GetCollectionWithObjectList ()
-    {
-      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
-      query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
-
-      var customers = _queryManager.GetCollection<Customer> (query).ToObjectList();
-      Assert.IsNotNull (customers);
-      Assert.AreEqual (1, customers.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, customers[0].ID);
-      Assert.IsTrue (query.CollectionType.IsAssignableFrom (customers.GetType ()));
-    }
-
-    [Test]
-    public void GetCollectionWithObjectListWorksWhenAssignableCollectionType ()
-    {
-      var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
-      query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
-
-      var orders = _queryManager.GetCollection<Order> (query).ToCustomCollection();
-      Assert.AreEqual (5, orders.Count);
-      Assert.That (orders, Is.EquivalentTo (new object[]
-      {
-        Order.GetObject (DomainObjectIDs.Order1),
-        Order.GetObject (DomainObjectIDs.Order2),
-        Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem),
-        Order.GetObject (DomainObjectIDs.Order3),
-        Order.GetObject (DomainObjectIDs.Order4),
-      }));
-      Assert.IsTrue (query.CollectionType.IsAssignableFrom (orders.GetType ()));
-    }
-
-    [Test]
-    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "The query returned an object of type " 
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer', but a query result of type "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' was expected.")]
-    public void GetCollectionWithObjectListThrowsWhenInvalidT ()
-    {
-      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
-      query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
-
-      _queryManager.GetCollection<Order> (query);
-    }
-
-    [Test]
-    public void GetCollectionWithObjectList_WorksWhenUnassignableCollectionType ()
-    {
-      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType");
-
-      var result = _queryManager.GetCollection<Order> (query);
-      Assert.That (result.Count, Is.GreaterThan (0));
+      _objectLoaderMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void GetCollection_CallsFilterQueryResult ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
-          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
-          .WhenCalled (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
-      ClientTransactionMock.AddListener (listenerMock);
+      var originalResult = new[] { _fakeOrder1 };
+      var filteredResult = new QueryResult<Order> (_collectionQuery, new[] { _fakeOrder2 });
+      
+      _objectLoaderMock.Stub (mock => mock.LoadCollectionQueryResult<Order> (_collectionQuery)).Return (originalResult);
+      _objectLoaderMock.Replay ();
 
-      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
-      query.Parameters.Add ("customerID", DomainObjectIDs.Customer1);
-      ClientTransactionMock.QueryManager.GetCollection (query);
+      _transactionEventSinkMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<Order>>.Matches (qr => qr.ToArray().SequenceEqual (originalResult))))
+          .Return (filteredResult);
+      _transactionEventSinkMock.Replay ();
 
-      listenerMock.VerifyAllExpectations ();
+      var result = _queryManager.GetCollection<Order> (_collectionQuery);
+
+      _transactionEventSinkMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (filteredResult));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException))]
-    public void GetScalarWithCollectionQuery ()
+    public void GetCollection_WithScalarQuery ()
     {
-      _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("OrderQuery"));
+      _queryManager.GetCollection (_scalarQuery);
     }
 
     [Test]
-    public void GetStoredProcedureResult ()
+    public void GetCollection_NonGeneric ()
     {
-      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
-
-      Assert.IsNotNull (orders, "OrderCollection is null");
-      Assert.AreEqual (2, orders.Count, "Order count");
-      Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
-      Assert.AreEqual (DomainObjectIDs.Order2, orders[1].ID, "Order2");
-    }
-
-    [Test]
-    public void GetStoredProcedureResultWithParameter ()
-    {
-      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQueryWithParameter");
-      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
-      var orders = (OrderCollection) _queryManager.GetCollection (query).ToCustomCollection();
-
-      Assert.IsNotNull (orders, "OrderCollection is null");
-      Assert.AreEqual (2, orders.Count, "Order count");
-      Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
-      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, orders[1].ID, "OrderWithoutOrderItem");
-    }
-
-    [Test]
-    public void QueryingEnlists ()
-    {
-      Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
-
-      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
-      Assert.AreEqual (2, orders.Count, "Order count");
-
-      foreach (Order order in orders)
-        Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
-
-      int orderNumberSum = 0;
-      foreach (Order order in orders)
-        orderNumberSum += order.OrderNumber;
-
-      Assert.AreEqual (Order.GetObject (DomainObjectIDs.Order1).OrderNumber + Order.GetObject (DomainObjectIDs.Order2).OrderNumber, orderNumberSum);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A domain object instance for object "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
-    public void QueriedObjectsMightNotBeEnlistableInOtherTransaction ()
-    {
-      var newTransaction = new ClientTransactionMock ();
-      using (newTransaction.EnterDiscardingScope ())
-      {
-        Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in newTransaction
-      }
-
-      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
-      Assert.AreEqual (2, orders.Count, "Order count");
-
-      using (newTransaction.EnterDiscardingScope ())
-      {
-        foreach (Order order in orders)
-        {
-          if (!newTransaction.IsEnlisted (order))
-            newTransaction.EnlistDomainObject (order);  // this throws because there is already _another_ instance of Order1 enlisted
-        }
-      }
-    }
-
-    [Test]
-    public void GetCollection_ReturnsDeletedObjects ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      order1.Delete (); // mark as deleted
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
-
-      var query = QueryFactory.CreateCollectionQuery (
-          "test",
-          order1.ID.StorageProviderID,
-          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
-          new QueryParameterCollection(),
-          typeof (DomainObjectCollection));
-      var result = ClientTransaction.Current.QueryManager.GetCollection (query);
-
-      Assert.That (result.Count, Is.EqualTo (2));
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order2 }));
-      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
-      Assert.That (order2.State, Is.EqualTo (StateType.Unchanged));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDiscardedException))]
-    public void GetCollection_ThrowsOnDiscardedObjects ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      order1.Delete ();
-      ClientTransactionMock.DataManager.Discard (order1.InternalDataContainer);
+      var filteredResult = new QueryResult<DomainObject> (_collectionQuery, new[] { _fakeOrder2 });
       
-      var query = QueryFactory.CreateCollectionQuery (
-          "test",
-          order1.ID.StorageProviderID,
-          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
-          new QueryParameterCollection (),
-          typeof (DomainObjectCollection));
-      ClientTransaction.Current.QueryManager.GetCollection (query);
+      _objectLoaderMock.Expect (mock => mock.LoadCollectionQueryResult<DomainObject> (_collectionQuery)).Return (new[] { _fakeOrder1, _fakeOrder2 });
+      _objectLoaderMock.Replay ();
+
+      _transactionEventSinkMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Return (filteredResult);
+      _transactionEventSinkMock.Replay ();
+
+      var result = _queryManager.GetCollection (_collectionQuery);
+
+      _objectLoaderMock.VerifyAllExpectations ();
+      _transactionEventSinkMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (filteredResult));
     }
+   
   }
 }

@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects;
-using Remotion.Utilities;
-
 namespace Remotion.Data.DomainObjects.Queries
 {
   /// <summary>
@@ -24,11 +21,6 @@ namespace Remotion.Data.DomainObjects.Queries
   /// </summary>
   public interface IQueryManager
   {
-    /// <summary>
-    /// Gets the <see cref="Remotion.Data.DomainObjects.ClientTransaction"/> that is associated with the <see cref="RootQueryManager"/>.
-    /// </summary>
-    ClientTransaction ClientTransaction { get; }
-
     /// <summary>
     /// Executes a given <see cref="IQuery"/> and returns the scalar value.
     /// </summary>

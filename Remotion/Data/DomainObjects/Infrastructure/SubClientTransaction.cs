@@ -107,6 +107,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected internal override DataContainer LoadDataContainer (ObjectID id)
     {
+      ArgumentUtility.CheckNotNull ("id", id);
+
       if (DataManager.IsDiscarded (id))
       {
         // Trying to load a data container for a discarded object. To mimic the behavior of RootClientTransaction, we will throw an
@@ -153,6 +155,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected internal override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
       DomainObject parentRelatedObject;
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
@@ -168,6 +172,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected internal override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
         DomainObjectCollection parentObjects = ParentTransaction.GetRelatedObjects (relationEndPointID);
@@ -185,6 +191,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected override DataContainer[] LoadDataContainersForQuery (IQuery query)
     {
+      ArgumentUtility.CheckNotNull ("query", query);
+
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
         var parentObjects = ParentTransaction.QueryManager.GetCollection (query).AsEnumerable();
@@ -198,6 +206,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         }
         return transferredContainers.ToArray();
       }
+    }
+
+    protected override object LoadScalarForQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      return ParentTransaction.QueryManager.GetScalar (query);
     }
 
     private DataContainer TransferParentObject (DomainObject parentObject)

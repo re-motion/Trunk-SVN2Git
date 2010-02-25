@@ -315,7 +315,7 @@ public abstract class ClientTransaction : IDataSource
   /// </summary>
   /// <param name="query">The <see cref="IQuery"/> to be executed.</param>
   /// <returns>
-  /// An array of <see cref="DataContainer"/> representing the result of the query.
+  /// An array of <see cref="DataContainer"/> instances representing the result of the query.
   /// </returns>
   /// <remarks>
   /// <para>
@@ -340,6 +340,25 @@ public abstract class ClientTransaction : IDataSource
   /// An error occurred while executing the query.
   /// </exception>
   protected abstract DataContainer[] LoadDataContainersForQuery (IQuery query);
+
+  /// <summary>
+  /// Executes the given <see cref="IQuery"/> and returns its result as a scalar value.
+  /// </summary>
+  /// <param name="query">The query to be executed.</param>
+  /// <returns>The scalar query result.</returns>
+  /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
+  /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Scalar"/>.
+  /// </exception>
+  /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
+  /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
+  /// </exception>
+  /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
+  /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.
+  /// </exception>
+  /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
+  /// An error occurred while executing the query.
+  /// </exception>
+  protected abstract object LoadScalarForQuery (IQuery query);
 
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.
@@ -1553,6 +1572,11 @@ public abstract class ClientTransaction : IDataSource
   DataContainer[] IDataSource.LoadDataContainersForQuery (IQuery query)
   {
     return LoadDataContainersForQuery (query);
+  }
+
+  object IDataSource.LoadScalarForQuery (IQuery query)
+  {
+    return LoadScalarForQuery (query);
   }
 }
 }

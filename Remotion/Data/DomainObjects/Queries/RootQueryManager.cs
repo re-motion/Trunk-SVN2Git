@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 
@@ -28,43 +27,28 @@ namespace Remotion.Data.DomainObjects.Queries
   [Serializable]
   public class RootQueryManager : IQueryManager
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    private readonly RootClientTransaction _clientTransaction;
+    private readonly IDataSource _dataSource;
     private readonly IObjectLoader _objectLoader;
+    private readonly IClientTransactionListener _transactionEventSink;
 
     // construction and disposing
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RootQueryManager"/> class. 
+    /// Initializes a new instance of the <see cref="RootQueryManager"/> class.
     /// </summary>
-    /// <remarks>
-    /// All <see cref="DomainObject"/>s that are loaded by the <b>RootQueryManager</b> will exist within the given <see cref="Remotion.Data.DomainObjects.ClientTransaction"/>.
-    /// </remarks>
-    /// <param name="clientTransaction">The <see cref="RootClientTransaction"/> to be used in the <b>RootQueryManager</b>. Must not be <see langword="null"/>.</param>
-    /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects into the <paramref name="clientTransaction"/>.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> is <see langword="null"/>.</exception>
-    public RootQueryManager (RootClientTransaction clientTransaction, IObjectLoader objectLoader)
+    /// <param name="dataSource">The <see cref="IDataSource"/> used to load query results not involving <see cref="DomainObject"/> instances.</param>
+    /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects. This parameter determines
+    /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
+    /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
+    public RootQueryManager (IDataSource dataSource, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("dataSource", dataSource);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
-      _clientTransaction = clientTransaction;
+      _dataSource = dataSource;
       _objectLoader = objectLoader;
-    }
-
-    // methods and properties
-
-    /// <summary>
-    /// Gets the <see cref="Remotion.Data.DomainObjects.ClientTransaction"/> that is associated with the <see cref="RootQueryManager"/>.
-    /// </summary>
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
+      _transactionEventSink = transactionEventSink;
     }
 
     /// <summary>
@@ -90,11 +74,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Collection)
         throw new ArgumentException ("A collection query cannot be used with GetScalar.", "query");
 
-      using (var storageProviderManager = new StorageProviderManager(_clientTransaction.ID))
-      {
-        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
-        return provider.ExecuteScalarQuery (query);
-      }
+      return _dataSource.LoadScalarForQuery (query);
     }
 
     /// <summary>
@@ -150,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var resultArray = _objectLoader.LoadCollectionQueryResult<T> (query);
       var queryResult = new QueryResult<T> (query, resultArray);
-      return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
+      return _transactionEventSink.FilterQueryResult (queryResult);
     }
   }
 }

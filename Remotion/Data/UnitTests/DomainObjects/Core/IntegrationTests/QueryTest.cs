@@ -19,10 +19,13 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects.DataManagement;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -152,6 +155,176 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       var result = query.ToArray();
       Assert.That (result, Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1) }));
+    }
+
+    [Test]
+    public void ScalarQueryWithoutParameter ()
+    {
+      Assert.AreEqual (42, _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
+    }
+
+    [Test]
+    public void CollectionQuery ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
+      query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
+
+      var customers = _queryManager.GetCollection (query);
+
+      Assert.IsNotNull (customers);
+      Assert.AreEqual (1, customers.Count);
+      Assert.AreEqual (DomainObjectIDs.Customer1, customers.ToArray ()[0].ID);
+      Assert.AreEqual (typeof (Customer), customers.ToArray ()[0].GetPublicDomainObjectType ());
+    }
+
+    [Test]
+    public void CollectionQuery_WithObjectList ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
+      query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
+
+      var customers = _queryManager.GetCollection<Customer> (query).ToObjectList ();
+      Assert.IsNotNull (customers);
+      Assert.AreEqual (1, customers.Count);
+      Assert.AreEqual (DomainObjectIDs.Customer1, customers[0].ID);
+      Assert.IsTrue (query.CollectionType.IsAssignableFrom (customers.GetType ()));
+    }
+
+    [Test]
+    public void CollectionQuery_WithObjectList_WorksWhenAssignableCollectionType ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
+      query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
+
+      var orders = _queryManager.GetCollection<Order> (query).ToCustomCollection ();
+      Assert.AreEqual (5, orders.Count);
+      Assert.That (orders, Is.EquivalentTo (new object[]
+      {
+        Order.GetObject (DomainObjectIDs.Order1),
+        Order.GetObject (DomainObjectIDs.Order2),
+        Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem),
+        Order.GetObject (DomainObjectIDs.Order3),
+        Order.GetObject (DomainObjectIDs.Order4),
+      }));
+      Assert.IsTrue (query.CollectionType.IsAssignableFrom (orders.GetType ()));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "The query returned an object of type "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer', but a query result of type "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' was expected.")]
+    public void CollectionQuery_WithObjectList_ThrowsWhenInvalidT ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
+      query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
+
+      _queryManager.GetCollection<Order> (query);
+    }
+
+    [Test]
+    public void CollectionQuery_WithObjectList_WorksWhenUnassignableCollectionType ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType");
+
+      var result = _queryManager.GetCollection<Order> (query);
+      Assert.That (result.Count, Is.GreaterThan (0));
+    }
+
+    [Test]
+    public void GetStoredProcedureResult ()
+    {
+      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
+
+      Assert.IsNotNull (orders, "OrderCollection is null");
+      Assert.AreEqual (2, orders.Count, "Order count");
+      Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
+      Assert.AreEqual (DomainObjectIDs.Order2, orders[1].ID, "Order2");
+    }
+
+    [Test]
+    public void GetStoredProcedureResultWithParameter ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQueryWithParameter");
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
+      var orders = (OrderCollection) _queryManager.GetCollection (query).ToCustomCollection ();
+
+      Assert.IsNotNull (orders, "OrderCollection is null");
+      Assert.AreEqual (2, orders.Count, "Order count");
+      Assert.AreEqual (DomainObjectIDs.Order1, orders[0].ID, "Order1");
+      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, orders[1].ID, "OrderWithoutOrderItem");
+    }
+
+    [Test]
+    public void QueryingEnlists ()
+    {
+      Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
+
+      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
+      Assert.AreEqual (2, orders.Count, "Order count");
+
+      foreach (Order order in orders)
+        Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
+
+      int orderNumberSum = 0;
+      foreach (Order order in orders)
+        orderNumberSum += order.OrderNumber;
+
+      Assert.AreEqual (Order.GetObject (DomainObjectIDs.Order1).OrderNumber + Order.GetObject (DomainObjectIDs.Order2).OrderNumber, orderNumberSum);
+    }
+
+    [Test]
+    public void CollectionQuery_ReturnsDeletedObjects ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete (); // mark as deleted
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          order1.ID.StorageProviderID,
+          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      var result = ClientTransaction.Current.QueryManager.GetCollection (query);
+
+      Assert.That (result.Count, Is.EqualTo (2));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order2 }));
+      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (order2.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void CollectionQuery_ThrowsOnDiscardedObjects ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete ();
+      ClientTransactionMock.DataManager.Discard (order1.InternalDataContainer);
+
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          order1.ID.StorageProviderID,
+          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      ClientTransaction.Current.QueryManager.GetCollection (query);
+    }
+
+    [Test]
+    public void CollectionQuery_CallsFilterQueryResult_AndAllowsGetObjectDuringFiltering ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
+          .WhenCalled (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      ClientTransactionMock.AddListener (listenerMock);
+
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("customerID", DomainObjectIDs.Customer1);
+      ClientTransactionMock.QueryManager.GetCollection (query);
+
+      listenerMock.VerifyAllExpectations ();
     }
   }
 }

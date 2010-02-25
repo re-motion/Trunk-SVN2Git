@@ -707,7 +707,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void QueryManager ()
     {
       Assert.IsNotNull (ClientTransactionMock.QueryManager);
-      Assert.AreSame (ClientTransactionMock, ClientTransactionMock.QueryManager.ClientTransaction);
     }
 
     [Test]

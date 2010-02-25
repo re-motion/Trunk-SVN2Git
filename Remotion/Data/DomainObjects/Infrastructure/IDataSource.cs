@@ -157,6 +157,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DataContainer[] LoadDataContainersForQuery (IQuery query);
 
     /// <summary>
+    /// Executes the given <see cref="IQuery"/> and returns its result as a scalar value.
+    /// </summary>
+    /// <param name="query">The query to be executed.</param>
+    /// <returns>The scalar query result.</returns>
+    /// <exception cref="System.ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
+    /// <exception cref="System.ArgumentException"><paramref name="query"/> does not have a <see cref="QueryType"/> of <see cref="QueryType.Scalar"/>.
+    /// </exception>
+    /// <exception cref="Remotion.Data.DomainObjects.Persistence.Configuration.StorageProviderConfigurationException">
+    /// The <see cref="IQuery.StorageProviderID"/> of <paramref name="query"/> could not be found.
+    /// </exception>
+    /// <exception cref="Remotion.Data.DomainObjects.Persistence.PersistenceException">
+    /// The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> for the given <see cref="IQuery"/> could not be instantiated.
+    /// </exception>
+    /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
+    /// An error occurred while executing the query.
+    /// </exception>
+    object LoadScalarForQuery (IQuery query);
+
+    /// <summary>
     /// Persists the changed data stored by the given <see cref="DataContainer"/> instances.
     /// </summary>
     /// <param name="changedDataContainers">The data containers whose data should be persisted.</param>

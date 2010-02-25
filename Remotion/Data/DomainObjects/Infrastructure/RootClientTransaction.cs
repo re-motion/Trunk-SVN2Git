@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Reflection;
@@ -85,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         if (_queryManager == null)
-          _queryManager = new RootQueryManager (this, ObjectLoader);
+          _queryManager = new RootQueryManager (this, ObjectLoader, TransactionEventSink);
 
         return _queryManager;
       }
@@ -176,10 +177,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected override DataContainer[] LoadDataContainersForQuery (IQuery query)
     {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      if (query.QueryType != QueryType.Collection)
+        throw new ArgumentException ("Only collection queries can be used to load data containers.", "query");
+
       using (var storageProviderManager = new StorageProviderManager (ID))
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         return provider.ExecuteCollectionQuery (query);
+      }
+    }
+
+    protected override object LoadScalarForQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      if (query.QueryType != QueryType.Scalar)
+        throw new ArgumentException("Only scalar queries can be used to load scalar results.", "query");
+
+      using (var storageProviderManager = new StorageProviderManager (ID))
+      {
+        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
+        return provider.ExecuteScalarQuery (query);
       }
     }
   }
