@@ -15,14 +15,37 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
-  /// <summary>
-  /// Interface for classes that handle markup-related actions for <see cref="DatePickerButton"/> controls,
-  /// such as registering HTML head contents, which have to be executed before the rendering stage.
-  /// </summary>
-  public interface IDatePickerButtonPreRenderer : IPreRenderer
+  public abstract class DatePickerPageRendererBase : IDatePickerPageRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly DatePickerPage _page;
+
+    protected DatePickerPageRendererBase (HttpContextBase context, DatePickerPage page)
+    {
+      _context = context;
+      _page = page;
+    }
+
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    public DatePickerPage Page
+    {
+      get { return _page; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+    }
+
+    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
   }
 }

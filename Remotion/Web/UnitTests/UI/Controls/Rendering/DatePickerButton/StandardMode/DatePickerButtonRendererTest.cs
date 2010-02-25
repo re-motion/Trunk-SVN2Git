@@ -17,10 +17,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.QuirksMode
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
   [TestFixture]
   public class DatePickerButtonRendererTest : RendererTestBase
@@ -71,9 +71,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.QuirksMo
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var preRenderer = new DatePickerButtonPreRenderer (HttpContext, _datePickerButton);
-      preRenderer.PreRender();
-
       var renderer = new DatePickerButtonRenderer (HttpContext, _datePickerButton);
       renderer.Render (Html.Writer);
       var buttonDocument = Html.GetResultDocument();
@@ -86,8 +83,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.QuirksMo
           _datePickerButton.ContainerControlID,
           _datePickerButton.TargetControlID,
           renderer.GetDatePickerUrl(),
-          "150pt",
-          "150pt"
+          "14em",
+          "16em"
           );
 
       if (isDisabled)

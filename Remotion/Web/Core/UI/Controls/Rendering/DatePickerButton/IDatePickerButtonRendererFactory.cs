@@ -20,13 +20,11 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
   /// <summary>
-  /// Interface for factories creating renderers and prerenderers for <see cref="DatePickerButton"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IDatePickerButton"/> controls.
   /// </summary>
   public interface IDatePickerButtonRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control);
-    IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control);
-
-    IDatePickerPagePreRenderer CreatePreRenderer (HttpContextBase context, DatePickerPage page);
+    IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page);
   }
 }

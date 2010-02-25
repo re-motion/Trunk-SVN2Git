@@ -57,13 +57,6 @@ namespace Remotion.Web.UI.Controls
       if (!IsDesignMode)
         RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
     }
-
-    protected override void OnPreRender (EventArgs e)
-    {
-      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
-      preRenderer.PreRender ();
-    }
     
     protected override void Render (HtmlTextWriter writer)
     {
@@ -89,8 +82,8 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
   }
 }

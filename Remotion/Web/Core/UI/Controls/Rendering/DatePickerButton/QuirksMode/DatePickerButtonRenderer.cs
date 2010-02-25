@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
@@ -31,6 +32,27 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     public DatePickerButtonRenderer (HttpContextBase context, IDatePickerButton control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      string scriptFileKey = typeof (DatePickerButtonRenderer).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
+      }
+
+      string styleFileKey = typeof (DatePickerButtonRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (styleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
 
     protected override bool DetermineClientScriptLevel ()

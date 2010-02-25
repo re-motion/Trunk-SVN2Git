@@ -21,9 +21,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
-  public class DatePickerPagePreRenderer : DatePickerPagePreRendererBase
+  public class DatePickerPageRenderer : DatePickerPageRendererBase
   {
-    public DatePickerPagePreRenderer (HttpContextBase context, DatePickerPage page)
+    public DatePickerPageRenderer (HttpContextBase context, DatePickerPage page)
         : base (context, page)
     {
     }

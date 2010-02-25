@@ -153,12 +153,11 @@
     <Compile Include="UI\Controls\ListMenuLineBreaks.cs" />
     <Compile Include="UI\Controls\MenuMode.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerButtonRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerPagePreRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerPagePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerPagePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerButtonPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerPageRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerPageRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerPageRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerButtonRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerPagePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerPageRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\Factories\DatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenu.cs" />
     <Compile Include="UI\Controls\ListMenu.cs" />
@@ -166,9 +165,7 @@
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButton.cs" />
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\DatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\DropDownMenuPreRendererBase.cs" />

@@ -29,14 +29,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factori
       return new DatePickerButtonRenderer (context, control);
     }
 
-    public IDatePickerButtonPreRenderer CreatePreRenderer (HttpContextBase context, IDatePickerButton control)
+    public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page)
     {
-      return new DatePickerButtonPreRenderer (context, control);
-    }
-
-    public IDatePickerPagePreRenderer CreatePreRenderer (HttpContextBase context, DatePickerPage page)
-    {
-      return new DatePickerPagePreRenderer (context, page);
+      return new DatePickerPageRenderer (context, page);
     }
   }
 }
