@@ -15,10 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
@@ -35,35 +34,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
           IBocRowRendererFactory,
           IBocListTableBlockRendererFactory
   {
-    IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    public IBocListCientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
     {
-      return new StandardMode.BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator);
-    }
-
-    IBocListPreRenderer IBocListRendererFactory.CreatePreRenderer (HttpContextBase context, IBocList list)
-    {
-      return new BocListPreRenderer (context, list, CssClassContainer.Instance);
-    }
-
-    IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
-    {
-      return new StandardMode.BocListMenuBlockRenderer (context, list, CssClassContainer.Instance);
-    }
-
-    IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
-    {
-      return new StandardMode.BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance);
+      return new BocListClientScriptBehavior (context, list);
     }
 
     public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
-      return new StandardMode.BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
+      return new BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
+    }
+
+    IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    {
+      return new BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator);
+    }
+
+    IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
+    {
+      return new BocListMenuBlockRenderer (context, list, CssClassContainer.Instance);
+    }
+
+    IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
+    {
+      return new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance);
     }
 
     IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
         HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
-      return new StandardMode.BocListTableBlockRenderer (context, list, CssClassContainer.Instance, serviceLocator);
+      return new BocListTableBlockRenderer (context, list, CssClassContainer.Instance, serviceLocator);
     }
   }
 }

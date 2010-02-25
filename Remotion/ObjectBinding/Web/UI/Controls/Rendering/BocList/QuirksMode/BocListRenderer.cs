@@ -17,14 +17,15 @@
 using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.Utilities;
-using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
+using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering a <see cref="BocList"/> object.
@@ -36,7 +37,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocListRenderer.xml' path='BocListRenderer/Class'/>
   /// <seealso cref="BocListNavigationBlockRenderer"/>
   /// <seealso cref="BocListRendererFactory"/>
-  /// <seealso cref="BocListMenuBlockRenderer"/>
   public class BocListRenderer : BocRendererBase<IBocList>
   {
     private const string c_defaultMenuBlockWidth = "70pt";
@@ -129,14 +129,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       string styleFileKey = typeof (BocListRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListRenderer), ResourceType.Html, ResourceTheme, "BocList.css");
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
       string scriptFileKey = typeof (BocListRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListRenderer), ResourceType.Html, "BocList.js");
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocListRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -266,7 +267,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       if (!Control.HasClientScript)
         return;
 
-      string startUpScriptKey = typeof (BocListRenderer).FullName + "_Startup";
+      string startUpScriptKey = typeof (IBocList).FullName + "_Startup";
       if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListRenderer), startUpScriptKey))
       {
         string script = string.Format (

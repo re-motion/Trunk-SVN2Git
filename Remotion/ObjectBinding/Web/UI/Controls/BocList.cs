@@ -402,8 +402,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override void OnLoad (EventArgs e)
@@ -1030,10 +1030,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureChildControls();
       base.OnPreRender (e);
 
-      var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context, this);
-      preRenderer.PreRender();
-
       // Must be executed before CalculateCurrentPage
       if (_editModeController.IsRowEditModeActive)
       {
@@ -1216,7 +1212,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (!_isBrowserCapableOfSCripting.HasValue)
         {
           var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
-          var preRenderer = factory.CreatePreRenderer (Context, this);
+          var preRenderer = factory.CreateClientScriptBehavior (Context, this);
           _isBrowserCapableOfSCripting = preRenderer.IsBrowserCapableOfScripting;
         }
         return _isBrowserCapableOfSCripting.Value;

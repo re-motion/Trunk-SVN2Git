@@ -33,14 +33,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.
           IBocRowRendererFactory,
           IBocListTableBlockRendererFactory
   {
+    public IBocListCientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
+    {
+      return new BocListClientScriptBehavior ();
+    }
+
+    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    {
+      return new BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
+    }
+
     IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
       return new BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator);
-    }
-
-    IBocListPreRenderer IBocListRendererFactory.CreatePreRenderer (HttpContextBase context, IBocList list)
-    {
-      return new BocListPreRenderer (context, list, CssClassContainer.Instance);
     }
 
     IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
@@ -51,11 +56,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.
     IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
       return new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance);
-    }
-
-    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
-    {
-      return new BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
     }
 
     IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
