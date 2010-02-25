@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
+  /// Responsible for rendering a <see cref="DatePickerButton"/> control in standard mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
   public class DatePickerButtonRenderer : DatePickerButtonRendererBase
