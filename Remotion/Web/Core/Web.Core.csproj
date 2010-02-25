@@ -178,7 +178,6 @@
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\Factories\DropDownMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\IPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuPreRenderer.cs" />
@@ -189,7 +188,6 @@
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\Factories\ListMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />
-    <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />

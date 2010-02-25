@@ -18,23 +18,38 @@ using System;
 using System.Text;
 using System.Web.UI;
 using System.Web;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
-  public class ListMenuPreRenderer : PreRendererBase<IListMenu>, IListMenuPreRenderer
+  public class ListMenuPreRenderer : IListMenuPreRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly IListMenu _control;
+
     public ListMenuPreRenderer (HttpContextBase context, IListMenu control)
-        : base(context, control)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      _control = control;
+      _context = context;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
+    public HttpContextBase Context
     {
-      throw new NotImplementedException();
+      get { return _context; }
     }
 
-    public override void PreRender ()
+    /// <summary>Gets the control that will be rendered.</summary>
+    public IListMenu Control
+    {
+      get { return _control; }
+    }
+
+    public void PreRender ()
     {
       if (!Control.HasClientScript)
         return;

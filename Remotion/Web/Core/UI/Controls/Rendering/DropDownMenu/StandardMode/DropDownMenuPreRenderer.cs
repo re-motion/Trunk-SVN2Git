@@ -35,10 +35,5 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       return true;
     }
-
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-      throw new NotImplementedException ();
-    }
   }
 }

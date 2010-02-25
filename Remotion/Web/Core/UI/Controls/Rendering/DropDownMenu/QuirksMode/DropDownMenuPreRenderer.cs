@@ -31,11 +31,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-      throw new NotImplementedException();
-    }
-
     public override bool GetBrowserCapableOfScripting ()
     {
       return IsInternetExplorer55OrHigher();

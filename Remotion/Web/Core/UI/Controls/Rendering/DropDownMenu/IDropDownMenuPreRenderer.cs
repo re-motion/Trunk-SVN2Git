@@ -22,8 +22,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
   /// Interface for classes that handle markup-related actions for <see cref="DropDownMenu"/> controls,
   /// such as registering HTML head contents, which have to be executed before the rendering stage.
   /// </summary>
-  public interface IDropDownMenuPreRenderer : IPreRenderer
+  public interface IDropDownMenuPreRenderer
   {
+    void PreRender ();
     bool GetBrowserCapableOfScripting ();
   }
 }

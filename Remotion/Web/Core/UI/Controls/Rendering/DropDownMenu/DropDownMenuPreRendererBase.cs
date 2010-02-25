@@ -27,14 +27,33 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
   /// Responsible for registering scripts and the style sheet for <see cref="DropDownMenu"/> controls.
   /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public abstract class DropDownMenuPreRendererBase : PreRendererBase<IDropDownMenu>, IDropDownMenuPreRenderer
+  public abstract class DropDownMenuPreRendererBase : IDropDownMenuPreRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly IDropDownMenu _control;
+    
     protected DropDownMenuPreRendererBase (HttpContextBase context, IDropDownMenu control)
-        : base(context, control)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      _control = control;
+      _context = context;
     }
 
-    public override void PreRender ()
+    /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    /// <summary>Gets the control that will be rendered.</summary>
+    public IDropDownMenu Control
+    {
+      get { return _control; }
+    }
+
+    public void PreRender ()
     {
       string key = Control.UniqueID;
       if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRendererBase), key))
