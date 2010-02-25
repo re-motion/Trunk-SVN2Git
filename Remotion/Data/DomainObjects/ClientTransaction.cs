@@ -698,7 +698,7 @@ public abstract class ClientTransaction : IDataSource
   /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the relation end point's data.
   /// </summary>
   /// <param name="endPointID">The <see cref="RelationEndPointID"/> of the end point whose data must be loaded. In order to force a collection-valued 
-  /// relation property to be loaded, pass the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+  /// relation property to be loaded, pass the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="endPointID"/> parameter is <see langword="null" />.</exception>
   public void EnsureDataAvailable (RelationEndPointID endPointID)
   {

@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </summary>
     /// <param name="clientTransaction">The client transaction to unload the data from.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
-    /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+    /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
     /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should 
     /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>>
     /// <exception cref="InvalidOperationException">The given end point is not in unchanged state.</exception>
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </summary>
     /// <param name="clientTransaction">The client transaction to unload the data from.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
-    /// end point, specify the <see cref="IEndPoint.ID"/> of the <see cref="DomainObjectCollection.AssociatedEndPoint"/>.</param>
+    /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
     /// <param name="transactionMode">The <see cref="UnloadTransactionMode"/> to use. This can be used to specify whether the unload operation should 
     /// affect this transaction only or the whole transaction hierarchy, up to the root transaction.</param>
     /// <exception cref="InvalidOperationException">The given end point or one of the items it stores are not in unchanged state.</exception>

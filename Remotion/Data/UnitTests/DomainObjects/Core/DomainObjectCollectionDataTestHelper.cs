@@ -136,5 +136,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var newStrategy = new ReadOnlyCollectionDataDecorator (originalStrategy);
       SetDataStrategy (collection, newStrategy);
     }
+
+    public static ICollectionEndPoint GetAssociatedEndPoint (DomainObjectCollection collection)
+    {
+      var strategy = GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
+      return strategy.AssociatedEndPoint;
+    }
   }
 }

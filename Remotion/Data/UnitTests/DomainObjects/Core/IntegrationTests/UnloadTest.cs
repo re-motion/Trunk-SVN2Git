@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock, 
-          orderItems.AssociatedEndPoint.ID, 
+          orderItems.AssociatedEndPointID, 
           UnloadTransactionMode.ThisTransactionOnly);
 
       CheckDataContainerExists (order, true);
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock,
-          orderItems.AssociatedEndPoint.ID,
+          orderItems.AssociatedEndPointID,
           UnloadTransactionMode.ThisTransactionOnly);
 
       Assert.That (orderItems.IsDataAvailable, Is.False);
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock,
-          orderItems.AssociatedEndPoint.ID,
+          orderItems.AssociatedEndPointID,
           UnloadTransactionMode.ThisTransactionOnly);
 
       Assert.That (orderItems.IsDataAvailable, Is.False);
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock, 
-          orderItems.AssociatedEndPoint.ID, 
+          orderItems.AssociatedEndPointID, 
           UnloadTransactionMode.ThisTransactionOnly);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2, OrderItem.GetObject (newOrderItemID) }));
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void UnloadCollectionEndPoint_AlreadyUnloaded ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var endPoint = customer.Orders.AssociatedEndPoint;
+      var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
@@ -385,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock,
-          orderItems.AssociatedEndPoint.ID,
+          orderItems.AssociatedEndPointID,
           UnloadTransactionMode.ThisTransactionOnly);
 
       CheckDataContainerExists (order, true);
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock,
-          orderItems.AssociatedEndPoint.ID,
+          orderItems.AssociatedEndPointID,
           UnloadTransactionMode.ThisTransactionOnly);
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
@@ -466,7 +466,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock,
-          orderItems.AssociatedEndPoint.ID,
+          orderItems.AssociatedEndPointID,
           UnloadTransactionMode.ThisTransactionOnly);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, OrderItem.GetObject (newOrderItemID) }));
@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock, 
-          order1.OrderItems.AssociatedEndPoint.ID, 
+          order1.OrderItems.AssociatedEndPointID, 
           UnloadTransactionMode.ThisTransactionOnly);
 
       listenerMock.VerifyAllExpectations ();

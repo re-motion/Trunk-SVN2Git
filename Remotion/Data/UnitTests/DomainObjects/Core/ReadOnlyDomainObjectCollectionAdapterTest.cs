@@ -79,12 +79,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void AssociatedEndPoint ()
+    public void AssociatedEndPointID ()
     {
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
       
-      Assert.That (readOnlyAdapter.AssociatedEndPoint, Is.SameAs (associatedCollection.AssociatedEndPoint));
+      Assert.That (readOnlyAdapter.AssociatedEndPointID, Is.EqualTo (associatedCollection.AssociatedEndPointID));
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock, 
-          associatedCollection.AssociatedEndPoint.ID, 
+          associatedCollection.AssociatedEndPointID, 
           UnloadTransactionMode.ThisTransactionOnly);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadCollectionEndPoint (
           ClientTransactionMock,
-          associatedCollection.AssociatedEndPoint.ID,
+          associatedCollection.AssociatedEndPointID,
           UnloadTransactionMode.ThisTransactionOnly);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);

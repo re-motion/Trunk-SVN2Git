@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       // cause parent tx to require reload of data containers...
       UnloadService.UnloadCollectionEndPointAndData (
           ClientTransactionMock, 
-          order.OrderItems.AssociatedEndPoint.ID, 
+          order.OrderItems.AssociatedEndPointID, 
           UnloadTransactionMode.ThisTransactionOnly); 
       
       using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())

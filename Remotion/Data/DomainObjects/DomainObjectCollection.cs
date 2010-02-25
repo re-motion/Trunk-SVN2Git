@@ -255,14 +255,30 @@ namespace Remotion.Data.DomainObjects
     /// this is a stand-alone collection.
     /// </summary>
     /// <value>The associated end point.</value>
-    public ICollectionEndPoint AssociatedEndPoint
+    public RelationEndPointID AssociatedEndPointID
     {
-      get { return _dataStrategy.AssociatedEndPoint; }
+      get 
+      {
+        var associatedEndPoint = _dataStrategy.AssociatedEndPoint;
+        return associatedEndPoint != null ? associatedEndPoint.ID : null; 
+      }
     }
 
     public bool IsDataAvailable
     {
       get { return _dataStrategy.IsDataAvailable; }
+    }
+
+    /// <summary>
+    /// Determines whether this <see cref="DomainObjectCollection"/> instance is associated to the specified <see cref="ICollectionEndPoint"/>.
+    /// </summary>
+    /// <param name="endPoint">The end point to check for. Pass <see langword="null" /> to check whether this collection is stand-alone.</param>
+    /// <returns>
+    /// 	<see langword="true"/> if this collection is associated to the specified end point; otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool IsAssociatedTo (ICollectionEndPoint endPoint)
+    {
+      return _dataStrategy.AssociatedEndPoint == endPoint;
     }
 
     /// <summary>
@@ -536,27 +552,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Returns an implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection but will
-    /// not raise any notifications. This means that no events wil be raised when the data is manipulated and no bidirectional notifications will be
-    /// performed. The returned object also does not check whether this collection is read-only.
-    /// </summary>
-    /// <returns>An implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection and will
-    /// not raise any notifications and manipulation.</returns>
-    /// <remarks>
-    /// <para>
-    /// When the collection is part of a
-    /// <see cref="CollectionEndPoint"/>, the manipulations performed on the data will not trigger bidirectional modifications on related objects,
-    /// so manipulations must be performed with care, otherwise inconsistent state might arise. The end point will also not be marked as touched by 
-    /// manipulations performed on the returned data. (The end point's <see cref="CollectionEndPoint.HasChanged"/> method might still return 
-    /// <see langword="true" />, though, since it compares the original data with the collection's contents.)
-    /// </para>
-    /// </remarks>
-    protected IDomainObjectCollectionData GetNonNotifyingData ()
-    {
-      return new ModificationCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore());
-    }
-
-    /// <summary>
     /// Creates a shallow copy of this collection, i.e. a collection of the same type and with the same contents as this collection. 
     /// No <see cref="Adding"/>, <see cref="Added"/>, <see cref="Removing"/>, or <see cref="Removed"/> 
     /// events are raised during the process of cloning.
@@ -663,6 +658,27 @@ namespace Remotion.Data.DomainObjects
           new Transformer (endPoint.OppositeDomainObjects),
           new Transformer (this),
           endPoint.OppositeDomainObjects._dataStrategy.GetDataStore());
+    }
+
+    /// <summary>
+    /// Returns an implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection but will
+    /// not raise any notifications. This means that no events wil be raised when the data is manipulated and no bidirectional notifications will be
+    /// performed. The returned object also does not check whether this collection is read-only.
+    /// </summary>
+    /// <returns>An implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection and will
+    /// not raise any notifications and manipulation.</returns>
+    /// <remarks>
+    /// <para>
+    /// When the collection is part of a
+    /// <see cref="CollectionEndPoint"/>, the manipulations performed on the data will not trigger bidirectional modifications on related objects,
+    /// so manipulations must be performed with care, otherwise inconsistent state might arise. The end point will also not be marked as touched by 
+    /// manipulations performed on the returned data. (The end point's <see cref="CollectionEndPoint.HasChanged"/> method might still return 
+    /// <see langword="true" />, though, since it compares the original data with the collection's contents.)
+    /// </para>
+    /// </remarks>
+    protected IDomainObjectCollectionData GetNonNotifyingData ()
+    {
+      return new ModificationCheckingCollectionDataDecorator (RequiredItemType, _dataStrategy.GetDataStore ());
     }
 
     /// <summary>

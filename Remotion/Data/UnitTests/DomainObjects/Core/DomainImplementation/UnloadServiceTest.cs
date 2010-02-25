@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_UnloadsEndPointAndItems ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      var orderItemsEndPoint = order.OrderItems.AssociatedEndPoint;
+      var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
       var orderItem1 = orderItemsEndPoint.OppositeDomainObjects[0];
       var orderItem2 = orderItemsEndPoint.OppositeDomainObjects[1];
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_UnloadsEndPoint_EmptyCollection ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
-      var ordersEndPoint = customer.Orders.AssociatedEndPoint;
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       Assert.That (ordersEndPoint.OppositeDomainObjects, Is.Empty);
 
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_DoesNothing_IfNoDataAvailable ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var ordersEndPoint = customer.Orders.AssociatedEndPoint;
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, ordersEndPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
 
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_ThrowsAndDoesNothing_IfItemCannotBeUnloaded ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var ordersEndPoint = customer.Orders.AssociatedEndPoint;
+      var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       var orderA = (Order) ordersEndPoint.OppositeDomainObjects[0];
       var orderB = (Order) ordersEndPoint.OppositeDomainObjects[1];
@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_TransactionMode_ThisTransactionOnly ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      var parentOrderItemsEndPoint = order.OrderItems.AssociatedEndPoint;
+      var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
       var orderItem1 = parentOrderItemsEndPoint.OppositeDomainObjects[0];
 
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_TransactionMode_Recurse ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      var parentOrderItemsEndPoint = order.OrderItems.AssociatedEndPoint;
+      var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
 
       var orderItem1 = parentOrderItemsEndPoint.OppositeDomainObjects[0];
 
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_TransactionMode_ThisTransactionOnly_EmptyCollection ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
-      var parentOrdersEndPoint = customer.Orders.AssociatedEndPoint;
+      var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       Assert.That (parentOrdersEndPoint.OppositeDomainObjects, Is.Empty);
 
@@ -337,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadCollectionEndPointAndData_TransactionMode_Recurse_EmptyCollection ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
-      var parentOrdersEndPoint = customer.Orders.AssociatedEndPoint;
+      var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
 
       Assert.That (parentOrdersEndPoint.OppositeDomainObjects, Is.Empty);
 

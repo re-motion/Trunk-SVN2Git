@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -59,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var orderItem1 = DomainObjectMother.GetObjectInOtherTransaction<OrderItem> (DomainObjectIDs.OrderItem1);
 
-      var endPoint = (CollectionEndPoint) order1.OrderItems.AssociatedEndPoint;
+      var endPoint = (CollectionEndPoint) DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
       endPoint.OppositeDomainObjects.Remove (orderItem1);
     }
 

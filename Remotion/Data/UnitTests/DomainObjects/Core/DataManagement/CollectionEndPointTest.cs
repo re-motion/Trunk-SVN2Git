@@ -371,8 +371,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newOpposites);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (_customerEndPoint.OriginalCollectionReference.AssociatedEndPoint, Is.Null);
+      Assert.That (_customerEndPoint.OppositeDomainObjects.IsAssociatedTo (_customerEndPoint), Is.True);
+      Assert.That (_customerEndPoint.OriginalCollectionReference.IsAssociatedTo (null), Is.True);
     }
 
     [Test]
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _customerEndPoint.SetOppositeCollectionAndNotify (_customerEndPoint.OppositeDomainObjects);
       
-      Assert.That (_customerEndPoint.OppositeDomainObjects.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.IsAssociatedTo (_customerEndPoint), Is.True);
     }
 
     [Test]
@@ -509,14 +509,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newCollection));
-      Assert.That (newCollection.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (oldCollection.AssociatedEndPoint, Is.Null);
+      Assert.That (newCollection.IsAssociatedTo (_customerEndPoint), Is.True);
+      Assert.That (oldCollection.IsAssociatedTo (null), Is.True);
 
       _customerEndPoint.Rollback ();
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (oldCollection));
-      Assert.That (newCollection.AssociatedEndPoint, Is.Null);
-      Assert.That (oldCollection.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (newCollection.IsAssociatedTo (null), Is.True);
+      Assert.That (oldCollection.IsAssociatedTo (_customerEndPoint), Is.True);
     }
 
     [Test]

@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
@@ -153,16 +152,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         customer1.Orders = newCollection;
         customer3.Orders = oldOrdersOfCustomer1;
-        Assert.That (oldOrdersOfCustomer3.AssociatedEndPoint, Is.Null);
+        Assert.That (oldOrdersOfCustomer3.IsAssociatedTo (null), Is.True);
 
         ClientTransaction.Current.Rollback ();
 
         Assert.That (customer1.Orders, Is.SameAs (oldOrdersOfCustomer1));
         Assert.That (customer3.Orders, Is.SameAs (oldOrdersOfCustomer3));
 
-        Assert.That (customer1.Orders.AssociatedEndPoint.GetDomainObject (), Is.SameAs (customer1));
-        Assert.That (customer3.Orders.AssociatedEndPoint.GetDomainObject (), Is.SameAs (customer3));
-        Assert.That (newCollection.AssociatedEndPoint, Is.Null);
+        Assert.That (customer1.Orders.AssociatedEndPointID.ObjectID, Is.EqualTo (customer1.ID));
+        Assert.That (customer3.Orders.AssociatedEndPointID.ObjectID, Is.EqualTo (customer3.ID));
+        Assert.That (newCollection.AssociatedEndPointID, Is.Null);
       }
     }
   }

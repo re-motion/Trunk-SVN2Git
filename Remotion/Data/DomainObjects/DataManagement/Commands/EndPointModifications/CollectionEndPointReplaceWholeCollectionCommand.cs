@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       // only transform the old collection to stand-alone if it is still associated with this end point
       // rationale: during rollback, the old relation might have already been associated with another end-point, we must not overwrite this!
-      if (OldOppositeCollectionTransformer.Collection.AssociatedEndPoint == ModifiedEndPoint)
+      if (OldOppositeCollectionTransformer.Collection.IsAssociatedTo (ModifiedEndPoint))
         OldOppositeCollectionTransformer.TransformToStandAlone();
 
       // copy over the data
@@ -151,10 +151,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
 
+#pragma warning disable 168
       foreach (var addedObject in AddedObjects.Reverse ())
         domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
       foreach (var removedObject in RemovedObjects.Reverse())
         domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
+#pragma warning restore 168
     }
 
     public override void NotifyClientTransactionOfEnd ()

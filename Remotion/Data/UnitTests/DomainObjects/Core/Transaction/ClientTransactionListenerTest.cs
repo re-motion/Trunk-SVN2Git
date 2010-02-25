@@ -437,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void RelationEndPointUnload ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var orderItemsEndPoint = order1.OrderItems.AssociatedEndPoint;
+      var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order1.OrderItems);
 
       ClientTransactionMock.AddListener (_strictListenerMock);
 

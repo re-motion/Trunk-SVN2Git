@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -65,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         ArgumentUtility.CheckNotNullAndType ("value", value, _oppositeDomainObjects.GetType ());
 
-        if (value.AssociatedEndPoint != this)
+        if (!value.IsAssociatedTo (this))
         {
           throw new ArgumentException (
               "The new opposite collection must have been prepared to delegate to this end point. Use SetOppositeCollectionAndNotify instead.",
@@ -130,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
 
-      if (oppositeDomainObjects.AssociatedEndPoint != null && oppositeDomainObjects.AssociatedEndPoint != this)
+      if (!oppositeDomainObjects.IsAssociatedTo (null) && !oppositeDomainObjects.IsAssociatedTo (this))
         throw new ArgumentException ("The given collection is already associated with an end point.", "oppositeDomainObjects");
 
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
@@ -182,8 +181,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         _oppositeDomainObjects = _originalCollectionReference;
 
-        Assertion.IsTrue (_oppositeDomainObjects.AssociatedEndPoint == this);
-        Assertion.IsTrue (_oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback || oppositeObjectsReferenceBeforeRollback.AssociatedEndPoint != this);
+        Assertion.IsTrue (_oppositeDomainObjects.IsAssociatedTo (this));
+        Assertion.IsTrue (
+            _oppositeDomainObjects == oppositeObjectsReferenceBeforeRollback 
+            || !oppositeObjectsReferenceBeforeRollback.IsAssociatedTo (this));
 
         _oppositeDomainObjects.Rollback (OriginalOppositeDomainObjectsContents);
       }

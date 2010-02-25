@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects
 
       public void TransformToStandAlone ()
       {
-        Assertion.IsNotNull (Collection.AssociatedEndPoint);
+        Assertion.IsFalse (Collection.IsAssociatedTo (null));
 
         var standAloneDataStore = new DomainObjectCollectionData (Collection._dataStrategy.GetDataStore ()); // copy data
         Collection._dataStrategy = CreateDataStrategyForStandAloneCollection (standAloneDataStore, Collection.RequiredItemType, Collection);

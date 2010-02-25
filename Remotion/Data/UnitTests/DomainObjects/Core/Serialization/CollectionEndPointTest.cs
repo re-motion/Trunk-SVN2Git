@@ -187,10 +187,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         var propertyName = Configuration.NameResolver.GetPropertyName (typeof (IndustrialSector), "Companies");
         var endPointID = new RelationEndPointID (industrialSector.ID, propertyName);
         var endPoint = ((ClientTransactionMock)ClientTransaction.Current).DataManager.RelationEndPointMap[endPointID];
-        Assert.That (deserializedTuple.Item2.Companies.AssociatedEndPoint, Is.SameAs (endPoint));
+        Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedTuple.Item2.Companies), Is.SameAs (endPoint));
 
         ClientTransaction.Current.Rollback ();
-        Assert.That (deserializedTuple.Item2.Companies.AssociatedEndPoint, Is.SameAs (endPoint));
+        Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedTuple.Item2.Companies), Is.SameAs (endPoint));
       }
     }
 

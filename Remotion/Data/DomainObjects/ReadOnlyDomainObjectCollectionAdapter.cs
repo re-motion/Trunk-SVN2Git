@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects
   /// This class acts as a read-only adapter for an <see cref="IDomainObjectCollectionData"/> object.
   /// </summary>
   [Serializable]
-  public class ReadOnlyDomainObjectCollectionAdapter<T> : IEnumerable<T>, IList<T> where T : DomainObject
+  public class ReadOnlyDomainObjectCollectionAdapter<T> : IList<T> where T : DomainObject
   {
     private readonly DomainObjectCollection _wrappedData;
 
@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects
       get { return _wrappedData.RequiredItemType; }
     }
 
-    public ICollectionEndPoint AssociatedEndPoint
+    public RelationEndPointID AssociatedEndPointID
     {
-      get { return _wrappedData.AssociatedEndPoint; }
+      get { return _wrappedData.AssociatedEndPointID; }
     }
 
     public bool IsDataAvailable

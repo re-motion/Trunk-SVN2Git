@@ -78,8 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.EqualTo (new[] { _orderWithoutOrderItem }));
       Assert.That (oldOpposites, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
-      Assert.That (newOpposites.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (oldOpposites.AssociatedEndPoint, Is.Null);
+      Assert.That (newOpposites.IsAssociatedTo (_customerEndPoint), Is.True);
+      Assert.That (oldOpposites.IsAssociatedTo (null), Is.True);
     }
 
     [Test]
@@ -251,7 +251,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (originalOpposites));
-      Assert.That (_customerEndPoint.OppositeDomainObjects.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (_customerEndPoint.OppositeDomainObjects.IsAssociatedTo (_customerEndPoint), Is.True);
     }
 
     [Test]
@@ -279,8 +279,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newCollection));
-      Assert.That (newCollection.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (oldCollection.AssociatedEndPoint, Is.Null);
+      Assert.That (newCollection.IsAssociatedTo (_customerEndPoint), Is.True);
+      Assert.That (oldCollection.IsAssociatedTo (null), Is.True);
 
       _customerEndPoint.Rollback ();
 
@@ -353,8 +353,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.SetOppositeCollectionAndNotify (newCollection);
 
       Assert.That (_customerEndPoint.OppositeDomainObjects, Is.SameAs (newCollection));
-      Assert.That (newCollection.AssociatedEndPoint, Is.SameAs (_customerEndPoint));
-      Assert.That (oldCollection.AssociatedEndPoint, Is.Null);
+      Assert.That (newCollection.IsAssociatedTo (_customerEndPoint), Is.True);
+      Assert.That (oldCollection.IsAssociatedTo (null));
 
       _customerEndPoint.Commit ();
 

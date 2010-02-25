@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       
       ClientTransactionMock.IsReadOnly = true;
 
-      int orderNumber = loadedOrder.OrderNumber;
+      Dev.Null = loadedOrder.OrderNumber;
     }
 
     [Test]
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransactionMock.IsReadOnly = true;
 
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Dev.Null = Order.GetObject (DomainObjectIDs.Order1);
     }
 
     #region Get/SetRelatedObjects1Side
@@ -127,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.IsReadOnly = true;
 
-      OrderItem orderItem = loadedOrder.OrderItems[0];
+      Dev.Null = loadedOrder.OrderItems[0];
     }
 
     [Test]
@@ -152,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.IsReadOnly = true;
 
-      ObjectList<Order> orders = loadedOfficial.Orders;
+      Dev.Null = loadedOfficial.Orders;
     }
 
     [Test]
@@ -194,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.IsReadOnly = true;
 
-      Order order = loadedOrderItem.Order;
+      Dev.Null = loadedOrderItem.Order;
     }
 
 
@@ -257,14 +258,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.IsReadOnly = true;
 
-      Employee employee = loadedComputer.Employee;
+      Dev.Null = loadedComputer.Employee;
     }
 
     [Test]
     public void CanGetNullRelatedObject1To1RealSideIfAlreadyLoaded ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
-      Employee employee = computer.Employee;
+      Dev.Null = computer.Employee;
       Assert.IsNull (computer.Employee);
 
       ClientTransactionMock.IsReadOnly = true;
@@ -320,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       ClientTransactionMock.IsReadOnly = true;
 
-      Computer computer = loadedEmployee.Computer;
+      Dev.Null = loadedEmployee.Computer;
     }
 
     [Test]
@@ -385,11 +386,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void CanExecuteQueryIfAlreadyLoaded ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
-      OrderCollection loadedOrders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
+      var loadedOrders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
 
       ClientTransactionMock.IsReadOnly = true;
       
-      OrderCollection orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
+      var orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
       Assert.AreEqual (loadedOrders.Count, orders.Count);
       Assert.AreSame (loadedOrders[0], orders[0]);
     }
@@ -421,10 +422,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ThrowsOnUnloadCollectionEndPoint ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
-      var endPoint = customer.Orders.AssociatedEndPoint;
+      var endPointID = customer.Orders.AssociatedEndPointID;
 
       ClientTransactionMock.IsReadOnly = true;
-      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPoint.ID, UnloadTransactionMode.ThisTransactionOnly);
+      UnloadService.UnloadCollectionEndPoint (ClientTransactionMock, endPointID, UnloadTransactionMode.ThisTransactionOnly);
     }
 
     [Test]

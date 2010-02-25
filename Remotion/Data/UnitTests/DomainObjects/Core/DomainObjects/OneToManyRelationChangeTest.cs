@@ -490,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (_oldCustomer.Orders, Is.Empty);
       Assert.That (_orderWithoutOrderItem.Customer, Is.Null);
       Assert.That (_order1.Customer, Is.Null);
-      Assert.That (_oldCustomer.Orders.AssociatedEndPoint.HasBeenTouched, Is.True);
+      Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (_oldCustomer.Orders).HasBeenTouched, Is.True);
     }
 
     [Test]
@@ -530,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (_oldCustomer.Orders, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (_oldCustomer));
       Assert.That (_order1.Customer, Is.SameAs (_oldCustomer));
-      Assert.That (_oldCustomer.Orders.AssociatedEndPoint.HasBeenTouched, Is.False);
+      Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (_oldCustomer.Orders).HasBeenTouched, Is.False);
     }
   }
 }

@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var collection = new DomainObjectCollection ();
 
       Assert.That (collection.IsReadOnly, Is.False);
-      Assert.That (collection.AssociatedEndPoint, Is.Null);
+      Assert.That (collection.AssociatedEndPointID, Is.Null);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, null);
     }
 
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var collection = new DomainObjectCollection (typeof (Order));
 
       Assert.That (collection.IsReadOnly, Is.False);
-      Assert.That (collection.AssociatedEndPoint, Is.Null);
+      Assert.That (collection.AssociatedEndPointID, Is.Null);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Order));
     }
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var collection = new DomainObjectCollection (givenData);
 
       Assert.That (collection.IsReadOnly, Is.False);
-      Assert.That (collection.AssociatedEndPoint, Is.Null);
+      Assert.That (collection.AssociatedEndPointID, Is.Null);
 
       var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
       Assert.That (actualData, Is.SameAs (givenData));
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (collection, Is.EqualTo (new[] { _customer1, _customer2 }));
       Assert.That (collection.RequiredItemType, Is.SameAs (typeof (Customer)));
       Assert.That (collection.IsReadOnly, Is.False);
-      Assert.That (collection.AssociatedEndPoint, Is.Null);
+      Assert.That (collection.AssociatedEndPointID, Is.Null);
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Customer));
     }
@@ -159,12 +159,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void AssociatedEndPoint ()
+    public void AssociatedEndPointID_AssociatedCollection ()
+    {
+      var endPointStub = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      _dataStrategyMock.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
+      
+      Assert.That (_collectionWithDataStrategyMock.AssociatedEndPointID, Is.EqualTo (endPointStub.ID));
+    }
+
+    [Test]
+    public void AssociatedEndPointID_StandAloneCollection ()
+    {
+      Assert.That (_collection.AssociatedEndPointID, Is.Null);
+    }
+
+    [Test]
+    public void IsAssociatedTo_AssociatedCollection ()
     {
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
       _dataStrategyMock.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
-      
-      Assert.That (_collectionWithDataStrategyMock.AssociatedEndPoint, Is.SameAs (endPointStub));
+
+      Assert.That (_collectionWithDataStrategyMock.IsAssociatedTo (endPointStub), Is.True);
+
+      var otherEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      Assert.That (_collectionWithDataStrategyMock.IsAssociatedTo (otherEndPointStub), Is.False);
+
+      Assert.That (_collectionWithDataStrategyMock.IsAssociatedTo (null), Is.False);
+    }
+
+    [Test]
+    public void IsAssociatedTo_StandAloneCollection ()
+    {
+      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
+      Assert.That (_collection.IsAssociatedTo (endPointStub), Is.False);
+
+      Assert.That (_collection.IsAssociatedTo (null), Is.True);
     }
 
     [Test]
@@ -762,7 +791,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var delegatingStrategy = new EndPointDelegatingCollectionData (collectionEndPointStub, endPointDataStub);
       var associatedCollection = new OrderCollection (new ModificationCheckingCollectionDataDecorator (typeof (Order), delegatingStrategy));
-      Assert.That (associatedCollection.AssociatedEndPoint, Is.SameAs (collectionEndPointStub));
+      Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (associatedCollection), Is.SameAs (collectionEndPointStub));
       return associatedCollection;
     }
   }

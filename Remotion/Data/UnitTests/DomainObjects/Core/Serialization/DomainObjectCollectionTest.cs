@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -55,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (DomainObjectIDs.Order1, deserializedCollection[0].ID);
       Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
       Assert.IsFalse (deserializedCollection.IsReadOnly);
-      Assert.IsNull (deserializedCollection.AssociatedEndPoint);
+      Assert.IsNull (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedCollection));
     }
 
     [Test]
@@ -81,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var customer1 = Customer.GetObject (DomainObjectIDs.Customer1);
       var collection = customer1.Orders;
-      var endPointID = new RelationEndPointID (customer1.ID, collection.AssociatedEndPoint.Definition);
+      var endPointID = collection.AssociatedEndPointID;
       var relatedIDs = collection.Select (obj => obj.ID).ToArray();
 
       var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.Create (collection, ClientTransactionMock));
@@ -89,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedTransaction = deserializedCollectionAndTransaction.Item2;
 
       var deserializedEndPoint = deserializedTransaction.DataManager.RelationEndPointMap[endPointID];
-      Assert.That (deserializedCollection.AssociatedEndPoint, Is.SameAs (deserializedEndPoint));
+      Assert.That (DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (deserializedCollection), Is.SameAs (deserializedEndPoint));
 
       var deserializedData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (deserializedCollection);
       DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (deserializedData);
