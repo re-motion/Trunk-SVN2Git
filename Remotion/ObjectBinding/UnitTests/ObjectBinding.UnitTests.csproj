@@ -343,6 +343,8 @@
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownList.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownMenu.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocMultilineTextValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\BocTextValueRendererTestBase.cs" />
