@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI.HtmlControls;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
@@ -312,7 +311,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         control.LoadValues (interim);
     }
 
-    private void CreateEditPermissionControls (ObjectList<Permission> permissions)
+    private void CreateEditPermissionControls (IList<Permission> permissions)
     {
       PermissionsPlaceHolder.Controls.Clear();
       _editPermissionControls.Clear();

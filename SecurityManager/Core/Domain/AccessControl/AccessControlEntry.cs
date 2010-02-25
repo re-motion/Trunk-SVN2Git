@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
@@ -125,24 +126,22 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     [DBBidirectionalRelation ("AccessControlEntry", SortExpression = "[Index] ASC")]
     [ObjectBinding (ReadOnly = true)]
-    public virtual ObjectList<Permission> Permissions
-    {
-      get { return CurrentProperty.GetValue<ObjectList<Permission>> ().AsReadOnly (); }
-    }
+    protected abstract ObjectList<Permission> PermissionsInternal { get; }
 
-    private ObjectList<Permission> GetPermissions ()
+    [StorageClassNone]
+    public ReadOnlyCollection<Permission> Permissions
     {
-      return Properties[typeof (AccessControlEntry), "Permissions"].GetValue<ObjectList<Permission>>();
+      get { return PermissionsInternal.AsReadOnlyCollection(); }
     }
 
     public AccessTypeDefinition[] GetAllowedAccessTypes ()
     {
-      return Permissions.Where (p => (p.Allowed.HasValue && p.Allowed.Value)).Select (p => p.AccessType).ToArray();
+      return PermissionsInternal.Where (p => (p.Allowed.HasValue && p.Allowed.Value)).Select (p => p.AccessType).ToArray ();
     }
 
     public AccessTypeDefinition[] GetDeniedAccessTypes ()
     {
-      return Permissions.Where (p => (p.Allowed.HasValue && !p.Allowed.Value)).Select (p => p.AccessType).ToArray();
+      return PermissionsInternal.Where (p => (p.Allowed.HasValue && !p.Allowed.Value)).Select (p => p.AccessType).ToArray ();
     }
 
     public void AttachAccessType (AccessTypeDefinition accessType)
@@ -158,12 +157,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       var permission = Permission.NewObject();
       permission.AccessType = accessType;
       permission.Allowed = null;
-      var permissions = GetPermissions();
-      permissions.Add (permission);
-      if (permissions.Count == 1)
+      PermissionsInternal.Add (permission);
+      if (PermissionsInternal.Count == 1)
         permission.Index = 0;
       else
-        permission.Index = permissions[permissions.Count - 2].Index + 1;
+        permission.Index = PermissionsInternal[PermissionsInternal.Count - 2].Index + 1;
       Touch();
     }
 

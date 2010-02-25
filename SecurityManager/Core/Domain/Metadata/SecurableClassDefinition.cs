@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
@@ -80,8 +81,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     // member fields
 
-    private ObjectList<StatePropertyDefinition> _stateProperties;
-    private ObjectList<AccessTypeDefinition> _accessTypes;
+    private ReadOnlyCollection<StatePropertyDefinition> _stateProperties;
+    private ReadOnlyCollection<AccessTypeDefinition> _accessTypes;
 
     // construction and disposing
 
@@ -133,13 +134,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
     protected abstract ObjectList<StatePropertyReference> StatePropertyReferences { get; }
 
     [StorageClassNone]
-    public ObjectList<StatePropertyDefinition> StateProperties
+    public ReadOnlyCollection<StatePropertyDefinition> StateProperties
     {
       get
       {
         if (_stateProperties == null)
         {
-          var stateProperties = new ObjectList<StatePropertyDefinition>();
+          var stateProperties = new List<StatePropertyDefinition>();
 
           foreach (var propertyReference in StatePropertyReferences)
             stateProperties.Add (propertyReference.StateProperty);
@@ -156,13 +157,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
     protected abstract ObjectList<AccessTypeReference> AccessTypeReferences { get; }
 
     [StorageClassNone]
-    public ObjectList<AccessTypeDefinition> AccessTypes
+    public ReadOnlyCollection<AccessTypeDefinition> AccessTypes
     {
       get
       {
         if (_accessTypes == null)
         {
-          var accessTypes = new ObjectList<AccessTypeDefinition>();
+          var accessTypes = new List<AccessTypeDefinition>();
 
           foreach (var accessTypeReference in AccessTypeReferences)
             accessTypes.Add (accessTypeReference.AccessType);

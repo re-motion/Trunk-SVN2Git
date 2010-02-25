@@ -85,15 +85,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void FillStateDefinitionField ()
     {
-      DomainObjectCollection stateProperties = CurrentStateCombination.Class.StateProperties;
+      var stateProperties = CurrentStateCombination.Class.StateProperties;
       if (stateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
-      List<StateDefinition> possibleStateDefinitions = new List<StateDefinition> ();
+      var possibleStateDefinitions = new List<StateDefinition> ();
       if (stateProperties.Count > 0)
       {
-        StatePropertyDefinition statePropertyDefinition = (StatePropertyDefinition) stateProperties[0];
-        foreach (StateDefinition stateDefinition in statePropertyDefinition.DefinedStates)
+        var statePropertyDefinition = stateProperties[0];
+        foreach (var stateDefinition in statePropertyDefinition.DefinedStates)
         {
           possibleStateDefinitions.Add (stateDefinition);
         }

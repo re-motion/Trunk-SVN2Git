@@ -122,8 +122,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
 
-        DomainObjectCollection firstCollection = orderClass.StateProperties;
-        DomainObjectCollection secondCollection = orderClass.StateProperties;
+        var firstCollection = orderClass.StateProperties;
+        var secondCollection = orderClass.StateProperties;
 
         Assert.AreSame (firstCollection, secondCollection);
       }
@@ -137,7 +137,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
 
-        Assert.IsTrue (orderClass.StateProperties.IsReadOnly);
+        Assert.IsTrue (((ICollection<StatePropertyDefinition>)orderClass.StateProperties).IsReadOnly);
       }
     }
 
@@ -149,9 +149,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
 
-        DomainObjectCollection firstCollection = orderClass.StateProperties;
+        var firstCollection = orderClass.StateProperties;
         orderClass.AddStateProperty (testHelper.CreateTestProperty ());
-        DomainObjectCollection secondCollection = orderClass.StateProperties;
+        var secondCollection = orderClass.StateProperties;
 
         Assert.AreNotSame (firstCollection, secondCollection);
       }
@@ -191,8 +191,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
         testHelper.AttachJournalizeAccessType (orderClass);
 
-        DomainObjectCollection firstCollection = orderClass.AccessTypes;
-        DomainObjectCollection secondCollection = orderClass.AccessTypes;
+        var firstCollection = orderClass.AccessTypes;
+        var secondCollection = orderClass.AccessTypes;
 
         Assert.AreSame (firstCollection, secondCollection);
       }
@@ -207,7 +207,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
         testHelper.AttachJournalizeAccessType (orderClass);
 
-        Assert.IsTrue (orderClass.AccessTypes.IsReadOnly);
+        Assert.IsTrue (((ICollection<AccessTypeDefinition>)orderClass.AccessTypes).IsReadOnly);
       }
     }
 
@@ -219,9 +219,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
 
-        DomainObjectCollection firstCollection = orderClass.AccessTypes;
+        var firstCollection = orderClass.AccessTypes;
         orderClass.AddAccessType (testHelper.CreateJournalizeAccessType ());
-        DomainObjectCollection secondCollection = orderClass.AccessTypes;
+        var secondCollection = orderClass.AccessTypes;
 
         Assert.AreNotSame (firstCollection, secondCollection);
       }
@@ -237,7 +237,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       SecurableClassDefinition invoiceClass;
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
-        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
+        testHelper.CreateOrderClassDefinition ();
         invoiceClass = testHelper.CreateInvoiceClassDefinition ();
         testHelper.Transaction.Commit ();
       }
@@ -259,8 +259,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       AccessControlTestHelper testHelper = new AccessControlTestHelper ();
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
-        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
-        SecurableClassDefinition invoiceClass = testHelper.CreateInvoiceClassDefinition ();
+        testHelper.CreateOrderClassDefinition ();
+        testHelper.CreateInvoiceClassDefinition ();
         testHelper.Transaction.Commit ();
       }
 
@@ -440,7 +440,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       SecurableClassDefinition expectedClassDefinition;
-      ObjectList<AccessTypeDefinition> expectedAccessTypes;
+      IList<AccessTypeDefinition> expectedAccessTypes;
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         expectedClassDefinition = dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessTypes (10, ClientTransactionScope.CurrentTransaction);

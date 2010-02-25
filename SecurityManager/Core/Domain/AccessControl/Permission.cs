@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [Mandatory]
     public abstract AccessTypeDefinition AccessType { get; set; }
 
-    [DBBidirectionalRelation ("Permissions")]
+    [DBBidirectionalRelation ("PermissionsInternal")]
     [Mandatory]
     public abstract AccessControlEntry AccessControlEntry { get; }
   }

@@ -21,7 +21,6 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
@@ -293,13 +292,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EnableNewAccessControlListButton ()
     {
-      DomainObjectCollection stateProperties = CurrentFunction.SecurableClassDefinition.StateProperties;
+      var stateProperties = CurrentFunction.SecurableClassDefinition.StateProperties;
       if (stateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
       int possibleStateCombinations = 1;
       if (stateProperties.Count > 0)
-        possibleStateCombinations = ((StatePropertyDefinition) stateProperties[0]).DefinedStates.Count;
+        possibleStateCombinations = stateProperties[0].DefinedStates.Count;
       NewStatefulAccessControlListButton.Enabled = CurrentFunction.SecurableClassDefinition.StateCombinations.Count < possibleStateCombinations;
 
       NewStatelessAccessControlListButton.Enabled = CurrentFunction.SecurableClassDefinition.StatelessAccessControlList == null;
