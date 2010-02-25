@@ -121,8 +121,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override string ValueContainingControlID
@@ -180,10 +180,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (Command != null)
         Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocAutoCompleteReferenceValue '{0}', Object Command", ID));
-
-      var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context, this);
-      preRenderer.PreRender();
 
       if (!IsReadOnly)
         PreRenderEditModeValue();

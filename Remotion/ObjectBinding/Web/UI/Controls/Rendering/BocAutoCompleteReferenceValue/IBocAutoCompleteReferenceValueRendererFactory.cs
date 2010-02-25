@@ -20,9 +20,11 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue
 {
+  /// <summary>
+  /// Defines a factory method for creating renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
+  /// </summary>
   public interface IBocAutoCompleteReferenceValueRendererFactory
   {
-    IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control);
     IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control);
   }
 }

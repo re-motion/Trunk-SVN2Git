@@ -18,9 +18,12 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode
 {
@@ -40,9 +43,75 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     {
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
+
+      RegisterJavaScriptFiles (htmlHeadAppender);
+      RegisterStylesheets (htmlHeadAppender);
+    }
+
+    private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
+    {
+      htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude (Control);
+
+      string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteScript";
+      htmlHeadAppender.RegisterJavaScriptInclude (
+          jqueryAutocompleteScriptKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (BocAutoCompleteReferenceValueRenderer),
+              ResourceType.Html,
+              ResourceTheme.Legacy,
+              "BocAutoCompleteReferenceValue.jquery.js"));
+
+      string scriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_Script";
+      htmlHeadAppender.RegisterJavaScriptInclude (
+          scriptKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (BocAutoCompleteReferenceValueRenderer),
+              ResourceType.Html,
+              ResourceTheme.Legacy,
+              "BocAutoCompleteReferenceValue.js"));
+    }
+
+    private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
+    {
+      string styleKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_Style";
+      htmlHeadAppender.RegisterStylesheetLink (
+          styleKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (BocAutoCompleteReferenceValueRenderer),
+              ResourceType.Html,
+              ResourceTheme.Legacy,
+              "BocAutoCompleteReferenceValue.css"),
+          HtmlHeadAppender.Priority.Library);
+
+      string jqueryAutocompleteStyleKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteStyle";
+      htmlHeadAppender.RegisterStylesheetLink (
+          jqueryAutocompleteStyleKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (BocAutoCompleteReferenceValueRenderer),
+              ResourceType.Html,
+              ResourceTheme.Legacy,
+              "BocAutoCompleteReferenceValue.jquery.css"),
+          HtmlHeadAppender.Priority.Library);
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
+      
+      RegisterBindScript();
 
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -60,6 +129,40 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         RenderContentsWithSeparateOptionsMenu (writer, textBox, hiddenField, label, icon);
 
       writer.RenderEndTag();
+    }
+
+    private void RegisterBindScript ()
+    {
+      string key = Control.UniqueID + "_BindScript";
+      const string scriptTemplate =
+          @"$(document).ready( function() {{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), "
+          + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
+
+      var dataSource = Maybe.ForValue (Control.DataSource);
+      string businessObjectClass = dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault ("");
+      string businessObjectProperty = Maybe.ForValue (Control.Property).Select (p => p.Identifier).ValueOrDefault ("");
+      string businessObjectID =
+          dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).ValueOrDefault ("");
+
+      string script = string.Format (
+          scriptTemplate,
+          Control.TextBoxClientID,
+          Control.HiddenFieldClientID,
+          Control.DropDownButtonClientID,
+          string.IsNullOrEmpty (Control.ServicePath)
+              ? ""
+              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath, true),
+          StringUtility.NullToEmpty (Control.ServiceMethod),
+          Control.CompletionSetCount.HasValue ? Control.CompletionSetCount.Value : 10,
+          Control.CompletionInterval,
+          Control.SuggestionInterval,
+          Control.NullValueString,
+          businessObjectClass,
+          businessObjectProperty,
+          businessObjectID,
+          Control.Args
+          );
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
     }
 
     private TextBox GetTextbox ()

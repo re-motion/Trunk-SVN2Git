@@ -20,13 +20,11 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating quirks mode renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
+  /// </summary>
   public class BocAutoCompleteReferenceValueRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
   {
-    public IBocAutoCompleteReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
-    {
-      return new BocAutoCompleteReferenceValuePreRenderer (context, control);
-    }
-
     public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
     {
       return new BocAutoCompleteReferenceValueRenderer (context, control);

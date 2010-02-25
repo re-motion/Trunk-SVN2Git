@@ -302,12 +302,8 @@
     </Compile>
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\BocAutoCompleteReferenceValuePreRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\BocAutoCompleteReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\BocAutocompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
