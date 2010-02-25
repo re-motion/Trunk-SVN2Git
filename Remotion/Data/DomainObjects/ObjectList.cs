@@ -156,5 +156,14 @@ namespace Remotion.Data.DomainObjects
       : base (collection.Cast<DomainObject> (), typeof (T), isCollectionReadOnly)
     {
     }
+
+    [Obsolete (
+    "This method has been removed. Use AsReadOnlyCollection (extension method defined on DomainObjectCollectionExtensions) to create a read-only "
+    + "wrapper for a DomainObjectCollection. For a more featured wrapper, create a ReadOnlyDomainObjectCollectionAdapter. To create a new "
+    + "read-only DomainObjectCollection with a copy of the original collection's data, use Clone (true). (1.13.48)", true)]
+    public new ObjectList<T> AsReadOnly ()
+    {
+      throw new NotImplementedException ();
+    }
   }
 }

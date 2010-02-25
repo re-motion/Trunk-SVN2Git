@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects
   /// This class acts as a read-only adapter for an <see cref="IDomainObjectCollectionData"/> object.
   /// </summary>
   [Serializable]
-  public class ReadOnlyDomainObjectCollectionAdapter<T> : IEnumerable<T> where T : DomainObject
+  public class ReadOnlyDomainObjectCollectionAdapter<T> : IEnumerable<T>, IList<T> where T : DomainObject
   {
     private readonly DomainObjectCollection _wrappedData;
 
@@ -79,31 +79,82 @@ namespace Remotion.Data.DomainObjects
       return _wrappedData.Contains (objectID);
     }
 
-    public bool ContainsObject (DomainObject domainObject)
+    public bool ContainsObject (T domainObject)
     {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       return _wrappedData.ContainsObject (domainObject);
     }
 
-    public int IndexOf (DomainObject domainObject)
+    public T this[int index]
     {
-      return _wrappedData.IndexOf (domainObject);
+      get { return (T) _wrappedData[index]; }
     }
 
-    public DomainObject GetObject (int index)
+    public T this[ObjectID objectID]
     {
-      return _wrappedData[index];
-    }
-
-    public DomainObject GetObject (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _wrappedData[objectID];
+      get
+      {
+        ArgumentUtility.CheckNotNull ("objectID", objectID);
+        return (T) _wrappedData[objectID];
+      }
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       return _wrappedData.IndexOf (objectID);
+    }
+
+    public void CopyTo (T[] array, int arrayIndex)
+    {
+      _wrappedData.CopyTo (array, arrayIndex);
+    }
+
+    public int IndexOf (T item)
+    {
+      ArgumentUtility.CheckNotNull ("item", item);
+      return _wrappedData.IndexOf (item);
+    }
+
+    void ICollection<T>.Add (T item)
+    {
+      throw new NotSupportedException ("This collection does not support modifications.");
+    }
+
+    void ICollection<T>.Clear ()
+    {
+      throw new NotSupportedException ("This collection does not support modifications.");
+    }
+
+    bool ICollection<T>.Contains (T item)
+    {
+      return ContainsObject (item);
+    }
+
+    bool ICollection<T>.Remove (T item)
+    {
+      throw new NotSupportedException ("This collection does not support modifications.");
+    }
+
+    bool ICollection<T>.IsReadOnly
+    {
+      get { return true; }
+    }
+
+    void IList<T>.Insert (int index, T item)
+    {
+      throw new NotSupportedException ("This collection does not support modifications.");
+    }
+
+    void IList<T>.RemoveAt (int index)
+    {
+      throw new NotSupportedException ("This collection does not support modifications.");
+    }
+
+    T IList<T>.this [int index]
+    {
+      get { return this[index]; }
+      set { throw new NotSupportedException("This collection does not support modifications."); }
     }
   }
 }

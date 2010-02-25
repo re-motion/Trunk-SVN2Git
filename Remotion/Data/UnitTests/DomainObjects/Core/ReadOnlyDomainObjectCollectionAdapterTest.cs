@@ -25,6 +25,8 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -32,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   public class ReadOnlyDomainObjectCollectionAdapterTest : ClientTransactionBaseTest
   {
     private ReadOnlyDomainObjectCollectionAdapter<DomainObject> _readOnlyAdapter;
+    private IList<DomainObject> _readOnlyAdapterAsIList;
     private DomainObjectCollection _wrappedData;
 
     private Order _order1;
@@ -44,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       base.SetUp ();
       _wrappedData = new DomainObjectCollection (typeof (Order));
       _readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_wrappedData);
+      _readOnlyAdapterAsIList = _readOnlyAdapter;
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -56,6 +60,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       StubInnerData (_order1, _order2, _order3);
       Assert.That (_readOnlyAdapter.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+
+      var nonGenericEnumerableAdapter = (IEnumerable) _readOnlyAdapter;
+      var enumerator = nonGenericEnumerableAdapter.GetEnumerator ();
+      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.Current, Is.SameAs (_order1));
+      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.Current, Is.SameAs (_order2));
+      Assert.That (enumerator.MoveNext (), Is.True);
+      Assert.That (enumerator.Current, Is.SameAs (_order3));
+      Assert.That (enumerator.MoveNext (), Is.False);
     }
 
     [Test]
@@ -131,19 +145,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetObject_ByIndex ()
+    public void Item_ByIndex ()
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyAdapter.GetObject (0), Is.SameAs (_order1));
+      Assert.That (_readOnlyAdapter[0], Is.SameAs (_order1));
     }
 
     [Test]
-    public void GetObject_ByID ()
+    public void Item_ByID ()
     {
       StubInnerData (_order1, _order2, _order3);
 
-      Assert.That (_readOnlyAdapter.GetObject (_order2.ID), Is.SameAs (_order2));
+      Assert.That (_readOnlyAdapter[_order2.ID], Is.SameAs (_order2));
     }
 
     [Test]
@@ -168,6 +182,74 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       StubInnerData (_order1, _order2, _order3);
       var result = Serializer.SerializeAndDeserialize (_readOnlyAdapter);
       Assert.That (result.Count, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void IList_Contains ()
+    {
+      StubInnerData (_order1, _order2);
+
+      Assert.That (_readOnlyAdapterAsIList.Contains (_order2), Is.True);
+      Assert.That (_readOnlyAdapterAsIList.Contains (_order3), Is.False);
+    }
+
+    [Test]
+    public void IList_IsReadOnly ()
+    {
+      StubInnerData (_order1, _order2);
+
+      Assert.That (_readOnlyAdapterAsIList.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void IList_Item_Get ()
+    {
+      StubInnerData (_order1, _order2);
+      var result = _readOnlyAdapterAsIList[0];
+
+      Assert.That (result, Is.SameAs (_order1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
+    public void IList_Item_Set ()
+    {
+      _readOnlyAdapterAsIList[0] = _order4;
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
+    public void IList_Add ()
+    {
+      _readOnlyAdapterAsIList.Add (_order3);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
+    public void IList_Clear ()
+    {
+      _readOnlyAdapterAsIList.Clear ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
+    public void IList_Remove ()
+    {
+      _readOnlyAdapterAsIList.Remove (_order3);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
+    public void IList_Insert ()
+    {
+      _readOnlyAdapterAsIList.Insert (0, _order3);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This collection does not support modifications.")]
+    public void IList_RemoveAt ()
+    {
+      _readOnlyAdapterAsIList.RemoveAt (0);
     }
 
     private void StubInnerData (params DomainObject[] contents)
