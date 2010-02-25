@@ -345,7 +345,7 @@
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownMenu.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocTextValueRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocTextValueRendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\BocTextValueRendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\Rendering\ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnDefinition.cs" />

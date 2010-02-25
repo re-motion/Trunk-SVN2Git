@@ -15,16 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
+using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
-using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public class BocMultilineTextValuePreRenderer : BocPreRendererBase<IBocMultilineTextValue>, IBocMultilineTextValuePreRenderer
+  /// <summary>
+  /// Provides a label for rendering a <see cref="BocMultilineTextValue"/> control in read-only mode. 
+  /// Rendering is done by the parent class.
+  /// </summary>
+  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>
   {
-    public BocMultilineTextValuePreRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control)
         : base (context, control)
     {
     }
@@ -43,8 +48,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
-    public override void PreRender ()
+    protected override Label GetLabel ()
     {
+      Label label = new Label();
+      label.ID = Control.GetTextBoxClientID();
+      label.EnableViewState = false;
+
+      string[] lines = Control.Value;
+      string text = null;
+      if (lines != null)
+      {
+        for (int i = 0; i < lines.Length; i++)
+          lines[i] = HttpUtility.HtmlEncode (lines[i]);
+        text = StringUtility.ConcatWithSeparator (lines, "<br />");
+      }
+      if (StringUtility.IsNullOrEmpty (text))
+      {
+        if (Control.IsDesignMode)
+        {
+          text = c_designModeEmptyLabelContents;
+          //  Too long, can't resize in designer to less than the content's width
+          //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
+        }
+        else
+          text = "&nbsp;";
+      }
+      label.Text = text;
+
+      label.Width = Unit.Empty;
+      label.Height = Unit.Empty;
+      label.ApplyStyle (Control.CommonStyle);
+      label.ApplyStyle (Control.LabelStyle);
+      return label;
+    }
+
+    public override string CssClassBase
+    {
+      get { return "bocMultilineTextValue"; }
     }
   }
 }

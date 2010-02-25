@@ -16,34 +16,18 @@
 // 
 using System;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocTextValue"/> and <see cref="IBocMultilineTextValue"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocTextValue"/> controls.
   /// </summary>
-  public class BocTextValueRendererFactory : IBocTextValueRendererFactory, IBocMultilineTextValueRendererFactory
+  public class BocTextValueRendererFactory : IBocTextValueRendererFactory
   {
     IRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocTextValue control)
     {
       return new BocTextValueRenderer (context, control);
-    }
-
-    public IBocTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocTextValue control)
-    {
-      return new BocTextValuePreRenderer (context, control);
-    }
-
-    IRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
-    {
-      return new BocMultilineTextValueRenderer (context, control);
-    }
-
-    public IBocMultilineTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocMultilineTextValue control)
-    {
-      return new BocMultilineTextValuePreRenderer (context, control);
     }
   }
 }

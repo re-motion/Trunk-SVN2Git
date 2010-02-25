@@ -15,11 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories
 {
-  public interface IBocMultilineTextValuePreRenderer : IPreRenderer
+  /// <summary>
+  /// Responsible for creating standard mode renderers for <see cref="IBocMultilineTextValue"/> controls.
+  /// </summary>
+  public class BocMultilineTextValueRendererFactory : IBocMultilineTextValueRendererFactory
   {
+    IRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    {
+      return new BocMultilineTextValueRenderer (context, control);
+    }
   }
 }

@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
@@ -30,6 +31,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     public BocTextValueRenderer (HttpContextBase context, IBocTextValue control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
+      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, false);
     }
 
     protected override Label GetLabel ()

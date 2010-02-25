@@ -21,11 +21,10 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
 {
   /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="IBocMultilineTextValue"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IBocMultilineTextValue"/> controls.
   /// </summary>
   public interface IBocMultilineTextValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control);
-    IBocMultilineTextValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocMultilineTextValue control);
   }
 }

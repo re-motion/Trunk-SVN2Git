@@ -19,6 +19,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
@@ -33,6 +35,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     protected BocRendererBase (HttpContextBase context, TControl control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+
+      string key = typeof (BocPreRendererBase<>).FullName + "_BrowserCompatibilityScript";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocPreRendererBase<>), ResourceType.Html, ResourceTheme, "BocBrowserCompatibility.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
+      }
     }
 
     /// <summary>

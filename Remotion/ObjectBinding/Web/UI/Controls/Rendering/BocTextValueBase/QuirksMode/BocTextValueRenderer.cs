@@ -18,18 +18,17 @@ using System;
 using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
   /// <summary>
-  /// Provides a label for rendering a <see cref="BocMultilineTextValue"/> control in read-only mode. 
+  /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 
   /// Rendering is done by the parent class.
   /// </summary>
-  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>
+  public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>
   {
-    public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    public BocTextValueRenderer (HttpContextBase context, IBocTextValue control)
         : base (context, control)
     {
     }
@@ -37,44 +36,42 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
       base.RegisterHtmlHeadContents (htmlHeadAppender);
-
-      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, false);
-
-      string styleKey = typeof (IBocMultilineTextValue).FullName + "_Style";
-      string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (IBocMultilineTextValue), ResourceType.Html, ResourceTheme, "BocMultilineTextValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, true);
     }
 
     protected override Label GetLabel ()
     {
-      Label label = new Label();
+      Label label = new Label { Text = Control.Text };
       label.ID = Control.GetTextBoxClientID();
       label.EnableViewState = false;
 
-      string[] lines = Control.Value;
-      string text = null;
-      if (lines != null)
+      string text;
+      if (Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine
+          && !StringUtility.IsNullOrEmpty (Control.Text))
       {
+        //  Allows for an optional \r
+        string temp = Control.Text.Replace ("\r", "");
+        string[] lines = temp.Split ('\n');
         for (int i = 0; i < lines.Length; i++)
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
+      else
+        text = HttpUtility.HtmlEncode (Control.Text);
+
       if (StringUtility.IsNullOrEmpty (text))
       {
         if (Control.IsDesignMode)
         {
           text = c_designModeEmptyLabelContents;
           //  Too long, can't resize in designer to less than the content's width
-          //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
+          //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
         }
         else
           text = "&nbsp;";
       }
       label.Text = text;
-
       label.Width = Unit.Empty;
       label.Height = Unit.Empty;
       label.ApplyStyle (Control.CommonStyle);
@@ -84,7 +81,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
 
     public override string CssClassBase
     {
-      get { return "bocMultilineTextValue"; }
+      get { return "bocTextValue"; }
     }
   }
 }

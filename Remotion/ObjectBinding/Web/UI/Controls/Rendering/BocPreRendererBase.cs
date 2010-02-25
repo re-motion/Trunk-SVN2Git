@@ -30,8 +30,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
   public abstract class BocPreRendererBase<TControl> : PreRendererBase<TControl>
       where TControl: IBusinessObjectBoundWebControl
   {
-    private static readonly string s_browserCompatibilityScriptFileKey = typeof (BocPreRendererBase<>).FullName + "_BrowserCompatibilityScript";
-
     protected BocPreRendererBase (HttpContextBase context, TControl control)
         : base (context, control)
     {
@@ -43,11 +41,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
-      if (!htmlHeadAppender.IsRegistered (s_browserCompatibilityScriptFileKey))
+      string key = typeof (BocPreRendererBase<>).FullName + "_BrowserCompatibilityScript";
+      if (!htmlHeadAppender.IsRegistered (key))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (BocPreRendererBase<>), ResourceType.Html, ResourceTheme, "BocBrowserCompatibility.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (s_browserCompatibilityScriptFileKey, scriptUrl);
+        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
       }
     }
   }

@@ -397,20 +397,18 @@
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultiLineTextValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValuePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultilineTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\BocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\BocTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocMultiLineTextValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValuePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\BocTextValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocRendererBase.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>

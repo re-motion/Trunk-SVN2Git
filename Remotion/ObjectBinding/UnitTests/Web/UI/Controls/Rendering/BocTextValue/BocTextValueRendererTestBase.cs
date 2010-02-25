@@ -19,10 +19,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.StandardMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue
 {
   public class BocTextValueRendererTestBase<T> : RendererTestBase
       where T: class, IBocTextValueBase
