@@ -29,10 +29,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
     {
       return new BocReferenceValueRenderer (context, control);
     }
-
-    public IBocReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocReferenceValue control)
-    {
-      return new BocReferenceValuePreRenderer (context, control);
-    }
   }
 }

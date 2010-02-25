@@ -19,6 +19,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode
@@ -48,9 +50,38 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+
+      string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
+      }
+
+      string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, ResourceTheme, "BocReferenceValue.css");
+
+        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
+
+      RegisterAdjustPositionScript ();
+      RegisterAdjustLayoutScript ();
 
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -70,6 +101,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       }
 
       writer.RenderEndTag();
+    }
+
+    private void RegisterAdjustPositionScript ()
+    {
+      string key = Control.ClientID + "_AdjustPositionScript";
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocReferenceValueRenderer),
+          key,
+          string.Format (
+              "BocReferenceValue_AdjustPosition(document.getElementById('{0}'), {1});",
+              Control.ClientID,
+              Control.EmbedInOptionsMenu ? "true" : "false"));
+    }
+
+    private void RegisterAdjustLayoutScript ()
+    {
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocReferenceValueRenderer),
+          Guid.NewGuid ().ToString (),
+          string.Format ("BocBrowserCompatibility.AdjustReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
     private DropDownList GetDropDownList ()

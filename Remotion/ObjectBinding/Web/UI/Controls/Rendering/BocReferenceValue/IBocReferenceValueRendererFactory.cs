@@ -21,12 +21,10 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
   /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="IBocReferenceValue"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IBocReferenceValue"/> controls.
   /// </summary>
   public interface IBocReferenceValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control);
-
-    IBocReferenceValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocReferenceValue control);
   }
 }

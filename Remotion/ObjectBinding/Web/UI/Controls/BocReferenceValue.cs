@@ -124,8 +124,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <remarks>
@@ -335,15 +335,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (DropDownListStyle.AutoPostBack == true)
           WcagHelper.Instance.HandleWarning (1, this, "DropDownListStyle.AutoPostBack");
       }
-    }
-
-    protected override void OnPreRender (EventArgs e)
-    {
-      base.OnPreRender (e);
-
-      var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context, this);
-      preRenderer.PreRender();
     }
 
     protected override void Render (HtmlTextWriter writer)

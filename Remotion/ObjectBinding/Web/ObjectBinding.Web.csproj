@@ -381,13 +381,9 @@
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocPreRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\BocReferenceValuePreRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValuePreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\Factories\BocReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />

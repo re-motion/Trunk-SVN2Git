@@ -19,7 +19,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode
 {
@@ -45,6 +47,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+
+      string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
+      }
+
+      string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.css");
+
+        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
     }
 
     public override void Render (HtmlTextWriter writer)
