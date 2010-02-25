@@ -23,6 +23,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoCompleteRefenceValue;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Rhino.Mocks;
@@ -56,6 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
       var pageStub = MockRepository.GenerateStub<IPage>();
       pageStub.Stub (stub => stub.WrappedInstance).Return (new Page());
+      pageStub.Stub (stub => stub.ClientScript).Return (MockRepository.GenerateStub<IClientScriptManager>());
       _control.Stub (stub => stub.Page).Return (pageStub);
 
       var datePickerButton = MockRepository.GenerateStub<IDatePickerButton> ();

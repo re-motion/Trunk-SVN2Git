@@ -19,9 +19,11 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
@@ -38,6 +40,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control)
         : base (context, control)
     {
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
+
+      string styleKey = typeof (BocDateTimeValueRenderer).FullName + "_Style";
+      string styleFile = ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (BocDateTimeValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocDateTimeValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
     /// <summary>

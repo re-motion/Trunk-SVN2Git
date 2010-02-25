@@ -140,8 +140,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      var renderer = factory.CreateRenderer (httpContext, this);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
 
       _datePickerButton.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
     }
@@ -252,10 +252,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       _datePickerButton.ContainerControlID = UniqueID;
       _datePickerButton.TargetControlID = GetDateTextboxUniqueID();
-
-      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context, this);
-      preRenderer.PreRender();
 
       EvaluateWaiConformity();
     }

@@ -21,18 +21,13 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocDateTimeValue"/> controls.
+  /// Responsible for creating standard mode renderers for <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
   public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
   {
     IRenderer IBocDateTimeValueRendererFactory.CreateRenderer (HttpContextBase context, IBocDateTimeValue control)
     {
       return new BocDateTimeValueRenderer (context, control);
-    }
-
-    public IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control)
-    {
-      return new BocDateTimeValuePreRenderer (context, control);
     }
   }
 }

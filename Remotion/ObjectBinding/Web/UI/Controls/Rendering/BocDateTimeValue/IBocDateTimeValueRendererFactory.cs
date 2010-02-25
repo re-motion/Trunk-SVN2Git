@@ -21,11 +21,10 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 {
   /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="IBocDateTimeValue"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
   public interface IBocDateTimeValueRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control);
-    IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control);
   }
 }

@@ -19,6 +19,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
@@ -40,9 +42,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
       _timeTextBox = timeTextBox ?? new TextBox();
     }
 
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterHtmlHeadContents (htmlHeadAppender);
+
+      string styleKey = typeof (BocDateTimeValueRenderer).FullName + "_Style";
+      string styleFile = ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (BocDateTimeValueRenderer), ResourceType.Html, ResourceTheme, "BocDateTimeValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
+
+      RegisterAdjustLayoutScript ();
 
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -112,6 +128,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
         timeTextBox.RenderControl (writer);
         writer.RenderEndTag ();
       }
+    }
+
+    private void RegisterAdjustLayoutScript ()
+    {
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocDateTimeValueRenderer),
+          Guid.NewGuid ().ToString (),
+          string.Format ("BocBrowserCompatibility.AdjustDateTimeValueLayout ($('#{0}'));", Control.ClientID));
     }
 
     protected override bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)

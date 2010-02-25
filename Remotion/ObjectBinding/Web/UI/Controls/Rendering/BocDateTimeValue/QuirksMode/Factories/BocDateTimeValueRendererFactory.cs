@@ -29,10 +29,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     {
       return new BocDateTimeValueRenderer (context, control);
     }
-
-    public IBocDateTimeValuePreRenderer CreatePreRenderer (HttpContextBase context, IBocDateTimeValue control)
-    {
-      return new BocDateTimeValuePreRenderer (context, control);
-    }
   }
 }
