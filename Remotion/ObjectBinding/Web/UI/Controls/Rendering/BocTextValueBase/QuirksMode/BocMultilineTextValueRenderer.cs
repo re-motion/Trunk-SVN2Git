@@ -42,9 +42,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
 
       Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, true);
 
-      string styleKey = typeof (IBocMultilineTextValue).FullName + "_Style";
+      string styleKey = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
       string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (IBocMultilineTextValue), ResourceType.Html, ResourceTheme.Legacy, "BocMultilineTextValue.css");
+          Control, typeof (BocMultilineTextValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocMultilineTextValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
