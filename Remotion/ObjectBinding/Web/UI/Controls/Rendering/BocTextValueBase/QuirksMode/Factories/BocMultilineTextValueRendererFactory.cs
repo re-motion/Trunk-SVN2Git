@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
   /// </summary>
   public class BocMultilineTextValueRendererFactory : IBocMultilineTextValueRendererFactory
   {
-    IRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
     {
       return new BocMultilineTextValueRenderer (context, control);
     }

@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
   /// </summary>
   public class BocTextValueRendererFactory : IBocTextValueRendererFactory
   {
-    IRenderer IBocTextValueRendererFactory.CreateRenderer (HttpContextBase context, IBocTextValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocTextValue control)
     {
       return new BocTextValueRenderer (context, control);
     }
