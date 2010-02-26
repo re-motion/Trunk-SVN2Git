@@ -22,46 +22,30 @@ using Remotion.Web.UI.Controls.Rendering;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating the quirks mode renderers for <see cref="IBocList"/> and its parts except columns - for that,
+  /// Responsible for creating the standard mode renderer for <see cref="IBocList"/> and its parts except columns - for that,
   /// see <see cref="BocColumnRendererFactory"/>.
   /// </summary>
-  public class BocListRendererFactory
-      :
-          IBocListRendererFactory,
-          IBocListMenuBlockRendererFactory,
-          IBocListNavigationBlockRendererFactory,
-          IBocRowRendererFactory,
-          IBocListTableBlockRendererFactory
+  public class BocListRendererFactory : IBocListRendererFactory
   {
     public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
     {
-      return new BocListClientScriptBehavior ();
+      return new BocListClientScriptBehavior();
     }
 
     public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
-      return new BocListRenderer (context, list, CssClassContainer.Instance, serviceLocator);
-    }
-
-    IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
-    {
-      return new BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator);
-    }
-
-    IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
-    {
-      return new BocListMenuBlockRenderer (context, list, CssClassContainer.Instance);
-    }
-
-    IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
-    {
-      return new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance);
-    }
-
-    IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
-        HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
-    {
-      return new BocListTableBlockRenderer (context, list, CssClassContainer.Instance, serviceLocator);
+      return new BocListRenderer (
+          context,
+          list,
+          CssClassContainer.Instance,
+          new BocListTableBlockRenderer (
+              context,
+              list,
+              CssClassContainer.Instance,
+              new BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator)),
+          new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance),
+          new BocListMenuBlockRenderer (context, list, CssClassContainer.Instance)
+          );
     }
   }
 }

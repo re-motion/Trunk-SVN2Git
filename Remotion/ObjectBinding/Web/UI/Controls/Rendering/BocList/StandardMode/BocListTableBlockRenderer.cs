@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.Utilities;
@@ -32,21 +31,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
     private readonly CssClassContainer _cssClasses;
-    private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+    public BocListTableBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IBocRowRenderer rowRenderer)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
-      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+      ArgumentUtility.CheckNotNull ("rowRenderer", rowRenderer);
 
       _context = context;
       _list = list;
       _cssClasses = cssClasses;
-      _serviceLocator = serviceLocator;
-      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory> ().CreateRenderer (Context, List, _serviceLocator);
+      _rowRenderer = rowRenderer;
     }
 
     public HttpContextBase Context
@@ -64,7 +61,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       get { return _cssClasses; }
     }
 
-    private IBocRowRenderer RowRenderer
+    public IBocRowRenderer RowRenderer
     {
       get { return _rowRenderer; }
     }

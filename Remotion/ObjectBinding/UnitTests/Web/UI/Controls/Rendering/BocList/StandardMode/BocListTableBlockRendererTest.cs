@@ -28,8 +28,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
   [TestFixture]
   public class BocListTableBlockRendererTest : BocListRendererTestBase
   {
-    private StubServiceLocator ServiceLocator { get; set; }
-
     [Test]
     public void RenderPopulatedList ()
     {
@@ -70,7 +68,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, CssClassContainer.Instance, ServiceLocator);
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, CssClassContainer.Instance, new StubRowRenderer());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -83,7 +81,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
     private void RenderAndAssertTable (out XmlNode tbody)
     {
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, CssClassContainer.Instance, ServiceLocator);
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, List, CssClassContainer.Instance, new StubRowRenderer());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -108,9 +106,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
     private void CommonInitialize ()
     {
-      ServiceLocator = new StubServiceLocator();
-      ServiceLocator.SetRowRendererFactory (new StubRowRendererFactory());
-
       List.Stub (list => list.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.IsDesignMode).Return (false);
       List.FixedColumns.Add (new StubColumnDefinition());

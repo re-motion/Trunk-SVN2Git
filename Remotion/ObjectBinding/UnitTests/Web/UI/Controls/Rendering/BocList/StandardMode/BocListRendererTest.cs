@@ -33,9 +33,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
     public void SetUp ()
     {
       ServiceLocator = new StubServiceLocator();
-      ServiceLocator.SetTableBlockRendererFactory (new StubRendererFactory());
-      ServiceLocator.SetMenuBlockRendererFactory (new StubRendererFactory());
-      ServiceLocator.SetNavigationBlockRendererFactory (new StubRendererFactory());
 
       Initialize();
 
@@ -73,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
     private void RenderAndAssertTable (out XmlNode colgroup)
     {
-      var renderer = new BocListRenderer (HttpContext, List, CssClassContainer.Instance, ServiceLocator);
+      var renderer = new BocListRenderer (HttpContext, List, CssClassContainer.Instance, new StubRenderer(), new StubRenderer(), new StubRenderer ());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

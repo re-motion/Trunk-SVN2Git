@@ -358,9 +358,7 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubCustomCellDefinition.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRenderer.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocList\StubRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRenderer.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Rendering\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\Rendering\XmlNodeExtensions.cs" />

@@ -332,13 +332,9 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListMenuBlockRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocRowRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocRowRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListMenuBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRenderer.cs" />

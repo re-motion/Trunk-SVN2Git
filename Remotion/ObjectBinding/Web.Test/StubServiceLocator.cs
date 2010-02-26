@@ -31,10 +31,6 @@ namespace OBWTest
     public StubServiceLocator ()
     {
       _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory ());
-      _instances.Add (typeof (IBocListMenuBlockRendererFactory), new BocListRendererFactory ());
-      _instances.Add (typeof (IBocListNavigationBlockRendererFactory), new BocListRendererFactory ());
-      _instances.Add (typeof (IBocListTableBlockRendererFactory), new BocListRendererFactory ());
-      _instances.Add (typeof (IBocRowRendererFactory), new BocListRendererFactory ());
 
       _instances.Add (typeof (IBocColumnRendererFactory<BocSimpleColumnDefinition>), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocColumnRendererFactory<BocCompoundColumnDefinition>), new BocColumnRendererFactory());

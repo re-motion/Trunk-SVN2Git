@@ -15,10 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using System.Web;
+using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -54,18 +53,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
     /// <param name="context">The <see cref="HttpContextBase"/> which contains the response to render to.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
-    /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
-    /// can be obtained.</param>
-    public BocListRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+    /// <param name="tableBlockRenderer">The <see cref="IBocListTableBlockRenderer"/> responsible for rendering the table-part of the <see cref="BocList"/>.</param>
+    /// <param name="navigationBlockRenderer">The <see cref="IBocListNavigationBlockRenderer"/> responsible for rendering the navigation-part of the <see cref="BocList"/>.</param>
+    /// <param name="menuBlockRenderer">The <see cref="IBocListMenuBlockRenderer"/> responsible for rendering the menu-part of the <see cref="BocList"/>.</param>
+    public BocListRenderer (
+        HttpContextBase context,
+        IBocList list,
+        CssClassContainer cssClasses,
+        IBocListTableBlockRenderer tableBlockRenderer,
+        IBocListNavigationBlockRenderer navigationBlockRenderer,
+        IBocListMenuBlockRenderer menuBlockRenderer)
         : base (context, list)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
-      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+      ArgumentUtility.CheckNotNull ("tableBlockRenderer", tableBlockRenderer);
+      ArgumentUtility.CheckNotNull ("navigationBlockRenderer", navigationBlockRenderer);
+      ArgumentUtility.CheckNotNull ("menuBlockRenderer", menuBlockRenderer);
 
       _cssClasses = cssClasses;
-      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory> ().CreateRenderer (context, list);
-      _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (context, list);
-      _tableBlockRenderer = serviceLocator.GetInstance<IBocListTableBlockRendererFactory>().CreateRenderer (context, list, serviceLocator);
+      _tableBlockRenderer = tableBlockRenderer;
+      _navigationBlockRenderer = navigationBlockRenderer;
+      _menuBlockRenderer = menuBlockRenderer;
 
       RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForLegacyBrowser;
 
@@ -77,17 +85,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       }
     }
 
-    private IBocListMenuBlockRenderer MenuBlockRenderer
+    public IBocListMenuBlockRenderer MenuBlockRenderer
     {
       get { return _menuBlockRenderer; }
     }
 
-    private IBocListNavigationBlockRenderer NavigationBlockRenderer
+    public IBocListNavigationBlockRenderer NavigationBlockRenderer
     {
       get { return _navigationBlockRenderer; }
     }
 
-    private IBocListTableBlockRenderer TableBlockRenderer
+    public IBocListTableBlockRenderer TableBlockRenderer
     {
       get { return _tableBlockRenderer; }
     }

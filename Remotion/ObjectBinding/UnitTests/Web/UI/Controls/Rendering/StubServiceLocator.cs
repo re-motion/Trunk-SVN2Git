@@ -49,10 +49,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
     public StubServiceLocator ()
     {
       _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListMenuBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListNavigationBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListTableBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocRowRendererFactory), new BocListRendererFactory());
 
       _instances.Add (typeof (IBocColumnRendererFactory<BocSimpleColumnDefinition>), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocColumnRendererFactory<BocCompoundColumnDefinition>), new BocColumnRendererFactory());
@@ -79,27 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
       _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
     }
 
-    public void SetRowRendererFactory (IBocRowRendererFactory factory)
-    {
-      SetFactory (factory);
-    }
-
-    public void SetTableBlockRendererFactory (IBocListTableBlockRendererFactory factory)
-    {
-      SetFactory (factory);
-    }
-
-    public void SetMenuBlockRendererFactory (IBocListMenuBlockRendererFactory factory)
-    {
-      SetFactory (factory);
-    }
-
-    public void SetNavigationBlockRendererFactory (IBocListTableBlockRendererFactory factory)
-    {
-      SetFactory (factory);
-    }
-
-    private void SetFactory<T> (T factory)
+    public void SetFactory<T> (T factory)
     {
       _instances[typeof (T)] = factory;
     }
