@@ -107,9 +107,6 @@ namespace Remotion.Web.UI.Controls
         if (scriptManager != null)
           scriptManager.RegisterPostBackControl (this);
       }
-
-      if (!IsLegacyButtonEnabled)
-        ScriptUtility.Instance.RegisterElementForBorderSpans (this, "#" + ClientID + " > *:first");
     }
 
     protected override void AddAttributesToRender (HtmlTextWriter writer)
@@ -251,6 +248,8 @@ namespace Remotion.Web.UI.Controls
       //For new styles
       //if (ControlHelper.IsDesignMode (this))
       //  return;
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (this, "#" + ClientID + " > *:first");
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButtonBody);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);

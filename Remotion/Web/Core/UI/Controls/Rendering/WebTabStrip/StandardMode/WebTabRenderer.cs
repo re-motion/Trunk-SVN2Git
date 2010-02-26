@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using System.Web;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
@@ -46,6 +47,8 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("style", style);
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + TabClientID + " > *:first");
 
       RenderTabBegin (writer);
       RenderSeperator (writer);
@@ -83,9 +86,14 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
       get { return _tab; }
     }
 
+    private string TabClientID
+    {
+      get { return Control.ClientID + "_" + Tab.ItemID; }
+    }
+
     private void RenderWrapperBegin (HtmlTextWriter writer)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID + "_" + Tab.ItemID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, TabClientID);
       string cssClass;
       if (Tab.IsSelected)
         cssClass = CssClassTabSelected;

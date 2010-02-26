@@ -231,16 +231,6 @@ namespace Remotion.Web.UI.Controls
 
       IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
       LoadResources (resourceManager);
-
-      List<WebTab> visibleTabs = GetVisibleTabs();
-      for (int i = 0; i < visibleTabs.Count; i++)
-      {
-        WebTab visibleTab = visibleTabs[i];
-        if (string.IsNullOrEmpty (visibleTab.ItemID))
-          visibleTab.ItemID = i.ToString();
-
-        ScriptUtility.Instance.RegisterElementForBorderSpans (this, "#" + ClientID + "_" + visibleTab.ItemID + " > *:first");
-      }
     }
 
     /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>
