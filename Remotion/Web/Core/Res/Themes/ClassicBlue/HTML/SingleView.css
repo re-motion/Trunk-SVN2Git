@@ -9,8 +9,12 @@ div.singleView
 
 div.singleView div.wrapper
 {
-  position: relative;
-  margin: 10px;
+  position: absolute;
+  background-color: white;
+  top: 1em;
+  bottom: 1em;
+  left: 1em;
+  right: 1em;
   width: auto;
   height: auto;
 }
@@ -26,27 +30,26 @@ div.singleView div.content
 
 div.singleViewView
 {
-  padding: 0;
-  vertical-align: top; 
-	border: solid 1px #005588;	
-  overflow: hidden;	
+  padding: 1px;
+  vertical-align: top; 	
+  margin: 0em 0.5em;
+  overflow: hidden;
 }
+
 
 div.singleViewView div.contentBorder
 {
+  position: relative;
+  border: solid 1px #083779;
   padding: 0.25em;
   overflow: auto;
 }
 
-div.singleViewView div.content
-{
-}
-
-div.singleViewView *.left, 
 div.singleViewView *.top, 
-div.singleViewView *.right, 
-div.singleViewView *.bottom,
-div.singleViewView *.topLeft, 
+div.singleViewView *.left, 
+div.singleViewView *.bottom, 
+div.singleViewView *.bottom, 
+div.singleViewView *.topLeft,
 div.singleViewView *.bottomLeft, 
 div.singleViewView *.topRight, 
 div.singleViewView *.bottomRight
@@ -54,10 +57,11 @@ div.singleViewView *.bottomRight
   display: none;
 }
 
+
 /* Non-IE Browsers hack \*/
 html > body div.singleViewView
 {
-  width: inherit;
+ width: inherit;
 }
 /* End Non-IE Browsers hack\*/
 
@@ -66,14 +70,34 @@ html > body div.singleViewView
 div.singleViewTopControls
 {
   padding-bottom: 1em;
-	overflow: hidden;
+  overflow: hidden;
+  background-color: White;
+}
+
+
+div.singleViewTopControls.empty
+{
+  height: 1em;
+  background-color: White;
 }
 
 /* Applied to the bottom section of the multi view. Height cannot be provided in percent. */
 div.singleViewBottomControls
 {
-  
-  padding-top: 1em;
+  position: absolute;
   overflow: hidden;
+  background-color: White;
+  margin-top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: 1em;
 }
 
+div.singleViewBottomControls.empty
+{
+  height: 1em;
+  background-color: White;
+}
+
+/* CSS for IE6 */

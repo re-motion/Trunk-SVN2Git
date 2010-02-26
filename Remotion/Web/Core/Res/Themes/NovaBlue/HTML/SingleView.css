@@ -4,18 +4,18 @@ div.singleView
   height: 100%;
   position: relative;
   margin: 0;
-	padding: 0;
+  padding: 0;
   background-color: #083779;
 }
 
 div.singleView div.wrapper
 {
-  position: relative;
+  position: absolute;
   background-color: white;
-  margin-top: 0;
-  margin-bottom: 0.5em;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+  top: 0;
+  bottom: 0.5em;
+  left: 0.5em;
+  right: 0.5em;
   width: auto;
   height: auto;
 }
@@ -157,7 +157,7 @@ div.singleViewView *.bottomRight
 /* Non-IE Browsers hack \*/
 html > body div.singleViewView
 {
-  width: inherit;
+ /* width: inherit;*/
 }
 /* End Non-IE Browsers hack\*/
 
@@ -175,16 +175,16 @@ div.singleViewTopControls.empty
   background-color: White;
 }
 
-
 /* Applied to the bottom section of the multi view. Height cannot be provided in percent. */
 div.singleViewBottomControls
 {
+  position: absolute;
   overflow: hidden;
   background-color: White;
-  margin-top: 0;
-  margin-bottom: 0.5em;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+  margin-top: 0.5em;
+  left: 0.5em;
+  right: 0.5em;
+  bottom: 0.5em;
 }
 
 div.singleViewBottomControls.empty
@@ -192,3 +192,6 @@ div.singleViewBottomControls.empty
   height: 1em;
   background-color: White;
 }
+
+
+/* CSS for IE6 */

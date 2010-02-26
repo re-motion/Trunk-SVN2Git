@@ -23,7 +23,7 @@ div.tabbedMultiView div.wrapper
   background-color: white;
   margin:10px;
   width: auto;
-  height: auto;
+  height: 100%;
 }
 
 div.tabbedMultiView div.content
@@ -135,6 +135,8 @@ div.tabbedMultiViewBottomControls
   overflow: hidden;
   padding-top: 1em;
   padding-bottom: 1em;
+  position: absolute;
+  bottom: 0;
 }
 
 div.tabbedMultiViewBottomControls.emtpy
@@ -299,25 +301,10 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
   height: 1.2em;
 }
 
+/* this need a css class in backend; to be selected by class name, not by id ctl00_body_UpdatePanel */
+div.tabbedMultiViewUpdatePanel 
+{
+    height: 100%;
+}
+
 /* IE6 only */
-* html .tabbedMultiViewTabStrip li
-{
-  float: left;
-  width: 1%;
-  margin-bottom: -1px;
-}
-
-* html .tabbedMultiViewTabStrip li
-{
-  margin-left: 0.5em;
-}
-
-* html .tabbedMultiViewTabStrip .tabStripTabsPane
-{
-  margin-bottom: 1px;
-}
-
-* html .tabStripTabsPane .bottom
-{
-  visibility: hidden;
-}
