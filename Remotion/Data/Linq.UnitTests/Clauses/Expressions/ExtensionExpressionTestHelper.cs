@@ -18,34 +18,33 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing;
+using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.UnitTests.Clauses.Expressions
 {
-  [TestFixture]
-  public class SqlTableReferenceExpressionTest
+  public static class ExtensionExpressionTestHelper
   {
-    private SqlTableReferenceExpression _tableReferenceExpression;
-
-    [SetUp]
-    public void SetUp ()
+    public static void CheckAcceptForVisitorSupportingType<TExpression, TVisitorInterface> (
+        TExpression expression,
+        Func<TVisitorInterface, Expression> visitMethodCall) where TExpression : ExtensionExpression
     {
-      _tableReferenceExpression = new SqlTableReferenceExpression (SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource());
-    }
+      var mockRepository = new MockRepository ();
+      var visitorMock = mockRepository.StrictMultiMock<ExpressionTreeVisitor> (typeof (TVisitorInterface));
 
-    [Test]
-    public void Initialize ()
-    {
-      var sqlTable = SqlStatementModelObjectMother.CreateSqlTableWithConstantTableSource();
-      Assert.That (new SqlTableReferenceExpression (sqlTable).Type, Is.EqualTo (sqlTable.TableSource.Type));
-    }
+      var returnedExpression = Expression.Constant (0);
 
+      visitorMock
+          .Expect (mock => visitMethodCall ((TVisitorInterface) (object) mock))
+          .Return (returnedExpression);
+      visitorMock.Replay ();
 
-    [Test]
-    public void Accept ()
-    {
-      var expression = _tableReferenceExpression.Accept (new TestExpressionTreeVisitor());
-      Assert.That (expression, Is.SameAs (_tableReferenceExpression));
+      var result = expression.Accept (visitorMock);
+
+      visitorMock.VerifyAllExpectations ();
+
+      Assert.That (result, Is.SameAs (returnedExpression));
     }
   }
 }
