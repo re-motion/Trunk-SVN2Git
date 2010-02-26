@@ -21,7 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting
+namespace Remotion.UnitTests.Utilities
 {
   [TestFixture]
   public class CultureScopeTest
