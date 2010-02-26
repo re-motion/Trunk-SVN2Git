@@ -44,8 +44,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransaction.CreateBindingTransaction ();
     }
 
-    [NonSerialized]
-    private RootQueryManager _queryManager;
     private readonly Guid _id = Guid.NewGuid();
 
     /// <summary>
@@ -79,17 +77,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override ClientTransaction CreateEmptyTransactionOfSameType ()
     {
       return (ClientTransaction) TypesafeActivator.CreateInstance (GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With ();
-    }
-
-    public override IQueryManager QueryManager
-    {
-      get
-      {
-        if (_queryManager == null)
-          _queryManager = new RootQueryManager (this, ObjectLoader, TransactionEventSink);
-
-        return _queryManager;
-      }
     }
 
     protected override void PersistData (DataContainerCollection changedDataContainers)

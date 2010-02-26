@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void QueryInSubtransaction_DoesntPreloadObjectsInSubtransaction ()
+    public void QueryInSubtransaction_CausesObjectsInSubtransactionToBeLoaded ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
@@ -195,13 +195,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         var finalResult = ClientTransaction.Current.QueryManager.GetCollection (query);
         var loadedObjects = finalResult.ToArray ();
-        Assert.That (loadedObjects.Length, Is.GreaterThan (0));
-        var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (ClientTransaction.Current, typeof (ClientTransaction), "DataManager");
-        Assert.That (dataManager.DataContainerMap[loadedObjects[0].ID], Is.Null);
 
-        Dev.Null = ((Order) loadedObjects[0]).InternalDataContainer;
+        Assert.That (loadedObjects.Length, Is.EqualTo (2));
+        Assert.That (loadedObjects[0].State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (loadedObjects[1].State, Is.EqualTo (StateType.Unchanged));
+      }
+    }
 
-        Assert.That (dataManager.DataContainerMap[loadedObjects[0].ID], Is.Not.Null);
+    [Test]
+    public void QueryInSubtransaction_CausesObjectsInSubtransactionToBeLoaded_WhenKnownInParent ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
+
+      var result = ClientTransaction.Current.QueryManager.GetCollection (query).ToArray(); // preload query result in parent transaction
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (result[0].State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (result[1].State, Is.EqualTo (StateType.Unchanged));
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var finalResult = ClientTransaction.Current.QueryManager.GetCollection (query);
+        var loadedObjects = finalResult.ToArray ();
+
+        Assert.That (loadedObjects[0].State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (loadedObjects[1].State, Is.EqualTo (StateType.Unchanged));
       }
     }
   }

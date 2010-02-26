@@ -351,7 +351,7 @@ namespace Remotion.Data.DomainObjects
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
 
     /// <summary>
-    /// This method is invoked after a collection query was executed by <see cref="RootQueryManager.GetCollection"/>.
+    /// This method is invoked after a collection query was executed by <see cref="QueryManager.GetCollection"/>.
     /// The <see cref="IClientTransactionExtension"/> may change the result at this point.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="DomainObject"/>s in the result collection.</typeparam>

@@ -354,7 +354,6 @@
     <Compile Include="Queries\Configuration\DuplicateQueryDefinitionException.cs" />
     <Compile Include="Queries\Configuration\QueryFileElement.cs" />
     <Compile Include="Queries\IQueryManager.cs" />
-    <Compile Include="Queries\SubQueryManager.cs" />
     <Compile Include="StorageClassNoneAttribute.cs" />
     <Compile Include="StorageClassTransactionAttribute.cs" />
     <Compile Include="StorageGroupAttribute.cs" />
@@ -626,7 +625,7 @@
     <Compile Include="Queries\Query.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Queries\RootQueryManager.cs">
+    <Compile Include="Queries\QueryManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Queries\QueryParameter.cs">

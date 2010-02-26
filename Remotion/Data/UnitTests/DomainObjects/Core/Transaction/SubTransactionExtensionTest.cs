@@ -30,8 +30,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.FunctionalProgramming;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
@@ -1238,22 +1238,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
 
-      ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      // preload query results to avoid Load notifications later on
+      LifetimeService.GetObject (_subTransaction, DomainObjectIDs.Order1, true);
+      LifetimeService.GetObject (_subTransaction, DomainObjectIDs.OrderWithoutOrderItem, true);
 
       _mockRepository.BackToRecord (_extensionMock);
 
-      QueryResult<DomainObject> newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject>();
+      QueryResult<DomainObject> parentFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> (new[] { _order1 });
+      QueryResult<DomainObject> subFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
+
       _extensionMock
-          .Expect (
-          mock =>
-          mock.FilterQueryResult (
-              Arg.Is (_subTransaction.ParentTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
-          .Return (newQueryResult);
+          .Expect (mock => mock.FilterQueryResult (
+              Arg.Is (_subTransaction.ParentTransaction), 
+              Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
+          .Return (parentFilteredQueryResult);
+      _extensionMock
+          .Expect (mock => mock.FilterQueryResult (
+            Arg.Is (_subTransaction),
+            Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 1 && qr.Query == query)))
+          .Return (subFilteredQueryResult);
 
       _mockRepository.ReplayAll();
 
       QueryResult<DomainObject> finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      Assert.That (finalResult, Is.SameAs (newQueryResult));
+      Assert.That (finalResult, Is.SameAs (subFilteredQueryResult));
 
       _mockRepository.VerifyAll();
     }
@@ -1262,89 +1270,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void FilterQueryResultWithLoad ()
     {
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
-      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4); // yields Order3, Order4
 
-      QueryResult<DomainObject> newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject>();
+      QueryResult<DomainObject> parentFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> (new[] { _order1 });
+      QueryResult<DomainObject> subFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
-      using (_mockRepository.Ordered())
-      {
-        _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_subTransaction.ParentTransaction),
-            Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
-
-        _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Property.Value ("Count", 2));
-        _extensionMock
-            .Expect (
-            mock =>
-            mock.FilterQueryResult (
-                Arg.Is (_subTransaction.ParentTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
-            .Return (newQueryResult);
-      }
-
-      _mockRepository.ReplayAll();
-
-      QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      Assert.That (finalQueryResult, Is.SameAs (newQueryResult));
-
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void FilterQueryResultWithFiltering ()
-    {
-      IQuery query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
-      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
-
-      var filteringExtension = _mockRepository.StrictMock<ClientTransactionExtensionWithQueryFiltering>();
-      _subTransaction.Extensions.Add ("FilteringExtension", filteringExtension);
-
-      var lastExtension = _mockRepository.StrictMock<IClientTransactionExtension>();
-      _subTransaction.Extensions.Add ("LastExtension", lastExtension);
-
-      QueryResult<DomainObject> newQueryResult1 = TestQueryFactory.CreateTestQueryResult<DomainObject> (query, new[] { _order1 });
-      QueryResult<DomainObject> newQueryResult2 = TestQueryFactory.CreateTestQueryResult<DomainObject> (query);
+      UnloadService.UnloadData (_subTransaction, _order1.ID, UnloadTransactionMode.ThisTransactionOnly); // unload _order1 to force Load events
+      _mockRepository.BackToRecordAll ();
 
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
             Arg.Is (_subTransaction.ParentTransaction),
-            Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
-        filteringExtension.Expect (mock => mock.ObjectsLoading (
+            Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.SetEquals (new[] { DomainObjectIDs.Order3, DomainObjectIDs.Order4 }))));
+        _extensionMock.ObjectsLoaded (
             Arg.Is (_subTransaction.ParentTransaction),
-            Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
-        lastExtension.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (_subTransaction.ParentTransaction),
-            Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.Count == 2)));
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (list => list.Count == 2));
+        _extensionMock
+            .Expect (mock => mock.FilterQueryResult (
+                Arg.Is (_subTransaction.ParentTransaction), 
+                Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
+            .Return (parentFilteredQueryResult);
 
-        _extensionMock.ObjectsLoaded (null, null);
-        LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Property.Value ("Count", 2));
-        filteringExtension.ObjectsLoaded (null, null);
-        LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Property.Value ("Count", 2));
-        lastExtension.ObjectsLoaded (null, null);
-        LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_Property.Value ("Count", 2));
-
+        _extensionMock.Expect (mock => mock.ObjectsLoading (
+            Arg.Is (_subTransaction),
+            Arg<ReadOnlyCollection<ObjectID>>.Matches (list => list.SetEquals (new[] { DomainObjectIDs.Order1 }))));
+        _extensionMock.ObjectsLoaded (
+            Arg.Is (_subTransaction),
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (list => list.Count == 1));
         _extensionMock
             .Expect (
             mock =>
             mock.FilterQueryResult (
-                Arg.Is (_subTransaction.ParentTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 2 && qr.Query == query)))
-            .Return (newQueryResult1);
-        filteringExtension
-            .Expect (mock => mock.FilterQueryResult (_subTransaction.ParentTransaction, newQueryResult1))
-            .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        lastExtension
-            .Expect (
-            mock =>
-            mock.FilterQueryResult (
-                Arg.Is (_subTransaction.ParentTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 0 && qr.Query == query)))
-            .Return (newQueryResult2);
+                Arg.Is (_subTransaction), Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == 1 && qr.Query == query)))
+            .Return (subFilteredQueryResult);
       }
 
       _mockRepository.ReplayAll();
 
       QueryResult<DomainObject> finalQueryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      Assert.That (finalQueryResult, Is.SameAs (newQueryResult2));
+      Assert.That (finalQueryResult, Is.SameAs (subFilteredQueryResult));
 
       _mockRepository.VerifyAll();
     }

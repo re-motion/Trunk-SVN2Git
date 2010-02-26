@@ -47,9 +47,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private readonly ClientTransaction _parentTransaction;
 
-    [NonSerialized]
-    private SubQueryManager _queryManager;
-
     protected SubClientTransaction (ClientTransaction parentTransaction)
         : base (
             ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction).ApplicationData,
@@ -85,17 +82,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override ClientTransaction CreateEmptyTransactionOfSameType ()
     {
       return _parentTransaction.CreateSubTransaction();
-    }
-
-    public override IQueryManager QueryManager
-    {
-      get
-      {
-        if (_queryManager == null)
-          _queryManager = new SubQueryManager (this);
-
-        return _queryManager;
-      }
     }
 
     protected internal override ObjectID CreateNewObjectID (ClassDefinition classDefinition)
@@ -195,7 +181,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        var parentObjects = ParentTransaction.QueryManager.GetCollection (query).AsEnumerable();
+        var queryResult = ParentTransaction.QueryManager.GetCollection (query);
+        if (queryResult == null)
+          throw new InvalidOperationException ("Parent transaction returned an invalid null query result.");
+
+        var parentObjects = queryResult.AsEnumerable();
 
         var transferredContainers = new List<DataContainer>();
         foreach (var parentObject in parentObjects)

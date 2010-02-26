@@ -139,6 +139,9 @@ public abstract class ClientTransaction : IDataSource
 
   private bool _isDiscarded;
 
+  [NonSerialized]
+  private QueryManager _queryManager;
+
   // construction and disposing
 
   protected ClientTransaction (
@@ -360,11 +363,6 @@ public abstract class ClientTransaction : IDataSource
   /// </exception>
   protected abstract object LoadScalarForQuery (IQuery query);
 
-  /// <summary>
-  /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.
-  /// </summary>
-  public abstract IQueryManager QueryManager { get; }
-
   // methods and properties
 
   /// <summary>
@@ -405,6 +403,20 @@ public abstract class ClientTransaction : IDataSource
   public ClientTransactionExtensionCollection Extensions
   {
     get { return _extensions; }
+  }
+
+  /// <summary>
+  /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.
+  /// </summary>
+  public virtual IQueryManager QueryManager
+  {
+    get
+    {
+      if (_queryManager == null)
+        _queryManager = new QueryManager (this, ObjectLoader, TransactionEventSink);
+
+      return _queryManager;
+    }
   }
 
   /// <summary>

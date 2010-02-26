@@ -27,9 +27,9 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
   [TestFixture]
-  public class RootQueryManagerTest : ClientTransactionBaseTest
+  public class QueryManagerTest : ClientTransactionBaseTest
   {
-    private RootQueryManager _queryManager;
+    private QueryManager _queryManager;
 
     private IDataSource _dataSourceMock;
     private IObjectLoader _objectLoaderMock;
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _objectLoaderMock = MockRepository.GenerateMock<IObjectLoader> ();
       _transactionEventSinkMock = MockRepository.GenerateMock<IClientTransactionListener> ();
 
-      _queryManager = new RootQueryManager (_dataSourceMock, _objectLoaderMock, _transactionEventSinkMock);
+      _queryManager = new QueryManager (_dataSourceMock, _objectLoaderMock, _transactionEventSinkMock);
 
       _collectionQuery =  QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       _scalarQuery = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");

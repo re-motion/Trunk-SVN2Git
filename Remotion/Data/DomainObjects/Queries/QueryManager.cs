@@ -22,10 +22,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Queries
 {
   /// <summary>
-  /// <see cref="RootQueryManager"/> provides methods to execute queries within a <see cref="RootClientTransaction"/>.
+  /// <see cref="QueryManager"/> provides methods to execute queries within a <see cref="RootClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public class RootQueryManager : IQueryManager
+  public class QueryManager : IQueryManager
   {
     private readonly IDataSource _dataSource;
     private readonly IObjectLoader _objectLoader;
@@ -34,13 +34,13 @@ namespace Remotion.Data.DomainObjects.Queries
     // construction and disposing
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RootQueryManager"/> class.
+    /// Initializes a new instance of the <see cref="QueryManager"/> class.
     /// </summary>
     /// <param name="dataSource">The <see cref="IDataSource"/> used to load query results not involving <see cref="DomainObject"/> instances.</param>
     /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects. This parameter determines
     /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
-    public RootQueryManager (IDataSource dataSource, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink)
+    public QueryManager (IDataSource dataSource, IObjectLoader objectLoader, IClientTransactionListener transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("dataSource", dataSource);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
