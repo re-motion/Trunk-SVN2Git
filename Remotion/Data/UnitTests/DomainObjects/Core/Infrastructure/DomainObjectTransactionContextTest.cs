@@ -240,6 +240,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _invalidContext.EnsureDataAvailable();
     }
 
+    [Test]
+    public void Execute_Action_RunsDelegate ()
+    {
+      bool delegateRun = false;
+      Action action = () => delegateRun = true;
+
+      _loadedOrder1Context.Execute (action);
+
+      Assert.That (delegateRun, Is.True);
+    }
+
+    [Test]
+    public void Execute_Action_SetsCurrentTx ()
+    {
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        Assert.That (ClientTransaction.Current, Is.Null);
+
+        ClientTransaction currentInDelegate = null;
+        Action action = () => currentInDelegate = ClientTransaction.Current;
+
+        _loadedOrder1Context.Execute (action);
+
+        Assert.That (currentInDelegate, Is.SameAs (_loadedOrder1Context.ClientTransaction));
+      }
+    }
+
+    [Test]
+    public void Execute_Func_RunsDelegate ()
+    {
+      Func<int> func = () => 17;
+      var result = _loadedOrder1Context.Execute (func);
+
+      Assert.That (result, Is.EqualTo (17));
+    }
+
+    [Test]
+    public void Execute_Func_SetsCurrentTx ()
+    {
+      using (ClientTransactionScope.EnterNullScope())
+      {
+        Assert.That (ClientTransaction.Current, Is.Null);
+
+        ClientTransaction currentInDelegate = null;
+        Func<int> func = () =>
+        {
+          currentInDelegate = ClientTransaction.Current;
+          return 4;
+        };
+
+        _loadedOrder1Context.Execute (func);
+
+        Assert.That (currentInDelegate, Is.SameAs (_loadedOrder1Context.ClientTransaction));
+      }
+    }
+
     private void DeleteOrder (Order order)
     {
       while (order.OrderItems.Count > 0)

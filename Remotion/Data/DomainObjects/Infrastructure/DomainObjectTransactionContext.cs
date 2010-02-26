@@ -109,5 +109,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (dataContainer.DomainObject == DomainObject, "Guaranteed because CheckIfRightTransaction ensures that domainObject is enlisted");
 
     }
+
+    public T Execute<T> (Func<T> func)
+    {
+      ArgumentUtility.CheckNotNull ("func", func);
+      return ClientTransaction.Execute (func);
+    }
+
+    public void Execute (Action action)
+    {
+      ArgumentUtility.CheckNotNull ("action", action);
+      ClientTransaction.Execute (action);
+    }
   }
 }

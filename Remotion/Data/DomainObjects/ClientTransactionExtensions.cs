@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects
   {
     /// <summary>
     /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/>, returning the result of the delegate. While the
-    /// delegate is being executed, the <see cref="ClientTransaction"/> is set the <see cref="ClientTransaction.Current"/> transaction.
+    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="ClientTransaction.Current"/> transaction.
     /// </summary>
     /// <typeparam name="T">The type of the value returned by the delegate.</typeparam>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> in whose context to execute the delegate.</param>
@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/>. While the
-    /// delegate is being executed, the <see cref="ClientTransaction"/> is set the <see cref="ClientTransaction.Current"/> transaction.
+    /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="ClientTransaction.Current"/> transaction.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> in whose context to execute the delegate.</param>
     /// <param name="action">The delegate to be executed.</param>
