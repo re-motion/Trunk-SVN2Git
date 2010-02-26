@@ -406,7 +406,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Database\SecurityManagerSetupDBSpecialTables.sql" />
+    <None Include="Database\SecurityManagerSetupDBSpecialTables.sql">
+    </None>
     <None Include="Domain\SecurityManagerQueries.xml">
     </None>
     <None Include="GenerateSetupDBScript.cmd" />
@@ -434,7 +435,8 @@
       <LastGenOutput>Substitution.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="Database\SecurityManagerSetupConstraints.sql" />
+    <Content Include="Database\SecurityManagerSetupConstraints.sql">
+    </Content>
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +452,6 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>cd ..\..\
-.\GenerateSetupDBScript.cmd</PostBuildEvent>
+.\GenerateSetupDBScript.cmd $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

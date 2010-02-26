@@ -1,8 +1,11 @@
 @echo off
-echo Running .\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\Debug\dbschema.exe from %CD%...
+setlocal
+set buildconf=Debug
+if not "%1"=="" set buildconf=%1
+echo Running .\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\%buildconf%\dbschema.exe from %CD%...
 
-.\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\Debug\dbschema.exe ^
-    "/baseDirectory:bin\debug" ^
+.\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\%buildconf%\dbschema.exe ^
+    "/baseDirectory:bin\%buildconf%" ^
     "/config:..\Clients.Web\web.config" ^
     "/schema" ^
     "/schemaDirectory:Database"

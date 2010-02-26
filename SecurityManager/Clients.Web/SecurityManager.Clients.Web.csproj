@@ -132,7 +132,9 @@
     <Content Include="UI\SecurityManagerCurrentTenantControl.ascx" />
     <Content Include="UI\SecurityManagerMasterPage.Master" />
     <Content Include="UI\ErrorMessageControl.ascx" />
-    <Content Include="SecurityManagerUrlMapping.xml" />
+    <Content Include="SecurityManagerUrlMapping.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="res\Themes\ClassicBlue\Html\Style.css" />
     <Content Include="UI\OrganizationalStructure\EditGroupTypePositionControl.ascx" />
     <Content Include="UI\OrganizationalStructure\EditGroupTypePositionForm.aspx" />
