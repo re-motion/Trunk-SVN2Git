@@ -256,7 +256,7 @@ function BocList_UnselectRow (bocList, rowBlock)
 //  bocList: The BocList to which the selectorControl belongs.
 //  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
 //  count: The number of data rows in the BocList.
-function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorControl, selectorControlPrefix, count)
+function BocList_OnSelectAllSelectorControlClick(bocList, selectAllSelectorControl, selectorControlPrefix, count, listMenu)
 {
   var selectedRows = _bocList_selectedRows[bocList.id];
 
@@ -283,7 +283,7 @@ function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorCont
   if (! selectAllSelectorControl.checked)      
     selectedRows.Length = 0;
 
-  BocList_UpdateListMenu (bocList);
+  ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
 }
 
 //  Event handler for the selection selectorControl in a data row.
