@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidUnidirectionalRelation.cs" />
+    <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionTest.cs" />
@@ -259,7 +260,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionEventRaiserFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecoratorTest.cs" />
-    <Compile Include="DomainObjects\Core\ClientTransactionExtensions.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
