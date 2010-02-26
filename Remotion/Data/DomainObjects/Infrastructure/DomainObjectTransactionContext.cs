@@ -110,16 +110,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     }
 
-    public T Execute<T> (Func<T> func)
+    public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)
     {
       ArgumentUtility.CheckNotNull ("func", func);
-      return ClientTransaction.Execute (func);
+      return ClientTransaction.Execute (() => func (_domainObject, _associatedTransaction));
     }
 
-    public void Execute (Action action)
+    public void Execute (Action<DomainObject, ClientTransaction> action)
     {
       ArgumentUtility.CheckNotNull ("action", action);
-      ClientTransaction.Execute (action);
+      ClientTransaction.Execute (() => action (_domainObject, _associatedTransaction));
     }
   }
 }

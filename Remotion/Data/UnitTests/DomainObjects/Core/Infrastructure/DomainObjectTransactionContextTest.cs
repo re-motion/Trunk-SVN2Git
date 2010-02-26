@@ -244,11 +244,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void Execute_Action_RunsDelegate ()
     {
       bool delegateRun = false;
-      Action action = () => delegateRun = true;
+      DomainObject objParameter = null;
+      ClientTransaction txParameter = null;
+
+      Action<DomainObject, ClientTransaction> action = (obj, tx) =>
+      {
+        delegateRun = true;
+        objParameter = obj;
+        txParameter = tx;
+      };
 
       _loadedOrder1Context.Execute (action);
 
       Assert.That (delegateRun, Is.True);
+      Assert.That (objParameter, Is.SameAs (_loadedOrder1Context.DomainObject));
+      Assert.That (txParameter, Is.SameAs (_loadedOrder1Context.ClientTransaction));
     }
 
     [Test]
@@ -259,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         Assert.That (ClientTransaction.Current, Is.Null);
 
         ClientTransaction currentInDelegate = null;
-        Action action = () => currentInDelegate = ClientTransaction.Current;
+        Action<DomainObject, ClientTransaction> action = (obj, tx) => currentInDelegate = ClientTransaction.Current;
 
         _loadedOrder1Context.Execute (action);
 
@@ -270,10 +280,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void Execute_Func_RunsDelegate ()
     {
-      Func<int> func = () => 17;
+      DomainObject objParameter = null;
+      ClientTransaction txParameter = null;
+
+      Func<DomainObject, ClientTransaction, int> func = (obj, tx) =>
+      {
+        objParameter = obj;
+        txParameter = tx;
+        return 17;
+      };
+
       var result = _loadedOrder1Context.Execute (func);
 
       Assert.That (result, Is.EqualTo (17));
+      Assert.That (objParameter, Is.SameAs (_loadedOrder1Context.DomainObject));
+      Assert.That (txParameter, Is.SameAs (_loadedOrder1Context.ClientTransaction));
     }
 
     [Test]
@@ -284,7 +305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         Assert.That (ClientTransaction.Current, Is.Null);
 
         ClientTransaction currentInDelegate = null;
-        Func<int> func = () =>
+        Func<DomainObject, ClientTransaction, int> func = (obj, tx) =>
         {
           currentInDelegate = ClientTransaction.Current;
           return 4;

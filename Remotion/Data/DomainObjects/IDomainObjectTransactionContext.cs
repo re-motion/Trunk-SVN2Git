@@ -79,16 +79,19 @@ namespace Remotion.Data.DomainObjects
     /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="DomainObjects.ClientTransaction.Current"/> transaction.
     /// </summary>
     /// <typeparam name="T">The type of the value returned by the delegate.</typeparam>
-    /// <param name="func">The delegate to be executed.</param>
+    /// <param name="func">The delegate to be executed. The delegate gets the <see cref="DomainObject"/> and the <see cref="ClientTransaction"/>
+    /// associated with this <see cref="IDomainObjectTransactionContext"/> as its parameters.
+    /// </param>
     /// <returns>The result of <paramref name="func"/>.</returns>
-    T Execute<T> (Func<T> func);
+    T Execute<T> (Func<DomainObject, ClientTransaction, T> func);
 
     /// <summary>
     /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/> associated with this 
     /// <see cref="IDomainObjectTransactionContext"/>. While the
     /// delegate is being executed, the <see cref="ClientTransaction"/> is made the <see cref="DomainObjects.ClientTransaction.Current"/> transaction.
     /// </summary>
-    /// <param name="action">The delegate to be executed.</param>
-    void Execute (Action action);
+    /// <param name="action">The delegate to be executed. The delegate gets the <see cref="DomainObject"/> and the <see cref="ClientTransaction"/>
+    /// associated with this <see cref="IDomainObjectTransactionContext"/> as its parameters.</param>
+    void Execute (Action<DomainObject, ClientTransaction> action);
   }
 }
