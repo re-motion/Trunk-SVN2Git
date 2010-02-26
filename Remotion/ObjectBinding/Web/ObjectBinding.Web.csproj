@@ -334,7 +334,6 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListMenuBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListCientScriptBahavior.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRendererFactory.cs" />

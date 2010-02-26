@@ -20,11 +20,10 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
   /// <summary>
-  /// Defines a factory method for creating renderers and prerenderers for <see cref="IListMenu"/> controls.
+  /// Defines a factory method for creating renderers for <see cref="IListMenu"/> controls.
   /// </summary>
   public interface IListMenuRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IListMenu control);
-    IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control);
   }
 }

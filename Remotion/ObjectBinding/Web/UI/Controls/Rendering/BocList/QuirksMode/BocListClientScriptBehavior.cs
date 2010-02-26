@@ -16,18 +16,23 @@
 // 
 using System;
 using System.Web;
+using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
-  public class BocListClientScriptBehavior : IBocListCientScriptBahavior
+  public class BocListClientScriptBehavior : IClientScriptBahavior
   {
     private readonly HttpContextBase _context;
     private readonly IBocList _control;
 
     public BocListClientScriptBehavior (HttpContextBase context, IBocList control)
     {
-      _control = control;
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+
       _context = context;
+      _control = control;
     }
 
     public bool IsBrowserCapableOfScripting

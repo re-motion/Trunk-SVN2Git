@@ -20,18 +20,13 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="ListMenu"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="ListMenu"/> controls.
   /// </summary>
   public class ListMenuRendererFactory : IListMenuRendererFactory
   {
     public IRenderer CreateRenderer (HttpContextBase context, IListMenu control)
     {
-      return new StandardMode.ListMenuRenderer (context, control);
-    }
-
-    public IListMenuPreRenderer CreatePreRenderer (HttpContextBase context, IListMenu control)
-    {
-      return new ListMenuPreRenderer (context, control);
+      return new ListMenuRenderer (context, control);
     }
   }
 }

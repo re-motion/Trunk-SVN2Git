@@ -187,6 +187,7 @@
     <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\HtmlHelper.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />

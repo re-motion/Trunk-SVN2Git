@@ -830,6 +830,12 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("commandID", commandID);
 
+      bool isSynchronousEventCommand = Type == CommandType.Event && EventCommand.RequiresSynchronousPostBack;
+      bool isSynchronousWxeFunctionCommand = Type == CommandType.WxeFunction && StringUtility.IsNullOrEmpty (WxeFunctionCommand.Target);
+
+      if (!isSynchronousEventCommand && !isSynchronousWxeFunctionCommand)
+        return;
+
       var scriptManager = ScriptManager.GetCurrent (control.Page);
       if (scriptManager != null)
       {
@@ -845,7 +851,7 @@ namespace Remotion.Web.UI.Controls
 
         if (hasUpdatePanelAsParent)
         {
-          if (Type == CommandType.Event && EventCommand.RequiresSynchronousPostBack)
+          if (isSynchronousEventCommand)
           {
             ISmartPage smartPage = control.Page as ISmartPage;
             if (smartPage == null)
@@ -857,7 +863,7 @@ namespace Remotion.Web.UI.Controls
             }
             smartPage.RegisterCommandForSynchronousPostBack (control, argument);
           }
-          else if (Type == CommandType.WxeFunction && StringUtility.IsNullOrEmpty (WxeFunctionCommand.Target))
+          else if (isSynchronousWxeFunctionCommand)
           {
             ISmartPage smartPage = control.Page as ISmartPage;
             if (smartPage == null)

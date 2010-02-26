@@ -15,8 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text;
 using System.Web;
+using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
 {
@@ -24,8 +27,10 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
   /// Responsible for registering scripts and the style sheet for <see cref="ListMenu"/> controls in quirks mode.
   /// <seealso cref="IListMenu"/>
   /// </summary>
-  public class ListMenuRenderer : StandardMode.ListMenuRenderer
+  public class ListMenuRenderer : RendererBase<IListMenu>
   {
+    protected const string c_whiteSpace = "&nbsp;";
+
     public ListMenuRenderer (HttpContextBase context, IListMenu control)
         : base (context, control)
     {
@@ -49,6 +54,186 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
           Control, typeof (ListMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+    }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      RegisterMenuItems ();
+
+      WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      bool isFirstItem = true;
+      for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
+      {
+        WebMenuItem currentItem = groupedListMenuItems[idxItems];
+        if (!currentItem.EvaluateVisible ())
+          continue;
+
+        bool isLastItem = (idxItems == (groupedListMenuItems.Length - 1));
+        bool isFirstCategoryItem = (isFirstItem || (groupedListMenuItems[idxItems - 1].Category != currentItem.Category));
+        bool isLastCategoryItem = (isLastItem || (groupedListMenuItems[idxItems + 1].Category != currentItem.Category));
+        bool hasAlwaysLineBreaks = (Control.LineBreaks == ListMenuLineBreaks.All);
+        bool hasCategoryLineBreaks = (Control.LineBreaks == ListMenuLineBreaks.BetweenGroups);
+
+        if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isFirstCategoryItem) || isFirstItem)
+        {
+          writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+          writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuRow");
+          writer.RenderBeginTag (HtmlTextWriterTag.Td);
+        }
+        RenderListMenuItem (writer, currentItem, Control.ClientID, Control.MenuItems.IndexOf (currentItem));
+        if (hasAlwaysLineBreaks || (hasCategoryLineBreaks && isLastCategoryItem) || isLastItem)
+        {
+          writer.RenderEndTag ();
+          writer.RenderEndTag ();
+        }
+
+        if (isFirstItem)
+          isFirstItem = false;
+      }
+      writer.RenderEndTag ();
+    }
+
+    private void RenderListMenuItem (HtmlTextWriter writer, WebMenuItem menuItem, string menuID, int index)
+    {
+      bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
+      bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index);
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      if (!menuItem.IsDisabled)
+      {
+        menuItem.Command.RenderBegin (
+            writer, Control.Page.ClientScript.GetPostBackClientHyperlink (Control, index.ToString ()), new[] { index.ToString () }, "", null);
+      }
+      else
+        writer.RenderBeginTag (HtmlTextWriterTag.A);
+
+      if (showIcon && menuItem.Icon.HasRenderingInformation)
+      {
+        writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
+        writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (menuItem.Icon.AlternateText));
+        writer.AddStyleAttribute ("vertical-align", "middle");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
+        writer.RenderBeginTag (HtmlTextWriterTag.Img);
+        writer.RenderEndTag ();
+        if (showText)
+          writer.Write (c_whiteSpace);
+      }
+      if (showText)
+        writer.Write (menuItem.Text); // Do not HTML encode.
+      writer.RenderEndTag ();
+      writer.RenderEndTag ();
+    }
+
+    private void RegisterMenuItems ()
+    {
+      if (!Control.HasClientScript)
+        return;
+
+      WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
+
+      string key = Control.UniqueID + "_MenuItems";
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (ListMenuRenderer), key))
+      {
+        StringBuilder script = new StringBuilder ();
+        script.AppendFormat ("ListMenu_AddMenuInfo (document.getElementById ('{0}'), \r\n\t", Control.ClientID);
+        script.AppendFormat ("new ListMenu_MenuInfo ('{0}', new Array (\r\n", Control.ClientID);
+        bool isFirstItemInGroup = true;
+
+        for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
+        {
+          WebMenuItem currentItem = groupedListMenuItems[idxItems];
+          if (!currentItem.EvaluateVisible ())
+            continue;
+
+          if (isFirstItemInGroup)
+            isFirstItemInGroup = false;
+          else
+            script.AppendFormat (",\r\n");
+          AppendListMenuItem (script, currentItem);
+        }
+        script.Append (" )"); // Close Array
+        script.Append (" )"); // Close new MenuInfo
+        script.Append (" );\r\n"); // Close AddMenuInfo
+
+        script.AppendFormat (
+            "ListMenu_Update ( document.getElementById ('{0}'), {1} );",
+            Control.ClientID,
+            string.IsNullOrEmpty (Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ListMenuRenderer), key, script.ToString ());
+      }
+    }
+
+    private void AppendListMenuItem (StringBuilder stringBuilder, WebMenuItem menuItem)
+    {
+      int menuItemIndex = Control.MenuItems.IndexOf (menuItem);
+      string href = "null";
+      string target = "null";
+      bool isCommandEnabled = true;
+      if (menuItem.Command != null)
+      {
+        bool isActive = menuItem.Command.Show == CommandShow.Always
+                        || Control.IsReadOnly && menuItem.Command.Show == CommandShow.ReadOnly
+                        || !Control.IsReadOnly && menuItem.Command.Show == CommandShow.EditMode;
+
+        isCommandEnabled = isActive && menuItem.Command.Type != CommandType.None;
+        if (isCommandEnabled)
+        {
+          bool isPostBackCommand = menuItem.Command.Type == CommandType.Event
+                                   || menuItem.Command.Type == CommandType.WxeFunction;
+          if (isPostBackCommand)
+          {
+            // Clientside script creates an anchor with href="#" and onclick=function
+            string argument = menuItemIndex.ToString ();
+            href = Control.Page.ClientScript.GetPostBackClientHyperlink (Control, argument) + ";";
+            href = ScriptUtility.EscapeClientScript (href);
+            href = "'" + href + "'";
+          }
+          else if (menuItem.Command.Type == CommandType.Href)
+          {
+            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
+            if ((Control is Control) && !ControlHelper.IsDesignMode (Control))
+              href = UrlUtility.GetAbsoluteUrl (((Control) Control).Page, href);
+            href = "'" + href + "'";
+            target = "'" + menuItem.Command.HrefCommand.Target + "'";
+          }
+        }
+      }
+
+      bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
+      bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
+      string icon = "null";
+      if (showIcon && menuItem.Icon.HasRenderingInformation)
+        icon = "'" + UrlUtility.ResolveUrl (menuItem.Icon.Url) + "'";
+      string disabledIcon = "null";
+      if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
+        disabledIcon = "'" + UrlUtility.ResolveUrl (menuItem.DisabledIcon.Url) + "'";
+      string text = showText ? "'" + menuItem.Text + "'" : "null";
+
+      bool isDisabled = !Control.Enabled
+                        || !menuItem.EvaluateEnabled ()
+                        || !isCommandEnabled;
+      stringBuilder.AppendFormat (
+          "\t\tnew ListMenuItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
+          Control.ClientID + "_" + menuItemIndex,
+          menuItem.Category,
+          text,
+          icon,
+          disabledIcon,
+          (int) menuItem.RequiredSelection,
+          isDisabled ? "true" : "false",
+          href,
+          target);
     }
   }
 }

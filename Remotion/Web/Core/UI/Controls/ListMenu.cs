@@ -82,9 +82,17 @@ namespace Remotion.Web.UI.Controls
 
     protected override void OnPreRender (EventArgs e)
     {
-      var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
-      preRenderer.PreRender();
+      base.OnPreRender (e);
+
+      for (int i = 0; i < MenuItems.Count; i++)
+      {
+        WebMenuItem menuItem = MenuItems[i];
+        if (menuItem.Command != null)
+        {
+          menuItem.Command.RegisterForSynchronousPostBack (
+              this, i.ToString (), string.Format ("ListMenu '{0}', MenuItem '{1}'", ID, menuItem.ItemID));
+        }
+      }
     }
 
     public bool EnableClientScript { get; set; }

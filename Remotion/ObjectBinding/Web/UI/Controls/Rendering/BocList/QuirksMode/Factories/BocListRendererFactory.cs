@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
           IBocRowRendererFactory,
           IBocListTableBlockRendererFactory
   {
-    public IBocListCientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
+    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
     {
       return new BocListClientScriptBehavior (context, list);
     }

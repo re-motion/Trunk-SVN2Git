@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.
           IBocRowRendererFactory,
           IBocListTableBlockRendererFactory
   {
-    public IBocListCientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
+    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
     {
       return new BocListClientScriptBehavior ();
     }

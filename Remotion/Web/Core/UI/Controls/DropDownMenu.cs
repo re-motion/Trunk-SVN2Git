@@ -60,8 +60,8 @@ namespace Remotion.Web.UI.Controls
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       if (!IsDesignMode)
       {
-        var preRenderer = factory.CreatePreRenderer (Page.Context, this);
-        _isBrowserCapableOfScripting = preRenderer.GetBrowserCapableOfScripting();
+        var clientScriptBahavior = factory.CreateClientScriptBehavior (Page.Context, this);
+        _isBrowserCapableOfScripting = clientScriptBahavior.IsBrowserCapableOfScripting;
         RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
       }
     }
@@ -80,9 +80,15 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnPreRender (e);
 
-      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Page.Context, this);
-      preRenderer.PreRender();
+      for (int i = 0; i < MenuItems.Count; i++)
+      {
+        WebMenuItem menuItem = MenuItems[i];
+        if (menuItem.Command != null)
+        {
+          menuItem.Command.RegisterForSynchronousPostBack (
+              this, i.ToString(), string.Format ("DropDownMenu '{0}', MenuItem '{1}'", ID, menuItem.ItemID));
+        }
+      }
     }
 
     protected override void Render (HtmlTextWriter writer)

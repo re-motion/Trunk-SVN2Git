@@ -21,11 +21,11 @@ using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
-using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode;
+using Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu.StandardMode
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu.QuirksMode
 {
   [TestFixture]
   public class ListMenuRendererTest : RendererTestBase

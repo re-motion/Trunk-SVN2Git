@@ -20,18 +20,18 @@ using System.Web;
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating standard mode renderers and prerenderers for <see cref="DropDownMenu"/> controls.
+  /// Responsible for creating standard mode renderers for <see cref="DropDownMenu"/> controls.
   /// </summary>
   public class DropDownMenuRendererFactory : IDropDownMenuRendererFactory
   {
-    public IDropDownMenuPreRenderer CreatePreRenderer (HttpContextBase context, IDropDownMenu control)
-    {
-      return new DropDownMenuPreRenderer (context, control);
-    }
-
     public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control)
     {
       return new DropDownMenuRenderer (context, control);
+    }
+
+    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
+    {
+      return new DropDownMenuClientScriptBehavior ();
     }
   }
 }

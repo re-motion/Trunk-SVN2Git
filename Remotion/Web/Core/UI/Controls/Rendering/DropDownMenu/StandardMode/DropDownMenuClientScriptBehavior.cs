@@ -16,14 +16,21 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.ListMenu
+namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 {
   /// <summary>
-  /// Interface for classes that handle markup-related actions for <see cref="ListMenu"/> controls,
-  /// such as registering HTML head contents, which have to be executed before the rendering stage.
+  /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in standard mode.
+  /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public interface IListMenuPreRenderer
+  public class DropDownMenuClientScriptBehavior : IClientScriptBahavior
   {
-    void PreRender ();
+    public DropDownMenuClientScriptBehavior ()
+    {
+    }
+
+    public bool IsBrowserCapableOfScripting
+    {
+      get { return true; }
+    }
   }
 }

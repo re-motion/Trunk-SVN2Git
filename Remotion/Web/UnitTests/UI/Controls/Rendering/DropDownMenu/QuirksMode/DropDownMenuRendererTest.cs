@@ -313,16 +313,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
       var scriptManagerMock = _control.Page.ClientScript;
       scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
-      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuPreRenderer), initializationScriptKey, initializationScript));
+      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuClientScriptBehavior), initializationScriptKey, initializationScript));
       if(_control.Enabled)
-        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuPreRendererBase), menuInfoKey, menuInfoScript));
+        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuRenderer), menuInfoKey, menuInfoScript));
       _control.Page.ClientScript.Replay ();
     }
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      var preRenderer = new DropDownMenuPreRenderer (HttpContext, _control);
-      preRenderer.PreRender();
       var renderer = new DropDownMenuRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
 

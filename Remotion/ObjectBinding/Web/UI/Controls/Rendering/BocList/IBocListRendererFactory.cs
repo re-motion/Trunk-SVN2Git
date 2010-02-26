@@ -27,6 +27,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
   public interface IBocListRendererFactory
   {
     IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);
-    IBocListCientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list);
+    IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list);
   }
 }

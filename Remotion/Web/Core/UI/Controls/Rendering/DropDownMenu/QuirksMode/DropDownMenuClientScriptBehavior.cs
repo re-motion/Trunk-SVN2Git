@@ -16,34 +16,44 @@
 // 
 using System;
 using System.Web;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 {
   /// <summary>
-  /// Overrides <see cref="GetBrowserCapableOfScripting"/> to determine if the <see cref="DropDownMenu"/> can be rendered in quirks mode.
-  /// <seealso cref="DropDownMenuPreRendererBase"/>
+  /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in quirks mode.
   /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public class DropDownMenuPreRenderer : DropDownMenuPreRendererBase
+  public class DropDownMenuClientScriptBehavior : IClientScriptBahavior
   {
-    public DropDownMenuPreRenderer (HttpContextBase context, IDropDownMenu control)
-        : base (context, control)
+    private readonly HttpContextBase _context;
+    private readonly IDropDownMenu _control;
+
+    public DropDownMenuClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      _context = context;
+      _control = control;
     }
 
-    public override bool GetBrowserCapableOfScripting ()
+    public bool IsBrowserCapableOfScripting
     {
-      return IsInternetExplorer55OrHigher();
+      get { return IsInternetExplorer55OrHigher(); }
     }
 
     private bool IsInternetExplorer55OrHigher ()
     {
+      if (_control.IsDesignMode)
+        return true;
+
       bool isVersionGreaterOrEqual55 =
-          Context.Request.Browser.MajorVersion >= 6
-          || Context.Request.Browser.MajorVersion == 5
-             && Context.Request.Browser.MinorVersion >= 0.5;
+          _context.Request.Browser.MajorVersion >= 6
+          || _context.Request.Browser.MajorVersion == 5
+             && _context.Request.Browser.MinorVersion >= 0.5;
       bool isInternetExplorer55AndHigher =
-          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+          _context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
       return isInternetExplorer55AndHigher;
     }
