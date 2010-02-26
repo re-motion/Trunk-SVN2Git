@@ -43,11 +43,6 @@ ViewLayout.AdjustSingleView = function(containerElement)
 
 ViewLayout.AdjustTabbedMultiView = function(containerElement) 
 {
-    /* Temporary hack for missisng div.tabbedMultiViewUpdatePanel class name */
-        var tabbedMultiViewUpdatePanel = containerElement.parent();
-        tabbedMultiViewUpdatePanel.addClass("tabbedMultiViewUpdatePanel");
-    /* END Temporary hack for missisng div.tabbedMultiViewUpdatePanel class name */
-
     var viewContent = containerElement.children().eq(0).children().eq(2);
     ViewLayout.AdjustActiveViewContent(viewContent);
 };
