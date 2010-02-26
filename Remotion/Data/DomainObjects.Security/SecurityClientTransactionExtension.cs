@@ -106,6 +106,9 @@ namespace Remotion.Data.DomainObjects.Security
     {
       ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
+      if (clientTransaction.ParentTransaction != null)
+        return queryResult; // filtering already done in parent transaction
+
       if (_isActive)
         return queryResult;
 

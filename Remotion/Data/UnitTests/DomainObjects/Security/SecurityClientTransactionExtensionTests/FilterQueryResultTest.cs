@@ -205,5 +205,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
     }
+
+    [Test]
+    public void Test_WithSubtransaction_EventIsIgnored ()
+    {
+      SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { deniedObject });
+      _testHelper.AddExtension (_extension);
+      _testHelper.ReplayAll ();
+
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction ().CreateSubTransaction(), queryResult);
+
+      _testHelper.VerifyAll ();
+      Assert.That (finalResult, Is.SameAs (queryResult));
+    }
+
+    [Test]
+    public void Test_WithSubtransaction_ViaDomainObjectQuery_EventIsExecutedInRoot ()
+    {
+      _testHelper.AddExtension (_extension);
+      _testHelper.ExpectSecurityProviderGetAccess (SecurityContext.CreateStateless (typeof (SecurableObject)), GeneralAccessTypes.Find);
+      _testHelper.ReplayAll ();
+
+      _testHelper.Transaction.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("GetSecurableObjects"));
+
+      _testHelper.VerifyAll ();
+    }
   }
 }
