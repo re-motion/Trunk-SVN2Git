@@ -29,8 +29,8 @@ div.tabbedMultiView div.wrapper
    position: absolute;
    top: 0;
    bottom: 0;
-   right: 0em;
-   left:0em;
+   right: 0;
+   left:0;
    display: block;
    width: auto;
    height: auto;

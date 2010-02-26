@@ -94,6 +94,7 @@ div.singleViewView
 
 div.singleViewView div.contentBorder
 {
+  position: relative;
   border: solid 1px #083779;
   padding: 0.25em;
   overflow: auto;
@@ -157,7 +158,7 @@ div.singleViewView *.bottomRight
 /* Non-IE Browsers hack \*/
 html > body div.singleViewView
 {
- /* width: inherit;*/
+ width: inherit;
 }
 /* End Non-IE Browsers hack\*/
 
@@ -165,7 +166,7 @@ html > body div.singleViewView
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.singleViewTopControls
 {
-	overflow: hidden;
+  overflow: hidden;
   background-color: White;
 }
 
@@ -192,6 +193,5 @@ div.singleViewBottomControls.empty
   height: 1em;
   background-color: White;
 }
-
 
 /* CSS for IE6 */
