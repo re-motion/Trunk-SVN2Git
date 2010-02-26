@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using Remotion.Utilities.ConsoleApplication;
 
-namespace Remotion.UnitTests.Utilities.ConsoleApplication
+namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
 {
   public class ConsoleApplicationTestApplicationRunner : IApplicationRunner<ConsoleApplicationTestSettings>
   {

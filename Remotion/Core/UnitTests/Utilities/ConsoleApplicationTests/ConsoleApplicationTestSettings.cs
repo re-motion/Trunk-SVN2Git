@@ -18,7 +18,7 @@ using System;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities.ConsoleApplication;
 
-namespace Remotion.UnitTests.Utilities.ConsoleApplication
+namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
 {
   public class ConsoleApplicationTestSettings : ConsoleApplicationSettings
   {

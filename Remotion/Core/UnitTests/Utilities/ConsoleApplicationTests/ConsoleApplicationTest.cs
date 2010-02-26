@@ -25,7 +25,7 @@ using Remotion.Utilities.ConsoleApplication;
 using Rhino.Mocks;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
-namespace Remotion.UnitTests.Utilities.ConsoleApplication
+namespace Remotion.UnitTests.Utilities.ConsoleApplicationTests
 {
   [TestFixture]
   public class ConsoleApplicationTest
@@ -35,39 +35,37 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplication
     {
       var args = new[] { "/?" };
 
-      var waitStub = MockRepository.GenerateMock<IWaiter> ();
+      var waitStub = MockRepository.GenerateMock<IWaiter>();
 
-      var stringWriterOut = new StringWriter ();
-      var stringWriterError = new StringWriter ();
-      var consoleApplication =
-          new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (stringWriterError, stringWriterOut, 80, waitStub);
+      var stringWriterOut = new StringWriter();
+      var stringWriterError = new StringWriter();
+      var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
+          stringWriterError, stringWriterOut, 1000, waitStub);
+
       consoleApplication.Main (args);
 
-      var outResult = stringWriterOut.ToString ();
-      var errorResult = stringWriterError.ToString ();
+      var outResult = stringWriterOut.ToString();
+      var errorResult = stringWriterError.ToString();
 
       Assert.That (outResult, NUnitText.Contains ("Application Usage:"));
       Assert.That (outResult, NUnitText.Contains ("[/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
       Assert.That (outResult, NUnitText.Contains ("/stringArg  stringArg description."));
       Assert.That (outResult, NUnitText.Contains ("/flagArg    flagArg description."));
       Assert.That (outResult, NUnitText.Contains ("/?          Show usage"));
-      Assert.That (outResult, NUnitText.Contains (Process.GetCurrentProcess ().MainModule.FileName.RightUntilChar ('\\')));
-      
+      Assert.That (outResult, NUnitText.Contains (Process.GetCurrentProcess().MainModule.FileName.RightUntilChar ('\\')));
+
       Assert.That (errorResult, Is.EqualTo (""));
-
     }
-
-
 
     [Test]
     public void StringArgFlagArgTest ()
     {
       var args = new[] { "/stringArg:someText /flagArg+" };
 
-      var stringWriterOut = new StringWriter ();
-      var stringWriterError = new StringWriter ();
+      var stringWriterOut = new StringWriter();
+      var stringWriterError = new StringWriter();
 
-      var waitMock = MockRepository.GenerateMock<IWaiter> ();
+      var waitMock = MockRepository.GenerateMock<IWaiter>();
 
       var consoleApplication =
           new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
@@ -77,21 +75,20 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplication
 
       consoleApplication.Main (args);
 
-      var errorResult = stringWriterError.ToString ();
+      var errorResult = stringWriterError.ToString();
 
       Assert.That (errorResult, Is.EqualTo (""));
     }
-
 
     [Test]
     public void UnknownCommandLineSwitchTest ()
     {
       var args = new[] { "/UNKNOWN_ARGUMENT" };
 
-      var stringWriterOut = new StringWriter ();
-      var stringWriterError = new StringWriter ();
+      var stringWriterOut = new StringWriter();
+      var stringWriterError = new StringWriter();
 
-      var waitMock = MockRepository.GenerateMock<IWaiter> ();
+      var waitMock = MockRepository.GenerateMock<IWaiter>();
 
       var consoleApplication =
           new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
@@ -101,28 +98,26 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplication
 
       consoleApplication.Main (args);
 
-      var errorResult = stringWriterError.ToString ();
+      var errorResult = stringWriterError.ToString();
       Assert.That (errorResult, NUnitText.Contains (@"An error occured: Argument /UNKNOWN_ARGUMENT: invalid argument name"));
     }
-
-
 
     [Test]
     public void WaitForKeypressTest ()
     {
       var args = new[] { "/wait+" };
 
-      var waitMock = MockRepository.GenerateMock<IWaiter> ();
-      waitMock.Expect (mock => mock.Wait ());
-      waitMock.Replay ();
+      var waitMock = MockRepository.GenerateMock<IWaiter>();
+      waitMock.Expect (mock => mock.Wait());
+      waitMock.Replay();
 
       var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
           TextWriter.Null, TextWriter.Null, 80, waitMock);
-      
+
       consoleApplication.Main (args);
 
       Assert.That (consoleApplication.Settings.WaitForKeypress, Is.True);
-      waitMock.VerifyAllExpectations ();
+      waitMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -130,79 +125,83 @@ namespace Remotion.UnitTests.Utilities.ConsoleApplication
     {
       const int bufferWidth = 37;
 
-      var waitMock = MockRepository.GenerateStub<IWaiter> ();
+      var waitMock = MockRepository.GenerateStub<IWaiter>();
 
       var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
           TextWriter.Null, TextWriter.Null, bufferWidth, waitMock);
 
-      Assert.That (consoleApplication.BufferWidth, Is.EqualTo(bufferWidth));
+      Assert.That (consoleApplication.BufferWidth, Is.EqualTo (bufferWidth));
     }
-
 
     [Test]
     public void DefaultCtorTest ()
     {
-      var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> ();
-      Assert.That (PrivateInvoke.GetNonPublicField(consoleApplication,"_errorWriter"), Is.EqualTo (System.Console.Error));
-      Assert.That (PrivateInvoke.GetNonPublicField(consoleApplication,"_logWriter"), Is.EqualTo (System.Console.Out));
+      var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>();
+      Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_errorWriter"), Is.EqualTo (Console.Error));
+      Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_logWriter"), Is.EqualTo (Console.Out));
       Assert.That (consoleApplication.BufferWidth, Is.EqualTo (80));
       Assert.That (PrivateInvoke.GetNonPublicField (consoleApplication, "_waitAtEnd"), Is.TypeOf (typeof (ConsoleKeypressWaiter)));
     }
 
-
     [Test]
     public void RunApplicationTextWriterArgumentPassingTest ()
     {
-      var stringWriterOut = new StringWriter ();
-      var stringWriterError = new StringWriter ();
+      var stringWriterOut = new StringWriter();
+      var stringWriterError = new StringWriter();
 
-      var waitStub = MockRepository.GenerateStub<IWaiter> ();
+      var waitStub = MockRepository.GenerateStub<IWaiter>();
 
-      var mocks = new MockRepository ();
-      var applicationRunnerMock = mocks.DynamicMock<IApplicationRunner<ConsoleApplicationTestSettings>> ();
+      var mocks = new MockRepository();
+      var applicationRunnerMock = mocks.DynamicMock<IApplicationRunner<ConsoleApplicationTestSettings>>();
       var consoleApplicationMock =
           mocks.PartialMock<ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>> (
               stringWriterError, stringWriterOut, 80, waitStub);
 
 
-      consoleApplicationMock.Expect (x => x.CreateApplication ()).Return (applicationRunnerMock);
-      applicationRunnerMock.Expect (x => x.Run (Arg<ConsoleApplicationTestSettings>.Is.Anything,
-                                                Arg<TextWriter>.Is.Equal (stringWriterError), Arg<TextWriter>.Is.Equal (stringWriterOut)));
+      consoleApplicationMock.Expect (x => x.CreateApplication()).Return (applicationRunnerMock);
+      applicationRunnerMock.Expect (
+          x => x.Run (
+                   Arg<ConsoleApplicationTestSettings>.Is.Anything,
+                   Arg<TextWriter>.Is.Equal (stringWriterError),
+                   Arg<TextWriter>.Is.Equal (stringWriterOut)));
 
-      consoleApplicationMock.Replay ();
-      applicationRunnerMock.Replay ();
+      consoleApplicationMock.Replay();
+      applicationRunnerMock.Replay();
 
       consoleApplicationMock.Main (new string[0]);
 
-      applicationRunnerMock.VerifyAllExpectations ();
-      consoleApplicationMock.VerifyAllExpectations ();
+      applicationRunnerMock.VerifyAllExpectations();
+      consoleApplicationMock.VerifyAllExpectations();
     }
 
     [Test]
     public void RunApplicationExeptionTest ()
     {
-      var stringWriterError = new StringWriter ();
+      var stringWriterError = new StringWriter();
       var stringWriterOut = TextWriter.Null;
 
-      var waitStub = MockRepository.GenerateStub<IWaiter> ();
+      var waitStub = MockRepository.GenerateStub<IWaiter>();
 
-      var mocks = new MockRepository ();
-      var applicationRunnerMock = mocks.DynamicMock<IApplicationRunner<ConsoleApplicationTestSettings>> ();
+      var mocks = new MockRepository();
+      var applicationRunnerMock = mocks.DynamicMock<IApplicationRunner<ConsoleApplicationTestSettings>>();
       var consoleApplicationMock =
           mocks.PartialMock<ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>> (
               stringWriterError, stringWriterOut, 80, waitStub);
 
-      consoleApplicationMock.Expect (x => x.CreateApplication ()).Return (applicationRunnerMock);
-      applicationRunnerMock.Expect (x => x.Run (Arg<ConsoleApplicationTestSettings>.Is.Anything,
-                                                Arg<TextWriter>.Is.Anything, Arg<TextWriter>.Is.Anything)).Throw(new Exception("The valve just came loose..."));
+      consoleApplicationMock.Expect (x => x.CreateApplication()).Return (applicationRunnerMock);
+      applicationRunnerMock.Expect (
+          x => x.Run (
+                   Arg<ConsoleApplicationTestSettings>.Is.Anything,
+                   Arg<TextWriter>.Is.Anything,
+                   Arg<TextWriter>.Is.Anything)).Throw (new Exception ("The valve just came loose..."));
 
-      consoleApplicationMock.Replay ();
-      applicationRunnerMock.Replay ();
+      consoleApplicationMock.Replay();
+      applicationRunnerMock.Replay();
 
       consoleApplicationMock.Main (new string[0]);
 
-      applicationRunnerMock.VerifyAllExpectations ();
-      consoleApplicationMock.VerifyAllExpectations ();
+      applicationRunnerMock.VerifyAllExpectations();
+      consoleApplicationMock.VerifyAllExpectations();
 
       var result = stringWriterError.ToString();
       Assert.That (result, NUnitText.StartsWith ("Execution aborted. Exception stack:System.Exception: The valve just came loose..."));
