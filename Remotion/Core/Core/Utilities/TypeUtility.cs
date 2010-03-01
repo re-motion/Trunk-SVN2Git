@@ -220,7 +220,7 @@ namespace Remotion.Utilities
       }
       else
       {
-        sb.Append (ns).Append (type.Name);
+        sb.Append (ns).Append (".").Append (type.Name);
         BuildAbbreviatedTypeParameters (sb, type, includeVersionAndCulture);
         sb.Append (", ").Append (asm);
       }

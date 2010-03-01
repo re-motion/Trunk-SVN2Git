@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Timers;
 using NUnit.Framework;
 using Remotion.Utilities;
 
@@ -163,25 +165,47 @@ namespace Remotion.UnitTests.Utilities
                             "a.b[[c.d[[e.f[[g.h[...], g, ver=1, token=2]], e, ver=2, token=3]], c, ver=3, token=4]], a, ver=4, token=5");
     }
 
-    private void AssertTransformation (string abbreviatedName, string fullName)
+    [Test]
+    [Ignore ("COMMONS-1596")]
+    public void GetAbbreviatedTypeName_WithSubNamespaceAndWithoutVersionAndCulture ()
     {
-      string result = TypeUtility.ParseAbbreviatedTypeName (abbreviatedName);
-      Assert.AreEqual (fullName, result);
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), false);
+      Assert.AreEqual ("System::Timers.Timer", name);
     }
 
     [Test]
-    public void AbbreviateWithoutNotFull()
+    [Ignore ("COMMONS-1596")]
+    public void GetAbbreviatedTypeName_WithSubNamespaceAndWithVersionAndCulture ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), true);
+      Assert.AreEqual ("System::Timers.Timer" + typeof (Timer).Assembly.FullName.Replace ("System", string.Empty), name);
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithoutAbbreviate ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Hashtable), false);
+      Assert.AreEqual ("System.Collections.Hashtable, mscorlib", name);
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithoutSubNamespaceAndWithoutVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Uri), false);
       Assert.AreEqual ("System::Uri", name);
     }
 
     [Test]
-    [Ignore ("TODO: SW")]
-    public void AbbreviateWithoutFull ()
+    public void GetAbbreviatedTypeName_WithoutSubNamespaceAndWithVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Uri), true);
-      Assert.AreEqual ("System::Uri, XXXXXXXXXXXXXXX", name);
+      Assert.AreEqual ("System::Uri" + typeof (Uri).Assembly.FullName.Replace ("System", string.Empty), name);
+    }
+
+    private void AssertTransformation (string abbreviatedName, string fullName)
+    {
+      string result = TypeUtility.ParseAbbreviatedTypeName (abbreviatedName);
+      Assert.AreEqual (fullName, result);
     }
   }
 }
