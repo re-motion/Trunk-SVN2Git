@@ -42,51 +42,51 @@ namespace Remotion.Utilities
 
       static AbbreviationParser ()
       {
-        const string typeNamePattern =                // <asm>::<type>
-              @"(?<asm>[^\[\]\,]+)"             //    <asm> is the assembly part of the type name (before ::)
+        const string typeNamePattern = //  <asm>::<type>
+            @"(?<asm>[^\[\]\,]+)" //       <asm> is the assembly part of the type name (before ::)
             + @"::"
-            + @"(?<type>[^\[\]\,]+)";           //    <type> is the partially qualified type name (after ::)
+            + @"(?<type>[^\[\]\,]+)"; //   <type> is the partially qualified type name (after ::)
 
-        const string bracketPattern =                 // [...] (an optional pair of matching square brackets and anything in between)
-              @"(?<br> \[          "            //    see "Mastering Regular Expressions" (O'Reilly) for how the construct "balancing group definition" 
-            + @"  (                "            //    is used to match brackets: http://www.oreilly.com/catalog/regex2/chapter/ch09.pdf
+        const string bracketPattern = //   [...] (an optional pair of matching square brackets and anything in between)
+            @"(?<br> \[            " //    see "Mastering Regular Expressions" (O'Reilly) for how the construct "balancing group definition" 
+            + @"  (                " //    is used to match brackets: http://www.oreilly.com/catalog/regex2/chapter/ch09.pdf
             + @"      [^\[\]]      "
             + @"    |              "
-            + @"      \[ (?<d>)    "            //    increment nesting counter <d>
+            + @"      \[ (?<d>)    " //    increment nesting counter <d>
             + @"    |              "
-            + @"      \] (?<-d>)   "            //    decrement <d>
+            + @"      \] (?<-d>)   " //    decrement <d>
             + @"  )*               "
-            + @"  (?(d)(?!))       "            //    ensure <d> is 0 before considering next match
+            + @"  (?(d)(?!))       " //    ensure <d> is 0 before considering next match
             + @"\] )?              ";
 
-        const string strongNameParts =                // comma-separated list of name=value pairs
-              @"(?<sn> (, \s* \w+ = [^,]+ )* )";
+        const string strongNameParts = // comma-separated list of name=value pairs
+            @"(?<sn> (, \s* \w+ = [^,]+ )* )";
 
-        const string typePattern =                    // <asm>::<type>[...] (square brackets are optional)
-              typeNamePattern
+        const string typePattern = // <asm>::<type>[...] (square brackets are optional)
+            typeNamePattern
             + bracketPattern;
 
-        const string openUnqualifiedPattern =         // requires the pattern to be preceded by [ or ,
-              @"(?<= [\[,] )";
-        const string closeUnqualifiedPattern =        // requires the pattern to be followed by ] or ,
-              @"(?= [\],] )";
+        const string openUnqualifiedPattern = // requires the pattern to be preceded by [ or ,
+            @"(?<= [\[,] )";
+        const string closeUnqualifiedPattern = // requires the pattern to be followed by ] or ,
+            @"(?= [\],] )";
 
-        const string enclosedTypePattern =            // type within argument list
-              openUnqualifiedPattern
+        const string enclosedTypePattern = // type within argument list
+            openUnqualifiedPattern
             + typePattern
             + closeUnqualifiedPattern;
 
-        const string qualifiedTypePattern =           // <asm>::<type>[...], name=val, name=val ... (square brackets are optional)
-              typePattern
+        const string qualifiedTypePattern = // <asm>::<type>[...], name=val, name=val ... (square brackets are optional)
+            typePattern
             + strongNameParts;
 
-        const string openQualifiedPattern =           // requires the pattern to be preceded by [[ or ,[
-              @"(?<= [\[,] \[)";
-        const string closeQualifiedPattern =          // requires the pattern to be followed by ]] or ],
-              @"(?= \] [\],] )";
+        const string openQualifiedPattern = // requires the pattern to be preceded by [[ or ,[
+            @"(?<= [\[,] \[)";
+        const string closeQualifiedPattern = // requires the pattern to be followed by ]] or ],
+            @"(?= \] [\],] )";
 
-        const string enclosedQualifiedTypePattern =   // qualified type within argument list
-              openQualifiedPattern
+        const string enclosedQualifiedTypePattern = // qualified type within argument list
+            openQualifiedPattern
             + qualifiedTypePattern
             + closeQualifiedPattern;
 
@@ -104,7 +104,7 @@ namespace Remotion.Utilities
         return s_fullTypeNames.GetOrCreateValue (abbreviatedTypeName, ParseAbbreviatedTypeName);
       }
 
-      private static string ParseAbbreviatedTypeName  (string abbreviatedTypeName)
+      private static string ParseAbbreviatedTypeName (string abbreviatedTypeName)
       {
         string fullTypeName = abbreviatedTypeName;
         const string replace = @"${asm}.${type}${br}, ${asm}";
@@ -171,7 +171,8 @@ namespace Remotion.Utilities
     /// <summary>
     ///   Loads a type, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
     /// </summary>
-    [Obsolete ("GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity " 
+    [Obsolete (
+        "GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity "
         + "is required, use Type.GetType. To use abbreviated type names for the lookup, use ParseAbbreviatedTypeName.", true)]
     public static Type GetType (string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
     {
@@ -210,7 +211,7 @@ namespace Remotion.Utilities
       // put type paramters in [brackets] if they include commas, so the commas cannot be confused with type parameter separators
       bool needsBrackets = isTypeParameter && (includeVersionAndCulture || ! canAbbreviate);
       if (needsBrackets)
-          sb.Append ("[");
+        sb.Append ("[");
 
       if (canAbbreviate)
       {
