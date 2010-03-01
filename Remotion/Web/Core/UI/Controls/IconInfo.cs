@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.Design;
@@ -29,303 +30,287 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
-[TypeConverter (typeof (IconInfoConverter))]
-public sealed class IconInfo
-{
-  private static IconInfo s_spacer;
-
-  public static IconInfo Spacer
+  [TypeConverter (typeof (IconInfoConverter))]
+  public sealed class IconInfo
   {
-    get 
-    { 
-      if (s_spacer == null)
+    private static IconInfo s_spacer;
+
+    public static IconInfo Spacer
+    {
+      get
       {
-        lock (typeof (IconInfo))
+        if (s_spacer == null)
         {
-          if (s_spacer == null)
+          lock (typeof (IconInfo))
           {
-            string url = 
-                ResourceUrlResolver.GetResourceUrl (null, typeof (IconInfo), ResourceType.Image, ResourceTheme, "Spacer.gif");
-            s_spacer = new IconInfo (url);
+            if (s_spacer == null)
+            {
+              string url =
+                  ResourceUrlResolver.GetResourceUrl (null, typeof (IconInfo), ResourceType.Image, ResourceTheme, "Spacer.gif");
+              s_spacer = new IconInfo (url);
+            }
           }
         }
+        return s_spacer;
       }
-      return s_spacer; 
     }
-  }
 
-  private static ResourceTheme ResourceTheme
-  {
-    get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
-  }
-
-  public static bool ShouldSerialize (IconInfo icon)
-  {
-    if (icon == null)
+    private static ResourceTheme ResourceTheme
     {
-      return false;
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
-    else if (   StringUtility.IsNullOrEmpty (icon.Url)
-             && StringUtility.IsNullOrEmpty (icon.AlternateText)
-             && StringUtility.IsNullOrEmpty (icon.ToolTip)
-             && icon.Height.IsEmpty
-             && icon.Width.IsEmpty)
+
+    public static bool ShouldSerialize (IconInfo icon)
     {
-      return false;
+      if (icon == null)
+        return false;
+      else if (StringUtility.IsNullOrEmpty (icon.Url)
+               && StringUtility.IsNullOrEmpty (icon.AlternateText)
+               && StringUtility.IsNullOrEmpty (icon.ToolTip)
+               && icon.Height.IsEmpty
+               && icon.Width.IsEmpty)
+        return false;
+      else
+        return true;
     }
-    else
+
+    public static void RenderInvisibleSpacer (HtmlTextWriter writer)
     {
-      return true;
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Src, Spacer.Url);
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
+      writer.AddAttribute ("class", "Icon");
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0px");
+      writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "0px");
+      writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
+      writer.RenderBeginTag (HtmlTextWriterTag.Img);
+      writer.RenderEndTag();
     }
-  }
 
-  public static void RenderInvisibleSpacer (HtmlTextWriter writer)
-  {
-    ArgumentUtility.CheckNotNull ("writer", writer);
+    private string _url;
+    private string _alternateText;
+    private string _toolTip;
+    private Unit _width;
+    private Unit _height;
 
-    writer.AddAttribute (HtmlTextWriterAttribute.Src, Spacer.Url);
-    writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
-    writer.AddAttribute ("class", "Icon");
-    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0px");
-    writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "0px");
-    writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-    writer.RenderBeginTag (HtmlTextWriterTag.Img);
-    writer.RenderEndTag();
-  }
-
-  private string _url;
-  private string _alternateText;
-  private string _toolTip;
-  private Unit _width;
-  private Unit _height;
-
-  public IconInfo (string url, string alternateText, string toolTip, Unit width, Unit height)
-  {
-    Url = url;
-    AlternateText = alternateText;
-    ToolTip = toolTip;
-    Width = width;
-    Height = height;
-  }
-
-  public IconInfo (string url, Unit width, Unit height)
-    : this (url, null, null, width, height)
-  {
-  }
-
-  public IconInfo (string url, string alternateText, string toolTip, string width, string height)
-    : this (url, alternateText, toolTip, new Unit (width), new Unit (height))
-  {
-  }
-
-  public IconInfo (string url, string width, string height)
-    : this (url, null, null, width, height)
-  {
-  }
-
-  public IconInfo (string url)
-    : this (url, null, null, Unit.Empty, Unit.Empty)
-  {
-  }
-
-  public IconInfo ()
-    : this (string.Empty)
-  {
-  }
-
-  [Editor (typeof (ImageUrlEditor), typeof (UITypeEditor))]
-  [PersistenceMode (PersistenceMode.Attribute)]
-  [DefaultValue ("")]
-  [NotifyParentProperty (true)]
-  public string Url
-  {
-    get { return _url; }
-    set { _url = StringUtility.NullToEmpty (value); }
-  }
-
-  [PersistenceMode (PersistenceMode.Attribute)]
-  [DefaultValue ("")]
-  [NotifyParentProperty (true)]
-  public string AlternateText
-  {
-    get { return _alternateText; }
-    set { _alternateText = StringUtility.NullToEmpty (value); }
-  }
-
-  [PersistenceMode (PersistenceMode.Attribute)]
-  [DefaultValue ("")]
-  [NotifyParentProperty (true)]
-  public string ToolTip
-  {
-    get { return  _toolTip; }
-    set { _toolTip = StringUtility.NullToEmpty (value); }
-  }
-
-  [PersistenceMode (PersistenceMode.Attribute)]
-  [DefaultValue (typeof (Unit), "")]
-  [NotifyParentProperty (true)]
-  public Unit Width
-  {
-    get { return _width; }
-    set { _width = value; }
-  }
-
-  [PersistenceMode (PersistenceMode.Attribute)]
-  [DefaultValue (typeof (Unit), "")]
-  [NotifyParentProperty (true)]
-  public Unit Height
-  {
-    get { return _height; }
-    set { _height = value; }
-  }
-
-  public override string ToString()
-  {
-    return _url;
-  }
-
-  public void Render (HtmlTextWriter writer)
-  {
-    ArgumentUtility.CheckNotNull ("writer", writer);
-
-    string url = UrlUtility.ResolveUrl (_url);
-    writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
-
-    if (! _width.IsEmpty && ! _height.IsEmpty)
+    public IconInfo (string url, string alternateText, string toolTip, Unit width, Unit height)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Width, _width.ToString());
-      writer.AddAttribute (HtmlTextWriterAttribute.Height, _height.ToString());
+      Url = url;
+      AlternateText = alternateText;
+      ToolTip = toolTip;
+      Width = width;
+      Height = height;
     }
-    writer.AddAttribute ("class", "Icon");
-    
-    writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (_alternateText));
-    
-    if (! StringUtility.IsNullOrEmpty (_toolTip))
-      writer.AddAttribute (HtmlTextWriterAttribute.Title, _toolTip);
 
-    writer.RenderBeginTag (HtmlTextWriterTag.Img);
-    writer.RenderEndTag();
-  }
-
-  [Browsable (false)]
-  [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-  public bool HasRenderingInformation
-  {
-    get { return ! StringUtility.IsNullOrEmpty (_url); }
-  }
-
-  public void Reset()
-  {
-    _url = string.Empty;
-    _alternateText = string.Empty;
-    _toolTip = string.Empty;
-    _width = Unit.Empty;
-    _height = Unit.Empty;
-  }
-
-  public void LoadResources (IResourceManager resourceManager)
-  {
-    if (resourceManager == null)
-      return;
-
-    string key;
-    key = ResourceManagerUtility.GetGlobalResourceKey (Url);
-    if (! StringUtility.IsNullOrEmpty (key))
-      Url = resourceManager.GetString (key);
-
-    key = ResourceManagerUtility.GetGlobalResourceKey (AlternateText);
-    if (! StringUtility.IsNullOrEmpty (key))
-      AlternateText = resourceManager.GetString (key);
-
-    key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
-    if (! StringUtility.IsNullOrEmpty (key))
-      ToolTip = resourceManager.GetString (key);
-  }
-}
-
-public class IconInfoConverter: ExpandableObjectConverter
-{
-  public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
-  {
-    if (   context == null // Requried to circumvent the Designer
-        && sourceType == typeof (string))
+    public IconInfo (string url, Unit width, Unit height)
+        : this (url, null, null, width, height)
     {
-      return true;
     }
-    return base.CanConvertFrom (context, sourceType);
-  }
 
-  public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
-  {
-    if (destinationType == typeof (string))
-      return true;
-    return base.CanConvertTo (context, destinationType);
-  }
-
-  public override object ConvertFrom 
-      (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
-  {
-    if (value == null)
-      return null;
-    if (value is string)
+    public IconInfo (string url, string alternateText, string toolTip, string width, string height)
+        : this (url, alternateText, toolTip, new Unit (width), new Unit (height))
     {
-      string stringValue = (string) value;
-      IconInfo icon = new IconInfo();
-      if (stringValue != string.Empty)
+    }
+
+    public IconInfo (string url, string width, string height)
+        : this (url, null, null, width, height)
+    {
+    }
+
+    public IconInfo (string url)
+        : this (url, null, null, Unit.Empty, Unit.Empty)
+    {
+    }
+
+    public IconInfo ()
+        : this (string.Empty)
+    {
+    }
+
+    [Editor (typeof (ImageUrlEditor), typeof (UITypeEditor))]
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [DefaultValue ("")]
+    [NotifyParentProperty (true)]
+    public string Url
+    {
+      get { return _url; }
+      set { _url = StringUtility.NullToEmpty (value); }
+    }
+
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [DefaultValue ("")]
+    [NotifyParentProperty (true)]
+    public string AlternateText
+    {
+      get { return _alternateText; }
+      set { _alternateText = StringUtility.NullToEmpty (value); }
+    }
+
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [DefaultValue ("")]
+    [NotifyParentProperty (true)]
+    public string ToolTip
+    {
+      get { return _toolTip; }
+      set { _toolTip = StringUtility.NullToEmpty (value); }
+    }
+
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [DefaultValue (typeof (Unit), "")]
+    [NotifyParentProperty (true)]
+    public Unit Width
+    {
+      get { return _width; }
+      set { _width = value; }
+    }
+
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [DefaultValue (typeof (Unit), "")]
+    [NotifyParentProperty (true)]
+    public Unit Height
+    {
+      get { return _height; }
+      set { _height = value; }
+    }
+
+    public override string ToString ()
+    {
+      return _url;
+    }
+
+    public void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      string url = UrlUtility.ResolveUrl (_url);
+      writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
+
+      if (! _width.IsEmpty && ! _height.IsEmpty)
       {
-        string[] valueParts = stringValue.Split (new char[]{'\0'}, 5);
-        icon.Url = valueParts[0];
-        if (valueParts[1] != string.Empty)
-          icon.Width = Unit.Parse (valueParts[1]);
-        if (valueParts[2] != string.Empty)
-          icon.Height = Unit.Parse (valueParts[2]);
-        icon.AlternateText = valueParts[3];
-        icon.ToolTip = valueParts[4];
+        writer.AddAttribute (HtmlTextWriterAttribute.Width, _width.ToString());
+        writer.AddAttribute (HtmlTextWriterAttribute.Height, _height.ToString());
       }
-      return icon;
+      writer.AddAttribute ("class", "Icon");
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (_alternateText));
+
+      if (! StringUtility.IsNullOrEmpty (_toolTip))
+        writer.AddAttribute (HtmlTextWriterAttribute.Title, _toolTip);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Img);
+      writer.RenderEndTag();
     }
 
-    return base.ConvertFrom (context, culture, value);
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public bool HasRenderingInformation
+    {
+      get { return ! StringUtility.IsNullOrEmpty (_url); }
+    }
+
+    public void Reset ()
+    {
+      _url = string.Empty;
+      _alternateText = string.Empty;
+      _toolTip = string.Empty;
+      _width = Unit.Empty;
+      _height = Unit.Empty;
+    }
+
+    public void LoadResources (IResourceManager resourceManager)
+    {
+      if (resourceManager == null)
+        return;
+
+      string key;
+      key = ResourceManagerUtility.GetGlobalResourceKey (Url);
+      if (! StringUtility.IsNullOrEmpty (key))
+        Url = resourceManager.GetString (key);
+
+      key = ResourceManagerUtility.GetGlobalResourceKey (AlternateText);
+      if (! StringUtility.IsNullOrEmpty (key))
+        AlternateText = resourceManager.GetString (key);
+
+      key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
+      if (! StringUtility.IsNullOrEmpty (key))
+        ToolTip = resourceManager.GetString (key);
+    }
   }
 
-  public override object ConvertTo
-    (ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+  public class IconInfoConverter : ExpandableObjectConverter
   {
-    if (destinationType == typeof (string))
+    public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
+    {
+      if (context == null // Requried to circumvent the Designer
+          && sourceType == typeof (string))
+        return true;
+      return base.CanConvertFrom (context, sourceType);
+    }
+
+    public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+    {
+      if (destinationType == typeof (string))
+        return true;
+      return base.CanConvertTo (context, destinationType);
+    }
+
+    public override object ConvertFrom
+        (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
       if (value == null)
         return null;
-      if (value is IconInfo)
+      if (value is string)
       {
-        IconInfo icon = (IconInfo) value;
-        if (context == null) // Requried to circumvent the Designer
+        string stringValue = (string) value;
+        IconInfo icon = new IconInfo();
+        if (stringValue != string.Empty)
         {
-          if (IconInfo.ShouldSerialize (icon))
+          string[] valueParts = stringValue.Split (new char[] { '\0' }, 5);
+          icon.Url = valueParts[0];
+          if (valueParts[1] != string.Empty)
+            icon.Width = Unit.Parse (valueParts[1]);
+          if (valueParts[2] != string.Empty)
+            icon.Height = Unit.Parse (valueParts[2]);
+          icon.AlternateText = valueParts[3];
+          icon.ToolTip = valueParts[4];
+        }
+        return icon;
+      }
+
+      return base.ConvertFrom (context, culture, value);
+    }
+
+    public override object ConvertTo
+        (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    {
+      if (destinationType == typeof (string))
+      {
+        if (value == null)
+          return null;
+        if (value is IconInfo)
+        {
+          IconInfo icon = (IconInfo) value;
+          if (context == null) // Requried to circumvent the Designer
           {
-            StringBuilder serializedValue = new StringBuilder();
-            serializedValue.Append (icon.Url).Append ("\0");
-            serializedValue.Append (icon.Width.ToString()).Append ("\0");
-            serializedValue.Append (icon.Height.ToString()).Append ("\0");
-            serializedValue.Append (icon.AlternateText).Append ("\0");
-            serializedValue.Append (icon.ToolTip);
-            return serializedValue.ToString();
+            if (IconInfo.ShouldSerialize (icon))
+            {
+              StringBuilder serializedValue = new StringBuilder();
+              serializedValue.Append (icon.Url).Append ("\0");
+              serializedValue.Append (icon.Width.ToString()).Append ("\0");
+              serializedValue.Append (icon.Height.ToString()).Append ("\0");
+              serializedValue.Append (icon.AlternateText).Append ("\0");
+              serializedValue.Append (icon.ToolTip);
+              return serializedValue.ToString();
+            }
+            else
+              return string.Empty;
           }
           else
-          {
-            return string.Empty;
-          }
-        }
-        else
-        {
-          return icon.Url;
+            return icon.Url;
         }
       }
+      return base.ConvertTo (context, culture, value, destinationType);
     }
-    return base.ConvertTo (context, culture, value, destinationType);
   }
-
-
-}
-
 }
