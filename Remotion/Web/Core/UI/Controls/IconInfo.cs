@@ -186,11 +186,9 @@ namespace Remotion.Web.UI.Controls
       string url = UrlUtility.ResolveUrl (_url);
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
 
-      if (! _width.IsEmpty && ! _height.IsEmpty)
-      {
-        writer.AddAttribute (HtmlTextWriterAttribute.Width, _width.ToString());
-        writer.AddAttribute (HtmlTextWriterAttribute.Height, _height.ToString());
-      }
+      AddDimensionToAttributes (writer, HtmlTextWriterAttribute.Width, _width);
+      AddDimensionToAttributes (writer, HtmlTextWriterAttribute.Height, _height);
+
       writer.AddAttribute ("class", "Icon");
 
       writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (_alternateText));
@@ -235,6 +233,30 @@ namespace Remotion.Web.UI.Controls
       key = ResourceManagerUtility.GetGlobalResourceKey (ToolTip);
       if (! StringUtility.IsNullOrEmpty (key))
         ToolTip = resourceManager.GetString (key);
+    }
+
+    private void AddDimensionToAttributes (HtmlTextWriter writer, HtmlTextWriterAttribute attribute, Unit attributeValue)
+    {
+      if (attributeValue.IsEmpty)
+        return;
+
+      if (attributeValue.Type == UnitType.Pixel || attributeValue.Type == UnitType.Percentage)
+        writer.AddAttribute (attribute, attributeValue.ToString ());
+      else
+        writer.AddStyleAttribute (GetDimensionAsStyleAttribute (attribute), attributeValue.ToString());
+    }
+
+    private HtmlTextWriterStyle GetDimensionAsStyleAttribute (HtmlTextWriterAttribute attribute)
+    {
+      switch (attribute)
+      {
+        case HtmlTextWriterAttribute.Height:
+          return HtmlTextWriterStyle.Height;
+        case HtmlTextWriterAttribute.Width:
+          return HtmlTextWriterStyle.Width;
+        default:
+          throw new InvalidOperationException ("Invalid value for attribute. Only Height and Width are supported.");
+      }
     }
   }
 
