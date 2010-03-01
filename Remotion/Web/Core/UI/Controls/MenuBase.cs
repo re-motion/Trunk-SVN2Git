@@ -151,14 +151,16 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Fires the <see cref="MenuBase.EventCommandClick"/> event. </summary>
     protected virtual void OnEventCommandClick (WebMenuItem item)
     {
+      ArgumentUtility.CheckNotNull ("item", item);
+
+      if (item.Command != null)
+        item.Command.OnClick();
+
       if (EventCommandClick != null)
       {
         WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (item);
         EventCommandClick (this, e);
       }
-
-      if (item != null && item.Command != null)
-        item.Command.OnClick();
     }
 
     /// <summary> Fires the <see cref="MenuBase.WxeFunctionCommandClick"/> event. </summary>

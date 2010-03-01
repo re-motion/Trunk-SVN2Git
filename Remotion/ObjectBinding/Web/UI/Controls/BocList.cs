@@ -158,6 +158,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
+    private object s_menuItemClickEvent = new object();
     private static readonly object s_listItemCommandClickEvent = new object();
     private static readonly object s_customCellClickEvent = new object();
 
@@ -3374,15 +3375,50 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RemoveRows (businessObjects);
     }
 
+    private void MenuItemEventCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      OnMenuItemEventCommandClick (e.Item);
+    }
+
+    /// <summary> Fires the <see cref="MenuItemClick"/> event. </summary>
+    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemEventCommandClick/*' />
+    protected virtual void OnMenuItemEventCommandClick (WebMenuItem menuItem)
+    {
+      ArgumentUtility.CheckNotNull ("menuItem", menuItem);
+
+      // Just pro forma. MenuBase already fired Command.Click before click-handler is invoked.
+      // OnClick only fires once because of a guard-condition.
+      if (menuItem.Command != null)
+        menuItem.Command.OnClick ();
+
+      if (menuItem is BocMenuItem && menuItem.Command is BocMenuItemCommand)
+        ((BocMenuItemCommand) menuItem.Command).OnClick ((BocMenuItem) menuItem);
+
+      WebMenuItemClickEventHandler menuItemClickHandler = (WebMenuItemClickEventHandler) Events[s_menuItemClickEvent];
+      if (menuItemClickHandler != null)
+      {
+        WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (menuItem);
+        menuItemClickHandler (this, e);
+      }
+    }
+
     private void MenuItemWxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
-      var menuItem = e.Item;
-      if (menuItem == null || e.Command == null)
+      OnMenuItemWxeFunctionCommandClick (e.Item);
+    }
+
+    /// <summary> Handles the click to a WXE function command. </summary>
+    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemWxeFunctionCommandClick/*' />
+    protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
+    {
+      ArgumentUtility.CheckNotNull ("menuItem", menuItem);
+
+      if (menuItem.Command == null)
         return;
 
       if (menuItem is BocMenuItem)
       {
-        BocMenuItemCommand command = (BocMenuItemCommand) e.Command;
+        BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
         if (Page is IWxePage)
           command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows(), GetSelectedBusinessObjects());
         //else
@@ -3396,12 +3432,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         //else
         //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
       }
-    }
-
-    private void MenuItemEventCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      if (e.Item is BocMenuItem)
-        ((BocMenuItemCommand) e.Item.Command).OnClick ((BocMenuItem) e.Item);
     }
 
     bool IBocMenuItemContainer.IsReadOnly
@@ -3825,16 +3855,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Description ("Is raised when a menu item with a command of type Event is clicked.")]
     public event WebMenuItemClickEventHandler MenuItemClick
     {
-      add
-      {
-        _optionsMenu.EventCommandClick += value;
-        _listMenu.EventCommandClick += value;
-      }
-      remove
-      {
-        _optionsMenu.EventCommandClick -= value;
-        _listMenu.EventCommandClick -= value;
-      }
+      add { Events.AddHandler (s_menuItemClickEvent, value); }
+      remove { Events.RemoveHandler (s_menuItemClickEvent, value); }
     }
 
     /// <summary> Gets or sets the offset between the items in the <c>menu block</c>. </summary>
