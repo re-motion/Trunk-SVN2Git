@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+extern alias castle;
+
 using System;
 using System.Threading;
-using Castle.Core.Interceptor;
+using castle::Castle.Core.Interceptor;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Assertion=Remotion.Utilities.Assertion;
