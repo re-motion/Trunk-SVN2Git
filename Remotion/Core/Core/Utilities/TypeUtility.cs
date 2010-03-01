@@ -215,7 +215,13 @@ namespace Remotion.Utilities
 
       if (canAbbreviate)
       {
-        sb.Append (asm).Append ("::").Append (ns.Substring (asm.Length)).Append (type.Name);
+        sb.Append (asm).Append ("::");
+
+        if (ns.Length > asm.Length)
+          sb.Append (ns.Substring (asm.Length + 1)).Append ('.').Append (type.Name);
+        else
+          sb.Append (type.Name);
+
         BuildAbbreviatedTypeParameters (sb, type, includeVersionAndCulture);
       }
       else

@@ -166,29 +166,6 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore ("COMMONS-1596")]
-    public void GetAbbreviatedTypeName_WithSubNamespaceAndWithoutVersionAndCulture ()
-    {
-      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), false);
-      Assert.AreEqual ("System::Timers.Timer", name);
-    }
-
-    [Test]
-    [Ignore ("COMMONS-1596")]
-    public void GetAbbreviatedTypeName_WithSubNamespaceAndWithVersionAndCulture ()
-    {
-      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), true);
-      Assert.AreEqual ("System::Timers.Timer" + typeof (Timer).Assembly.FullName.Replace ("System", string.Empty), name);
-    }
-
-    [Test]
-    public void GetAbbreviatedTypeName_WithoutAbbreviate ()
-    {
-      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Hashtable), false);
-      Assert.AreEqual ("System.Collections.Hashtable, mscorlib", name);
-    }
-
-    [Test]
     public void GetAbbreviatedTypeName_WithoutSubNamespaceAndWithoutVersionAndCulture ()
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Uri), false);
@@ -200,6 +177,27 @@ namespace Remotion.UnitTests.Utilities
     {
       string name = TypeUtility.GetAbbreviatedTypeName (typeof (Uri), true);
       Assert.AreEqual ("System::Uri" + typeof (Uri).Assembly.FullName.Replace ("System", string.Empty), name);
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithSubNamespaceAndWithoutVersionAndCulture ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), false);
+      Assert.AreEqual ("System::Timers.Timer", name);
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithSubNamespaceAndWithVersionAndCulture ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Timer), true);
+      Assert.AreEqual ("System::Timers.Timer" + typeof (Timer).Assembly.FullName.Replace ("System", string.Empty), name);
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithoutAbbreviate ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (Hashtable), false);
+      Assert.AreEqual ("System.Collections.Hashtable, mscorlib", name);
     }
 
     private void AssertTransformation (string abbreviatedName, string fullName)
