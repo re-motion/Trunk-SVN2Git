@@ -33,7 +33,11 @@ namespace Remotion.ObjectBinding.BindableObject
       where TBindableObject: class
   {
     [NonSerialized]
-    private BindableObjectClass _bindableObjectClass;
+    private MixinConfiguration _mixinConfigurationAtInstantiationTime;
+    [NonSerialized]
+    private BindableObjectProvider _bindableObjectProvider;
+    [NonSerialized]
+    private DoubleCheckedLockingContainer<BindableObjectClass> _bindableObjectClass;
 
     protected abstract Type GetTypeForBindableObjectClass ();
 
@@ -114,7 +118,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <value> An <see cref="BindableObjectClass"/> instance acting as the business object's type. </value>
     public BindableObjectClass BusinessObjectClass
     {
-      get { return _bindableObjectClass; }
+      get { return _bindableObjectClass.Value; }
     }
 
     /// <summary> Gets the <see cref="IBusinessObjectClass"/> of this business object. </summary>
@@ -128,7 +132,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <value> The default implementation returns the <see cref="BusinessObjectClass"/>'s <see cref="IBusinessObjectClass.Identifier"/>. </value>
     public virtual string DisplayName
     {
-      get { return _bindableObjectClass.Identifier; }
+      get { return BusinessObjectClass.Identifier; }
     }
 
     /// <summary>
@@ -139,14 +143,14 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       get
       {
-        if (!_bindableObjectClass.HasPropertyDefinition ("DisplayName"))
+        if (!BusinessObjectClass.HasPropertyDefinition ("DisplayName"))
           return DisplayName;
 
-        IBusinessObjectProperty displayNameProperty = _bindableObjectClass.GetPropertyDefinition ("DisplayName");
-        if (displayNameProperty.IsAccessible (_bindableObjectClass, (IBusinessObject) This))
+        IBusinessObjectProperty displayNameProperty = BusinessObjectClass.GetPropertyDefinition ("DisplayName");
+        if (displayNameProperty.IsAccessible (BusinessObjectClass, (IBusinessObject) This))
           return DisplayName;
 
-        return _bindableObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
+        return BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
       }
     }
 
@@ -154,21 +158,30 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       base.OnInitialized();
 
-      _bindableObjectClass = InitializeBindableObjectClass();
+      var typeForBindableObjectClass = GetTypeForBindableObjectClass ();
+      _mixinConfigurationAtInstantiationTime = MixinConfiguration.ActiveConfiguration;
+      _bindableObjectProvider = BindableObjectProvider.GetProviderForBindableObjectType (typeForBindableObjectClass);
+      _bindableObjectClass = new DoubleCheckedLockingContainer<BindableObjectClass> (InitializeBindableObjectClass);
     }
 
     protected override void OnDeserialized ()
     {
       base.OnDeserialized();
 
-      _bindableObjectClass = InitializeBindableObjectClass();
+      var typeForBindableObjectClass = GetTypeForBindableObjectClass ();
+      _mixinConfigurationAtInstantiationTime = MixinConfiguration.ActiveConfiguration;
+      _bindableObjectProvider = BindableObjectProvider.GetProviderForBindableObjectType (typeForBindableObjectClass);
+      _bindableObjectClass = new DoubleCheckedLockingContainer<BindableObjectClass> (InitializeBindableObjectClass);
     }
 
     private BindableObjectClass InitializeBindableObjectClass ()
     {
-      var targetType = GetTypeForBindableObjectClass();
-      var provider = BindableObjectProvider.GetProviderForBindableObjectType (targetType);
-      return provider.GetBindableObjectClass (targetType);
+      // reactivate the mixin configuration to get the bindable object class originally expected
+      using (_mixinConfigurationAtInstantiationTime.EnterScope ())
+      {
+        var targetType = GetTypeForBindableObjectClass();
+        return _bindableObjectProvider.GetBindableObjectClass (targetType);
+      }
     }
   }
 }

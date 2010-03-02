@@ -24,6 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     string MixedReadOnlyProperty { get; }
   }
 
+  [Serializable]
   public class MixinAddingProperty : IMixinAddingProperty
   {
     private string _mixedProperty;
