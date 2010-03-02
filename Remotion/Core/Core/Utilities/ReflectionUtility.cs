@@ -16,12 +16,18 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Collections;
 
 namespace Remotion.Utilities
 {
   public static class ReflectionUtility
   {
     public delegate bool CompareValues (object propertyOrFieldValue, object compareToValue);
+
+    private static readonly InterlockedCache<Tuple<Type, Type>, bool> s_canAscribeCache = new InterlockedCache<Tuple<Type, Type>, bool>();
+    private static readonly InterlockedCache<Tuple<Type, Type>, bool> s_canAscribeInternalCache = new InterlockedCache<Tuple<Type, Type>, bool> ();
+    private static readonly InterlockedCache<Tuple<Type, Type>, Type[]> s_ascribedGenericArgumentsCache = new InterlockedCache<Tuple<Type, Type>, Type[]> ();
+    private static readonly InterlockedCache<Tuple<Type, Type, Type>, bool> s_canDirectlyAscribeToGenericTypeInternalCache = new InterlockedCache<Tuple<Type, Type, Type>, bool> ();
 
     [Obsolete ("Replace with AttributeUtilities.GetCustomAttriubte")]
     public static object GetSingleAttribute (MemberInfo member, Type attributeType, bool inherit, bool throwExceptionIfNotPresent)
@@ -81,7 +87,7 @@ namespace Remotion.Utilities
         return member;
 
       if (throwExceptionIfNotFound)
-        throw new ArgumentException (String.Format ("{0} is not an instance field or property of type {1}.", fieldOrPropertyName, type.FullName), "memberName");
+        throw new ArgumentException (String.Format ("{0} is not an instance field or property of type {1}.", fieldOrPropertyName, type.FullName), "fieldOrPropertyName");
       return null;
     }
 
@@ -103,14 +109,14 @@ namespace Remotion.Utilities
       if (obj == null)
         throw new ArgumentNullException ("obj");
       if (fieldOrProperty == null)
-        throw new ArgumentNullException ("member");
+        throw new ArgumentNullException ("fieldOrProperty");
 
       if (fieldOrProperty is FieldInfo)
         return ((FieldInfo) fieldOrProperty).GetValue (obj);
       else if (fieldOrProperty is PropertyInfo)
         return ((PropertyInfo) fieldOrProperty).GetValue (obj, new object[0]);
       else
-        throw new ArgumentException (String.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "member");
+        throw new ArgumentException (String.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "fieldOrProperty");
     }
 
 
@@ -131,14 +137,14 @@ namespace Remotion.Utilities
       if (obj == null)
         throw new ArgumentNullException ("obj");
       if (fieldOrProperty == null)
-        throw new ArgumentNullException ("member");
+        throw new ArgumentNullException ("fieldOrProperty");
 
       if (fieldOrProperty is FieldInfo)
         ((FieldInfo) fieldOrProperty).SetValue (obj, value);
       else if (fieldOrProperty is PropertyInfo)
         ((PropertyInfo) fieldOrProperty).SetValue (obj, value, new object[0]);
       else
-        throw new ArgumentException (String.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "member");
+        throw new ArgumentException (String.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "fieldOrProperty");
     }
 
     public static Type GetFieldOrPropertyType (MemberInfo fieldOrProperty)
@@ -149,146 +155,6 @@ namespace Remotion.Utilities
         return ((PropertyInfo) fieldOrProperty).PropertyType;
       else
         throw new ArgumentException ("Argument must be FieldInfo or PropertyInfo.", "fieldOrProperty");
-    }
-
-    /// <summary>
-    /// Evaluates whether the <paramref name="type"/> can be ascribed to the <paramref name="ascribeeType"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
-    /// <param name="ascribeeType">The <see cref="Type"/> to check the <paramref name="type"/> against. Must not be <see langword="null" />.</param>
-    /// <returns>
-    /// <see langword="true"/> if the <paramref name="type"/> is not the <paramref name="ascribeeType"/> or its instantiation, 
-    /// its subclass or the implementation of an interface in case the <paramref name="ascribeeType"/> is an interface..
-    /// </returns>
-    public static bool CanAscribe (Type type, Type ascribeeType)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("ascribeeType", ascribeeType);
-
-      if (ascribeeType.IsInterface)
-      {
-        if (type.IsInterface && CanAscribeInternal (type, ascribeeType))
-          return true;
-        else
-          return Array.Exists (type.GetInterfaces (), delegate (Type current) { return CanAscribeInternal (current, ascribeeType); });
-      }
-      else
-        return CanAscribeInternal (type, ascribeeType);
-    }
-
-    private static bool CanAscribeInternal (Type type, Type ascribeeType)
-    {
-      if (!ascribeeType.IsGenericType)
-        return ascribeeType.IsAssignableFrom (type);
-      else
-      {
-        Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
-        for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
-        {
-          if (CanDirectlyAscribeToGenericTypeInternal (currentType, ascribeeType, ascribeeGenericTypeDefinition))
-            return true;
-        }
-        return false;
-      }
-    }
-
-    private static bool CanDirectlyAscribeToGenericTypeInternal (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)
-    {
-      if (!type.IsGenericType || type.GetGenericTypeDefinition () != ascribeeGenericTypeDefinition)
-        return false;
-
-      if (ascribeeType != ascribeeGenericTypeDefinition)
-        return ascribeeType.IsAssignableFrom (type);
-      else
-        return ascribeeType.IsAssignableFrom (type.GetGenericTypeDefinition ());
-    }
-
-    /// <summary>
-    /// Returns the type arguments for the ascribed <paramref name="ascribeeType"/> as inherited or implemented by a given <paramref name="type"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> for which to return the type parameter. Must not be <see langword="null" />.</param>
-    /// <param name="ascribeeType">The <see cref="Type"/> to check the <paramref name="type"/> against. Must not be <see langword="null" />.</param>
-    /// <returns>A <see cref="Type"/> array containing the generic arguments of the <paramref name="ascribeeType"/> as it is inherited or implemented
-    /// by <paramref name="type"/>.</returns>
-    /// <exception cref="ArgumentTypeException">
-    /// Thrown if the <paramref name="type"/> is not the <paramref name="ascribeeType"/> or its instantiation, its subclass or the implementation
-    /// of an interface in case the <paramref name="ascribeeType"/> is an interface.
-    /// </exception>
-    /// <exception cref="AmbiguousMatchException">
-    /// Thrown if the <paramref name="type"/> is an interface and implements the interface <paramref name="ascribeeType"/> or its instantiations
-    /// more than once.
-    /// </exception>
-    public static Type[] GetAscribedGenericArguments (Type type, Type ascribeeType)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("ascribeeType", ascribeeType);
-
-      if (!ascribeeType.IsGenericType)
-      {
-        if (ascribeeType.IsAssignableFrom (type))
-          return Type.EmptyTypes;
-        else
-          throw new ArgumentTypeException ("type", ascribeeType, type);
-      }
-      else if (ascribeeType.IsInterface)
-        return GetAscribedGenericInterfaceArgumentsInternal (type, ascribeeType);
-      else
-        return GetAscribedGenericClassArgumentsInternal (type, ascribeeType);
-    }
-
-    private static Type[] GetAscribedGenericInterfaceArgumentsInternal (Type type, Type ascribeeType)
-    {
-      Assertion.IsTrue (ascribeeType.IsGenericType);
-      Assertion.IsTrue (ascribeeType.IsInterface);
-
-      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
-
-      Type conreteSpecialization; // concrete specialization of ascribeeType implemented by type
-      // is type itself a specialization of ascribeeType?
-      if (type.IsInterface && CanDirectlyAscribeToGenericTypeInternal (type, ascribeeType, ascribeeGenericTypeDefinition))
-        conreteSpecialization = type;
-      else
-      {
-        // Type.GetInterfaces will return all interfaces inherited by type. We will filter it to those that are directly ascribable
-        // to ascribeeType. Since interfaces have no base types, these can only be closed or constructed specializations of ascribeeType.
-        Type[] ascribableInterfaceTypes = Array.FindAll (type.GetInterfaces (),
-            delegate (Type current) { return CanDirectlyAscribeToGenericTypeInternal (current, ascribeeType, ascribeeGenericTypeDefinition); });
-
-        if (ascribableInterfaceTypes.Length == 0)
-          conreteSpecialization = null;
-        else if (ascribableInterfaceTypes.Length == 1)
-          conreteSpecialization = ascribableInterfaceTypes[0];
-        else
-        {
-          string message =
-              String.Format ("The type {0} implements the given interface type {1} more than once.", type.FullName, ascribeeType.FullName);
-          throw new AmbiguousMatchException (message);
-        }
-      }
-
-      if (conreteSpecialization == null)
-        throw new ArgumentTypeException ("type", ascribeeType, type);
-
-      Assertion.IsTrue (conreteSpecialization.GetGenericTypeDefinition () == ascribeeType.GetGenericTypeDefinition ());
-      return conreteSpecialization.GetGenericArguments ();
-    }
-
-    private static Type[] GetAscribedGenericClassArgumentsInternal (Type type, Type ascribeeType)
-    {
-      Assertion.IsTrue (ascribeeType.IsGenericType);
-      Assertion.IsTrue (!ascribeeType.IsInterface);
-
-      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
-
-      // Search via base type until we find a type that is directly ascribable to the base type. That's the type whose generic arguments we want
-      Type currentType = type;
-      while (currentType != null && !CanDirectlyAscribeToGenericTypeInternal (currentType, ascribeeType, ascribeeGenericTypeDefinition))
-        currentType = currentType.BaseType;
-
-      if (currentType != null)
-        return currentType.GetGenericArguments ();
-      else
-        throw new ArgumentTypeException ("type", ascribeeType, type);
     }
 
     /// <summary>
@@ -352,6 +218,169 @@ namespace Remotion.Utilities
           return true;
       }
       return false;
+    }
+
+
+    /// <summary>
+    /// Evaluates whether the <paramref name="type"/> can be ascribed to the <paramref name="ascribeeType"/>.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to check. Must not be <see langword="null" />.</param>
+    /// <param name="ascribeeType">The <see cref="Type"/> to check the <paramref name="type"/> against. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// <see langword="true"/> if the <paramref name="type"/> is not the <paramref name="ascribeeType"/> or its instantiation, 
+    /// its subclass or the implementation of an interface in case the <paramref name="ascribeeType"/> is an interface..
+    /// </returns>
+    public static bool CanAscribe (Type type, Type ascribeeType)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("ascribeeType", ascribeeType);
+
+      return s_canAscribeCache.GetOrCreateValue (
+          Tuple.Create (type, ascribeeType),
+          key =>
+          {
+            if (key.Item2.IsInterface)
+            {
+              if (key.Item1.IsInterface && CanAscribeInternalFromCache (key.Item1, key.Item2))
+                return true;
+
+              return Array.Exists (key.Item1.GetInterfaces(), current => CanAscribeInternalFromCache (current, key.Item2));
+            }
+            else
+              return CanAscribeInternalFromCache(type, ascribeeType);
+          });
+    }
+
+    /// <summary>
+    /// Returns the type arguments for the ascribed <paramref name="ascribeeType"/> as inherited or implemented by a given <paramref name="type"/>.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> for which to return the type parameter. Must not be <see langword="null" />.</param>
+    /// <param name="ascribeeType">The <see cref="Type"/> to check the <paramref name="type"/> against. Must not be <see langword="null" />.</param>
+    /// <returns>A <see cref="Type"/> array containing the generic arguments of the <paramref name="ascribeeType"/> as it is inherited or implemented
+    /// by <paramref name="type"/>.</returns>
+    /// <exception cref="ArgumentTypeException">
+    /// Thrown if the <paramref name="type"/> is not the <paramref name="ascribeeType"/> or its instantiation, its subclass or the implementation
+    /// of an interface in case the <paramref name="ascribeeType"/> is an interface.
+    /// </exception>
+    /// <exception cref="AmbiguousMatchException">
+    /// Thrown if the <paramref name="type"/> is an interface and implements the interface <paramref name="ascribeeType"/> or its instantiations
+    /// more than once.
+    /// </exception>
+    public static Type[] GetAscribedGenericArguments (Type type, Type ascribeeType)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("ascribeeType", ascribeeType);
+
+      return s_ascribedGenericArgumentsCache.GetOrCreateValue (
+          Tuple.Create (type, ascribeeType), key => GetAscribedGenericArgumentsWithoutCache (key.Item1, key.Item2));
+    }
+
+    private static bool CanAscribeInternalFromCache (Type type, Type ascribeeType)
+    {
+      return s_canAscribeInternalCache.GetOrCreateValue (Tuple.Create (type, ascribeeType), key => CanAscribeInternal (key.Item1, key.Item2));
+    }
+
+    private static bool CanAscribeInternal (Type type, Type ascribeeType)
+    {
+      if (!ascribeeType.IsGenericType)
+        return ascribeeType.IsAssignableFrom (type);
+
+      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition();
+      for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
+      {
+        if (CanDirectlyAscribeToGenericTypeInternalFromCache (currentType, ascribeeType, ascribeeGenericTypeDefinition))
+          return true;
+      }
+      return false;
+    }
+
+    private static Type[] GetAscribedGenericArgumentsWithoutCache (Type type, Type ascribeeType)
+    {
+      if (!ascribeeType.IsGenericType)
+      {
+        if (ascribeeType.IsAssignableFrom (type))
+          return Type.EmptyTypes;
+        else
+          throw new ArgumentTypeException ("type", ascribeeType, type);
+      }
+      else if (ascribeeType.IsInterface)
+        return GetAscribedGenericInterfaceArgumentsInternal (type, ascribeeType);
+      else
+        return GetAscribedGenericClassArgumentsInternal (type, ascribeeType);
+    }
+
+    private static Type[] GetAscribedGenericInterfaceArgumentsInternal (Type type, Type ascribeeType)
+    {
+      Assertion.IsTrue (ascribeeType.IsGenericType);
+      Assertion.IsTrue (ascribeeType.IsInterface);
+
+      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
+
+      Type conreteSpecialization; // concrete specialization of ascribeeType implemented by type
+      // is type itself a specialization of ascribeeType?
+      if (type.IsInterface && CanDirectlyAscribeToGenericTypeInternalFromCache (type, ascribeeType, ascribeeGenericTypeDefinition))
+        conreteSpecialization = type;
+      else
+      {
+        // Type.GetInterfaces will return all interfaces inherited by type. We will filter it to those that are directly ascribable
+        // to ascribeeType. Since interfaces have no base types, these can only be closed or constructed specializations of ascribeeType.
+        Type[] ascribableInterfaceTypes = Array.FindAll (
+            type.GetInterfaces (),
+            current => CanDirectlyAscribeToGenericTypeInternalFromCache (current, ascribeeType, ascribeeGenericTypeDefinition));
+
+        if (ascribableInterfaceTypes.Length == 0)
+          conreteSpecialization = null;
+        else if (ascribableInterfaceTypes.Length == 1)
+          conreteSpecialization = ascribableInterfaceTypes[0];
+        else
+        {
+          string message = 
+              String.Format ("The type {0} implements the given interface type {1} more than once.", type.FullName, ascribeeType.FullName);
+          throw new AmbiguousMatchException (message);
+        }
+      }
+
+      if (conreteSpecialization == null)
+        throw new ArgumentTypeException ("type", ascribeeType, type);
+
+      Assertion.IsTrue (conreteSpecialization.GetGenericTypeDefinition () == ascribeeType.GetGenericTypeDefinition ());
+      return conreteSpecialization.GetGenericArguments ();
+    }
+
+    private static Type[] GetAscribedGenericClassArgumentsInternal (Type type, Type ascribeeType)
+    {
+      Assertion.IsTrue (ascribeeType.IsGenericType);
+      Assertion.IsTrue (!ascribeeType.IsInterface);
+
+      Type ascribeeGenericTypeDefinition = ascribeeType.GetGenericTypeDefinition ();
+
+      // Search via base type until we find a type that is directly ascribable to the base type. That's the type whose generic arguments we want
+      Type currentType = type;
+      while (currentType != null && !CanDirectlyAscribeToGenericTypeInternalFromCache (currentType, ascribeeType, ascribeeGenericTypeDefinition))
+        currentType = currentType.BaseType;
+
+      if (currentType != null)
+        return currentType.GetGenericArguments ();
+      else
+        throw new ArgumentTypeException ("type", ascribeeType, type);
+    }
+
+    private static bool CanDirectlyAscribeToGenericTypeInternalFromCache (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)
+    {
+      return s_canDirectlyAscribeToGenericTypeInternalCache.GetOrCreateValue (
+        Tuple.Create (type, ascribeeType, ascribeeGenericTypeDefinition),
+        key => CanDirectlyAscribeToGenericTypeInternal (key.Item1, key.Item2, key.Item3));
+    }
+
+    private static bool CanDirectlyAscribeToGenericTypeInternal (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)
+    {
+      if (!type.IsGenericType || type.GetGenericTypeDefinition () != ascribeeGenericTypeDefinition)
+        return false;
+
+      if (ascribeeType != ascribeeGenericTypeDefinition)
+        return ascribeeType.IsAssignableFrom (type);
+      else
+        return ascribeeType.IsAssignableFrom (type.GetGenericTypeDefinition ());
     }
   }
 }
