@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
           typeof (SubstitutionPropertiesSearchService), searchServiceStub);
-      var substitutionClass = BindableObjectProvider.GetBindableObjectClass (typeof (Substitution));
+      var substitutionClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Substitution));
       var substitutingUserProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutingUser");
       Assert.That (substitutingUserProperty, Is.Not.Null);
 
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (
           typeof (SubstitutionPropertiesSearchService), searchServiceStub);
-      var substitutionClass = BindableObjectProvider.GetBindableObjectClass (typeof (Substitution));
+      var substitutionClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Substitution));
       var substitutedRoleProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutedRole");
       Assert.That (substitutedRoleProperty, Is.Not.Null);
 

@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       base.SetUp();
 
       _searchService = new RolePropertiesSearchService();
-      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass (typeof (Role));
+      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
       _groupProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
       Assert.That (_groupProperty, Is.Not.Null);
 

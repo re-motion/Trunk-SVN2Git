@@ -58,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void SupportsProperty_True_SingleProperty ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (BindableDomainObjectWithProperties)).GetPropertyDefinition ("RequiredRelatedObjectProperty");
+      var property = GetBusinessObjectProperty (typeof (BindableDomainObjectWithProperties), "RequiredRelatedObjectProperty");
       Assert.That (property, Is.Not.Null);
       Assert.That (_service.SupportsProperty (property), Is.True);
     }
@@ -67,8 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void SupportsProperty_True_CollectionProperty ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (BindableDomainObjectWithProperties)).GetPropertyDefinition ("RequiredBidirectionalRelatedObjectsProperty");
+      var property = GetBusinessObjectProperty (typeof (BindableDomainObjectWithProperties), "RequiredBidirectionalRelatedObjectsProperty");
       Assert.That (property, Is.Not.Null);
       Assert.That (_service.SupportsProperty (property), Is.True);
     }
@@ -76,8 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void SupportsProperty_False ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (BindableDomainObjectWithProperties)).GetPropertyDefinition ("ReferencePropertyNotInMapping");
+      var property = GetBusinessObjectProperty (typeof (BindableDomainObjectWithProperties), "ReferencePropertyNotInMapping");
       Assert.That (property, Is.Not.Null);
       Assert.That (_service.SupportsProperty (property), Is.False);
     }
@@ -121,8 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
         + "instances).\r\nParameter name: property")]
     public void Search_ThrowsOnUnsupportedProperty ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (BindableDomainObjectWithProperties)).GetPropertyDefinition ("ReferencePropertyNotInMapping");
+      var property = GetBusinessObjectProperty (typeof (BindableDomainObjectWithProperties), "ReferencePropertyNotInMapping");
       Assert.That (property, Is.Not.Null);
       Assert.That (_service.SupportsProperty (property), Is.False);
 
@@ -132,8 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void Search_SingleProperty ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
       var result = _service.Search (null, property, null);
       Assert.That (result, Is.EquivalentTo (new[] { _persistedSampleObject1, _persistedSampleObject2 }));
     }
@@ -141,8 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void Search_CollectionProperty ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObjects");
+      var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObjects");
       var result = _service.Search (null, property, null);
       Assert.That (result, Is.EquivalentTo (new[] { _persistedSampleObject1, _persistedSampleObject2 }));
     }
@@ -150,8 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void Search_UsesCurrentTransaction_WithNullObject ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
       var result = _service.Search (null, property, null);
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
@@ -161,8 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void Search_UsesCurrentTransaction_WithNonDomainObject ()
     {
-      var property = (IBusinessObjectReferenceProperty) BindableObjectProvider.GetBindableObjectClass (
-          typeof (BindableNonDomainObjectReferencingDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var property = GetBusinessObjectProperty (typeof (BindableNonDomainObjectReferencingDomainObject), "OppositeSampleObject");
       var result = _service.Search (new BindableNonDomainObjectReferencingDomainObject(), property, null);
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).HasBindingTransaction, Is.False);
@@ -174,8 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       var referencingObject = OppositeBidirectionalBindableDomainObject.NewObject();
 
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
       var result = _service.Search (referencingObject, property, null);
 
       Assert.That (result.Length, Is.EqualTo (2));
@@ -193,8 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
         referencingObject = OppositeBidirectionalBindableDomainObject.NewObject();
       }
 
-      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
       var result = _service.Search (referencingObject, property, null);
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
@@ -212,11 +202,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       using (ClientTransactionScope.EnterNullScope ())
       {
-        var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
-                                                              typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition (
-                                                              "OppositeSampleObject");
+        var property = GetBusinessObjectProperty (typeof (OppositeBidirectionalBindableDomainObject), "OppositeSampleObject");
         _service.Search (null, property, null);
       }
+    }
+
+    private IBusinessObjectReferenceProperty GetBusinessObjectProperty (Type bindableObjectType, string propertyName)
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (bindableObjectType);
+      var bindableObjectClass = provider.GetBindableObjectClass (bindableObjectType);
+      return (IBusinessObjectReferenceProperty) bindableObjectClass.GetPropertyDefinition (propertyName);
     }
   }
 }

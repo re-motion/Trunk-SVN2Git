@@ -176,7 +176,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetPropertyDisplayName_WithPropertyAddedByMixin ()
     {
-      BindableObjectClass bindableClass = BindableObjectProvider.GetBindableObjectClass (typeof (ClassWithMixedPropertyAndResources));
+      BindableObjectClass bindableClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithMixedPropertyAndResources));
       PropertyBase property = (PropertyBase) bindableClass.GetPropertyDefinition ("MixedProperty");
 
       Assert.That (_globalizationService.GetPropertyDisplayName (property.PropertyInfo), Is.EqualTo ("Resourced!"));

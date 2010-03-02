@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               false,
               false));
 
-      Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (ClassWithIdentity))));
+      Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity))));
       Assert.That (
           property.BusinessObjectProvider,
           Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType(typeof (ClassWithReferenceType<ClassWithIdentity>))));
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               false,
               false));
 
-      Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
+      Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
       Assert.That (
           property.BusinessObjectProvider,
           Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassWithReferenceToClassDerivedFromBindableObjectBase))));

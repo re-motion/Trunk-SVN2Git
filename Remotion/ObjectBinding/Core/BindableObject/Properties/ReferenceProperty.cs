@@ -122,7 +122,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private IBusinessObjectClass GetReferenceClass ()
     {
       if (BindableObjectProvider.IsBindableObjectImplementation (UnderlyingType))
-        return BindableObjectProvider.GetBindableObjectClass (UnderlyingType);
+      {
+        var provider = BindableObjectProvider.GetProviderForBindableObjectType (UnderlyingType);
+        return provider.GetBindableObjectClass (UnderlyingType);
+      }
 
       return GetReferenceClassFromService();
     }

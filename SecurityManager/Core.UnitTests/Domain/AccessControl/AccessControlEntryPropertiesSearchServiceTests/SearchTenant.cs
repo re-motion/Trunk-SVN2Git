@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       _testHelper.Transaction.EnterNonDiscardingScope ();
 
       _searchService = new AccessControlEntryPropertiesSearchService ();
-      IBusinessObjectClass aceClass = BindableObjectProvider.GetBindableObjectClass (typeof (AccessControlEntry));
+      IBusinessObjectClass aceClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("SpecificTenant");
       Assert.That (_property, Is.Not.Null);
     }

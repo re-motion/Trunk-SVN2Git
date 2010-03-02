@@ -86,7 +86,8 @@ namespace Remotion.ObjectBinding.BindableObject
         throw new InvalidOperationException (message);
       }
 
-      return BindableObjectProvider.GetBindableObjectClass (Type);
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (Type);
+      return provider.GetBindableObjectClass (Type);
     }
 
     private bool IsDesignMode

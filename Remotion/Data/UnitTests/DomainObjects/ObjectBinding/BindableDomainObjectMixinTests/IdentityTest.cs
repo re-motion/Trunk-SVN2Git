@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.ObjectBinding;
@@ -53,8 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (IGetObjectService), new BindableDomainObjectGetObjectService());
       SampleBindableMixinDomainObject original = SampleBindableMixinDomainObject.NewObject ();
-      BindableObjectClassWithIdentity boClass =
-          (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClass (typeof (SampleBindableMixinDomainObject));
+      
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (SampleBindableMixinDomainObject));
+      var boClass = (BindableObjectClassWithIdentity) provider.GetBindableObjectClass (typeof (SampleBindableMixinDomainObject));
       Assert.AreSame (original, boClass.GetObject (original.ID.ToString ()));
     }
   }

@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), searchServiceStub);
-      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass (typeof (Role));
+      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
       IBusinessObjectReferenceProperty groupProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
       Assert.That (groupProperty, Is.Not.Null);
 
@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), searchServiceStub);
-      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass (typeof (Role));
+      IBusinessObjectClass roleClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Role));
       IBusinessObjectReferenceProperty userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (userProperty, Is.Not.Null);
 

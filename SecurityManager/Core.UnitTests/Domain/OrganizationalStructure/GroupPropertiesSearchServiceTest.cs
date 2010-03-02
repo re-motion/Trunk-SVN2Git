@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       _testHelper.Transaction.EnterNonDiscardingScope();
 
       _searchService = new GroupPropertiesSearchService();
-      IBusinessObjectClass groupClass = BindableObjectProvider.GetBindableObjectClass (typeof (Group));
+      IBusinessObjectClass groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
       _parentGroupProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Parent");
       _tenantProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Tenant");
       Assert.That (_parentGroupProperty, Is.Not.Null);

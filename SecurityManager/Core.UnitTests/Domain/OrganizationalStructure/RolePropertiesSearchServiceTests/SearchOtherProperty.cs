@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       base.SetUp();
 
       _searchService = new RolePropertiesSearchService();
-      IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClass (typeof (User));
+      IBusinessObjectClass userClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (User));
       _tenantProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
       Assert.That (_tenantProperty, Is.Not.Null);
     }

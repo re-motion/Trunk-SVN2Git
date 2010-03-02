@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Security;
 using Remotion.Data.DomainObjects.Security;
@@ -286,7 +285,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     public void SearchParentGroups ()
     {
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (GroupPropertiesSearchService), new GroupPropertiesSearchService ());
-      IBusinessObjectClass groupClass = BindableObjectProvider.GetBindableObjectClass (typeof (Group));
+      IBusinessObjectClass groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
       IBusinessObjectReferenceProperty parentGroupProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Parent");
       Assert.That (parentGroupProperty, Is.Not.Null);
 

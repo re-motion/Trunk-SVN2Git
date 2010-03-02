@@ -64,21 +64,6 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
     /// <summary>
-    /// Use this method as a shortcut to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
-    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied or is derived from a bindable object base class without first retrieving the 
-    /// matching provider.
-    /// </summary>
-    /// <param name="type">The type to get a <see cref="BindableObjectClass"/> for. This type must have a mixin derived from
-    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured or it must be derived from a bindable object class class, and it is 
-    /// recommended to specify the simple target type rather then the generated mixed type.</param>
-    /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
-    public static BindableObjectClass GetBindableObjectClass (Type type)
-    {
-      var provider = GetProviderForBindableObjectType (type);
-      return provider.GetBindableObjectClassInternal (type);
-    }
-
-    /// <summary>
     /// Determines whether the specified type is a bindable object implementation.
     /// </summary>
     /// <param name="type">The type to check.</param>
@@ -175,7 +160,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured or it must be derived from a bindable object class class, and it is 
     /// recommended to specify the simple target type rather then the generated mixed type.</param>
     /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
-    public BindableObjectClass GetBindableObjectClassInternal (Type type)
+    public BindableObjectClass GetBindableObjectClass (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 

@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Web.UI.HtmlControls;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
@@ -45,7 +44,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       base.LoadValues (interim);
 
-      IBusinessObjectClass aceClass = BindableObjectProvider.GetBindableObjectClass (typeof (AccessControlEntry));
+      var type = typeof (AccessControlEntry);
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+      var aceClass = provider.GetBindableObjectClass (type);
 
       var cssHorizontal = "titleCellHorizontal";
       var cssVertical = "titleCellVertical";
@@ -62,10 +63,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private HtmlGenericControl CreateTableCell (string title, string cssClass)
     {
-      HtmlGenericControl th = new HtmlGenericControl ("th");
+      var th = new HtmlGenericControl ("th");
       th.Attributes.Add ("class", cssClass);
 
-      HtmlGenericControl div = new HtmlGenericControl ("div");
+      var div = new HtmlGenericControl ("div");
       div.InnerText = title;
       th.Controls.Add (div);
 

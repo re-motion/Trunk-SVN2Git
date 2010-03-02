@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
@@ -81,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       _dataSource.Type = typeof (SimpleBusinessObjectClass);
       Type type = typeof (SimpleBusinessObjectClass);
       ArgumentUtility.CheckNotNull ("type", type);
-      Assert.That (_dataSource.BusinessObjectClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (type)));
+      Assert.That (_dataSource.BusinessObjectClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (type)));
     }
 
     [Test]

@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 
@@ -59,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _valueBNull = (IBusinessObject) TypeWithReference.Create (TypeWithReference.Create ("B"), null);
 
 
-      _class = BindableObjectProvider.GetBindableObjectClass(typeof (TypeWithReference));
+      _class = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithReference));
 
 
       _firstValuePath = BusinessObjectPropertyPath.Parse (_class, "FirstValue");

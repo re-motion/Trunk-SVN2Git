@@ -40,11 +40,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public override void SetUp ()
     {
       base.SetUp ();
-      _businessObjectClassWithProperties = BindableObjectProvider.GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
+      _businessObjectClassWithProperties = GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
       _classWithPropertiesInstance = BindableDomainObjectWithProperties.NewObject();
       _classWithPropertiesMixin = Mixin.Get<BindableDomainObjectMixin>  (_classWithPropertiesInstance);
 
-      _businessObjectClassWithMixedProperties = BindableObjectProvider.GetBindableObjectClass (typeof (BindableDomainObjectWithMixedPersistentProperties));
+      _businessObjectClassWithMixedProperties = GetBindableObjectClass (typeof (BindableDomainObjectWithMixedPersistentProperties));
       _classWithMixedPropertiesInstance = BindableDomainObjectWithMixedPersistentProperties.NewObject ();
       _classWithMixedPropertiesImplementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (_classWithMixedPropertiesInstance, typeof (BindableDomainObject), "_implementation");
     }
@@ -117,6 +117,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
           + "Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.IMixinAddingPersistentProperties."
           + "ExplicitMixedProperty"));
       Assert.That (_classWithMixedPropertiesInstance.ID.ClassDefinition.GetPropertyDefinition (identifier), Is.Not.Null);
+    }
+
+    private BindableObjectClass GetBindableObjectClass (Type type)
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+      return provider.GetBindableObjectClass (type);
     }
   }
 }

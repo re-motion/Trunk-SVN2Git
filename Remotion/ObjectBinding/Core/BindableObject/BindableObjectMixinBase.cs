@@ -167,7 +167,8 @@ namespace Remotion.ObjectBinding.BindableObject
     private BindableObjectClass InitializeBindableObjectClass ()
     {
       var targetType = GetTypeForBindableObjectClass();
-      return BindableObjectProvider.GetBindableObjectClass (targetType);
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (targetType);
+      return provider.GetBindableObjectClass (targetType);
     }
   }
 }

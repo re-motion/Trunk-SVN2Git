@@ -66,7 +66,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("args", args);
 
       Type type = TypeUtility.GetType (businessObjectClass, true);
-      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+      var bindableObjectClass = provider.GetBindableObjectClass (type);
 
       IBusinessObjectProperty propertyDefinition = bindableObjectClass.GetPropertyDefinition (businessObjectProperty);
       Assertion.IsNotNull (propertyDefinition);

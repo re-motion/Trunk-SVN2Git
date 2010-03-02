@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     {
       base.SetUp();
 
-      _aceClass = BindableObjectProvider.GetBindableObjectClass (typeof (AccessControlEntry));
+      _aceClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (AccessControlEntry));
 
       _testHelper = new AccessControlTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();

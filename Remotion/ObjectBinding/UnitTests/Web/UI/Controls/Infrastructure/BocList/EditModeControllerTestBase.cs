@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
@@ -73,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       _newValues[0] = (IBusinessObject) TypeWithAllDataTypes.Create ("F", 6);
       _newValues[1] = (IBusinessObject) TypeWithAllDataTypes.Create ("G", 7);
 
-      _class = BindableObjectProvider.GetBindableObjectClass(typeof (TypeWithAllDataTypes));
+      _class = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithAllDataTypes));
 
       _stringValuePath = BusinessObjectPropertyPath.Parse (_class, "String");
       _int32ValuePath = BusinessObjectPropertyPath.Parse (_class, "Int32");

@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
@@ -72,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       _value01 = (IBusinessObject) TypeWithAllDataTypes.Create ("A", 1);
 
-      _typeWithAllDataTypesClass = BindableObjectProvider.GetBindableObjectClass(typeof (TypeWithAllDataTypes));
+      _typeWithAllDataTypesClass = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithAllDataTypes));
 
       _typeWithAllDataTypesStringValuePath = BusinessObjectPropertyPath.Parse (_typeWithAllDataTypesClass, "String");
       _typeWithAllDataTypesInt32ValuePath = BusinessObjectPropertyPath.Parse (_typeWithAllDataTypesClass, "Int32");

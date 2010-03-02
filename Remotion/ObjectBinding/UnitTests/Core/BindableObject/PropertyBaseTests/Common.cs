@@ -176,7 +176,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       Type type = typeof (SimpleBusinessObjectClass);
       ArgumentUtility.CheckNotNull ("type", type);
-      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
+      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (type);
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
               _bindableObjectProvider,
@@ -204,7 +204,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       BindableObjectProvider provider = new BindableObjectProvider();
       Type type = typeof (SimpleBusinessObjectClass);
       ArgumentUtility.CheckNotNull ("type", type);
-      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
+      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (type);
 
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
@@ -231,7 +231,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     {
       Type type = typeof (SimpleBusinessObjectClass);
       ArgumentUtility.CheckNotNull ("type", type);
-      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
+      BindableObjectClass bindableObjectClass = BindableObjectProviderTestHelper.GetBindableObjectClass (type);
 
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
@@ -246,7 +246,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       property.SetReflectedClass (bindableObjectClass);
       Type type1 = typeof (ClassWithIdentity);
       ArgumentUtility.CheckNotNull ("type", type1);
-      property.SetReflectedClass (BindableObjectProvider.GetBindableObjectClass (type1));
+      property.SetReflectedClass (BindableObjectProviderTestHelper.GetBindableObjectClass (type1));
     }
 
     [Test]
