@@ -28,14 +28,9 @@ namespace Remotion.ObjectBinding.BindableObject
   [BindableObjectProvider]
   public class BindableObjectMixin : BindableObjectMixinBase<object>
   {
-    public BindableObjectMixin ()
+    protected override Type GetTypeForBindableObjectClass ()
     {
-    }
-
-    protected override BindableObjectClass InitializeBindableObjectClass()
-    {
-      Type targetType = MixinTypeUtility.GetUnderlyingTargetType (This.GetType());
-      return BindableObjectProvider.GetBindableObjectClass (targetType);
+      return MixinTypeUtility.GetUnderlyingTargetType (This.GetType());
     }
   }
 }

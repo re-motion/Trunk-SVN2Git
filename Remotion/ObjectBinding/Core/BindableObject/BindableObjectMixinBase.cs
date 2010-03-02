@@ -30,14 +30,12 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </remarks>
   [Serializable]
   public abstract class BindableObjectMixinBase<TBindableObject> : Mixin<TBindableObject>, IBusinessObject
-      where TBindableObject : class
+      where TBindableObject: class
   {
     [NonSerialized]
     private BindableObjectClass _bindableObjectClass;
 
-    public BindableObjectMixinBase ()
-    {
-    }
+    protected abstract Type GetTypeForBindableObjectClass ();
 
     /// <overloads> Gets the value accessed through the specified property. </overloads>
     /// <summary> Gets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
@@ -48,13 +46,11 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </exception>
     public object GetProperty (IBusinessObjectProperty property)
     {
-      PropertyBase propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
-
-      object nativeValue;
+      var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
 
       //TODO: catch and unwrap the TargetException
-      nativeValue = propertyBase.PropertyInfo.GetValue (This, new object[0]);
-      
+      object nativeValue = propertyBase.PropertyInfo.GetValue (This, new object[0]);
+
       if (!propertyBase.IsList && IsDefaultValue (propertyBase, nativeValue))
         return null;
       else
@@ -86,7 +82,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </exception>
     public void SetProperty (IBusinessObjectProperty property, object value)
     {
-      PropertyBase propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
+      var propertyBase = ArgumentUtility.CheckNotNullAndType<PropertyBase> ("property", property);
 
       object nativeValue = propertyBase.ConvertToNativePropertyType (value);
 
@@ -108,7 +104,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </exception>
     public string GetPropertyString (IBusinessObjectProperty property, string format)
     {
-      IBusinessObjectStringFormatterService stringFormatterService =
+      var stringFormatterService =
           (IBusinessObjectStringFormatterService)
           BusinessObjectClass.BusinessObjectProvider.GetService (typeof (IBusinessObjectStringFormatterService));
       return stringFormatterService.GetPropertyString ((IBusinessObject) This, property, format);
@@ -150,24 +146,28 @@ namespace Remotion.ObjectBinding.BindableObject
         if (displayNameProperty.IsAccessible (_bindableObjectClass, (IBusinessObject) This))
           return DisplayName;
 
-        return _bindableObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
+        return _bindableObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
       }
     }
 
     protected override void OnInitialized ()
     {
-      base.OnInitialized ();
+      base.OnInitialized();
 
-      _bindableObjectClass = InitializeBindableObjectClass ();
+      _bindableObjectClass = InitializeBindableObjectClass();
     }
 
     protected override void OnDeserialized ()
     {
-      base.OnDeserialized ();
+      base.OnDeserialized();
 
-      _bindableObjectClass = InitializeBindableObjectClass ();
+      _bindableObjectClass = InitializeBindableObjectClass();
     }
 
-    protected abstract BindableObjectClass InitializeBindableObjectClass ();
+    private BindableObjectClass InitializeBindableObjectClass ()
+    {
+      var targetType = GetTypeForBindableObjectClass();
+      return BindableObjectProvider.GetBindableObjectClass (targetType);
+    }
   }
 }

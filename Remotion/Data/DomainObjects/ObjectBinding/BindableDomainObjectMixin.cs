@@ -47,9 +47,9 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       StateType State { get; }
     }
 
-    protected override BindableObjectClass InitializeBindableObjectClass ()
+    protected override Type GetTypeForBindableObjectClass ()
     {
-      return BindableObjectProvider.GetBindableObjectClass (This.GetPublicDomainObjectType());
+      return This.GetPublicDomainObjectType();
     }
 
     public string UniqueIdentifier
