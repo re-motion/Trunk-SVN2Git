@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       CheckObjectIDColumn (classDefinition, propertyDefinition, dataReader, objectIDColumnOrdinal);
 
-      OppositeClassDefinitionRetriever retriever = new OppositeClassDefinitionRetriever (_provider, classDefinition, propertyDefinition);
+      var retriever = new OppositeClassDefinitionRetriever (_provider, classDefinition, propertyDefinition);
       ClassDefinition relatedClassDefinition = retriever.GetMandatoryOppositeClassDefinition (dataReader, objectIDColumnOrdinal);
       return GetObjectID (relatedClassDefinition, dataReader.GetValue (objectIDColumnOrdinal));
     }
@@ -172,13 +172,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private void CheckObjectIDColumn (
         ClassDefinition classDefinition, PropertyDefinition propertyDefinition, IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      IRelationEndPointDefinition endPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyDefinition.PropertyName);
-      if (endPointDefinition.IsMandatory && dataReader.IsDBNull (objectIDColumnOrdinal))
+      if (dataReader.IsDBNull (objectIDColumnOrdinal))
       {
-        throw CreateConverterException (
-            "Invalid null value for not-nullable relation property '{0}' encountered. Class: '{1}'.",
-            propertyDefinition.PropertyName,
-            classDefinition.ID);
+        var endPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyDefinition.PropertyName);
+        if (endPointDefinition.IsMandatory)
+        {
+          throw CreateConverterException (
+              "Invalid null value for not-nullable relation property '{0}' encountered. Class: '{1}'.",
+              propertyDefinition.PropertyName,
+              classDefinition.ID);
+        }
       }
     }
   }
