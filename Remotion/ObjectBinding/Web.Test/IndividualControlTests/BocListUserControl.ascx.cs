@@ -29,6 +29,7 @@ namespace OBWTest.IndividualControlTests
 [WebMultiLingualResources ("OBWTest.Globalization.IndividualControlTests.BocListUserControl")]
 public class BocListUserControl : BaseUserControl
 {
+  private const string c_deleteItemID = "Delete";
   protected HtmlTable Table3;
   protected BocTextValue FirstNameField;
   protected BocTextValue LastNameField;
@@ -147,7 +148,7 @@ public class BocListUserControl : BaseUserControl
     ChildrenList.ListMenuItems.Add (menuItem);
   
     menuItem = new BocMenuItem();
-    menuItem.ItemID = "Delete";
+    menuItem.ItemID = c_deleteItemID;
     menuItem.Text = "Delete";
     menuItem.Category = "Edit";
     menuItem.Icon.Url = "Images/DeleteItem.gif";
@@ -303,6 +304,11 @@ public class BocListUserControl : BaseUserControl
     }
   }
 
+  protected override void OnPreRender (EventArgs e)
+  {
+    base.OnPreRender (e);
+  }
+
   public override void LoadValues(bool interim)
   {
     base.LoadValues (interim);
@@ -340,6 +346,8 @@ public class BocListUserControl : BaseUserControl
   private void ChildrenList_MenuItemClick(object sender, WebMenuItemClickEventArgs e)
   {
     ChildrenListEventArgsLabel.Text = e.Item.ItemID;
+    if (e.Item.ItemID == c_deleteItemID)
+      ChildrenList.RemoveRows (ChildrenList.GetSelectedBusinessObjects());
   }
 
   private void ChildrenList_DataRowRender(object sender, BocListDataRowRenderEventArgs e)
