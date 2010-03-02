@@ -48,6 +48,7 @@
 
   <target name="init-build-version">
     <buildversion versionfile="${solution.build-version-file}" increment="false" />
+    <property name="build.version.noconfig"  value="${build.version.major}.${build.version.minor}.${build.version.build}" />
     <echo message="current version is ${build.version.noconfig}"/>
 
     <property name="build.basedir" value="${solution.basedir}/build/${build.version.noconfig}" unless="${property::exists('build.local')}" overwrite="false"/>

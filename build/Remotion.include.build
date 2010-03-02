@@ -338,10 +338,7 @@
 
   <!--======================= Release Notes =======================-->
   <target name="release-notes-directory" depends="init-build-version" >
-    <property name="MajorVersion" value="${version::get-major (version::parse (build.version.noconfig))}"/>
-    <property name="MinorVersion" value="${version::get-minor (version::parse (build.version.noconfig))}"/>
-    <property name="BuildVersion" value="${version::get-build (version::parse (build.version.noconfig))}"/>
-    <property name="release-notes.directory.full" value="${release-notes.directory}\${MajorVersion}.${MinorVersion}" />
+    <property name="release-notes.directory.full" value="${release-notes.directory}\${build.version.major}.${build.version.minor}" />
 
     <echo message="Release notes directory: ${release-notes.directory.full}"/>
   </target>
@@ -350,7 +347,7 @@
     <property name="release-notes.generator.exe" value="JiraReleaseNoteGenerator.exe" />
 
     <exec program="${release-notes.generator.exe}" basedir="${release-notes.generator.directory}" workingdir="${release-notes.generator.directory}" failonerror="true">
-      <arg value="${MajorVersion}.${MinorVersion}.${BuildVersion}"/>
+      <arg value="${build.version.noconfig}"/>
       <arg value="${release-notes.directory.full}"/>
     </exec>
 
@@ -359,8 +356,8 @@
 
   <target name="copy-release-notes" depends="release-notes-directory">
     <foreach item="File" in="${release-notes.directory.full}" property="copied-file">
-      <regex pattern="ReleaseNotes_v${MajorVersion}\.${MinorVersion}\.(?'currentbuildversion'\d+)\.html$" input="${copied-file}" />
-      <if test="${int::parse(currentbuildversion) &lt;= int::parse(BuildVersion)}">
+      <regex pattern="ReleaseNotes_v${build.version.major}\.${build.version.minor}\.(?'currentbuildversion'\d+)\.html$" input="${copied-file}" />
+      <if test="${int::parse(currentbuildversion) &lt;= int::parse(build.version.build)}">
         <echo message="${copied-file}"/>
         <copy todir="${build.basedir}/release-notes" file="${copied-file}" overwrite="true"/>
       </if>
@@ -368,10 +365,7 @@
   </target>
 
   <target name="relinq-release-notes-directory" depends="init-build-version" >
-    <property name="MajorVersion" value="${version::get-major (version::parse (build.version.noconfig))}"/>
-    <property name="MinorVersion" value="${version::get-minor (version::parse (build.version.noconfig))}"/>
-    <property name="BuildVersion" value="${version::get-build (version::parse (build.version.noconfig))}"/>
-    <property name="relinq-release-notes.directory.full" value="${relinq-release-notes.directory}\${MajorVersion}.${MinorVersion}" />
+    <property name="relinq-release-notes.directory.full" value="${relinq-release-notes.directory}\${build.version.major}.${build.version.minor}" />
 
     <echo message="Release notes directory: ${relinq-release-notes.directory.full}"/>
   </target>
@@ -380,7 +374,7 @@
     <property name="release-notes.generator.exe" value="JiraReleaseNoteGenerator.exe" />
 
     <exec program="${release-notes.generator.exe}" basedir="${release-notes.generator.directory}" workingdir="${release-notes.generator.directory}" failonerror="true">
-      <arg value="${MajorVersion}.${MinorVersion}.${BuildVersion}"/>
+      <arg value="${build.version.noconfig}"/>
       <arg value="${relinq-release-notes.directory.full}"/>
       <arg value="component='Data.Linq'"/>
     </exec>
@@ -390,8 +384,8 @@
 
   <target name="relinq-copy-release-notes" depends="relinq-release-notes-directory">
     <foreach item="File" in="${relinq-release-notes.directory.full}" property="copied-file">
-      <regex pattern="ReleaseNotes_v${MajorVersion}\.${MinorVersion}\.(?'currentbuildversion'\d+)\.html$" input="${copied-file}" />
-      <if test="${int::parse(currentbuildversion) &lt;= int::parse(BuildVersion)}">
+      <regex pattern="ReleaseNotes_v${build.version.major}\.${build.version.minor}\.(?'currentbuildversion'\d+)\.html$" input="${copied-file}" />
+      <if test="${int::parse(currentbuildversion) &lt;= int::parse(build.version.build)}">
         <echo message="${copied-file}"/>
         <copy todir="${build.basedir}/relinq-release-notes" file="${copied-file}" overwrite="true"/>
       </if>
