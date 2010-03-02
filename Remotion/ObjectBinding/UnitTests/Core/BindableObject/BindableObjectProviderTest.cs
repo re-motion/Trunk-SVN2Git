@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       mockRepository.ReplayAll();
 
-      BindableObjectClass actual = BindableObjectProvider.GetBindableObjectClass (targetType);
+      BindableObjectClass actual = provider.GetBindableObjectClassInternal (targetType);
 
       mockRepository.VerifyAll();
 
@@ -143,14 +143,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetBindableObjectClass_SameTwice ()
     {
       Assert.That (
-          BindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass)),
-          Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass))));
+          _provider.GetBindableObjectClassInternal (typeof (SimpleBusinessObjectClass)),
+          Is.SameAs (_provider.GetBindableObjectClassInternal (typeof (SimpleBusinessObjectClass))));
     }
 
     [Test]
     public void GetBindableObjectClass_WithTypeDerivedFromBindableObjectBase ()
     {
-      var bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase));
+      var bindableObjectClass = _provider.GetBindableObjectClassInternal (typeof (ClassDerivedFromBindableObjectBase));
       Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
       Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
     }
@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetBindableObjectClass_WithTypeDerivedFromBindableObjectWithIdentityBase ()
     {
-      var bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectWithIdentityBase));
+      var bindableObjectClass = _provider.GetBindableObjectClassInternal (typeof (ClassDerivedFromBindableObjectWithIdentityBase));
       Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectWithIdentityBase)));
       Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectWithIdentityBase)));
     }
@@ -166,7 +166,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetBindableObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
-      var bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (SimpleReferenceType));
+      var bindableObjectClass = _provider.GetBindableObjectClassInternal (typeof (SimpleReferenceType));
       Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (SimpleReferenceType)));
       Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (SimpleReferenceType)));
     }

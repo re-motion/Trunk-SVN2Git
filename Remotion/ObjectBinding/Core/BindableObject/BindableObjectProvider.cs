@@ -56,35 +56,11 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      Type providerAttributeType = s_ProviderAttributeTypeCache.GetOrCreateValue (
-          type,
-          delegate (Type targetType)
-          {
-            Type concreteType = MixinTypeUtility.GetConcreteMixedType (targetType);
-            BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
+      var providerAttributeType = s_ProviderAttributeTypeCache.GetOrCreateValue (type, FindProviderAttributeType);
 
-            if (attribute == null)
-            {
-              throw new ArgumentException (
-                  String.Format (
-                      "The type '{0}' does not have the '{1}' applied.", targetType.FullName, typeof (BusinessObjectProviderAttribute).FullName),
-                  "type");
-            }
-
-            if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
-            {
-              throw new ArgumentException (
-                  String.Format (
-                      "The business object provider associated with the type '{0}' is not of type '{1}'.",
-                      targetType.FullName,
-                      typeof (BindableObjectProvider).FullName),
-                  "type");
-            }
-
-            return attribute.GetType();
-          });
-
-      return (BindableObjectProvider) GetProvider (providerAttributeType);
+      var provider = (BindableObjectProvider) GetProvider (providerAttributeType);
+      Assertion.IsNotNull (provider, "GetProvider cannot return null (type '{0}').", type.FullName);
+      return provider;
     }
 
     /// <summary>
@@ -98,11 +74,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
     public static BindableObjectClass GetBindableObjectClass (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      BindableObjectProvider provider = GetProviderForBindableObjectType (type);
-      Assertion.IsNotNull (provider, "No BindableObjectProvider associated with type '{0}'.", type.FullName);
-
+      var provider = GetProviderForBindableObjectType (type);
       return provider.GetBindableObjectClassInternal (type);
     }
 
@@ -131,6 +103,32 @@ namespace Remotion.ObjectBinding.BindableObject
       return MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>));
     }
 
+    private static Type FindProviderAttributeType (Type type)
+    {
+      var concreteType = MixinTypeUtility.GetConcreteMixedType (type);
+      var attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
+
+      if (attribute == null)
+      {
+        var message = string.Format (
+            "The type '{0}' does not have the '{1}' applied.",
+            type.FullName,
+            typeof (BusinessObjectProviderAttribute).FullName);
+        throw new ArgumentException (message, "type");
+      }
+
+      if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
+      {
+        var message = string.Format (
+            "The business object provider associated with the type '{0}' is not of type '{1}'.",
+            type.FullName,
+            typeof (BindableObjectProvider).FullName);
+        throw new ArgumentException (message, "type");
+      }
+
+      return attribute.GetType ();
+    }
+
     private readonly InterlockedDataStore<Type, BindableObjectClass> _businessObjectClassStore = new InterlockedDataStore<Type, BindableObjectClass>();
     private readonly InterlockedDataStore<Type, IBusinessObjectService> _serviceStore = new InterlockedDataStore<Type, IBusinessObjectService>();
     private readonly IMetadataFactory _metadataFactory;
@@ -154,7 +152,10 @@ namespace Remotion.ObjectBinding.BindableObject
       _metadataFactory = metadataFactory;
     }
 
-    /// <summary>Gets the MetadataFactory for this <see cref="BindableObjectProvider"/></summary>
+    /// <summary>
+    /// Gets the <see cref="IMetadataFactory"/> for this <see cref="BindableObjectProvider"/>. The <see cref="MetadataFactory"/> determines
+    /// how properties are found for a specific <see cref="BindableObjectClass"/>.
+    /// </summary>
     public IMetadataFactory MetadataFactory
     {
       get { return _metadataFactory; }
@@ -166,8 +167,18 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _serviceStore; }
     }
 
-    private BindableObjectClass GetBindableObjectClassInternal (Type type)
+    /// <summary>
+    /// Use this method to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
+    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied or is derived from a bindable object base class.
+    /// </summary>
+    /// <param name="type">The type to get a <see cref="BindableObjectClass"/> for. This type must have a mixin derived from
+    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured or it must be derived from a bindable object class class, and it is 
+    /// recommended to specify the simple target type rather then the generated mixed type.</param>
+    /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
+    public BindableObjectClass GetBindableObjectClassInternal (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       return _businessObjectClassStore.GetOrCreateValue (type, CreateBindableObjectClass);
     }
 
