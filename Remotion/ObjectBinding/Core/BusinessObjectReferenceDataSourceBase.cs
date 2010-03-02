@@ -58,9 +58,10 @@ namespace Remotion.ObjectBinding
       // load value from "parent" data source
       if (ReferencedDataSource != null && ReferencedDataSource.BusinessObject != null && ReferenceProperty != null)
       {
-        BusinessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
-        if (_businessObject == null && Mode == DataSourceMode.Edit && ReferenceProperty.CreateIfNull)
-          BusinessObject = ReferenceProperty.Create (ReferencedDataSource.BusinessObject);
+        var businessObject = (IBusinessObject) ReferencedDataSource.BusinessObject.GetProperty (ReferenceProperty);
+        if (businessObject == null && Mode == DataSourceMode.Edit && ReferenceProperty.CreateIfNull)
+          businessObject = ReferenceProperty.Create (ReferencedDataSource.BusinessObject);
+        BusinessObject = businessObject;
         _hasBusinessObjectChanged = false;
       }
 
