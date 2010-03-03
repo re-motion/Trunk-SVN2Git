@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
@@ -35,41 +34,44 @@ namespace Remotion.ServiceLocation
 
     object IServiceProvider.GetService (Type serviceType)
     {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       return null;
     }
 
     public object GetInstance (Type serviceType)
     {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      return null;
+      throw CreateActivationException();
     }
 
     public object GetInstance (Type serviceType, string key)
     {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      return null;
-    }
-
-    public IEnumerable<object> GetAllInstances (Type serviceType)
-    {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      return new object[0];
+      throw CreateActivationException();
     }
 
     public TService GetInstance<TService> ()
     {
-      return default (TService);
+      throw CreateActivationException();
     }
 
     public TService GetInstance<TService> (string key)
     {
-      return default (TService);
+      throw CreateActivationException();
+    }
+
+    public IEnumerable<object> GetAllInstances (Type serviceType)
+    {
+      return new object[0];
     }
 
     public IEnumerable<TService> GetAllInstances<TService> ()
     {
       return new TService[0];
+    }
+
+    private ActivationException CreateActivationException ()
+    {
+      return new ActivationException (
+          "The NullServiceLocator cannot be used to retrieve a single instance for a type. "
+          + "Please configure your application to use a concrete implementation of IServiceLocator.");
     }
   }
 }

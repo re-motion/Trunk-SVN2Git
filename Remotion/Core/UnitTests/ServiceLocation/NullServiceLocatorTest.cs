@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ServiceLocation;
@@ -43,27 +44,31 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    [ExpectedException (typeof (ActivationException))]
     public void GetInstance_ReturnsNull ()
     {
-      Assert.That (NullServiceLocator.Instance.GetInstance (typeof (int)), Is.Null);
+      NullServiceLocator.Instance.GetInstance (typeof (int));
     }
 
     [Test]
+    [ExpectedException (typeof (ActivationException))]
     public void GetInstance_WithKey_ReturnsNull ()
     {
-      Assert.That (NullServiceLocator.Instance.GetInstance (typeof (int), "key"), Is.Null);
+      NullServiceLocator.Instance.GetInstance (typeof (int), "key");
     }
 
     [Test]
+    [ExpectedException (typeof (ActivationException))]
     public void GetInstanceOfT_ReturnsDefault ()
     {
-      Assert.That (NullServiceLocator.Instance.GetInstance<IFormatProvider>(), Is.Null);
+      NullServiceLocator.Instance.GetInstance<IFormatProvider>();
     }
 
     [Test]
+    [ExpectedException (typeof (ActivationException))]
     public void GetInstanceOfT_WithKey_ReturnsDefault ()
     {
-      Assert.That (NullServiceLocator.Instance.GetInstance<IFormatProvider> ("key"), Is.Null);
+      NullServiceLocator.Instance.GetInstance<IFormatProvider> ("key");
     }
 
     [Test]
