@@ -31,6 +31,10 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
+    /// <summary>
+    /// Gets the currently configured <see cref="IServiceLocator"/>. 
+    /// If no service locator is configured, the <see cref="NullServiceLocator"/> will be returned.
+    /// </summary>
     public static IServiceLocator Current
     {
       get
