@@ -18,8 +18,7 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Utilities;
 
-// TODO: Move to SqlStatementModel.Unresolved namespace
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel 
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
   /// <see cref="ConstantTableSource"/> holds a <see cref="ConstantExpression"/> representing the data source defined by a LINQ query.

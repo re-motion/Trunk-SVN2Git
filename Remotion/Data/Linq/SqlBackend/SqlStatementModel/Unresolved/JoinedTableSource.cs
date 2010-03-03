@@ -18,8 +18,7 @@ using System;
 using System.Reflection;
 using Remotion.Data.Linq.Utilities;
 
-// TODO: Move to SqlStatementModel.Unresolved namespace
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
   /// <see cref="JoinedTableSource"/> represents the table source defined by a join in a relational database.

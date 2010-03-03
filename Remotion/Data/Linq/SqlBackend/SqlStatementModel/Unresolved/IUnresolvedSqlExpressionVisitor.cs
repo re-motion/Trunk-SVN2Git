@@ -17,14 +17,12 @@
 using System;
 using System.Linq.Expressions;
 
-// TODO: Move to SqlStatementModel.Unresolved namespace
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="ISqlExpressionVisitor"/> provides methods to visit expressions held by the <see cref="SqlStatement"/>.
+  /// <see cref="IUnresolvedSqlExpressionVisitor"/> provides methods to visit expressions held by the <see cref="SqlStatement"/>.
   /// </summary>
-  // TODO: Rename to IUnresolvedSqlExpressionVisitor
-  public interface ISqlExpressionVisitor
+  public interface IUnresolvedSqlExpressionVisitor
   {
     Expression VisitSqlTableReferenceExpression (SqlTableReferenceExpression expression);
     Expression VisitSqlMemberExpression (SqlMemberExpression expression);

@@ -21,19 +21,18 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 using System.Reflection;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
   /// <see cref="SqlMemberExpression"/> represents a sql specific member expression.
   /// </summary>
-  // TODO: Move to SqlStatementModel.Unresolved namespace
   public class SqlMemberExpression : ExtensionExpression
   {
     private readonly SqlTable _sqlTable;
     private readonly MemberInfo _memberInfo;
 
     public SqlMemberExpression (SqlTable sqlTable, MemberInfo memberInfo)
-      : base (sqlTable.TableSource.Type) // TODO: Type of SqlMemberExpression is type of object returned by memberInfo. Use ReflectionUtility.GetFieldOrPropertyType
+        : base (sqlTable.TableSource.Type) // TODO: Type of SqlMemberExpression is type of object returned by memberInfo. Use ReflectionUtility.GetFieldOrPropertyType
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
@@ -60,7 +59,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var specificVisitor = visitor as ISqlExpressionVisitor;
+      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
       if (specificVisitor != null)
         return specificVisitor.VisitSqlMemberExpression(this);
       else
