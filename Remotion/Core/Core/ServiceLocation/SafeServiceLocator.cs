@@ -33,7 +33,8 @@ namespace Remotion.ServiceLocation
   {
     public static IServiceLocator Current
     {
-      get {
+      get
+      {
         try
         {
           return ServiceLocator.Current;
