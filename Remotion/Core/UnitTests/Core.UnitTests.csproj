@@ -280,6 +280,7 @@
       <DependentUpon>LightColorExtensions.resx</DependentUpon>
     </Compile>
     <Compile Include="ServiceLocation\NullServiceLocatorTest.cs" />
+    <Compile Include="ServiceLocation\SafeServiceLocatorTest.cs" />
     <Compile Include="Utilities\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />

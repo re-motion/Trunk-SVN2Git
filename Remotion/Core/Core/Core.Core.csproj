@@ -250,6 +250,7 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\SearchPathRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\IRootAssemblyFinder.cs" />
     <Compile Include="ServiceLocation\NullServiceLocator.cs" />
+    <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
