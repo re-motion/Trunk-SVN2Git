@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
@@ -57,7 +57,7 @@ public class TestBasePage :
           new HttpContextWrapper (Context),
           typeof (ResourceUrlResolver),
           ResourceType.Html,
-          ServiceLocator.Current.GetInstance<ResourceTheme>(),
+          SafeServiceLocator.Current.GetInstance<ResourceTheme>(),
           "Style.css");
 
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);

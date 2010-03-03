@@ -21,8 +21,8 @@ using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
@@ -84,7 +84,7 @@ public class TestWxeBasePage:
           new HttpContextWrapper (Context),
           typeof (ResourceUrlResolver),
           ResourceType.Html,
-          ServiceLocator.Current.GetInstance<ResourceTheme>(),
+          SafeServiceLocator.Current.GetInstance<ResourceTheme>(),
           "Style.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url);
     }

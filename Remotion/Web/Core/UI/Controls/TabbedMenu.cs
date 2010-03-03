@@ -21,8 +21,8 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using System.Web;
@@ -100,7 +100,7 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
       var renderer = factory.CreateRenderer (context, this);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -241,7 +241,7 @@ namespace Remotion.Web.UI.Controls
 
       EvaluateWaiConformity ();
 
-      var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }

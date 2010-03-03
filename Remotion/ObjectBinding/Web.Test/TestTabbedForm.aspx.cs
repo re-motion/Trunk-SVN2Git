@@ -18,12 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ServiceLocation;
 using Remotion.Text;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -227,7 +226,7 @@ public class TestTabbedForm : TestWxeBasePage
   {
     base.OnPreRender (e);
     string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
-    string theme = ServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
+    string theme = SafeServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
     NavigationTabs.StatusText = mode + " " + theme;
   }
 

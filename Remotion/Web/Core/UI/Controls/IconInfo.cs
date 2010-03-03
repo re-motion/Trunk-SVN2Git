@@ -22,8 +22,8 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -57,7 +57,7 @@ namespace Remotion.Web.UI.Controls
 
     private static ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     public static bool ShouldSerialize (IconInfo icon)

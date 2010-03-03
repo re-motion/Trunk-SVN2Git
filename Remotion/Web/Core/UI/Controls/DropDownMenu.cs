@@ -17,7 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
@@ -57,7 +57,7 @@ namespace Remotion.Web.UI.Controls
 
     protected override void OnInit (EventArgs e)
     {
-      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       if (!IsDesignMode)
       {
         var clientScriptBahavior = factory.CreateClientScriptBehavior (Page.Context, this);
@@ -71,7 +71,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory> ();
+      var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory> ();
       var renderer = factory.CreateRenderer (httpContext, this);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -98,7 +98,7 @@ namespace Remotion.Web.UI.Controls
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }

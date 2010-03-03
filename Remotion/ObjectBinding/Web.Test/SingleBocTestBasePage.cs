@@ -18,8 +18,8 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -68,7 +68,7 @@ public class SingleBocTestBasePage:
           new HttpContextWrapper (Context),
           typeof (ResourceUrlResolver),
           ResourceType.Html,
-          ServiceLocator.Current.GetInstance<ResourceTheme>(),
+          SafeServiceLocator.Current.GetInstance<ResourceTheme>(),
           "Style.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url);
     }

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -108,7 +109,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     protected IServiceLocator ServiceLocator
     {
-      get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
+      get { return SafeServiceLocator.Current; }
     }
 
     protected ResourceTheme ResourceTheme

@@ -18,8 +18,8 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -120,7 +120,7 @@ namespace Remotion.Web.Utilities
 
     public static IScriptUtility Instance
     {
-      get { return ServiceLocator.Current.GetInstance<IScriptUtility>(); }
+      get { return SafeServiceLocator.Current.GetInstance<IScriptUtility>(); }
     }
 
     /// <summary> Escapes special characters (e.g. <c>\n</c>) in the passed string. </summary>
@@ -242,7 +242,7 @@ namespace Remotion.Web.Utilities
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
     }
   }
 }

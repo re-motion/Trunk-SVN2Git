@@ -21,9 +21,9 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Design;
@@ -1244,7 +1244,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
 
   protected ResourceTheme ResourceTheme
   {
-    get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+    get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
   }
 
   private void NamingContainer_Load (object sender, EventArgs e)

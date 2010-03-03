@@ -17,8 +17,8 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using System.Web;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
@@ -103,7 +103,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 
     private void RenderTab (HtmlTextWriter writer, IWebTab tab, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer (ServiceLocator.Current, Context, Control);
+      var tabRenderer = tab.GetRenderer (SafeServiceLocator.Current, Context, Control);
 
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;

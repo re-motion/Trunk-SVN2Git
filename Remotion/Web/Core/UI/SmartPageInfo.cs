@@ -21,12 +21,11 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -318,7 +317,7 @@ namespace Remotion.Web.UI
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     public void OnPreRenderComplete ()

@@ -22,9 +22,9 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.Infrastructure;
@@ -111,7 +111,7 @@ namespace Remotion.Web.UI.Controls
 
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
-      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
       var renderer = factory.CreateRenderer (context, this);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -250,7 +250,7 @@ namespace Remotion.Web.UI.Controls
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }

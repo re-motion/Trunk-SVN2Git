@@ -20,6 +20,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
@@ -100,7 +101,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     protected IServiceLocator ServiceLocator
     {
-      get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
+      get { return SafeServiceLocator.Current; }
     }
 
     protected ResourceTheme ResourceTheme

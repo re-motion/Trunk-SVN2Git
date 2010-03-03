@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
@@ -34,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       _clientTransactionID = clientTransactionID;
 
-      IServiceLocator serviceLocator = ServiceLocator.Current;
+      IServiceLocator serviceLocator = SafeServiceLocator.Current;
       if (serviceLocator != null)
         _listeners.AddRange (serviceLocator.GetAllInstances<IPersistenceTraceListener>());
     }

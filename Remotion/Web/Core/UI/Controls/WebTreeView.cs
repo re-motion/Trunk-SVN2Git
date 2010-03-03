@@ -21,9 +21,9 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering.WebTreeView;
 using Remotion.Web.UI.Globalization;
@@ -452,7 +452,7 @@ namespace Remotion.Web.UI.Controls
 
     public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, HttpContextBase httpContext)
     {
-      var factory = ServiceLocator.Current.GetInstance<IWebTreeViewRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IWebTreeViewRendererFactory>();
       var renderer = factory.CreateRenderer (Context, this);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -862,7 +862,7 @@ namespace Remotion.Web.UI.Controls
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     /// <summary> Sets the selected tree node. </summary>

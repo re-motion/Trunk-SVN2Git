@@ -24,6 +24,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
@@ -448,7 +449,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected virtual IServiceLocator ServiceLocator
     {
-      get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
+      get { return SafeServiceLocator.Current; }
     }
 
     protected new HttpContextBase Context

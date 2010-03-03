@@ -19,9 +19,9 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Web;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
@@ -128,7 +128,7 @@ namespace Remotion.Web.ExecutionEngine
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     public NameValueCollection EnsurePostBackModeDetermined (HttpContext context)

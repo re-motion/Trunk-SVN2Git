@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using System.Web;
+using System.Web.UI;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
@@ -62,7 +62,7 @@ namespace Remotion.Web.UI.Controls.Rendering
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     protected void AddStandardAttributesToRender (HtmlTextWriter writer)

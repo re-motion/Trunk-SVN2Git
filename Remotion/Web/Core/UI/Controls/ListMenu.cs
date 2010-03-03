@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using System.Web;
+using System.Web.UI;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 
 namespace Remotion.Web.UI.Controls
@@ -56,7 +56,7 @@ namespace Remotion.Web.UI.Controls
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
       var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }
@@ -75,7 +75,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory> ();
+      var factory = SafeServiceLocator.Current.GetInstance<IListMenuRendererFactory> ();
       var renderer = factory.CreateRenderer (httpContext, this);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }

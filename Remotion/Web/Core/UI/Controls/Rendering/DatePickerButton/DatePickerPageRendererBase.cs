@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Microsoft.Practices.ServiceLocation;
 using System.Web;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
@@ -43,7 +43,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);

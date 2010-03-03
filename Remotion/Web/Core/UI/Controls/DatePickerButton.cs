@@ -18,7 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
@@ -61,7 +61,7 @@ namespace Remotion.Web.UI.Controls
     protected override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
-      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var renderer = factory.CreateRenderer (Page.Context, this);
       renderer.Render (writer);
     }
@@ -81,7 +81,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var factory = SafeServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var renderer = factory.CreateRenderer (httpContext, this);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }

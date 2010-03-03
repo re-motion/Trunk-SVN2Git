@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     protected ResourceTheme ResourceTheme
     {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
     }
 
     public virtual void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)

@@ -19,9 +19,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering.WebButton;
 using Remotion.Web.UI.Globalization;
@@ -62,7 +62,7 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
 
-      var factory = ServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
+      var factory = SafeServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
       var preRenderer = factory.CreateRenderer (Page.Context, this);
       preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
     }
@@ -302,7 +302,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
-      if (ControlHelper.IsDesignMode ((IControl) this))
+      if (ControlHelper.IsDesignMode (this))
         return;
 
       //  Dispatch simple properties
