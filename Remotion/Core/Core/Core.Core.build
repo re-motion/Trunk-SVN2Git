@@ -48,6 +48,7 @@
         <include name="ObjectBinding/**/*.cs" />
         <include name="Properties/**/*.cs" />
         <include name="Reflection/**/*.cs" />
+        <include name="ServiceLocation/**/*.cs" />
         <include name="Text/**/*.cs" />
         <include name="Utilities/**/*.cs" />
         <include name="Xml/**/*.cs" />
@@ -61,6 +62,7 @@
         <include asis="true" name="System.Xml.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Castle.DynamicProxy2.dll"/>
+        <include asis="true" name="${build.outputdir}/Microsoft.Practices.ServiceLocation.dll"/>        
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion">
         <include name="Configuration/TypeDiscovery/TypeDiscoveryConfiguration.xsd" />
