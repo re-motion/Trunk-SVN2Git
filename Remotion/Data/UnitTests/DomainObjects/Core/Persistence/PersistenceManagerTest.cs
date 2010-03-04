@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -44,6 +45,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       base.TearDown ();
       _persistenceManager.Dispose ();
+    }
+
+    [Test]
+    public void Initialize ()
+    {
+      var persistenceTracer = MockRepository.GenerateStub<IPersistenceTracer>();
+      using (var persistenceManager = new PersistenceManager (persistenceTracer))
+      {
+        Assert.That (persistenceManager.StorageProviderManager, Is.Not.Null);
+        
+        using (var storageProvider = persistenceManager.StorageProviderManager.GetMandatory (c_testDomainProviderID))
+        {
+          Assert.That (storageProvider.PersistenceTracer, Is.SameAs (persistenceTracer));
+        }
+      }
     }
 
     [Test]
