@@ -50,14 +50,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [Test]
     public void Initialize ()
     {
-      var persistenceTracer = MockRepository.GenerateStub<IPersistenceTracer>();
+      var persistenceTracer = MockRepository.GenerateStub<IPersistenceListener>();
       using (var persistenceManager = new PersistenceManager (persistenceTracer))
       {
         Assert.That (persistenceManager.StorageProviderManager, Is.Not.Null);
         
         using (var storageProvider = persistenceManager.StorageProviderManager.GetMandatory (c_testDomainProviderID))
         {
-          Assert.That (storageProvider.PersistenceTracer, Is.SameAs (persistenceTracer));
+          Assert.That (storageProvider.PersistenceListener, Is.SameAs (persistenceTracer));
         }
       }
     }

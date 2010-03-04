@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
   /// Provides a wrapper for implementations of <see cref="IDataReader"/>. The number of records read and the lifetime of the reader 
-  /// are traced using <see cref="IPersistenceTracer"/> passed during the instantiation.
+  /// are traced using <see cref="IPersistenceListener"/> passed during the instantiation.
   /// </summary>
   public class TracingDataReader : IDataReader
   {
@@ -186,19 +186,19 @@ namespace Remotion.Data.DomainObjects.Tracing
     #endregion
 
     private readonly IDataReader _dataReader;
-    private readonly IPersistenceTracer _persistenceTracer;
+    private readonly IPersistenceListener _persistenceListener;
     private readonly Guid _connectionID;
     private readonly Guid _queryID;
     private readonly Stopwatch _stopwatch;
     private int _rowCount;
 
-    public TracingDataReader (IDataReader dataReader, IPersistenceTracer persistenceTracer, Guid connectionID, Guid queryID)
+    public TracingDataReader (IDataReader dataReader, IPersistenceListener persistenceListener, Guid connectionID, Guid queryID)
     {
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
-      ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
+      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
       _dataReader = dataReader;
-      _persistenceTracer = persistenceTracer;
+      _persistenceListener = persistenceListener;
       _connectionID = connectionID;
       _queryID = queryID;
       _stopwatch = Stopwatch.StartNew();
@@ -219,9 +219,9 @@ namespace Remotion.Data.DomainObjects.Tracing
       get { return _queryID; }
     }
 
-    public IPersistenceTracer PersistenceTracer
+    public IPersistenceListener PersistenceListener
     {
-      get { return _persistenceTracer; }
+      get { return _persistenceListener; }
     }
 
     public void Dispose ()
@@ -248,7 +248,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       if (_stopwatch.IsRunning)
       {
-        _persistenceTracer.TraceQueryCompleted (_connectionID, _queryID, _stopwatch.Elapsed, _rowCount);
+        _persistenceListener.QueryCompleted (_connectionID, _queryID, _stopwatch.Elapsed, _rowCount);
         _stopwatch.Stop ();
       }
     }

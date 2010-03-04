@@ -78,8 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition, Data.DomainObjects.Tracing.PersistenceTracer.Null);
     }
 
-    public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition, IPersistenceTracer persistenceTracer)
-        : base (definition, persistenceTracer)
+    public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition, IPersistenceListener persistenceListener)
+        : base (definition, persistenceListener)
     {
     }
 

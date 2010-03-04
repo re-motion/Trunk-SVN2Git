@@ -27,14 +27,14 @@ public class StorageProviderManager : IDisposable
 {
   private bool _disposed;
   private StorageProviderCollection _storageProviders;
-  private readonly IPersistenceTracer _persistenceTracer;
+  private readonly IPersistenceListener _persistenceListener;
 
-  public StorageProviderManager (IPersistenceTracer persistenceTracer)
+  public StorageProviderManager (IPersistenceListener persistenceListener)
   {
-    ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
+    ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
     _storageProviders = new StorageProviderCollection ();
-    _persistenceTracer = persistenceTracer;
+    _persistenceListener = persistenceListener;
   }
 
   #region IDisposable Members
@@ -84,7 +84,7 @@ public class StorageProviderManager : IDisposable
           DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
 
       Type concreteStorageProviderType = TypeFactory.GetConcreteType (providerDefinition.StorageProviderType);
-      var provider = (StorageProvider) ReflectionUtility.CreateObject (concreteStorageProviderType, providerDefinition, _persistenceTracer);
+      var provider = (StorageProvider) ReflectionUtility.CreateObject (concreteStorageProviderType, providerDefinition, _persistenceListener);
 
       _storageProviders.Add (provider);
 

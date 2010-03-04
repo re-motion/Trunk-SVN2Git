@@ -24,11 +24,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
-  /// The default implementation of the <see cref="IPersistenceTracer"/>.
+  /// The default implementation of the <see cref="IPersistenceListener"/>.
   /// </summary>
-  public class PersistenceTracer : IPersistenceTracer
+  public class PersistenceTracer : IPersistenceListener
   {
-    public static readonly IPersistenceTracer Null = new NullPersistenceTracer();
+    public static readonly IPersistenceListener Null = new NullPersistenceListener();
 
     private readonly List<IPersistenceTraceListener> _listeners = new List<IPersistenceTraceListener>();
     private readonly Guid _clientTransactionID;
@@ -41,43 +41,43 @@ namespace Remotion.Data.DomainObjects.Tracing
       _listeners.AddRange (serviceLocator.GetAllInstances<IPersistenceTraceListener>());
     }
 
-    public void TraceConnectionOpened (Guid connectionID)
+    public void ConnectionOpened (Guid connectionID)
     {
       foreach (var listener in _listeners)
         listener.TraceConnectionOpened (_clientTransactionID, connectionID);
     }
 
-    public void TraceConnectionClosed (Guid connectionID)
+    public void ConnectionClosed (Guid connectionID)
     {
       foreach (var listener in _listeners)
         listener.TraceConnectionClosed (_clientTransactionID, connectionID);
     }
 
-    public void TraceTransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
+    public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
     {
       foreach (var listener in _listeners)
         listener.TraceTransactionBegan (_clientTransactionID, connectionID, isolationLevel);
     }
 
-    public void TraceTransactionCommitted (Guid connectionID)
+    public void TransactionCommitted (Guid connectionID)
     {
       foreach (var listener in _listeners)
         listener.TraceTransactionCommitted (_clientTransactionID, connectionID);
     }
 
-    public void TraceTransactionRolledback (Guid connectionID)
+    public void TransactionRolledback (Guid connectionID)
     {
       foreach (var listener in _listeners)
         listener.TraceTransactionRolledback (_clientTransactionID, connectionID);
     }
 
-    public void TraceTransactionDisposed (Guid connectionID)
+    public void TransactionDisposed (Guid connectionID)
     {
       foreach (var listener in _listeners)
         listener.TraceTransactionDisposed (_clientTransactionID, connectionID);
     }
 
-    public void TraceQueryExecuting (Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters)
+    public void QueryExecuting (Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters)
     {
       ArgumentUtility.CheckNotNull ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
@@ -86,19 +86,19 @@ namespace Remotion.Data.DomainObjects.Tracing
         listener.TraceQueryExecuting (_clientTransactionID, connectionID, queryID, commandText, parameters);
     }
 
-    public void TraceQueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
+    public void QueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
     {
       foreach (var listener in _listeners)
         listener.TraceQueryExecuted (_clientTransactionID, connectionID, queryID, durationOfQueryExecution);
     }
 
-    public void TraceQueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
+    public void QueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
     {
       foreach (var listener in _listeners)
         listener.TraceQueryCompleted (_clientTransactionID, connectionID, queryID, durationOfDataRead, rowCount);
     }
 
-    public void TraceQueryError (Guid connectionID, Guid queryID, Exception e)
+    public void QueryError (Guid connectionID, Guid queryID, Exception e)
     {
       foreach (var listener in _listeners)
         listener.TraceQueryError (_clientTransactionID, connectionID, queryID, e);

@@ -34,8 +34,8 @@ public class SqlProvider : RdbmsProvider
 
   // construction and disposing
 
-  public SqlProvider (RdbmsProviderDefinition definition, IPersistenceTracer persistenceTracer)
-    : base (definition, persistenceTracer)
+  public SqlProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener)
+    : base (definition, persistenceListener)
   {
   }
 
@@ -86,7 +86,7 @@ public class SqlProvider : RdbmsProvider
   {
     CheckDisposed ();
     
-    return new TracingDbConnection  (new SqlConnection (), PersistenceTracer);
+    return new TracingDbConnection  (new SqlConnection (), PersistenceListener);
   }
   
   public new SqlConnection Connection

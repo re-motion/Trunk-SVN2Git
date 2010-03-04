@@ -30,15 +30,15 @@ namespace Remotion.Data.DomainObjects.Persistence
   {
     private StorageProviderDefinition _definition;
     private bool _disposed;
-    private readonly IPersistenceTracer _persistenceTracer;
+    private readonly IPersistenceListener _persistenceListener;
 
-    protected StorageProvider (StorageProviderDefinition definition, IPersistenceTracer persistenceTracer)
+    protected StorageProvider (StorageProviderDefinition definition, IPersistenceListener persistenceListener)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
-      ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
+      ArgumentUtility.CheckNotNull ("persistenceListener", persistenceListener);
 
       _definition = definition;
-      _persistenceTracer = persistenceTracer;
+      _persistenceListener = persistenceListener;
     }
 
     ~StorageProvider ()
@@ -134,9 +134,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       get { return _definition.TypeConversionProvider; }
     }
 
-    public IPersistenceTracer PersistenceTracer
+    public IPersistenceListener PersistenceListener
     {
-      get { return _persistenceTracer; }
+      get { return _persistenceListener; }
     }
 
     protected void CheckDisposed ()

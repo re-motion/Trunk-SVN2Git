@@ -48,8 +48,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // construction and disposing
 
-    protected RdbmsProvider (RdbmsProviderDefinition definition, IPersistenceTracer persistenceTracer)
-        : base (definition, persistenceTracer)
+    protected RdbmsProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener)
+        : base (definition, persistenceListener)
     {
       _dataContainerLoader = new DataContainerLoader (this);
     }

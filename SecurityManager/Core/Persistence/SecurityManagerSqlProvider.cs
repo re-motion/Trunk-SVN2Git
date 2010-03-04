@@ -36,8 +36,8 @@ namespace Remotion.SecurityManager.Persistence
 
     // construction and disposing
 
-    public SecurityManagerSqlProvider (RdbmsProviderDefinition definition, IPersistenceTracer persistenceTracer) 
-      : base (definition, persistenceTracer)
+    public SecurityManagerSqlProvider (RdbmsProviderDefinition definition, IPersistenceListener persistenceListener) 
+      : base (definition, persistenceListener)
     {
       _revisionExtension = new RevisionStorageProviderExtension ();
     }

@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     // construction and disposing
 
-    public StubStorageProvider (StorageProviderDefinition definition, IPersistenceTracer persistenceTracer)
-      : base (definition, persistenceTracer)
+    public StubStorageProvider (StorageProviderDefinition definition, IPersistenceListener persistenceListener)
+      : base (definition, persistenceListener)
     {
     }
 
