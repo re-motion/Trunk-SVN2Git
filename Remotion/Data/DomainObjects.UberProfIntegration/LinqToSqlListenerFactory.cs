@@ -15,39 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Tracing;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
+namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
-  public class SqlProviderBaseTest : ClientTransactionBaseTest
+  /// <summary>
+  /// Implements <see cref="IListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
+  /// <seealso cref="LinqToSqlAppender"/>
+  /// </summary>
+  public class LinqToSqlListenerFactory : IListenerFactory
   {
-    private RdbmsProviderDefinition _providerDefinition;
-    private SqlProvider _provider;
-
-    public override void SetUp ()
+    public IPersistenceListener CreatePersistenceListener (Guid clientTransactionID)
     {
-      base.SetUp ();
-
-      _providerDefinition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (SqlProvider), TestDomainConnectionString);
-
-      _provider = new SqlProvider (_providerDefinition, NullPersistenceListener.Instance);
-    }
-
-    public override void TearDown ()
-    {
-      _provider.Dispose ();
-      base.TearDown ();
-    }
-
-    protected RdbmsProviderDefinition ProviderDefinition
-    {
-      get { return _providerDefinition; }
-    }
-
-    protected SqlProvider Provider
-    {
-      get { return _provider; }
+      return new LinqToSqlPersistenceListener (clientTransactionID);
     }
   }
 }

@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         sqlProvider.Save (collection);
       }
 
-      using (SqlProvider sqlProvider = new SqlProvider (ProviderDefinition, PersistenceTracer.Null))
+      using (SqlProvider sqlProvider = new SqlProvider (ProviderDefinition, NullPersistenceListener.Instance))
       {
         DataContainer classWithAllDataTypes = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
@@ -776,7 +776,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private SqlProvider CreateSqlProvider ()
     {
-      return new SqlProvider (ProviderDefinition, PersistenceTracer.Null);
+      return new SqlProvider (ProviderDefinition, NullPersistenceListener.Instance);
     }
   }
 }

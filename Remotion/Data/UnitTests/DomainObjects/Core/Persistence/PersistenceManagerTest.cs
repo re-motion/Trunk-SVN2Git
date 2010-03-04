@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public override void SetUp ()
     {
       base.SetUp ();
-      _persistenceManager = new PersistenceManager (PersistenceTracer.Null);
+      _persistenceManager = new PersistenceManager (NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           (UnitTestStorageProviderStub) _persistenceManager.StorageProviderManager.GetMandatory (DomainObjectIDs.Official1.StorageProviderID);
 
       MockRepository mockRepository = new MockRepository();
-      StorageProvider mockProvider = mockRepository.StrictMock<StorageProvider> (officialStorageProvider.Definition, PersistenceTracer.Null);
+      StorageProvider mockProvider = mockRepository.StrictMock<StorageProvider> (officialStorageProvider.Definition, NullPersistenceListener.Instance);
 
       DataContainer officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       DataContainer officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);

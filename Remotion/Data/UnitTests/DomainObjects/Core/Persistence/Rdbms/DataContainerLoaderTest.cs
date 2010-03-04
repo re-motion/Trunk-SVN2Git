@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (RdbmsProvider provider = new SqlProvider (
           (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
-          PersistenceTracer.Null))
+          NullPersistenceListener.Instance))
       {
         provider.Connect ();
 
@@ -385,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (RdbmsProvider provider = new SqlProvider (
           (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
-          PersistenceTracer.Null))
+          NullPersistenceListener.Instance))
       {
         provider.Connect ();
 
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Provider.Disconnect ();
 
-      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (ProviderDefinition, PersistenceTracer.Null))
+      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (ProviderDefinition, NullPersistenceListener.Instance))
       {
         var loader = new DataContainerLoader (providerMock);
 

@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var storageProviderID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Official)).StorageProviderID;
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition, Data.DomainObjects.Tracing.PersistenceTracer.Null);
+      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition, Data.DomainObjects.Tracing.NullPersistenceListener.Instance);
     }
 
     public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition, IPersistenceListener persistenceListener)

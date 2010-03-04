@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager (PersistenceTracer.Null);
+      _storageProviderManager = new StorageProviderManager (NullPersistenceListener.Instance);
       _provider = (SqlProvider) _storageProviderManager.GetMandatory (TableInheritanceTestDomainProviderID);
       _provider.Connect ();
     }

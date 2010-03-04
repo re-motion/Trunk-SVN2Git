@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
@@ -25,6 +26,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -196,12 +198,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private PersistenceManager CreatePersistenceManager ()
     {
-      return new PersistenceManager (new PersistenceTracer (_id));
+      return new PersistenceManager (CreatePersistenceListener());
     }
 
     private StorageProviderManager CreateStorageProviderManager ()
     {
-      return new StorageProviderManager (new PersistenceTracer (_id));
+      return new StorageProviderManager (CreatePersistenceListener ());
+    }
+
+    private IPersistenceListener CreatePersistenceListener ()
+    {
+      var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IListenerFactory>();
+      return new CompoundPersistenceListener (listenerFactories.Select (f => f.CreatePersistenceListener (_id)));
     }
   }
 }

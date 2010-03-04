@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager (PersistenceTracer.Null);
+      _storageProviderManager = new StorageProviderManager (NullPersistenceListener.Instance);
       var provider = (RdbmsProvider) _storageProviderManager.GetMandatory ("TestDomain");
       provider.Connect ();
       _connection = provider.Connection;

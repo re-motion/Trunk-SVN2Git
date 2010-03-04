@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       if (changedDataContainers.Count > 0)
       {
-        using (var persistenceManager = new PersistenceManager (PersistenceTracer.Null))
+        using (var persistenceManager = new PersistenceManager (NullPersistenceListener.Instance))
         {
           persistenceManager.Save (changedDataContainers);
         }

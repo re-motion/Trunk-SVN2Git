@@ -913,7 +913,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll();
 
-      using (var persistanceManager = new PersistenceManager(PersistenceTracer.Null))
+      using (var persistanceManager = new PersistenceManager(NullPersistenceListener.Instance))
       {
         ClassDefinition orderTicketDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)];
         IRelationEndPointDefinition orderEndPointDefinition =
@@ -931,7 +931,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       //Note: no reading notification must be performed
       _mockRepository.ReplayAll();
 
-      using (var persistenceManager = new PersistenceManager(PersistenceTracer.Null))
+      using (var persistenceManager = new PersistenceManager(NullPersistenceListener.Instance))
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
         IRelationEndPointDefinition orderTicketEndPointDefinition =

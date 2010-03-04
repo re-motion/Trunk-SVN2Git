@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       RdbmsProviderDefinition definition = new RdbmsProviderDefinition (c_testDomainProviderID, typeof (SqlProvider), TestDomainConnectionString);
 
-      _provider = new SqlProvider (definition, PersistenceTracer.Null);
+      _provider = new SqlProvider (definition, NullPersistenceListener.Instance);
     }
 
     public override void TearDown ()

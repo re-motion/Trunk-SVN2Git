@@ -17,64 +17,58 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
-  /// The default implementation of the <see cref="IPersistenceListener"/>.
+  /// Implements a collection of <see cref="IPersistenceListener"/> objects.
   /// </summary>
-  public class PersistenceTracer : IPersistenceListener
+  public class CompoundPersistenceListener : IPersistenceListener
   {
-    public static readonly IPersistenceListener Null = new NullPersistenceListener();
+    private readonly List<IPersistenceListener> _listeners = new List<IPersistenceListener>();
 
-    private readonly List<IPersistenceTraceListener> _listeners = new List<IPersistenceTraceListener>();
-    private readonly Guid _clientTransactionID;
-
-    public PersistenceTracer (Guid clientTransactionID)
+    public CompoundPersistenceListener (IEnumerable<IPersistenceListener> listeners)
     {
-      _clientTransactionID = clientTransactionID;
+      ArgumentUtility.CheckNotNull ("listeners", listeners);
 
-      IServiceLocator serviceLocator = SafeServiceLocator.Current;
-      _listeners.AddRange (serviceLocator.GetAllInstances<IPersistenceTraceListener>());
+      _listeners.AddRange (listeners);
     }
 
     public void ConnectionOpened (Guid connectionID)
     {
       foreach (var listener in _listeners)
-        listener.TraceConnectionOpened (_clientTransactionID, connectionID);
+        listener.ConnectionOpened (connectionID);
     }
 
     public void ConnectionClosed (Guid connectionID)
     {
       foreach (var listener in _listeners)
-        listener.TraceConnectionClosed (_clientTransactionID, connectionID);
+        listener.ConnectionClosed (connectionID);
     }
 
     public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
     {
       foreach (var listener in _listeners)
-        listener.TraceTransactionBegan (_clientTransactionID, connectionID, isolationLevel);
+        listener.TransactionBegan (connectionID, isolationLevel);
     }
 
     public void TransactionCommitted (Guid connectionID)
     {
       foreach (var listener in _listeners)
-        listener.TraceTransactionCommitted (_clientTransactionID, connectionID);
+        listener.TransactionCommitted (connectionID);
     }
 
     public void TransactionRolledback (Guid connectionID)
     {
       foreach (var listener in _listeners)
-        listener.TraceTransactionRolledback (_clientTransactionID, connectionID);
+        listener.TransactionRolledback (connectionID);
     }
 
     public void TransactionDisposed (Guid connectionID)
     {
       foreach (var listener in _listeners)
-        listener.TraceTransactionDisposed (_clientTransactionID, connectionID);
+        listener.TransactionDisposed (connectionID);
     }
 
     public void QueryExecuting (Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters)
@@ -83,25 +77,25 @@ namespace Remotion.Data.DomainObjects.Tracing
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
       foreach (var listener in _listeners)
-        listener.TraceQueryExecuting (_clientTransactionID, connectionID, queryID, commandText, parameters);
+        listener.QueryExecuting (connectionID, queryID, commandText, parameters);
     }
 
     public void QueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
     {
       foreach (var listener in _listeners)
-        listener.TraceQueryExecuted (_clientTransactionID, connectionID, queryID, durationOfQueryExecution);
+        listener.QueryExecuted (connectionID, queryID, durationOfQueryExecution);
     }
 
     public void QueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
     {
       foreach (var listener in _listeners)
-        listener.TraceQueryCompleted (_clientTransactionID, connectionID, queryID, durationOfDataRead, rowCount);
+        listener.QueryCompleted (connectionID, queryID, durationOfDataRead, rowCount);
     }
 
     public void QueryError (Guid connectionID, Guid queryID, Exception e)
     {
       foreach (var listener in _listeners)
-        listener.TraceQueryError (_clientTransactionID, connectionID, queryID, e);
+        listener.QueryError (connectionID, queryID, e);
     }
 
     bool INullObject.IsNull

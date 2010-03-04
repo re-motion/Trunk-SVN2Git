@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
@@ -26,102 +24,73 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
-  /// Implements <see cref="IPersistenceTraceListener"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
+  /// Implements <see cref="IPersistenceListener"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
+  /// <seealso cref="LinqToSqlAppender"/>
   /// </summary>
-  /// <remarks>
-  /// The instantiation is comparatively expensive due to the use of Reflection for binding to Linq to Sql Profiler's API.
-  /// Invocation of the actual profiling API only has minimal overhead compared to a statically bound trace listener implementation.
-  /// Therefor, it is recommended to register the <see cref="LinqToSqlTraceListener"/> in a singleton-configuration in your IoC container.
-  /// </remarks>
   /// <threadsafety static="true" instance="true" />
-  public class LinqToSqlTraceListener : IPersistenceTraceListener
+  public class LinqToSqlPersistenceListener : IPersistenceListener
   {
-    private readonly object _linqToSqlAppender;
-    private readonly Action<Guid> _connectionStarted;
-    private readonly Action<Guid> _connectionDisposed;
-    private readonly Action<Guid, Guid, int> _statementRowCount;
-    private readonly Action<Guid, Exception> _statementError;
-    private readonly Action<Guid, long, int?> _commandDurationAndRowCount;
-    private readonly Action<Guid, Guid, string> _statementExecuted;
-    private readonly Action<Guid, IsolationLevel> _transactionBegan;
-    private readonly Action<Guid> _transactionCommit;
-    private readonly Action<Guid> _transactionDisposed;
-    private readonly Action<Guid> _transactionRolledBack;
+    private readonly LinqToSqlAppender _appender;
+    private readonly Guid _clientTransactionID;
 
-    public LinqToSqlTraceListener ()
+    public LinqToSqlPersistenceListener (Guid clientTransactionID)
     {
-      Type linqToSqlProfilerType =
-          Type.GetType ("HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler, HibernatingRhinos.Profiler.Appender", true, false);
-
-      Type linqToSqlAppenderType =
-          Type.GetType ("HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlAppender, HibernatingRhinos.Profiler.Appender", true, false);
-
-      CreateDelegate<Action> (linqToSqlProfilerType, "Initialize")();
-      var getAppender = CreateDelegate (
-          linqToSqlProfilerType, "GetAppender", typeof (Func<,>).MakeGenericType (typeof (string), linqToSqlAppenderType));
-      _linqToSqlAppender = getAppender.DynamicInvoke ("re-store UberProf PoC - RestoreProfiler");
-
-      _connectionStarted = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "ConnectionStarted");
-      _connectionDisposed = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "ConnectionDisposed");
-      _statementRowCount = CreateDelegate<Action<Guid, Guid, int>> (_linqToSqlAppender, "StatementRowCount");
-      _statementError = CreateDelegate<Action<Guid, Exception>> (_linqToSqlAppender, "StatementError");
-      _commandDurationAndRowCount = CreateDelegate<Action<Guid, long, int?>> (_linqToSqlAppender, "CommandDurationAndRowCount");
-      _statementExecuted = CreateDelegate<Action<Guid, Guid, string>> (_linqToSqlAppender, "StatementExecuted");
-      _transactionBegan = CreateDelegate<Action<Guid, IsolationLevel>> (_linqToSqlAppender, "TransactionBegan");
-      _transactionCommit = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionCommit");
-      _transactionDisposed = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionDisposed");
-      _transactionRolledBack = CreateDelegate<Action<Guid>> (_linqToSqlAppender, "TransactionRolledBack");
+      _clientTransactionID = clientTransactionID;
+      _appender = LinqToSqlAppender.Instance;
     }
 
-    public void TraceConnectionOpened (Guid clientTransactionID, Guid connectionID)
+    public void ConnectionOpened (Guid connectionID)
     {
-      _connectionStarted (clientTransactionID);
+      _appender.ConnectionStarted (_clientTransactionID);
     }
 
-    public void TraceConnectionClosed (Guid clientTransactionID, Guid connectionID)
+    public void ConnectionClosed (Guid connectionID)
     {
-      _connectionDisposed (clientTransactionID);
+      _appender.ConnectionDisposed (_clientTransactionID);
     }
 
-    public void TraceQueryCompleted (Guid clientTransactionID, Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
+    public void QueryCompleted (Guid connectionID, Guid queryID, TimeSpan durationOfDataRead, int rowCount)
     {
-      _statementRowCount (clientTransactionID, queryID, rowCount);
+      _appender.StatementRowCount (_clientTransactionID, queryID, rowCount);
     }
 
-    public void TraceQueryError (Guid clientTransactionID, Guid connectionID, Guid queryID, Exception e)
+    public void QueryError (Guid connectionID, Guid queryID, Exception e)
     {
-      _statementError (clientTransactionID, e);
+      _appender.StatementError (_clientTransactionID, e);
     }
 
-    public void TraceQueryExecuted (Guid clientTransactionID, Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
+    public void QueryExecuted (Guid connectionID, Guid queryID, TimeSpan durationOfQueryExecution)
     {
-      _commandDurationAndRowCount (clientTransactionID, (long) durationOfQueryExecution.Milliseconds, (int?) null);
+      _appender.CommandDurationAndRowCount (_clientTransactionID, durationOfQueryExecution.Milliseconds, null);
     }
 
-    public void TraceQueryExecuting (
-        Guid clientTransactionID, Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters)
+    public void QueryExecuting (
+        Guid connectionID, Guid queryID, string commandText, IDictionary<string, object> parameters)
     {
-      _statementExecuted (clientTransactionID, queryID, AppendParametersToCommandText (commandText, parameters));
+      ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
+
+      _appender.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (commandText, parameters));
     }
 
-    public void TraceTransactionBegan (Guid clientTransactionID, Guid connectionID, IsolationLevel isolationLevel)
+    public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
     {
-      _transactionBegan (clientTransactionID, isolationLevel);
+      _appender.TransactionBegan (_clientTransactionID, isolationLevel);
     }
 
-    public void TraceTransactionCommitted (Guid clientTransactionID, Guid connectionID)
+    public void TransactionCommitted (Guid connectionID)
     {
-      _transactionCommit (clientTransactionID);
+      _appender.TransactionCommit (_clientTransactionID);
     }
 
-    public void TraceTransactionDisposed (Guid clientTransactionID, Guid connectionID)
+    public void TransactionDisposed (Guid connectionID)
     {
-      _transactionDisposed (clientTransactionID);
+      _appender.TransactionDisposed (_clientTransactionID);
     }
 
-    public void TraceTransactionRolledback (Guid clientTransactionID, Guid connectionID)
+    public void TransactionRolledback (Guid connectionID)
     {
-      _transactionRolledBack (clientTransactionID);
+      _appender.TransactionRolledBack (_clientTransactionID);
     }
 
     private string AppendParametersToCommandText (string commandText, IDictionary<string, object> parameters)
@@ -137,52 +106,9 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       return builder.ToString();
     }
 
-    private TSignature CreateDelegate<TSignature> (object target, string methodName)
+    bool INullObject.IsNull
     {
-      try
-      {
-        return (TSignature) (object) Delegate.CreateDelegate (typeof (TSignature), target, methodName, false, true);
-      }
-      catch (ArgumentException ex)
-      {
-        throw CreateMissingMethodException (target, methodName, typeof (TSignature), ex);
-      }
-    }
-
-    private TSignature CreateDelegate<TSignature> (Type target, string methodName)
-    {
-      return (TSignature) (object) CreateDelegate (target, methodName, typeof (TSignature));
-    }
-
-    private Delegate CreateDelegate (Type target, string methodName, Type signature)
-    {
-      try
-      {
-        return Delegate.CreateDelegate (signature, target, methodName, false, true);
-      }
-      catch (ArgumentException ex)
-      {
-        throw CreateMissingMethodException (target, methodName, signature, ex);
-      }
-    }
-
-    private MissingMethodException CreateMissingMethodException (object target, string methodName, Type signatureType, Exception innerException)
-    {
-      Type targetType = (target is Type) ? (Type) target : target.GetType();
-
-      Assertion.IsTrue (typeof (Delegate).IsAssignableFrom (signatureType));
-      MethodInfo invoke = signatureType.GetMethod ("Invoke");
-      Type returnType = invoke.ReturnType;
-      Type[] parameters = invoke.GetParameters().Select (p => p.ParameterType).ToArray();
-
-      return new MissingMethodException (
-          string.Format (
-              "Type {0} does not define a method {3} {1}({2}).",
-              targetType.AssemblyQualifiedName,
-              methodName,
-              StringUtility.ConcatWithSeparator (parameters, ", "),
-              returnType == typeof (void) ? "void" : returnType.FullName),
-          innerException);
+      get { return false; }
     }
   }
 }

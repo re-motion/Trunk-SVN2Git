@@ -6,11 +6,12 @@ namespace Remotion.Data.DomainObjects.Tracing
 {
   /// <summary>
   /// <see cref="INullObject"/> implementation of <see cref="IPersistenceListener"/>.
-  /// Use <see cref="PersistenceTracer.Null"/> to get an instance of the <see cref="NullPersistenceListener"/>.
   /// </summary>
   public sealed class NullPersistenceListener : IPersistenceListener
   {
-    internal NullPersistenceListener ()
+    public static readonly IPersistenceListener Instance = new NullPersistenceListener ();
+
+    private NullPersistenceListener ()
     {      
     }
 
