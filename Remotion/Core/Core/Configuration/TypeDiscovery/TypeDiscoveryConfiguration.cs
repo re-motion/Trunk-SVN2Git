@@ -144,7 +144,7 @@ namespace Remotion.Configuration.TypeDiscovery
       if (CustomRootAssemblyFinder.Type == null)
       {
         string message = string.Format (
-            "In CustomRootAssemblyFinder mode, a custom root asembly finder must be specified in the type discovery configuration. {0}", 
+            "In CustomRootAssemblyFinder mode, a custom root assembly finder must be specified in the type discovery configuration. {0}", 
             GetConfigurationBodyErrorMessage (
                 "CustomRootAssemblyFinder", 
                 "<customRootAssemblyFinder type=\"ApplicationNamespace.CustomFinderType, ApplicationAssembly\"/>"));
