@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -354,7 +355,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Disconnect ();
 
       using (RdbmsProvider provider = new SqlProvider (
-          (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain")))
+          (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
+          PersistenceTracer.Null))
       {
         provider.Connect ();
 
@@ -382,7 +384,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Disconnect ();
 
       using (RdbmsProvider provider = new SqlProvider (
-          (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain")))
+          (RdbmsProviderDefinition) DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory ("TableInheritanceTestDomain"),
+          PersistenceTracer.Null))
       {
         provider.Connect ();
 
@@ -412,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       Provider.Disconnect ();
 
-      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (ProviderDefinition))
+      using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (ProviderDefinition, PersistenceTracer.Null))
       {
         var loader = new DataContainerLoader (providerMock);
 

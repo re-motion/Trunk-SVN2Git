@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.SecurityManager.Persistence
 {
@@ -35,8 +36,8 @@ namespace Remotion.SecurityManager.Persistence
 
     // construction and disposing
 
-    public SecurityManagerSqlProvider (RdbmsProviderDefinition definition) 
-      : base (definition)
+    public SecurityManagerSqlProvider (RdbmsProviderDefinition definition, IPersistenceTracer persistenceTracer) 
+      : base (definition, persistenceTracer)
     {
       _revisionExtension = new RevisionStorageProviderExtension ();
     }

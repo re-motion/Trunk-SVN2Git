@@ -34,7 +34,8 @@ public class SqlProvider : RdbmsProvider
 
   // construction and disposing
 
-  public SqlProvider (RdbmsProviderDefinition definition) : base (definition)
+  public SqlProvider (RdbmsProviderDefinition definition, IPersistenceTracer persistenceTracer)
+    : base (definition, persistenceTracer)
   {
   }
 

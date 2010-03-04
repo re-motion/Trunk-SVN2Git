@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -74,11 +75,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var storageProviderID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Official)).StorageProviderID;
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition);
+      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition, Data.DomainObjects.Tracing.PersistenceTracer.Null);
     }
 
-    public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition)
-        : base (definition)
+    public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition, IPersistenceTracer persistenceTracer)
+        : base (definition, persistenceTracer)
     {
     }
 

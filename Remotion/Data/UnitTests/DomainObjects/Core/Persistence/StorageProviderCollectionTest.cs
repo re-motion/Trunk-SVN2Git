@@ -16,9 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       base.SetUp ();
 
-      _provider = new SqlProvider (new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), "ConnectionString"));
+      _provider = new SqlProvider (new RdbmsProviderDefinition ("TestDomain", typeof (SqlProvider), "ConnectionString"), PersistenceTracer.Null);
       _collection = new StorageProviderCollection ();
     }
 
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       _collection.Add (_provider);
 
-      StorageProvider copy = new SqlProvider ((RdbmsProviderDefinition) _provider.Definition);
+      StorageProvider copy = new SqlProvider ((RdbmsProviderDefinition) _provider.Definition, PersistenceTracer.Null);
       Assert.IsFalse (_collection.Contains (copy));
     }
 

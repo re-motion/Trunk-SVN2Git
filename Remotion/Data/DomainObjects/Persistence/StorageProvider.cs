@@ -28,21 +28,17 @@ namespace Remotion.Data.DomainObjects.Persistence
 {
   public abstract class StorageProvider : IDisposable
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
     private StorageProviderDefinition _definition;
-    private bool _disposed = false;
+    private bool _disposed;
+    private readonly IPersistenceTracer _persistenceTracer;
 
-    // construction and disposing
-
-    public StorageProvider (StorageProviderDefinition definition)
+    protected StorageProvider (StorageProviderDefinition definition, IPersistenceTracer persistenceTracer)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
+      ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
+
       _definition = definition;
+      _persistenceTracer = persistenceTracer;
     }
 
     ~StorageProvider ()
@@ -64,8 +60,6 @@ namespace Remotion.Data.DomainObjects.Persistence
       _disposed = true;
     }
 
-    // abstract methods and properties
-
     public abstract DataContainer LoadDataContainer (ObjectID id);
     
     public abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids);
@@ -83,8 +77,6 @@ namespace Remotion.Data.DomainObjects.Persistence
     public abstract ObjectID CreateNewObjectID (ClassDefinition classDefinition);
     public abstract DataContainer[] ExecuteCollectionQuery (IQuery query);
     public abstract object ExecuteScalarQuery (IQuery query);
-
-    // methods and properties
 
     public string ID
     {
@@ -142,11 +134,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       get { return _definition.TypeConversionProvider; }
     }
 
-    private IPersistenceTracer _persistenceTracer;
     public IPersistenceTracer PersistenceTracer
     {
-      get { return _persistenceTracer ?? Tracing.PersistenceTracer.Null; }
-      set { _persistenceTracer = value; }
+      get { return _persistenceTracer; }
     }
 
     protected void CheckDisposed ()

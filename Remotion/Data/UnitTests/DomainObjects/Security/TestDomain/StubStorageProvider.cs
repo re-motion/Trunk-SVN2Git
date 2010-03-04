@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
@@ -36,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     // construction and disposing
 
-    public StubStorageProvider (StorageProviderDefinition definition)
-      : base (definition)
+    public StubStorageProvider (StorageProviderDefinition definition, IPersistenceTracer persistenceTracer)
+      : base (definition, persistenceTracer)
     {
     }
 

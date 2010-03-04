@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
           (UnitTestStorageProviderStub) _persistenceManager.StorageProviderManager.GetMandatory (DomainObjectIDs.Official1.StorageProviderID);
 
       MockRepository mockRepository = new MockRepository();
-      StorageProvider mockProvider = mockRepository.StrictMock<StorageProvider> (officialStorageProvider.Definition);
+      StorageProvider mockProvider = mockRepository.StrictMock<StorageProvider> (officialStorageProvider.Definition, PersistenceTracer.Null);
 
       DataContainer officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       DataContainer officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);
