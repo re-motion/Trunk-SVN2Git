@@ -33,7 +33,8 @@ namespace Remotion.ServiceLocation
   {
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
-    /// If no service locator is configured, the <see cref="NullServiceLocator"/> will be returned.
+    /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
+    /// the <see cref="NullServiceLocator"/> will be returned.
     /// </summary>
     public static IServiceLocator Current
     {
