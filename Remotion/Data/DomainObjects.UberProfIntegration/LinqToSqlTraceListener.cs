@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       }
       catch (ArgumentException ex)
       {
-        throw CreateExceptionForMethodNotFound (target, methodName, typeof (TSignature), ex);
+        throw CreateMissingMethodException (target, methodName, typeof (TSignature), ex);
       }
     }
 
@@ -162,11 +162,11 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       }
       catch (ArgumentException ex)
       {
-        throw CreateExceptionForMethodNotFound (target, methodName, signature, ex);
+        throw CreateMissingMethodException (target, methodName, signature, ex);
       }
     }
 
-    private ArgumentException CreateExceptionForMethodNotFound (object target, string methodName, Type signatureType, Exception innerException)
+    private MissingMethodException CreateMissingMethodException (object target, string methodName, Type signatureType, Exception innerException)
     {
       Type targetType = (target is Type) ? (Type) target : target.GetType();
 
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       Type returnType = invoke.ReturnType;
       Type[] parameters = invoke.GetParameters().Select (p => p.ParameterType).ToArray();
 
-      return new ArgumentException (
+      return new MissingMethodException (
           string.Format (
               "Type {0} does not define a method {3} {1}({2}).",
               targetType.AssemblyQualifiedName,
