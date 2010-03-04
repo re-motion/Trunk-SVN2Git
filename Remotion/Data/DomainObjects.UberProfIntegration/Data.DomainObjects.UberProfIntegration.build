@@ -46,6 +46,8 @@
         <include name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.ObjectBinding.dll" />
         <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Core.dll"/>
+        <include asis="true" name="System.Data.dll"/>
       </references>
     </csc>
   </target>
