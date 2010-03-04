@@ -27,7 +27,7 @@
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, 
       Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
-      Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
+      Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, Data.DomainObjects.UberProfIntegration, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
       Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.DocumentEventMonitor, Dms.Web,
       SecurityManager.Core, SecurityManager.AclTools.Expander, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
@@ -230,6 +230,14 @@
     <property name="project.name" value="Data.DomainObjects.Security" />
     <property name="project.dir" value="Remotion/Data/DomainObjects.Security" />
     <property name="project.output" value="Remotion.Data.DomainObjects.Security" />
+    <property name="project.extension" value="dll" />
+    <call target="execute-buildstep" />
+  </target>
+
+  <target name="Data.DomainObjects.UberProfIntegration" depends="Core.Core, Data.DomainObjects">
+    <property name="project.name" value="Data.DomainObjects.UberProfIntegration" />
+    <property name="project.dir" value="Remotion/Data/DomainObjects.UberProfIntegration" />
+    <property name="project.output" value="Remotion.Data.DomainObjects.UberProfIntegration" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>
