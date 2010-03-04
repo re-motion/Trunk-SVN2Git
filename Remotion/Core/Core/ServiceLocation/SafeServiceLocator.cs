@@ -41,7 +41,7 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current;
+          return ServiceLocator.Current ?? NullServiceLocator.Instance;
         }
         catch (NullReferenceException)
         {

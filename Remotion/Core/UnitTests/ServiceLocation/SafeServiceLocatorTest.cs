@@ -61,6 +61,23 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (ServiceLocator.Current, Is.SameAs (NullServiceLocator.Instance));
     }
 
+    [Test]
+    public void GetCurrent_WithLocatorProviderReturningNull_ReturnsNullServiceLocator ()
+    {
+      ServiceLocator.SetLocatorProvider (() => null);
+
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (NullServiceLocator.Instance));
+    }
+
+    [Test]
+    public void GetCurrent_WithLocatorProviderReturningNull_DoesNotSetServiceLocatorCurrent ()
+    {
+      ServiceLocator.SetLocatorProvider (() => null);
+
+      Dev.Null = SafeServiceLocator.Current;
+      Assert.That (ServiceLocator.Current, Is.Null);
+    }
+
     [TestFixtureTearDown]
     public void TestFixtureTearDown ()
     {
