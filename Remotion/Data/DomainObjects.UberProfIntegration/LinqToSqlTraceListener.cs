@@ -26,7 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
-  /// Implements <see cref="IPersistenceTraceListener"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>.
+  /// Implements <see cref="IPersistenceTraceListener"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
   /// </summary>
   /// <remarks>
   /// The instantiation is comparatively expensive due to the use of Reflection for binding to Linq to Sql Profiler's API.
