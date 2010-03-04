@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using Remotion.Logging;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
@@ -36,7 +35,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
   /// </remarks>
   public class FilteringAssemblyLoader : IAssemblyLoader
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinder));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (FilteringAssemblyLoader));
 
     private readonly IAssemblyLoaderFilter _filter;
 
