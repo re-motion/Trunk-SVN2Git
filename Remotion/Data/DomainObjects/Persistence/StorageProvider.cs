@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     private IPersistenceTracer _persistenceTracer;
     public IPersistenceTracer PersistenceTracer
     {
-      get { return _persistenceTracer ?? new PersistenceTracer (Guid.Empty); }
+      get { return _persistenceTracer ?? Tracing.PersistenceTracer.Null; }
       set { _persistenceTracer = value; }
     }
 

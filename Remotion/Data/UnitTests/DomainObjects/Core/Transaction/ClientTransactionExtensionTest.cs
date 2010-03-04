@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -807,7 +808,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll();
 
-      using (var persistanceManager = new PersistenceManager())
+      using (var persistanceManager = new PersistenceManager(PersistenceTracer.Null))
       {
         ClassDefinition orderTicketDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (OrderTicket)];
         IRelationEndPointDefinition orderEndPointDefinition =
@@ -825,7 +826,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       //Note: no reading notification must be performed
       _mockRepository.ReplayAll();
 
-      using (var persistenceManager = new PersistenceManager())
+      using (var persistenceManager = new PersistenceManager(PersistenceTracer.Null))
       {
         ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (Order)];
         IRelationEndPointDefinition orderTicketEndPointDefinition =
@@ -1367,7 +1368,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.BackToRecord (_extensionMock);
 
-      using (var storageProviderManager = new StorageProviderManager())
+      using (var storageProviderManager = new StorageProviderManager(PersistenceTracer.Null))
       {
         using (var storageProvider =
             (UnitTestStorageProviderStub) storageProviderManager.GetMandatory (c_unitTestStorageProviderStubID))

@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Tracing
   /// <summary>
   /// The <see cref="IPersistenceTracer"/> defines the API for tracing database access.
   /// </summary>
-  public interface IPersistenceTracer
+  public interface IPersistenceTracer : INullObject
   {
     /// <summary>
     /// Invoking this method signals that a database connection has been established.

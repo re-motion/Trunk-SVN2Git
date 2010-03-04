@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -36,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public override void SetUp ()
     {
       base.SetUp ();
-      _persistenceManager = new PersistenceManager ();
+      _persistenceManager = new PersistenceManager (PersistenceTracer.Null);
     }
 
     public override void TearDown ()

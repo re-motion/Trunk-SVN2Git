@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 {
@@ -30,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager ();
+      _storageProviderManager = new StorageProviderManager (PersistenceTracer.Null);
       _provider = (SqlProvider) _storageProviderManager.GetMandatory (TableInheritanceTestDomainProviderID);
       _provider.Connect ();
     }

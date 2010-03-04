@@ -25,27 +25,16 @@ namespace Remotion.Data.DomainObjects.Persistence
 {
 public class StorageProviderManager : IDisposable
 {
-  // types
-
-  // static members and constants
-
-  // member fields
-
-  private bool _disposed = false;
+  private bool _disposed;
   private StorageProviderCollection _storageProviders;
   private readonly IPersistenceTracer _persistenceTracer;
 
-  // construction and disposing
-
-  public StorageProviderManager ()
-    :this (Guid.Empty)
+  public StorageProviderManager (IPersistenceTracer persistenceTracer)
   {
-  }
+    ArgumentUtility.CheckNotNull ("persistenceTracer", persistenceTracer);
 
-  public StorageProviderManager (Guid clientTransactionID)
-  {
     _storageProviders = new StorageProviderCollection ();
-    _persistenceTracer = new PersistenceTracer (clientTransactionID);
+    _persistenceTracer = persistenceTracer;
   }
 
   #region IDisposable Members
@@ -65,8 +54,6 @@ public class StorageProviderManager : IDisposable
   }
 
   #endregion
-
-  // methods and properties
 
   public StorageProvider GetMandatory (string storageProviderID)
   {

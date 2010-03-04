@@ -16,15 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -39,9 +40,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns></returns>
     [Obsolete ("Use ClientTransaction.CreateBindingTransaction for clarity.")]
-    public static new ClientTransaction CreateBindingTransaction ()
+    public new static ClientTransaction CreateBindingTransaction ()
     {
-      return ClientTransaction.CreateBindingTransaction ();
+      return ClientTransaction.CreateBindingTransaction();
     }
 
     private readonly Guid _id = Guid.NewGuid();
@@ -50,11 +51,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Initializes a new instance of the <b>RootClientTransaction</b> class.
     /// </summary>
     protected RootClientTransaction ()
-      : base (
-        new Dictionary<Enum, object>(), 
-        new ClientTransactionExtensionCollection (), 
-        new RootCollectionEndPointChangeDetectionStrategy(),
-        new DictionaryBasedEnlistedDomainObjectManager())
+        : base (
+            new Dictionary<Enum, object>(),
+            new ClientTransactionExtensionCollection(),
+            new RootCollectionEndPointChangeDetectionStrategy(),
+            new DictionaryBasedEnlistedDomainObjectManager())
     {
     }
 
@@ -76,7 +77,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>Initializes a new instance of this transaction.</summary>
     public override ClientTransaction CreateEmptyTransactionOfSameType ()
     {
-      return (ClientTransaction) TypesafeActivator.CreateInstance (GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With ();
+      return
+          (ClientTransaction)
+          TypesafeActivator.CreateInstance (GetType(), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With();
     }
 
     protected override void PersistData (DataContainerCollection changedDataContainers)
@@ -85,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (changedDataContainers.Count > 0)
       {
-        using (var persistenceManager = new PersistenceManager (_id))
+        using (var persistenceManager = CreatePersistenceManager())
         {
           persistenceManager.Save (changedDataContainers);
         }
@@ -97,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       ObjectID newObjectID;
-      using (var persistenceManager = new PersistenceManager (_id))
+      using (var persistenceManager = CreatePersistenceManager())
       {
         newObjectID = persistenceManager.CreateNewObjectID (classDefinition);
       }
@@ -108,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      using (var persistenceManager = new PersistenceManager (_id))
+      using (var persistenceManager = CreatePersistenceManager())
       {
         return persistenceManager.LoadDataContainer (id);
       }
@@ -127,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           throw new ObjectDiscardedException (id);
       }
 
-      using (var persistenceManager = new PersistenceManager (_id))
+      using (var persistenceManager = CreatePersistenceManager())
       {
         return persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
       }
@@ -139,13 +142,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, false);
       DataContainer relatedDataContainer;
-      using (var persistenceManager = new PersistenceManager (_id))
+      using (var persistenceManager = CreatePersistenceManager())
       {
         relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer (domainObject), relationEndPointID);
-        
+
         // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
         // (Like in MergeLoadedDomainObjects.)
-        Assertion.IsTrue (relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null, 
+        Assertion.IsTrue (
+            relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null,
             "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
             + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
         return relatedDataContainer;
@@ -156,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
-      using (var persistenceManager = new PersistenceManager (_id))
+      using (var persistenceManager = CreatePersistenceManager())
       {
         return persistenceManager.LoadRelatedDataContainers (relationEndPointID);
       }
@@ -169,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (query.QueryType != QueryType.Collection)
         throw new ArgumentException ("Only collection queries can be used to load data containers.", "query");
 
-      using (var storageProviderManager = new StorageProviderManager (ID))
+      using (var storageProviderManager = CreateStorageProviderManager())
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         return provider.ExecuteCollectionQuery (query);
@@ -181,13 +185,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("query", query);
 
       if (query.QueryType != QueryType.Scalar)
-        throw new ArgumentException("Only scalar queries can be used to load scalar results.", "query");
+        throw new ArgumentException ("Only scalar queries can be used to load scalar results.", "query");
 
-      using (var storageProviderManager = new StorageProviderManager (ID))
+      using (var storageProviderManager = CreateStorageProviderManager())
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         return provider.ExecuteScalarQuery (query);
       }
+    }
+
+    private PersistenceManager CreatePersistenceManager ()
+    {
+      return new PersistenceManager (new PersistenceTracer (_id));
+    }
+
+    private StorageProviderManager CreateStorageProviderManager ()
+    {
+      return new StorageProviderManager (new PersistenceTracer (_id));
     }
   }
 }

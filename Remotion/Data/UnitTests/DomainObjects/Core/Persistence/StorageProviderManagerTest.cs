@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
@@ -31,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager ();
+      _storageProviderManager = new StorageProviderManager (PersistenceTracer.Null);
     }
 
     public override void TearDown ()

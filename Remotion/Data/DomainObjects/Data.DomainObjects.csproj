@@ -274,6 +274,7 @@
     <Compile Include="Persistence\BulkLoadException.cs" />
     <Compile Include="Tracing\IPersistenceTracer.cs" />
     <Compile Include="Tracing\IPersistenceTraceListener.cs" />
+    <Compile Include="Tracing\NullPersistenceTracer.cs" />
     <Compile Include="Tracing\PersistenceTracer.cs">
       <SubType>Code</SubType>
     </Compile>

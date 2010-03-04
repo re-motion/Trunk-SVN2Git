@@ -18,6 +18,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -32,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       if (changedDataContainers.Count > 0)
       {
-        using (var persistenceManager = new PersistenceManager ())
+        using (var persistenceManager = new PersistenceManager (PersistenceTracer.Null))
         {
           persistenceManager.Save (changedDataContainers);
         }

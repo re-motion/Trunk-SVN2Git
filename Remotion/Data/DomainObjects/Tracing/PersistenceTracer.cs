@@ -28,6 +28,8 @@ namespace Remotion.Data.DomainObjects.Tracing
   /// </summary>
   public class PersistenceTracer : IPersistenceTracer
   {
+    public static readonly IPersistenceTracer Null = new NullPersistenceTracer();
+
     private readonly List<IPersistenceTraceListener> _listeners = new List<IPersistenceTraceListener>();
     private readonly Guid _clientTransactionID;
 
@@ -36,8 +38,7 @@ namespace Remotion.Data.DomainObjects.Tracing
       _clientTransactionID = clientTransactionID;
 
       IServiceLocator serviceLocator = SafeServiceLocator.Current;
-      if (serviceLocator != null)
-        _listeners.AddRange (serviceLocator.GetAllInstances<IPersistenceTraceListener>());
+      _listeners.AddRange (serviceLocator.GetAllInstances<IPersistenceTraceListener>());
     }
 
     public void TraceConnectionOpened (Guid connectionID)
@@ -101,6 +102,11 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       foreach (var listener in _listeners)
         listener.TraceQueryError (_clientTransactionID, connectionID, queryID, e);
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

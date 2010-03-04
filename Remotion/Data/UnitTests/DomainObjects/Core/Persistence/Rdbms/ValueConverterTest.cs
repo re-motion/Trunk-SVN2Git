@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -40,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       base.SetUp ();
 
-      _storageProviderManager = new StorageProviderManager ();
+      _storageProviderManager = new StorageProviderManager (PersistenceTracer.Null);
       var provider = (RdbmsProvider) _storageProviderManager.GetMandatory ("TestDomain");
       provider.Connect ();
       _connection = provider.Connection;
