@@ -20,10 +20,10 @@ using Remotion.Data.DomainObjects.Tracing;
 namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
   /// <summary>
-  /// Implements <see cref="IListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
+  /// Implements <see cref="IPersistenceListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
   /// <seealso cref="LinqToSqlAppender"/>
   /// </summary>
-  public class LinqToSqlListenerFactory : IListenerFactory
+  public class LinqToSqlListenerFactory : IPersistenceListenerFactory
   {
     public IPersistenceListener CreatePersistenceListener (Guid clientTransactionID)
     {

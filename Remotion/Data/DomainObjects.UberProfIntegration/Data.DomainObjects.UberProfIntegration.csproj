@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="LinqToSqlAppender.cs" />
     <Compile Include="LinqToSqlListenerFactory.cs" />
-    <Compile Include="LinqToSqlTraceListener.cs" />
+    <Compile Include="LinqToSqlPersistenceListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>

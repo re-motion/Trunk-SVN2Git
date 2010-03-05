@@ -273,7 +273,7 @@
     <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
     <Compile Include="Tracing\IPersistenceListener.cs" />
-    <Compile Include="Tracing\IListenerFactory.cs" />
+    <Compile Include="Tracing\IPersistenceListenerFactory.cs" />
     <Compile Include="Tracing\NullPersistenceListener.cs" />
     <Compile Include="Tracing\CompoundPersistenceListener.cs">
       <SubType>Code</SubType>
