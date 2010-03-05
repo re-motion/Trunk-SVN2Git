@@ -47,8 +47,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransaction.CreateBindingTransaction();
     }
 
-    private readonly Guid _id = Guid.NewGuid();
-
     /// <summary>
     /// Initializes a new instance of the <b>RootClientTransaction</b> class.
     /// </summary>
@@ -69,11 +67,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override ClientTransaction RootTransaction
     {
       get { return this; }
-    }
-
-    public Guid ID
-    {
-      get { return _id; }
     }
 
     /// <summary>Initializes a new instance of this transaction.</summary>
@@ -209,7 +202,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private IPersistenceListener CreatePersistenceListener ()
     {
       var listenerFactories = SafeServiceLocator.Current.GetAllInstances<IPersistenceListenerFactory>();
-      return new CompoundPersistenceListener (listenerFactories.Select (f => f.CreatePersistenceListener (_id)));
+      return new CompoundPersistenceListener (listenerFactories.Select (f => f.CreatePersistenceListener (ID)));
     }
   }
 }

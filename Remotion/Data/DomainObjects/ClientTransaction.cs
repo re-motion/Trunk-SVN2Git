@@ -143,6 +143,8 @@ public abstract class ClientTransaction : IDataSource
   [NonSerialized]
   private QueryManager _queryManager;
 
+  private readonly Guid _id = Guid.NewGuid ();
+
   // construction and disposing
 
   protected ClientTransaction (
@@ -173,6 +175,8 @@ public abstract class ClientTransaction : IDataSource
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);
     _objectLoader = new ObjectLoader (this, this, TransactionEventSink, new EagerFetcher (_dataManager));
     _enlistedObjectManager = enlistedObjectManager;
+
+    TransactionEventSink.TransactionInitializing();
   }
 
   // abstract methods and properties
@@ -368,6 +372,14 @@ public abstract class ClientTransaction : IDataSource
   protected abstract object LoadScalarForQuery (IQuery query);
 
   // methods and properties
+
+  /// <summary>
+  /// Returns a <see cref="Guid"/> that uniquely identifies this <see cref="ClientTransaction"/>.
+  /// </summary>
+  public Guid ID
+  {
+    get { return _id; }
+  }
 
   /// <summary>
   /// Indicates whether this transaction is set read-only.
