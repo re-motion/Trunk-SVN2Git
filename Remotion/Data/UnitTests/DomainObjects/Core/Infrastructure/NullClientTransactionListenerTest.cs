@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -51,6 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void IsNull ()
     {
       Assert.That (_listener.IsNull, Is.True);
+    }
+
+    [Test]
+    public void SerializeAndDeserialize ()
+    {
+      Assert.That (
+          Serializer.SerializeAndDeserialize (NullClientTransactionListener.Instance), 
+          Is.SameAs (NullClientTransactionListener.Instance));
     }
 
     [Test]

@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.UberProfIntegration
@@ -29,7 +30,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// The wrapper uses runtime-binding to redirect the calls to Linq to Sql Profiler's API. This removes the static dependcy on Linq to Sql Profiler.
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
-  public sealed class LinqToSqlAppender
+  public sealed class LinqToSqlAppender : IObjectReference
   {
     private static readonly DoubleCheckedLockingContainer<LinqToSqlAppender> _instance =
         new DoubleCheckedLockingContainer<LinqToSqlAppender> (() => new LinqToSqlAppender("re-store ClientTransaction"));
@@ -174,6 +175,11 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
               StringUtility.ConcatWithSeparator (parameters, ", "),
               returnType == typeof (void) ? "void" : returnType.FullName),
           innerException);
+    }
+
+    object IObjectReference.GetRealObject (StreamingContext context)
+    {
+      return LinqToSqlAppender.Instance;
     }
   }
 }

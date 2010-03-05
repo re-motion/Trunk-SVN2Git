@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 
@@ -24,7 +25,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// <see cref="INullObject"/> implementation of <see cref="IClientTransactionListener"/>.
   /// </summary>
-  public sealed class NullClientTransactionListener : IClientTransactionListener
+  [Serializable]
+  public sealed class NullClientTransactionListener : IClientTransactionListener, IObjectReference
   {
     public static readonly IClientTransactionListener Instance = new NullClientTransactionListener();
 
@@ -161,6 +163,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void DataContainerMapUnregistering (DataContainer container)
     {
+    }
+
+    object IObjectReference.GetRealObject (StreamingContext context)
+    {
+      return NullClientTransactionListener.Instance;
     }
   }
 }

@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// <seealso cref="LinqToSqlAppender"/>
   /// </summary>
   /// <threadsafety static="true" instance="true" />
+  [Serializable]
   public class LinqToSqlListener : IPersistenceListener, IClientTransactionListener
   {
     #region Implementation of IClientTransactionListener
@@ -207,7 +208,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
-      _appender.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (commandText, parameters));
+      _appender.StatementExecuted (_clientTransactionID, queryID, AppendParametersToCommandText (queryID, commandText, parameters));
     }
 
     public void TransactionBegan (Guid connectionID, IsolationLevel isolationLevel)
@@ -230,16 +231,31 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       _appender.TransactionRolledBack (_clientTransactionID);
     }
 
-    private string AppendParametersToCommandText (string commandText, IDictionary<string, object> parameters)
+    private string AppendParametersToCommandText (Guid queryID, string commandText, IDictionary<string, object> parameters)
     {
-      StringBuilder builder = new StringBuilder (commandText).AppendLine().AppendLine ("-- Parameters:");
-      foreach (string str in parameters.Keys)
+      StringBuilder builder = new StringBuilder();
+      builder.Append ("-- Statement ").Append (queryID).AppendLine();
+      builder.AppendLine (commandText);
+      builder.AppendLine ("-- Ignore unbounded result sets: TOP *"); // Format with space and asterisk is important to trigger RexEx in profiler.
+      builder.AppendLine ("-- Parameters:");
+      foreach (string key in parameters.Keys)
       {
-        string str2 = str;
-        if (!str2.StartsWith ("@"))
-          str2 = "@" + str2;
-        builder.Append ("-- ").Append (str2).Append (" = [-[").Append (parameters[str]).AppendLine ("]-]");
+        string parameterName = key;
+        if (!parameterName.StartsWith ("@"))
+          parameterName = "@" + parameterName;
+        object value = parameters[key];
+
+        builder.Append ("-- ");
+        builder.Append (parameterName);
+        builder.Append (" = [-[");
+        builder.Append (value);
+        builder.Append ("]-] [-[");
+        builder.Append ("Type"); //parameter.DbType
+        builder.Append (" (");
+        builder.Append (0); // parameter.Size
+        builder.AppendLine (")]-]");
       }
+
       return builder.ToString();
     }
 
