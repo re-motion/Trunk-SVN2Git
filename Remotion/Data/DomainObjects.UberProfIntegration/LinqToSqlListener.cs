@@ -16,8 +16,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
@@ -28,12 +32,133 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// <seealso cref="LinqToSqlAppender"/>
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public class LinqToSqlPersistenceListener : IPersistenceListener
+  public class LinqToSqlListener : IPersistenceListener, IClientTransactionListener
   {
+    #region Implementation of IClientTransactionListener
+
+    public void SubTransactionCreating ()
+    {
+    }
+
+    public void SubTransactionCreated (ClientTransaction subTransaction)
+    {
+    }
+
+    public void NewObjectCreating (Type type, DomainObject instance)
+    {
+    }
+
+    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    {
+    }
+
+    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+    }
+
+    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+    }
+
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+    }
+
+    public void ObjectDeleting (DomainObject domainObject)
+    {
+    }
+
+    public void ObjectDeleted (DomainObject domainObject)
+    {
+    }
+
+    public void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    {
+    }
+
+    public void PropertyValueRead (DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
+    {
+    }
+
+    public void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+    }
+
+    public void PropertyValueChanged (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+    }
+
+    public void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess)
+    {
+    }
+
+    public void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+    }
+
+    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    {
+    }
+
+    public void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+    }
+
+    public void RelationChanged (DomainObject domainObject, string propertyName)
+    {
+    }
+
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
+    {
+      return queryResult;
+    }
+
+    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+    }
+
+    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+    }
+
+    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+    }
+
+    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
+    {
+    }
+
+    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
+    {
+    }
+
+    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
+    {
+    }
+
+    public void RelationEndPointUnloading (RelationEndPoint endPoint)
+    {
+    }
+
+    public void DataManagerMarkingObjectDiscarded (ObjectID id)
+    {
+    }
+
+    public void DataContainerMapRegistering (DataContainer container)
+    {
+    }
+
+    public void DataContainerMapUnregistering (DataContainer container)
+    {
+    }
+
+    #endregion
+
     private readonly LinqToSqlAppender _appender;
     private readonly Guid _clientTransactionID;
 
-    public LinqToSqlPersistenceListener (Guid clientTransactionID)
+    public LinqToSqlListener (Guid clientTransactionID)
     {
       _clientTransactionID = clientTransactionID;
       _appender = LinqToSqlAppender.Instance;

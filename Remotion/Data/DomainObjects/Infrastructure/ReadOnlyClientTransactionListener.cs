@@ -187,5 +187,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       EnsureWriteable ("DataContainerMapUnregistering");
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

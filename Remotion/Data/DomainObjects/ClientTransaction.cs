@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
@@ -164,6 +165,9 @@ public abstract class ClientTransaction : IDataSource
     _listeners.AddListener (new LoggingClientTransactionListener ());
     _listeners.AddListener (new ReadOnlyClientTransactionListener (this));
     _listeners.AddListener (new ExtensionClientTransactionListener (this, _extensions));
+
+    foreach (var factory in SafeServiceLocator.Current.GetAllInstances<IClientTransactionListenerFactory> ())
+      _listeners.AddListener (factory.CreateClientTransactionListener (this));
 
     _applicationData = applicationData;
     _dataManager = new DataManager (this, collectionEndPointChangeDetectionStrategy);

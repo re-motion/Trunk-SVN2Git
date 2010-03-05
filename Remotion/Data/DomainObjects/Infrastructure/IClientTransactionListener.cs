@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// This is similar to <see cref="IClientTransactionExtension"/>, but where <see cref="IClientTransactionExtension"/> is for the public,
   /// <see cref="IClientTransactionListener"/> is for internal usage (and therefore provides more events).
   /// </remarks>
-  public interface IClientTransactionListener
+  public interface IClientTransactionListener : INullObject
   {
     void SubTransactionCreating ();
     void SubTransactionCreated (ClientTransaction subTransaction);

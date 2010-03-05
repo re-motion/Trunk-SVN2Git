@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.UberProfIntegration
 {
@@ -23,11 +25,18 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   /// Implements <see cref="IPersistenceListenerFactory"/> for <b><a href="http://l2sprof.com/">Linq to Sql Profiler</a></b>. (Tested for build 661)
   /// <seealso cref="LinqToSqlAppender"/>
   /// </summary>
-  public class LinqToSqlListenerFactory : IPersistenceListenerFactory
+  public class LinqToSqlListenerFactory : IPersistenceListenerFactory, IClientTransactionListenerFactory
   {
     public IPersistenceListener CreatePersistenceListener (Guid clientTransactionID)
     {
-      return new LinqToSqlPersistenceListener (clientTransactionID);
+      return new LinqToSqlListener (clientTransactionID);
+    }
+
+    public IClientTransactionListener CreateClientTransactionListener (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      return new LinqToSqlListener (((RootClientTransaction) clientTransaction).ID);
     }
   }
 }

@@ -238,5 +238,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       return domainObject != null ? domainObject.ID.ToString () : "<null>";
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

@@ -187,5 +187,10 @@ namespace Remotion.Data.DomainObjects.Transport
     {
       
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

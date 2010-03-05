@@ -15,208 +15,144 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Implements a collection of <see cref="IClientTransactionListener"/> objects.
+  /// <see cref="INullObject"/> implementation of <see cref="IClientTransactionListener"/>.
   /// </summary>
-  [Serializable]
-  public class CompoundClientTransactionListener : IClientTransactionListener
+  public sealed class NullClientTransactionListener : IClientTransactionListener
   {
-    private readonly List<IClientTransactionListener> _listeners = new List<IClientTransactionListener>();
+    public static readonly IClientTransactionListener Instance = new NullClientTransactionListener();
 
-    public void AddListener (IClientTransactionListener listener)
+    private NullClientTransactionListener ()
     {
-      ArgumentUtility.CheckNotNull ("listener", listener);
+    }
 
-      _listeners.Add (listener);
+    public bool IsNull
+    {
+      get { return true; }
     }
 
     public void SubTransactionCreating ()
     {
-      foreach (var listener in _listeners)
-        listener.SubTransactionCreating();
     }
 
     public void SubTransactionCreated (ClientTransaction subTransaction)
     {
-      foreach (var listener in _listeners)
-        listener.SubTransactionCreated (subTransaction);
     }
 
     public void NewObjectCreating (Type type, DomainObject instance)
     {
-      foreach (var listener in _listeners)
-        listener.NewObjectCreating (type, instance);
     }
 
     public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
     {
-      foreach (var listener in _listeners)
-        listener.ObjectsLoading (objectIDs);
-    }
-
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      foreach (var listener in _listeners)
-        listener.ObjectsUnloaded (unloadedDomainObjects);
     }
 
     public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      foreach (var listener in _listeners)
-        listener.ObjectsLoaded (domainObjects);
     }
 
     public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      foreach (var listener in _listeners)
-        listener.ObjectsUnloading (unloadedDomainObjects);
+    }
+
+    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
     }
 
     public void ObjectDeleting (DomainObject domainObject)
     {
-      foreach (var listener in _listeners)
-        listener.ObjectDeleting (domainObject);
     }
 
     public void ObjectDeleted (DomainObject domainObject)
     {
-      foreach (var listener in _listeners)
-        listener.ObjectDeleted (domainObject);
     }
 
     public void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
     {
-      foreach (var listener in _listeners)
-        listener.PropertyValueReading (dataContainer, propertyValue, valueAccess);
     }
 
     public void PropertyValueRead (DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
     {
-      foreach (var listener in _listeners)
-        listener.PropertyValueRead (dataContainer, propertyValue, value, valueAccess);
     }
 
     public void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
-      foreach (var listener in _listeners)
-        listener.PropertyValueChanging (dataContainer, propertyValue, oldValue, newValue);
     }
 
     public void PropertyValueChanged (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
-      foreach (var listener in _listeners)
-        listener.PropertyValueChanged (dataContainer, propertyValue, oldValue, newValue);
     }
 
     public void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess)
     {
-      foreach (var listener in _listeners)
-        listener.RelationReading (domainObject, propertyName, valueAccess);
     }
 
     public void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
     {
-      foreach (var listener in _listeners)
-        listener.RelationRead (domainObject, propertyName, relatedObject, valueAccess);
     }
 
     public void RelationRead (
         DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
-      foreach (var listener in _listeners)
-        listener.RelationRead (domainObject, propertyName, relatedObjects, valueAccess);
     }
 
     public void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      foreach (var listener in _listeners)
-        listener.RelationChanging (domainObject, propertyName, oldRelatedObject, newRelatedObject);
     }
 
     public void RelationChanged (DomainObject domainObject, string propertyName)
     {
-      foreach (var listener in _listeners)
-        listener.RelationChanged (domainObject, propertyName);
     }
 
     public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject
     {
-      foreach (var listener in _listeners)
-        queryResult = listener.FilterQueryResult (queryResult);
       return queryResult;
     }
 
     public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      foreach (var listener in _listeners)
-        listener.TransactionCommitting (domainObjects);
     }
 
     public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      foreach (var listener in _listeners)
-        listener.TransactionCommitted (domainObjects);
     }
 
     public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      foreach (var listener in _listeners)
-        listener.TransactionRollingBack (domainObjects);
     }
 
     public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
-      foreach (var listener in _listeners)
-        listener.TransactionRolledBack (domainObjects);
     }
 
     public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
     {
-      foreach (var listener in _listeners)
-        listener.RelationEndPointMapRegistering (endPoint);
     }
 
     public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
     {
-      foreach (var listener in _listeners)
-        listener.RelationEndPointMapUnregistering (endPointID);
     }
 
     public void RelationEndPointUnloading (RelationEndPoint endPoint)
     {
-      foreach (var listener in _listeners)
-        listener.RelationEndPointUnloading (endPoint);
     }
 
     public void DataManagerMarkingObjectDiscarded (ObjectID id)
     {
-      foreach (var listener in _listeners)
-        listener.DataManagerMarkingObjectDiscarded (id);
     }
 
     public void DataContainerMapRegistering (DataContainer container)
     {
-      foreach (var listener in _listeners)
-        listener.DataContainerMapRegistering (container);
     }
 
     public void DataContainerMapUnregistering (DataContainer container)
     {
-      foreach (var listener in _listeners)
-        listener.DataContainerMapUnregistering (container);
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return false; }
     }
   }
 }

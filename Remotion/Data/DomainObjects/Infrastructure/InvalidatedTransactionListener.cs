@@ -173,5 +173,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       throw CreateException();
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

@@ -204,5 +204,10 @@ namespace Remotion.Data.DomainObjects.Transport
     {
       // not handled by this listener
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

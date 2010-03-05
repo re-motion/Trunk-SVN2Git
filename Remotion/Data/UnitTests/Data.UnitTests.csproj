@@ -260,6 +260,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionEventRaiserFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
