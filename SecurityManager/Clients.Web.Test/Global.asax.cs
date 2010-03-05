@@ -20,6 +20,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.DomainObjects.UberProfIntegration;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
@@ -58,7 +59,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme> ().Instance (ResourceTheme.ClassicBlue));
 
-      container.Register (Component.For<IPersistenceListenerFactory> ().Instance (new LinqToSqlListenerFactory()));
+      container.Register (Component.For<IClientTransactionListenerFactory, IPersistenceListenerFactory> ().Instance (new LinqToSqlListenerFactory()));
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

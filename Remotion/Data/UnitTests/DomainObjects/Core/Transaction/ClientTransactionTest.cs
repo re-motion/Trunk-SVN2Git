@@ -1015,6 +1015,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var mockRepository = new MockRepository ();
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      listenerMock.Stub (stub => stub.TransactionDiscarding());
 
       listenerMock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
       listenerMock.DataContainerMapRegistering (null);

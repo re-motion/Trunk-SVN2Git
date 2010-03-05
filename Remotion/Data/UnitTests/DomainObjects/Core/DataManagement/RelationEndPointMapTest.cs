@@ -485,6 +485,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.RemoveEndPoint (endPointID);
 
       listenerMock.VerifyAllExpectations();
+      listenerMock.BackToRecord (); // For Discard
     }
 
     [Test]

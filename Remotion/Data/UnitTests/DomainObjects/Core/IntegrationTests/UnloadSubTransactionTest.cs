@@ -480,6 +480,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           UnloadTransactionMode.RecurseToRoot);
 
       subListenerMock.VerifyAllExpectations ();
+      subListenerMock.BackToRecord (); // For Discarding
     }
 
     private void CheckDataContainerExists (ClientTransaction clientTransaction, DomainObject domainObject, bool dataContainerShouldExist)

@@ -462,6 +462,9 @@ public abstract class ClientTransaction : IDataSource
   /// </remarks>
   public virtual bool Discard ()
   {
+    if (!_isDiscarded)
+      TransactionEventSink.TransactionDiscarding ();
+
     if (ParentTransaction != null)
       ParentTransaction.IsReadOnly = false;
 

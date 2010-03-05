@@ -63,7 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void EnsureTransactionThrowsOnEvents (ClientTransaction clientTransaction)
     {
-      var listenerMock = new MockRepository ().StrictMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
+      listenerMock.Stub (stub => stub.TransactionDiscarding());
       AddListener (clientTransaction, listenerMock);
       listenerMock.Replay (); // no events expected
     }
@@ -72,7 +73,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       IClientTransactionListener listenerMock = CreateAndAddListenerMock(clientTransaction);
       listenerMock.Expect (forbiddenEventExpectation).WhenCalled (mi => { throw new InvalidOperationException ("Forbidden event raised."); });
-
       listenerMock.Replay ();
     }
 

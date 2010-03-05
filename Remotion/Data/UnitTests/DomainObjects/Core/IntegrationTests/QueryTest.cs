@@ -325,6 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClientTransactionMock.QueryManager.GetCollection (query);
 
       listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord(); // For Discarding
     }
   }
 }

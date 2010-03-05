@@ -132,6 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _map.Remove (dataContainer.ID);
 
       listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord(); // For Discard
     }
 
     [Test]

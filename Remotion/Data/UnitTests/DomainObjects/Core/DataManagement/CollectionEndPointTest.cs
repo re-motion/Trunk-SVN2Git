@@ -289,6 +289,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _customerEndPoint.Unload ();
 
       listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord(); // For Discard
     }
 
     [Test]

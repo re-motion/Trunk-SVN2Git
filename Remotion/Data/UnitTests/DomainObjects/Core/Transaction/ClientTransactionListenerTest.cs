@@ -47,6 +47,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _strictListenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
     }
 
+    [TearDown]
+    public override void TearDown ()
+    {
+      _strictListenerMock.BackToRecord();
+      base.TearDown();
+    }
+
+    [Test]
+    [Ignore ("TODO: COMMONS-1973")]
+    public void TransactionInitializing ()
+    {
+      
+    }
+
+    [Test]
+    public void TransactionDiscarding ()
+    {
+      ClientTransactionMock.AddListener (_strictListenerMock);
+
+      _strictListenerMock.Expect (mock => mock.TransactionDiscarding ());
+      
+      _mockRepository.ReplayAll ();
+
+      ClientTransactionMock.Discard();
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void TransactionDiscarding_OnlyFiresIfTransactionIsNotYetDiscarded ()
+    {
+      ClientTransactionMock.AddListener (_strictListenerMock);
+
+      _strictListenerMock.Expect (mock => mock.TransactionDiscarding ());
+
+      _mockRepository.ReplayAll ();
+
+      ClientTransactionMock.Discard ();
+      ClientTransactionMock.Discard ();
+
+      _mockRepository.VerifyAll ();
+    }
+
     [Test]
     public void NewObjectCreating ()
     {

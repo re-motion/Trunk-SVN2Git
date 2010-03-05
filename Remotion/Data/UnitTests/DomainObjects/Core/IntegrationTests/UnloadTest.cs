@@ -519,6 +519,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           UnloadTransactionMode.ThisTransactionOnly);
 
       listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord(); // For Discarding
 
       Assert.That (orderItemA.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
       Assert.That (orderItemB.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");

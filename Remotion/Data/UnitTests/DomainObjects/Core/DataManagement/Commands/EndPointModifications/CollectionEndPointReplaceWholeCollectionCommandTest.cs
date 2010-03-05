@@ -66,6 +66,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
     }
 
+    public override void TearDown ()
+    {
+      _mockRepository.BackToRecordAll (); // For Discard
+      base.TearDown ();
+    }
+
     [Test]
     public void Initialization ()
     {

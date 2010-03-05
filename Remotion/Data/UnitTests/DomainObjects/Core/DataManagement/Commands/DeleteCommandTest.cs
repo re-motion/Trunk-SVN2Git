@@ -80,6 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _deleteOrder1Command.NotifyClientTransactionOfBegin ();
 
       mockRepository.VerifyAll ();
+      mockRepository.BackToRecordAll (); // For Discard
     }
 
     [Test]
@@ -116,6 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 
       mockRepository.VerifyAll ();
+      mockRepository.BackToRecordAll (); // For Discard
     }
 
     [Test]
