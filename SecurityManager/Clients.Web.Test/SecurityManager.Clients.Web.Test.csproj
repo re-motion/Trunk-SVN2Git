@@ -112,6 +112,10 @@
       <Name>Data.DomainObjects.Security</Name>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj">
+      <Project>{81E5BEC0-B845-4470-BD19-9FCB121CB413}</Project>
+      <Name>Data.DomainObjects.UberProfIntegration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Data\DomainObjects\Data.DomainObjects.csproj">
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
       <Name>Data.DomainObjects</Name>

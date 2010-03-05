@@ -35,8 +35,11 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     public IClientTransactionListener CreateClientTransactionListener (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      return new LinqToSqlListener (((RootClientTransaction) clientTransaction).ID);
+     
+      if (clientTransaction is RootClientTransaction)
+        return new LinqToSqlListener (((RootClientTransaction) clientTransaction).ID);
+      else
+        return NullClientTransactionListener.Instance;
     }
   }
 }

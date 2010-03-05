@@ -33,6 +33,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
 
+    public void RootTransactionCreating ()
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.Debug ("RootTransactionCreating");
+    }
+
+    public void RootTransactionCreated (ClientTransaction rootTransaction)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.Debug ("RootTransactionCreated");
+    }
+
+
     public void SubTransactionCreating ()
     {
       if (s_log.IsDebugEnabled)

@@ -79,6 +79,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.NewObject();
       Order order2 = Order.NewObject();
 
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RootTransactionCreating"), new object[0]);
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RootTransactionCreated"), new object[] { ClientTransactionMock });
+
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreating"), new object[0]);
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreated"), new object[] { ClientTransactionMock });
 

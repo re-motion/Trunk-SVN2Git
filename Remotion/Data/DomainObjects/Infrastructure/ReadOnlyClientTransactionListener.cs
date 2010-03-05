@@ -48,6 +48,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    public void RootTransactionCreating ()
+    {
+      // not handled by this listener
+    }
+
+    public void RootTransactionCreated (ClientTransaction rootTransaction)
+    {
+      // not handled by this listener
+    }
+
     public virtual void SubTransactionCreating ()
     {
       EnsureWriteable ("SubTransactionCreating");

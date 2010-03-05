@@ -30,6 +30,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </remarks>
   public interface IClientTransactionListener : INullObject
   {
+    void RootTransactionCreating ();
+    void RootTransactionCreated (ClientTransaction rootTransaction);
+
     void SubTransactionCreating ();
     void SubTransactionCreated (ClientTransaction subTransaction);
 

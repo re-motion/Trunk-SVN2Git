@@ -64,6 +64,16 @@ namespace Remotion.Data.DomainObjects.Transport
       }
     }
 
+    public void RootTransactionCreating ()
+    {
+      // not handled by this listener
+    }
+
+    public void RootTransactionCreated (ClientTransaction rootTransaction)
+    {
+      // not handled by this listener
+    }
+
     public void SubTransactionCreating ()
     {
       // not handled by this listener
