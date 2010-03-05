@@ -38,16 +38,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _listeners.Add (listener);
     }
 
-    public void RootTransactionCreating ()
+    public void TransactionInitializing ()
     {
       foreach (var listener in _listeners)
-        listener.RootTransactionCreating ();
+        listener.TransactionInitializing ();
     }
 
-    public void RootTransactionCreated (ClientTransaction rootTransaction)
+    public void TransactionDiscarding ()
     {
       foreach (var listener in _listeners)
-        listener.RootTransactionCreated (subTransaction);
+        listener.TransactionDiscarding ();
     }
 
     public void SubTransactionCreating ()

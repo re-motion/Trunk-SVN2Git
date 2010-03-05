@@ -36,10 +36,6 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
   {
     #region Implementation of IClientTransactionListener
 
-    public void RootTransactionCreating ()
-    {
-    }
-
     public void SubTransactionCreating ()
     {
     }
@@ -159,6 +155,18 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
 
     #endregion
 
+    #region Implementation of IPersistenceListener
+
+    public void ConnectionOpened (Guid connectionID)
+    {
+    }
+
+    public void ConnectionClosed (Guid connectionID)
+    {
+    }
+    
+    #endregion
+
     private readonly LinqToSqlAppender _appender;
     private readonly Guid _clientTransactionID;
 
@@ -168,17 +176,12 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       _appender = LinqToSqlAppender.Instance;
     }
 
-    public void RootTransactionCreated (ClientTransaction rootTransaction)
-    {
-      //TODO: _appender.ConnectionStarted (_clientTransactionID);
-    }
-
-    public void ConnectionOpened (Guid connectionID)
+    public void TransactionInitializing ()
     {
       _appender.ConnectionStarted (_clientTransactionID);
     }
 
-    public void ConnectionClosed (Guid connectionID)
+    public void TransactionDiscarding ()
     {
       _appender.ConnectionDisposed (_clientTransactionID);
     }

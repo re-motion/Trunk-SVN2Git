@@ -30,11 +30,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </remarks>
   public interface IClientTransactionListener : INullObject
   {
-    void RootTransactionCreating ();
-    void RootTransactionCreated (ClientTransaction rootTransaction);
+    void TransactionInitializing ();
+    void TransactionDiscarding ();
 
     void SubTransactionCreating ();
     void SubTransactionCreated (ClientTransaction subTransaction);
+
 
     /// <summary>
     /// Indicates a new <see cref="DomainObject"/> instance is being created. This event is called while the <see cref="DomainObject"/> base 

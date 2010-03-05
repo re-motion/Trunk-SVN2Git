@@ -37,21 +37,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return true; }
     }
 
-    public void RootTransactionCreating ()
+    public void TransactionInitializing ()
     {
-      // not handled by this listener
     }
 
-    public void RootTransactionCreated (ClientTransaction rootTransaction)
-    {
-      // not handled by this listener
-    }
-
-    public void SubTransactionCreating ()
+    public void TransactionDiscarding ()
     {
     }
 
     public void SubTransactionCreated (ClientTransaction subTransaction)
+    {
+    }
+
+    public void SubTransactionCreating ()
     {
     }
 

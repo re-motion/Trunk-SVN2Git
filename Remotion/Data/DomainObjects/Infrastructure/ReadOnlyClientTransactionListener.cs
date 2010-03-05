@@ -48,12 +48,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public void RootTransactionCreating ()
+    public void TransactionInitializing ()
     {
       // not handled by this listener
     }
 
-    public void RootTransactionCreated (ClientTransaction rootTransaction)
+    public void TransactionDiscarding ()
     {
       // not handled by this listener
     }
