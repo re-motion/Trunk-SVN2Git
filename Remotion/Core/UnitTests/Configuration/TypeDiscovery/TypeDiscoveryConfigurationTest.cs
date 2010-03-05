@@ -134,7 +134,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 
     [Test]
     [ExpectedException (typeof (ConfigurationErrorsException), 
-        ExpectedMessage = "In CustomRootAssemblyFinder mode, a custom root asembly finder must be specified in the type discovery configuration.", 
+        ExpectedMessage = "In CustomRootAssemblyFinder mode, a custom root assembly finder must be specified in the type discovery configuration.", 
         MatchType = MessageMatch.Contains)]
     public void CreateTypeDiscoveryService_CustomRootAssemblyFinder_MissingType ()
     {
