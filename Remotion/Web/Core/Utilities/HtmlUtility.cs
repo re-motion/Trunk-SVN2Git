@@ -40,6 +40,7 @@ public class HtmlUtility
       html = html.Replace ("\r\n", "<br />");
       html = html.Replace ("\n", "<br />");
       html = html.Replace ("\r", "<br />");
+      html = html.Replace ("'", "&#039;");
     }
     return html;
   }
