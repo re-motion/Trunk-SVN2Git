@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), TextValue);
+      Renderer = new BocMultilineTextValueQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), TextValue);
     }
 
     [Test]

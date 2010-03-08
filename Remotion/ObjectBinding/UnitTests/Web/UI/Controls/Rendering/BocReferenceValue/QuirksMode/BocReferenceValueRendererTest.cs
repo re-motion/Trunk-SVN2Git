@@ -313,7 +313,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     [Test]
     public void RenderOptions ()
     {
-      var renderer = new BocReferenceValueRenderer (HttpContext, Control, () => new StubDropDownList());
+      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
@@ -329,7 +329,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       Control.Stub (stub => stub.EnableIcon).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocReferenceValueRenderer (HttpContext, Control, () => new StubDropDownList());
+      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
@@ -345,7 +345,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       AddStyle();
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new BocReferenceValueRenderer (HttpContext, Control);
+      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       renderer.RenderOptionsMenuTitle (Html.Writer);
       Html.Writer.RenderEndTag();
@@ -356,7 +356,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
-      var renderer = new BocReferenceValueRenderer (HttpContext, Control, () => DropDownList);
+      var renderer = new BocReferenceValueQuirksModeRenderer (HttpContext, Control, () => DropDownList);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

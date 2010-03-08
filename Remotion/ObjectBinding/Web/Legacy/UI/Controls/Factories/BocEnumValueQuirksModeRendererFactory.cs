@@ -16,20 +16,20 @@
 // 
 using System;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocMultilineTextValue"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocEnumValue"/> controls.
   /// </summary>
-  public class BocMultilineTextValueRendererFactory : IBocMultilineTextValueRendererFactory
+  public class BocEnumValueQuirksModeRendererFactory : IBocEnumValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
     {
-      return new BocMultilineTextValueRenderer (context, control);
+      return new BocEnumValueQuirksModeRenderer (context, control);
     }
   }
 }

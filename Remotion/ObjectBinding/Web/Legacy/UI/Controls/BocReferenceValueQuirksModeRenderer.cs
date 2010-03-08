@@ -34,17 +34,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocReferenceValueRenderer : BocRendererBase<IBocReferenceValue>
+  public class BocReferenceValueQuirksModeRenderer : BocRendererBase<IBocReferenceValue>
   {
     private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control)
+    public BocReferenceValueQuirksModeRenderer (HttpContextBase context, IBocReferenceValue control)
         : this (context, control, () => new DropDownList())
     {
     }
 
-    public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
+    public BocReferenceValueQuirksModeRenderer (HttpContextBase context, IBocReferenceValue control, Func<DropDownList> dropDownListFactoryMethod)
         : base (context, control)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
@@ -59,19 +59,19 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
 
-      string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
+      string scriptFileKey = typeof (BocReferenceValueQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.js");
+            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
+      string styleFileKey = typeof (BocReferenceValueQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.css");
+            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.css");
 
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }

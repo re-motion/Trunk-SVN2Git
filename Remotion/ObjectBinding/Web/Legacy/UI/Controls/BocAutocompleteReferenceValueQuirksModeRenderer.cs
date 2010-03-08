@@ -36,11 +36,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// <para>During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.</para>
   /// <para>During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.</para>
   /// </remarks>
-  public class BocAutoCompleteReferenceValueRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValueQuirksModeRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+    public BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
         : base (context, control)
     {
     }
@@ -58,24 +58,24 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     {
       htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude (Control);
 
-      string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteScript";
+      string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_JQueryAutoCompleteScript";
       htmlHeadAppender.RegisterJavaScriptInclude (
           jqueryAutocompleteScriptKey,
           ResourceUrlResolver.GetResourceUrl (
               Control,
               Context,
-              typeof (BocAutoCompleteReferenceValueRenderer),
+              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.jquery.js"));
 
-      string scriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_Script";
+      string scriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Script";
       htmlHeadAppender.RegisterJavaScriptInclude (
           scriptKey,
           ResourceUrlResolver.GetResourceUrl (
               Control,
               Context,
-              typeof (BocAutoCompleteReferenceValueRenderer),
+              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.js"));
@@ -83,25 +83,25 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
     private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
     {
-      string styleKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_Style";
+      string styleKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (
           styleKey,
           ResourceUrlResolver.GetResourceUrl (
               Control,
               Context,
-              typeof (BocAutoCompleteReferenceValueRenderer),
+              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.css"),
           HtmlHeadAppender.Priority.Library);
 
-      string jqueryAutocompleteStyleKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteStyle";
+      string jqueryAutocompleteStyleKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_JQueryAutoCompleteStyle";
       htmlHeadAppender.RegisterStylesheetLink (
           jqueryAutocompleteStyleKey,
           ResourceUrlResolver.GetResourceUrl (
               Control,
               Context,
-              typeof (BocAutoCompleteReferenceValueRenderer),
+              typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
               ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.jquery.css"),

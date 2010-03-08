@@ -33,13 +33,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// <seealso cref="IBocBooleanValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocBooleanValueRenderer.xml' path='BocBooleanValueRenderer/Class'/>
-  public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>
+  public class BocBooleanValueQuirksModeRenderer : BocBooleanValueRendererBase<IBocBooleanValue>
   {
     private const string c_nullString = "null";
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValue).FullName + "_Startup_";
 
-    public BocBooleanValueRenderer (HttpContextBase context, IBocBooleanValue control)
+    public BocBooleanValueQuirksModeRenderer (HttpContextBase context, IBocBooleanValue control)
         : base (context, control)
     {
     }
@@ -48,19 +48,19 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string scriptFileKey = typeof (BocBooleanValueRenderer).FullName + "_Script";
+      string scriptFileKey = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocBooleanValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocBooleanValue.js");
+            Control, Context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocBooleanValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      string styleFileKey = typeof (BocBooleanValueRenderer).FullName + "_Style";
+      string styleFileKey = typeof (BocBooleanValueQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocBooleanValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocBooleanValue.css");
+            Control, Context, typeof (BocBooleanValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocBooleanValue.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     private void RegisterStarupScriptIfNeeded (BocBooleanValueResourceSet resourceSet)
     {
       string startUpScriptKey = s_startUpScriptKeyPrefix + resourceSet.ResourceKey;
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocBooleanValueRenderer), startUpScriptKey))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocBooleanValueQuirksModeRenderer), startUpScriptKey))
       {
         string trueValue = true.ToString();
         string falseValue = false.ToString();
@@ -153,7 +153,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
             resourceSet.TrueIconUrl,
             resourceSet.FalseIconUrl,
             resourceSet.NullIconUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocBooleanValueRenderer), startUpScriptKey, startupScript);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocBooleanValueQuirksModeRenderer), startUpScriptKey, startupScript);
       }
     }
 

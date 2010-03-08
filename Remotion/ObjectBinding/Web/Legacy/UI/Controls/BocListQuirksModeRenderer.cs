@@ -37,8 +37,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// This class should not be instantiated directly. Use a <see cref="BocRowRenderer"/> to obtain an instance.</remarks>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocListRenderer.xml' path='BocListRenderer/Class'/>
   /// <seealso cref="BocListNavigationBlockRenderer"/>
-  /// <seealso cref="BocListRendererFactory"/>
-  public class BocListRenderer : BocRendererBase<IBocList>
+  /// <seealso cref="BocListQuirksModeRendererFactory"/>
+  public class BocListQuirksModeRenderer : BocRendererBase<IBocList>
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
     /// <summary>
     /// Initializes the renderer with the <see cref="BocList"/> to render and the <see cref="HtmlTextWriter"/> to render it to,
-    /// as well as a <see cref="BocListRendererFactory"/> used to create detail renderers.
+    /// as well as a <see cref="BocListQuirksModeRendererFactory"/> used to create detail renderers.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
     /// <param name="context">The <see cref="HttpContextBase"/> which contains the response to render to.</param>
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     /// <param name="tableBlockRenderer">The <see cref="IBocListTableBlockRenderer"/> responsible for rendering the table-part of the <see cref="BocList"/>.</param>
     /// <param name="navigationBlockRenderer">The <see cref="IBocListNavigationBlockRenderer"/> responsible for rendering the navigation-part of the <see cref="BocList"/>.</param>
     /// <param name="menuBlockRenderer">The <see cref="IBocListMenuBlockRenderer"/> responsible for rendering the menu-part of the <see cref="BocList"/>.</param>
-    public BocListRenderer (
+    public BocListQuirksModeRenderer (
         HttpContextBase context,
         IBocList list,
         CssClassContainer cssClasses,
@@ -136,18 +136,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
-      string styleFileKey = typeof (BocListRenderer).FullName + "_Style";
+      string styleFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.css");
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
-      string scriptFileKey = typeof (BocListRenderer).FullName + "_Script";
+      string scriptFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocListRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.js");
+            Control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -278,13 +278,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
         return;
 
       string startUpScriptKey = typeof (IBocList).FullName + "_Startup";
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListRenderer), startUpScriptKey))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListQuirksModeRenderer), startUpScriptKey))
       {
         string script = string.Format (
             "BocList_InitializeGlobals ('{0}', '{1}');",
             CssClasses.DataRow,
             CssClasses.DataRowSelected);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocListRenderer), startUpScriptKey, script);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocListQuirksModeRenderer), startUpScriptKey, script);
       }
     }
   }

@@ -16,20 +16,20 @@
 // 
 using System;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocTextValue"/> controls.
   /// </summary>
-  public class BocAutoCompleteReferenceValueRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
+  public class BocTextValueQuirksModeRendererFactory : IBocTextValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocTextValue control)
     {
-      return new BocAutoCompleteReferenceValueRenderer (context, control);
+      return new BocTextValueQuirksModeRenderer (context, control);
     }
   }
 }

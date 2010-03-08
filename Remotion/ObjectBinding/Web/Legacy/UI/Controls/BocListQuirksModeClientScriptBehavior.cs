@@ -22,12 +22,12 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
-  public class BocListClientScriptBehavior : IClientScriptBahavior
+  public class BocListQuirksModeClientScriptBehavior : IClientScriptBahavior
   {
     private readonly HttpContextBase _context;
     private readonly IBocList _control;
 
-    public BocListClientScriptBehavior (HttpContextBase context, IBocList control)
+    public BocListQuirksModeClientScriptBehavior (HttpContextBase context, IBocList control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);

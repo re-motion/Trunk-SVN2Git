@@ -32,14 +32,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// <seealso cref="IBocEnumValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocEnumValueRenderer.xml' path='BocEnumValueRenderer/Class'/>
-  public class BocEnumValueRenderer : BocRendererBase<IBocEnumValue>
+  public class BocEnumValueQuirksModeRenderer : BocRendererBase<IBocEnumValue>
   {
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
     private const string c_defaultListControlWidth = "150pt";
 
-    public BocEnumValueRenderer (HttpContextBase context, IBocEnumValue control)
+    public BocEnumValueQuirksModeRenderer (HttpContextBase context, IBocEnumValue control)
         : base (context, control)
     {
     }
@@ -48,9 +48,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      var key = typeof (BocEnumValueRenderer).FullName + "_Style";
+      var key = typeof (BocEnumValueQuirksModeRenderer).FullName + "_Style";
       string url = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocEnumValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocEnumValue.css");
+          Control, Context, typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocEnumValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 

@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private string _keyDownScript;
     private const string _dummyScript = "return false;";
     private IBocBooleanValue _booleanValue;
-    private BocBooleanValueRenderer _renderer;
+    private BocBooleanValueQuirksModeRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
           resourceSet.TrueIconUrl,
           resourceSet.FalseIconUrl,
           resourceSet.NullIconUrl);
-      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_booleanValue, typeof (BocBooleanValueRenderer), startupScriptKey, _startupScript));
+      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_booleanValue, typeof (BocBooleanValueQuirksModeRenderer), startupScriptKey, _startupScript));
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_booleanValue, string.Empty)).Return (c_postbackEventReference);
 
@@ -259,7 +259,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), _booleanValue);
+      _renderer = new BocBooleanValueQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), _booleanValue);
       _renderer.Render (Html.Writer);
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

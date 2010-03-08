@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private IBocCheckBox _checkbox;
     private string _startupScript;
-    private BocCheckboxRenderer _renderer;
+    private BocCheckboxQuirksModeRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
           _checkbox.DefaultTrueDescription,
           _checkbox.DefaultFalseDescription);
-      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, typeof (BocCheckboxRenderer), _startUpScriptKey, _startupScript));
+      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, typeof (BocCheckboxQuirksModeRenderer), _startUpScriptKey, _startupScript));
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_checkbox, string.Empty)).Return (c_postbackEventReference);
 
@@ -224,7 +224,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     {
       _checkbox.Value = value;
 
-      _renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<HttpContextBase>(), _checkbox);
+      _renderer = new BocCheckboxQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), _checkbox);
       _renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// <summary>
   /// Responsible for creating the quirks mode column renderers.
   /// </summary>
-  public class BocColumnRendererFactory
+  public class BocColumnQuirksModeRendererFactory
       :
           IBocColumnRendererFactory<BocSimpleColumnDefinition>,
           IBocColumnRendererFactory<BocCompoundColumnDefinition>,

@@ -25,18 +25,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating the quirks mode renderer for <see cref="IBocList"/> and its parts except columns - for that,
-  /// see <see cref="BocColumnRendererFactory"/>.
+  /// see <see cref="BocColumnQuirksModeRendererFactory"/>.
   /// </summary>
-  public class BocListRendererFactory : IBocListRendererFactory
+  public class BocListQuirksModeRendererFactory : IBocListRendererFactory
   {
     public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
     {
-      return new BocListClientScriptBehavior (context, list);
+      return new BocListQuirksModeClientScriptBehavior (context, list);
     }
 
     public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
-      return new BocListRenderer (
+      return new BocListQuirksModeRenderer (
           context,
           list,
           CssClassContainer.Instance,

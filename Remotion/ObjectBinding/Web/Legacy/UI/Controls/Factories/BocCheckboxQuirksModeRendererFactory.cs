@@ -16,20 +16,20 @@
 // 
 using System;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocDateTimeValue"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocCheckBox"/> controls;
   /// </summary>
-  public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
+  public class BocCheckboxQuirksModeRendererFactory : IBocCheckboxRendererFactory
   {
-    IRenderer IBocDateTimeValueRendererFactory.CreateRenderer (HttpContextBase context, IBocDateTimeValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control)
     {
-      return new BocDateTimeValueRenderer (context, control);
+      return new BocCheckboxQuirksModeRenderer (context, control);
     }
   }
 }

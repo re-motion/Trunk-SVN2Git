@@ -36,11 +36,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// <seealso cref="IBocDateTimeValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>
-  public class BocDateTimeValueRenderer : BocDateTimeValueRendererBase
+  public class BocDateTimeValueQuirksModeRenderer : BocDateTimeValueRendererBase
   {
     private const string c_defaultControlWidth = "150pt";
 
-    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control)
+    public BocDateTimeValueQuirksModeRenderer (HttpContextBase context, IBocDateTimeValue control)
         : base (context, control)
     {
     }
@@ -51,9 +51,9 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
       
-      string styleKey = typeof (BocDateTimeValueRenderer).FullName + "_Style";
+      string styleKey = typeof (BocDateTimeValueQuirksModeRenderer).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocDateTimeValueRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocDateTimeValue.css");
+          Control, Context, typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocDateTimeValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
