@@ -64,6 +64,8 @@ namespace Remotion.Web.UI
     /// <summary> <see langword="true"/> if <see cref="EnsureAppended"/> has already executed. </summary>
     private bool _hasAppendExecuted;
 
+    private WeakReference _handler = new WeakReference (null);
+
     /// <remarks>
     ///   Factory pattern. No public construction.
     /// </remarks>
@@ -126,6 +128,8 @@ namespace Remotion.Web.UI
     public void EnsureAppended (HtmlHeadContents htmlHeadContents)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadContents", htmlHeadContents);
+
+      EnsureStateIsClearedAfterServerTransfer();
 
       if (_hasAppendExecuted)
         return;
@@ -328,6 +332,8 @@ namespace Remotion.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNull ("headElement", headElement);
 
+      EnsureStateIsClearedAfterServerTransfer();
+      
       if (_hasAppendExecuted)
         throw new HttpException ("RegisterHeadElement must not be called after EnsureAppended has executed.");
       if (! IsRegistered (key))
@@ -348,6 +354,8 @@ namespace Remotion.Web.UI
     public bool IsRegistered (string key)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      EnsureStateIsClearedAfterServerTransfer();
 
       return _registeredHeadElements.Contains (key);
     }
@@ -379,5 +387,21 @@ namespace Remotion.Web.UI
     //    headElement.Text = innerHtml.ToString();
     //    RegisterHeadElement (key, headElement, priority);
     //  }
+
+    private void EnsureStateIsClearedAfterServerTransfer ()
+    {
+      HttpContext context = HttpContext.Current;
+      if (context != null)
+      {
+        var handler = context.Handler;
+        if (!object.ReferenceEquals (handler, _handler.Target))
+        {
+          _registeredHeadElements.Clear();
+          _sortedHeadElements.Clear();
+          _hasAppendExecuted = false;
+          _handler = new WeakReference (handler);
+        }
+      }
+    }
   }
 }
