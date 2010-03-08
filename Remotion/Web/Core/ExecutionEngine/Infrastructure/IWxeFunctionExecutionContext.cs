@@ -20,5 +20,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     object[] GetInParameters ();
     object[] GetOutParameters ();
+    object[] GetVariables ();
   }
 }

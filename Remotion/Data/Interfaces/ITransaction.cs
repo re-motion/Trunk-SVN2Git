@@ -85,7 +85,7 @@ namespace Remotion.Data
     void RegisterObjects (IEnumerable objects);
 
     /// <summary>Resets the transaction.</summary>
-    /// <remarks>Object references must still be valid after the reset.</remarks>
+    /// <remarks>Performs an operation that is logically equivalent to replacing the transaction with a new transaction.</remarks>
     void Reset ();
   }
 }

@@ -162,40 +162,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       _wrappedInstance.Discard ();
 
-      var oldTransaction = _wrappedInstance;
-      ClientTransaction newTransaction = oldTransaction.CreateEmptyTransactionOfSameType ();
-      _wrappedInstance = newTransaction;
-
-      EnlistSameDomainObjects (oldTransaction);
-      newTransaction.CopyTransactionEventHandlers (oldTransaction);
-    }
-
-    private void EnlistSameDomainObjects (ClientTransaction sourceTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
-      var enlistedObjects = new HashSet<DomainObject> ();
-
-      foreach (var domainObject in sourceTransaction.GetEnlistedDomainObjects ())
-      {
-        _wrappedInstance.EnlistDomainObject (domainObject);
-        enlistedObjects.Add (domainObject);
-      }
-
-      foreach (DomainObject domainObject in enlistedObjects)
-      {
-        try
-        {
-          _wrappedInstance.CopyCollectionEventHandlers (domainObject, sourceTransaction);
-        }
-        catch (ObjectNotFoundException)
-        {
-          // ignore
-        }
-        catch (ObjectDiscardedException)
-        {
-          // ignore
-        }
-      }
+      _wrappedInstance = _wrappedInstance.CreateEmptyTransactionOfSameType ();
     }
   }
 }

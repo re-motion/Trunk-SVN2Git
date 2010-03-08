@@ -47,7 +47,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _executionContext = executionContext;
       _child = NullTransactionStrategy.Null;
 
-      var inParameters = ExecutionContext.GetInParameters();
+      var inParameters = _executionContext.GetInParameters ();
       RegisterObjects (inParameters);
     }
 
@@ -71,7 +71,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _autoCommit; }
     }
 
-    public override TransactionStrategyBase OuterTransactionStrategy
+    public override sealed TransactionStrategyBase OuterTransactionStrategy
     {
       get { return _outerTransactionStrategy; }
     }
@@ -100,12 +100,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       if (_scope != null)
       {
-        _scope.Leave();
-        _transaction.Reset();
+        _scope.Leave ();
+        _transaction.Reset ();
         EnterScope();
       }
       else
+      {
         _transaction.Reset();
+      }
+
+      var variables = _executionContext.GetVariables();
+      RegisterObjects (variables);
     }
 
     public override sealed TransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext, WxeContext wxeContext)
@@ -161,7 +166,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       ExecuteAndWrapInnerException (EnterScope, null);
 
-      Child.OnExecutionPlay (context, listener);
+      _child.OnExecutionPlay (context, listener);
     }
 
     public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
@@ -172,13 +177,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionStop may not be invoked unless OnExecutionPlay was called first.");
 
-      Child.OnExecutionStop (context, listener);
+      _child.OnExecutionStop (context, listener);
 
-      if (AutoCommit)
+      if (_autoCommit)
         CommitTransaction();
 
-      var outParameters = ExecutionContext.GetOutParameters();
-      OuterTransactionStrategy.RegisterObjects (outParameters);
+      var outParameters = _executionContext.GetOutParameters ();
+      _outerTransactionStrategy.RegisterObjects (outParameters);
 
       LeaveScopeAndReleaseTransaction (null);
     }
@@ -194,7 +199,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        Child.OnExecutionPause (context, listener);
+        _child.OnExecutionPause (context, listener);
       }
       catch (Exception e)
       {
@@ -218,7 +223,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        Child.OnExecutionFail (context, listener, exception);
+        _child.OnExecutionFail (context, listener, exception);
       }
       catch (Exception e)
       {

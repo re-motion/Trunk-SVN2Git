@@ -283,6 +283,11 @@ namespace Remotion.Web.ExecutionEngine
       return _variablesContainer.ParameterDeclarations.Where (p => p.IsOut).Select (p => p.GetValue (_variablesContainer.Variables)).ToArray ();
     }
 
+    object[] IWxeFunctionExecutionContext.GetVariables ()
+    {
+      return _variablesContainer.Variables.Values.Cast<object>().ToArray();
+    }
+
     public string ReturnUrl
     {
       get { return _returnUrl; }

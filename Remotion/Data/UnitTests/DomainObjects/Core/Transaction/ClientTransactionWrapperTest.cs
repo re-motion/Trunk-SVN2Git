@@ -161,7 +161,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction clientTransactionBefore = ClientTransaction.CreateRootTransaction();
       ITransaction transaction = clientTransactionBefore.ToITransation();
       Order order;
-      bool addedCalled;
       bool loadedCalled;
 
       using (clientTransactionBefore.EnterNonDiscardingScope())
@@ -169,9 +168,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         order = Order.GetObject (DomainObjectIDs.Order1);
         order.OrderNumber = 7;
         clientTransactionBefore.Rollback();
-
-        addedCalled = false;
-        order.OrderItems.Added += delegate { addedCalled = true; };
 
         loadedCalled = false;
         clientTransactionBefore.Loaded += delegate { loadedCalled = true; };
@@ -186,18 +182,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (clientTransactionAfter.EnterNonDiscardingScope())
       {
-        Assert.That (clientTransactionAfter.IsEnlisted (order), Is.True);
-        Assert.That (order.OrderNumber, Is.EqualTo (1));
-
-        Assert.That (addedCalled, Is.False);
-        order.OrderItems.Add (OrderItem.NewObject());
-        Assert.That (addedCalled, Is.True);
+        Assert.That (clientTransactionAfter.IsEnlisted (order), Is.False);
 
         loadedCalled = false;
 
         Order.GetObject (DomainObjectIDs.Order2);
 
-        Assert.That (loadedCalled, Is.True);
+        Assert.That (loadedCalled, Is.False);
       }
     }
 
@@ -239,13 +230,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         Assert.That (addedCalled, Is.False);
         order.OrderItems.Add (OrderItem.NewObject());
-        Assert.That (addedCalled, Is.True);
+        Assert.That (addedCalled, Is.False);
 
         loadedCalled = false;
 
         Order.GetObject (DomainObjectIDs.Order2);
 
-        Assert.That (loadedCalled, Is.True);
+        Assert.That (loadedCalled, Is.False);
       }
     }
 

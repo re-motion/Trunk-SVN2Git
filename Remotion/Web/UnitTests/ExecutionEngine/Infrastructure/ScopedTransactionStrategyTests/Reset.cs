@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
@@ -37,10 +38,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     [Test]
     public void Test_WithoutScope ()
     {
+      var object1 = new object ();
+      var object2 = new object ();
+
       TransactionMock.BackToRecord ();
       using (MockRepository.Ordered())
       {
         TransactionMock.Expect (mock => mock.Reset ());
+
+        ExecutionContextMock.Expect (mock => mock.GetVariables()).Return (new[] { object1, object2 });
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
       }
       Assert.That (_strategy.Scope, Is.Null);
       MockRepository.ReplayAll();
@@ -75,6 +82,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     [Test]
     public void Test_WithScope ()
     {
+      var object1 = new object ();
+      var object2 = new object ();
+
       InvokeOnExecutionPlay (_strategy);
       TransactionMock.BackToRecord ();
       var newScopeMock = MockRepository.StrictMock<ITransactionScope>();
@@ -84,6 +94,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
         ScopeMock.Expect (mock => mock.Leave());
         TransactionMock.Expect (mock => mock.Reset ());
         TransactionMock.Expect (mock => mock.EnterScope ()).Return (newScopeMock);
+
+        ExecutionContextMock.Expect (mock => mock.GetVariables()).Return (new[] { object1, object2 });
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
       MockRepository.ReplayAll();

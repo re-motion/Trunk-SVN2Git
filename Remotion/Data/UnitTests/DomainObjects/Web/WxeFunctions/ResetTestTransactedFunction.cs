@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 using Assertion=Remotion.Utilities.Assertion;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
@@ -33,35 +32,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
       Assertion.IsFalse (TransactionMode.AutoCommit);
     }
 
+    public Order TheOrder
+    {
+      get { return (Order) Variables["TheOrder"]; }
+      set { Variables["TheOrder"] = value; }
+    }
+
     private void Step1 ()
     {
       ClientTransaction transactionBefore = ClientTransactionScope.CurrentTransaction;
-      Order order = Order.GetObject (new DomainObjectIDs().Order1);
-      order.OrderNumber = 7;
+      Order order1 = Order.GetObject (new DomainObjectIDs().Order1);
+      order1.OrderNumber = 7;
+      TheOrder = order1;
+
+      Order order2 = Order.GetObject (new DomainObjectIDs().Order2);
+
       transactionBefore.Rollback();
 
       bool addedCalled = false;
-      order.OrderItems.Added += delegate { addedCalled = true; };
+      order1.OrderItems.Added += delegate { addedCalled = true; };
 
       bool loadedCalled = false;
       ClientTransactionScope.CurrentTransaction.Loaded += delegate { loadedCalled = true; };
 
-      Transaction.Reset ();
+      Transaction.Reset();
 
       Assert.AreNotEqual (transactionBefore, ClientTransactionScope.CurrentTransaction);
-      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order));
+      Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order1));
+      
+      var isRootTransaction = ParentFunction == null;
+      if (isRootTransaction)
+        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (order2));
+      else
+        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (order2));
 
-      Assert.AreEqual (1, order.OrderNumber);
+      Assert.AreEqual (1, order1.OrderNumber);
 
       Assert.IsFalse (addedCalled);
-      order.OrderItems.Add (OrderItem.NewObject());
-      Assert.AreEqual (true, addedCalled);
+      order1.OrderItems.Add (OrderItem.NewObject());
+      Assert.IsFalse (addedCalled);
 
       loadedCalled = false;
 
-      Order.GetObject (new DomainObjectIDs().Order2);
+      Order.GetObject (new DomainObjectIDs().Order3);
 
-      Assert.AreEqual (true, loadedCalled);
+      Assert.IsFalse (loadedCalled);
     }
   }
 }

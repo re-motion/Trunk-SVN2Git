@@ -476,7 +476,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    public void ResetCopiesEventHandlers ()
+    public void ResetDoesNotCopyEventHandlers ()
     {
       ResetTestTransactedFunction function = new ResetTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot);
       function.Execute (Context);
