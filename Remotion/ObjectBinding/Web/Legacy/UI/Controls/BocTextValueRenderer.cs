@@ -17,10 +17,13 @@
 using System;
 using System.Web;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 

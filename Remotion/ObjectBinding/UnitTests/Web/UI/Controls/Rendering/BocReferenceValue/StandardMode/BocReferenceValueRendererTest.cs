@@ -20,7 +20,7 @@ using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode

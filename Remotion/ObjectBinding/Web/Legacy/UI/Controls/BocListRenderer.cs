@@ -16,16 +16,17 @@
 // 
 using System;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering a <see cref="BocList"/> object.
@@ -64,7 +65,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
         IBocListTableBlockRenderer tableBlockRenderer,
         IBocListNavigationBlockRenderer navigationBlockRenderer,
         IBocListMenuBlockRenderer menuBlockRenderer)
-      : base (context, list)
+        : base (context, list)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
       ArgumentUtility.CheckNotNull ("tableBlockRenderer", tableBlockRenderer);

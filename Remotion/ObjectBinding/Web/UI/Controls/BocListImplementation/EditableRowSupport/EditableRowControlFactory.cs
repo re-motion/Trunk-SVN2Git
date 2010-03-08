@@ -21,7 +21,7 @@ using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport
 {
   public class EditableRowControlFactory
   {

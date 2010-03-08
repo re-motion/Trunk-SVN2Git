@@ -17,7 +17,7 @@
 using System;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   public class BocListClientScriptBehavior : IClientScriptBahavior
   {

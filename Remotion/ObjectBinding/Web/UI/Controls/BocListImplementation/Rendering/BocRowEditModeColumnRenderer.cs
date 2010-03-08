@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocRowEditModeColumnDefinition"/> columns.

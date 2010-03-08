@@ -23,7 +23,7 @@ using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
+namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary>
   /// Base class for renderers of <see cref="IBocRenderableControl"/> objects.

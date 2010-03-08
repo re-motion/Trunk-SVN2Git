@@ -23,7 +23,7 @@ using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   public class BocDateTimeValueRenderer : BocDateTimeValueRendererBase
   {

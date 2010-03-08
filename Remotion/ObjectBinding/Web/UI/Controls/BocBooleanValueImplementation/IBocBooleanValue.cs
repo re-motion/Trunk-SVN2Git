@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
   public interface IBocBooleanValue : IBocBooleanValueBase
   {

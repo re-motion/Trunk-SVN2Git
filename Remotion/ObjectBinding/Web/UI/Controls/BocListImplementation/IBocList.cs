@@ -20,15 +20,14 @@ using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Globalization;
 using Image=System.Web.UI.WebControls.Image;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 {
   public interface IBocList
       : IBusinessObjectBoundEditableWebControl,

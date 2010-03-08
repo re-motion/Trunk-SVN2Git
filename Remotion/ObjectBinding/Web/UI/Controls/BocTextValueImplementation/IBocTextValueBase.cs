@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
 {
   public interface IBocTextValueBase : IBusinessObjectBoundEditableWebControl, IBocRenderableControl
   {

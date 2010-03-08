@@ -15,10 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for factories creating <see cref="IBocSelectorColumnRenderer"/> renderers.

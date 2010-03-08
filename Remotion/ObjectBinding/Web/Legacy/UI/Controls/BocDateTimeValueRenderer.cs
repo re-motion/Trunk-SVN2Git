@@ -18,6 +18,9 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -25,7 +28,7 @@ using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode;
 using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocDateTimeValue"/> controls, but not for the included <see cref="IDatePickerButton"/>.

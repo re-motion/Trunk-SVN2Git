@@ -17,14 +17,13 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using System.Web;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocBooleanValue"/> controls.

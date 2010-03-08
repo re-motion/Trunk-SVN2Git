@@ -22,7 +22,7 @@ using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering single data rows or the title row of a specific <see cref="BocList"/>.

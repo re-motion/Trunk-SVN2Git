@@ -19,7 +19,7 @@ using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for factory creating renderers and prerenderers for <see cref="IBocList"/> controls.

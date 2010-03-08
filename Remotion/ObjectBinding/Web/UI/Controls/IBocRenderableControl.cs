@@ -19,7 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
+namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary>
   /// Common interface for controls which exposes properties relevant to rendering.

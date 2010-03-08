@@ -18,7 +18,6 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;

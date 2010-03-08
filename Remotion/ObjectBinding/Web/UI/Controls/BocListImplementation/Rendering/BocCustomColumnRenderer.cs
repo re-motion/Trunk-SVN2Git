@@ -18,12 +18,11 @@ using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
 using System.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering table cells of <see cref="BocCustomColumnDefinition"/> columns.

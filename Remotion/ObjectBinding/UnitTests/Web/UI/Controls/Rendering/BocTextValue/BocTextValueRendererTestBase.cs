@@ -19,7 +19,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue

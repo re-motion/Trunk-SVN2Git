@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList
 {

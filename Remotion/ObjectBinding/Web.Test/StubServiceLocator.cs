@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 
 namespace OBWTest
 {

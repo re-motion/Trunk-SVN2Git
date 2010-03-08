@@ -25,7 +25,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class BocAutoCompleteReferenceValueRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>
   {

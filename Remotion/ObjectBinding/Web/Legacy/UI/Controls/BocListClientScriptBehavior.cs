@@ -16,10 +16,11 @@
 // 
 using System;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   public class BocListClientScriptBehavior : IClientScriptBahavior
   {

@@ -23,7 +23,7 @@ using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Quirks Mode.
@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
     public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control)
-      : this (context, control, () => new DropDownList ())
+        : this (context, control, () => new DropDownList ())
     {
     }
 

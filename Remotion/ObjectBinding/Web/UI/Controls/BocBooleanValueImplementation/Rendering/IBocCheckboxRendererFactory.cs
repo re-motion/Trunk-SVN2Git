@@ -18,7 +18,7 @@ using System;
 using System.Web;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocCheckBox"/> controls.

@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for classes able to render table cells from a column definition derived from <see cref="BocColumnDefinition"/>.

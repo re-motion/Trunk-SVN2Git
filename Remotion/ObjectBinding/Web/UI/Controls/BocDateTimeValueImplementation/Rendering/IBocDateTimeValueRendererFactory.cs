@@ -18,7 +18,7 @@ using System;
 using System.Web;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocDateTimeValue"/> controls.

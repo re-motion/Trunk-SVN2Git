@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
 {
   public interface IBocMultilineTextValue : IBocTextValueBase
   {

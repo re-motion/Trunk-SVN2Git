@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation
 {
   /// <summary>
   /// Utility class for formatting date/time values in a consistent way.

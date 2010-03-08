@@ -18,12 +18,14 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Quirks Mode.

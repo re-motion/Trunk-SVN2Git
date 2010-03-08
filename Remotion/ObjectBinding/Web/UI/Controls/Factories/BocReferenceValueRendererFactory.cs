@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="IBocReferenceValue"/> controls.

@@ -18,12 +18,14 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocEnumValue"/> controls.

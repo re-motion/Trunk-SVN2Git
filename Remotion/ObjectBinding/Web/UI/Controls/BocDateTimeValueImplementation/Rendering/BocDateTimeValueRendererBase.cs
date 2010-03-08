@@ -17,12 +17,11 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   public abstract class BocDateTimeValueRendererBase : BocRendererBase<IBocDateTimeValue>
   {

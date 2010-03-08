@@ -18,10 +18,9 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocTextValue"/> and <see cref="BocMultilineTextValue"/> controls, which is done

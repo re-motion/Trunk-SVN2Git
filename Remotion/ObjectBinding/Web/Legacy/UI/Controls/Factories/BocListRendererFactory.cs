@@ -17,10 +17,11 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating the quirks mode renderer for <see cref="IBocList"/> and its parts except columns - for that,

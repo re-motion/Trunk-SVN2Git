@@ -16,10 +16,9 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public interface IBocReferenceValue : IBusinessObjectBoundEditableWebControl, IBocRenderableControl
   {

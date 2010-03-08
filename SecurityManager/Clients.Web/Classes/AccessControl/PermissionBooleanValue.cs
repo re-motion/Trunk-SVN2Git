@@ -17,7 +17,7 @@
 // 
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.Web;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl

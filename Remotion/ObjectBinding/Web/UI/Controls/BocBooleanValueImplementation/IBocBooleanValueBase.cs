@@ -16,9 +16,8 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
   public interface IBocBooleanValueBase : IBusinessObjectBoundEditableWebControl, IBocRenderableControl
   {

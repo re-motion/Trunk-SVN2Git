@@ -18,9 +18,8 @@ using System;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 {
   public class BocListCustomColumnTuple : Tuple<IBusinessObject, int, Control>
   {

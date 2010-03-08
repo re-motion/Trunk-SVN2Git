@@ -17,11 +17,11 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Utilities;
 using System.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Abstract base class for column renderers that handle classes derived from <see cref="BocValueColumnDefinition"/>.

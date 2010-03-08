@@ -19,8 +19,7 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
 

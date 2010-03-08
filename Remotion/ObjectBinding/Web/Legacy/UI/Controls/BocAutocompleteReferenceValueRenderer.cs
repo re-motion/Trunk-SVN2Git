@@ -19,13 +19,15 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Quirks Mode.
@@ -39,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     private const string c_defaultControlWidth = "150pt";
 
     public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
-      : base (context, control)
+        : base (context, control)
     {
     }
 

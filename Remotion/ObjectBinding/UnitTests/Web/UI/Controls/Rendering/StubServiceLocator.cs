@@ -20,18 +20,13 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode.Factories;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode.Factories;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factories;
@@ -39,6 +34,10 @@ using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories;
+using BocDateTimeValueRendererFactory=
+    Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories.BocDateTimeValueRendererFactory;
+using BocReferenceValueRendererFactory=
+    Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories.BocReferenceValueRendererFactory;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 {

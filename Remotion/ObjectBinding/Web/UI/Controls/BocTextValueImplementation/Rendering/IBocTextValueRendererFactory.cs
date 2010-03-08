@@ -18,7 +18,7 @@ using System;
 using System.Web;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IBocTextValue"/> controls.

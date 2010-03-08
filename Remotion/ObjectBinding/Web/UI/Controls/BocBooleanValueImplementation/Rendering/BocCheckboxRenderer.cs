@@ -23,7 +23,7 @@ using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.

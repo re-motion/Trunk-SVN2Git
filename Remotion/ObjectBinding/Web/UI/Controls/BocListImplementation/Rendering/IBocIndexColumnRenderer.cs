@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Interface for classes that render the index column of <see cref="IBocList"/> controls.

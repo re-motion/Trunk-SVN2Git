@@ -17,14 +17,16 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocBooleanValue"/> controls.

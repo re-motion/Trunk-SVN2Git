@@ -16,7 +16,7 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
   /// <summary>
   /// The <see cref="BocBooleanValueResourceSet"/> type is a value object that holds the information required 

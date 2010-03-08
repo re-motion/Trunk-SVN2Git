@@ -17,14 +17,14 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering the navigation block of a <see cref="BocList"/>.

@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating the quirks mode column renderers.
@@ -35,42 +38,42 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
   {
     public IBocColumnRenderer CreateRenderer(HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition)
     {
-      return new StandardMode.BocSimpleColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocSimpleColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
     
     public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition)
     {
-      return new StandardMode.BocCompoundColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocCompoundColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition)
     {
-      return new StandardMode.BocCommandColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocCommandColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCustomColumnDefinition columnDefinition)
     {
-      return new StandardMode.BocCustomColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocCustomColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
     {
-      return new StandardMode.BocDropDownMenuColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocDropDownMenuColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
     public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
     {
-      return new StandardMode.BocRowEditModeColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      return new BocRowEditModeColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
     }
 
     IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
-      return new StandardMode.BocIndexColumnRenderer (context, list, CssClassContainer.Instance);
+      return new BocIndexColumnRenderer (context, list, CssClassContainer.Instance);
     }
 
     IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
-      return new StandardMode.BocSelectorColumnRenderer (context, list, CssClassContainer.Instance);
+      return new BocSelectorColumnRenderer (context, list, CssClassContainer.Instance);
     }
   }
 }

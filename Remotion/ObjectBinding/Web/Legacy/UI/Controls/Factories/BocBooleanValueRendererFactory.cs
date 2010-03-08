@@ -16,18 +16,20 @@
 // 
 using System;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.QuirksMode.Factories
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocBooleanValue"/> controls;
   /// </summary>
-  public class BocAutoCompleteReferenceValueRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
+  public class BocBooleanValueRendererFactory : IBocBooleanValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control)
     {
-      return new BocAutoCompleteReferenceValueRenderer (context, control);
+      return new BocBooleanValueRenderer (context, control);
     }
   }
 }

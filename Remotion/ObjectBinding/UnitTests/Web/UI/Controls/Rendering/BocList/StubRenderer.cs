@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {

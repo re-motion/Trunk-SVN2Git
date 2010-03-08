@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList
 {

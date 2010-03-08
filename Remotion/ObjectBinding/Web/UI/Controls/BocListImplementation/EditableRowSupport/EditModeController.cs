@@ -27,7 +27,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport
 {
   [ToolboxItem (false)]
   public class EditModeController : PlaceHolder, IEditModeController
@@ -624,7 +624,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
     {
       base.OnInit (e);
 
-      if (!ControlHelper.IsDesignMode ((IControl)this))
+      if (!ControlHelper.IsDesignMode (this))
         Page.RegisterRequiresControlState (this);
     }
 

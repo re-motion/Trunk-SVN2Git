@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport
 {
   public interface IEditModeController : IControl
   {

@@ -16,9 +16,8 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   public interface IBocRowRenderer
   {

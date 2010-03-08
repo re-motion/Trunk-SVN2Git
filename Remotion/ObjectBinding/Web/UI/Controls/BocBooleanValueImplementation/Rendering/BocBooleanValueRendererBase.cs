@@ -17,14 +17,13 @@
 using System;
 using System.Web.UI;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
   /// Base class for the renderers in the same namespace. Contains common constants and methods.
-  /// <seealso cref="BocCheckboxRenderer"/>
   /// <seealso cref="BocBooleanValueRenderer"/>
+  /// <seealso cref="BocCheckboxRenderer"/>
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
   public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>

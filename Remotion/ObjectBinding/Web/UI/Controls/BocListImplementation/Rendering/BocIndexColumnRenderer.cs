@@ -19,7 +19,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using System.Web;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering the index column of a <see cref="IBocList"/>.

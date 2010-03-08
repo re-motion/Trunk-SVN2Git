@@ -21,7 +21,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
   /// <summary>
   /// Provides a label for rendering a <see cref="BocMultilineTextValue"/> control in read-only mode. 

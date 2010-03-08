@@ -20,7 +20,7 @@ using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web;
 using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.Utilities;

@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Collections;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;

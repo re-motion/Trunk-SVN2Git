@@ -22,14 +22,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
 {
   /// <summary>
   /// Abstract base class for <see cref="BocTextValue"/> and <see cref="BocMultilineTextValue"/>, both of which handle text input.

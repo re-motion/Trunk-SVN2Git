@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating the quirks mode column renderers.

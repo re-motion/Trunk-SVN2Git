@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="IBocBooleanValue"/> controls.

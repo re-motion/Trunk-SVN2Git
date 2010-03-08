@@ -29,9 +29,8 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public abstract class BocReferenceValueBase : BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IPostBackEventHandler, IBocMenuItemContainer
   {
@@ -331,7 +330,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> 
-    ///   Gets or sets a flag that determines whether the icon is shown in front of the <see cref="BocReferenceValue.Value"/>.
+    ///   Gets or sets a flag that determines whether the icon is shown in front of the <see cref="Value"/>.
     /// </summary>
     /// <value> <see langword="true"/> to show the icon. The default value is <see langword="true"/>. </value>
     /// <remarks> 

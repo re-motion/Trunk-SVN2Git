@@ -19,7 +19,7 @@ using System;
 using System.Web;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.SecurityManager.Clients.Web.UI;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;

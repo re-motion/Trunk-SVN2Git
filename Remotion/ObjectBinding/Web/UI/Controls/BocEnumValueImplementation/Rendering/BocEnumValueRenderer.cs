@@ -23,7 +23,7 @@ using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocEnumValue"/> controls.

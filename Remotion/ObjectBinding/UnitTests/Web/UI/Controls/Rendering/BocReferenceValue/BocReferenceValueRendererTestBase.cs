@@ -24,6 +24,7 @@ using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;

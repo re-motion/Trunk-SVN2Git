@@ -22,7 +22,7 @@ using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Abstract base class for column renderers that can handle derived classes of <see cref="BocCommandEnabledColumnDefinition"/>.

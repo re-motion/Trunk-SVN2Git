@@ -18,65 +18,63 @@ using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport
 {
-
-[Serializable]
-public class EditableRowIDProvider
-{
-  // types
-
-  // static members and constants
-
-  // member fields
-
-  private string _idFormat;
-  private int _nextID;
-  private StringCollection _excludedIDs = new StringCollection();
-
-  // construction and disposing
-
-  public EditableRowIDProvider (string idFormat)
+  [Serializable]
+  public class EditableRowIDProvider
   {
-    ArgumentUtility.CheckNotNullOrEmpty ("idFormat", idFormat);
+    // types
 
-    _idFormat = idFormat;
-    _nextID = 0;
-  }
+    // static members and constants
 
-  // methods and properties
+    // member fields
 
-  public string GetNextID ()
-  {
-    string id;
-    do {
-      id = string.Format (_idFormat, _nextID);
-      _nextID++;
-    } while (_excludedIDs.Contains (id));
+    private string _idFormat;
+    private int _nextID;
+    private StringCollection _excludedIDs = new StringCollection();
 
-    return id;
-  }
+    // construction and disposing
 
-  public void ExcludeID (string id)
-  {
-    ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+    public EditableRowIDProvider (string idFormat)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("idFormat", idFormat);
 
-    if (! _excludedIDs.Contains (id))
-      _excludedIDs.Add (id);
-  }
+      _idFormat = idFormat;
+      _nextID = 0;
+    }
 
-  public void Reset ()
-  {
-    _nextID = 0;
-  }
+    // methods and properties
 
-  public string[] GetExcludedIDs ()
-  {
-    string[] ids = new string[_excludedIDs.Count];
-    _excludedIDs.CopyTo (ids, 0);
+    public string GetNextID ()
+    {
+      string id;
+      do {
+        id = string.Format (_idFormat, _nextID);
+        _nextID++;
+      } while (_excludedIDs.Contains (id));
+
+      return id;
+    }
+
+    public void ExcludeID (string id)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+
+      if (! _excludedIDs.Contains (id))
+        _excludedIDs.Add (id);
+    }
+
+    public void Reset ()
+    {
+      _nextID = 0;
+    }
+
+    public string[] GetExcludedIDs ()
+    {
+      string[] ids = new string[_excludedIDs.Count];
+      _excludedIDs.CopyTo (ids, 0);
     
-    return ids;
+      return ids;
+    }
   }
-}
-
 }

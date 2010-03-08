@@ -23,7 +23,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.DomainObjects.UberProfIntegration;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.Web;
