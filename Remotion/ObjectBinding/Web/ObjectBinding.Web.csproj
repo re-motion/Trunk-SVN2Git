@@ -279,116 +279,116 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\IDataEditControl.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocBooleanValue\BocBooleanValueResourceSet.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocDateTimeValue\DateTimeFormatter.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\BocListRowMenuTuple.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRow.cs">
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\BocBooleanValueResourceSet.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\DateTimeFormatter.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\BocListRowMenuTuple.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRow.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRowControlFactory.cs">
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRowControlFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRowDataSourceFactory.cs">
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRowDataSourceFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRowIDProvider.cs">
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRowIDProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Infrastructure\BocList\EditModeController.cs">
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditModeController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Infrastructure\BocList\EditModeValidator.cs">
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditModeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\IEditableRow.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\IEditModeController.cs" />
     <Compile Include="Legacy\UI\Controls\BocAutocompleteReferenceValueRenderer.cs" />
     <Compile Include="Legacy\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocAutoCompleteReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocAutoCompleteReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRendererFactory.cs" />
     <Compile Include="Legacy\UI\Controls\BocBooleanValueRenderer.cs" />
     <Compile Include="Legacy\UI\Controls\BocCheckboxRenderer.cs" />
     <Compile Include="Legacy\Factories\BocBooleanValueRendererFactory.cs" />
     <Compile Include="Legacy\Factories\BocCheckboxRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\BocBooleanValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\BocCheckboxRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\Factories\BocBooleanValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\Factories\BocCheckboxRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\BocDateTimeValueRendererBase.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererBase.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\BocBooleanValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocCheckboxRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRendererBase.cs" />
     <Compile Include="Legacy\UI\Controls\BocDateTimeValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRendererFactory.cs" />
     <Compile Include="Legacy\Factories\BocDateTimeValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\BocDateTimeValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\Factories\BocDateTimeValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\BocDateTimeValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRendererFactory.cs" />
     <Compile Include="Legacy\UI\Controls\BocEnumValueRenderer.cs" />
     <Compile Include="Legacy\Factories\BocEnumValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\BocEnumValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\Factories\BocEnumValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocRowRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListMenuBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\BocEnumValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocIndexColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListTableBlockRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocRowRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListMenuBlockRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListNavigationBlockRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRendererFactory.cs" />
     <Compile Include="Legacy\UI\Controls\BocListClientScriptBehavior.cs" />
     <Compile Include="Legacy\UI\Controls\BocListRenderer.cs" />
     <Compile Include="Legacy\Factories\BocColumnRendererFactory.cs" />
     <Compile Include="Legacy\Factories\BocListRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocIndexColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListClientScriptBehavior.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListTableBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSelectorColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\CssClassContainer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\Factories\BocColumnRendererFactory.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\BocListCustomColumnTuple.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocIndexColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListClientScriptBehavior.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListTableBlockRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocSelectorColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\CssClassContainer.cs" />
+    <Compile Include="UI\Controls\Factories\BocColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\BocListCustomColumnTuple.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\PropertyPathBindingCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCommandColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCommandEnabledColumnRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCompoundColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCustomColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocDropDownMenuColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\Factories\BocListRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocColumnRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListMenuBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListNavigationBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocRowRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocRowEditModeColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSimpleColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocValueColumnRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocCommandColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocCommandEnabledColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocCompoundColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocCustomColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocDropDownMenuColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\BocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListMenuBlockRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListNavigationBlockRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocRowRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocRowEditModeColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocSimpleColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocValueColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocColumnRenderer.cs" />
     <Compile Include="Legacy\UI\Controls\BocReferenceValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="Legacy\Factories\BocReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\BocReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\BocReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRendererFactory.cs" />
     <Compile Include="Legacy\UI\Controls\BocMultilineTextValueRenderer.cs" />
     <Compile Include="Legacy\UI\Controls\BocTextValueRenderer.cs" />
     <Compile Include="Legacy\Factories\BocMultilineTextValueRendererFactory.cs" />
     <Compile Include="Legacy\Factories\BocTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocMultilineTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocMultilineTextValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\BocTextValueRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocRendererBase.cs" />
+    <Compile Include="UI\Controls\Factories\BocMultilineTextValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocTextValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\IBocRenderableControl.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRendererBase.cs" />
+    <Compile Include="UI\Controls\BocRendererBase.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -610,13 +610,23 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="UI\Controls\Infrastructure\BocBooleanValue\" />
+    <Folder Include="UI\Controls\Infrastructure\BocDateTimeValue\" />
+    <Folder Include="UI\Controls\Infrastructure\BocList\" />
     <Folder Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\Factories\" />
     <Folder Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\Factories\" />
     <Folder Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\Factories\" />
     <Folder Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocEnumValue\StandardMode\Factories\" />
     <Folder Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocList\StandardMode\Factories\" />
     <Folder Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\" />
     <Folder Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
