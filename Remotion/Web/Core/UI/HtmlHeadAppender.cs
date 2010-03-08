@@ -130,9 +130,9 @@ namespace Remotion.Web.UI
       if (_hasAppendExecuted)
         return;
 
-      if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
+      if (ControlHelper.IsDesignMode (htmlHeadContents))
         return;
-      if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
+      if (ControlHelper.IsDesignMode (htmlHeadContents))
         htmlHeadContents.Controls.Clear();
 
       for (int idxPriority = 0; idxPriority < _sortedHeadElements.Count; idxPriority++)
@@ -146,7 +146,7 @@ namespace Remotion.Web.UI
         }
       }
 
-      if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
+      if (ControlHelper.IsDesignMode (htmlHeadContents))
       {
         _sortedHeadElements.Clear();
         _registeredHeadElements.Clear();
@@ -168,7 +168,7 @@ namespace Remotion.Web.UI
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///     All calls to <see cref="RegisterStylesheetLink"/> must be completed before
+    ///     All calls to <see cref="SetTitle"/> must be completed before
     ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Remove the title tag from the aspx-source.
@@ -194,7 +194,7 @@ namespace Remotion.Web.UI
 
     /// <summary> Registers a stylesheet file. </summary>
     /// <remarks>
-    ///   All calls to <see cref="RegisterStylesheetLink"/> must be completed before
+    ///   All calls to <see cref="RegisterStylesheetLink(string, string, Priority)"/> must be completed before
     ///   <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
     /// </remarks>
     /// <param name="key"> 
@@ -225,7 +225,7 @@ namespace Remotion.Web.UI
     /// <summary> Registers a stylesheet file. </summary>
     /// <remarks>
     ///   <para>
-    ///     All calls to <see cref="RegisterStylesheetLink"/> must be completed before
+    ///     All calls to <see cref="RegisterStylesheetLink(string, string)"/> must be completed before
     ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.
