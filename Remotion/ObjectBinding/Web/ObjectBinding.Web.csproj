@@ -220,14 +220,14 @@
     <Compile Include="UI\Controls\BocReferenceValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\BocReferenceValueBase.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\BocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocRowEditColumnDefinitionShow.cs" />
     <Compile Include="UI\Controls\BocRowEditModeColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocSimpleColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocTextValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\BocTextValueBase.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\BocTextValueBase.cs" />
     <Compile Include="UI\Controls\BocTextValueType.cs" />
     <Compile Include="UI\Controls\BocTextValueValidator.cs">
       <SubType>Code</SubType>
@@ -261,18 +261,18 @@
     <Compile Include="UI\Controls\DataEditControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UI\Controls\IBocAutoCompleteReferenceValue.cs" />
-    <Compile Include="UI\Controls\IBocBooleanValue.cs" />
-    <Compile Include="UI\Controls\IBocBooleanValueBase.cs" />
-    <Compile Include="UI\Controls\IBocCheckBox.cs" />
-    <Compile Include="UI\Controls\IBocDateTimeValue.cs" />
-    <Compile Include="UI\Controls\IBocEnumValue.cs" />
-    <Compile Include="UI\Controls\IBocList.cs" />
-    <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
-    <Compile Include="UI\Controls\IBocReferenceValue.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocAutoCompleteReferenceValue.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\IBocBooleanValue.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\IBocBooleanValueBase.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\IBocCheckBox.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\IBocDateTimeValue.cs" />
+    <Compile Include="UI\Controls\BocEnumValueImplementation\IBocEnumValue.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\IBocList.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\IBocMultilineTextValue.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValue.cs" />
     <Compile Include="UI\Controls\IBocSortableColumnDefinition.cs" />
-    <Compile Include="UI\Controls\IBocTextValue.cs" />
-    <Compile Include="UI\Controls\IBocTextValueBase.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\IBocTextValue.cs" />
+    <Compile Include="UI\Controls\BocTextValueImplementation\IBocTextValueBase.cs" />
     <Compile Include="UI\Controls\IBusinessObjectBoundEditableWebControl.cs" />
     <Compile Include="UI\Controls\IBusinessObjectBoundWebControl.cs" />
     <Compile Include="UI\Controls\IBusinessObjectDataSourceControl.cs">
@@ -304,8 +304,8 @@
     <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\IEditModeController.cs" />
     <Compile Include="Legacy\UI\Controls\BocAutocompleteReferenceValueRenderer.cs" />
     <Compile Include="Legacy\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
-    <Compile Include="UI\Controls\BocAutoCompleteReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderer.cs" />
-    <Compile Include="UI\Controls\BocAutoCompleteReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\IBocAutoCompleteReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocCheckboxRendererFactory.cs" />
@@ -372,9 +372,9 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocColumnRenderer.cs" />
     <Compile Include="Legacy\UI\Controls\BocReferenceValueRenderer.cs" />
-    <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="Legacy\Factories\BocReferenceValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\BocReferenceValueImplementation\BocReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRendererFactory.cs" />
