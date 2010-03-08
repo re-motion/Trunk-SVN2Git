@@ -2944,6 +2944,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
 
       Value = ListUtility.AddRange (Value, businessObjects, Property, false, true);
+
+      ClearSelectedRows();
     }
 
     /// <summary> Adds the <paramref name="businessObject"/> to the <see cref="Value"/> collection. </summary>
@@ -2958,6 +2960,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       Value = ListUtility.AddRange (Value, businessObject, Property, false, true);
+
+      ClearSelectedRows();
 
       if (Value == null)
         return -1;
@@ -2978,6 +2982,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (Value != null)
         Value = ListUtility.Remove (Value, businessObjects, Property, false);
+
+      ClearSelectedRows ();
     }
 
     /// <summary> Removes the <paramref name="businessObject"/> from the <see cref="Value"/> collection. </summary>
@@ -3008,6 +3014,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (Value != null)
         Value = ListUtility.Remove (Value, businessObject, Property, false);
+
+      ClearSelectedRows ();
     }
 
     /// <summary>
@@ -3371,7 +3379,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <remarks> Sets the dirty state. </remarks>
     protected virtual void RemoveBusinessObjects (IBusinessObject[] businessObjects)
     {
-      ClearSelectedRows();
       RemoveRows (businessObjects);
     }
 
