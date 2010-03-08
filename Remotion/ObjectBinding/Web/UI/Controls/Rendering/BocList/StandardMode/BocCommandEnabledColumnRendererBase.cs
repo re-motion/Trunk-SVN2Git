@@ -21,7 +21,6 @@ using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
@@ -59,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       writer.AddAttribute ("class", CssClasses.CommandText);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
       
-      contents = HtmlUtility.HtmlEncode (contents);
+      contents = HttpUtility.HtmlEncode (contents);
       if (StringUtility.IsNullOrEmpty (contents))
         contents = c_whiteSpace;
       writer.Write (contents);

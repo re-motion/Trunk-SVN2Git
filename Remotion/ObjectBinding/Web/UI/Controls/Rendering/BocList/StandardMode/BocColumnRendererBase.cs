@@ -21,7 +21,6 @@ using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
@@ -158,7 +157,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         writer.Write (c_designModeEmptyContents);
       else
       {
-        string contents = HtmlUtility.HtmlEncode (Column.ColumnTitleDisplayValue);
+        string contents = HttpUtility.HtmlEncode (Column.ColumnTitleDisplayValue);
         if (StringUtility.IsNullOrEmpty (contents))
           contents = c_whiteSpace;
         writer.Write (contents);
