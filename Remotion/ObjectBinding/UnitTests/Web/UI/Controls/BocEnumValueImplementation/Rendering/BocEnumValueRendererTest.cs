@@ -31,7 +31,7 @@ using System.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
   [TestFixture]
   public class BocEnumValueRendererTest : RendererTestBase

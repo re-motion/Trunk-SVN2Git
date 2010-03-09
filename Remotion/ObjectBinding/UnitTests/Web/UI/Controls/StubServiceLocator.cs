@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
@@ -35,7 +35,7 @@ using Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {

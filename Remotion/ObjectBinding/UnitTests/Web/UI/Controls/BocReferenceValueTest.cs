@@ -21,8 +21,6 @@ using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue;
 using Remotion.ObjectBinding.Web;
 using Remotion.Web.UI.Controls;
 

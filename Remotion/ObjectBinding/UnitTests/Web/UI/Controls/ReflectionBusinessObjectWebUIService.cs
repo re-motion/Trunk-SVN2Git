@@ -22,7 +22,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
   public class ReflectionBusinessObjectWebUIService : IBusinessObjectWebUIService
   {

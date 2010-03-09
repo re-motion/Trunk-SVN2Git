@@ -27,7 +27,7 @@ using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanValue.StandardMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   [TestFixture]
   public class BocBooleanValueRendererTest : RendererTestBase

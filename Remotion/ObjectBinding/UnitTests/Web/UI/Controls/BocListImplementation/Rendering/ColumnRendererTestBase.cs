@@ -18,7 +18,7 @@ using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
   public abstract class ColumnRendererTestBase<T> : BocListRendererTestBase
       where T: BocColumnDefinition

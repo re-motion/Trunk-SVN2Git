@@ -23,7 +23,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using System.Web;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
 {
   [TestFixture]
   public class BocColumnRendererFactoryTest

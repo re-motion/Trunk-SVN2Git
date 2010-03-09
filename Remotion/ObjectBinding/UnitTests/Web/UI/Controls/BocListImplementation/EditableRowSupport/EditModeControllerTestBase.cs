@@ -18,17 +18,15 @@ using System;
 using System.Collections.Specialized;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.EditableRowSupport
 {
   public class EditModeControllerTestBase : BocTest
   {
@@ -100,10 +98,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       _controllerInvoker = new ControlInvoker (_controller);
 
-      _bocList.EditableRowChangesCanceled += new BocListItemEventHandler (Boclist_EditableRowChangesCanceled);
-      _bocList.EditableRowChangesCanceling += new BocListEditableRowChangesEventHandler (Boclist_EditableRowChangesCanceling);
-      _bocList.EditableRowChangesSaved += new BocListItemEventHandler (Boclist_EditableRowChangesSaved);
-      _bocList.EditableRowChangesSaving += new BocListEditableRowChangesEventHandler (Boclist_EditableRowChangesSaving);
+      _bocList.EditableRowChangesCanceled += Boclist_EditableRowChangesCanceled;
+      _bocList.EditableRowChangesCanceling += Boclist_EditableRowChangesCanceling;
+      _bocList.EditableRowChangesSaved += Boclist_EditableRowChangesSaved;
+      _bocList.EditableRowChangesSaving += Boclist_EditableRowChangesSaving;
 
       _bocList.FixedColumns.AddRange (_columns);
       _bocList.LoadUnboundValue (_values, false);

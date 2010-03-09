@@ -22,7 +22,7 @@ using System.Web;
 using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.StandardMode.Factories
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
 {
   [TestFixture]
   public class BocListRendererFactoryTest
