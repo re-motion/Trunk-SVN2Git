@@ -24,7 +24,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
   /// <summary>
   /// <see cref="JoinedTableSource"/> represents the table source defined by a join in a relational database.
   /// </summary>
-  public class JoinedTableSource : AbstractTableSource
+  public class JoinedTableSource : AbstractJoinInfo
   {
     private readonly MemberInfo _memberInfo;
 
@@ -45,7 +45,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return ReflectionUtility.GetFieldOrPropertyType (_memberInfo); }
     }
 
-    public override AbstractTableSource Accept (ITableSourceVisitor visitor)
+    public override AbstractJoinInfo Accept (IJoinInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       return visitor.VisitJoinedTableSource (this);

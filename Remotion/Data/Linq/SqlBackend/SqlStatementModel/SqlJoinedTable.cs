@@ -23,36 +23,36 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
   /// <summary>
   /// <see cref="SqlTable"/> represents a data source in a <see cref="SqlStatement"/>.
   /// </summary>
-  public class SqlTable : SqlTableBase
+  public class SqlJoinedTable : SqlTableBase
   {
-    private AbstractTableSource _tableSource;
+    private AbstractJoinInfo _joinInfo;
 
-    public SqlTable (AbstractTableSource tableSource) 
-        : base (tableSource.ItemType)
+    public SqlJoinedTable (AbstractJoinInfo joinInfo)
+      : base (joinInfo.ItemType)
     {
-      ArgumentUtility.CheckNotNull ("tableSource", tableSource);
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
 
-      _tableSource = tableSource;
+      _joinInfo = joinInfo;
     }
 
-    public AbstractTableSource TableSource
+    public AbstractJoinInfo JoinInfo
     {
-      get { return _tableSource; }
+      get { return _joinInfo; }
       set
       {
         ArgumentUtility.CheckNotNull ("value", value);
-        if (_tableSource != null)
+        if (_joinInfo != null)
         {
-          if (_tableSource.ItemType != value.ItemType)
-            throw new ArgumentTypeException ("value", _tableSource.ItemType, value.ItemType);
+          if (_joinInfo.ItemType != value.ItemType)
+            throw new ArgumentTypeException ("value", _joinInfo.ItemType, value.ItemType);
         }
-        _tableSource = value;
+        _joinInfo = value;
       }
     }
 
     public override SqlTableSource GetResolvedTableSource ()
     {
-      return TableSource.GetResolvedTableSource();
+      return JoinInfo.GetResolvedTableSource();
     }
   }
 }
