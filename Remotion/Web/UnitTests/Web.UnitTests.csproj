@@ -414,19 +414,6 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\DatePickerButton\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\" />
-    <Folder Include="UI\Controls\Rendering\DropDownMenu\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\ListMenu\QuirksMode\" />
-    <Folder Include="UI\Controls\Rendering\ListMenu\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\SingleView\QuirksMode\" />
-    <Folder Include="UI\Controls\Rendering\SingleView\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMenu\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\WebTabStrip\StandardMode\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
