@@ -43,7 +43,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
     [TestFixtureTearDown]
     public void TestFixtureTearDown ()
     {
-      ServiceLocator.SetLocatorProvider (() => null);
+      ServiceLocator.SetLocatorProvider (null);
     }
 
     protected virtual void Initialize ()
