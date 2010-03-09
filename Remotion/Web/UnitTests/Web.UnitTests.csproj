@@ -183,25 +183,25 @@
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategyTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />
     <Compile Include="UI\Controls\IconInfoTest.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerButtonRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\DropDownMenuMock.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\HtmlHelper.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\StubServiceLocator.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\WebTabStripRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\TabbedMultiViewMock.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\WebTabStripMock.cs" />
-    <Compile Include="UI\Controls\Rendering\XmlNodeExtensions.cs" />
+    <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRendererTest.cs" />
+    <Compile Include="UI\Controls\DropDownMenuImplementation\DropDownMenuMock.cs" />
+    <Compile Include="Legacy\UI\Controls\DropDownMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\HtmlHelper.cs" />
+    <Compile Include="Legacy\UI\Controls\ListMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\RendererTestBase.cs" />
+    <Compile Include="Legacy\UI\Controls\SingleViewRendererTest.cs" />
+    <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRendererTest.cs" />
+    <Compile Include="UI\Controls\StubServiceLocator.cs" />
+    <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRendererTest.cs" />
+    <Compile Include="Legacy\UI\Controls\TabbedMultiViewRendererTest.cs" />
+    <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRendererTest.cs" />
+    <Compile Include="UI\Controls\TabbedMultiViewImplementation\TabbedMultiViewMock.cs" />
+    <Compile Include="Legacy\UI\Controls\WebTabStripRendererTest.cs" />
+    <Compile Include="UI\Controls\WebTabStripImplementation\WebTabStripMock.cs" />
+    <Compile Include="UI\Controls\XmlNodeExtensions.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="UI\Controls\RequestMode.cs" />
     <Compile Include="UI\Controls\TestPageHolder.cs" />
@@ -413,6 +413,19 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\Controls\Rendering\DatePickerButton\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\" />
+    <Folder Include="UI\Controls\Rendering\DropDownMenu\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\ListMenu\QuirksMode\" />
+    <Folder Include="UI\Controls\Rendering\ListMenu\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\SingleView\QuirksMode\" />
+    <Folder Include="UI\Controls\Rendering\SingleView\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\TabbedMenu\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\" />
+    <Folder Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\WebTabStrip\StandardMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
