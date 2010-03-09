@@ -155,7 +155,7 @@
     <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerButtonRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerPageRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerPageRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerPageRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\DatePickerPageRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerPageRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\Factories\DatePickerButtonRendererFactory.cs" />
@@ -167,48 +167,48 @@
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\DatePickerButtonRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\DatePickerButtonRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\DatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenu.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuClientScriptBehavior.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\Factories\DropDownMenuRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\DropDownMenuClientScriptBehavior.cs" />
+    <Compile Include="Legacy\UI\Controls\DropDownMenuRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\DropDownMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuClientScriptBehavior.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\Factories\DropDownMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\ListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\ListMenuRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\Factories\ListMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\SingleViewRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\TabbedMenuRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\Factories\TabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\TabbedMultiViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\TabbedMultiViewRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\Factories\TabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTab.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButton.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\IWebButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebButton\QuirksMode\Factories\WebButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebButton\QuirksMode\WebButtonRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\WebButtonRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\WebButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\StandardMode\Factories\WebButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebButton\StandardMode\WebButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTab.cs" />
@@ -216,16 +216,16 @@
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStrip.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\WebTabStripRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\WebTabStripRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\WebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\WebTabStripRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\MenuTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeView\IWebTreeView.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeView\IWebTreeViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTreeView\QuirksMode\Factories\WebTreeViewRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTreeView\QuirksMode\WebTreeViewRenderer.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\WebTreeViewRendererFactory.cs" />
+    <Compile Include="Legacy\UI\Controls\WebTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeView\StandardMode\Factories\WebTreeViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\WebTreeView\StandardMode\WebTreeViewRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
@@ -931,6 +931,17 @@
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\WebButton\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\WebTreeView\QuirksMode\Factories\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
