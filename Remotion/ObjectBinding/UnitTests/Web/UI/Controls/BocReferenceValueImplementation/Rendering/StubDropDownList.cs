@@ -18,13 +18,13 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoCompleteRefenceValue
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
-  public class StubTextBox : TextBox
+  public class StubDropDownList : DropDownList
   {
     protected override void Render (HtmlTextWriter writer)
     {
-      writer.WriteLine ("TextBox");
+      writer.WriteLine ("DropDownList");
     }
   }
 }

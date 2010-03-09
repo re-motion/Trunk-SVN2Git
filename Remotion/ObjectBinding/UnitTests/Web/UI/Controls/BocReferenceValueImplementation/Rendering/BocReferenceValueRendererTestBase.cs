@@ -18,10 +18,10 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
@@ -30,7 +30,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class BocReferenceValueRendererTestBase : RendererTestBase
   {
@@ -69,11 +69,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       BusinessObject = TypeWithReference.Create ("MyBusinessObject");
       BusinessObject.ReferenceList = new[]
-                                      {
-                                          TypeWithReference.Create ("ReferencedObject 0"),
-                                          TypeWithReference.Create ("ReferencedObject 1"),
-                                          TypeWithReference.Create ("ReferencedObject 2")
-                                      };
+                                     {
+                                         TypeWithReference.Create ("ReferencedObject 0"),
+                                         TypeWithReference.Create ("ReferencedObject 1"),
+                                         TypeWithReference.Create ("ReferencedObject 2")
+                                     };
       _dataSource = new BusinessObjectReferenceDataSource();
       _dataSource.BusinessObject = (IBusinessObject) BusinessObject;
 

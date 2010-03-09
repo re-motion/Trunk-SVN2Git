@@ -15,9 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class StubDropDownMenu : DropDownMenu
   {
@@ -29,7 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     {
     }
 
-    protected override void Render (System.Web.UI.HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       writer.WriteLine ("DropDownMenu");
     }

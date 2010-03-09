@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoCompleteRefenceValue;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;

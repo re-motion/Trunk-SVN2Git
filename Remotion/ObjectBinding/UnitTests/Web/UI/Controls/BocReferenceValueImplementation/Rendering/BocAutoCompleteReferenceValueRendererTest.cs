@@ -21,7 +21,7 @@ using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
@@ -31,7 +31,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoCompleteRefenceValue.StandardMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   [TestFixture]
   public class BocAutoCompleteReferenceValueRendererTest : RendererTestBase
@@ -77,11 +77,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
 
       BusinessObject = TypeWithReference.Create ("MyBusinessObject");
       BusinessObject.ReferenceList = new[]
-                                      {
-                                          TypeWithReference.Create ("ReferencedObject 0"),
-                                          TypeWithReference.Create ("ReferencedObject 1"),
-                                          TypeWithReference.Create ("ReferencedObject 2")
-                                      };
+                                     {
+                                         TypeWithReference.Create ("ReferencedObject 0"),
+                                         TypeWithReference.Create ("ReferencedObject 1"),
+                                         TypeWithReference.Create ("ReferencedObject 2")
+                                     };
       _dataSource = new BusinessObjectReferenceDataSource ();
       _dataSource.BusinessObject = (IBusinessObject) BusinessObject;
 

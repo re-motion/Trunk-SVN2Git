@@ -19,11 +19,12 @@ using System.Web.UI;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   [TestFixture]
   public class BocReferenceValueRendererTest : BocReferenceValueRendererTestBase
