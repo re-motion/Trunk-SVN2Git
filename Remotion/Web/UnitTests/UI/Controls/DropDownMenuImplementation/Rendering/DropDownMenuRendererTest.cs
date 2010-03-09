@@ -117,7 +117,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.DropDownMenuImplementation.Renderin
       var span = titleDiv.GetAssertedChildElement ("span", 1);
       string imageFileName = _control.Enabled ? "DropDownMenuArrow.gif" : "DropDownMenuArrow_disabled.gif";
       string imageFilePath = ResourceUrlResolver.GetResourceUrl (
-          _control, HttpContext, typeof (IDropDownMenu), ResourceType.Image, ResourceTheme.ClassicBlue, imageFileName);
+          _control, HttpContext, typeof (DropDownMenuRenderer), ResourceType.Image, ResourceTheme.ClassicBlue, imageFileName);
       string styleValue = string.Format ("url({0})", imageFilePath);
 
       span.AssertStyleAttribute (

@@ -292,7 +292,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void SetUpScriptExpectations ()
     {
-      Type type = typeof (IDropDownMenu);
+      Type type = typeof (DropDownMenuQuirksModeRenderer);
       string initializationScriptKey = type.FullName + "_Startup";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
           _control, HttpContext, type, ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
@@ -314,7 +314,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       var scriptManagerMock = _control.Page.ClientScript;
       scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
-      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuQuirksModeClientScriptBehavior), initializationScriptKey, initializationScript));
+      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuQuirksModeRenderer), initializationScriptKey, initializationScript));
       if(_control.Enabled)
         scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuQuirksModeRenderer), menuInfoKey, menuInfoScript));
       _control.Page.ClientScript.Replay ();
