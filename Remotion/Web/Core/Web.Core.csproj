@@ -932,26 +932,6 @@
       <Name>Security.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\DatePickerButton\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\DropDownMenu\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\ListMenu\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\SingleView\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMenu\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebButton\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebButton\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebTreeView\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebTreeView\StandardMode\Factories\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
