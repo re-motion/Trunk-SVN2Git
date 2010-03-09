@@ -441,21 +441,6 @@
       <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\UI\Controls\Infrastructure\BocList\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocAutoCompleteRefenceValue\StandardMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocBooleanValue\StandardMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocDateTimeValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocDateTimeValue\StandardMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocEnumValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocEnumValue\StandardMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocList\StandardMode\Factories\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocReferenceValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocReferenceValue\StandardMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
