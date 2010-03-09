@@ -29,11 +29,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocListQuirksModeRendererFactory : IBocListRendererFactory
   {
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
-    {
-      return new BocListQuirksModeClientScriptBehavior (context, list);
-    }
-
     public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
       return new BocListQuirksModeRenderer (

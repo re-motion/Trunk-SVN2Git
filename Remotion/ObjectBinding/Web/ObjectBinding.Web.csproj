@@ -339,12 +339,10 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocListNavigationBlockRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSelectorColumnRendererFactory.cs" />
-    <Compile Include="Legacy\UI\Controls\BocListQuirksModeClientScriptBehavior.cs" />
     <Compile Include="Legacy\UI\Controls\BocListQuirksModeRenderer.cs" />
     <Compile Include="Legacy\UI\Controls\Factories\BocColumnQuirksModeRendererFactory.cs" />
     <Compile Include="Legacy\UI\Controls\Factories\BocListQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocIndexColumnRenderer.cs" />
-    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListClientScriptBehavior.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\CssClassContainer.cs" />

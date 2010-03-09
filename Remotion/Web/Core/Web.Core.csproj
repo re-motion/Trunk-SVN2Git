@@ -142,6 +142,7 @@
     <Compile Include="Infrastructure\ControlWrapper.cs" />
     <Compile Include="Infrastructure\IClientScriptManager.cs" />
     <Compile Include="Infrastructure\PageWrapper.cs" />
+    <Compile Include="Legacy\UI\Controls\Factories\ClientScriptBehaviorFactory.cs" />
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
@@ -149,6 +150,8 @@
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
     <Compile Include="UI\Controls\DatePickerButton.cs" />
+    <Compile Include="UI\Controls\Factories\ClientScriptBehaviorFactory.cs" />
+    <Compile Include="UI\Controls\IClientScriptBehaviorFactory.cs" />
     <Compile Include="UI\Controls\IControlItem.cs" />
     <Compile Include="UI\Controls\ListMenuLineBreaks.cs" />
     <Compile Include="UI\Controls\MenuMode.cs" />
@@ -171,10 +174,10 @@
     <Compile Include="Legacy\UI\Controls\Factories\DatePickerButtonQuirksModeRendererFactory.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\IDropDownMenu.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererFactory.cs" />
-    <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeClientScriptBehavior.cs" />
+    <Compile Include="Legacy\UI\Controls\QuirksModeClientScriptBehavior.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRenderer.cs" />
     <Compile Include="Legacy\UI\Controls\Factories\DropDownMenuQuirksModeRendererFactory.cs" />
-    <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuClientScriptBehavior.cs" />
+    <Compile Include="UI\Controls\ClientScriptBehavior.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\Factories\DropDownMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\IRenderer.cs" />

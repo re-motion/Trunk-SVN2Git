@@ -18,6 +18,9 @@ using System;
 
 namespace Remotion.Web.UI.Controls
 {
+  /// <summary>
+  /// Defines an API for determining whether the browser used for the current request supports client script.
+  /// </summary>
   public interface IClientScriptBahavior
   {
     bool IsBrowserCapableOfScripting { get; }

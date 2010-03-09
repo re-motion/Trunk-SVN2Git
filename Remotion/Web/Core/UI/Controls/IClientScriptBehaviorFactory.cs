@@ -15,22 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   /// <summary>
-  /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in standard mode.
-  /// <seealso cref="IDropDownMenu"/>
+  /// Defines a factory method for creating the client script behavior for an <see cref="IControl"/>.
   /// </summary>
-  public class DropDownMenuClientScriptBehavior : IClientScriptBahavior
+  public interface IClientScriptBehaviorFactory
   {
-    public DropDownMenuClientScriptBehavior ()
-    {
-    }
-
-    public bool IsBrowserCapableOfScripting
-    {
-      get { return true; }
-    }
+    IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IControl control);
   }
 }

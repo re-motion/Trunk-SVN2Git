@@ -19,9 +19,11 @@ using System.Web;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
+  /// <summary>
+  /// Defines a factory method for creating renderers for <see cref="IDropDownMenu"/> controls.
+  /// </summary>
   public interface IDropDownMenuRendererFactory
   {
-    IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IDropDownMenu control);
     IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control);
   }
 }

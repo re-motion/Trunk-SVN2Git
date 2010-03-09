@@ -159,7 +159,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           Control.ClientID,
           getSelectionCount);
 
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuClientScriptBehavior), key, script);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ClientScriptBehavior), key, script);
 
       if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
       {
@@ -167,7 +167,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
         string elementReference = string.Format ("$('#{0}')", Control.ClientID);
         string menuIDReference = string.Format ("'{0}'", Control.ClientID);
         script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuClientScriptBehavior), key, script);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ClientScriptBehavior), key, script);
       }
     }
 

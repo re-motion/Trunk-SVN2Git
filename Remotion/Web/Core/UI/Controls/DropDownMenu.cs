@@ -58,9 +58,9 @@ namespace Remotion.Web.UI.Controls
 
     protected override void OnInit (EventArgs e)
     {
-      var factory = SafeServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       if (!IsDesignMode)
       {
+        var factory = SafeServiceLocator.Current.GetInstance<IClientScriptBehaviorFactory>();
         var clientScriptBahavior = factory.CreateClientScriptBehavior (Page.Context, this);
         _isBrowserCapableOfScripting = clientScriptBahavior.IsBrowserCapableOfScripting;
         RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);

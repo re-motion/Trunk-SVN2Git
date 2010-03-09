@@ -31,10 +31,5 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
     {
       return new DropDownMenuQuirksModeRenderer (context, control);
     }
-
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
-    {
-      return new DropDownMenuQuirksModeClientScriptBehavior (context, control);
-    }
   }
 }

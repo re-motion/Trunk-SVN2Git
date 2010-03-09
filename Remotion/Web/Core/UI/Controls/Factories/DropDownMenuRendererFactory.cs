@@ -30,10 +30,5 @@ namespace Remotion.Web.UI.Controls.Factories
     {
       return new DropDownMenuRenderer (context, control);
     }
-
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
-    {
-      return new DropDownMenuClientScriptBehavior ();
-    }
   }
 }

@@ -37,6 +37,7 @@ using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -1212,7 +1213,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (!_isBrowserCapableOfSCripting.HasValue)
         {
-          var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
+          var factory = ServiceLocator.GetInstance<IClientScriptBehaviorFactory>();
           var preRenderer = factory.CreateClientScriptBehavior (Context, this);
           _isBrowserCapableOfSCripting = preRenderer.IsBrowserCapableOfScripting;
         }

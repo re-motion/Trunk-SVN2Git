@@ -16,16 +16,18 @@
 // 
 using System;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
-  /// Interface for factory creating renderers for <see cref="IBocList"/> controls.
+  /// Responsible for creating standard mode <see cref="ClientScriptBehavior"/>.
   /// </summary>
-  public interface IBocListRendererFactory
+  public class ClientScriptBehaviorFactory : IClientScriptBehaviorFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator);
+    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IControl control)
+    {
+      return new ClientScriptBehavior();
+    }
   }
 }

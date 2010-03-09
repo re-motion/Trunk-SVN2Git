@@ -18,20 +18,19 @@ using System;
 using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in quirks mode.
-  /// <seealso cref="IDropDownMenu"/>
+  /// Implements <see cref="IClientScriptBahavior"/> to determine if the browser supports advanced client scripting in quirks mode.
   /// </summary>
-  public class DropDownMenuQuirksModeClientScriptBehavior : IClientScriptBahavior
+  public class QuirksModeClientScriptBehavior : IClientScriptBahavior
   {
     private readonly HttpContextBase _context;
-    private readonly IDropDownMenu _control;
+    private readonly IControl _control;
 
-    public DropDownMenuQuirksModeClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
+    public QuirksModeClientScriptBehavior (HttpContextBase context, IControl control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
@@ -47,7 +46,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     private bool IsInternetExplorer55OrHigher ()
     {
-      if (_control.IsDesignMode)
+      if (ControlHelper.IsDesignMode (_control))
         return true;
 
       bool isVersionGreaterOrEqual55 =

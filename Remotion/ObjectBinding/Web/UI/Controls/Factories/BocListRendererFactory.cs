@@ -29,11 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   /// </summary>
   public class BocListRendererFactory : IBocListRendererFactory
   {
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IBocList list)
-    {
-      return new BocListClientScriptBehavior();
-    }
-
     public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
     {
       return new BocListRenderer (
