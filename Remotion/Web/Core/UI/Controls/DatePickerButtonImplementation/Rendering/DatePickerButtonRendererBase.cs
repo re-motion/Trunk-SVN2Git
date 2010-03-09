@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   public abstract class DatePickerButtonRendererBase : RendererBase<IDatePickerButton>
   {

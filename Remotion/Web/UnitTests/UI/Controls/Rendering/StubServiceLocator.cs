@@ -18,14 +18,13 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.Factories;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
+using DropDownMenuRendererFactory=Remotion.Web.Legacy.UI.Controls.Factories.DropDownMenuRendererFactory;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {

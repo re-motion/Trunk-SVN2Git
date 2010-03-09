@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.ListMenu
+namespace Remotion.Web.UI.Controls.ListMenuImplementation
 {
   /// <summary>
   /// Exposes <see cref="ListMenu"/> properties relevant to rendering.

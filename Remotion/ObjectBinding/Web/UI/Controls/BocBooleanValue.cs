@@ -29,7 +29,6 @@ using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {

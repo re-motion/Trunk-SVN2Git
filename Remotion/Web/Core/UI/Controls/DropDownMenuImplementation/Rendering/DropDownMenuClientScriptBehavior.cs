@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
+namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   /// <summary>
   /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in standard mode.

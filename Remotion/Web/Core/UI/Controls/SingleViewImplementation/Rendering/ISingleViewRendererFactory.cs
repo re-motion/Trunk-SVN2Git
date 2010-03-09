@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView
+namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="ISingleView"/> controls.

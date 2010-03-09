@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls
 {
   public interface IClientScriptBahavior
   {

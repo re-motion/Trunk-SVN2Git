@@ -18,7 +18,7 @@ using System;
 using System.Web;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   public abstract class DatePickerPageRendererBase : IDatePickerPageRenderer
   {

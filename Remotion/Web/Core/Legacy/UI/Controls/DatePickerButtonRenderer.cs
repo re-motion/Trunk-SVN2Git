@@ -18,8 +18,12 @@ using System;
 using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.

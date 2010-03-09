@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
   /// Interface for classes able to render <see cref="IWebTab"/> items.

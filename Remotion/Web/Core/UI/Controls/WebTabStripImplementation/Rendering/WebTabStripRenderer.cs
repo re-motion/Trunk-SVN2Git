@@ -21,7 +21,7 @@ using System.Web;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
+namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTabStrip"/> controls.

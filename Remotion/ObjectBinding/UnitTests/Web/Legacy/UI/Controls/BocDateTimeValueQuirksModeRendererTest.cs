@@ -26,7 +26,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls

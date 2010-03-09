@@ -28,12 +28,10 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Ren
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode.Factories;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories;
-using Remotion.Web.UI.Controls.Rendering.ListMenu;
-using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.Factories;
+using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {

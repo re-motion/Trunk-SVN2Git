@@ -19,7 +19,7 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   public class DatePickerPageRenderer : DatePickerPageRendererBase
   {

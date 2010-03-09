@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
+namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="ITabbedMultiView"/> controls.

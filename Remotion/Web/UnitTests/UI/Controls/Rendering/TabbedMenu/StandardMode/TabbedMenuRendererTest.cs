@@ -20,9 +20,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.StandardMode

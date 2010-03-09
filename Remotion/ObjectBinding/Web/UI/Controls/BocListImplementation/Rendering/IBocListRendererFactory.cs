@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {

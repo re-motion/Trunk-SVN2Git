@@ -20,8 +20,8 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
-using Remotion.Web.UI.Controls.Rendering.SingleView;
-using Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode;
+using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode

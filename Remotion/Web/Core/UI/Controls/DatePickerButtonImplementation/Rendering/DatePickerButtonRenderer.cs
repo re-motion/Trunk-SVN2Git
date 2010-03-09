@@ -19,7 +19,7 @@ using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in standard mode.

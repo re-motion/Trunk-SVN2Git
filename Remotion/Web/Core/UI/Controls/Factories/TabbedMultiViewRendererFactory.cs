@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode.Factories
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="TabbedMultiView"/> controls.

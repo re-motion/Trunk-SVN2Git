@@ -17,8 +17,10 @@
 using System;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in quirks mode.

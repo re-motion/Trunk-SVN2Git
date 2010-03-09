@@ -22,8 +22,10 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using System.Web;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
 namespace Remotion.Web.UI.Controls
 {

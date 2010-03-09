@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
+namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating quirks mode renderers for <see cref="WebTabStrip"/> controls and <see cref="WebTab"/> items.
@@ -31,7 +34,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
 
     public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)
     {
-      return new StandardMode.WebTabRenderer (context, control, tab);
+      return new WebTabRenderer (context, control, tab);
     }
   }
 }

@@ -23,9 +23,9 @@ using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.TabbedMultiView;
-using Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardMode

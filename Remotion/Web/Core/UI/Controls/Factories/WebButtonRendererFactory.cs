@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls.WebButtonImplementation;
+using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode.Factories
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="IWebButton"/> controls.

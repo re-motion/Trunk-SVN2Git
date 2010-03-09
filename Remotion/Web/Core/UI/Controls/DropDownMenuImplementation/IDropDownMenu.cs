@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
+namespace Remotion.Web.UI.Controls.DropDownMenuImplementation
 {
   /// <summary>
   /// Exposes <see cref="DropDownMenu"/> properties relevant to rendering.

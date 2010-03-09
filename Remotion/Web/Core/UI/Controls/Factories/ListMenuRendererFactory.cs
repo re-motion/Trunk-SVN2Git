@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls.ListMenuImplementation;
+using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating quirks mode renderers for <see cref="ListMenu"/> controls.

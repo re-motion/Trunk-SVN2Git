@@ -22,8 +22,9 @@ using System.Web.UI.WebControls;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls.Rendering.TabbedMultiView;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls

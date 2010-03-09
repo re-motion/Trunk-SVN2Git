@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IDatePickerButton"/> controls.

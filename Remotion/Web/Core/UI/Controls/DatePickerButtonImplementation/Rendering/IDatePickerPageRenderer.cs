@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
   public interface IDatePickerPageRenderer
   {

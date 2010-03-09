@@ -18,7 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Remotion.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls
 {
   /// <summary>
   /// Exposes WebControl properties for <see cref="RendererBase{TControl}"/>.

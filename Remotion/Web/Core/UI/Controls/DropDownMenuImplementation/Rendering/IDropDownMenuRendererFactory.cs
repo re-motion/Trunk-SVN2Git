@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
+namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   public interface IDropDownMenuRendererFactory
   {

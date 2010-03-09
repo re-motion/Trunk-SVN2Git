@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Specialized;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
+namespace Remotion.Web.UI.Controls.TabbedMenuImplementation
 {
   /// <summary>
   /// Exposes <see cref="MenuTab"/> properties relevant to rendering.

@@ -16,8 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.StandardMode

@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using System.Web;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UI.Controls.WebTabStripImplementation
 {
   /// <summary>
   /// Exposes <see cref="WebTab"/> properties relevant to rendering.

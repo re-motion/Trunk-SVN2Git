@@ -21,11 +21,11 @@ using System.Xml;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.TabbedMultiView;
-using Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMode

@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factories
+namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating quirks mode renderers for <see cref="TabbedMultiView"/> controls.

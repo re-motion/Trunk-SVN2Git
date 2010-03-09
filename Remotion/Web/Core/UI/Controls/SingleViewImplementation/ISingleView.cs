@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI.WebControls;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView
+namespace Remotion.Web.UI.Controls.SingleViewImplementation
 {
   /// <summary>
   /// Exposes <see cref="SingleView"/> properties that are relevant to rendering.

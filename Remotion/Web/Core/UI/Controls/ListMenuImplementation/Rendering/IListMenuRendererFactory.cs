@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.ListMenu
+namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IListMenu"/> controls.

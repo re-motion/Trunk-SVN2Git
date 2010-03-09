@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UI.Controls.WebTabStripImplementation
 {
   /// <summary>
   /// Exposes <see cref="WebTabStrip"/> properties relevant to rendering.

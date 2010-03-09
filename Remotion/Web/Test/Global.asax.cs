@@ -20,7 +20,7 @@ using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
 using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Test

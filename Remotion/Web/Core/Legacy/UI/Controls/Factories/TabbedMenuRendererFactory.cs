@@ -16,12 +16,16 @@
 // 
 using System;
 using System.Web;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
+namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="TabbedMenuRenderer"/> controls  and <see cref="MenuTab"/> items.
+  /// Responsible for creating quirks mode renderers for <see cref="MenuTab"/> controls  and <see cref="Remotion.Web.Legacy"/> items.
   /// </summary>
   public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
@@ -32,7 +36,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
 
     public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
     {
-      return new StandardMode.MenuTabRenderer (context, control, tab);
+      return new MenuTabRenderer (context, control, tab);
     }
   }
 }

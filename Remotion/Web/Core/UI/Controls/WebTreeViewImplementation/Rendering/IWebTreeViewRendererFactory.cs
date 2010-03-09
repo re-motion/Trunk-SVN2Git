@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTreeView
+namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IWebTreeView"/> controls.

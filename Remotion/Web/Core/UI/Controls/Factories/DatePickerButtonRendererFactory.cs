@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode.Factories
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating quirks mode renderers and prerenderers for <see cref="DatePickerButton"/> controls.

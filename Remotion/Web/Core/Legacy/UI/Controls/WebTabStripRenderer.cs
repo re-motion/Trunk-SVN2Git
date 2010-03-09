@@ -17,14 +17,17 @@
 using System;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTabStrip"/> controls.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
-  public class WebTabStripRenderer : StandardMode.WebTabStripRenderer
+  public class WebTabStripRenderer : Web.UI.Controls.WebTabStripImplementation.Rendering.WebTabStripRenderer
   {
     public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
         : base (context, control)

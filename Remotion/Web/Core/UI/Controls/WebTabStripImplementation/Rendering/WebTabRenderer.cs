@@ -21,7 +21,7 @@ using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
+namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="WebTab"/> controls in quirks mode.

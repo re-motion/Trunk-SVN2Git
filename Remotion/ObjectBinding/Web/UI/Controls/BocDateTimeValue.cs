@@ -27,7 +27,7 @@ using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
+using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 

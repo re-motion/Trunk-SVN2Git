@@ -33,7 +33,7 @@ using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web;
 using Remotion.Web.Configuration;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace OBWTest

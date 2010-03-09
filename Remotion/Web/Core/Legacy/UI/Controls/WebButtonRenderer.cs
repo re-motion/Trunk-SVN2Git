@@ -18,8 +18,11 @@ using System;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.WebButtonImplementation;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebButton"/> controls.

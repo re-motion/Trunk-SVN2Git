@@ -20,8 +20,8 @@ using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.ListMenu;
-using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode;
+using Remotion.Web.UI.Controls.ListMenuImplementation;
+using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 

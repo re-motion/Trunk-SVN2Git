@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebButton
+namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
   /// <summary>
   /// Defines a factory method for creating renderers for <see cref="IWebButton"/> controls.

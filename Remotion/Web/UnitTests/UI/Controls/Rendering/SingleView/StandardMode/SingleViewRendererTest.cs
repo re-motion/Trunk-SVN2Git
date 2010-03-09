@@ -20,8 +20,8 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering.SingleView;
-using Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
+using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode

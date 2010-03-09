@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="WebTabStrip"/> controls and <see cref="WebTab"/> items.

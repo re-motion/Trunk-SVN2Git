@@ -21,7 +21,7 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
+namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="DropDownMenu"/> controls in standard mode.

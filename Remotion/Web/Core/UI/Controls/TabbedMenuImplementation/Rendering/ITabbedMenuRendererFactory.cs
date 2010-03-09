@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
+namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
   /// <summary>
   /// Interface for factories creating renderers for <see cref="TabbedMenu"/> controls.

@@ -17,8 +17,11 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.WebTreeViewImplementation;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.

@@ -31,7 +31,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.Security.UI;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 

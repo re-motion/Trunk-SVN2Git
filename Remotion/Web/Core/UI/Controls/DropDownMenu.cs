@@ -20,7 +20,8 @@ using System.Web.UI;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using System.Web;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Design;
 
 namespace Remotion.Web.UI.Controls

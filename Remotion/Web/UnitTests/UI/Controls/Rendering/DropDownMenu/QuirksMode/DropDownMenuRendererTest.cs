@@ -23,10 +23,10 @@ using System.Xml;
 using NUnit.Framework;
 using System.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode

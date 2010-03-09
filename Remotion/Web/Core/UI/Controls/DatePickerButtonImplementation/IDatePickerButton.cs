@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI.WebControls;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
+namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation
 {
   /// <summary>
   /// Exposes <see cref="DatePickerButton"/> properties relevant to rendering.

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {

@@ -19,9 +19,12 @@ using System.Text;
 using System.Web.UI;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for rendering a <see cref="DropDownMenu"/> control in quirks mode.

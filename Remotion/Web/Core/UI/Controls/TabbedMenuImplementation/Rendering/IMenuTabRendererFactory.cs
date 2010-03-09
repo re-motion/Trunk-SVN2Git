@@ -16,9 +16,10 @@
 // 
 using System;
 using System.Web;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
+namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
   /// <summary>
   /// Interface for factories creating renderers for <see cref="MenuTab"/> items.

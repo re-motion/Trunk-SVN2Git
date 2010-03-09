@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
+using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode.Factories
+namespace Remotion.Web.UI.Controls.Factories
 {
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="SingleView"/> controls.

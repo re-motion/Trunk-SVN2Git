@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering

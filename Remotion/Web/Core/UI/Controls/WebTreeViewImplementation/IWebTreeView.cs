@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTreeView
+namespace Remotion.Web.UI.Controls.WebTreeViewImplementation
 {
   public interface IWebTreeView : IStyledControl
   {

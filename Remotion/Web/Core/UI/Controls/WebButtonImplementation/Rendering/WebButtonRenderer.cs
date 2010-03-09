@@ -19,7 +19,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode
+namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebButton"/> controls.

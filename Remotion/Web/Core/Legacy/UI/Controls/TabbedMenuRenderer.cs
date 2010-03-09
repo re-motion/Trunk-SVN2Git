@@ -17,14 +17,17 @@
 using System;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMenu"/> controls.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class TabbedMenuRenderer : StandardMode.TabbedMenuRenderer
+  public class TabbedMenuRenderer : Web.UI.Controls.TabbedMenuImplementation.Rendering.TabbedMenuRenderer
   {
     public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
         : base(context, control)

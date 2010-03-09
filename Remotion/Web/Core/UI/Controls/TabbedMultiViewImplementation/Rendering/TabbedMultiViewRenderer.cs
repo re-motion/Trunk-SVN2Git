@@ -21,7 +21,7 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
+namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMultiView"/> controls.

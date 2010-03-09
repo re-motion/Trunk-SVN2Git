@@ -22,8 +22,8 @@ using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode

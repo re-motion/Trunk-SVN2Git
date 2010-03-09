@@ -22,7 +22,8 @@ using System.Web;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls.Rendering.SingleView;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
+using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls

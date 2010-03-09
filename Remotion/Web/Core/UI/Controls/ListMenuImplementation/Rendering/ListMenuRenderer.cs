@@ -21,7 +21,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
+namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering a <see cref="ListMenu"/> control in quirks mode.

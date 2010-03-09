@@ -20,14 +20,14 @@ using System.Web.UI;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls
 {
   /// <summary>
   /// Base class for all renderers. Contains the essential properties used in rendering.
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl> : IRenderer
-    where TControl : IStyledControl
+      where TControl : IStyledControl
   {
     private readonly HttpContextBase _context;
     private readonly TControl _control;

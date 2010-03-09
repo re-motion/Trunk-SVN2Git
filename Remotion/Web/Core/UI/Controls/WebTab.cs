@@ -23,7 +23,8 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using System.Web;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.Web.UI.Controls

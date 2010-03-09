@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls
 {
   /// <summary>
   /// Declares the interface needed to provide a spcific rendering implementation for <see cref="IControl"/>.

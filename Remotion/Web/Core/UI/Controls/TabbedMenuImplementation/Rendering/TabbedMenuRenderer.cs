@@ -21,7 +21,7 @@ using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using System.Web;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
+namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="TabbedMenu"/> controls.

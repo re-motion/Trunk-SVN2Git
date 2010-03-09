@@ -18,7 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTreeView.StandardMode
+namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for standard mode rendering of <see cref="WebTreeView"/> controls.

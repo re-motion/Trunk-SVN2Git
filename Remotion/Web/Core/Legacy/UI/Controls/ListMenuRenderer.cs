@@ -19,9 +19,12 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Responsible for registering scripts and the style sheet for <see cref="ListMenu"/> controls in quirks mode.

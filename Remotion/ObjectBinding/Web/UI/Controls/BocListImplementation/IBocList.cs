@@ -22,8 +22,8 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
-using Remotion.Web.UI.Controls.Rendering.ListMenu;
+using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Globalization;
 using Image=System.Web.UI.WebControls.Image;
 

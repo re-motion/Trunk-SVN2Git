@@ -19,9 +19,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
+namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="SingleView"/> controls.

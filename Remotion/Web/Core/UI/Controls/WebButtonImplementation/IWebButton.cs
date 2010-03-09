@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebButton
+namespace Remotion.Web.UI.Controls.WebButtonImplementation
 {
   public interface IWebButton : IStyledControl
   {
