@@ -21,7 +21,7 @@ using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering
+namespace Remotion.Web.UnitTests.UI.Controls
 {
   [TestFixture]
   public class RendererTestBase

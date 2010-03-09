@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView
+namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation
 {
-  public class TabbedMultiViewMock : Web.UI.Controls.TabbedMultiView
+  public class TabbedMultiViewMock : TabbedMultiView
   {
     private bool _isDesignMode;
 

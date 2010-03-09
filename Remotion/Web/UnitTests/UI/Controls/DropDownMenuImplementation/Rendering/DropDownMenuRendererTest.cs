@@ -26,7 +26,7 @@ using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
+namespace Remotion.Web.UnitTests.UI.Controls.DropDownMenuImplementation.Rendering
 {
   [TestFixture]
   public class DropDownMenuRendererTest : RendererTestBase

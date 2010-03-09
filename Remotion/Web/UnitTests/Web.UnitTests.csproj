@@ -184,7 +184,6 @@
     <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />
     <Compile Include="UI\Controls\IconInfoTest.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRendererTest.cs" />
-    <Compile Include="UI\Controls\DropDownMenuImplementation\DropDownMenuMock.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\HtmlHelper.cs" />

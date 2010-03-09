@@ -196,25 +196,25 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     private void RegisterEventHandlerScripts ()
     {
-      string key = typeof (IDropDownMenu).FullName + "_Startup";
+      string key = typeof (DropDownMenuRenderer).FullName + "_Startup";
 
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuClientScriptBehavior), key))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuClientScriptBehavior), key, script);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuRenderer), key, script);
       }
 
       if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
       {
         key = Control.ClientID + "_ClickEventHandlerBindScript";
-        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuClientScriptBehavior), key))
+        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
         {
           string elementReference = string.Format ("document.getElementById('{0}')", Control.MenuHeadClientID);
           string menuIDReference = string.Format ("'{0}'", Control.ClientID);
           string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
-          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuClientScriptBehavior), key, script);
+          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuRenderer), key, script);
         }
       }
     }

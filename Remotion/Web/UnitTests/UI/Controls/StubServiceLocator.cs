@@ -24,9 +24,8 @@ using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
-using DropDownMenuRendererFactory=Remotion.Web.Legacy.UI.Controls.Factories.DropDownMenuRendererFactory;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering
+namespace Remotion.Web.UnitTests.UI.Controls
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {

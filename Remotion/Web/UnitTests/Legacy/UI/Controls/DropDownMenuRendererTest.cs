@@ -27,9 +27,10 @@ using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
+using Remotion.Web.UnitTests.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
+namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 {
   [TestFixture]
   public class DropDownMenuRendererTest : RendererTestBase
@@ -299,8 +300,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
       string menuInfoKey = _control.UniqueID;
       string menuInfoScript = "DropDownMenu_AddMenuInfo (" + Environment.NewLine +
-                        "\t" + "new DropDownMenu_MenuInfo ('{0}', new Array (" + Environment.NewLine +
-                        "{1} ) ) );";
+                              "\t" + "new DropDownMenu_MenuInfo ('{0}', new Array (" + Environment.NewLine +
+                              "{1} ) ) );";
       StringBuilder menuItems = new StringBuilder();
       foreach (string menuItem in _itemInfos)
       {

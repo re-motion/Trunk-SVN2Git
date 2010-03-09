@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UnitTests.UI.Controls.WebTabStripImplementation
 {
-  public class WebTabStripMock : Web.UI.Controls.WebTabStrip
+  public class WebTabStripMock : WebTabStrip
   {
     private bool _isDesignMode;
 
