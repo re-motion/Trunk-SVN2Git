@@ -43,6 +43,7 @@
         <include name="Context/**/*.cs" />
         <include name="ExecutionEngine/**/*.cs" />
         <include name="Infrastructure/**/*.cs" />
+        <include name="Legacy/**/*.cs" />
         <include name="Properties/**/*.cs" />
         <include name="UI/**/*.cs" />
         <include name="Utilities/**/*.cs" />
