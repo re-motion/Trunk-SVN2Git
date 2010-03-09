@@ -17,19 +17,19 @@
 using System;
 using System.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.WebTreeViewImplementation;
-using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebButtonImplementation;
+using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IWebTreeView"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IWebButton"/> controls.
   /// </summary>
-  public class WebTreeViewRendererFactory : IWebTreeViewRendererFactory
+  public class WebButtonQuirksModeRendererFactory : IWebButtonRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control)
     {
-      return new WebTreeViewRenderer (context, control);
+      return new WebButtonQuirksModeRenderer (context, control);
     }
   }
 }

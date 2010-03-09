@@ -16,38 +16,38 @@
 // 
 using System;
 using System.Web;
-using Remotion.Utilities;
+using System.Web.UI;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.TabbedMenuImplementation;
+using Remotion.Web.UI.Controls.WebTreeViewImplementation;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMenu"/> controls.
-  /// <seealso cref="ITabbedMenu"/>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.
+  /// <seealso cref="IWebTreeView"/>
   /// </summary>
-  public class TabbedMenuRenderer : Web.UI.Controls.TabbedMenuImplementation.Rendering.TabbedMenuRenderer
+  public class WebTreeViewQuirksModeRenderer : RendererBase<IWebTreeView>
   {
-    public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
-        : base(context, control)
+    public WebTreeViewQuirksModeRenderer (HttpContextBase context, IWebTreeView control)
+        : base (context, control)
     {
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      // Do not call base implementation
-      //base.RegisterHtmlHeadContents
-
-      string key = typeof (TabbedMenuRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (key))
+      string styleKey = typeof (WebTreeViewQuirksModeRenderer).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (styleKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (TabbedMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabbedMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "TreeView.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
+    }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      throw new NotSupportedException ("The WebTreeView does not support customized rendering.");
     }
   }
 }

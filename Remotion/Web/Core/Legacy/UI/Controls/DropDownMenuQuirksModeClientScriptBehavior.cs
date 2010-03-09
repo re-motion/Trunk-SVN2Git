@@ -26,12 +26,12 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Implements <see cref="IClientScriptBahavior"/> to determine if the <see cref="DropDownMenu"/> can be rendered in quirks mode.
   /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public class DropDownMenuClientScriptBehavior : IClientScriptBahavior
+  public class DropDownMenuQuirksModeClientScriptBehavior : IClientScriptBahavior
   {
     private readonly HttpContextBase _context;
     private readonly IDropDownMenu _control;
 
-    public DropDownMenuClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
+    public DropDownMenuQuirksModeClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);

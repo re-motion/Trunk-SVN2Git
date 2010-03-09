@@ -17,26 +17,19 @@
 using System;
 using System.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.TabbedMenuImplementation;
-using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.WebTabStripImplementation;
-using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTreeViewImplementation;
+using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="MenuTab"/> controls  and <see cref="Remotion.Web.Legacy"/> items.
+  /// Responsible for creating quirks mode renderers for <see cref="IWebTreeView"/> controls.
   /// </summary>
-  public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
+  public class WebTreeViewQuirksModeRendererFactory : IWebTreeViewRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control)
     {
-      return new TabbedMenuRenderer (context, control);
-    }
-
-    public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
-    {
-      return new MenuTabRenderer (context, control, tab);
+      return new WebTreeViewQuirksModeRenderer (context, control);
     }
   }
 }

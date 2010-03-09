@@ -29,7 +29,7 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 {
   [TestFixture]
-  public class ListMenuRendererTest : RendererTestBase
+  public class ListMenuQuirksModeRendererTest : RendererTestBase
   {
     private IListMenu _control;
     private IClientScriptManager _clientScriptManagerMock;
@@ -75,9 +75,9 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       script = string.Format (script, _control.ClientID, GetItemScript (0), GetItemScript (1), GetItemScript (2), GetItemScript (4));
 
       _clientScriptManagerMock.Expect (
-          mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuRenderer), _control.UniqueID + "_MenuItems", script));
+          mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuQuirksModeRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuRenderer (HttpContext, _control);
+      var renderer = new ListMenuQuirksModeRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
     }
 
@@ -144,7 +144,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuRenderer (HttpContext, _control);
+      var renderer = new ListMenuQuirksModeRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

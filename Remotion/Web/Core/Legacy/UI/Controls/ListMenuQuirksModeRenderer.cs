@@ -30,11 +30,11 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for registering scripts and the style sheet for <see cref="ListMenu"/> controls in quirks mode.
   /// <seealso cref="IListMenu"/>
   /// </summary>
-  public class ListMenuRenderer : RendererBase<IListMenu>
+  public class ListMenuQuirksModeRenderer : RendererBase<IListMenu>
   {
     protected const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuRenderer (HttpContextBase context, IListMenu control)
+    public ListMenuQuirksModeRenderer (HttpContextBase context, IListMenu control)
         : base (context, control)
     {
     }
@@ -48,14 +48,14 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
-      string scriptFileKey = typeof (ListMenuRenderer).FullName + "_Script";
+      string scriptFileKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (ListMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");
+          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
-      string styleSheetKey = typeof (ListMenuRenderer).FullName + "_Style";
+      string styleSheetKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Style";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (ListMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
+          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 
@@ -146,7 +146,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
 
       string key = Control.UniqueID + "_MenuItems";
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (ListMenuRenderer), key))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (ListMenuQuirksModeRenderer), key))
       {
         StringBuilder script = new StringBuilder ();
         script.AppendFormat ("ListMenu_AddMenuInfo (document.getElementById ('{0}'), \r\n\t", Control.ClientID);
@@ -173,7 +173,7 @@ namespace Remotion.Web.Legacy.UI.Controls
             "ListMenu_Update ( document.getElementById ('{0}'), {1} );",
             Control.ClientID,
             string.IsNullOrEmpty (Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ListMenuRenderer), key, script.ToString ());
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ListMenuQuirksModeRenderer), key, script.ToString ());
       }
     }
 

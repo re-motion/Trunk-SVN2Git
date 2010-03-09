@@ -17,24 +17,19 @@
 using System;
 using System.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
-using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
+using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="DatePickerButton"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="SingleView"/> controls.
   /// </summary>
-  public class DatePickerButtonRendererFactory : IDatePickerButtonRendererFactory
+  public class SingleViewQuirksModeRendererFactory : ISingleViewRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, ISingleView control)
     {
-      return new DatePickerButtonRenderer (context, control);
-    }
-
-    public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page)
-    {
-      return new DatePickerPageRenderer (context, page);
+      return new SingleViewQuirksModeRenderer (context, control);
     }
   }
 }

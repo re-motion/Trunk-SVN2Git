@@ -24,6 +24,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -34,10 +35,10 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 {
   [TestFixture]
-  public class WebTabStripRendererTest : RendererTestBase
+  public class WebTabStripQuirksModeRendererTest : RendererTestBase
   {
     private IWebTabStrip _webTabStrip;
-    private WebTabStripRenderer _renderer;
+    private WebTabStripQuirksModeRenderer _renderer;
     private IPage _pageStub;
     private IWebTab _tab0;
 
@@ -182,7 +183,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _renderer = new WebTabStripRenderer (HttpContext, _webTabStrip);
+      _renderer = new WebTabStripQuirksModeRenderer (HttpContext, _webTabStrip);
       _renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

@@ -25,11 +25,11 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// <summary>
   /// Responsible for creating quirks mode renderers for <see cref="WebTabStrip"/> controls and <see cref="WebTab"/> items.
   /// </summary>
-  public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
+  public class WebTabStripQuirksModeRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
     public IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control)
     {
-      return new WebTabStripRenderer (context, control);
+      return new WebTabStripQuirksModeRenderer (context, control);
     }
 
     public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)

@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 {
   [TestFixture]
-  public class SingleViewRendererTest : RendererTestBase
+  public class SingleViewQuirksModeRendererTest : RendererTestBase
   {
     private const string c_cssClass = "CssClass";
 
@@ -146,7 +146,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewRenderer (HttpContext, _singleView);
+      var renderer = new SingleViewQuirksModeRenderer (HttpContext, _singleView);
 
       string controlCssClass = renderer.CssClassBase;
       string topControlsCssClass = renderer.CssClassTopControls;

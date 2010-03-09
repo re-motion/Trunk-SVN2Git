@@ -17,37 +17,48 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.WebTreeViewImplementation;
+using Remotion.Web.UI.Controls.WebButtonImplementation;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.
-  /// <seealso cref="IWebTreeView"/>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebButton"/> controls.
+  /// <seealso cref="IWebButton"/>
   /// </summary>
-  public class WebTreeViewRenderer : RendererBase<IWebTreeView>
+  public class WebButtonQuirksModeRenderer : RendererBase<IWebButton>
   {
-    public WebTreeViewRenderer (HttpContextBase context, IWebTreeView control)
+    public WebButtonQuirksModeRenderer (HttpContextBase context, IWebButton control)
         : base (context, control)
     {
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      string styleKey = typeof (WebTreeViewRenderer).FullName + "_Style";
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      string scriptKey = typeof (WebButtonQuirksModeRenderer).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (scriptKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "WebButton.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
+      }
+
+      string styleKey = typeof (WebButtonQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebTreeViewRenderer), ResourceType.Html, ResourceTheme.Legacy, "TreeView.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "WebButton.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
 
     public override void Render (HtmlTextWriter writer)
     {
-      throw new NotSupportedException ("The WebTreeView does not support customized rendering.");
+      throw new NotSupportedException ("The WebButton does not support customized rendering.");
     }
   }
 }

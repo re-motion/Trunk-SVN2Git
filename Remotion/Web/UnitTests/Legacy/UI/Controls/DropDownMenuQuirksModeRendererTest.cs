@@ -33,7 +33,7 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 {
   [TestFixture]
-  public class DropDownMenuRendererTest : RendererTestBase
+  public class DropDownMenuQuirksModeRendererTest : RendererTestBase
   {
     private IDropDownMenu _control;
     private readonly List<string> _itemInfos = new List<string>();
@@ -314,15 +314,15 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       var scriptManagerMock = _control.Page.ClientScript;
       scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
-      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuClientScriptBehavior), initializationScriptKey, initializationScript));
+      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuQuirksModeClientScriptBehavior), initializationScriptKey, initializationScript));
       if(_control.Enabled)
-        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuRenderer), menuInfoKey, menuInfoScript));
+        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuQuirksModeRenderer), menuInfoKey, menuInfoScript));
       _control.Page.ClientScript.Replay ();
     }
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      var renderer = new DropDownMenuRenderer (HttpContext, _control);
+      var renderer = new DropDownMenuQuirksModeRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

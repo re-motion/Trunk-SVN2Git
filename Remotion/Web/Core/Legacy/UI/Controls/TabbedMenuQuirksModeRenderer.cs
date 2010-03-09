@@ -19,18 +19,18 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTabStrip"/> controls.
-  /// <seealso cref="IWebTabStrip"/>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMenu"/> controls.
+  /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class WebTabStripRenderer : Web.UI.Controls.WebTabStripImplementation.Rendering.WebTabStripRenderer
+  public class TabbedMenuQuirksModeRenderer : Web.UI.Controls.TabbedMenuImplementation.Rendering.TabbedMenuRenderer
   {
-    public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
-        : base (context, control)
+    public TabbedMenuQuirksModeRenderer (HttpContextBase context, ITabbedMenu control)
+        : base(context, control)
     {
     }
 
@@ -41,12 +41,12 @@ namespace Remotion.Web.Legacy.UI.Controls
       // Do not call base implementation
       //base.RegisterHtmlHeadContents
 
-      string key = typeof (WebTabStripRenderer).FullName + "_Style";
+      string key = typeof (TabbedMenuQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebTabStripRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabbedMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
     }
   }

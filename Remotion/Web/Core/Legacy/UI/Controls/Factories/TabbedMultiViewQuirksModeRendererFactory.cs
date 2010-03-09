@@ -25,11 +25,11 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// <summary>
   /// Responsible for creating quirks mode renderers for <see cref="TabbedMultiView"/> controls.
   /// </summary>
-  public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
+  public class TabbedMultiViewQuirksModeRendererFactory : ITabbedMultiViewRendererFactory
   {
     public IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control)
     {
-      return new TabbedMultiViewRenderer (context, control);
+      return new TabbedMultiViewQuirksModeRenderer (context, control);
     }
   }
 }

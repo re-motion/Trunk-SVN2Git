@@ -21,18 +21,18 @@ using System.Web;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
+using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMultiView"/> controls.
-  /// <seealso cref="ITabbedMultiView"/>
+  /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="SingleView"/> controls.
+  /// <seealso cref="ISingleView"/>
   /// </summary>
-  public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>
+  public class SingleViewQuirksModeRenderer : RendererBase<ISingleView>
   {
-    public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control)
+    public SingleViewQuirksModeRenderer (HttpContextBase context, ISingleView control)
         : base(context, control)
     {
     }
@@ -41,11 +41,11 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string key = typeof (TabbedMultiViewRenderer).FullName + "_Style";
+      string key = typeof (SingleViewQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (TabbedMultiViewRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
+            Control, Context, typeof (SingleViewQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
 
@@ -68,88 +68,64 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       RenderTopControls (writer);
-      writer.RenderEndTag();
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderTabStrip (writer);
-      writer.RenderEndTag();
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderActiveView (writer);
-      writer.RenderEndTag();
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
+      RenderView (writer);
       RenderBottomControls (writer);
-      writer.RenderEndTag();
 
       writer.RenderEndTag();
+
       writer.RenderEndTag();
     }
 
     protected void AddAttributesToRender (HtmlTextWriter writer)
     {
       AddStandardAttributesToRender (writer);
+
       if (Control.IsDesignMode)
       {
         writer.AddStyleAttribute ("width", "100%");
         writer.AddStyleAttribute ("height", "75%");
       }
+
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
-    protected virtual void RenderTabStrip (HtmlTextWriter writer)
+    protected virtual void RenderView (HtmlTextWriter writer)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabStrip);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
+      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ClientID + "_View > *:first");
 
-      Control.TabStrip.CssClass = CssClassTabStrip;
-      Control.TabStrip.RenderControl (writer);
-
-      writer.RenderEndTag (); // end td
-    }
-
-    protected virtual void RenderActiveView (HtmlTextWriter writer)
-    {
-      ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + Control.ActiveViewClientID + " > *:first");
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
 
       if (Control.IsDesignMode)
         writer.AddStyleAttribute ("border", "solid 1px black");
-      Control.ActiveViewStyle.AddAttributesToRender (writer);
-      if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
+      Control.ViewStyle.AddAttributesToRender (writer);
+      if (string.IsNullOrEmpty (Control.ViewStyle.CssClass))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
       writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID);
-      Control.ActiveViewStyle.AddAttributesToRender (writer);
-      if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
+      Control.ViewStyle.AddAttributesToRender (writer);
+      if (string.IsNullOrEmpty (Control.ViewStyle.CssClass))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID + "_Content");
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID + "_View_Content");
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
 
-      var view = Control.GetActiveView();
-      if (view != null)
-      {
-        for (int i = 0; i < view.Controls.Count; i++)
-        {
-          Control control = view.Controls[i];
-          control.RenderControl (writer);
-        }
-      }
+      //_viewTemplateContainer.RenderControl (writer);
+      Control.View.RenderControl (writer);
 
       writer.RenderEndTag(); // end content div
       writer.RenderEndTag(); // end body div
       writer.RenderEndTag(); // end outer div
 
       writer.RenderEndTag(); // end td
+      writer.RenderEndTag(); // end tr
     }
 
     protected virtual void RenderTopControls (HtmlTextWriter writer)
@@ -171,7 +147,8 @@ namespace Remotion.Web.Legacy.UI.Controls
     private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string cssClass)
     {
       ScriptUtility.Instance.RegisterElementForBorderSpans (Control, "#" + placeHolder.ClientID + " > *:first");
-
+      
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
       if (string.IsNullOrEmpty (style.CssClass))
       {
         if (placeHolder.Controls.Count > 0)
@@ -203,56 +180,48 @@ namespace Remotion.Web.Legacy.UI.Controls
       writer.RenderEndTag(); // end outer div
 
       writer.RenderEndTag(); // end td
+      writer.RenderEndTag(); // end tr
     }
 
     #region protected virtual string CssClass...
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="SingleView"/>. </summary>
     /// <remarks> 
-    ///   <para> Class: <c>tabbedMultiView</c>. </para>
+    ///   <para> Class: <c>singleView</c>. </para>
     /// </remarks>
     public virtual string CssClassBase
     {
-      get { return "tabbedMultiView"; }
+      get { return "singleView"; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>'s tab strip. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="SingleView"/>'s active view. </summary>
     /// <remarks> 
-    ///   <para> Class: <c>tabbedMultiViewTabStrip</c>. </para>
+    ///   <para> Class: <c>singleViewActiveView</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="P:Control.ViewStyle"/> is not set. </para>
     /// </remarks>
-    public virtual string CssClassTabStrip
+    public virtual string CssClassView
     {
-      get { return "tabbedMultiViewTabStrip"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>'s active view. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>tabbedMultiViewActiveView</c>. </para>
-    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ITabbedMultiView.ActiveViewStyle"/> is not set. </para>
-    /// </remarks>
-    public virtual string CssClassActiveView
-    {
-      get { return "tabbedMultiViewActiveView"; }
+      get { return "singleViewView"; }
     }
 
     /// <summary> Gets the CSS-Class applied to the top section. </summary>
     /// <remarks> 
-    ///   <para> Class: <c>tabbedMultiViewTopControls</c>. </para>
-    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ITabbedMultiView.TopControlsStyle"/> is not set. </para>
+    ///   <para> Class: <c>singleViewTopControls</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="P:Control.TopControlsStyle"/> is not set. </para>
     /// </remarks>
     public virtual string CssClassTopControls
     {
-      get { return "tabbedMultiViewTopControls"; }
+      get { return "singleViewTopControls"; }
     }
 
     /// <summary> Gets the CSS-Class applied to the bottom section. </summary>
     /// <remarks> 
-    ///   <para> Class: <c>tabbedMultiViewBottomControls</c>. </para>
-    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ITabbedMultiView.BottomControlsStyle"/> is not set. </para>
+    ///   <para> Class: <c>singleViewBottomControls</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="P:Control.BottomControlsStyle"/> is not set. </para>
     /// </remarks>
     public virtual string CssClassBottomControls
     {
-      get { return "tabbedMultiViewBottomControls"; }
+      get { return "singleViewBottomControls"; }
     }
 
     /// <summary> Gets the CSS-Class applied to a <c>div</c> wrapping the content and the border elements. </summary>
@@ -277,8 +246,8 @@ namespace Remotion.Web.Legacy.UI.Controls
     /// <remarks> 
     ///   <para> Class: <c>empty</c>. </para>
     ///   <para> 
-    ///     Applied in addition to the regular CSS-Class. Use <c>td.tabbedMultiViewTopControls.emtpy</c> or 
-    ///     <c>td.tabbedMultiViewBottomControls.emtpy</c>as a selector.
+    ///     Applied in addition to the regular CSS-Class. Use <c>td.singleViewTopControls.emtpy</c> or 
+    ///     <c>td.singleViewBottomControls.emtpy</c>as a selector.
     ///   </para>
     /// </remarks>
     public virtual string CssClassEmpty
@@ -287,5 +256,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     }
 
     #endregion
+
+    
   }
 }

@@ -17,19 +17,19 @@
 using System;
 using System.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.SingleViewImplementation;
-using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
+using Remotion.Web.UI.Controls.ListMenuImplementation;
+using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="SingleView"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="ListMenu"/> controls.
   /// </summary>
-  public class SingleViewRendererFactory : ISingleViewRendererFactory
+  public class ListMenuQuirksModeRendererFactory : IListMenuRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ISingleView control)
+    public IRenderer CreateRenderer (HttpContextBase context, IListMenu control)
     {
-      return new SingleViewRenderer (context, control);
+      return new ListMenuQuirksModeRenderer (context, control);
     }
   }
 }

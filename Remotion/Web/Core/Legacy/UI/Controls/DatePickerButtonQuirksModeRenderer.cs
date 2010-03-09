@@ -29,11 +29,11 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonRenderer : DatePickerButtonRendererBase
+  public class DatePickerButtonQuirksModeRenderer : DatePickerButtonRendererBase
   {
     private const int c_defaultDatePickerLengthInPoints = 150;
 
-    public DatePickerButtonRenderer (HttpContextBase context, IDatePickerButton control)
+    public DatePickerButtonQuirksModeRenderer (HttpContextBase context, IDatePickerButton control)
         : base (context, control)
     {
     }
@@ -42,19 +42,19 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      string scriptFileKey = typeof (DatePickerButtonRenderer).FullName + "_Script";
+      string scriptFileKey = typeof (DatePickerButtonQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.js");
+            Control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
-      string styleFileKey = typeof (DatePickerButtonRenderer).FullName + "_Style";
+      string styleFileKey = typeof (DatePickerButtonQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.css");
+            Control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

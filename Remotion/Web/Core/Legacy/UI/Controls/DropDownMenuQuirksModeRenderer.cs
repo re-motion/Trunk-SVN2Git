@@ -30,11 +30,11 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for rendering a <see cref="DropDownMenu"/> control in quirks mode.
   /// <seealso cref="IDropDownMenu"/>
   /// </summary>
-  public class DropDownMenuRenderer : RendererBase<IDropDownMenu>
+  public class DropDownMenuQuirksModeRenderer : RendererBase<IDropDownMenu>
   {
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
-    public DropDownMenuRenderer (HttpContextBase context, IDropDownMenu control)
+    public DropDownMenuQuirksModeRenderer (HttpContextBase context, IDropDownMenu control)
         : base(context, control)
     {
     }
@@ -45,19 +45,19 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
 
-      string key = typeof (DropDownMenuRenderer).FullName + "_Script";
+      string key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.js");
+            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.js");
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
       }
 
-      key = typeof (DropDownMenuRenderer).FullName + "_Style";
+      key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
+            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -196,25 +196,25 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     private void RegisterEventHandlerScripts ()
     {
-      string key = typeof (DropDownMenuRenderer).FullName + "_Startup";
+      string key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Startup";
 
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
+            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuRenderer), key, script);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
       }
 
       if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
       {
         key = Control.ClientID + "_ClickEventHandlerBindScript";
-        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
+        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
         {
           string elementReference = string.Format ("document.getElementById('{0}')", Control.MenuHeadClientID);
           string menuIDReference = string.Format ("'{0}'", Control.ClientID);
           string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
-          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuRenderer), key, script);
+          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
         }
       }
     }
@@ -223,7 +223,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     private void RegisterMenuItems ()
     {
       string key = Control.UniqueID;
-      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
+      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
       {
         StringBuilder script = new StringBuilder ();
         script.Append ("DropDownMenu_AddMenuInfo" + " (\r\n\t");
@@ -261,7 +261,7 @@ namespace Remotion.Web.Legacy.UI.Controls
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuRenderer), key, script.ToString ());
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script.ToString ());
       }
     }
 

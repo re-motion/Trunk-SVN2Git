@@ -17,24 +17,26 @@
 using System;
 using System.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation;
+using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.WebTabStripImplementation;
+using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="DropDownMenu"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="MenuTab"/> controls  and <see cref="Remotion.Web.Legacy"/> items.
   /// </summary>
-  public class DropDownMenuRendererFactory : IDropDownMenuRendererFactory
+  public class TabbedMenuQuirksModeRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
     {
-      return new DropDownMenuRenderer (context, control);
+      return new TabbedMenuQuirksModeRenderer (context, control);
     }
 
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IDropDownMenu control)
+    public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
     {
-      return new DropDownMenuClientScriptBehavior (context, control);
+      return new MenuTabRenderer (context, control, tab);
     }
   }
 }
