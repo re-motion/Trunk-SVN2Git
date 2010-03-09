@@ -32,7 +32,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 {
   [TestFixture]
-  public class BocDateTimeValueRendererTest : RendererTestBase
+  public class BocDateTimeValueQuirksModeRendererTest : RendererTestBase
   {
     private const string c_defaultControlWidth = "150pt";
 

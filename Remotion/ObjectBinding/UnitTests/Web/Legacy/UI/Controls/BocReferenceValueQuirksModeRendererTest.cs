@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 {
   [TestFixture]
-  public class BocReferenceValueRendererTest : BocReferenceValueRendererTestBase
+  public class BocReferenceValueQuirksModeRendererTest : BocReferenceValueRendererTestBase
   {
     [Test]
     public void RenderReferenceValueAutoPostback ()

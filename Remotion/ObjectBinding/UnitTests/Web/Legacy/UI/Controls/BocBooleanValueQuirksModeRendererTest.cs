@@ -31,7 +31,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 {
   [TestFixture]
-  public class BocBooleanValueRendererTest : RendererTestBase
+  public class BocBooleanValueQuirksModeRendererTest : RendererTestBase
   {
     private const string c_defaultControlWidth = "100pt";
     private const string c_trueDescription = "Wahr";

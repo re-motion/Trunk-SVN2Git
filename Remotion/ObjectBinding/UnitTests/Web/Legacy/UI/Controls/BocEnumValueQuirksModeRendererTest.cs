@@ -35,7 +35,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 {
   [TestFixture]
-  public class BocEnumValueRendererTest : RendererTestBase
+  public class BocEnumValueQuirksModeRendererTest : RendererTestBase
   {
     private IBocEnumValue _enumValue;
     private readonly Unit _width = Unit.Point (173);

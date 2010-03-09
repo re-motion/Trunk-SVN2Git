@@ -30,7 +30,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 {
   [TestFixture]
-  public class BocMultilineTextValueRendererTest : BocTextValueRendererTestBase<IBocMultilineTextValue>
+  public class BocMultilineTextValueQuirksModeRendererTest : BocTextValueRendererTestBase<IBocMultilineTextValue>
   {
     [SetUp]
     public void SetUp ()
