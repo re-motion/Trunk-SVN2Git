@@ -22,13 +22,13 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="ConstantTableSource"/> holds a <see cref="ConstantExpression"/> representing the data source defined by a LINQ query.
+  /// <see cref="UnresolvedTableInfo"/> holds a <see cref="ConstantExpression"/> representing the data source defined by a LINQ query.
   /// </summary>
-  public class ConstantTableSource : AbstractTableSource
+  public class UnresolvedTableInfo : AbstractTableInfo
   {
     private readonly Type _itemType;
 
-    public ConstantTableSource (ConstantExpression constantExpression, Type itemType)
+    public UnresolvedTableInfo (ConstantExpression constantExpression, Type itemType)
     {
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
       ArgumentUtility.CheckNotNull ("itemType", itemType);
@@ -44,13 +44,13 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
       get { return _itemType;  }
     }
 
-    public override AbstractTableSource Accept (ITableSourceVisitor visitor)
+    public override AbstractTableInfo Accept (ITableInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      return visitor.VisitConstantTableSource (this);
+      return visitor.VisitUnresolvedTableInfo (this);
     }
 
-    public override SqlTableSource GetResolvedTableSource ()
+    public override ResolvedTableInfo GetResolvedTableInfo ()
     {
       throw new InvalidOperationException ("This table has not yet been resolved; call the resolution step first.");
     }

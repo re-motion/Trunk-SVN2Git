@@ -22,27 +22,27 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class ConstantTableSourceTest
+  public class UnresolvedTableInfoTest
   {
     [Test]
     public void Accept ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsInt();
+      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo_TypeIsCook();
 
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor>();
-      tableSourceVisitorMock.Expect (mock => mock.VisitConstantTableSource (tableSource));
+      var tableInfoVisitorMock = MockRepository.GenerateMock<ITableInfoVisitor>();
+      tableInfoVisitorMock.Expect (mock => mock.VisitUnresolvedTableInfo (tableInfo));
 
-      tableSourceVisitorMock.Replay ();
-      tableSource.Accept (tableSourceVisitorMock);
-      tableSourceVisitorMock.VerifyAllExpectations ();
+      tableInfoVisitorMock.Replay ();
+      tableInfo.Accept (tableInfoVisitorMock);
+      tableInfoVisitorMock.VerifyAllExpectations ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This table has not yet been resolved; call the resolution step first.")]
-    public void GetResolvedTableSource_Throws ()
+    public void GetResolvedTableInfo_Throws ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateConstantTableSource_TypeIsInt ();
-      tableSource.GetResolvedTableSource();
+      var tableInfo = SqlStatementModelObjectMother.CreateUnresolvedTableInfo();
+      tableInfo.GetResolvedTableInfo();
     }
   }
 }

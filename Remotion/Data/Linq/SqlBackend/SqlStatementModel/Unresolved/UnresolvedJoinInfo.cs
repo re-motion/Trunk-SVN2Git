@@ -15,54 +15,45 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="SqlTableSource"/> represents the data source defined by a table in a relational database.
+  /// <see cref="UnresolvedJoinInfo"/> represents the data source defined by a member access in a LINQ expression.
   /// </summary>
-  public class SqlTableSource : AbstractTableSource
+  public class UnresolvedJoinInfo : AbstractJoinInfo
   {
-    private readonly Type _itemType;
-    private readonly string _tableName;
-    private readonly string _tableAlias;
+    private readonly MemberInfo _memberInfo;
 
-    public SqlTableSource (Type type, string tableName, string tableAlias)
+    public UnresolvedJoinInfo (MemberInfo memberInfo)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("tableName", tableName);
-      ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      _itemType = type;
-      _tableName = tableName;
-      _tableAlias = tableAlias;
+      _memberInfo = memberInfo;
     }
 
-    public string TableName
+    public MemberInfo MemberInfo
     {
-      get { return _tableName; }
-    }
-
-    public string TableAlias
-    {
-      get { return _tableAlias; }
+      get { return _memberInfo; }
     }
 
     public override Type ItemType
     {
-      get { return _itemType; }
+      get { return ReflectionUtility.GetFieldOrPropertyType (_memberInfo); }
     }
 
-    public override AbstractTableSource Accept (ITableSourceVisitor visitor)
+    public override AbstractJoinInfo Accept (IJoinInfoVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      return visitor.VisitSqlTableSource (this);
+      return visitor.VisitUnresolvedJoinInfo (this);
     }
 
-    public override SqlTableSource GetResolvedTableSource ()
+    public override ResolvedTableInfo GetResolvedTableInfo ()
     {
-      return this;
+      throw new InvalidOperationException ("This join has not yet been resolved; call the resolution step first.");
     }
   }
 }

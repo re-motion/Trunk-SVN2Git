@@ -22,28 +22,28 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Unresolved
 {
   [TestFixture]
-  public class JoinedTableSourceTest
+  public class UnresolvedJoinInfoTest
   {
     [Test]
     public void Accept ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_KitchenCook();
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook();
 
-      var tableSourceVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor>();
-      tableSourceVisitorMock.Expect (mock => mock.VisitJoinedTableSource (tableSource));
+      var joinInfoVisitorMock = MockRepository.GenerateMock<IJoinInfoVisitor>();
+      joinInfoVisitorMock.Expect (mock => mock.VisitUnresolvedJoinInfo (joinInfo));
 
-      tableSourceVisitorMock.Replay ();
+      joinInfoVisitorMock.Replay ();
 
-      tableSource.Accept (tableSourceVisitorMock);
-      tableSourceVisitorMock.VerifyAllExpectations();
+      joinInfo.Accept (joinInfoVisitorMock);
+      joinInfoVisitorMock.VerifyAllExpectations();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This join has not yet been resolved; call the resolution step first.")]
-    public void GetResolvedTableSource_Throws ()
+    public void GetResolvedTableInfo_Throws ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateJoinedTableSource_KitchenCook ();
-      tableSource.GetResolvedTableSource ();
+      var joinInfo = SqlStatementModelObjectMother.CreateUnresolvedJoinInfo_KitchenCook ();
+      joinInfo.GetResolvedTableInfo ();
     }
   }
 }

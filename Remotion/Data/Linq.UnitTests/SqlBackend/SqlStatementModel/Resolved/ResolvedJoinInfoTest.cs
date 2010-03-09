@@ -17,35 +17,20 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.SqlBackend.SqlStatementModel.Resolved
 {
   [TestFixture]
-  public class SqlTableSourceTest
+  public class ResolvedJoinInfoTest
   {
     [Test]
-    public void Accept ()
+    public void GetResolvedTableInfo ()
     {
-      var tableSource = SqlStatementModelObjectMother.CreateSqlTableSource_TypeIsInt();
-      var tableSourceVisitorMock = MockRepository.GenerateMock<ITableSourceVisitor> ();
-      tableSourceVisitorMock.Expect (mock => mock.VisitSqlTableSource (tableSource));
-      
-      tableSourceVisitorMock.Replay ();
-      tableSource.Accept (tableSourceVisitorMock);
-      
-      tableSourceVisitorMock.VerifyAllExpectations ();
-    }
+      var joinInfo = SqlStatementModelObjectMother.CreateResolvedJoinInfo ();
 
-    [Test]
-    public void GetResolvedTableSource ()
-    {
-      var tableSource = SqlStatementModelObjectMother.CreateSqlTableSource_TypeIsInt();
-      
-      var result = tableSource.GetResolvedTableSource ();
+      var result = joinInfo.GetResolvedTableInfo ();
 
-      Assert.That (result, Is.SameAs (tableSource));
+      Assert.That (result, Is.SameAs (joinInfo.ForeignTableInfo));
     }
   }
 }
