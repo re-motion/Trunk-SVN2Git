@@ -40,6 +40,12 @@ namespace Remotion.Web.UnitTests.UI.Controls
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
     }
 
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      ServiceLocator.SetLocatorProvider (() => null);
+    }
+
     protected virtual void Initialize ()
     {
       Html = new HtmlHelper ();

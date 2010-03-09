@@ -57,12 +57,6 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       PopulateMenu();
     }
 
-    [TearDown]
-    public void TearDown ()
-    {
-      _clientScriptManagerMock.VerifyAllExpectations();
-    }
-
     [Test]
     public void Render_RegistersMenuItems ()
     {
@@ -79,6 +73,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       var renderer = new ListMenuQuirksModeRenderer (HttpContext, _control);
       renderer.Render (Html.Writer);
+  
+      _clientScriptManagerMock.VerifyAllExpectations ();
     }
 
 
@@ -100,6 +96,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
         var td = GetAssertedCell (tr, 0, 1);
         AssertMenuItem (td, itemIndex, 0);
       }
+   
+      _clientScriptManagerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -123,6 +121,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       AssertMenuItem (td2, 2, 0);
       AssertMenuItem (td2, 4, 1);
+   
+      _clientScriptManagerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -140,6 +140,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       {
         AssertMenuItem (td, iColumn < 3 ? iColumn : iColumn + 1, iColumn);
       }
+
+      _clientScriptManagerMock.VerifyAllExpectations ();
     }
 
     private XmlNode GetAssertedTable ()

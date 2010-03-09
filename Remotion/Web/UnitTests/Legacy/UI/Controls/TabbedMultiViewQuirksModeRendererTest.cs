@@ -41,7 +41,6 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     [SetUp]
     public void SetUp ()
     {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
       Initialize();
       _control = MockRepository.GenerateStub<ITabbedMultiView>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMultiView");

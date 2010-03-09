@@ -40,7 +40,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation.Rende
     [SetUp]
     public void SetUp ()
     {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
       Initialize();
       _control = MockRepository.GenerateStub<ITabbedMultiView>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMultiView");

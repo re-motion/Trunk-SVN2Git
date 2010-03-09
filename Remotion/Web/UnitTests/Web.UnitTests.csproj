@@ -177,6 +177,21 @@
     <Compile Include="ExecutionEngine\WxeContextFactory.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionTests\Execute.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionModeTest.cs" />
+    <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Legacy\UI\Controls\ListMenuQuirksModeRendererTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Legacy\UI\Controls\SingleViewQuirksModeRendererTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Legacy\UI\Controls\TabbedMultiViewQuirksModeRendererTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Legacy\UI\Controls\WebTabStripQuirksModeRendererTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategyTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IAddedControl.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategyTest.cs" />
@@ -184,21 +199,16 @@
     <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />
     <Compile Include="UI\Controls\IconInfoTest.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRendererTest.cs" />
-    <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\HtmlHelper.cs" />
-    <Compile Include="Legacy\UI\Controls\ListMenuQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRendererTest.cs" />
     <Compile Include="UI\Controls\RendererTestBase.cs" />
-    <Compile Include="Legacy\UI\Controls\SingleViewQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\StubServiceLocator.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRendererTest.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRendererTest.cs" />
-    <Compile Include="Legacy\UI\Controls\TabbedMultiViewQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRendererTest.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\TabbedMultiViewMock.cs" />
-    <Compile Include="Legacy\UI\Controls\WebTabStripQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\WebTabStripImplementation\WebTabStripMock.cs" />
     <Compile Include="UI\Controls\XmlNodeExtensions.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />

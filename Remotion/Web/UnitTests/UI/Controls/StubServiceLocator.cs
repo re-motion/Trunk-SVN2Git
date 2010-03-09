@@ -33,11 +33,6 @@ namespace Remotion.Web.UnitTests.UI.Controls
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IWebTabStripRendererFactory), new WebTabStripRendererFactory());
-      _instances.Add (typeof (ITabbedMenuRendererFactory), new WebTabStripRendererFactory());
-      _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownMenuRendererFactory());
-      _instances.Add (typeof (IWebTabRendererFactory), new WebTabStripRendererFactory());
-      _instances.Add (typeof (IMenuTabRendererFactory), new TabbedMenuRendererFactory ());
       _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
       _instances.Add (typeof (IScriptUtility), MockRepository.GenerateStub<IScriptUtility>());
     }

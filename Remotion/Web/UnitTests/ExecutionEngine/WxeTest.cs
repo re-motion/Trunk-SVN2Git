@@ -51,6 +51,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [TearDown]
     public virtual void TearDown ()
     {
+      HttpContextHelper.SetCurrent (null);
+      WxeContext.SetCurrent (null);
     }
   }
 }

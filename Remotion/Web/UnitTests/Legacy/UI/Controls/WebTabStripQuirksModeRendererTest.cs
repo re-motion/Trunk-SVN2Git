@@ -47,8 +47,6 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     {
       Initialize();
 
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
-
       _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
       _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
 
