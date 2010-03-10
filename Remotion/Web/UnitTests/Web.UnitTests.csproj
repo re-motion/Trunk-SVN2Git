@@ -144,6 +144,10 @@
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\Legacy\Web.Legacy.csproj">
+      <Project>{DD30FC13-485F-425D-8FA0-0CE8998B925D}</Project>
+      <Name>Web.Legacy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Security\Web.Security.csproj">
       <Project>{9B6F6D1A-A7EA-4EE8-B36E-E31CF7E518E3}</Project>
       <Name>Web.Security</Name>

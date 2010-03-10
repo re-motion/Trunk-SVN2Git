@@ -16,7 +16,7 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define--><!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
-<project xmlns="nant-schema" name="Remotion.Web.Test">  
+<project xmlns="nant-schema" name="Remotion.Web.UnitTests">  
 
   <target name="build" description="perform a build">
 
@@ -29,12 +29,9 @@
       <nowarn>
       </nowarn> 
       <sources failonempty="true">
-        <include name="*.cs" />
-        <include name="AspNetFramework/**/*.cs" />
-        <include name="Configuration/**/*.cs" />
-        <include name="ExecutionEngine/**/*.cs" />
-        <include name="Properties/**/*.cs" />
-        <include name="UI/**/*.cs" />
+        <include name="/**/*.cs" />
+        <exclude name="bin/**" />
+        <exclude name="obj/**" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
       <references failonempty="true">
@@ -46,6 +43,7 @@
         <include name="${build.test.outputdir}/Remotion.Security.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Web.dll" />
+        <include name="${build.test.outputdir}/Remotion.Web.Legacy.dll" />
         <include name="${build.test.outputdir}/Remotion.Web.Security.dll" />
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
