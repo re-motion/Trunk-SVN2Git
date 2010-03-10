@@ -45,7 +45,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabbedMenu.css");
+            Control, Context, typeof (TabbedMenuQuirksModeRenderer), ResourceType.Html, "TabbedMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
     }

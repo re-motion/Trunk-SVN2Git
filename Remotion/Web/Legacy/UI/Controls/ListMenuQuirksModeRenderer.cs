@@ -50,12 +50,12 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       string scriptFileKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");
+          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Style";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
+          Control, typeof (ListMenuQuirksModeRenderer), ResourceType.Html, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 

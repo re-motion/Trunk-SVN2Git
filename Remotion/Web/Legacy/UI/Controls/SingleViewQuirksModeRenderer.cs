@@ -45,7 +45,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (SingleViewQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
+            Control, Context, typeof (SingleViewQuirksModeRenderer), ResourceType.Html, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
 

@@ -49,7 +49,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.js");
+            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.js");
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
       }
 
@@ -57,7 +57,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
+            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -201,7 +201,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuQuirksModeRenderer), key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
+            Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Html, "DropDownMenu.css");
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuQuirksModeRenderer), key, script);
       }

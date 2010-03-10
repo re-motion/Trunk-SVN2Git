@@ -43,7 +43,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (scriptKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "WebButton.js");
+            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
       }
 
@@ -51,7 +51,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "WebButton.css");
+            Control, Context, typeof (WebButtonQuirksModeRenderer), ResourceType.Html, "WebButton.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

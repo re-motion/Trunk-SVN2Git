@@ -45,7 +45,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (TabbedMultiViewQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
+            Control, Context, typeof (TabbedMultiViewQuirksModeRenderer), ResourceType.Html, "TabbedMultiView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
 

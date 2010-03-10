@@ -40,7 +40,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "TreeView.css");
+            Control, Context, typeof (WebTreeViewQuirksModeRenderer), ResourceType.Html, "TreeView.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
