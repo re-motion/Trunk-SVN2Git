@@ -44,6 +44,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Controls\BocAutocompleteReferenceValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocCheckboxQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocEnumValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocListQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocMultilineTextValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocReferenceValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocTextValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\BocAutoCompleteReferenceValueQuirksModeRendereFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocBooleanValueQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocCheckboxQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocColumnQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocDateTimeValueQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocEnumValueQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocListQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocMultilineTextValueQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocReferenceValueQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\BocTextValueQuirksModeRendererFactory.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
