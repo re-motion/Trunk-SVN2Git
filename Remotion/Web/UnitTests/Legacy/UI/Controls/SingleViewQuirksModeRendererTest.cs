@@ -41,7 +41,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
 
       _singleView = MockRepository.GenerateStub<ISingleView>();
       _singleView.Stub (stub => stub.ClientID).Return ("SingleView");

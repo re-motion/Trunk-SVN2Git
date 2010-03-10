@@ -34,7 +34,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
 
       _datePickerButton = MockRepository.GenerateStub<IDatePickerButton>();
       _datePickerButton.ID = "_Boc_DatePickerButton";

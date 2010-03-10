@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
 
       _control = MockRepository.GenerateStub<ISingleView>();
       _control.Stub (stub => stub.ClientID).Return ("MySingleView");
