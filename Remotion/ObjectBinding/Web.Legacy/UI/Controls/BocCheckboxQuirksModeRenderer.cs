@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
-  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
+  /// <include file='doc\include\UI\Controls\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
   public class BocCheckboxQuirksModeRenderer : BocBooleanValueRendererBase<IBocCheckBox>
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";

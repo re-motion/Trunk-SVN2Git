@@ -422,13 +422,6 @@
     <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
     <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />
     <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocBooleanValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocCheckboxRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocDateTimeValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocEnumValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocListRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocMultilineTextValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\Rendering\QuirksMode\BocTextValueRenderer.xml" />
     <Content Include="Doc\WhatsNew_Remotion.ObjectBinding.Web.txt" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocBrowserCompatibility.js" />
     <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.css" />
@@ -587,6 +580,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Doc\include\UI\Controls\Rendering\QuirksMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

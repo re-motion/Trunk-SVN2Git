@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// rendering of the various parts by delegating to specialized renderers.
   /// 
   /// This class should not be instantiated directly. Use a <see cref="BocRowRenderer"/> to obtain an instance.</remarks>
-  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocListRenderer.xml' path='BocListRenderer/Class'/>
+  /// <include file='doc\include\UI\Controls\BocListRenderer.xml' path='BocListRenderer/Class'/>
   /// <seealso cref="BocListNavigationBlockRenderer"/>
   /// <seealso cref="BocListQuirksModeRendererFactory"/>
   public class BocListQuirksModeRenderer : BocRendererBase<IBocList>

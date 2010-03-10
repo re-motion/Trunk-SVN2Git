@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// For that, see <see cref="DatePickerButtonRenderer"/>.
   /// <seealso cref="IBocDateTimeValue"/>
   /// </summary>
-  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>
+  /// <include file='doc\include\UI\Controls\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>
   public class BocDateTimeValueQuirksModeRenderer : BocDateTimeValueRendererBase
   {
     private const string c_defaultControlWidth = "150pt";

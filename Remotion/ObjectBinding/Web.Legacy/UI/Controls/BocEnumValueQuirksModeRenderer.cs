@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// Responsible for rendering <see cref="BocEnumValue"/> controls.
   /// <seealso cref="IBocEnumValue"/>
   /// </summary>
-  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocEnumValueRenderer.xml' path='BocEnumValueRenderer/Class'/>
+  /// <include file='doc\include\UI\Controls\BocEnumValueRenderer.xml' path='BocEnumValueRenderer/Class'/>
   public class BocEnumValueQuirksModeRenderer : BocRendererBase<IBocEnumValue>
   {
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>

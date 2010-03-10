@@ -109,6 +109,15 @@
       <Name>ObjectBinding.Web</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Doc\include\UI\Controls\BocBooleanValueRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocCheckboxRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocDateTimeValueRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocEnumValueRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocListRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocMultilineTextValueRenderer.xml" />
+    <Content Include="Doc\include\UI\Controls\BocTextValueRenderer.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
