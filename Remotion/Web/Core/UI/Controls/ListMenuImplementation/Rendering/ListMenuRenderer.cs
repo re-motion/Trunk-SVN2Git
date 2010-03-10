@@ -24,7 +24,7 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="ListMenu"/> control in quirks mode.
+  /// Responsible for rendering a <see cref="ListMenu"/> control in standard mode.
   /// <seealso cref="IListMenu"/>
   /// </summary>
   public class ListMenuRenderer : RendererBase<IListMenu>
