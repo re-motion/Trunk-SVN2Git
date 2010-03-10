@@ -91,7 +91,54 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Res\" />
+    <Content Include="Res\HTML\DatePicker.css" />
+    <Content Include="Res\HTML\DatePicker.js" />
+    <Content Include="Res\HTML\DropDownMenu.css" />
+    <Content Include="Res\HTML\DropDownMenu.js" />
+    <Content Include="Res\HTML\ExecutionEngine.css" />
+    <Content Include="Res\HTML\FontSize080.css" />
+    <Content Include="Res\HTML\FontSize100.css" />
+    <Content Include="Res\HTML\FormGrid.css" />
+    <Content Include="Res\HTML\ListMenu.css" />
+    <Content Include="Res\HTML\ListMenu.js" />
+    <Content Include="Res\HTML\SingleView.css" />
+    <Content Include="Res\HTML\SmartPage.css" />
+    <Content Include="Res\HTML\Style.css" />
+    <Content Include="Res\HTML\StyleUtility.js" />
+    <Content Include="Res\HTML\TabbedMenu.css" />
+    <Content Include="Res\HTML\TabbedMultiView.css" />
+    <Content Include="Res\HTML\TabStrip.css" />
+    <Content Include="Res\HTML\TreeView.css" />
+    <Content Include="Res\HTML\WebButton.css" />
+    <Content Include="Res\HTML\WebButton.js" />
+    <Content Include="Res\Image\DatePicker.gif" />
+    <Content Include="Res\Image\DropDownMenuArrow.gif" />
+    <Content Include="Res\Image\DropDownMenuArrow_disabled.gif" />
+    <Content Include="Res\Image\DropDownMenuItemIconPane.gif" />
+    <Content Include="Res\Image\DropDownMenuSeparator.gif" />
+    <Content Include="Res\Image\Help.gif" />
+    <Content Include="Res\Image\RequiredField.gif" />
+    <Content Include="Res\Image\Spacer.gif" />
+    <Content Include="Res\Image\TabbedMainMenuTabTopLeftCorner.gif" />
+    <Content Include="Res\Image\TabbedMainMenuTabTopRightCorner.gif" />
+    <Content Include="Res\Image\TreeViewF.gif" />
+    <Content Include="Res\Image\TreeViewFMinus.gif" />
+    <Content Include="Res\Image\TreeViewFPlus.gif" />
+    <Content Include="Res\Image\TreeViewI.gif" />
+    <Content Include="Res\Image\TreeViewL.gif" />
+    <Content Include="Res\Image\TreeViewLMinus.gif" />
+    <Content Include="Res\Image\TreeViewLPlus.gif" />
+    <Content Include="Res\Image\TreeViewMinus.gif" />
+    <Content Include="Res\Image\TreeViewPlus.gif" />
+    <Content Include="Res\Image\TreeViewR.gif" />
+    <Content Include="Res\Image\TreeViewRMinus.gif" />
+    <Content Include="Res\Image\TreeViewRPlus.gif" />
+    <Content Include="Res\Image\TreeViewT.gif" />
+    <Content Include="Res\Image\TreeViewTMinus.gif" />
+    <Content Include="Res\Image\TreeViewTPlus.gif" />
+    <Content Include="Res\Image\TreeViewWhite.gif" />
+    <Content Include="Res\Image\ValidationError.gif" />
+    <Content Include="Res\UI\DatePickerForm.aspx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
