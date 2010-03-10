@@ -218,8 +218,8 @@
     <Compile Include="Core\UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="Core\UI\Controls\RequestMode.cs" />
     <Compile Include="Core\UI\Controls\TestPageHolder.cs" />
-    <Compile Include="Utilities\HtmlUtilityTest.cs" />
-    <Compile Include="Utilities\InternalControlMemberCallerTest.cs" />
+    <Compile Include="Core\Utilities\HtmlUtilityTest.cs" />
+    <Compile Include="Core\Utilities\InternalControlMemberCallerTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ResourceObjectWithVarRefTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ResourceObjectTest.cs" />
     <Compile Include="Core\UI\Controls\ControlReplacing\ControlReplacerTest.cs" />
@@ -408,7 +408,7 @@
     </Compile>
     <Compile Include="Core\UI\Design\WebDesignModeHelperTest.cs" />
     <Compile Include="PairConstraint.cs" />
-    <Compile Include="Utilities\UrlUtilityTest.cs">
+    <Compile Include="Core\Utilities\UrlUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WxeDelegateStep.cs" />
