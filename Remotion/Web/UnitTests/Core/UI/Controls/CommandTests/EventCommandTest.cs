@@ -23,7 +23,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
-namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
   public class EventCommandTest : BaseTest

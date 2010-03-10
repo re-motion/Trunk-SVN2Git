@@ -17,7 +17,7 @@
 using System;
 using Remotion.Security;
 
-namespace Remotion.Web.UnitTests.Security.Domain
+namespace Remotion.Web.UnitTests.Core.Security.Domain
 {
   public class SecurableObject : ISecurableObject
   {

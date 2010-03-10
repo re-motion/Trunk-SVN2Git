@@ -21,7 +21,7 @@ using Remotion.Web.UI;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 
   public class WebControlTest

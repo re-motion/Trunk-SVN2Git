@@ -21,10 +21,10 @@ using Remotion.Data;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
   public class ScopedTransactionStrategyTestBase
   {

@@ -17,7 +17,7 @@
 using System;
 using Remotion.Data;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
 {
   [Serializable]
   public class TestTransactionFactory : ITransactionFactory

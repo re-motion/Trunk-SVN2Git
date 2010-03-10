@@ -17,7 +17,7 @@
 using System;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation
+namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation
 {
   public class TabbedMultiViewMock : TabbedMultiView
   {

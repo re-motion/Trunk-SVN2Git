@@ -23,7 +23,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Exe
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.ExecuteExternalByRedirect
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   [TestFixture]
   public class PreProcessingSubFunctionStateTest : TestBase

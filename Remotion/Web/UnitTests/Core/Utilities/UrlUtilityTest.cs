@@ -21,7 +21,7 @@ using System.Web;
 using NUnit.Framework;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UnitTests.Utilities
+namespace Remotion.Web.UnitTests.Core.Utilities
 {
 
 [TestFixture]

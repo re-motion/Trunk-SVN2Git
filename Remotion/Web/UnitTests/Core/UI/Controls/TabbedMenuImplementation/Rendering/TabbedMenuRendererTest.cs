@@ -26,7 +26,7 @@ using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.TabbedMenuImplementation.Rendering
+namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rendering
 {
   [TestFixture]
   public class TabbedMenuRendererTest : RendererTestBase

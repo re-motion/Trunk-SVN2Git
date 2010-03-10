@@ -32,7 +32,7 @@ using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.WebTabStripImplementation.Rendering
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rendering
 {
   [TestFixture]
   public class WebTabStripRendererTest : RendererTestBase

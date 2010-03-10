@@ -26,7 +26,7 @@ using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 
   [TestFixture]

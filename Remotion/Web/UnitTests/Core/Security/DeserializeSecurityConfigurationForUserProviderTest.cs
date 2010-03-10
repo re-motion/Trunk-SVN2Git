@@ -20,7 +20,7 @@ using Remotion.Development.UnitTesting.Configuration;
 using Remotion.Security.Configuration;
 using Remotion.Web.Security;
 
-namespace Remotion.Web.UnitTests.Security
+namespace Remotion.Web.UnitTests.Core.Security
 {
   [TestFixture]
   public class DeserializeSecurityConfigurationForUserProviderTest

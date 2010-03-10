@@ -20,10 +20,10 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using System.Web;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTests
 {
   [TestFixture]
   public class Execute_Self : TestBase

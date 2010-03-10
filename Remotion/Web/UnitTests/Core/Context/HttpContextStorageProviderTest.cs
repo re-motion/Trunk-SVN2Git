@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.Context;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
-namespace Remotion.Web.UnitTests.Context
+namespace Remotion.Web.UnitTests.Core.Context
 {
   [TestFixture]
   public class HttpContextStorageProviderTest

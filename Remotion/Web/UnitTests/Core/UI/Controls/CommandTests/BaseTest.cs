@@ -22,7 +22,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
-namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   public class BaseTest
   {

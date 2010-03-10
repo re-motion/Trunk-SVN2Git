@@ -18,7 +18,7 @@ using System;
 using System.ComponentModel;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 
 /// <summary> Exposes non-public members of the <see cref="EmailAddressValidator"/> type. </summary>

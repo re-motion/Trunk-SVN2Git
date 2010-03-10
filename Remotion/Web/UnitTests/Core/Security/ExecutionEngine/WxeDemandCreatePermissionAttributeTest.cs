@@ -17,9 +17,9 @@
 using System;
 using NUnit.Framework;
 using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.UnitTests.Security.Domain;
+using Remotion.Web.UnitTests.Core.Security.Domain;
 
-namespace Remotion.Web.UnitTests.Security.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 {
   [TestFixture]
   public class WxeDemandCreatePermissionAttributeTest

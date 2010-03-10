@@ -16,11 +16,11 @@
 // 
 using System;
 using Remotion.Security;
-using Remotion.Web.UnitTests.Security.Domain;
+using Remotion.Web.UnitTests.Core.Security.Domain;
 using Rhino.Mocks;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
+namespace Remotion.Web.UnitTests.Core.Security.UI.WebSecurityAdapterTests
 {
   public class WebPermissionProviderTestHelper
   {

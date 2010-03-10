@@ -21,7 +21,7 @@ using Remotion.Security;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.MenuTabTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
 {
   [TestFixture]
   public class SecurityTestWithVisible : BaseTest

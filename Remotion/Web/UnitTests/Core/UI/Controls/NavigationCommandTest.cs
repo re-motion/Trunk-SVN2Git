@@ -26,10 +26,10 @@ using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.Utilities;
-using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
-using TestFunctionWithNesting=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunctionWithNesting;
+using TestFunction=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.TestFunction;
+using TestFunctionWithNesting=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.TestFunctionWithNesting;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 
 [TestFixture]

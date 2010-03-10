@@ -24,7 +24,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
 {
   [TestFixture]
   public class ChildTransactionExecutionListenerTest

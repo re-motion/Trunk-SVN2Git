@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
+namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
 {
   [TestFixture]
   public class StateLoadingStrategyTest : TestBase

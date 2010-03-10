@@ -18,7 +18,7 @@ using System;
 using System.ComponentModel;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 {
 
 /// <summary> Exposes non-public members of the <see cref="WebButton"/> type. </summary>

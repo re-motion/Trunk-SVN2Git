@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.MenuTabTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.MenuTabTests
 {
   [TestFixture]
   public class MainMenuTabTest

@@ -23,9 +23,9 @@ using Remotion.Context;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
   [TestFixture]
   public class WxeHandlerTest : WxeTest

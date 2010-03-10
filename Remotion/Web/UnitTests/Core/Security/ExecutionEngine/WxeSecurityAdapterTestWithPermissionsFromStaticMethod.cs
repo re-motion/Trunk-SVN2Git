@@ -17,14 +17,14 @@
 using System;
 using NUnit.Framework;
 using Remotion.Security;
-using Remotion.Web.UnitTests.Security.Configuration;
-using Remotion.Web.UnitTests.Security.Domain;
+using Remotion.Web.UnitTests.Core.Security.Configuration;
+using Remotion.Web.UnitTests.Core.Security.Domain;
 using Rhino.Mocks;
 using Remotion.Security.Configuration;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.Security.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 {
   [TestFixture]
   public class WxeSecurityAdapterTestWithPermissionsFromStaticMethod

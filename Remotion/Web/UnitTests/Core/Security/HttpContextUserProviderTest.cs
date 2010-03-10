@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Security;
 using Remotion.Web.Security;
 
-namespace Remotion.Web.UnitTests.Security
+namespace Remotion.Web.UnitTests.Core.Security
 {
   [TestFixture]
   public class HttpContextUserProviderTest

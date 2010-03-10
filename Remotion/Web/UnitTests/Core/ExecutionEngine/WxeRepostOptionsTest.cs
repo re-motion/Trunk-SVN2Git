@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
   [TestFixture]
   public class WxeRepostOptionsTest

@@ -18,7 +18,7 @@ using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.UrlMapping
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
 {
   public class FirstMappedFunction : WxeFunction
   {

@@ -26,7 +26,7 @@ using Remotion.Web.Utilities;
 using Rhino.Mocks;
 using Assertion=Remotion.Utilities.Assertion;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
+namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
 {
   public class TestBase
   {

@@ -24,10 +24,10 @@ using Remotion.Context;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
   [TestFixture]
   public class WxeFunctionStateManagerTest

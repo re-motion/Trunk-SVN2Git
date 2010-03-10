@@ -21,7 +21,7 @@ using Remotion.Security;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 {
   [TestFixture]
   public class SecurityTestWithEnabled : BaseTest

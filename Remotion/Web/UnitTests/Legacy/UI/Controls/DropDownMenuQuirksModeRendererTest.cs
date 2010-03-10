@@ -27,7 +27,7 @@ using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
-using Remotion.Web.UnitTests.UI.Controls;
+using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Legacy.UI.Controls

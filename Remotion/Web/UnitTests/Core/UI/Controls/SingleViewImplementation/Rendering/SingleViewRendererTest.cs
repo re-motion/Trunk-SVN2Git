@@ -25,7 +25,7 @@ using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.SingleViewImplementation.Rendering
+namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rendering
 {
   [TestFixture]
   public class SingleViewRendererTest : RendererTestBase

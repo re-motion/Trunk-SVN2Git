@@ -18,9 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
 
 [TestFixture]

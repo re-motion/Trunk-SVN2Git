@@ -29,7 +29,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.Utilities
+namespace Remotion.Web.UnitTests.Core.Utilities
 {
   [TestFixture]
   public class InternalControlMemberCallerTest

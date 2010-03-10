@@ -21,7 +21,7 @@ using Remotion.Data;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
 {
   [TestFixture]
   public class RootTransactionStrategyTest

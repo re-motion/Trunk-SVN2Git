@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Remotion.Data;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
 {
   [Serializable]
   public class TestTransaction: ITransaction

@@ -19,7 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UnitTests.Utilities
+namespace Remotion.Web.UnitTests.Core.Utilities
 {
   [TestFixture]
   public class HtmlUtilityTest

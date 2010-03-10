@@ -23,7 +23,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
   public class HrefCommandTest : BaseTest

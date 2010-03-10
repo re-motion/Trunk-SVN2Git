@@ -22,13 +22,13 @@
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 		<add 
 		    id="First"
-		    type="Remotion.Web.UnitTests.ExecutionEngine.UrlMapping.FirstMappedFunction, Remotion.Web.UnitTests"
+		    type="Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping.FirstMappedFunction, Remotion.Web.UnitTests"
 		    resource="First.wxe"/>
 		<add 
 		    id="Second"
-		    type="Remotion.Web.UnitTests.ExecutionEngine.UrlMapping.SecondMappedFunction, Remotion.Web.UnitTests"
+		    type="Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping.SecondMappedFunction, Remotion.Web.UnitTests"
 		    resource="Second.wxe"/>
 		<add 
-		    type="Remotion.Web.UnitTests.ExecutionEngine.UrlMapping.FirstMappedFunction, Remotion.Web.UnitTests"
+		    type="Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping.FirstMappedFunction, Remotion.Web.UnitTests"
 		    resource="Primary.wxe"/>
 </urlMapping>

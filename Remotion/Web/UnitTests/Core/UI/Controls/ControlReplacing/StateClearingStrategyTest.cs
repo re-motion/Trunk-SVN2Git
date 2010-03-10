@@ -25,7 +25,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
+namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
 {
   [TestFixture]
   public class StateClearingStrategyTest : TestBase

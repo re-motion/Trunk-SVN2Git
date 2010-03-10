@@ -21,6 +21,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 		<add 
-		    type="Remotion.Web.UnitTests.ExecutionEngine.UrlMapping.FirstMappedFunction, Remotion.Web.UnitTests"
+		    type="Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping.FirstMappedFunction, Remotion.Web.UnitTests"
 		    resource=""/>
 </urlMapping>

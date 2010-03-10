@@ -22,7 +22,7 @@ using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public class ReplaceableControlMock : ControlMock, INamingContainer, IReplaceableControl
   {

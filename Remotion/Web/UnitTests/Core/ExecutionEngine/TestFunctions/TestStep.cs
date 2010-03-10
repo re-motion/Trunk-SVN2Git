@@ -17,7 +17,7 @@
 using System;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
 {
   public class TestStep: WxeStep
   {

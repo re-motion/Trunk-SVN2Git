@@ -26,7 +26,7 @@ using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ListMenuImplementation.Rendering
+namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Rendering
 {
   [TestFixture]
   public class ListMenuRendererTest : RendererTestBase

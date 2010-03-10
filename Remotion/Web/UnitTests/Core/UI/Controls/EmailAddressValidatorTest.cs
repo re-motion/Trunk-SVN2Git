@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 
 [TestFixture]

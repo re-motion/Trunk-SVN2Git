@@ -21,7 +21,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Development.Web.UnitTesting.Configuration;
 
-namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 {
   public class BaseTest : WebControlTest
   {

@@ -18,7 +18,7 @@ using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   [TestFixture]
   public class RendererTestBase

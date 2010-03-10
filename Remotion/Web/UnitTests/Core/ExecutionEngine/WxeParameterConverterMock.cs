@@ -18,7 +18,7 @@ using System;
 using Remotion.Collections;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
 
 /// <summary> Exposes non-public members of the <see cref="WxeParameterConverter"/> type. </summary>

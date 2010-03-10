@@ -17,7 +17,7 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
+namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
 {
   public interface IAddedControl
   {

@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTests
 {
   public class TestBase
   {

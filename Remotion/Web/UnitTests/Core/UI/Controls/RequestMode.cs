@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public enum RequestMode
   {

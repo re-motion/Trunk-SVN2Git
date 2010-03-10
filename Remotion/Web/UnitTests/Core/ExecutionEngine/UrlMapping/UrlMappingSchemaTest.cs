@@ -20,7 +20,7 @@ using System.Xml.Schema;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.UrlMapping
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
 {
 
 [TestFixture]

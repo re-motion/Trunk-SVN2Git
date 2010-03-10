@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
 {
   public class ReleaseException : Exception
   {

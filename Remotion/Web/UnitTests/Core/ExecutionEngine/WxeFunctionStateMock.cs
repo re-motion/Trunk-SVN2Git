@@ -18,7 +18,7 @@ using System;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 {
 
 [Serializable]

@@ -28,7 +28,7 @@ using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation.Rendering
+namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
   [TestFixture]
   public class TabbedMultiViewRendererTest : RendererTestBase

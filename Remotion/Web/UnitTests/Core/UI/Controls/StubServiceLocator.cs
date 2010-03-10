@@ -25,7 +25,7 @@ using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {

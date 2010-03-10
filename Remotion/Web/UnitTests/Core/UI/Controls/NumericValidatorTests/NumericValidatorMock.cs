@@ -19,7 +19,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.NumericValidatorTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.NumericValidatorTests
 {
   public class NumericValidatorMock : NumericValidator
   {

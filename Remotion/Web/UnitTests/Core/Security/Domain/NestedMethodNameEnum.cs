@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Web.UnitTests.Security.Domain
+namespace Remotion.Web.UnitTests.Core.Security.Domain
 {
   public class SimpleType
   {

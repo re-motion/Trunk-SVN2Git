@@ -17,10 +17,10 @@
 using System;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.UnitTests.Security.Domain;
+using Remotion.Web.UnitTests.Core.Security.Domain;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.Security.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 {
   [WxeDemandCreatePermission (typeof (SecurableObject))]
   public class TestFunctionWithPermissionsFromConstructor : WxeFunction

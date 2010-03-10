@@ -22,9 +22,9 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
-using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
+using TestFunction=Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions.TestFunction;
 
-namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
   public class WxeFunctionCommandTest : BaseTest

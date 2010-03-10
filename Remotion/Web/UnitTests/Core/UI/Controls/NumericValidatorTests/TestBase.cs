@@ -22,7 +22,7 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.NumericValidatorTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.NumericValidatorTests
 {
   public class TestBase
   {

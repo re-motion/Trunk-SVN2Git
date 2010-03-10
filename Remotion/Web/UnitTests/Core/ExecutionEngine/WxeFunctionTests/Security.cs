@@ -16,12 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxeFunctionTests
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
 {
   [TestFixture]
   public class Security

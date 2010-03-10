@@ -18,7 +18,7 @@ using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.Security.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 {
   public class TestFunctionWithoutPermissions : WxeFunction
   {

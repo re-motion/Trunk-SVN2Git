@@ -17,9 +17,9 @@
 using System;
 using NUnit.Framework;
 using Remotion.Web.Security.UI;
-using Remotion.Web.UnitTests.Security.ExecutionEngine;
+using Remotion.Web.UnitTests.Core.Security.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.Security.UI
+namespace Remotion.Web.UnitTests.Core.Security.UI
 {
   [TestFixture]
   public class DemandTargetWxeFunctionPermissionAttributeTest

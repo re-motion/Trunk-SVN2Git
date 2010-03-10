@@ -26,7 +26,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
-using Remotion.Web.UnitTests.UI.Controls;
+using Remotion.Web.UnitTests.Core.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Legacy.UI.Controls

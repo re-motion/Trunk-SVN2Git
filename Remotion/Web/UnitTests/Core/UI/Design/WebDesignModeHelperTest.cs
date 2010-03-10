@@ -24,7 +24,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.Web.UI.Design;
 
-namespace Remotion.Web.UnitTests.UI.Design
+namespace Remotion.Web.UnitTests.Core.UI.Design
 {
   [TestFixture]
   public class WebDesignModeHelperTest

@@ -20,7 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.NumericValidatorTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.NumericValidatorTests
 {
   [TestFixture]
   public class ValidateWithInt64 : TestBase

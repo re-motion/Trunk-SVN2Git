@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
+using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
 {
   [TestFixture]
   public class WxeVariablesContainerTest

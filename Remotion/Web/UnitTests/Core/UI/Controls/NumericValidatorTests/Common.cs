@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.NumericValidatorTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.NumericValidatorTests
 {
   [TestFixture]
   public class Common : TestBase

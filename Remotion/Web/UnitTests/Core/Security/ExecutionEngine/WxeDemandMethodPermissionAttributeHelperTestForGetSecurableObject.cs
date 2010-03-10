@@ -17,11 +17,11 @@
 using System;
 using NUnit.Framework;
 using Remotion.Web.Security.ExecutionEngine;
-using Remotion.Web.UnitTests.Security.Domain;
+using Remotion.Web.UnitTests.Core.Security.Domain;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.Security.ExecutionEngine
+namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
 {
   [TestFixture]
   public class WxeDemandMethodPermissionAttributeHelperTestForGetSecurableObject
@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
     [Test]
     [ExpectedException (typeof (WxeException), ExpectedMessage = "The parameter 'ThisObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to"
-        + " WxeFunction 'Remotion.Web.UnitTests.Security.ExecutionEngine.TestFunctionWithThisObject' is null.")]
+        + " WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObject' is null.")]
     public void TestWithParameterNull ()
     {
       _attribute.ParameterName = "ThisObject";
@@ -99,7 +99,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
     [Test]
     [ExpectedException (typeof (WxeException), ExpectedMessage = "The parameter 'SomeObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to"
-        + " WxeFunction 'Remotion.Web.UnitTests.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' does not implement"
+        + " WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' does not implement"
         + " interface 'Remotion.Security.ISecurableObject'.")]
     public void TestWithParameterNotImplementingISecurableObject ()
     {
@@ -114,8 +114,8 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
     [Test]
     [ExpectedException (typeof (WxeException), ExpectedMessage = "The parameter 'ThisObject' specified by the WxeDemandTargetMethodPermissionAttribute applied to"
-        + " WxeFunction 'Remotion.Web.UnitTests.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' is not derived from type"
-        + " 'Remotion.Web.UnitTests.Security.Domain.OtherSecurableObject'.")]
+        + " WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' is not derived from type"
+        + " 'Remotion.Web.UnitTests.Core.Security.Domain.OtherSecurableObject'.")]
     public void TestWithParameterNotOfMatchingType ()
     {
       WxeDemandTargetMethodPermissionAttribute attribute = new WxeDemandTargetMethodPermissionAttribute ("Show", typeof (OtherSecurableObject));
@@ -141,7 +141,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
     [Test]
     [ExpectedException (typeof (WxeException),
-       ExpectedMessage = "WxeFunction 'Remotion.Web.UnitTests.Security.ExecutionEngine.TestFunctionWithoutParameters' has a WxeDemandTargetMethodPermissionAttribute"
+       ExpectedMessage = "WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithoutParameters' has a WxeDemandTargetMethodPermissionAttribute"
        + " applied, but does not define any parameters to supply the 'this-object'.")]
     public void TestWithFunctionWithoutParameters ()
     {
@@ -154,7 +154,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
     [Test]
     [ExpectedException (typeof (WxeException), ExpectedMessage = "The parameter 'Invalid' specified by the WxeDemandTargetMethodPermissionAttribute applied to"
-        + " WxeFunction 'Remotion.Web.UnitTests.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' is not a valid parameter"
+        + " WxeFunction 'Remotion.Web.UnitTests.Core.Security.ExecutionEngine.TestFunctionWithThisObjectAsSecondParameter' is not a valid parameter"
         + " of this function.")]
     public void TestWithInvalidParameterName ()
     {

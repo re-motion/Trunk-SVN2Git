@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Context;
 using Remotion.Web.Context;
 
-namespace Remotion.Web.UnitTests.Context
+namespace Remotion.Web.UnitTests.Core.Context
 {
   [TestFixture]
   public class WebSafeContextMixinTest

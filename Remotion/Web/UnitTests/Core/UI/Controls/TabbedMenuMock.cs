@@ -18,7 +18,7 @@ using System;
 using System.ComponentModel;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
 [ToolboxItem (false)]
 public class TabbedMenuMock: TabbedMenu

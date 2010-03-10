@@ -18,7 +18,7 @@ using System;
 using System.Xml;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public static class XmlNodeExtensions
   {

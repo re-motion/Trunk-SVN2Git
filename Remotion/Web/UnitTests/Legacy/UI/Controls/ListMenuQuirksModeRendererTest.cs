@@ -23,7 +23,7 @@ using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
-using Remotion.Web.UnitTests.UI.Controls;
+using Remotion.Web.UnitTests.Core.UI.Controls;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 

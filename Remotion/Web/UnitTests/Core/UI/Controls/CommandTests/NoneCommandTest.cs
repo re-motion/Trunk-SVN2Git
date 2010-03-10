@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 {
   [TestFixture]
   public class NoneCommandTest : BaseTest

@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 
-namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
+namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 {
 
 [TestFixture]

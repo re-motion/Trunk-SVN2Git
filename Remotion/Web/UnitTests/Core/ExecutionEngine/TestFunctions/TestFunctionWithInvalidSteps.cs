@@ -18,7 +18,7 @@ using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
 {
   public class TestFunctionWithInvalidSteps: WxeFunction
   {
