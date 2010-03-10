@@ -196,33 +196,33 @@
     <Compile Include="Legacy\UI\Controls\WebTabStripQuirksModeRendererTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategyTest.cs" />
-    <Compile Include="UI\Controls\ControlReplacing\IAddedControl.cs" />
-    <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategyTest.cs" />
-    <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategyTest.cs" />
-    <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />
-    <Compile Include="UI\Controls\IconInfoTest.cs" />
-    <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRendererTest.cs" />
-    <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\HtmlHelper.cs" />
-    <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\RendererTestBase.cs" />
-    <Compile Include="UI\Controls\SingleViewImplementation\Rendering\SingleViewRendererTest.cs" />
-    <Compile Include="UI\Controls\StubServiceLocator.cs" />
-    <Compile Include="UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRendererTest.cs" />
-    <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRendererTest.cs" />
-    <Compile Include="UI\Controls\TabbedMultiViewImplementation\TabbedMultiViewMock.cs" />
-    <Compile Include="UI\Controls\WebTabStripImplementation\WebTabStripMock.cs" />
-    <Compile Include="UI\Controls\XmlNodeExtensions.cs" />
-    <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
-    <Compile Include="UI\Controls\RequestMode.cs" />
-    <Compile Include="UI\Controls\TestPageHolder.cs" />
+    <Compile Include="Core\UI\Controls\ControlReplacing\StateClearingStrategyTest.cs" />
+    <Compile Include="Core\UI\Controls\ControlReplacing\IAddedControl.cs" />
+    <Compile Include="Core\UI\Controls\ControlReplacing\StateReplacingStrategyTest.cs" />
+    <Compile Include="Core\UI\Controls\ControlReplacing\StateLoadingStrategyTest.cs" />
+    <Compile Include="Core\UI\Controls\ControlReplacing\TestBase.cs" />
+    <Compile Include="Core\UI\Controls\IconInfoTest.cs" />
+    <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\HtmlHelper.cs" />
+    <Compile Include="Core\UI\Controls\ListMenuImplementation\Rendering\ListMenuRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\RendererTestBase.cs" />
+    <Compile Include="Core\UI\Controls\SingleViewImplementation\Rendering\SingleViewRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\StubServiceLocator.cs" />
+    <Compile Include="Core\UI\Controls\TabbedMenuImplementation\Rendering\TabbedMenuRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\WebTabStripImplementation\Rendering\WebTabStripRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\TabbedMultiViewImplementation\TabbedMultiViewMock.cs" />
+    <Compile Include="Core\UI\Controls\WebTabStripImplementation\WebTabStripMock.cs" />
+    <Compile Include="Core\UI\Controls\XmlNodeExtensions.cs" />
+    <Compile Include="Core\UI\Controls\ReplaceableControlMock.cs" />
+    <Compile Include="Core\UI\Controls\RequestMode.cs" />
+    <Compile Include="Core\UI\Controls\TestPageHolder.cs" />
     <Compile Include="Utilities\HtmlUtilityTest.cs" />
     <Compile Include="Utilities\InternalControlMemberCallerTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ResourceObjectWithVarRefTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ResourceObjectTest.cs" />
-    <Compile Include="UI\Controls\ControlReplacing\ControlReplacerTest.cs" />
+    <Compile Include="Core\UI\Controls\ControlReplacing\ControlReplacerTest.cs" />
     <Compile Include="Core\ExecutionEngine\TestFunctions\CommitException.cs" />
     <Compile Include="Core\ExecutionEngine\TestFunctions\OtherTestFunction.cs" />
     <Compile Include="Core\ExecutionEngine\TestFunctions\ReleaseException.cs" />
@@ -355,58 +355,58 @@
     <Compile Include="Core\Security\UI\WebSecurityAdapterTests\PermissionFromSecurableObjectTest.cs" />
     <Compile Include="Core\Security\UI\WebSecurityAdapterTests\PermissionFromWxeFunctionTest.cs" />
     <Compile Include="Core\Security\UI\WebSecurityAdapterTests\WebPermissionProviderTestHelper.cs" />
-    <Compile Include="UI\Controls\CommandTests\BaseTest.cs" />
-    <Compile Include="UI\Controls\CommandTests\CommandTestHelper.cs" />
-    <Compile Include="UI\Controls\CommandTests\WxeFunctionCommandTest.cs" />
-    <Compile Include="UI\Controls\CommandTests\EventCommandTest.cs" />
-    <Compile Include="UI\Controls\CommandTests\NoneCommandTest.cs" />
-    <Compile Include="UI\Controls\CommandTests\HrefCommandTest.cs" />
-    <Compile Include="UI\Controls\EmailAddressValidatorMock.cs">
+    <Compile Include="Core\UI\Controls\CommandTests\BaseTest.cs" />
+    <Compile Include="Core\UI\Controls\CommandTests\CommandTestHelper.cs" />
+    <Compile Include="Core\UI\Controls\CommandTests\WxeFunctionCommandTest.cs" />
+    <Compile Include="Core\UI\Controls\CommandTests\EventCommandTest.cs" />
+    <Compile Include="Core\UI\Controls\CommandTests\NoneCommandTest.cs" />
+    <Compile Include="Core\UI\Controls\CommandTests\HrefCommandTest.cs" />
+    <Compile Include="Core\UI\Controls\EmailAddressValidatorMock.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\EmailAddressValidatorTest.cs">
+    <Compile Include="Core\UI\Controls\EmailAddressValidatorTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\LazyContainerTest.cs">
+    <Compile Include="Core\UI\Controls\LazyContainerTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\MenuTabTests\BaseTest.cs" />
-    <Compile Include="UI\Controls\MenuTabTests\MainMenuTabTest.cs" />
-    <Compile Include="UI\Controls\MenuTabTests\SecurityTestWithVisible.cs" />
-    <Compile Include="UI\Controls\MenuTabTests\SecurityTestWithEnabled.cs" />
-    <Compile Include="UI\Controls\MenuTabTests\WcagTest.cs" />
-    <Compile Include="UI\Controls\NavigationCommandTest.cs">
+    <Compile Include="Core\UI\Controls\MenuTabTests\BaseTest.cs" />
+    <Compile Include="Core\UI\Controls\MenuTabTests\MainMenuTabTest.cs" />
+    <Compile Include="Core\UI\Controls\MenuTabTests\SecurityTestWithVisible.cs" />
+    <Compile Include="Core\UI\Controls\MenuTabTests\SecurityTestWithEnabled.cs" />
+    <Compile Include="Core\UI\Controls\MenuTabTests\WcagTest.cs" />
+    <Compile Include="Core\UI\Controls\NavigationCommandTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\NumericValidatorTests\Common.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithSingle.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithInt64.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithByte.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithInt16.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithDecimal.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithDouble.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\NumericValidatorMock.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\TestBase.cs" />
-    <Compile Include="UI\Controls\NumericValidatorTests\ValidateWithInt32.cs" />
-    <Compile Include="UI\Controls\TabbedMenuMock.cs">
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\Common.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithSingle.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithInt64.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithByte.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithInt16.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithDecimal.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithDouble.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\NumericValidatorMock.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\TestBase.cs" />
+    <Compile Include="Core\UI\Controls\NumericValidatorTests\ValidateWithInt32.cs" />
+    <Compile Include="Core\UI\Controls\TabbedMenuMock.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\TabbedMenuTest.cs" />
-    <Compile Include="UI\Controls\WebButtonTests\BaseTest.cs" />
-    <Compile Include="UI\Controls\WebButtonTests\SecurityTestWithEnabled.cs" />
-    <Compile Include="UI\Controls\WebButtonTests\SecurityTestWithVisible.cs" />
-    <Compile Include="UI\Controls\WebButtonTests\WcagTest.cs" />
-    <Compile Include="UI\Controls\WebButtonTests\WebButtonMock.cs" />
-    <Compile Include="UI\Controls\WebControlTest.cs">
+    <Compile Include="Core\UI\Controls\TabbedMenuTest.cs" />
+    <Compile Include="Core\UI\Controls\WebButtonTests\BaseTest.cs" />
+    <Compile Include="Core\UI\Controls\WebButtonTests\SecurityTestWithEnabled.cs" />
+    <Compile Include="Core\UI\Controls\WebButtonTests\SecurityTestWithVisible.cs" />
+    <Compile Include="Core\UI\Controls\WebButtonTests\WcagTest.cs" />
+    <Compile Include="Core\UI\Controls\WebButtonTests\WebButtonMock.cs" />
+    <Compile Include="Core\UI\Controls\WebControlTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\WebMenuItemTests\BaseTest.cs" />
-    <Compile Include="UI\Controls\WebMenuItemTests\SecurityTestWithEnabled.cs" />
-    <Compile Include="UI\Controls\WebMenuItemTests\SecurityTestWithVisible.cs" />
-    <Compile Include="UI\Controls\WebTabCollectionTest.cs">
+    <Compile Include="Core\UI\Controls\WebMenuItemTests\BaseTest.cs" />
+    <Compile Include="Core\UI\Controls\WebMenuItemTests\SecurityTestWithEnabled.cs" />
+    <Compile Include="Core\UI\Controls\WebMenuItemTests\SecurityTestWithVisible.cs" />
+    <Compile Include="Core\UI\Controls\WebTabCollectionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Design\WebDesignModeHelperTest.cs" />
+    <Compile Include="Core\UI\Design\WebDesignModeHelperTest.cs" />
     <Compile Include="PairConstraint.cs" />
     <Compile Include="Utilities\UrlUtilityTest.cs">
       <SubType>Code</SubType>
