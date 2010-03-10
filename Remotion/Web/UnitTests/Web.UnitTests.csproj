@@ -154,8 +154,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context\HttpContextStorageProviderTest.cs" />
-    <Compile Include="Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
+    <Compile Include="Core\Context\WebSafeContextMixinTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
@@ -426,9 +426,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
