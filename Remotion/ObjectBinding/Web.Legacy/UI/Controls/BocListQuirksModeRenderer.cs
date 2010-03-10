@@ -139,7 +139,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       string styleFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.css");
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocList.js");
+            Control, Context, typeof (BocListQuirksModeRenderer), ResourceType.Html, "BocList.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 

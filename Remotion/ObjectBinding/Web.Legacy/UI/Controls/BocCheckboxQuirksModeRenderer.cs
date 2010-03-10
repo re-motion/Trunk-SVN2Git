@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocCheckbox.js");
+            Control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocCheckbox.css");
+            Control, Context, typeof (BocCheckboxQuirksModeRenderer), ResourceType.Html, "BocCheckbox.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

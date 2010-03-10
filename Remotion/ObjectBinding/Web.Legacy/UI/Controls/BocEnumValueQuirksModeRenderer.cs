@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
       var key = typeof (BocEnumValueQuirksModeRenderer).FullName + "_Style";
       string url = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocEnumValue.css");
+          Control, Context, typeof (BocEnumValueQuirksModeRenderer), ResourceType.Html, "BocEnumValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 

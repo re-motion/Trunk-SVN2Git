@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.js");
+            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
       }
 
@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.css");
+            Control, Context, typeof (BocReferenceValueQuirksModeRenderer), ResourceType.Html, "BocReferenceValue.css");
 
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }

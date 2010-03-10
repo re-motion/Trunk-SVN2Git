@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       
       string styleKey = typeof (BocDateTimeValueQuirksModeRenderer).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, ResourceTheme.Legacy, "BocDateTimeValue.css");
+          Control, Context, typeof (BocDateTimeValueQuirksModeRenderer), ResourceType.Html, "BocDateTimeValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
