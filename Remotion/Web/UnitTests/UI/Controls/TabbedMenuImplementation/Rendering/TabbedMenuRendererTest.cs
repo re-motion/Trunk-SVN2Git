@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Drawing;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
@@ -31,11 +32,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.TabbedMenuImplementation.Rendering
   public class TabbedMenuRendererTest : RendererTestBase
   {
     private ITabbedMenu _control;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
 
       _control = MockRepository.GenerateStub<ITabbedMenu>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMenu");
@@ -98,11 +102,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.TabbedMenuImplementation.Rendering
 
     private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
     {
-      var renderer = new TabbedMenuRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
-      // _control.RenderControl (Html.Writer);
+      var renderer = new TabbedMenuRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
+      // _control.RenderControl (_htmlHelper.Writer);
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
       var table = document.GetAssertedChildElement ("table", 0);
       table.AssertAttributeValueEquals ("class", hasCssClass ? "CustomCssClass" : "tabbedMenu");
       if (isDesignMode)

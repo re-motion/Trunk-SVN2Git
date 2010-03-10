@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
@@ -26,11 +27,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.DatePickerButtonImplementation.Rend
   public class DatePickerButtonRendererTest : RendererTestBase
   {
     private IDatePickerButton _datePickerButton;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+
       _datePickerButton = MockRepository.GenerateStub<IDatePickerButton>();
       _datePickerButton.ID = "_Boc_DatePickerButton";
       _datePickerButton.Stub (mock => mock.ContainerControlID).Return ("Container");
@@ -71,12 +76,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.DatePickerButtonImplementation.Rend
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var renderer = new DatePickerButtonRenderer (HttpContext, _datePickerButton);
-      renderer.Render (Html.Writer);
-      var buttonDocument = Html.GetResultDocument();
+      var renderer = new DatePickerButtonRenderer (_httpContext, _datePickerButton);
+      renderer.Render (_htmlHelper.Writer);
+      var buttonDocument = _htmlHelper.GetResultDocument();
 
-      var button = Html.GetAssertedChildElement (buttonDocument, "a", 0);
-      Html.AssertAttribute (button, "id", "_Boc_DatePickerButton");
+      var button = _htmlHelper.GetAssertedChildElement (buttonDocument, "a", 0);
+      _htmlHelper.AssertAttribute (button, "id", "_Boc_DatePickerButton");
       string script = string.Format (
           "DatePicker_ShowDatePicker(this, document.getElementById ('{0}'), " +
           "document.getElementById ('{1}'), '{2}', '{3}', '{4}');return false;",
@@ -90,19 +95,19 @@ namespace Remotion.Web.UnitTests.UI.Controls.DatePickerButtonImplementation.Rend
       if (isDisabled)
       {
         script = "return false;";
-        Html.AssertAttribute (button, "disabled", "disabled");
+        _htmlHelper.AssertAttribute (button, "disabled", "disabled");
       }
       if (hasClientScript)
       {
-        Html.AssertAttribute (button, "onclick", script);
-        Html.AssertAttribute (button, "href", "#");
+        _htmlHelper.AssertAttribute (button, "onclick", script);
+        _htmlHelper.AssertAttribute (button, "href", "#");
       }
 
       if (hasClientScript)
       {
-        var image = Html.GetAssertedChildElement (button, "img", 0);
-        Html.AssertAttribute (image, "alt", _datePickerButton.AlternateText);
-        Html.AssertAttribute (image, "src", renderer.GetResolvedImageUrl());
+        var image = _htmlHelper.GetAssertedChildElement (button, "img", 0);
+        _htmlHelper.AssertAttribute (image, "alt", _datePickerButton.AlternateText);
+        _htmlHelper.AssertAttribute (image, "src", renderer.GetResolvedImageUrl());
       }
     }
   }

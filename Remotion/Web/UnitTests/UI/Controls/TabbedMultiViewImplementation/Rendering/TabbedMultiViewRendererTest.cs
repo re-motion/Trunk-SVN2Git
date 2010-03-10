@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -36,18 +36,22 @@ namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation.Rende
     private const string c_cssClass = "SomeCssClass";
 
     private ITabbedMultiView _control;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+
       _control = MockRepository.GenerateStub<ITabbedMultiView>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMultiView");
       _control.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "MyTabbedMultiView_TopControl" });
       _control.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "MyTabbedMultiView_BottomControl" });
 
       var tabStrip = MockRepository.GenerateStub<IWebTabStrip>();
-      tabStrip.Stub (stub => stub.RenderControl (Html.Writer)).WhenCalled (
+      tabStrip.Stub (stub => stub.RenderControl (_htmlHelper.Writer)).WhenCalled (
           delegate (MethodInvocation obj)
           {
             HtmlTextWriter writer = (HtmlTextWriter) obj.Arguments[0];
@@ -183,8 +187,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation.Rende
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
+      var renderer = new TabbedMultiViewRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
 
       var container = GetAssertedContainerElement (withCssClass, inAttributes, isDesignMode, renderer);
       AssertTopControls (container, withCssClass, isEmpty, renderer);
@@ -201,7 +205,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.TabbedMultiViewImplementation.Rende
         cssClass = inAttributes ? _control.Attributes["class"] : _control.CssClass;
       }
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
       var outerDiv = document.GetAssertedChildElement ("div", 0);
       
       outerDiv.AssertAttributeValueEquals ("class", cssClass);

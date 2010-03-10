@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
@@ -32,11 +33,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.ListMenuImplementation.Rendering
   {
     private IListMenu _control;
     private IClientScriptManager _clientScriptManagerMock;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
 
       _control = MockRepository.GenerateStub<IListMenu>();
       _control.Stub (stub => stub.UniqueID).Return ("MyListMenu");
@@ -76,8 +80,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.ListMenuImplementation.Rendering
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
+      var renderer = new ListMenuRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
     }
 
 
@@ -143,12 +147,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.ListMenuImplementation.Rendering
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
+      var renderer = new ListMenuRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
 
-      var table = Html.GetAssertedChildElement (document, "table", 0);
+      var table = _htmlHelper.GetAssertedChildElement (document, "table", 0);
       table.AssertAttributeValueEquals ("id", _control.ClientID);
       table.AssertAttributeValueEquals ("cellspacing", "0");
       table.AssertAttributeValueEquals ("cellpadding", "0");

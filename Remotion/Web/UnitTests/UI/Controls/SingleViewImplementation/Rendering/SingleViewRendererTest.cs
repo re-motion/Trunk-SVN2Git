@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
@@ -30,11 +31,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.SingleViewImplementation.Rendering
   public class SingleViewRendererTest : RendererTestBase
   {
     private ISingleView _control;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
 
       _control = MockRepository.GenerateStub<ISingleView>();
       _control.Stub (stub => stub.ClientID).Return ("MySingleView");
@@ -153,10 +157,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.SingleViewImplementation.Rendering
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
+      var renderer = new SingleViewRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
       document.AssertChildElementCount (1);
 
       var outerDiv = document.GetAssertedChildElement ("div", 0);
@@ -165,8 +169,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.SingleViewImplementation.Rendering
 
       if (isDesignMode)
       {
-        Html.AssertStyleAttribute (outerDiv, "width", "100%");
-        Html.AssertStyleAttribute (outerDiv, "height", "75%");
+        _htmlHelper.AssertStyleAttribute (outerDiv, "width", "100%");
+        _htmlHelper.AssertStyleAttribute (outerDiv, "height", "75%");
       }
 
       var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);

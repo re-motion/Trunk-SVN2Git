@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -41,12 +42,16 @@ namespace Remotion.Web.UnitTests.UI.Controls.DropDownMenuImplementation.Renderin
     private static readonly IconInfo s_titleIcon = new IconInfo (c_Icon_Url, c_IconAlternateText, c_Icon_ToolTip, s_iconWidth, s_iconHeight);
 
     private IDropDownMenu _control;
-    
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
+
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize ();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+
       _control = MockRepository.GenerateStub<IDropDownMenu> ();
       _control.ID = "DropDownMenu1";
       _control.Stub (stub => stub.Enabled).Return (true);
@@ -117,7 +122,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.DropDownMenuImplementation.Renderin
       var span = titleDiv.GetAssertedChildElement ("span", 1);
       string imageFileName = _control.Enabled ? "DropDownMenuArrow.gif" : "DropDownMenuArrow_disabled.gif";
       string imageFilePath = ResourceUrlResolver.GetResourceUrl (
-          _control, HttpContext, typeof (DropDownMenuRenderer), ResourceType.Image, ResourceTheme.ClassicBlue, imageFileName);
+          _control, _httpContext, typeof (DropDownMenuRenderer), ResourceType.Image, ResourceTheme.ClassicBlue, imageFileName);
       string styleValue = string.Format ("url({0})", imageFilePath);
 
       span.AssertStyleAttribute (
@@ -149,9 +154,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.DropDownMenuImplementation.Renderin
 
     private XmlNode GetAssertedContainerSpan ()
     {
-      var renderer = new DropDownMenuRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
-      var document = Html.GetResultDocument();
+      var renderer = new DropDownMenuRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
+      var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
       containerDiv.AssertAttributeValueEquals ("id", _control.ClientID);
       containerDiv.AssertAttributeValueEquals ("class", "DropDownMenuContainer");

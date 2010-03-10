@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -33,11 +34,15 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private const string c_cssClass = "CssClass";
 
     private ISingleView _singleView;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+
       _singleView = MockRepository.GenerateStub<ISingleView>();
       _singleView.Stub (stub => stub.ClientID).Return ("SingleView");
       _singleView.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "TopControl" });
@@ -146,7 +151,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewQuirksModeRenderer (HttpContext, _singleView);
+      var renderer = new SingleViewQuirksModeRenderer (_httpContext, _singleView);
 
       string controlCssClass = renderer.CssClassBase;
       string topControlsCssClass = renderer.CssClassTopControls;
@@ -172,10 +177,10 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
         _singleView.ViewStyle.CssClass = viewCssClass;
       }
 
-      renderer.Render (Html.Writer);
-      //_singleView.RenderControl (Html.Writer);
+      renderer.Render (_htmlHelper.Writer);
+      //_singleView.RenderControl (_htmlHelper.Writer);
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
 
       XmlNode outerDiv = GetAssertedOuterDiv (document, controlCssClass, isDesignMode);
       XmlNode table = GetAssertedTable (outerDiv, controlCssClass);
@@ -184,9 +189,9 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       XmlNode tdTop = GetAssertedTdTop (table, topControlsCssClass, isEmpty, renderer.CssClassEmpty);
       XmlNode divTopControls = GetAssertedDivTopControls (tdTop, topControlsCssClass);
 
-      var divTopContent = Html.GetAssertedChildElement (divTopControls, "div", 0);
+      var divTopContent = _htmlHelper.GetAssertedChildElement (divTopControls, "div", 0);
 
-      Html.AssertAttribute (divTopContent, "class", contentCssClass);
+      _htmlHelper.AssertAttribute (divTopContent, "class", contentCssClass);
 
 
       XmlNode tdView = GetAssertedTdView (table, viewCssClass);
@@ -195,110 +200,110 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
       XmlNode divViewBody = GetAssertedDivViewBody (divViewControls, viewBodyCssClass);
 
-      var divViewContent = Html.GetAssertedChildElement (divViewBody, "div", 0);
-      Html.AssertAttribute (divViewContent, "class", contentCssClass);
+      var divViewContent = _htmlHelper.GetAssertedChildElement (divViewBody, "div", 0);
+      _htmlHelper.AssertAttribute (divViewContent, "class", contentCssClass);
 
 
       XmlNode tdBottom = GetAssertedTdBottom (table, bottomControlsCssClass, isEmpty, renderer.CssClassEmpty);
       XmlNode divBottomControls = GetAssertedDivBottomControls (tdBottom, bottomControlsCssClass);
 
-      var divBottomContent = Html.GetAssertedChildElement (divBottomControls, "div", 0);
-      Html.AssertAttribute (divBottomContent, "class", contentCssClass);
+      var divBottomContent = _htmlHelper.GetAssertedChildElement (divBottomControls, "div", 0);
+      _htmlHelper.AssertAttribute (divBottomContent, "class", contentCssClass);
     }
 
     private XmlNode GetAssertedDivViewBody (XmlNode divViewControls, string cssClass)
     {
-      var divViewBody = Html.GetAssertedChildElement (divViewControls, "div", 0);
-      Html.AssertAttribute (divViewBody, "class", cssClass);
-      Html.AssertChildElementCount (divViewBody, 1);
+      var divViewBody = _htmlHelper.GetAssertedChildElement (divViewControls, "div", 0);
+      _htmlHelper.AssertAttribute (divViewBody, "class", cssClass);
+      _htmlHelper.AssertChildElementCount (divViewBody, 1);
       return divViewBody;
     }
 
     private XmlNode GetAssertedDivBottomControls (XmlNode tdBottom, string cssClass)
     {
-      var divBottomControls = Html.GetAssertedChildElement (tdBottom, "div", 0);
-      Html.AssertAttribute (divBottomControls, "id", _singleView.BottomControl.ClientID);
-      Html.AssertAttribute (divBottomControls, "class", cssClass);
-      Html.AssertChildElementCount (divBottomControls, 1);
+      var divBottomControls = _htmlHelper.GetAssertedChildElement (tdBottom, "div", 0);
+      _htmlHelper.AssertAttribute (divBottomControls, "id", _singleView.BottomControl.ClientID);
+      _htmlHelper.AssertAttribute (divBottomControls, "class", cssClass);
+      _htmlHelper.AssertChildElementCount (divBottomControls, 1);
       return divBottomControls;
     }
 
     private XmlNode GetAssertedDivViewControls (XmlNode tdView, string cssClass)
     {
-      var divViewControls = Html.GetAssertedChildElement (tdView, "div", 0);
-      Html.AssertAttribute (divViewControls, "class", cssClass);
-      Html.AssertAttribute (divViewControls, "id", _singleView.ViewClientID);
-      Html.AssertChildElementCount (divViewControls, 1);
+      var divViewControls = _htmlHelper.GetAssertedChildElement (tdView, "div", 0);
+      _htmlHelper.AssertAttribute (divViewControls, "class", cssClass);
+      _htmlHelper.AssertAttribute (divViewControls, "id", _singleView.ViewClientID);
+      _htmlHelper.AssertChildElementCount (divViewControls, 1);
       return divViewControls;
     }
 
     private XmlNode GetAssertedDivTopControls (XmlNode tdTop, string cssClass)
     {
-      var divTopControls = Html.GetAssertedChildElement (tdTop, "div", 0);
-      Html.AssertAttribute (divTopControls, "id", _singleView.TopControl.ClientID);
-      Html.AssertAttribute (divTopControls, "class", cssClass);
-      Html.AssertChildElementCount (divTopControls, 1);
+      var divTopControls = _htmlHelper.GetAssertedChildElement (tdTop, "div", 0);
+      _htmlHelper.AssertAttribute (divTopControls, "id", _singleView.TopControl.ClientID);
+      _htmlHelper.AssertAttribute (divTopControls, "class", cssClass);
+      _htmlHelper.AssertChildElementCount (divTopControls, 1);
       return divTopControls;
     }
 
     private XmlNode GetAssertedTdBottom (XmlNode table, string cssClass, bool isEmpty, string cssClassEmpty)
     {
-      var trBottom = Html.GetAssertedChildElement (table, "tr", 2);
-      Html.AssertChildElementCount (trBottom, 1);
+      var trBottom = _htmlHelper.GetAssertedChildElement (table, "tr", 2);
+      _htmlHelper.AssertChildElementCount (trBottom, 1);
 
-      var tdBottom = Html.GetAssertedChildElement (trBottom, "td", 0);
-      Html.AssertAttribute (tdBottom, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      var tdBottom = _htmlHelper.GetAssertedChildElement (trBottom, "td", 0);
+      _htmlHelper.AssertAttribute (tdBottom, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
       if (isEmpty)
-        Html.AssertAttribute (tdBottom, "class", cssClassEmpty, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertChildElementCount (tdBottom, 1);
+        _htmlHelper.AssertAttribute (tdBottom, "class", cssClassEmpty, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      _htmlHelper.AssertChildElementCount (tdBottom, 1);
       return tdBottom;
     }
 
     private XmlNode GetAssertedTdView (XmlNode table, string cssClass)
     {
-      var trView = Html.GetAssertedChildElement (table, "tr", 1);
-      Html.AssertChildElementCount (trView, 1);
+      var trView = _htmlHelper.GetAssertedChildElement (table, "tr", 1);
+      _htmlHelper.AssertChildElementCount (trView, 1);
 
-      var tdView = Html.GetAssertedChildElement (trView, "td", 0);
-      Html.AssertAttribute (tdView, "class", cssClass);
+      var tdView = _htmlHelper.GetAssertedChildElement (trView, "td", 0);
+      _htmlHelper.AssertAttribute (tdView, "class", cssClass);
       if (_singleView.IsDesignMode)
-        Html.AssertStyleAttribute (tdView, "border", "solid 1px black");
+        _htmlHelper.AssertStyleAttribute (tdView, "border", "solid 1px black");
 
-      Html.AssertChildElementCount (tdView, 1);
+      _htmlHelper.AssertChildElementCount (tdView, 1);
       return tdView;
     }
 
     private XmlNode GetAssertedTdTop (XmlNode table, string cssClass, bool isEmpty, string cssClassEmpty)
     {
-      var trTop = Html.GetAssertedChildElement (table, "tr", 0);
-      Html.AssertChildElementCount (trTop, 1);
+      var trTop = _htmlHelper.GetAssertedChildElement (table, "tr", 0);
+      _htmlHelper.AssertChildElementCount (trTop, 1);
 
-      var tdTop = Html.GetAssertedChildElement (trTop, "td", 0);
-      Html.AssertAttribute (tdTop, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      var tdTop = _htmlHelper.GetAssertedChildElement (trTop, "td", 0);
+      _htmlHelper.AssertAttribute (tdTop, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
       if (isEmpty)
-        Html.AssertAttribute (tdTop, "class", cssClassEmpty, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      Html.AssertChildElementCount (tdTop, 1);
+        _htmlHelper.AssertAttribute (tdTop, "class", cssClassEmpty, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      _htmlHelper.AssertChildElementCount (tdTop, 1);
       return tdTop;
     }
 
     private XmlNode GetAssertedTable (XmlNode outerDiv, string cssClass)
     {
-      var table = Html.GetAssertedChildElement (outerDiv, "table", 0);
-      Html.AssertAttribute (table, "class", cssClass);
-      Html.AssertChildElementCount (table, 3);
+      var table = _htmlHelper.GetAssertedChildElement (outerDiv, "table", 0);
+      _htmlHelper.AssertAttribute (table, "class", cssClass);
+      _htmlHelper.AssertChildElementCount (table, 3);
       return table;
     }
 
     private XmlNode GetAssertedOuterDiv (XmlDocument document, string cssClass, bool isDesignMode)
     {
-      var outerDiv = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (outerDiv, "class", cssClass);
+      var outerDiv = _htmlHelper.GetAssertedChildElement (document, "div", 0);
+      _htmlHelper.AssertAttribute (outerDiv, "class", cssClass);
       if (isDesignMode)
       {
-        Html.AssertStyleAttribute (outerDiv, "width", "100%");
-        Html.AssertStyleAttribute (outerDiv, "height", "75%");
+        _htmlHelper.AssertStyleAttribute (outerDiv, "width", "100%");
+        _htmlHelper.AssertStyleAttribute (outerDiv, "height", "75%");
       }
-      Html.AssertChildElementCount (outerDiv, 1);
+      _htmlHelper.AssertChildElementCount (outerDiv, 1);
       return outerDiv;
     }
   }

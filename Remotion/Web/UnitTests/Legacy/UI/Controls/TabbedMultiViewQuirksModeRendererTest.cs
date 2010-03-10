@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls;
@@ -37,11 +37,15 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private const string c_cssClass = "SomeCssClass";
 
     private ITabbedMultiView _control;
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+  
       _control = MockRepository.GenerateStub<ITabbedMultiView>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMultiView");
       _control.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "MyTabbedMultiView_TopControl" });
@@ -172,8 +176,8 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewQuirksModeRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
+      var renderer = new TabbedMultiViewQuirksModeRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
 
       var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode, renderer);
       AssertTopRow (table, withCssClass, isEmpty, renderer);
@@ -190,7 +194,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
         cssClass = inAttributes ? _control.Attributes["class"] : _control.CssClass;
       }
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
       var outerDiv = document.GetAssertedChildElement ("div", 0);
       
       outerDiv.AssertAttributeValueEquals ("class", cssClass);

@@ -37,11 +37,15 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
   {
     private IDropDownMenu _control;
     private readonly List<string> _itemInfos = new List<string>();
+    private HttpContextBase _httpContext;
+    private HtmlHelper _htmlHelper;
 
     [SetUp]
     public void SetUp ()
     {
-      Initialize();
+      _htmlHelper = new HtmlHelper ();
+      _httpContext = MockRepository.GenerateMock<HttpContextBase> ();
+     
       _control = MockRepository.GenerateStub<IDropDownMenu>();
       _control.ID = "DropDownMenu1";
       _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
@@ -295,7 +299,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       Type type = typeof (DropDownMenuQuirksModeRenderer);
       string initializationScriptKey = type.FullName + "_Startup";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          _control, HttpContext, type, ResourceType.Html, "DropDownMenu.css");
+          _control, _httpContext, type, ResourceType.Html, "DropDownMenu.css");
       string initializationScript = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
 
       string menuInfoKey = _control.UniqueID;
@@ -322,10 +326,10 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      var renderer = new DropDownMenuQuirksModeRenderer (HttpContext, _control);
-      renderer.Render (Html.Writer);
+      var renderer = new DropDownMenuQuirksModeRenderer (_httpContext, _control);
+      renderer.Render (_htmlHelper.Writer);
 
-      var document = Html.GetResultDocument();
+      var document = _htmlHelper.GetResultDocument();
       document.AssertChildElementCount (1);
 
       var outerDiv = document.GetAssertedChildElement ("div", 0);
