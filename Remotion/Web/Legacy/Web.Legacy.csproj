@@ -47,6 +47,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Controls\DatePickerButtonQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\DatePickerPageQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\DropDownMenuQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\Factories\ClientScriptBehaviorFactory.cs" />
+    <Compile Include="UI\Controls\Factories\DatePickerButtonQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\DropDownMenuQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\ListMenuQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\SingleViewQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\TabbedMenuQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\TabbedMultiViewQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\WebButtonQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\WebTabStripQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\Factories\WebTreeViewQuirksModeRendererFactory.cs" />
+    <Compile Include="UI\Controls\ListMenuQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\QuirksModeClientScriptBehavior.cs" />
+    <Compile Include="UI\Controls\SingleViewQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\TabbedMenuQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\TabbedMultiViewQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\WebButtonQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\WebTabStripQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\WebTreeViewQuirksModeRenderer.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
