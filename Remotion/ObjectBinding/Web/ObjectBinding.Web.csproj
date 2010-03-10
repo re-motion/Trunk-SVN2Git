@@ -424,19 +424,6 @@
     <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
     <Content Include="Doc\WhatsNew_Remotion.ObjectBinding.Web.txt" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocBrowserCompatibility.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.jquery.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.jquery.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocAutoCompleteReferenceValue.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocBooleanValue.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocBooleanValue.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocBrowserCompatibility.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocCheckBox.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocCheckBox.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocDateTimeValue.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocEnumValue.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocList.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocList.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocBooleanValue.css" />
     <Content Include="Res\HTML\BocBooleanValue.js" />
     <Content Include="Res\HTML\BocCheckBox.js" />
@@ -444,12 +431,6 @@
     <Content Include="Res\Themes\ClassicBlue\HTML\BocEnumValue.css" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocList.css" />
     <Content Include="Res\HTML\BocList.js" />
-    <Content Include="Res\Themes\Legacy\HTML\BocMultilineTextValue.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocReferenceValue.css" />
-    <Content Include="Res\Themes\Legacy\HTML\BocReferenceValue.js">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="Res\Themes\Legacy\HTML\BocTextValue.css" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocDateTimeValue.css" />
@@ -459,23 +440,6 @@
     <Content Include="Res\Themes\ClassicBlue\HTML\BocReferenceValue.css" />
     <Content Include="Res\HTML\BocReferenceValue.js" />
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
-    <Content Include="Res\Themes\Legacy\HTML\TextBoxStyle.js" />
-    <Content Include="Res\Themes\Legacy\Image\CheckBoxFalse.gif" />
-    <Content Include="Res\Themes\Legacy\Image\CheckBoxNull.gif" />
-    <Content Include="Res\Themes\Legacy\Image\CheckBoxTrue.gif" />
-    <Content Include="Res\Themes\Legacy\Image\DropDownMenuArrow.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MoveFirst.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MoveFirstInactive.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MoveLast.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MoveLastInactive.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MoveNext.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MoveNextInactive.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MovePrevious.gif" />
-    <Content Include="Res\Themes\Legacy\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Themes\Legacy\Image\RequiredField.gif" />
-    <Content Include="Res\Themes\Legacy\Image\SortAscending.gif" />
-    <Content Include="Res\Themes\Legacy\Image\SortDescending.gif" />
-    <Content Include="Res\Themes\Legacy\Image\ValidationError.gif" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.jquery.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteTextValue.css" />
