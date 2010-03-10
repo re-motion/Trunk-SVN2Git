@@ -298,7 +298,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="ObjectBinding.Web.Legacy" depends="Core.Core, Web, ObjectBinding.Web">
+  <target name="ObjectBinding.Web.Legacy" depends="Core.Core, Web, Web.Legacy, ObjectBinding.Web">
     <property name="project.name" value="ObjectBinding.Web.Legacy" />
     <property name="project.dir" value="Remotion/ObjectBinding/Web.Legacy" />
     <property name="project.output" value="Remotion.ObjectBinding.Web.Legacy" />

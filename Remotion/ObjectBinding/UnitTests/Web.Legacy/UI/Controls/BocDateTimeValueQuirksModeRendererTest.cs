@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Rhino.Mocks;
 
@@ -412,7 +413,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 
     private void AssertDocument (bool isReadOnly, bool isDisabled, bool withStyle)
     {
-      _renderer = new BocDateTimeValueQuirksModeRenderer (HttpContext, _dateTimeValue);
+      IClientScriptBahavior clientScriptBehaviorStub = MockRepository.GenerateStub<IClientScriptBahavior>();
+      clientScriptBehaviorStub.Stub (stub => stub.IsBrowserCapableOfScripting).Return (true);
+      _renderer = new BocDateTimeValueQuirksModeRenderer (HttpContext, _dateTimeValue, clientScriptBehaviorStub);
       _renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();

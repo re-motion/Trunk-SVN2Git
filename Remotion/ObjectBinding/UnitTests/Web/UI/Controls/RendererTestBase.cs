@@ -43,21 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       Html = new HtmlHelper();
 
-      HttpContext = MockRepository.GenerateMock<HttpContextBase>();
-      HttpResponseBase response = MockRepository.GenerateMock<HttpResponseBase>();
-      HttpContext.Stub (mock => mock.Response).Return (response);
-      response.Stub (mock => mock.ContentType).Return ("text/html");
-
-      HttpBrowserCapabilities browser = new HttpBrowserCapabilities();
-      browser.Capabilities = new Hashtable();
-      browser.Capabilities.Add ("browser", "IE");
-      browser.Capabilities.Add ("majorversion", "7");
-
-      var request = MockRepository.GenerateStub<HttpRequestBase>();
-      request.Stub (stub => stub.Browser).Return (new HttpBrowserCapabilitiesWrapper (browser));
-
       HttpContext = MockRepository.GenerateStub<HttpContextBase>();
-      HttpContext.Stub (stub => stub.Request).Return (request);
     }
   }
 }

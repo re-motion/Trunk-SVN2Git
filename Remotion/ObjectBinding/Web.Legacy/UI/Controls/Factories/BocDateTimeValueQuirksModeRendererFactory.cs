@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
@@ -29,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   {
     IRenderer IBocDateTimeValueRendererFactory.CreateRenderer (HttpContextBase context, IBocDateTimeValue control)
     {
-      return new BocDateTimeValueQuirksModeRenderer (context, control);
+      return new BocDateTimeValueQuirksModeRenderer (context, control, new QuirksModeClientScriptBehavior (context, control));
     }
   }
 }

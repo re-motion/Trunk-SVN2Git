@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Web;
 using System.Web.UI;
 using System.Xml;
 using NUnit.Framework;
@@ -30,6 +32,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
   [TestFixture]
   public class BocReferenceValueQuirksModeRendererTest : BocReferenceValueRendererTestBase
   {
+    protected override void Initialize ()
+    {
+      base.Initialize ();
+      HttpResponseBase response = MockRepository.GenerateMock<HttpResponseBase> ();
+      HttpContext.Stub (mock => mock.Response).Return (response);
+      response.Stub (mock => mock.ContentType).Return ("text/html");
+
+      HttpBrowserCapabilities browser = new HttpBrowserCapabilities ();
+      browser.Capabilities = new Hashtable ();
+      browser.Capabilities.Add ("browser", "IE");
+      browser.Capabilities.Add ("majorversion", "7");
+
+      var request = MockRepository.GenerateStub<HttpRequestBase> ();
+      request.Stub (stub => stub.Browser).Return (new HttpBrowserCapabilitiesWrapper (browser));
+
+      HttpContext.Stub (stub => stub.Request).Return (request);
+    }
+
     [Test]
     public void RenderReferenceValueAutoPostback ()
     {
