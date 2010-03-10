@@ -24,6 +24,9 @@ using System.Web.UI.WebControls;
 using System.ComponentModel;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
+// ReSharper disable RedundantUsingDirective
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation; // This line is needed for the XML documentation.
+// ReSharper restore RedundantUsingDirective
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -418,7 +421,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
 
-    /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
+    /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. 
+    /// </summary>
     /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
