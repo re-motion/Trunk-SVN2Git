@@ -29,7 +29,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   {
     public IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control)
     {
-      return new DatePickerButtonQuirksModeRenderer (context, control);
+      return new DatePickerButtonQuirksModeRenderer (context, control, new QuirksModeClientScriptBehavior (context, control));
     }
 
     public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page)

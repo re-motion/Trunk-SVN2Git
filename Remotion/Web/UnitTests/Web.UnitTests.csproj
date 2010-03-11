@@ -181,6 +181,7 @@
     <Compile Include="Core\ExecutionEngine\WxeContextFactory.cs" />
     <Compile Include="Core\ExecutionEngine\WxeFunctionTests\Execute.cs" />
     <Compile Include="Core\ExecutionEngine\WxeTransactionModeTest.cs" />
+    <Compile Include="Legacy\UI\Controls\DatePickerButtonQuirksModeRendererTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
       <SubType>Code</SubType>
     </Compile>

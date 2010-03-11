@@ -16,31 +16,39 @@
 // 
 using System;
 using System.Web;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
-  public class DatePickerPageRenderer : DatePickerPageRendererBase
+  public class DatePickerPageRenderer : IDatePickerPageRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly DatePickerPage _page;
+
     public DatePickerPageRenderer (HttpContextBase context, DatePickerPage page)
-        : base (context, page)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("page", page);
+
+      _context = context;
+      _page = page;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       var page = PageWrapper.CastOrCreate (Page);
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (page);
 
-      string key = typeof (DatePickerPage).FullName + "_Script";
+      string key = typeof (DatePickerPageRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
             page,
             Context,
-            typeof (DatePickerPage),
+            typeof (DatePickerPageRenderer),
             ResourceType.Html,
             "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
@@ -49,11 +57,26 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       string styleUrl = ResourceUrlResolver.GetResourceUrl (
           page,
           Context,
-          typeof (DatePickerPage),
+          typeof (DatePickerPageRenderer),
           ResourceType.Html,
           ResourceTheme,
           "Style.css");
-      htmlHeadAppender.RegisterStylesheetLink (typeof (DatePickerPage).FullName + "_Style", styleUrl);
+      htmlHeadAppender.RegisterStylesheetLink (typeof (DatePickerPageRenderer).FullName + "_Style", styleUrl);
+    }
+
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    public DatePickerPage Page
+    {
+      get { return _page; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
     }
   }
 }

@@ -24,31 +24,47 @@ using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
-  public class DatePickerPageQuirksModeRenderer : DatePickerPageRendererBase
+  public class DatePickerPageQuirksModeRenderer : IDatePickerPageRenderer
   {
+    private readonly HttpContextBase _context;
+    private readonly DatePickerPage _page;
+
     public DatePickerPageQuirksModeRenderer (HttpContextBase context, DatePickerPage page)
-        : base (context, page)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("page", page);
+
+      _context = context;
+      _page = page;
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       var page = PageWrapper.CastOrCreate (Page);
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (page);
 
-      string key = typeof (DatePickerPage).FullName + "_Script";
+      string key = typeof (DatePickerPageQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
             page,
             Context,
-            typeof (DatePickerPage),
+            typeof (DatePickerPageQuirksModeRenderer),
             ResourceType.Html,
-            ResourceTheme.Legacy,
             "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
       }
+    }
+
+    public HttpContextBase Context
+    {
+      get { return _context; }
+    }
+
+    public DatePickerPage Page
+    {
+      get { return _page; }
     }
   }
 }

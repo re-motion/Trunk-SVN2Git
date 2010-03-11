@@ -16,12 +16,12 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
-using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
 namespace Remotion.Web.Legacy.UI.Controls
 {
@@ -29,13 +29,19 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonQuirksModeRenderer : DatePickerButtonRendererBase
+  public class DatePickerButtonQuirksModeRenderer : RendererBase<IDatePickerButton>
   {
     private const int c_defaultDatePickerLengthInPoints = 150;
+    private const string c_datePickerPopupForm = "DatePickerForm.aspx";
+    private const string c_datePickerIcon = "DatePicker.gif";
+    private readonly IClientScriptBehavior _clientScriptBehavior;
 
-    public DatePickerButtonQuirksModeRenderer (HttpContextBase context, IDatePickerButton control)
+    public DatePickerButtonQuirksModeRenderer (HttpContextBase context, IDatePickerButton control, IClientScriptBehavior clientScriptBehavior)
         : base (context, control)
     {
+      ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
+
+      _clientScriptBehavior = clientScriptBehavior;
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
@@ -59,29 +65,120 @@ namespace Remotion.Web.Legacy.UI.Controls
       }
     }
 
-    protected override bool DetermineClientScriptLevel ()
+    /// <summary>
+    /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
+    /// into the control specified by <see cref="P:Control.TargetControlID"/>.
+    /// </summary>
+    public override void Render (HtmlTextWriter writer)
     {
-      if (Control.IsDesignMode || !Control.EnableClientScript)
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      bool hasClientScript = DetermineClientScriptLevel ();
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+
+      string cssClass = string.IsNullOrEmpty (Control.CssClass) ? CssClassBase : Control.CssClass;
+      if (!Control.Enabled)
+        cssClass += " " + CssClassDisabled;
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+
+      // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
+
+      bool canScript = (Control.EnableClientScript && Control.IsDesignMode) || hasClientScript;
+      if (canScript)
+      {
+        string script = GetClickScript (hasClientScript);
+
+        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      }
+      if (!Control.Enabled)
+        writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
+
+      writer.RenderBeginTag (HtmlTextWriterTag.A);
+
+      if (canScript)
+      {
+        string imageUrl = GetResolvedImageUrl ();
+
+        writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
+        writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
+        writer.RenderBeginTag (HtmlTextWriterTag.Img);
+        writer.RenderEndTag ();
+      }
+
+      writer.RenderEndTag ();
+    }
+
+    public string GetDatePickerUrl ()
+    {
+      return ResourceUrlResolver.GetResourceUrl (
+          Control.Parent, Context, typeof (DatePickerPageQuirksModeRenderer), ResourceType.UI, c_datePickerPopupForm);
+    }
+
+    public string GetResolvedImageUrl ()
+    {
+      return ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (DatePickerButtonQuirksModeRenderer), ResourceType.Image, c_datePickerIcon);
+    }
+
+    private string GetClickScript (bool hasClientScript)
+    {
+      string script;
+      if (hasClientScript && Control.Enabled)
+      {
+        const string pickerActionButton = "this";
+
+        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace ('$', '_') + "')";
+        string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
+
+        string pickerUrl = "'" + GetDatePickerUrl () + "'";
+
+        Unit popUpWidth = PopUpWidth;
+        string pickerWidth = "'" + popUpWidth + "'";
+
+        Unit popUpHeight = PopUpHeight;
+        string pickerHeight = "'" + popUpHeight + "'";
+
+        script = "DatePicker_ShowDatePicker("
+                 + pickerActionButton + ", "
+                 + pickerActionContainer + ", "
+                 + pickerActionTarget + ", "
+                 + pickerUrl + ", "
+                 + pickerWidth + ", "
+                 + pickerHeight + ");"
+                 + "return false;";
+      }
+      else
+        script = "return false;";
+      return script;
+    }
+
+    protected bool DetermineClientScriptLevel ()
+    {
+      if (!Control.EnableClientScript)
         return false;
 
-      bool isVersionGreaterOrEqual55 =
-          Context.Request.Browser.MajorVersion >= 6
-          || Context.Request.Browser.MajorVersion == 5
-             && Context.Request.Browser.MinorVersion >= 0.5;
-      bool isInternetExplorer55AndHigher =
-          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
-
-      return isInternetExplorer55AndHigher;
+      return _clientScriptBehavior.IsBrowserCapableOfScripting;
     }
 
-    protected override Unit PopUpWidth
+    protected Unit PopUpWidth
     {
       get { return Unit.Point (c_defaultDatePickerLengthInPoints); }
     }
 
-    protected override Unit PopUpHeight
+    protected Unit PopUpHeight
     {
       get { return Unit.Point (c_defaultDatePickerLengthInPoints); }
+    }
+
+    public string CssClassBase
+    {
+      get { return "DatePickerButton"; }
+    }
+
+    public string CssClassDisabled
+    {
+      get { return "disabled"; }
     }
   }
 }

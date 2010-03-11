@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 
@@ -25,7 +26,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in standard mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonRenderer : DatePickerButtonRendererBase
+  public class DatePickerButtonRenderer : RendererBase<IDatePickerButton>
   {
     public DatePickerButtonRenderer (HttpContextBase context, IDatePickerButton control)
         : base (context, control)
@@ -53,17 +54,107 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       }
     }
 
-    protected override bool DetermineClientScriptLevel ()
+
+    private const string c_datePickerPopupForm = "DatePickerForm.aspx";
+    private const string c_datePickerIcon = "DatePicker.gif";
+
+    /// <summary>
+    /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
+    /// into the control specified by <see cref="P:Control.TargetControlID"/>.
+    /// </summary>
+    public override void Render (HtmlTextWriter writer)
     {
-      return true;
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+
+      string cssClass = string.IsNullOrEmpty (Control.CssClass) ? CssClassBase : Control.CssClass;
+      if (!Control.Enabled)
+        cssClass += " " + CssClassDisabled;
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+
+      // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
+
+      string script = GetClickScript (true);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+
+      if (!Control.Enabled)
+        writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
+
+      writer.RenderBeginTag (HtmlTextWriterTag.A);
+
+      string imageUrl = GetResolvedImageUrl();
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
+      writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
+      writer.RenderBeginTag (HtmlTextWriterTag.Img);
+      writer.RenderEndTag();
+
+      writer.RenderEndTag();
     }
 
-    protected override Unit PopUpWidth
+    public string GetDatePickerUrl ()
+    {
+      return ResourceUrlResolver.GetResourceUrl (
+          Control.Parent, Context, typeof (DatePickerPageRenderer), ResourceType.UI, ResourceTheme, c_datePickerPopupForm);
+    }
+
+    public string GetResolvedImageUrl ()
+    {
+      return ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Image, ResourceTheme, c_datePickerIcon);
+    }
+
+    private string GetClickScript (bool hasClientScript)
+    {
+      string script;
+      if (hasClientScript && Control.Enabled)
+      {
+        const string pickerActionButton = "this";
+
+        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace ('$', '_') + "')";
+        string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
+
+        string pickerUrl = "'" + GetDatePickerUrl () + "'";
+
+        Unit popUpWidth = PopUpWidth;
+        string pickerWidth = "'" + popUpWidth + "'";
+
+        Unit popUpHeight = PopUpHeight;
+        string pickerHeight = "'" + popUpHeight + "'";
+
+        script = "DatePicker_ShowDatePicker("
+                 + pickerActionButton + ", "
+                 + pickerActionContainer + ", "
+                 + pickerActionTarget + ", "
+                 + pickerUrl + ", "
+                 + pickerWidth + ", "
+                 + pickerHeight + ");"
+                 + "return false;";
+      }
+      else
+        script = "return false;";
+      return script;
+    }
+
+    public string CssClassBase
+    {
+      get { return "DatePickerButton"; }
+    }
+
+    public string CssClassDisabled
+    {
+      get { return "disabled"; }
+    }
+
+    protected Unit PopUpWidth
     {
       get { return new Unit (14, UnitType.Em); }
     }
 
-    protected override Unit PopUpHeight
+    protected Unit PopUpHeight
     {
       get { return new Unit (16, UnitType.Em); }
     }
