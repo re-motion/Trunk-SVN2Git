@@ -145,7 +145,6 @@
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\HTML\BocBooleanValue.css" />
     <Content Include="Res\HTML\BocBooleanValue.js" />
-    <Content Include="Res\HTML\BocBrowserCompatibility.js" />
     <Content Include="Res\HTML\BocCheckBox.css" />
     <Content Include="Res\HTML\BocCheckBox.js" />
     <Content Include="Res\HTML\BocDateTimeValue.css" />
@@ -156,7 +155,6 @@
     <Content Include="Res\HTML\BocReferenceValue.css" />
     <Content Include="Res\HTML\BocReferenceValue.js" />
     <Content Include="Res\HTML\BocTextValue.css" />
-    <Content Include="Res\HTML\TextBoxStyle.js" />
     <Content Include="Res\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Image\CheckBoxNull.gif" />
     <Content Include="Res\Image\CheckBoxTrue.gif" />
