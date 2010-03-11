@@ -241,10 +241,5 @@ namespace Remotion.Web.Utilities
       string script = string.Format ("PageUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
       control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
     }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
-    }
   }
 }

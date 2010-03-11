@@ -30,10 +30,12 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using System.Web;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
@@ -1354,8 +1356,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected internal virtual Image GetRequiredMarker ()
     {
       Image requiredIcon = new Image();
-      requiredIcon.ImageUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (BocList), ResourceType.Image, ResourceTheme, c_rowEditModeRequiredFieldIcon);
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      requiredIcon.ImageUrl = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_rowEditModeRequiredFieldIcon);
 
       IResourceManager resourceManager = GetResourceManager();
       requiredIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.RequiredFieldAlternateText);
@@ -1369,8 +1371,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public virtual Image GetValidationErrorMarker ()
     {
       Image validationErrorIcon = new Image();
-      validationErrorIcon.ImageUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (EditableRow), ResourceType.Image, ResourceTheme, c_rowEditModeValidationErrorIcon);
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      validationErrorIcon.ImageUrl = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_rowEditModeValidationErrorIcon);
 
       IResourceManager resourceManager = GetResourceManager();
       validationErrorIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.ValidationErrorInfoAlternateText);

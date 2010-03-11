@@ -167,10 +167,8 @@
     <Content Include="Res\Image\MoveNextInactive.gif" />
     <Content Include="Res\Image\MovePrevious.gif" />
     <Content Include="Res\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Image\RequiredField.gif" />
     <Content Include="Res\Image\SortAscending.gif" />
     <Content Include="Res\Image\SortDescending.gif" />
-    <Content Include="Res\Image\ValidationError.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

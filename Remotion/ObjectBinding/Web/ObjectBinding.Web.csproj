@@ -467,10 +467,8 @@
     <Content Include="Res\Themes\ClassicBlue\Image\MoveNextInactive.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\MovePrevious.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\RequiredField.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\SortDescending.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\ValidationError.gif" />
     <Content Include="Res\Themes\NovaBlue\Html\BocBrowserCompatibility.js" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
@@ -485,10 +483,8 @@
     <Content Include="Res\Themes\NovaBlue\Image\MoveNextInactive.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MovePrevious.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\RequiredField.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortDescending.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\ValidationError.gif" />
     <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
