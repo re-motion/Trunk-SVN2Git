@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, true);
+      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender);
     }
 
     protected override Label GetLabel ()

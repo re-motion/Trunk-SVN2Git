@@ -380,7 +380,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       textBox.TextMode = _textMode;
     }
 
-    public void RegisterJavaScriptInclude (IControl control, HttpContextBase context, HtmlHeadAppender htmlHeadAppender, bool useLegacyScriptFile)
+    public void RegisterJavaScriptInclude (IControl control, HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -388,9 +388,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        ResourceTheme theme = useLegacyScriptFile ? ResourceTheme.Legacy : null;
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (TextBoxStyle), ResourceType.Html, theme, c_scriptFileUrl);
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }

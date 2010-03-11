@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, true);
+      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender);
 
       string styleKey = typeof (BocMultilineTextValueQuirksModeRenderer).FullName + "_Style";
       string styleUrl = ResourceUrlResolver.GetResourceUrl (
