@@ -24,7 +24,7 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for rendering <see cref="WebTab"/> controls in quirks mode.
+  /// Responsible for rendering <see cref="WebTab"/> controls in standard mode.
   /// </summary>
   public class WebTabRenderer : IWebTabRenderer
   {
