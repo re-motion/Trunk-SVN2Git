@@ -51,11 +51,13 @@
       <include name="Remotion.ObjectBinding.dll" />
       <include name="Remotion.ObjectBinding.Interfaces.dll" />
       <include name="Remotion.ObjectBinding.Web.dll" />
+      <include name="Remotion.ObjectBinding.Web.Legacy.dll" />
       <include name="Remotion.Security.dll" />
       <include name="Remotion.Security.Interfaces.dll" />
       <include name="Remotion.Security.Metadata.Extractor.exe" />
       <include name="Remotion.Security.MSBuild.Tasks.dll" />
       <include name="Remotion.Web.dll" />
+      <include name="Remotion.Web.Legacy.dll" />
       <include name="Remotion.Web.Security.dll" />
     </fileset>
 
