@@ -24,6 +24,6 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   /// </summary>
   public interface IClientScriptBehaviorFactory
   {
-    IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IControl control);
+    IClientScriptBehavior CreateClientScriptBehavior (HttpContextBase context, IControl control);
   }
 }

@@ -23,9 +23,9 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.Legacy.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IClientScriptBahavior"/> to determine if the browser supports advanced client scripting in quirks mode.
+  /// Implements <see cref="IClientScriptBehavior"/> to determine if the browser supports advanced client scripting in quirks mode.
   /// </summary>
-  public class QuirksModeClientScriptBehavior : IClientScriptBahavior
+  public class QuirksModeClientScriptBehavior : IClientScriptBehavior
   {
     private readonly HttpContextBase _context;
     private readonly IControl _control;

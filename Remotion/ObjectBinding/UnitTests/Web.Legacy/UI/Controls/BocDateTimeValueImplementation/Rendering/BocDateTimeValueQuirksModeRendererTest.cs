@@ -413,7 +413,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeVal
 
     private void AssertDocument (bool isReadOnly, bool isDisabled, bool withStyle)
     {
-      IClientScriptBahavior clientScriptBehaviorStub = MockRepository.GenerateStub<IClientScriptBahavior>();
+      IClientScriptBehavior clientScriptBehaviorStub = MockRepository.GenerateStub<IClientScriptBehavior>();
       clientScriptBehaviorStub.Stub (stub => stub.IsBrowserCapableOfScripting).Return (true);
       _renderer = new BocDateTimeValueQuirksModeRenderer (HttpContext, _dateTimeValue, clientScriptBehaviorStub);
       _renderer.Render (Html.Writer);

@@ -160,7 +160,7 @@
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerPageRenderer.cs" />
     <Compile Include="UI\Controls\Factories\DatePickerButtonRendererFactory.cs" />
-    <Compile Include="UI\Controls\IClientScriptBahavior.cs" />
+    <Compile Include="UI\Controls\IClientScriptBehavior.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\IListMenu.cs" />
     <Compile Include="UI\Controls\ListMenu.cs" />
     <Compile Include="UI\Controls\MenuBase.cs" />

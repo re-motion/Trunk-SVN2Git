@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class ClientScriptBehaviorFactory : IClientScriptBehaviorFactory
   {
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IControl control)
+    public IClientScriptBehavior CreateClientScriptBehavior (HttpContextBase context, IControl control)
     {
       return new ClientScriptBehavior();
     }

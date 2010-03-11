@@ -19,10 +19,10 @@ using System;
 namespace Remotion.Web.UI.Controls
 {
   /// <summary>
-  /// Implements <see cref="IClientScriptBahavior"/> for standard mode.
+  /// Implements <see cref="IClientScriptBehavior"/> for standard mode.
   /// <see cref="IsBrowserCapableOfScripting"/> always returns <see langword="true" />.
   /// </summary>
-  public class ClientScriptBehavior : IClientScriptBahavior
+  public class ClientScriptBehavior : IClientScriptBehavior
   {
     public ClientScriptBehavior ()
     {

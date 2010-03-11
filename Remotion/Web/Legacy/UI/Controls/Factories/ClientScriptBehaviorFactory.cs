@@ -26,7 +26,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class QuirksModeClientScriptBehaviorFactory : IClientScriptBehaviorFactory
   {
-    public IClientScriptBahavior CreateClientScriptBehavior (HttpContextBase context, IControl control)
+    public IClientScriptBehavior CreateClientScriptBehavior (HttpContextBase context, IControl control)
     {
       return new QuirksModeClientScriptBehavior(context, control);
     }

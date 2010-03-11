@@ -39,14 +39,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
   public class BocDateTimeValueQuirksModeRenderer : BocDateTimeValueRendererBase
   {
     private const string c_defaultControlWidth = "150pt";
-    private readonly IClientScriptBahavior _clientScriptBahavior;
+    private readonly IClientScriptBehavior _clientScriptBehavior;
 
-    public BocDateTimeValueQuirksModeRenderer (HttpContextBase context, IBocDateTimeValue control, IClientScriptBahavior clientScriptBahavior)
+    public BocDateTimeValueQuirksModeRenderer (HttpContextBase context, IBocDateTimeValue control, IClientScriptBehavior clientScriptBehavior)
         : base (context, control)
     {
-      ArgumentUtility.CheckNotNull ("clientScriptBahavior", clientScriptBahavior);
+      ArgumentUtility.CheckNotNull ("clientScriptBehavior", clientScriptBehavior);
 
-      _clientScriptBahavior = clientScriptBahavior;
+      _clientScriptBehavior = clientScriptBehavior;
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
@@ -249,7 +249,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
       if (!datePickerButton.EnableClientScript)
         return false;
 
-      return _clientScriptBahavior.IsBrowserCapableOfScripting;
+      return _clientScriptBehavior.IsBrowserCapableOfScripting;
     }
   }
 }
