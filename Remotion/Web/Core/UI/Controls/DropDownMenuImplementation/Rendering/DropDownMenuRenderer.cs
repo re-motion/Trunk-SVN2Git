@@ -116,7 +116,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
       string imageUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (IDropDownMenu), ResourceType.Image, ResourceTheme, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
+          Control, typeof (DropDownMenuRenderer), ResourceType.Image, ResourceTheme, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
       writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url({0})", imageUrl));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);

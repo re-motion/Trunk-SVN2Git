@@ -457,7 +457,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
     private void AssertImage (XmlNode parent)
     {
       var img = parent.GetAssertedChildElement ("img", 0);
-      img.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Themes/ClassicBlue/Image/DropDownMenuArrow.gif");
+      img.AssertAttributeValueEquals ("src", "/res/Remotion.Web.Legacy/Image/DropDownMenuArrow.gif");
       img.AssertAttributeValueEquals ("alt", "");
       img.AssertStyleAttribute ("vertical-align", "middle");
       img.AssertStyleAttribute ("border-style", "none");

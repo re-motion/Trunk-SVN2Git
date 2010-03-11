@@ -183,7 +183,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
       writer.AddStyleAttribute ("vertical-align", "middle");
       writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IDropDownMenu), ResourceType.Image, ResourceTheme, c_dropDownIcon);
+      string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (DropDownMenuQuirksModeRenderer), ResourceType.Image, c_dropDownIcon);
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
       writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
