@@ -77,9 +77,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_rowEditModeValidationErrorIcon = "ValidationError.gif";
 
     /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
-    internal const string SortCommandPrefix = "Sort=";
+    public const string SortCommandPrefix = "Sort=";
 
-    internal const string c_goToCommandPrefix = "GoTo=";
+    public const string GoToCommandPrefix = "GoTo=";
 
 
     /// <summary> The key identifying a fixed column resource entry. </summary>
@@ -448,8 +448,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         HandleCustomCellEvent (eventArgument.Substring (c_customCellEventPrefix.Length));
       else if (eventArgument.StartsWith (c_eventRowEditModePrefix))
         HandleRowEditModeEvent (eventArgument.Substring (c_eventRowEditModePrefix.Length));
-      else if (eventArgument.StartsWith (c_goToCommandPrefix))
-        HandleGoToEvent (eventArgument.Substring (c_goToCommandPrefix.Length));
+      else if (eventArgument.StartsWith (GoToCommandPrefix))
+        HandleGoToEvent (eventArgument.Substring (GoToCommandPrefix.Length));
       else
         throw new ArgumentException ("Argument 'eventArgument' has unknown prefix: '" + eventArgument + "'.");
     }

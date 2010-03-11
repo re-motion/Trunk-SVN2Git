@@ -16,20 +16,23 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Abstract base class for all column renderers. Provides a template for rendering a table cell from an <see cref="IBusinessObject"/>
   /// and a <see cref="BocColumnDefinition"/>. 
   /// </summary>
   /// <typeparam name="TBocColumnDefinition">The column definition class which the deriving class can handle.</typeparam>
-  public abstract class BocColumnRendererBase<TBocColumnDefinition> : IBocColumnRenderer
+  public abstract class BocColumnQuirksModeRendererBase<TBocColumnDefinition> : IBocColumnRenderer
       where TBocColumnDefinition: BocColumnDefinition
   {
     /// <summary>Filename of the image used to indicate an ascending sort order of the column in its title cell.</summary>
@@ -59,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
     /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocColumnRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
+    protected BocColumnQuirksModeRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -137,7 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       {
         if (!List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive && List.HasClientScript)
         {
-          string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
+          string argument = BocList.SortCommandPrefix + ColumnIndex;
           string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
           postBackEvent += "; return false;";
           writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
@@ -176,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.SortingOrder);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Controls.BocList.ResourceIdentifier alternateTextID;
+      Web.UI.Controls.BocList.ResourceIdentifier alternateTextID;
       if (sortingDirection == SortingDirection.Ascending)
         alternateTextID = BocList.ResourceIdentifier.SortAscendingAlternateText;
       else
@@ -200,13 +203,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         case SortingDirection.Ascending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, Context, typeof (BocColumnRendererBase<>), ResourceType.Image, ResourceTheme, c_sortAscendingIcon);
+              List, Context, typeof (BocColumnQuirksModeRendererBase<>), ResourceType.Image, c_sortAscendingIcon);
           break;
         }
         case SortingDirection.Descending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, Context, typeof (BocColumnRendererBase<>), ResourceType.Image, ResourceTheme, c_sortDescendingIcon);
+              List, Context, typeof (BocColumnQuirksModeRendererBase<>), ResourceType.Image, c_sortDescendingIcon);
           break;
         }
         case SortingDirection.None:
@@ -263,7 +266,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="dataRowRenderEventArgs">The row-specific rendering arguments.</param>
-    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRenderer.List"/>.</param>
+    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="Web.UI.Controls.BocListImplementation.Rendering.BocListRenderer.List"/>.</param>
     /// <param name="showIcon">Specifies if the cell should contain an icon of the current <see cref="IBusinessObject"/>.</param>
     protected abstract void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon);
   }

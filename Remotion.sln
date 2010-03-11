@@ -104,6 +104,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web", "Remoti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Preview", "Remotion\ObjectBinding\Web.Preview\ObjectBinding.Web.Preview.csproj", "{6D58BB53-8709-48F9-8EF9-0D65B11A162C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Legacy", "Remotion\ObjectBinding\Web.Legacy\ObjectBinding.Web.Legacy.csproj", "{38BAE576-C67B-471D-82C6-91B0BB6F14DA}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Test", "Remotion\ObjectBinding\Web.Test\ObjectBinding.Web.Test.csproj", "{FE98ED8D-E645-4E11-9431-FA5EE8ED7C86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Core", "Remotion\Security\Core\Security.Core.csproj", "{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}"
@@ -136,6 +138,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Core", "Remotion\Web\Core\Web.Core.csproj", "{DF8BA786-9679-4879-8757-16AE2709D83A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Security", "Remotion\Web\Security\Web.Security.csproj", "{9B6F6D1A-A7EA-4EE8-B36E-E31CF7E518E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Legacy", "Remotion\Web\Legacy\Web.Legacy.csproj", "{DD30FC13-485F-425D-8FA0-0CE8998B925D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Test", "Remotion\Web\Test\Web.Test.csproj", "{0B5318E7-4878-402A-8CF8-6BFFC47F571D}"
 EndProject
@@ -202,10 +206,6 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Data.IntegrationTests.VB", "Remotion\Data\IntegrationTests.VB\Data.IntegrationTests.VB.vbproj", "{CC698D05-D96D-4FFF-B87A-263AB22B0EB1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.UberProfIntegration", "Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj", "{81E5BEC0-B845-4470-BD19-9FCB121CB413}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Legacy", "Remotion\Web\Legacy\Web.Legacy.csproj", "{DD30FC13-485F-425D-8FA0-0CE8998B925D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Legacy", "Remotion\ObjectBinding\Web.Legacy\ObjectBinding.Web.Legacy.csproj", "{38BAE576-C67B-471D-82C6-91B0BB6F14DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

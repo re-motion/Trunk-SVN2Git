@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls;
@@ -35,13 +36,13 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
           context,
           list,
           CssClassContainer.Instance,
-          new BocListTableBlockRenderer (
+          new BocListTableBlockQuirksModeRenderer (
               context,
               list,
               CssClassContainer.Instance,
-              new BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator)),
-          new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance),
-          new BocListMenuBlockRenderer (context, list, CssClassContainer.Instance)
+              new BocRowQuirksModeRenderer (context, list, CssClassContainer.Instance, serviceLocator)),
+          new BocListNavigationBlockQuirksModeRenderer (context, list, CssClassContainer.Instance),
+          new BocListMenuBlockQuirksModeRenderer (context, list, CssClassContainer.Instance)
           );
     }
   }

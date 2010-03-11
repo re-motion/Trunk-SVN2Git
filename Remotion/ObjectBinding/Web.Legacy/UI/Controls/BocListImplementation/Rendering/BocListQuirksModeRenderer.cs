@@ -26,17 +26,13 @@ using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering a <see cref="BocList"/> object.
   /// </summary>
-  /// <remarks>Renders the outline of a <see cref="IBocList"/> object to an <see cref="HtmlTextWriter"/> and controls
-  /// rendering of the various parts by delegating to specialized renderers.
-  /// 
-  /// This class should not be instantiated directly. Use a <see cref="BocRowRenderer"/> to obtain an instance.</remarks>
   /// <include file='doc\include\UI\Controls\BocListRenderer.xml' path='BocListRenderer/Class'/>
-  /// <seealso cref="BocListNavigationBlockRenderer"/>
+  /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
   /// <seealso cref="BocListQuirksModeRendererFactory"/>
   public class BocListQuirksModeRenderer : BocRendererBase<IBocList>
   {
@@ -161,18 +157,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     /// <remarks>
     /// This method provides the outline table of the <see cref="BocList"/>, creating three areas:
     /// <list type="bullet">
-    /// <item><description>A table block displaying the title and data rows. See <see cref="IBocListTableBlockRenderer.Render"/>.</description></item>
-    /// <item><description>A menu block containing the available commands. See <see cref="IBocListMenuBlockRenderer.Render"/></description></item>
-    /// <item><description>A navigation block to browse through pages of data rows. See <see cref="IBocListNavigationBlockRenderer.Render"/>.</description></item>
+    /// <item><description>A table block displaying the title and data rows. See <see cref="IBocListTableBlockRenderer"/>.</description></item>
+    /// <item><description>A menu block containing the available commands. See <see cref="IBocListMenuBlockRenderer"/></description></item>
+    /// <item><description>A navigation block to browse through pages of data rows. See <see cref="IBocListNavigationBlockRenderer"/>.</description></item>
     /// </list>
     /// </remarks>
-    /// <seealso cref="BocListMenuBlockRenderer"/>
-    /// <seealso cref="BocListNavigationBlockRenderer"/>
+    /// <seealso cref="BocListMenuBlockQuirksModeRenderer"/>
+    /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      RegisterInitializeGlobalsScript();
+      RegisterInitializeGlobalsScript ();
 
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -196,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       if (List.HasNavigator)
         NavigationBlockRenderer.Render (writer);
 
-      writer.RenderEndTag();
+      writer.RenderEndTag ();
 
       if (List.HasMenuBlock)
       {
@@ -205,12 +201,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
         writer.AddStyleAttribute ("vertical-align", "top");
         writer.RenderBeginTag (HtmlTextWriterTag.Td);
         MenuBlockRenderer.Render (writer);
-        writer.RenderEndTag();
+        writer.RenderEndTag ();
       }
 
-      writer.RenderEndTag(); //  TR
-      writer.RenderEndTag(); //  Table
-      writer.RenderEndTag(); //  div
+      writer.RenderEndTag (); //  TR
+      writer.RenderEndTag (); //  Table
+      writer.RenderEndTag (); //  div
     }
 
     private void RenderTopLevelColumnGroupForLegacyBrowser (HtmlTextWriter writer)
@@ -230,18 +226,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
         string menuBlockWidth = c_defaultMenuBlockWidth;
         if (!List.MenuBlockWidth.IsEmpty)
-          menuBlockWidth = List.MenuBlockWidth.ToString();
+          menuBlockWidth = List.MenuBlockWidth.ToString ();
         writer.WriteStyleAttribute ("width", menuBlockWidth);
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
         if (!List.MenuBlockOffset.IsEmpty)
-          menuBlockOffset = List.MenuBlockOffset.ToString();
+          menuBlockOffset = List.MenuBlockOffset.ToString ();
         writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
 
         writer.Write ("\">");
       }
 
-      writer.RenderEndTag();
+      writer.RenderEndTag ();
     }
 
     private void RenderTopLevelColumnGroupForXmlBrowser (HtmlTextWriter writer)
@@ -250,26 +246,26 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
 
       // Left: list block
       writer.RenderBeginTag (HtmlTextWriterTag.Col);
-      writer.RenderEndTag();
+      writer.RenderEndTag ();
 
       if (List.HasMenuBlock)
       {
         //  Right: menu block
         string menuBlockWidth = c_defaultMenuBlockWidth;
         if (!List.MenuBlockWidth.IsEmpty)
-          menuBlockWidth = List.MenuBlockWidth.ToString();
+          menuBlockWidth = List.MenuBlockWidth.ToString ();
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
         if (!List.MenuBlockOffset.IsEmpty)
-          menuBlockOffset = List.MenuBlockOffset.ToString();
+          menuBlockOffset = List.MenuBlockOffset.ToString ();
 
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);
         writer.AddStyleAttribute (HtmlTextWriterStyle.PaddingLeft, menuBlockOffset);
         writer.RenderBeginTag (HtmlTextWriterTag.Col);
-        writer.RenderEndTag();
+        writer.RenderEndTag ();
       }
 
-      writer.RenderEndTag();
+      writer.RenderEndTag ();
     }
 
     private void RegisterInitializeGlobalsScript ()

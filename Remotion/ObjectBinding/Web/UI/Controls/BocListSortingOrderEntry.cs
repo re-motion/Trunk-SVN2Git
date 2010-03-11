@@ -59,7 +59,7 @@ public class BocListSortingOrderEntry
     get { return _isEmpty; }
   }
 
-  protected internal int ColumnIndex
+  public int ColumnIndex
   {
     get { return _columnIndex; }
   }

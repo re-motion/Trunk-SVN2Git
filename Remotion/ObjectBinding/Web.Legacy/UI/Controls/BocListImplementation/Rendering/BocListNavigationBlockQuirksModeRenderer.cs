@@ -17,6 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -24,13 +27,13 @@ using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering the navigation block of a <see cref="BocList"/>.
   /// </summary>
-  /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocListNavigationBlockRenderer : IBocListNavigationBlockRenderer
+  /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="Web.UI.Controls.BocListImplementation.Rendering.BocListRenderer"/>.</remarks>
+  public class BocListNavigationBlockQuirksModeRenderer : IBocListNavigationBlockRenderer
   {
     private const string c_whiteSpace = "&nbsp;";
     private const string c_goToFirstIcon = "MoveFirst.gif";
@@ -91,10 +94,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// Contructs a renderer bound to a <see cref="BocList"/> to render and an <see cref="HtmlTextWriter"/> to render to.
     /// </summary>
     /// <remarks>
-    /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
+    /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListQuirksModeRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+    public BocListNavigationBlockQuirksModeRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -193,7 +196,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private string GetResolvedImageUrl (string imageUrl)
     {
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (BocListNavigationBlockRenderer), ResourceType.Image, ResourceTheme, imageUrl);
+      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (BocListNavigationBlockQuirksModeRenderer), ResourceType.Image, imageUrl);
       return imageUrl;
     }
   }

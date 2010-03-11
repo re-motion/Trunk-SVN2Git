@@ -266,6 +266,26 @@
     <Compile Include="Core\StubBusinessObjectDataSource.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocCommandColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocCompoundColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocCustomColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocDropDownMenuColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocIndexColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListMenuBlockQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListNavigationBlockQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocListTableBlockQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocRowEditModeColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocRowQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocSelectorColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\BocSimpleColumnQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnDefinition.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnQuirksModeRenderer.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubColumnQuirksModeRendererFactory.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubCustomCellDefinition.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubQuirksModeRenderer.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubRowQuirksModeRenderer.cs" />
     <Compile Include="Web\Domain\TypeWithAllDataTypes.cs" />
     <Compile Include="Web\Domain\TypeWithBoolean.cs" />
     <Compile Include="Web\Domain\TypeWithDateTime.cs" />

@@ -401,7 +401,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    internal void RenderInternal (HtmlTextWriter writer, BocCustomCellRenderArguments arguments)
+    public void RenderInternal (HtmlTextWriter writer, BocCustomCellRenderArguments arguments)
     {
       InitArguments (arguments);
       Render (writer, arguments);
