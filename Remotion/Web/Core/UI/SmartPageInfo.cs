@@ -27,6 +27,7 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -310,7 +311,8 @@ namespace Remotion.Web.UI
         url = ResourceUrlResolver.GetResourceUrl (_page, typeof (SmartPageInfo), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-        url = ResourceUrlResolver.GetResourceUrl (_page, typeof (SmartPageInfo), ResourceType.Html, ResourceTheme, c_styleFileUrl);
+        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
+        url = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

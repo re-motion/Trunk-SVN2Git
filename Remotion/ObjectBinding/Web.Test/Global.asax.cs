@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -65,7 +66,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      var resourceTheme = Remotion.Web.ResourceTheme.Legacy;
+      var resourceTheme = Remotion.Web.ResourceTheme.NovaBlue;
       PreferQuirksModeRendering = resourceTheme == Remotion.Web.ResourceTheme.Legacy;
 
       string objectPath = Server.MapPath ("~/objects");

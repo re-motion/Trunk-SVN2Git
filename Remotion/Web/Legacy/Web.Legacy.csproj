@@ -46,6 +46,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\Factories\QuirksModeResourceUrlResolverFactory.cs" />
+    <Compile Include="Infrastructure\QuirksModeResourceUrlResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Controls\DatePickerButtonQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\DatePickerPageQuirksModeRenderer.cs" />

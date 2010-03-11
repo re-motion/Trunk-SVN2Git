@@ -131,6 +131,7 @@ namespace Remotion.Web.UI.Controls
     private InitializeRootWebTreeNodes _initializeRootTreeNodes;
     private WebTreeNodeRenderMethod _treeNodeRenderMethod;
     private IPage _page;
+    private IThemedResourceUrlResolver _themedResourceUrlResolver;
 
     //  construction and destruction
 
@@ -822,38 +823,22 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Resolves the URLs for the node icons. </summary>
     private void ResolveNodeIcons ()
     {
-      _resolvedNodeIconF = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconF));
-      _resolvedNodeIconFMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconFMinus));
-      _resolvedNodeIconFPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconFPlus));
-      _resolvedNodeIconI = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconI));
-      _resolvedNodeIconL = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconL));
-      _resolvedNodeIconLMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconLMinus));
-      _resolvedNodeIconLPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconLPlus));
-      _resolvedNodeIconMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconMinus));
-      _resolvedNodeIconPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconPlus));
-      _resolvedNodeIconR = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconR));
-      _resolvedNodeIconRMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconRMinus));
-      _resolvedNodeIconRPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconRPlus));
-      _resolvedNodeIconT = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconT));
-      _resolvedNodeIconTMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconTMinus));
-      _resolvedNodeIconTPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconTPlus));
-      _resolvedNodeIconWhite = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconWhite));
+      _resolvedNodeIconF = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconF));
+      _resolvedNodeIconFMinus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconFMinus));
+      _resolvedNodeIconFPlus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconFPlus));
+      _resolvedNodeIconI = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconI));
+      _resolvedNodeIconL = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconL));
+      _resolvedNodeIconLMinus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconLMinus));
+      _resolvedNodeIconLPlus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconLPlus));
+      _resolvedNodeIconMinus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconMinus));
+      _resolvedNodeIconPlus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconPlus));
+      _resolvedNodeIconR = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconR));
+      _resolvedNodeIconRMinus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconRMinus));
+      _resolvedNodeIconRPlus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconRPlus));
+      _resolvedNodeIconT = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconT));
+      _resolvedNodeIconTMinus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconTMinus));
+      _resolvedNodeIconTPlus = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconTPlus));
+      _resolvedNodeIconWhite = new IconInfo (ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_nodeIconWhite));
     }
 
     public new HttpContextBase Context
@@ -861,9 +846,14 @@ namespace Remotion.Web.UI.Controls
       get { return ((IControl) this).Page.Context; }
     }
 
-    protected ResourceTheme ResourceTheme
+    private IThemedResourceUrlResolver ThemedResourceUrlResolver
     {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      get
+      {
+        if (_themedResourceUrlResolver == null)
+          _themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+        return _themedResourceUrlResolver;
+      }
     }
 
     /// <summary> Sets the selected tree node. </summary>

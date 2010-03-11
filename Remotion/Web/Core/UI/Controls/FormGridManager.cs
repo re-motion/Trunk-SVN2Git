@@ -1021,6 +1021,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   private ResourceManagerSet _cachedResourceManager;
 
   private bool _formGridListPopulated = false;
+  private IThemedResourceUrlResolver _themedResourceUrlResolver;
 
   // construction and disposing
 
@@ -1236,15 +1237,19 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     string key = typeof (FormGridManager).FullName + "_Style";
     if (!HtmlHeadAppender.Current.IsRegistered (key))
     {
-      string url = ResourceUrlResolver.GetResourceUrl (
-          this, Page.Context, typeof (FormGridManager), ResourceType.Html, ResourceTheme, "FormGrid.css");
+      string url = ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "FormGrid.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
   }
 
-  protected ResourceTheme ResourceTheme
+  private IThemedResourceUrlResolver ThemedResourceUrlResolver
   {
-    get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
+    get
+    {
+      if (_themedResourceUrlResolver == null)
+        _themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
+      return _themedResourceUrlResolver;
+    }
   }
 
   private void NamingContainer_Load (object sender, EventArgs e)
@@ -2867,8 +2872,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   {
     string relativeUrl = image + ImageExtension;
 
-    string imageUrl = ResourceUrlResolver.GetResourceUrl (
-        this, Page.Context, typeof (FormGridManager), ResourceType.Image, ResourceTheme, relativeUrl);
+    string imageUrl = ThemedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, relativeUrl);
 
     if (imageUrl != null)
       return imageUrl;

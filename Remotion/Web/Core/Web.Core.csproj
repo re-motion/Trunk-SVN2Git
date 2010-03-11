@@ -140,7 +140,9 @@
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="Infrastructure\ClientScriptManagerWrapper.cs" />
     <Compile Include="Infrastructure\ControlWrapper.cs" />
+    <Compile Include="Infrastructure\Factories\ThemedResourceUrlResolverFactory.cs" />
     <Compile Include="Infrastructure\IClientScriptManager.cs" />
+    <Compile Include="Infrastructure\IThemedResourceUrlResolverFactory.cs" />
     <Compile Include="Infrastructure\PageWrapper.cs" />
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />
@@ -152,6 +154,7 @@
     <Compile Include="UI\Controls\Factories\ClientScriptBehaviorFactory.cs" />
     <Compile Include="UI\Controls\IClientScriptBehaviorFactory.cs" />
     <Compile Include="UI\Controls\IControlItem.cs" />
+    <Compile Include="Infrastructure\IThemedResourceUrlResolver.cs" />
     <Compile Include="UI\Controls\ListMenuLineBreaks.cs" />
     <Compile Include="UI\Controls\MenuMode.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerPageRendererBase.cs" />
@@ -192,6 +195,7 @@
     <Compile Include="UI\Controls\Factories\TabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewImplementation\Rendering\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\TabbedMenuImplementation\IMenuTab.cs" />
+    <Compile Include="Infrastructure\ThemedResourceUrlResolver.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\IWebButton.cs" />
     <Compile Include="UI\Controls\WebButtonImplementation\Rendering\IWebButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\WebButtonRendererFactory.cs" />
