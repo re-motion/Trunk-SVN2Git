@@ -17,6 +17,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Web;
 using Castle.MicroKernel.Registration;
@@ -64,7 +65,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      var resourceTheme = Remotion.Web.ResourceTheme.NovaBlue;
+      var resourceTheme = Remotion.Web.ResourceTheme.Legacy;
       PreferQuirksModeRendering = resourceTheme == Remotion.Web.ResourceTheme.Legacy;
 
       string objectPath = Server.MapPath ("~/objects");
@@ -83,10 +84,12 @@ namespace OBWTest
 
       if (PreferQuirksModeRendering)
       {
-        RegisterRendererFactories (container, ".QuirksMode.Factories");
-      }
+        RegisterRendererFactories (container,Assembly.Load (new AssemblyName("Remotion.Web.Legacy")));
+        RegisterRendererFactories (container, Assembly.Load (new AssemblyName ("Remotion.ObjectBinding.Web.Legacy")));
+     }
 
-      RegisterRendererFactories (container, ".StandardMode.Factories");
+      RegisterRendererFactories (container, Assembly.Load (new AssemblyName ("Remotion.Web")));
+      RegisterRendererFactories (container, Assembly.Load (new AssemblyName ("Remotion.ObjectBinding.Web")));
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme));
       
@@ -94,21 +97,12 @@ namespace OBWTest
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
 
-    private void RegisterRendererFactories (IWindsorContainer container, string namespaceSuffix)
+    private void RegisterRendererFactories (IWindsorContainer container, Assembly assembly)
     {
-      // Remotion.Web.Core
       container.Register (
           AllTypes.Pick()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (namespaceSuffix))
-              .WithService.Select ((t, b) => t.GetInterfaces())
-              .Configure (c => c.Named (c.ServiceType.Name)));
-
-      // Remotion.ObjectBinding.Web
-      container.Register (
-          AllTypes.Pick()
-              .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (namespaceSuffix))
+              .FromAssembly (assembly)
+              .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces())
               .Configure (c => c.Named (c.ServiceType.Name)));
     }
