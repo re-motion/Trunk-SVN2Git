@@ -41,13 +41,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     // constants
 
-    private const string c_trueIcon = "CheckBoxTrue.gif";
-    private const string c_falseIcon = "CheckBoxFalse.gif";
-    private const string c_nullIcon = "CheckBoxNull.gif";
-
     private const string c_nullString = "null";
 
-    private const string c_defaultResourceGroup = "default";
     private const string c_hiddenfieldIDPostfix = "Boc_HiddenField";
 
     // types
@@ -60,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocBooleanValue")]
-    protected enum ResourceIdentifier
+    public enum ResourceIdentifier
     {
       /// <summary> The descripton rendered next the check box when it is checked. </summary>
       TrueDescription,
@@ -387,25 +382,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// for representing the control's value.</returns>
     protected virtual BocBooleanValueResourceSet CreateResourceSet ()
     {
-      IResourceManager resourceManager = GetResourceManager ();
-
-      BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
-          c_defaultResourceGroup,
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, ResourceTheme, c_trueIcon),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, ResourceTheme, c_falseIcon),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, ResourceTheme, c_nullIcon),
-          resourceManager.GetString (ResourceIdentifier.TrueDescription),
-          resourceManager.GetString (ResourceIdentifier.FalseDescription),
-          resourceManager.GetString (ResourceIdentifier.NullDescription)
-          );
-
-      return resourceSet;
+      return null;
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
     protected virtual IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
+    }
+
+    IResourceManager IBocBooleanValue.GetResourceManager ()
+    {
+      return GetResourceManager ();
     }
 
     /// <summary> Loads the resources into the control's properties. </summary>

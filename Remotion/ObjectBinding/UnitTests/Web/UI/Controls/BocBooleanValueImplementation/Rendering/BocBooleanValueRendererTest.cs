@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using System.Web;
@@ -45,13 +46,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
     private const string _dummyScript = "return false;";
     private IBocBooleanValue _booleanValue;
     private BocBooleanValueRenderer _renderer;
+    private BocBooleanValueResourceSet _resourceSet;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
 
-      var resourceSet = new BocBooleanValueResourceSet (
+      _resourceSet = new BocBooleanValueResourceSet (
           "ResourceKey",
           "TrueIconUrl",
           "FalseIconUrl",
@@ -62,7 +64,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
           );
 
       _booleanValue = MockRepository.GenerateMock<IBocBooleanValue>();
-      _booleanValue.Stub (mock => mock.CreateResourceSet()).Return (resourceSet);
 
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
 
@@ -72,19 +73,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
       _booleanValue.Stub (mock => mock.GetImageClientID()).Return ("_Boc_Image");
       _booleanValue.Stub (mock => mock.GetLabelClientID()).Return ("_Boc_Label");
 
-      string startupScriptKey = typeof (ObjectBinding.Web.UI.Controls.BocBooleanValue).FullName + "_Startup_" + resourceSet.ResourceKey;
+      string startupScriptKey = typeof (BocBooleanValueRenderer).FullName + "_Startup_" + _resourceSet.ResourceKey;
       _startupScript = string.Format (
           "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}');",
-          resourceSet.ResourceKey,
+          _resourceSet.ResourceKey,
           "true",
           "false",
           "null",
-          ScriptUtility.EscapeClientScript (resourceSet.DefaultTrueDescription),
-          ScriptUtility.EscapeClientScript (resourceSet.DefaultFalseDescription),
-          ScriptUtility.EscapeClientScript (resourceSet.DefaultNullDescription),
-          resourceSet.TrueIconUrl,
-          resourceSet.FalseIconUrl,
-          resourceSet.NullIconUrl);
+          ScriptUtility.EscapeClientScript (_resourceSet.DefaultTrueDescription),
+          ScriptUtility.EscapeClientScript (_resourceSet.DefaultFalseDescription),
+          ScriptUtility.EscapeClientScript (_resourceSet.DefaultNullDescription),
+          _resourceSet.TrueIconUrl,
+          _resourceSet.FalseIconUrl,
+          _resourceSet.NullIconUrl);
       clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_booleanValue, typeof (BocBooleanValueRenderer), startupScriptKey, _startupScript));
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_booleanValue, string.Empty)).Return (c_postbackEventReference);
@@ -259,7 +260,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocBooleanValueImplem
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), _booleanValue);
+      _renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<HttpContextBase> (), _booleanValue, _resourceSet);
       _renderer.Render (Html.Writer);
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

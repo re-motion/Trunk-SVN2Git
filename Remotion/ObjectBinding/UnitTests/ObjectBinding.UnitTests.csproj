@@ -337,8 +337,8 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditModeControllerWithoutEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubTextBox.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueQuirksModeRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocCheckboxQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRendererTest.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocDateTimeValueQuirksModeRendererTest.cs" />

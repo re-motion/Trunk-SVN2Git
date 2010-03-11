@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
@@ -26,5 +27,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
     string GetHiddenFieldUniqueID ();
     string GetHyperLinkUniqueID ();
     BocBooleanValueResourceSet CreateResourceSet ();
+    IResourceManager GetResourceManager ();
   }
 }

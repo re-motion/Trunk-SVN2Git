@@ -16,24 +16,14 @@
 // 
 using System;
 using System.Web;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ServiceLocation;
-using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocBooleanValue"/> controls;
+  /// Defines a factory method for creating the <see cref="BocBooleanValue"/> <see cref="BocBooleanValueResourceSet"/>.
   /// </summary>
-  public class BocBooleanValueQuirksModeRendererFactory : IBocBooleanValueRendererFactory
+  public interface IBocBooleanValueResourceSetFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control)
-    {
-      var resourceSetFactory = SafeServiceLocator.Current.GetInstance<IBocBooleanValueResourceSetFactory> ();
-
-      return new BocBooleanValueQuirksModeRenderer (context, control, resourceSetFactory.CreateResourceSet (context, control));
-    }
+    BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control);
   }
 }

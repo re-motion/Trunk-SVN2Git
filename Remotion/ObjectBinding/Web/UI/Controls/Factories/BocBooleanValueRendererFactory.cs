@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
@@ -29,7 +30,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   {
     public IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control)
     {
-      return new BocBooleanValueRenderer (context, control);
+      var resourceSetFactory = SafeServiceLocator.Current.GetInstance<IBocBooleanValueResourceSetFactory>();
+
+      return new BocBooleanValueRenderer (context, control, resourceSetFactory.CreateResourceSet (context, control));
     }
   }
 }

@@ -54,9 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRendererBase.cs" />
+    <Compile Include="UI\Controls\Factories\BocBooleanValueQuirksModeResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutocompleteReferenceValueQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\BocBooleanValueQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\BocCheckboxQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnQuirksModeRendererBase.cs" />

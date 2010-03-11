@@ -20,25 +20,24 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
 using System.Web;
 using Remotion.Web.UI;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocCheckBox"/> controls.
   /// <seealso cref="IBocCheckBox"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
-  public class BocCheckboxQuirksModeRenderer : BocBooleanValueRendererBase<IBocCheckBox>
+  public class BocCheckboxQuirksModeRenderer : BocBooleanValueQuirksModeRendererBase<IBocCheckBox>
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
 
-    private static readonly string s_startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
+    private static readonly string s_startUpScriptKey = typeof (BocCheckboxQuirksModeRenderer).FullName + "_Startup";
 
     public BocCheckboxQuirksModeRenderer (HttpContextBase context, IBocCheckBox control)
         : base (context, control)
@@ -169,9 +168,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       string imageUrl = ResourceUrlResolver.GetResourceUrl (
           Control,
           Context,
-          typeof (BocCheckBox),
+          typeof (BocCheckboxQuirksModeRenderer),
           ResourceType.Image,
-          ResourceTheme,
           Control.Value.Value ? c_trueIcon : c_falseIcon);
 
       imageControl.ImageUrl = imageUrl;

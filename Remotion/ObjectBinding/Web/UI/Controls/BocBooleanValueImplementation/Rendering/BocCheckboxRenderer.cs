@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
 
-    private static readonly string s_startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
+    private static readonly string s_startUpScriptKey = typeof (BocCheckboxRenderer).FullName + "_Startup";
 
     public BocCheckboxRenderer (HttpContextBase context, IBocCheckBox control)
         : base (context, control)
