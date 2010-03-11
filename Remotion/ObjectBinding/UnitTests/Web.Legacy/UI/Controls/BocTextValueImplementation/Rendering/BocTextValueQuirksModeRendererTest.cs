@@ -21,16 +21,16 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using System.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
 {
   [TestFixture]
-  public class BocTextValueQuirksModeRendererTest : BocTextValueRendererTestBase<IBocTextValue>
+  public class BocTextValueQuirksModeRendererTest : BocTextValueQuirksModeRendererTestBase<IBocTextValue>
   {
     [SetUp]
     public void SetUp ()
@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 
     private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, autoPostBack);
 
@@ -194,7 +194,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 
       var input = Html.GetAssertedChildElement (span, "input", 0);
       Html.AssertAttribute (input, "type", "text");
-      Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      Html.AssertAttribute (input, "value", BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
       if (TextValue.TextBoxStyle.AutoPostBack == true)
         Html.AssertAttribute (input, "onchange", string.Format ("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
 
@@ -203,7 +203,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 
     private void RenderSingleLineDisabled (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
@@ -223,14 +223,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
       var input = Html.GetAssertedChildElement (span, "input", 0);
       Html.AssertAttribute (input, "disabled", "disabled");
       Html.AssertAttribute (input, "readonly", "readonly");
-      Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      Html.AssertAttribute (input, "value", BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
 
       CheckStyle (withStyle, span, input);
     }
 
     private void RenderSingleLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
@@ -248,7 +248,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
       Html.AssertChildElementCount (span, 1);
 
       var labelSpan = Html.GetAssertedChildElement (span, "span", 0);
-      Html.AssertTextNode (labelSpan, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
+      Html.AssertTextNode (labelSpan, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText, 0);
 
       CheckStyle (withStyle, span, labelSpan);
     }
@@ -256,8 +256,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
     private void RenderMultiLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
       TextValue.Stub (mock => mock.Text).Return (
-          BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText + Environment.NewLine
-          + BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText);
+          BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText + Environment.NewLine
+          + BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_secondLineText);
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
@@ -278,9 +278,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 
       var labelSpan = Html.GetAssertedChildElement (span, "span", 0);
 
-      Html.AssertTextNode (labelSpan, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
+      Html.AssertTextNode (labelSpan, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText, 0);
       Html.GetAssertedChildElement (labelSpan, "br", 1);
-      Html.AssertTextNode (labelSpan, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText, 2);
+      Html.AssertTextNode (labelSpan, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_secondLineText, 2);
       Html.AssertChildElementCount (labelSpan, 1);
 
       CheckStyle (withStyle, span, labelSpan);

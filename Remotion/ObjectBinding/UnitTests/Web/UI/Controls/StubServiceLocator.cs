@@ -62,6 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBocMultilineTextValueRendererFactory), new BocMultilineTextValueRendererFactory());
       _instances.Add (typeof (IBocTextValueRendererFactory), new BocTextValueRendererFactory ());
       _instances.Add (typeof (IBocBooleanValueRendererFactory), new BocBooleanValueRendererFactory ());
+      _instances.Add (typeof (IBocBooleanValueResourceSetFactory), new BocBooleanValueResourceSetFactory ());
       _instances.Add (typeof (IBocCheckboxRendererFactory), new BocCheckboxRendererFactory ());
       _instances.Add (typeof (IBocEnumValueRendererFactory), new BocEnumValueRendererFactory ());
 

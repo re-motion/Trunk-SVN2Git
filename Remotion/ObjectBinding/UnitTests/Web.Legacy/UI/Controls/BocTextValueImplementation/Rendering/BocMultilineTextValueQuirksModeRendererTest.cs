@@ -21,16 +21,16 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using System.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
 {
   [TestFixture]
-  public class BocMultilineTextValueQuirksModeRendererTest : BocTextValueRendererTestBase<IBocMultilineTextValue>
+  public class BocMultilineTextValueQuirksModeRendererTest : BocTextValueQuirksModeRendererTestBase<IBocMultilineTextValue>
   {
     [SetUp]
     public void SetUp ()
@@ -39,18 +39,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
 
       TextValue = MockRepository.GenerateMock<IBocMultilineTextValue>();
       TextValue.Stub (mock => mock.Text).Return (
-          BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText + Environment.NewLine
-          + BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText);
+          BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText
+          + Environment.NewLine
+          + BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_secondLineText);
       TextValue.Stub (mock => mock.Value).Return (
-          new[] { BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText });
+          new[]
+          {
+              BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText,
+              BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_secondLineText
+          });
 
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
 
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
-      var pageStub = MockRepository.GenerateStub<IPage> ();
-      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
+      var pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
       Renderer = new BocMultilineTextValueQuirksModeRenderer (MockRepository.GenerateMock<HttpContextBase>(), TextValue);
@@ -191,9 +196,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
       }
 
       var label = Html.GetAssertedChildElement (span, "span", 0);
-      Html.AssertTextNode (label, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
+      Html.AssertTextNode (label, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_firstLineText, 0);
       Html.GetAssertedChildElement (label, "br", 1);
-      Html.AssertTextNode (label, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText, 2);
+      Html.AssertTextNode (label, BocTextValueQuirksModeRendererTestBase<IBocTextValue>.c_secondLineText, 2);
       Html.AssertChildElementCount (label, 1);
     }
 
