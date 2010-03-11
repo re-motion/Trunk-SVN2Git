@@ -52,8 +52,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      RegisterBrowserCompatibilityScript (htmlHeadAppender);
       
       string styleKey = typeof (BocDateTimeValueQuirksModeRenderer).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (

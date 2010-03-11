@@ -49,7 +49,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      RegisterBrowserCompatibilityScript (htmlHeadAppender);
       RegisterJavaScriptFiles (htmlHeadAppender);
       RegisterStylesheets (htmlHeadAppender);
     }
