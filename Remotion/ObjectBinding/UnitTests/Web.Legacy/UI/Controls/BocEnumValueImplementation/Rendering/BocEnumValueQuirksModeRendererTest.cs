@@ -25,14 +25,14 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using System.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering
 {
   [TestFixture]
   public class BocEnumValueQuirksModeRendererTest : RendererTestBase

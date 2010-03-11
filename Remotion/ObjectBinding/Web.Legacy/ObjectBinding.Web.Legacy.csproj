@@ -60,8 +60,8 @@
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutocompleteReferenceValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\BocDateTimeValueQuirksModeRenderer.cs" />
-    <Compile Include="UI\Controls\BocEnumValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueQuirksModeRenderer.cs" />
+    <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnQuirksModeRendererBase.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocCommandColumnQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocCommandEnabledColumnQuirksModeRendererBase.cs" />

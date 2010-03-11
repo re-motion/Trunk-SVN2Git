@@ -22,7 +22,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.Web.UI;
@@ -30,7 +30,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   [TestFixture]
   public class BocDateTimeValueQuirksModeRendererTest : RendererTestBase

@@ -342,9 +342,9 @@
     <Compile Include="Web.Legacy\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocDateTimeValueQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRendererTest.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocEnumValueQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocCommandColumnRendererTest.cs" />
