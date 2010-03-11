@@ -27,7 +27,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Quirks Mode.
@@ -65,7 +65,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
               Context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
-              ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.jquery.js"));
 
       string scriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_Script";
@@ -76,7 +75,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
               Context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
-              ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.js"));
     }
 
@@ -90,7 +88,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
               Context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
-              ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.css"),
           HtmlHeadAppender.Priority.Library);
 
@@ -102,7 +99,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
               Context,
               typeof (BocAutoCompleteReferenceValueQuirksModeRenderer),
               ResourceType.Html,
-              ResourceTheme.Legacy,
               "BocAutoCompleteReferenceValue.jquery.css"),
           HtmlHeadAppender.Priority.Library);
     }
@@ -491,7 +487,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       string imgUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (IBocAutoCompleteReferenceValue), ResourceType.Image, ResourceTheme, "DropDownMenuArrow.gif");
+          Control, Context, typeof (BocAutoCompleteReferenceValueQuirksModeRenderer), ResourceType.Image, "DropDownMenuArrow.gif");
       writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
       IconInfo.Spacer.Render (writer);

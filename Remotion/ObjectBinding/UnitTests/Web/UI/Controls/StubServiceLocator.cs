@@ -28,10 +28,13 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Ren
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.Infrastructure.Factories;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.Factories;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -67,6 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _instances.Add (typeof (IBocEnumValueRendererFactory), new BocEnumValueRendererFactory ());
 
       _instances.Add (typeof (IClientScriptBehaviorFactory), new ClientScriptBehaviorFactory());
+      _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
       _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
     }
 

@@ -15,22 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
-  /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocAutoCompleteReferenceValue"/> controls.
-  /// </summary>
-  public class BocAutoCompleteReferenceValueQuirksModeRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
+  public class StubResourceUrlResolverFactory : IThemedResourceUrlResolverFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+    public IThemedResourceUrlResolver CreateResourceUrlResolver ()
     {
-      return new BocAutoCompleteReferenceValueQuirksModeRenderer (context, control);
+      return new StubResourceUrlResolver();
     }
   }
 }

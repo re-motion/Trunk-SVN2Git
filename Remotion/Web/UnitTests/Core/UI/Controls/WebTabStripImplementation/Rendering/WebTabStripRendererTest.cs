@@ -290,7 +290,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       var anchorBody = link.GetAssertedChildElement ("span", 0);
       anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
-      string url = "/res/Remotion.Web/Themes/ClassicBlue/Image/Spacer.gif";
+      string url = "Spacer.gif";
       string alt = "";
       string text = StringUtility.NullToEmpty (tab.Text);
       if (tab.Icon != null)
