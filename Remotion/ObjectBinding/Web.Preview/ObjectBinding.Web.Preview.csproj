@@ -62,8 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Controls\BocQuirksModeAutoCompleteReferenceValue.cs" />
-    <Compile Include="UI\Controls\BocQuirksModeAutoCompleteReferenceValueExtender.cs" />
     <None Include="ObjectBinding.Web.Preview.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
@@ -95,19 +93,6 @@
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
       <Name>ObjectBinding.Web</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Globalization\BocQuirksModeAutoCompleteReferenceValue.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BocQuirksModeAutoCompleteReferenceValue.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\BocQuirksModeAutoCompleteReferenceValueBehavior.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Res\HTML\BocQuirksModeAutoCompleteReferenceValue.css" />
-    <Content Include="Res\Image\DropDownMenuArrow.gif" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
