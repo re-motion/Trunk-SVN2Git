@@ -18,20 +18,101 @@ using System;
 using System.Collections;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
-using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
+using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   [TestFixture]
-  public class BocReferenceValueQuirksModeRendererTest : BocReferenceValueRendererTestBase
+  public class BocReferenceValueQuirksModeRendererTest : RendererTestBase
   {
+    private IBusinessObjectProvider _provider;
+    private BusinessObjectReferenceDataSource _dataSource;
+    protected static readonly Unit Width = Unit.Pixel (250);
+    protected static readonly Unit Height = Unit.Point (12);
+    public IClientScriptManager ClientScriptManagerMock { get; set; }
+    public IBocReferenceValue Control { get; set; }
+    public TypeWithReference BusinessObject { get; set; }
+    public StubDropDownMenu OptionsMenu { get; set; }
+    public StubDropDownList DropDownList { get; set; }
+
+    [SetUp]
+    public void SetUp ()
+    {
+      Initialize ();
+
+      OptionsMenu = new StubDropDownMenu ();
+      DropDownList = new StubDropDownList ();
+
+      Control = MockRepository.GenerateStub<IBocReferenceValue> ();
+      Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
+      Control.Stub (stub => stub.Command).Return (new BocCommand ());
+      Control.Command.Type = CommandType.Event;
+      Control.Command.Show = CommandShow.Always;
+
+      Control.Stub (stub => stub.OptionsMenu).Return (OptionsMenu);
+
+      IPage pageStub = MockRepository.GenerateStub<IPage> ();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
+      Control.Stub (stub => stub.Page).Return (pageStub);
+
+      ClientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      pageStub.Stub (stub => stub.ClientScript).Return (ClientScriptManagerMock);
+
+      BusinessObject = TypeWithReference.Create ("MyBusinessObject");
+      BusinessObject.ReferenceList = new[]
+                                     {
+                                         TypeWithReference.Create ("ReferencedObject 0"),
+                                         TypeWithReference.Create ("ReferencedObject 1"),
+                                         TypeWithReference.Create ("ReferencedObject 2")
+                                     };
+      _dataSource = new BusinessObjectReferenceDataSource ();
+      _dataSource.BusinessObject = (IBusinessObject) BusinessObject;
+
+      _provider = ((IBusinessObject) BusinessObject).BusinessObjectClass.BusinessObjectProvider;
+      _provider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService ());
+
+      StateBag stateBag = new StateBag ();
+      Control.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
+      Control.Stub (mock => mock.Style).Return (Control.Attributes.CssStyle);
+      Control.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
+      Control.Stub (mock => mock.DropDownListStyle).Return (new DropDownListStyle ());
+      Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      Control.Stub (stub => stub.LabelClientID).Return (Control.ClientID + "_Boc_Label");
+      Control.Stub (stub => stub.DropDownListClientID).Return (Control.ClientID + "_Boc_DropDownList");
+      Control.Stub (stub => stub.IconClientID).Return (Control.ClientID + "_Boc_Icon");
+      Control.Stub (stub => stub.PopulateDropDownList (Arg<DropDownList>.Is.NotNull))
+          .WhenCalled (
+          invocation =>
+          {
+            foreach (var item in BusinessObject.ReferenceList)
+              ((DropDownList) invocation.Arguments[0]).Items.Add (new ListItem (item.DisplayName, item.UniqueIdentifier));
+          });
+
+      Control.Stub (stub => stub.GetLabelText ()).Return ("MyText");
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      ClientScriptManagerMock.VerifyAllExpectations ();
+    }
+
     protected override void Initialize ()
     {
       base.Initialize ();
@@ -504,6 +585,55 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls
       menuCell.AssertStyleAttribute ("width", "0%");
       menuCell.AssertChildElementCount (0);
       menuCell.AssertTextNode ("DropDownMenu", 0);
+    }
+
+    protected void AddStyle ()
+    {
+      Control.Height = Height;
+      Control.Width = Width;
+      Control.Style["height"] = Control.Height.ToString();
+      Control.Style["width"] = Control.Width.ToString();
+    }
+
+    protected void SetUpGetIconExpectations ()
+    {
+      Control.Expect (mock => mock.GetIcon (null, null)).IgnoreArguments().Return (new IconInfo ("~/Images/NullIcon.gif"));
+    }
+
+    protected void SetUpClientScriptExpectations ()
+    {
+      ClientScriptManagerMock.Expect (mock => mock.GetPostBackEventReference (Control, string.Empty)).Return ("PostBackEventReference");
+    }
+
+    protected void AssertIcon (XmlNode parent, bool wrapNonCommandIcon)
+    {
+      if (Control.IsCommandEnabled (Control.IsReadOnly))
+      {
+        var link = parent.GetAssertedChildElement ("a", 0);
+        link.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");
+        link.AssertAttributeValueEquals ("href", "#");
+        link.AssertAttributeValueEquals ("onclick", "");
+        link.AssertChildElementCount (1);
+
+        var icon = link.GetAssertedChildElement ("img", 0);
+        icon.AssertAttributeValueEquals ("src", "~/Images/Remotion.ObjectBinding.UnitTests.Web.Domain.TypeWithReference.gif");
+        icon.AssertStyleAttribute ("border-width", "0px");
+      }
+      else
+      {
+        var iconParent = parent;
+        if (wrapNonCommandIcon)
+        {
+          var span = parent.GetAssertedChildElement ("span", 0);
+          span.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");
+
+          iconParent = span;
+        }
+
+        var icon = iconParent.GetAssertedChildElement ("img", 0);
+        icon.AssertAttributeValueEquals ("src", "~/Images/NullIcon.gif");
+        icon.AssertStyleAttribute ("border-width", "0px");
+      }
     }
   }
 }

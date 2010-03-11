@@ -286,6 +286,7 @@
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubCustomCellDefinition.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubQuirksModeRenderer.cs" />
     <Compile Include="Web.Legacy\UI\Controls\BocListImplementation\Rendering\StubRowQuirksModeRenderer.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\Domain\TypeWithAllDataTypes.cs" />
     <Compile Include="Web\Domain\TypeWithBoolean.cs" />
     <Compile Include="Web\Domain\TypeWithDateTime.cs" />
@@ -362,8 +363,7 @@
     <Compile Include="Web\UI\Controls\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Factories\BocListRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\BocListRendererTestBase.cs" />
-    <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererTestBase.cs" />
-    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueQuirksModeRendererTest.cs" />
+    <Compile Include="Web.Legacy\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueQuirksModeRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubDropDownList.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\StubDropDownMenu.cs" />

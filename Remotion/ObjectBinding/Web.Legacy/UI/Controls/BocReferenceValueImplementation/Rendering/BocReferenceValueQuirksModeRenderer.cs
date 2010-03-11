@@ -25,7 +25,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web;
 
-namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
+namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   /// <summary>
   /// Responsible for rendering <see cref="BocReferenceValue"/> controls in Quirks Mode.
