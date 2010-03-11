@@ -25,6 +25,7 @@ using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -79,14 +80,9 @@ public class TestWxeBasePage:
     string key = GetType().FullName + "_Style";
     if (! HtmlHeadAppender.Current.IsRegistered (key))
     {
-      string url = ResourceUrlResolver.GetResourceUrl (
-          this,
-          new HttpContextWrapper (Context),
-          typeof (ResourceUrlResolver),
-          ResourceType.Html,
-          SafeServiceLocator.Current.GetInstance<ResourceTheme>(),
-          "Style.css");
-      HtmlHeadAppender.Current.RegisterStylesheetLink (key, url);
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
+      HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
     }
 
     key = GetType().FullName + "_Global";

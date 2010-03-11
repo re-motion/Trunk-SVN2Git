@@ -33,7 +33,6 @@ namespace Remotion.Web.Legacy.Infrastructure
 
     public string GetResourceUrl (IControl control, ResourceType resourceType, string relativeUrl)
     {
-      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
       return ResourceUrlResolver.GetResourceUrl (control, typeof (QuirksModeResourceUrlResolver), resourceType, relativeUrl);

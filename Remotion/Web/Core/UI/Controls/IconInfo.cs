@@ -25,6 +25,7 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -45,19 +46,14 @@ namespace Remotion.Web.UI.Controls
           {
             if (s_spacer == null)
             {
-              string url =
-                  ResourceUrlResolver.GetResourceUrl (null, typeof (IconInfo), ResourceType.Image, ResourceTheme, "Spacer.gif");
+              var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
+              string url = themedResourceUrlResolver.GetResourceUrl (null, ResourceType.Image, "Spacer.gif");
               s_spacer = new IconInfo (url);
             }
           }
         }
         return s_spacer;
       }
-    }
-
-    private static ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     public static bool ShouldSerialize (IconInfo icon)

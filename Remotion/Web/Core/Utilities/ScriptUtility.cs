@@ -21,6 +21,7 @@ using System.Web.UI;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -212,7 +213,8 @@ namespace Remotion.Web.Utilities
       string key = typeof (ScriptUtility).FullName + "_StyleUtility";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
+        string url = themedResourceUrlResolver.GetResourceUrl (control, ResourceType.Html, "StyleUtility.js");
 
         htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
