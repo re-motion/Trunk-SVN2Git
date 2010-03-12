@@ -29,8 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public class BocAutoCompleteReferenceValueRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>
   {
-    private const string c_defaultControlWidth = "150pt";
-
     public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
         : this (context, control, () => new TextBox())
     {
@@ -189,33 +187,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       bool isReadOnly = Control.IsReadOnly;
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isDropDownListHeightEmpty = textBox.Height.IsEmpty
-                                       && string.IsNullOrEmpty (textBox.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-      bool isLabelWidthEmpty = label.Width.IsEmpty
-                               && string.IsNullOrEmpty (label.Style["width"]);
-      bool isDropDownListWidthEmpty = textBox.Width.IsEmpty
-                                      && string.IsNullOrEmpty (textBox.Style["width"]);
-      if (isReadOnly)
-      {
-        if (isLabelWidthEmpty && !isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      }
-      else
-      {
-        if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        if (isDropDownListWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        }
-      }
-
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -257,11 +228,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       writer.RenderEndTag();
     }
 
-    protected string CssClassOptionsMenu
-    {
-      get { return "bocAutoCompleteReferenceValueOptionsMenu"; }
-    }
-
     private void RenderEditModeValue (HtmlTextWriter writer, TextBox textBox)
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownList);
@@ -271,7 +237,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       writer.RenderEndTag();
     }
-
 
     /// <summary> Called after the edit mode value's cell is rendered. </summary>
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
@@ -318,33 +283,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer, TextBox textBox, Label label)
     {
-      bool isReadOnly = Control.IsReadOnly;
-
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isDropDownListHeightEmpty = string.IsNullOrEmpty (textBox.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-      bool isLabelWidthEmpty = string.IsNullOrEmpty (label.Style["width"]);
-      bool isDropDownListWidthEmpty = string.IsNullOrEmpty (textBox.Style["width"]);
-
-      if (isReadOnly)
-      {
-        if (isLabelWidthEmpty && !isControlWidthEmpty)
-          Control.OptionsMenu.Style["width"] = "100%";
-      }
-      else
-      {
-        if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-          Control.OptionsMenu.Style["height"] = "100%";
-
-        if (isDropDownListWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-            Control.OptionsMenu.Style["width"] = c_defaultControlWidth;
-          else
-            Control.OptionsMenu.Style["width"] = "100%";
-        }
-      }
-
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
       Control.OptionsMenu.RenderControl (writer);
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
@@ -384,7 +322,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
     }
 
-
     private Label GetLabel ()
     {
       var label = new Label { ID = Control.TextBoxUniqueID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
@@ -408,8 +345,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           icon.Height = iconInfo.Height;
 
           icon.Visible = true;
-          icon.Style["vertical-align"] = "middle";
-          icon.Style["border-style"] = "none";
           icon.CssClass = CssClassContent;
 
           if (Control.IsCommandEnabled (Control.IsReadOnly))
@@ -480,19 +415,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return textBox;
     }
 
-    public string CssClassDummy
+    public override string CssClassBase
     {
-      get { return "bocAutoCompleteReferenceValueDummy"; }
+      get { return "bocAutoCompleteReferenceValue"; }
     }
 
     public string CssClassButton
     {
       get { return "bocAutoCompleteReferenceValueButton"; }
-    }
-
-    public override string CssClassBase
-    {
-      get { return "bocAutoCompleteReferenceValue"; }
     }
 
     public string CssClassInput
@@ -518,6 +448,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public string CssClassDropDownList
     {
       get { return "bocAutoCompleteReferenceValueDropDownList"; }
+    }
+
+    public string CssClassOptionsMenu
+    {
+      get { return "bocAutoCompleteReferenceValueOptionsMenu"; }
     }
   }
 }
