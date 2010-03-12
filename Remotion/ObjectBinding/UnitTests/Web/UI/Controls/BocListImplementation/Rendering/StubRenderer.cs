@@ -22,13 +22,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 {
   public class StubRenderer : IBocListTableBlockRenderer, IBocListMenuBlockRenderer, IBocListNavigationBlockRenderer
   {
-    public StubRenderer ()
+    private readonly string _tagName;
+
+    public StubRenderer (string tagName)
     {
+      _tagName = tagName;
     }
 
     public void Render (HtmlTextWriter writer)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      writer.RenderBeginTag (_tagName);
       writer.RenderEndTag();
     }
 
