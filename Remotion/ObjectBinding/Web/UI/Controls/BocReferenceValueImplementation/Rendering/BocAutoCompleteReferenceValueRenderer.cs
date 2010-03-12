@@ -205,7 +205,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         if (icon.Visible)
           RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
 
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent());
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValue (writer, textBox);
@@ -297,7 +297,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       Image icon = GetIcon();
       Label label = GetLabel();
-      label.CssClass = CssClassReadOnly;
       bool isReadOnly = Control.IsReadOnly;
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
@@ -312,7 +311,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       {
         if (icon.Visible)
           RenderSeparateIcon (writer, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent());
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
@@ -424,6 +423,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
     }
 
+    private string GetCssClassInnerContent ()
+    {
+      if (!Control.HasOptionsMenu)
+        return CssClassInnerContent + "." + CssClassWithoutOptionsMenu;
+      if (EmbedInOptionsMenu)
+        return CssClassInnerContent + "." + CssClassEmbeddedOptionsMenu;
+      return CssClassInnerContent + "." + CssClassSeparateOptionsMenu;
+    }
+
     public override string CssClassBase
     {
       get { return "bocAutoCompleteReferenceValue"; }
@@ -447,6 +455,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public string CssClassInnerContent
     {
       get { return "content"; }
+    }
+
+    public string CssClassSeparateOptionsMenu
+    {
+      get { return "separateOptionsMenu"; }
+    }
+
+    public string CssClassEmbeddedOptionsMenu
+    {
+      get { return "embeddedOptionsMenu"; }
+    }
+
+    public string CssClassWithoutOptionsMenu
+    {
+      get { return "withoutOptionsMenu"; }
     }
 
     public string CssClassCommand
