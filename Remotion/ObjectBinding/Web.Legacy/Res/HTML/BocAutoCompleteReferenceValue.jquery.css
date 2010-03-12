@@ -4,6 +4,8 @@
 	border: 1px solid black;
 	background-color: white;
 	overflow: hidden;
+	overflow-y: scroll;
+
 	z-index: 99999;
 }
 

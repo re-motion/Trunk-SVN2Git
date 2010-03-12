@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon              
+                // matches also semicolon               
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab            
+                // re-motion: do not block event bubbling for tab             
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -789,19 +789,23 @@
                 var offset = $(input).offset();
                 // re-motion: calculate best position where to open dropdown list
                 var position = $.Autocompleter.calculateSpaceAround(input);
+
+                var newScrollHeight = options.scrollHeight;
+                
                 if (position.spaceVertical == 'T') {
-                    var newTop = -2;
-                    var newScrollHeight = position.top;
+                    if (options.scrollHeight > position.top)
+                        newScrollHeight = position.top;
+                    var newTop = position.top - newScrollHeight;
                 } else {
                     var newTop = offset.top + input.offsetHeight;
-                    var newScrollHeight = options.scrollHeight;
+                    if (options.scrollHeight > position.bottom)
+                        newScrollHeight = position.bottom;
                 }
-                options.scrollHeight = position.top;
 
                 element.css({
                     // re-motion: changed width to span the entire control, including dropdown button
-                    height: options.scrollHeight,
-                    width: $(input).parents('span.bocAutoCompleteReferenceValueDropDownList').width() - 2,
+                    height: newScrollHeight,
+                    width: $(input).parent().width(),
                     top: newTop,
                     left: offset.left
                 }).show();
@@ -810,7 +814,7 @@
                     list.scrollTop(0);
                     // re-motion: need to resize list to fit available space
                     list.css({
-                        maxHeight: newScrollHeight,
+                        maxHeight: options.scrollHeight,
                         overflow: 'auto'
                     });
 
