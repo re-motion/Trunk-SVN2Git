@@ -139,11 +139,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 
       if (Control.ControlStyle.Width.IsEmpty)
       {
-        string width = "auto";
         if (!Control.Width.IsEmpty)
-          width = Control.Width.ToString();
-
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, width);
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
       }
     }
 
