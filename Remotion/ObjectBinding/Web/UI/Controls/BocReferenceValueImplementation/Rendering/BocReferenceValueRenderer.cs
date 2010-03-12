@@ -85,19 +85,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      DropDownList dropDownList = GetDropDownList();
-      dropDownList.Page = Control.Page.WrappedInstance;
-      Label label = GetLabel();
-      Image icon = GetIcon();
-
-      if (Control.EmbedInOptionsMenu)
-      {
-        RenderContentsWithIntegratedOptionsMenu (writer, dropDownList, label);
-      }
+      if (EmbedInOptionsMenu)
+        RenderContentsWithIntegratedOptionsMenu (writer);
       else
-      {
-        RenderContentsWithSeparateOptionsMenu (writer, dropDownList, label, icon);
-      }
+        RenderContentsWithSeparateOptionsMenu (writer);
 
       writer.RenderEndTag();
     }
@@ -112,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           string.Format (
               "BocReferenceValue_AdjustPosition(document.getElementById('{0}'), {1});",
               Control.ClientID,
-              Control.EmbedInOptionsMenu ? "true" : "false"));
+              EmbedInOptionsMenu ? "true" : "false"));
     }
 
     private void RegisterAdjustLayoutScript ()
@@ -182,8 +173,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return icon;
     }
 
-    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer, DropDownList dropDownList, Label label, Image icon)
+    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
+      DropDownList dropDownList = GetDropDownList ();
+      dropDownList.Page = Control.Page.WrappedInstance;
+      Label label = GetLabel ();
+      Image icon = GetIcon ();
+
       bool isReadOnly = Control.IsReadOnly;
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
@@ -229,7 +225,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       writer.RenderEndTag ();
     }
 
-    private void RenderContentsWithIntegratedOptionsMenu(HtmlTextWriter writer, DropDownList dropDownList, Label label)
+    private void RenderContentsWithIntegratedOptionsMenu(HtmlTextWriter writer)
     {
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
       Control.OptionsMenu.RenderControl (writer);
@@ -326,6 +322,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
     protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
+    }
+
+    private bool EmbedInOptionsMenu
+    {
+      get
+      {
+        return Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
+               || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu;
+      }
     }
 
     public override string CssClassBase

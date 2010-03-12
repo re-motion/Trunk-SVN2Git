@@ -55,11 +55,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// </remarks>
     Style CommonStyle { get; }
 
-    bool EmbedInOptionsMenu { get; }
+    bool? HasValueEmbeddedInsideOptionsMenu { get; }
     bool HasOptionsMenu { get; }
     Unit OptionsMenuWidth { get; }
     bool EnableIcon { get; }
-    bool? HasValueEmbeddedInsideOptionsMenu { get; }
     bool IsCommandEnabled (bool readOnly);
     IconInfo GetIcon();
 

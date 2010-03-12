@@ -115,15 +115,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       AddAttributesToRender (writer, false);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      TextBox textBox = GetTextBox();
-      textBox.Page = Control.Page.WrappedInstance;
-      Label label = GetLabel();
-      Image icon = GetIcon();
-
-      if (Control.EmbedInOptionsMenu)
-        RenderContentsWithIntegratedOptionsMenu (writer, textBox, label);
+      if (EmbedInOptionsMenu)
+        RenderContentsWithIntegratedOptionsMenu (writer);
       else
-        RenderContentsWithSeparateOptionsMenu (writer, textBox, label, icon);
+        RenderContentsWithSeparateOptionsMenu (writer);
 
       writer.RenderEndTag();
     }
@@ -171,7 +166,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           key,
           string.Format ("BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1});",
                          Control.ClientID,
-                         Control.EmbedInOptionsMenu ? "true" : "false"));
+                         EmbedInOptionsMenu ? "true" : "false"));
     }
 
     private void RegisterAdjustLayoutScript ()
@@ -183,8 +178,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           string.Format ("BocBrowserCompatibility.AdjustAutoCompleteReferenceValueLayout ($('#{0}'));", Control.ClientID));
     }
 
-    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer, TextBox textBox, Label label, Image icon)
+    private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer)
     {
+      TextBox textBox = GetTextBox ();
+      textBox.Page = Control.Page.WrappedInstance;
+      Label label = GetLabel ();
+      Image icon = GetIcon ();
+
       bool isReadOnly = Control.IsReadOnly;
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
@@ -281,7 +281,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         writer.RenderEndTag();
     }
 
-    private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer, TextBox textBox, Label label)
+    private void RenderContentsWithIntegratedOptionsMenu (HtmlTextWriter writer)
     {
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
       Control.OptionsMenu.RenderControl (writer);
@@ -413,6 +413,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       textBox.ApplyStyle (Control.CommonStyle);
       Control.TextBoxStyle.ApplyStyle (textBox);
       return textBox;
+    }
+
+    private bool EmbedInOptionsMenu
+    {
+      get
+      {
+        return Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
+               || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu;
+      }
     }
 
     public override string CssClassBase

@@ -44,6 +44,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     string LabelClientID { get; }
     string IconClientID { get; }
     string NullIdentifier { get; }
-    bool EmbedInOptionsMenu { get; }
   }
 }

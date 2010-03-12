@@ -41,9 +41,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private const string c_defaultControlWidth = "150pt";
 
     public BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
-        : base (context, control)
+        : this (context, control, () => new TextBox())
     {
     }
+
+    public BocAutoCompleteReferenceValueQuirksModeRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxFactory)
+        : base (context, control)
+    {
+      ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
+      TextBoxFactory = textBoxFactory;
+    }
+
+    private Func<TextBox> TextBoxFactory { get; set; }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
@@ -118,8 +127,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       Label label = GetLabel();
       Image icon = GetIcon();
 
-      if (Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
-          || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu)
+      if (EmbedInOptionsMenu)
         RenderContentsWithIntegratedOptionsMenu (writer, textBox, label);
       else
         RenderContentsWithSeparateOptionsMenu (writer, textBox, hiddenField, label, icon);
@@ -163,18 +171,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
     private TextBox GetTextbox ()
     {
-      var textbox = new TextBox ();
-      textbox.ID = Control.TextBoxUniqueID;
-      textbox.EnableViewState = false;
-      textbox.Text = Control.BusinessObjectDisplayName;
+      var textBox = TextBoxFactory();
+      textBox.ID = Control.TextBoxUniqueID;
+      textBox.EnableViewState = false;
+      textBox.Text = Control.BusinessObjectDisplayName;
 
-      textbox.Enabled = Control.Enabled;
-      textbox.Height = Unit.Empty;
-      textbox.Width = Unit.Empty;
-      textbox.ApplyStyle (Control.CommonStyle);
-      Control.TextBoxStyle.ApplyStyle (textbox);
+      textBox.Enabled = Control.Enabled;
+      textBox.Height = Unit.Empty;
+      textBox.Width = Unit.Empty;
+      textBox.ApplyStyle (Control.CommonStyle);
+      Control.TextBoxStyle.ApplyStyle (textBox);
 
-      return textbox;
+      return textBox;
     }
 
     private HiddenField GetHiddenField ()
@@ -497,6 +505,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     protected string CssClassButton
     {
       get { return "bocAutoCompleteReferenceValueButton"; }
+    }
+
+    private bool EmbedInOptionsMenu
+    {
+      get
+      {
+        return Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
+               || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu;
+      }
     }
   }
 }

@@ -773,15 +773,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    bool IBocReferenceValue.EmbedInOptionsMenu
-    {
-      get
-      {
-        return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
-               || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
-      }
-    }
-
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }

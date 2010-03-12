@@ -87,8 +87,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       Label label = GetLabel();
       Image icon = GetIcon();
 
-      if (Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
-          || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu)
+      if (EmbedInOptionsMenu)
         RenderContentsWithIntegratedOptionsMenu (writer, dropDownList, label);
       else
         RenderContentsWithSeparateOptionsMenu (writer, dropDownList, label, icon);
@@ -395,6 +394,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
     protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
+    }
+
+    private bool EmbedInOptionsMenu
+    {
+      get
+      {
+        return Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
+               || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu;
+      }
     }
   }
 }

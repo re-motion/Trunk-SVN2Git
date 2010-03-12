@@ -574,15 +574,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return OptionsMenu; }
     }
 
-    bool IBocAutoCompleteReferenceValue.EmbedInOptionsMenu
-    {
-      get
-      {
-        return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
-               || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
-      }
-    }
-
     bool IBocAutoCompleteReferenceValue.HasOptionsMenu
     {
       get { return HasOptionsMenu; }
