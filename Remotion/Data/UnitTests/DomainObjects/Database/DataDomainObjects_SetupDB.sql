@@ -110,6 +110,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SampleBind
   DROP VIEW [dbo].[SampleBindableDomainObjectView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TargetClassForPersistentMixinView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SampleBindableDomainObjectView]
+GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
@@ -1311,5 +1314,16 @@ CREATE VIEW [dbo].[SampleBindableDomainObjectView] ([ID], [ClassID], [Timestamp]
   SELECT [ID], [ClassID], [Timestamp], [Name], [Int32]
     FROM [dbo].[SampleBindableDomainObject]
     WHERE [ClassID] IN ('SampleBindableDomainObject')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TargetClassForPersistentMixinView] (
+  [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [RelationPropertyID], [PrivateBaseRelationPropertyID],
+  [CollectionPropertyNSideID], [UnidirectionalRelationPropertyID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [RelationPropertyID], [PrivateBaseRelationPropertyID],
+    [CollectionPropertyNSideID], [UnidirectionalRelationPropertyID]
+    FROM [dbo].[MixedDomains_Target]
+    WHERE [ClassID] IN ('TargetClassForPersistentMixin')
   WITH CHECK OPTION
 GO

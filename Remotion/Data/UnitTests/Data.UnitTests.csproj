@@ -262,6 +262,8 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
+    <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointInsertCommandTest.cs" />
@@ -587,6 +589,7 @@
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
+    <Compile Include="DomainObjects\TestDomain\ClassWithInvalidRedirectedProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithoutProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithSerializationCallbacks.cs" />
     <Compile Include="DomainObjects\Core\Serialization\SerializationCallbackTest.cs" />

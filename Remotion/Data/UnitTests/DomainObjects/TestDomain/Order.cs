@@ -65,10 +65,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public abstract int OrderNumber { get; set; }
 
     [StorageClassNone]
-    [LinqRedirection (typeof (Order), "OrderNumber")]
+    [LinqPropertyRedirection (typeof (Order), "OrderNumber")]
     public int RedirectedOrderNumber
     {
       get { return OrderNumber; }
+    }
+
+    [StorageClassNone]
+    [LinqPropertyRedirection (typeof (Order), "RedirectedOrderNumber")]
+    public int RedirectedRedirectedOrderNumber
+    {
+      get { return RedirectedOrderNumber; }
     }
     
     public abstract DateTime DeliveryDate { get; set; }
@@ -77,16 +84,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBBidirectionalRelation ("Orders")]
     public abstract Official Official { get; set; }
 
-    [StorageClassNone]
-    [LinqRedirection (typeof (Order), "Official")]
-    public Official RedirectedOfficial
-    {
-      get { return Official; }
-    }
-
     [Mandatory]
     [DBBidirectionalRelation ("Order")]
     public abstract OrderTicket OrderTicket { get; set; }
+
+    [StorageClassNone]
+    [LinqPropertyRedirection (typeof (Order), "OrderTicket")]
+    public OrderTicket RedirectedOrderTicket
+    {
+      get { return OrderTicket; }
+    }
 
     [Mandatory]
     [DBBidirectionalRelation ("Orders")]
@@ -97,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public virtual ObjectList<OrderItem> OrderItems { get; set; }
 
     [StorageClassNone]
-    [LinqRedirection (typeof (Order), "OrderItems")]
+    [LinqPropertyRedirection (typeof (Order), "OrderItems")]
     public ObjectList<OrderItem> RedirectedOrderItems
     {
       get { return OrderItems; }

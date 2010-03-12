@@ -165,13 +165,13 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property == null)
         return null;
 
-      // TODO: redirection
-
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
       if (classDefinition == null)
         return null;
 
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
       RelationDefinition relationDefinition = classDefinition.GetRelationDefinition (propertyIdentifier);
       if (relationDefinition == null)
         return null;
@@ -192,9 +192,6 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property == null)
         return null;
 
-      // TODO: if property is redirected, use that property
-      // TODO: recursive?
-
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return "ID";
 
@@ -203,8 +200,10 @@ namespace Remotion.Data.DomainObjects.Linq
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
       if (classDefinition == null)
         return null;
+      
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
 
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
       PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
 
       if (propertyDefinition != null)

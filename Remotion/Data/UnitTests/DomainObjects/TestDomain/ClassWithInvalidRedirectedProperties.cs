@@ -16,21 +16,20 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
+namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
-  [Uses (typeof (MixinAddingUnidirectionalRelation1))]
-  [DBTable ("MixedDomains_TargetWithUnidirectionalMixin1")]
-  [TestDomain]
-  public class TargetClassWithUnidirectionalMixin1 : SimpleDomainObject<TargetClassWithUnidirectionalMixin1>
+  public class ClassWithInvalidRedirectedProperties
   {
-    [LinqPropertyRedirection (typeof (MixinAddingUnidirectionalRelation1), "Computer")]
-    [StorageClassNone]
-    public Computer RedirectedComputer
-    {
-      get { throw new NotImplementedException (); }
-    }
+    [LinqPropertyRedirection (typeof (ClassWithInvalidRedirectedProperties), "SelfRedirected")]
+    public int SelfRedirected { get; set; }
+
+    [LinqPropertyRedirection (typeof (ClassWithInvalidRedirectedProperties), "Nonexistent")]
+    public int RedirectedToNonexistent { get; set; }
+
+    [LinqPropertyRedirection (typeof (ClassWithInvalidRedirectedProperties), "PropertyWithOtherType")]
+    public int RedirectedToPropertyWithOtherType { get; set; }
+
+    public string PropertyWithOtherType { get; set; }
   }
 }

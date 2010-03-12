@@ -27,6 +27,7 @@ using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -120,6 +121,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void IsRelationMember_RedirectedRelationProperty ()
+    {
+      Assert.That (_databaseInfo.IsRelationMember (typeof (Order).GetProperty ("RedirectedOrderTicket")), Is.True);
+      Assert.That (_databaseInfo.IsRelationMember (typeof (Order).GetProperty ("RedirectedOrderItems")), Is.True);
+      Assert.That (_databaseInfo.IsRelationMember (typeof (TargetClassWithUnidirectionalMixin1).GetProperty ("RedirectedComputer")), Is.True);
+    }
+
+    [Test]
     public void GetTableForRelation_FK_Right ()
     {
       var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("OrderItems"), "x");
@@ -139,6 +148,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void GetTableForRelation_Metadata ()
     {
       var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("OrderItems"), "x");
+      var mappedTable = (MappedTable) table;
+
+      var expectedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      Assert.That (mappedTable.ClassDefinition, Is.SameAs (expectedClassDefinition));
+    }
+
+    [Test]
+    public void GetTableForRelation_RedirectedProperty_CardinalityOne ()
+    {
+      var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("RedirectedOrderTicket"), "x");
+      Assert.That (table.Name, Is.EqualTo ("OrderTicketView"));
+      Assert.That (table.Alias, Is.EqualTo ("x"));
+
+      var mappedTable = (MappedTable) table;
+
+      var expectedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderTicket));
+      Assert.That (mappedTable.ClassDefinition, Is.SameAs (expectedClassDefinition));
+    }
+
+    [Test]
+    public void GetTableForRelation_RedirectedProperty_CardinalityMany ()
+    {
+      var table = _databaseInfo.GetTableForRelation (typeof (Order).GetProperty ("RedirectedOrderItems"), "x");
+      Assert.That (table.Name, Is.EqualTo ("OrderItemView"));
+      Assert.That (table.Alias, Is.EqualTo ("x"));
+
       var mappedTable = (MappedTable) table;
 
       var expectedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
@@ -183,6 +218,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void HasAssociatedColumn_True_RedirectedMember ()
+    {
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (Order).GetProperty ("RedirectedOrderNumber")), Is.True);
+      Assert.That (_databaseInfo.HasAssociatedColumn (typeof (TargetClassForPersistentMixin).GetProperty ("RedirectedPersistentProperty")), Is.True);
+    }
+
+    [Test]
     public void GetColumnForMember ()
     {
       var columnSource = MockRepository.GenerateStub<IColumnSource> ();
@@ -194,6 +236,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (column1, Is.EqualTo (new Column (columnSource, "OrderNo")));
       Assert.That (column2, Is.EqualTo (new Column (columnSource, "DeliveryDate")));
       Assert.That (column3, Is.EqualTo (new Column (columnSource, "OrderID")));
+    }
+
+    [Test]
+    public void GetColumnForMember_RedirectedMember ()
+    {
+      var columnSource = MockRepository.GenerateStub<IColumnSource> ();
+
+      var column1 = _databaseInfo.GetColumnForMember (columnSource, typeof (Order).GetProperty ("RedirectedOrderNumber"));
+
+      Assert.That (column1, Is.EqualTo (new Column (columnSource, "OrderNo")));
     }
 
     [Test]
@@ -248,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
  
     [Test]
-    public void GetJoinColumns_FK_Right()
+    public void GetJoinForMember_FK_Right()
     {
       var join = _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("OrderItems"), _columnSourceStub1, _columnSourceStub2);
       Assert.That (join.LeftColumn, Is.EqualTo (new Column (_columnSourceStub1, "ID")));
@@ -256,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void GetJoinColumns_FK_Left ()
+    public void GetJoinForMember_FK_Left ()
     {
       var join = _databaseInfo.GetJoinForMember (typeof (OrderItem).GetProperty ("Order"), _columnSourceStub1, _columnSourceStub2);
 
@@ -265,9 +317,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void GetJoinForMember_RedirectedProperty_CardinalityOne ()
+    {
+      var join = _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("RedirectedOrderTicket"), _columnSourceStub1, _columnSourceStub2);
+
+      Assert.That (join.LeftColumn, Is.EqualTo (new Column (_columnSourceStub1, "ID")));
+      Assert.That (join.RightColumn, Is.EqualTo (new Column (_columnSourceStub2, "OrderID")));
+    }
+
+    [Test]
+    public void GetJoinForMember_RedirectedProperty_CardinalityMany ()
+    {
+      var join = _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("RedirectedOrderItems"), _columnSourceStub1, _columnSourceStub2);
+
+      Assert.That (join.LeftColumn, Is.EqualTo (new Column (_columnSourceStub1, "ID")));
+      Assert.That (join.RightColumn, Is.EqualTo (new Column (_columnSourceStub2, "OrderID")));
+    }
+
+    [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
         "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMapping' does not identify a relation.")]
-    public void GetJoinColumns_NotInMapping ()
+    public void GetJoinForMember_NotInMapping ()
     {
       _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("NotInMapping"), _columnSourceStub1, _columnSourceStub2);
     }
@@ -275,7 +345,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage =
         "The member 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' does not identify a relation.")]
-    public void GetJoinColumns_NoRelationProperty ()
+    public void GetJoinForMember_NoRelationProperty ()
     {
       _databaseInfo.GetJoinForMember (typeof (Order).GetProperty ("OrderNumber"), _columnSourceStub1, _columnSourceStub2);
     }
