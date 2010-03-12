@@ -66,7 +66,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      var resourceTheme = Remotion.Web.ResourceTheme.Legacy;
+      var resourceTheme = Remotion.Web.ResourceTheme.NovaBlue;
       PreferQuirksModeRendering = resourceTheme == Remotion.Web.ResourceTheme.Legacy;
 
       string objectPath = Server.MapPath ("~/objects");
