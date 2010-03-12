@@ -186,6 +186,7 @@
     <Compile Include="Infrastructure\IObjectLoader.cs" />
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLoader.cs" />
+    <Compile Include="LinqRedirectionAttribute.cs" />
     <Compile Include="Linq\MappedTable.cs" />
     <Compile Include="Queries\IEagerFetcher.cs" />
     <Compile Include="ReadOnlyDomainObjectCollectionAdapter.cs" />

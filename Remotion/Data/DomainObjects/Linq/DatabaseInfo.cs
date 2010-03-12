@@ -165,6 +165,8 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property == null)
         return null;
 
+      // TODO: redirection
+
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
       if (classDefinition == null)
         return null;
@@ -189,6 +191,9 @@ namespace Remotion.Data.DomainObjects.Linq
       var property = member as PropertyInfo;
       if (property == null)
         return null;
+
+      // TODO: if property is redirected, use that property
+      // TODO: recursive?
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return "ID";

@@ -64,11 +64,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBColumn ("OrderNo")]
     public abstract int OrderNumber { get; set; }
 
+    [StorageClassNone]
+    [LinqRedirection (typeof (Order), "OrderNumber")]
+    public int RedirectedOrderNumber
+    {
+      get { return OrderNumber; }
+    }
+    
     public abstract DateTime DeliveryDate { get; set; }
 
     [Mandatory]
     [DBBidirectionalRelation ("Orders")]
     public abstract Official Official { get; set; }
+
+    [StorageClassNone]
+    [LinqRedirection (typeof (Order), "Official")]
+    public Official RedirectedOfficial
+    {
+      get { return Official; }
+    }
 
     [Mandatory]
     [DBBidirectionalRelation ("Order")]
@@ -81,6 +95,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [Mandatory]
     [DBBidirectionalRelation ("Order")]
     public virtual ObjectList<OrderItem> OrderItems { get; set; }
+
+    [StorageClassNone]
+    [LinqRedirection (typeof (Order), "OrderItems")]
+    public ObjectList<OrderItem> RedirectedOrderItems
+    {
+      get { return OrderItems; }
+    }
 
     public void PreparePropertyAccess (string propertyName)
     {
