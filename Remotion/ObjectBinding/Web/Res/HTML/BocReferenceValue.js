@@ -27,6 +27,8 @@ function BocReferenceValue_GetSelectionCount(referenceValueDropDownListID, nullV
 
 function BocReferenceValue_AdjustPosition(control, isEmbedded)
 {
+    if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
+        return;
 
   var totalWidth = $(control).innerWidth();
   var totalHeight = $(control).innerHeight();

@@ -1,87 +1,16 @@
 span.bocReferenceValue
 {
-  display: inline-block;
   position: relative;
-  height: 1.8em;
-  vertical-align: middle;
-}
-
-span.bocReferenceValueContent
-{
-  display: block;
-  position:relative;
-  text-align: left;
-  line-height: 1.25em;
-  white-space: nowrap;
-  padding: 1px 0px;
-}
-
-span.bocReferenceValue *.bocReferenceValueCommand
-{
+  width: 100%;
   display: inline-block;
-  position: relative;
-  padding: 1px;
-  margin: auto;
+  overflow: hidden;
+  height: 2em;
 }
 
-span.bocReferenceValue a.bocReferenceValueCommand:hover
+span.bocReferenceValue select
 {
-  border: solid 1px #005588;
-  background-color: #fee197;
-  padding: 0;
-}
-
-span.bocReferenceValue span.bocReferenceValueCommand
-{
-  cursor: default;
-}
-
-span.bocReferenceValue img.bocReferenceValueContent
-{
-    background-color: Transparent;
-    border-style: none;
-    position: static;    
-    padding: 1px 3px 1px 1px;
-}
-
-.bocReferenceValueOptionsMenu 
-{
-  position: absolute; 
-  display: block; 
-  right: 0;
-  top: 1px;
-}
-
-.bocReferenceValueOptionsMenu .DropDownMenuSelect
-{
-  margin-left: 4px;
-}
-
-.bocReferenceValueContent span.readOnly
-{
-  position : static;
-}
-
-span.bocReferenceValue .disabled span.readOnly
-{
-  padding-right: 18px;
-}
-
-span.content
-{
-  top: 0px;
-  display: inline-block;
-  position: absolute;
-}
-
-span.bocReferenceValue span.content * {
-  width: 100%; 
-  margin: 0px;
-}
-
-span.bocReferenceValue .disabled span.content 
-{
-  padding: 0.5px 3px;
+   width: 100%;
+   display: inline-block;
 }
 
 span.bocReferenceValue.disabled img
@@ -90,4 +19,100 @@ span.bocReferenceValue.disabled img
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
   -moz-opacity: 0.4;
+}
+
+span.bocReferenceValue a.bocReferenceValueCommand
+{
+  cursor: default;
+  display: inline-block;
+  margin-top: 2px;
+  margin-left: 2px;
+  border: solid 1px transparent;
+  height: 1.3em; 
+}
+
+span.bocReferenceValue a.bocReferenceValueCommand:hover
+{
+  display: inline-block;
+  border: solid 1px #005588;
+  background-color: #fee197;
+  padding: 0;
+}
+
+span.bocReferenceValue a.bocReferenceValueCommand *
+{
+  cursor: pointer;
+}
+
+span.bocReferenceValue a.bocReferenceValueCommand span,
+span.bocReferenceValue span.bocReferenceValueCommand span
+{
+   margin: 0 5px;
+   vertical-align: top;  
+}
+
+span.bocReferenceValue span.bocReferenceValueCommand
+{
+  display: inline-block;
+  margin-top: 3px;
+  margin-left: 3px;
+}
+
+/* withoutOptionsMenu */
+span.bocReferenceValue span.content.withoutOptionsMenu
+{
+  right: 0;
+}
+
+/* embeddedOptionsMenu */
+span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect
+{
+  height: 1.7em;
+}
+/* WebKit browsers only (Safari, Chrome) */
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+    span.bocReferenceValue span.DropDownMenuContainer  span.DropDownMenuSelect
+    {
+      height: 1.8em;
+    }
+    span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+    {
+      margin-top: 0.2em;
+    }  
+}
+
+span.bocReferenceValue span.content.embeddedOptionsMenu
+{
+  right: 1.3em; /* width of span.DropDownMenuButton + desired space between */
+}
+
+/* separateOptionsMenu */
+span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+{
+  height: 1.4em;
+}
+
+
+span.bocReferenceValue span.content,
+span.bocReferenceValue span.disabled span.content
+{
+  position: absolute;
+  width: auto;
+  display: inline-block;
+  top: 0;
+  left: 22px; /* width of a.bocReferenceValueCommand icon + desired space between */
+}
+
+span.bocReferenceValue span.bocReferenceValueOptionsMenu
+{
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  right: 0;
+  width: 6em; /* Define width of span.bocReferenceValueOptionsMenu */
+}
+
+span.bocReferenceValue span.content.separateOptionsMenu
+{
+  right: 6.25em; /* width of span.bocReferenceValueOptionsMenu + desired space between */
 }
