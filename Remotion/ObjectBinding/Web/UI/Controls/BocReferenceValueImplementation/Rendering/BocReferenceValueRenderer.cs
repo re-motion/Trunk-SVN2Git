@@ -335,10 +335,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private string GetCssClassInnerContent ()
     {
       if (!Control.HasOptionsMenu)
-        return CssClassInnerContent + "." + CssClassWithoutOptionsMenu;
+        return CssClassInnerContent + " " + CssClassWithoutOptionsMenu;
       if (EmbedInOptionsMenu)
-        return CssClassInnerContent + "." + CssClassEmbeddedOptionsMenu;
-      return CssClassInnerContent + "." + CssClassSeparateOptionsMenu;
+        return CssClassInnerContent + " " + CssClassEmbeddedOptionsMenu;
+      return CssClassInnerContent + " " + CssClassSeparateOptionsMenu;
     }
 
     public override string CssClassBase

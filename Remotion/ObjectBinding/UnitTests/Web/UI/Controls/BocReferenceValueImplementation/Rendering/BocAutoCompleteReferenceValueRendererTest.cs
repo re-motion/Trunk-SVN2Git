@@ -534,13 +534,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       switch (optionMenuConfiguration)
       {
         case OptionMenuConfiguration.NoOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content.withoutOptionsMenu");
+          contentSpan.AssertAttributeValueEquals ("class", "content withoutOptionsMenu");
           break;
         case OptionMenuConfiguration.SeparateOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content.separateOptionsMenu");
+          contentSpan.AssertAttributeValueEquals ("class", "content separateOptionsMenu");
           break;
         case OptionMenuConfiguration.EmbeddedOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content.embeddedOptionsMenu");
+          contentSpan.AssertAttributeValueEquals ("class", "content embeddedOptionsMenu");
           break;
       }
 
