@@ -28,7 +28,7 @@ using Remotion.Web.UI.Globalization;
 namespace OBWTest.IndividualControlTests
 {
   [WebMultiLingualResources ("OBWTest.Globalization.SingleBocTestBasePage")]
-  public partial class IndividualControlTestForm : TestBasePage
+  public partial class IndividualControlTestForm : TestBasePage<TestFunction>
   {
     private IDataEditControl _dataEditControl;
     private bool _isCurrentObjectSaved = false;

@@ -332,7 +332,7 @@
       <DependentUpon>Form.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="IndividualControlTests\TestBasePage.cs">
+    <Compile Include="TestBasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="IndividualControlTests\TestFunction.cs">
@@ -406,6 +406,14 @@
       <DependentUpon>NavigationTabs.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="ViewLayoutTests\Form.aspx.cs">
+      <DependentUpon>Form.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewLayoutTests\Form.aspx.designer.cs">
+      <DependentUpon>Form.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewLayoutTests\TestFunction.cs" />
     <Compile Include="ViewPersonDetailsWxeFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -533,6 +541,7 @@
       <SubType>UserControl</SubType>
     </Content>
     <Content Include="UrlMapping.xml" />
+    <Content Include="ViewLayoutTests\Form.aspx" />
     <Content Include="Web.config" />
     <Content Include="WebForm1.aspx">
       <SubType>Form</SubType>
