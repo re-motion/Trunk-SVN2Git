@@ -34,7 +34,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </remarks>
   public class BocReferenceValueRenderer : BocRendererBase<IBocReferenceValue>
   {
-    private const string c_defaultControlWidth = "150pt";
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
     public BocReferenceValueRenderer (HttpContextBase context, IBocReferenceValue control)
@@ -137,7 +136,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       dropDownList.Width = Unit.Empty;
       dropDownList.ApplyStyle (Control.CommonStyle);
       Control.DropDownListStyle.ApplyStyle (dropDownList);
-      dropDownList.Style[HtmlTextWriterStyle.Margin] = "0";
 
       return dropDownList;
     }
@@ -165,8 +163,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           icon.Height = iconInfo.Height;
 
           icon.Visible = true;
-          icon.Style["vertical-align"] = "middle";
-          icon.Style["border-style"] = "none";
           icon.CssClass = CssClassContent;
 
           if (Control.IsCommandEnabled (Control.IsReadOnly))
@@ -186,53 +182,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return icon;
     }
 
-    public override string CssClassBase
-    {
-      get { return "bocReferenceValue"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocReferenceValue"/>'s value. </summary>
-    /// <remarks> Class: <c>bocReferenceValueContent</c> </remarks>
-    public virtual string CssClassContent
-    {
-      get { return "bocReferenceValueContent"; }
-    }
-
-    public virtual string CssClassInnerContent
-    {
-      get { return "content"; }
-    }
-
     private void RenderContentsWithSeparateOptionsMenu (HtmlTextWriter writer, DropDownList dropDownList, Label label, Image icon)
     {
       bool isReadOnly = Control.IsReadOnly;
-
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isDropDownListHeightEmpty = dropDownList.Height.IsEmpty
-                                       && string.IsNullOrEmpty (dropDownList.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-      bool isLabelWidthEmpty = label.Width.IsEmpty
-                               && string.IsNullOrEmpty (label.Style["width"]);
-      bool isDropDownListWidthEmpty = dropDownList.Width.IsEmpty
-                                      && string.IsNullOrEmpty (dropDownList.Style["width"]);
-      if (isReadOnly)
-      {
-        if (isLabelWidthEmpty && !isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      }
-      else
-      {
-        if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        if (isDropDownListWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        }
-      }
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -257,7 +209,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-        RenderEditModeValue (writer, dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty);
+        RenderEditModeValue (writer, dropDownList);
        
         writer.RenderEndTag ();
       }
@@ -277,40 +229,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       writer.RenderEndTag ();
     }
 
-    protected string CssClassOptionsMenu
-    {
-      get { return "bocReferenceValueOptionsMenu"; }
-    }
-
     private void RenderContentsWithIntegratedOptionsMenu(HtmlTextWriter writer, DropDownList dropDownList, Label label)
     {
-      bool isReadOnly = Control.IsReadOnly;
-
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isDropDownListHeightEmpty = string.IsNullOrEmpty (dropDownList.Style["height"]);
-      bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
-      bool isLabelWidthEmpty = string.IsNullOrEmpty (label.Style["width"]);
-      bool isDropDownListWidthEmpty = string.IsNullOrEmpty (dropDownList.Style["width"]);
-
-      if (isReadOnly)
-      {
-        if (isLabelWidthEmpty && !isControlWidthEmpty)
-          Control.OptionsMenu.Style["width"] = "100%";
-      }
-      else
-      {
-        if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-          Control.OptionsMenu.Style["height"] = "100%";
-
-        if (isDropDownListWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-            Control.OptionsMenu.Style["width"] = c_defaultControlWidth;
-          else
-            Control.OptionsMenu.Style["width"] = "100%";
-        }
-      }
-
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
       Control.OptionsMenu.RenderControl (writer);
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
@@ -327,9 +247,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       Label label = GetLabel();
       label.CssClass = CssClassReadOnly;
       bool isReadOnly = Control.IsReadOnly;
-
-      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
-      bool isDropDownListHeightEmpty = string.IsNullOrEmpty (dropDownList.Style["height"]);
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
 
@@ -351,7 +268,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
-        RenderEditModeValue (writer, dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty);
+        RenderEditModeValue (writer, dropDownList);
 
         writer.RenderEndTag();
       }
@@ -398,16 +315,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         writer.RenderEndTag();
     }
 
-    protected string CssClassCommand
+    private void RenderEditModeValue (HtmlTextWriter writer, DropDownList dropDownList)
     {
-      get { return "bocReferenceValueCommand"; }
-    }
-
-    private void RenderEditModeValue (HtmlTextWriter writer, DropDownList dropDownList, bool isControlHeightEmpty, bool isDropDownListHeightEmpty)
-    {
-      if (!isControlHeightEmpty && isDropDownListHeightEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
       dropDownList.RenderControl (writer);
 
       RenderEditModeValueExtension (writer);
@@ -417,6 +326,33 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
     protected virtual void RenderEditModeValueExtension (HtmlTextWriter writer)
     {
+    }
+
+    public override string CssClassBase
+    {
+      get { return "bocReferenceValue"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocReferenceValue"/>'s value. </summary>
+    /// <remarks> Class: <c>bocReferenceValueContent</c> </remarks>
+    public virtual string CssClassContent
+    {
+      get { return "bocReferenceValueContent"; }
+    }
+
+    private string CssClassInnerContent
+    {
+      get { return "content"; }
+    }
+
+    private string CssClassOptionsMenu
+    {
+      get { return "bocReferenceValueOptionsMenu"; }
+    }
+
+    private string CssClassCommand
+    {
+      get { return "bocReferenceValueCommand"; }
     }
   }
 }
