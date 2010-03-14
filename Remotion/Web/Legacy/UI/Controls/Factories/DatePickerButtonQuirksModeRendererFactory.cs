@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
@@ -27,12 +28,12 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class DatePickerButtonQuirksModeRendererFactory : IDatePickerButtonRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control, IServiceLocator serviceLocator)
     {
       return new DatePickerButtonQuirksModeRenderer (context, control, new QuirksModeClientScriptBehavior (context, control));
     }
 
-    public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page)
+    public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page, IServiceLocator serviceLocator)
     {
       return new DatePickerPageQuirksModeRenderer (context, page);
     }

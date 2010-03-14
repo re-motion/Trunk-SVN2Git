@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocEnumValueQuirksModeRendererFactory : IBocEnumValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control, IServiceLocator serviceLocator)
     {
       return new BocEnumValueQuirksModeRenderer (context, control);
     }

@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -30,12 +32,20 @@ namespace Remotion.Web.UI.Controls.Factories
   {
     public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IMenuTab tab)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("tab", tab);
+
       return new MenuTabRenderer (context, control, tab);
     }
 
-    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control, IServiceLocator serviceLocator)
     {
-      return new TabbedMenuRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new TabbedMenuRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory> ());
     }
   }
 }

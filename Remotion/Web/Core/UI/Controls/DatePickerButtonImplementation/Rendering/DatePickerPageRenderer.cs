@@ -26,14 +26,17 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   {
     private readonly HttpContextBase _context;
     private readonly DatePickerPage _page;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
 
-    public DatePickerPageRenderer (HttpContextBase context, DatePickerPage page)
+    public DatePickerPageRenderer (HttpContextBase context, DatePickerPage page, IResourceUrlFactory resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
       _context = context;
       _page = page;
+      _resourceUrlFactory = resourceUrlFactory;
     }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
@@ -72,6 +75,11 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     public DatePickerPage Page
     {
       get { return _page; }
+    }
+
+    protected IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return _resourceUrlFactory; }
     }
 
     protected ResourceTheme ResourceTheme

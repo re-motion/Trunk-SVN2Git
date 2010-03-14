@@ -19,6 +19,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -69,12 +70,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
     private void RenderAndAssertTable (out XmlNode colgroup)
     {
-      var renderer = new BocListRenderer (HttpContext, List, CssClassContainer.Instance, new StubRenderer(), new StubRenderer(), new StubRenderer ());
+      var renderer = new BocListRenderer (
+          HttpContext,
+          List,
+          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          CssClassContainer.Instance,
+          new StubRenderer(),
+          new StubRenderer(),
+          new StubRenderer());
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
 
-      var div = Html.GetAssertedChildElement(document, "div", 0);
+      var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "id", "MyList");
 
       var table = Html.GetAssertedChildElement (div, "table", 0);

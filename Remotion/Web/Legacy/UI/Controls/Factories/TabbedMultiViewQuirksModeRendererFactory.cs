@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class TabbedMultiViewQuirksModeRendererFactory : ITabbedMultiViewRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control, IServiceLocator serviceLocator)
     {
       return new TabbedMultiViewQuirksModeRenderer (context, control);
     }

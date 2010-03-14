@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 
@@ -26,9 +28,13 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class DropDownMenuRendererFactory : IDropDownMenuRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control, IServiceLocator serviceLocator)
     {
-      return new DropDownMenuRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new DropDownMenuRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory>());
     }
   }
 }

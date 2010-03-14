@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
@@ -24,7 +25,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   /// </summary>
   public interface IDatePickerButtonRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control);
-    IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page);
+    IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control, IServiceLocator serviceLocator);
+    IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage control, IServiceLocator serviceLocator);
   }
 }

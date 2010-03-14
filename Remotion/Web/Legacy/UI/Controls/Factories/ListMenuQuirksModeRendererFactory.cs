@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class ListMenuQuirksModeRendererFactory : IListMenuRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IListMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IListMenu control, IServiceLocator serviceLocator)
     {
       return new ListMenuQuirksModeRenderer (context, control);
     }

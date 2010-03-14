@@ -29,8 +29,8 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>
   {
-    public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control)
-        : base (context, control)
+    public TabbedMultiViewRenderer (HttpContextBase context, ITabbedMultiView control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

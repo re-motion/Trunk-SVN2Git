@@ -146,7 +146,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       var factory = !IsDesignMode ? ServiceLocator.GetInstance<IBocTextValueRendererFactory> () : new BocTextValueRendererFactory ();
-      var renderer = factory.CreateRenderer (Context, this);
+      var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
       renderer.Render (writer);
     }
 
@@ -360,7 +360,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.GetInstance<IBocTextValueRendererFactory>();
-      var renderer = factory.CreateRenderer (httpContext, this);
+      var renderer = factory.CreateRenderer (httpContext, this, ServiceLocator);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 

@@ -28,6 +28,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using System.Web;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -320,10 +321,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<HttpContextBase> (), _enumValue);
+      var renderer = new BocEnumValueRenderer (
+          MockRepository.GenerateMock<HttpContextBase>(), _enumValue, MockRepository.GenerateStub<IResourceUrlFactory>());
       renderer.Render (Html.Writer);
 
-      var document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
       XmlNode div = GetAssertedSpan (document, true, false, false, renderer);
 
 
@@ -366,10 +368,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
 
     private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
     {
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<HttpContextBase> (), _enumValue);
+      var renderer = new BocEnumValueRenderer (
+          MockRepository.GenerateMock<HttpContextBase>(), _enumValue, MockRepository.GenerateStub<IResourceUrlFactory>());
       renderer.Render (Html.Writer);
 
-      var document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
       var div = GetAssertedSpan (document, false, false, false, renderer);
 
       var select = Html.GetAssertedChildElement (div, "select", 0);
@@ -390,7 +393,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocEnumValueImplement
         AssertNullOption (select, !selectedValue.HasValue);
 
       if (autoPostBack)
-        Html.AssertAttribute (select, "onchange", string.Format("javascript:__doPostBack('{0}','')", _enumValue.ListControlID));
+        Html.AssertAttribute (select, "onchange", string.Format ("javascript:__doPostBack('{0}','')", _enumValue.ListControlID));
 
       int index = withNullValue ? 1 : 0;
       foreach (TestEnum value in Enum.GetValues (typeof (TestEnum)))

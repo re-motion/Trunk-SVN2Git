@@ -36,7 +36,7 @@ namespace Remotion.Web.Factories
 
     private readonly ResourceTheme _resourceTheme;
 
-    private ResourceUrlFactory (ResourceTheme resourceTheme)
+    public ResourceUrlFactory (ResourceTheme resourceTheme)
     {
       ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
       _resourceTheme = resourceTheme;

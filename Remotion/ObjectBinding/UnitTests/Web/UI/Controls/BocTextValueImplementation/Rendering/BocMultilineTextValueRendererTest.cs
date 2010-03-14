@@ -22,6 +22,7 @@ using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using System.Web;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -47,11 +48,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
 
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
-      var pageStub = MockRepository.GenerateStub<IPage> ();
-      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
+      var pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), TextValue);
+      Renderer = new BocMultilineTextValueRenderer (
+          MockRepository.GenerateMock<HttpContextBase>(), TextValue, MockRepository.GenerateStub<IResourceUrlFactory>());
     }
 
     [Test]

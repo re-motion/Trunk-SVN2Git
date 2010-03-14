@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   /// </summary>
   public interface IDropDownMenuRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control);
+    IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control, IServiceLocator serviceLocator);
   }
 }

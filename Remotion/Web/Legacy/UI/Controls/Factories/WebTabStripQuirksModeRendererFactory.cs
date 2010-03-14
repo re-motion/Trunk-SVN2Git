@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class WebTabStripQuirksModeRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IServiceLocator serviceLocator)
     {
       return new WebTabStripQuirksModeRenderer (context, control);
     }

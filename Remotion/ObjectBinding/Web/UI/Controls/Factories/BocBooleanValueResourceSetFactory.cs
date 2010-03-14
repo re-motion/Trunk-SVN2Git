@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
@@ -37,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 
     public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", context);
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
 
       return control.CreateResourceSet() ?? CreateDefaultResourceSet (context, control);

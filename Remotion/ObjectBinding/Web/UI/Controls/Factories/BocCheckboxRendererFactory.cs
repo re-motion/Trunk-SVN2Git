@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
@@ -27,9 +30,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   /// </summary>
   public class BocCheckboxRendererFactory : IBocCheckboxRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control, IServiceLocator serviceLocator)
     {
-      return new BocCheckboxRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocCheckboxRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory>());
     }
   }
 }

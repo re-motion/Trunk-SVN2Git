@@ -23,6 +23,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using System.Web;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -36,7 +37,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueImplement
     {
       Initialize();
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
-      Renderer = new BocTextValueRenderer (MockRepository.GenerateMock<HttpContextBase>(), TextValue);
+      Renderer = new BocTextValueRenderer (
+          MockRepository.GenerateMock<HttpContextBase>(), TextValue, MockRepository.GenerateStub<IResourceUrlFactory>());
 
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");

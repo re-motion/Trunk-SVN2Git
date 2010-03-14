@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class DropDownMenuQuirksModeRendererFactory : IDropDownMenuRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IDropDownMenu control, IServiceLocator serviceLocator)
     {
       return new DropDownMenuQuirksModeRenderer (context, control);
     }

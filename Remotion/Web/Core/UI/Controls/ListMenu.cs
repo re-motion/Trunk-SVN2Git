@@ -58,7 +58,7 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = SafeServiceLocator.Current.GetInstance<IListMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, this);
+      var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
       renderer.Render (writer);
     }
 
@@ -77,7 +77,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var factory = SafeServiceLocator.Current.GetInstance<IListMenuRendererFactory> ();
-      var renderer = factory.CreateRenderer (httpContext, this);
+      var renderer = factory.CreateRenderer (httpContext, this, SafeServiceLocator.Current);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 

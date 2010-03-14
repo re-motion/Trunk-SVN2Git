@@ -80,7 +80,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       _clientScriptManagerMock.Expect (
           mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuRenderer), _control.UniqueID + "_MenuItems", script));
 
-      var renderer = new ListMenuRenderer (_httpContext, _control);
+      var renderer = new ListMenuRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
       renderer.Render (_htmlHelper.Writer);
     }
 
@@ -147,7 +147,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuRenderer (_httpContext, _control);
+      var renderer = new ListMenuRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
       renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

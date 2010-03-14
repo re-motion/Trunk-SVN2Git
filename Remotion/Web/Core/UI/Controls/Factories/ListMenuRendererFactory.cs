@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
 
@@ -26,9 +28,13 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class ListMenuRendererFactory : IListMenuRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IListMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, IListMenu control, IServiceLocator serviceLocator)
     {
-      return new ListMenuRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new ListMenuRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory> ());
     }
   }
 }

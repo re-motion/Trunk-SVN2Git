@@ -26,8 +26,8 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   /// </summary>
   public class WebTreeViewRenderer : RendererBase<IWebTreeView>
   {
-    public WebTreeViewRenderer (HttpContextBase context, IWebTreeView control)
-        : base (context, control)
+    public WebTreeViewRenderer (HttpContextBase context, IWebTreeView control, IResourceUrlFactory resourceUrlFactory)
+        : base (context, control, resourceUrlFactory)
     {
     }
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   /// </summary>
   public interface IWebTreeViewRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control);
+    IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control, IServiceLocator serviceLocator);
   }
 }

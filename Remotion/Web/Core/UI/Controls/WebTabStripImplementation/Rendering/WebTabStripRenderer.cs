@@ -29,8 +29,8 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>
   {
-    public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control)
-        : base (context, control)
+    public WebTabStripRenderer (HttpContextBase context, IWebTabStrip control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

@@ -29,8 +29,8 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>
   {
-    public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control)
-        : base (context, control)
+    public TabbedMenuRenderer (HttpContextBase context, ITabbedMenu control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocMultilineTextValueQuirksModeRendererFactory : IBocMultilineTextValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control, IServiceLocator serviceLocator)
     {
       return new BocMultilineTextValueQuirksModeRenderer (context, control);
     }

@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 
@@ -26,9 +28,13 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control, IServiceLocator serviceLocator)
     {
-      return new TabbedMultiViewRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new TabbedMultiViewRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory> ());
     }
   }
 }

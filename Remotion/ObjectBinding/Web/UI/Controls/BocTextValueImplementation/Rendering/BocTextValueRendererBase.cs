@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -38,8 +39,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     protected const string c_defaultTextBoxWidth = "150pt";
     protected const int c_defaultColumns = 60;
 
-    protected BocTextValueRendererBase (HttpContextBase context, T control)
-        : base(context, control)
+    protected BocTextValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
+        : base(context, control, resourceUrlFactory)
     {
     }
 

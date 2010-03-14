@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 
@@ -26,14 +28,22 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class DatePickerButtonRendererFactory : IDatePickerButtonRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, IDatePickerButton control, IServiceLocator serviceLocator)
     {
-      return new DatePickerButtonRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new DatePickerButtonRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory> ());
     }
 
-    public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage page)
+    public IDatePickerPageRenderer CreateRenderer (HttpContextBase context, DatePickerPage control, IServiceLocator serviceLocator)
     {
-      return new DatePickerPageRenderer (context, page);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new DatePickerPageRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory>());
     }
   }
 }

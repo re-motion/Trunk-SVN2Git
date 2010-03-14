@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocCheckboxQuirksModeRendererFactory : IBocCheckboxRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocCheckBox control, IServiceLocator serviceLocator)
     {
       return new BocCheckboxQuirksModeRenderer (context, control);
     }

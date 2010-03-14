@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
@@ -25,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// </summary>
   public interface IBocBooleanValueRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control, IServiceLocator serviceLocator);
   }
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
@@ -25,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
   /// </summary>
   public interface IBocDateTimeValueRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocDateTimeValue control, IServiceLocator serviceLocator);
   }
 }

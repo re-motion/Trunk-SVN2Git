@@ -16,10 +16,11 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
-using Remotion.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
@@ -29,9 +30,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocBooleanValueQuirksModeRendererFactory : IBocBooleanValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocBooleanValue control, IServiceLocator serviceLocator)
     {
-      var resourceSetFactory = SafeServiceLocator.Current.GetInstance<IBocBooleanValueResourceSetFactory> ();
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      var resourceSetFactory = serviceLocator.GetInstance<IBocBooleanValueResourceSetFactory> ();
 
       return new BocBooleanValueQuirksModeRenderer (context, control, resourceSetFactory.CreateResourceSet (context, control));
     }

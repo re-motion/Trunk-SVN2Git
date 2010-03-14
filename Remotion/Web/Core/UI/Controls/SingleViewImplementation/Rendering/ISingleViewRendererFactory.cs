@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   /// </summary>
   public interface ISingleViewRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, ISingleView control);
+    IRenderer CreateRenderer (HttpContextBase context, ISingleView control, IServiceLocator serviceLocator);
   }
 }

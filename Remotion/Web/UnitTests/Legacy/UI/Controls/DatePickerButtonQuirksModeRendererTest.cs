@@ -77,7 +77,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var renderer = new DatePickerButtonRenderer (_httpContext, _datePickerButton);
+      var renderer = new DatePickerButtonRenderer (_httpContext, _datePickerButton, MockRepository.GenerateStub<IResourceUrlFactory> ());
       renderer.Render (_htmlHelper.Writer);
       var buttonDocument = _htmlHelper.GetResultDocument();
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class BocAutoCompleteReferenceValueQuirksModeRendereFactory : IBocAutoCompleteReferenceValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IServiceLocator serviceLocator)
     {
       return new BocAutoCompleteReferenceValueQuirksModeRenderer (context, control);
     }

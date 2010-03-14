@@ -19,6 +19,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Factories;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -31,17 +32,20 @@ namespace Remotion.Web.UI.Controls
   {
     private readonly HttpContextBase _context;
     private readonly TControl _control;
+    private IResourceUrlFactory _resourceUrlFactory;
 
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (HttpContextBase context, TControl control)
+    protected RendererBase (HttpContextBase context, TControl control, IResourceUrlFactory resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
       _control = control;
       _context = context;
+      _resourceUrlFactory = resourceUrlFactory;
     }
 
     /// <summary>Gets the <see cref="HttpContextBase"/> that contains the response for which this renderer generates output.</summary>
@@ -50,15 +54,20 @@ namespace Remotion.Web.UI.Controls
       get { return _context; }
     }
 
-    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
-
-    public abstract void Render (HtmlTextWriter writer);
-
     /// <summary>Gets the control that will be rendered.</summary>
     public TControl Control
     {
       get { return _control; }
     }
+
+    protected IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return _resourceUrlFactory;  }
+    }
+
+    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+
+    public abstract void Render (HtmlTextWriter writer);
 
     protected ResourceTheme ResourceTheme
     {

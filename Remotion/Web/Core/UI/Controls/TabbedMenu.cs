@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var factory = SafeServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (context, this);
+      var renderer = factory.CreateRenderer (context, this, SafeServiceLocator.Current);
       renderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
@@ -243,7 +243,7 @@ namespace Remotion.Web.UI.Controls
       EvaluateWaiConformity ();
 
       var factory = SafeServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var renderer = factory.CreateRenderer (Page.Context, this);
+      var renderer = factory.CreateRenderer (Page.Context, this, SafeServiceLocator.Current);
       renderer.Render (writer);
     }
 

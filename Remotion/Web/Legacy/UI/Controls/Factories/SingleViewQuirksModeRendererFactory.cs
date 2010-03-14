@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class SingleViewQuirksModeRendererFactory : ISingleViewRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ISingleView control)
+    public IRenderer CreateRenderer (HttpContextBase context, ISingleView control, IServiceLocator serviceLocator)
     {
       return new SingleViewQuirksModeRenderer (context, control);
     }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
@@ -29,7 +30,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class TabbedMenuQuirksModeRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control)
+    public IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control, IServiceLocator serviceLocator)
     {
       return new TabbedMenuQuirksModeRenderer (context, control);
     }

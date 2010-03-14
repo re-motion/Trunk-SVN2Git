@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebButtonImplementation;
 using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class WebButtonQuirksModeRendererFactory : IWebButtonRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control, IServiceLocator serviceLocator)
     {
       return new WebButtonQuirksModeRenderer (context, control);
     }

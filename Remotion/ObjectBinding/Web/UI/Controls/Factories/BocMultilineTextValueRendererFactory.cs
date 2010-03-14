@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
@@ -27,9 +30,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   /// </summary>
   public class BocMultilineTextValueRendererFactory : IBocMultilineTextValueRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control, IServiceLocator serviceLocator)
     {
-      return new BocMultilineTextValueRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocMultilineTextValueRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory>());
     }
   }
 }

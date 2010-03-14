@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   /// </summary>
   public interface ITabbedMenuRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control);
+    IRenderer CreateRenderer (HttpContextBase context, ITabbedMenu control, IServiceLocator serviceLocator);
   }
 }

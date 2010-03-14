@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web;
+using System.Web.UI;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -31,12 +32,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   {
     private const string c_defaultControlWidth = "100pt";
 
-    protected BocBooleanValueRendererBase (HttpContextBase context, T control)
-        : base (context, control)
+    protected BocBooleanValueRendererBase (HttpContextBase context, T control, IResourceUrlFactory resourceUrlFactory)
+        : base (context, control, resourceUrlFactory)
     {
     }
 
-    protected override void AddAdditionalAttributes(HtmlTextWriter writer)
+    protected override void AddAdditionalAttributes (HtmlTextWriter writer)
     {
       base.AddAdditionalAttributes (writer);
       writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");

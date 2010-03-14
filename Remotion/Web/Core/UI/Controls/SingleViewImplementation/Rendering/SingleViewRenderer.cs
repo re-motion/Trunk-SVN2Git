@@ -29,8 +29,8 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>
   {
-    public SingleViewRenderer (HttpContextBase context, ISingleView control)
-        : base (context, control)
+    public SingleViewRenderer (HttpContextBase context, ISingleView control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

@@ -19,6 +19,8 @@ using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
@@ -29,19 +31,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
   /// </summary>
   public class BocListRendererFactory : IBocListRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IBocList list, IServiceLocator serviceLocator)
+    public IRenderer CreateRenderer (HttpContextBase context, IBocList control, IServiceLocator serviceLocator)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
       return new BocListRenderer (
           context,
-          list,
+          control,
+          serviceLocator.GetInstance<IResourceUrlFactory>(),
           CssClassContainer.Instance,
           new BocListTableBlockRenderer (
               context,
-              list,
+              control,
               CssClassContainer.Instance,
-              new BocRowRenderer (context, list, CssClassContainer.Instance, serviceLocator)),
-          new BocListNavigationBlockRenderer (context, list, CssClassContainer.Instance),
-          new BocListMenuBlockRenderer (context, list, CssClassContainer.Instance)
+              new BocRowRenderer (context, control, CssClassContainer.Instance, serviceLocator)),
+          new BocListNavigationBlockRenderer (context, control, CssClassContainer.Instance),
+          new BocListMenuBlockRenderer (context, control, CssClassContainer.Instance)
           );
     }
   }

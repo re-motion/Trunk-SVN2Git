@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   /// </summary>
   public interface IListMenuRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IListMenu control);
+    IRenderer CreateRenderer (HttpContextBase context, IListMenu control, IServiceLocator serviceLocator);
   }
 }

@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImplemen
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
@@ -143,7 +144,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImple
 
     private XmlNode GetAssertedContainer (out BocDateTimeValueRenderer renderer, bool isDateOnly)
     {
-      renderer = new BocDateTimeValueRenderer (HttpContext, _control, _dateTextBox, _timeTextBox);
+      renderer = new BocDateTimeValueRenderer (HttpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory>(), _dateTextBox, _timeTextBox);
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument ();

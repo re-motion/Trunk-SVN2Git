@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
@@ -26,13 +28,21 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IServiceLocator serviceLocator)
     {
-      return new WebTabStripRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new WebTabStripRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory> ());
     }
 
     public IWebTabRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IWebTab tab)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("tab", tab);
+
       return new WebTabRenderer (context, control, tab);
     }
   }

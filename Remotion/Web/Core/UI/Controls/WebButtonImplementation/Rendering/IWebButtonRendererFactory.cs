@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   /// </summary>
   public interface IWebButtonRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IWebButton control);
+    IRenderer CreateRenderer (HttpContextBase context, IWebButton control, IServiceLocator serviceLocator);
   }
 }

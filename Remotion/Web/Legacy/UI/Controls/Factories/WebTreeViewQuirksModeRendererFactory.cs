@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
@@ -27,7 +28,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Factories
   /// </summary>
   public class WebTreeViewQuirksModeRendererFactory : IWebTreeViewRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebTreeView control, IServiceLocator serviceLocator)
     {
       return new WebTreeViewQuirksModeRenderer (context, control);
     }

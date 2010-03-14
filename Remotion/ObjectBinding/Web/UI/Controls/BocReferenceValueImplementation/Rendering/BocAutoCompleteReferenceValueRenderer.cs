@@ -29,13 +29,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
   public class BocAutoCompleteReferenceValueRenderer : BocRendererBase<IBocAutoCompleteReferenceValue>
   {
-    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control)
-        : this (context, control, () => new TextBox())
+    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IResourceUrlFactory resourceUrlFactory)
+      : this (context, control, resourceUrlFactory, () => new TextBox ())
     {
     }
 
-    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxFactory)
-        : base (context, control)
+    public BocAutoCompleteReferenceValueRenderer (HttpContextBase context, IBocAutoCompleteReferenceValue control, IResourceUrlFactory resourceUrlFactory, Func<TextBox> textBoxFactory)
+      : base (context, control, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("textBoxFactory", textBoxFactory);
       TextBoxFactory = textBoxFactory;

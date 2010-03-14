@@ -29,8 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// </summary>
   public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>
   {
-    public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control)
-        : base (context, control)
+    public BocMultilineTextValueRenderer (HttpContextBase context, IBocMultilineTextValue control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

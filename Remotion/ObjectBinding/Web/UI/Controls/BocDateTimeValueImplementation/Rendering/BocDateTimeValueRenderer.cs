@@ -40,13 +40,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     private readonly TextBox _dateTextBox;
     private readonly TextBox _timeTextBox;
 
-    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control)
-        : this (context, control, new TextBox(), new TextBox())
+    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control, IResourceUrlFactory resourceUrlFactory)
+      : this (context, control, resourceUrlFactory, new TextBox (), new TextBox ())
     {
     }
 
-    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control, TextBox dateTextBox, TextBox timeTextBox)
-        : base (context, control)
+    public BocDateTimeValueRenderer (HttpContextBase context, IBocDateTimeValue control, IResourceUrlFactory resourceUrlFactory, TextBox dateTextBox, TextBox timeTextBox)
+      : base (context, control, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("dateTextBox", dateTextBox);
       ArgumentUtility.CheckNotNull ("timeTextBox", timeTextBox);

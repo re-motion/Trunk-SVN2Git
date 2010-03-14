@@ -157,7 +157,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewRenderer (_httpContext, _control);
+      var renderer = new SingleViewRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
       renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

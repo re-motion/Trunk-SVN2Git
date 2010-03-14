@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
@@ -28,8 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// </summary>
   public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>
   {
-    public BocTextValueRenderer (HttpContextBase context, IBocTextValue control)
-        : base (context, control)
+    public BocTextValueRenderer (HttpContextBase context, IBocTextValue control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

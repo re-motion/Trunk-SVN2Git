@@ -27,8 +27,8 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   /// </summary>
   public class WebButtonRenderer : RendererBase<IWebButton>
   {
-    public WebButtonRenderer (HttpContextBase context, IWebButton control)
-        : base (context, control)
+    public WebButtonRenderer (HttpContextBase context, IWebButton control, IResourceUrlFactory resourceUrlFactory)
+      : base (context, control, resourceUrlFactory)
     {
     }
 

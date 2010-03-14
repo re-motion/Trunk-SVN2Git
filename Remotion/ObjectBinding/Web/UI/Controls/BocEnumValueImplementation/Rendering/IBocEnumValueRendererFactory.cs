@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
@@ -25,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
   /// </summary>
   public interface IBocEnumValueRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocEnumValue control, IServiceLocator serviceLocator);
   }
 }

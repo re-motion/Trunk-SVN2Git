@@ -36,8 +36,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValueRenderer).FullName + "_Startup_";
 
-    public BocBooleanValueRenderer (HttpContextBase context, IBocBooleanValue control, BocBooleanValueResourceSet resourceSet)
-        : base (context, control)
+    public BocBooleanValueRenderer (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory, BocBooleanValueResourceSet resourceSet)
+      : base (context, control, resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("resourceSet", resourceSet);
 

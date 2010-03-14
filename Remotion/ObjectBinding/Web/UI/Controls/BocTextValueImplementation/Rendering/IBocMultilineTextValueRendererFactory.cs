@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
@@ -25,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   /// </summary>
   public interface IBocMultilineTextValueRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocMultilineTextValue control, IServiceLocator serviceLocator);
   }
 }

@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.WebButtonImplementation;
 using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 
@@ -26,9 +28,13 @@ namespace Remotion.Web.UI.Controls.Factories
   /// </summary>
   public class WebButtonRendererFactory : IWebButtonRendererFactory
   {
-    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control)
+    public IRenderer CreateRenderer (HttpContextBase context, IWebButton control, IServiceLocator serviceLocator)
     {
-      return new WebButtonRenderer (context, control);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new WebButtonRenderer (context, control, serviceLocator.GetInstance<IResourceUrlFactory> ());
     }
   }
 }

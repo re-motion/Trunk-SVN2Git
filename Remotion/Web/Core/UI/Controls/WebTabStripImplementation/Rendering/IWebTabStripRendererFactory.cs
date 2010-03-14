@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// </summary>
   public interface IWebTabStripRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control);
+    IRenderer CreateRenderer (HttpContextBase context, IWebTabStrip control, IServiceLocator serviceLocator);
   }
 }

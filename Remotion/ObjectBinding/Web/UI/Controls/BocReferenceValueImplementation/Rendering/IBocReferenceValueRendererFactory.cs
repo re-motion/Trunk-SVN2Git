@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
@@ -25,6 +26,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </summary>
   public interface IBocReferenceValueRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control);
+    IRenderer CreateRenderer (HttpContextBase context, IBocReferenceValue control, IServiceLocator serviceLocator);
   }
 }

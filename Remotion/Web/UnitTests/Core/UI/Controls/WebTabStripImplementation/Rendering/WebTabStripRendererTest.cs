@@ -192,7 +192,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _renderer = new WebTabStripRenderer (_httpContext, _webTabStrip);
+      _renderer = new WebTabStripRenderer (_httpContext, _webTabStrip, MockRepository.GenerateStub<IResourceUrlFactory> ());
       _renderer.Render (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   /// </summary>
   public interface ITabbedMultiViewRendererFactory
   {
-    IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control);
+    IRenderer CreateRenderer (HttpContextBase context, ITabbedMultiView control, IServiceLocator serviceLocator);
   }
 }
