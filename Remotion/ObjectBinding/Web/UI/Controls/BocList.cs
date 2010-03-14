@@ -1356,7 +1356,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected internal virtual Image GetRequiredMarker ()
     {
       Image requiredIcon = new Image();
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
       requiredIcon.ImageUrl = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_rowEditModeRequiredFieldIcon);
 
       IResourceManager resourceManager = GetResourceManager();
@@ -1371,7 +1371,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public virtual Image GetValidationErrorMarker ()
     {
       Image validationErrorIcon = new Image();
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
       validationErrorIcon.ImageUrl = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Image, c_rowEditModeValidationErrorIcon);
 
       IResourceManager resourceManager = GetResourceManager();

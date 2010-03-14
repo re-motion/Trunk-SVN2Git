@@ -111,7 +111,7 @@ namespace Remotion.Web.Legacy.UI.Controls
 
     private void RenderTab (HtmlTextWriter writer, IWebTab tab, bool isLast)
     {
-      var tabRenderer = tab.GetRenderer (SafeServiceLocator.Current, Context, Control);
+      var tabRenderer = tab.GetRenderer (Context, Control);
 
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;

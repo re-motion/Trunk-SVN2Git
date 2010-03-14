@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 {
@@ -39,11 +38,6 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     public DatePickerPage Page
     {
       get { return _page; }
-    }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);

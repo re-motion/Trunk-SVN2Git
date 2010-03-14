@@ -21,6 +21,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -327,9 +328,9 @@ public class WebTab: IWebTab, IControlStateManager
     return !IsDisabled;
   }
 
-  public virtual IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, IWebTabStrip tabStrip)
+  public virtual IWebTabRenderer GetRenderer (HttpContextBase context, IWebTabStrip tabStrip)
   {
-    var factory = serviceLocator.GetInstance<IWebTabRendererFactory>();
+    var factory = SafeServiceLocator.Current.GetInstance<IWebTabRendererFactory> ();
     return factory.CreateRenderer (context, tabStrip, this);
   }
 

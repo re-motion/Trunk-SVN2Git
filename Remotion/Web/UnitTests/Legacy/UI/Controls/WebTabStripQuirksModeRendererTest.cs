@@ -146,7 +146,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab0.Stub (stub => stub.Icon).Return (new IconInfo());
       _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       _tab0.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink(_webTabStrip, _tab0.ItemID));
-      _tab0.Stub (stub => stub.GetRenderer (null, null, null)).IgnoreArguments().Return (
+      _tab0.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments().Return (
           new WebTabRenderer (_httpContext, _webTabStrip, _tab0));
 
       var tab1 = MockRepository.GenerateStub<IWebTab> ();
@@ -155,7 +155,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab1.Stub (stub => stub.Icon).Return (new IconInfo ("myImageUrl"));
       tab1.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab1.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab1.ItemID));
-      tab1.Stub (stub => stub.GetRenderer (null, null, null)).IgnoreArguments ().Return (
+      tab1.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
           new WebTabRenderer (_httpContext, _webTabStrip, tab1));
 
       var tab2 = MockRepository.GenerateStub<IWebTab> ();
@@ -164,7 +164,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab2.Stub (stub => stub.Icon).Return (null);
       tab2.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab2.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab2.ItemID));
-      tab2.Stub (stub => stub.GetRenderer (null, null, null)).IgnoreArguments ().Return (
+      tab2.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
           new WebTabRenderer (_httpContext, _webTabStrip, tab2));
 
       var tab3 = MockRepository.GenerateStub<IWebTab> ();
@@ -173,7 +173,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       tab3.Stub (stub => stub.Icon).Return (null);
       tab3.Stub (stub => stub.EvaluateEnabled ()).Return (true);
       tab3.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab3.ItemID));
-      tab3.Stub (stub => stub.GetRenderer (null, null, null)).IgnoreArguments ().Return (
+      tab3.Stub (stub => stub.GetRenderer (null, null)).IgnoreArguments ().Return (
           new WebTabRenderer (_httpContext, _webTabStrip, tab3));
 
       _webTabStrip.GetVisibleTabs().Add (_tab0);

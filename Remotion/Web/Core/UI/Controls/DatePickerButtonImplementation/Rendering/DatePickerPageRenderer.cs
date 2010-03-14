@@ -67,10 +67,5 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     {
       get { return _resourceUrlFactory; }
     }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
-    }
   }
 }

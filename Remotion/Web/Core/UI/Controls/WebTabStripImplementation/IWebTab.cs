@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Microsoft.Practices.ServiceLocation;
 using System.Web;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
@@ -33,6 +32,6 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation
     bool IsSelected { get; }
     bool EvaluateEnabled ();
 
-    IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, HttpContextBase context, IWebTabStrip tabStrip);
+    IWebTabRenderer GetRenderer (HttpContextBase context, IWebTabStrip tabStrip);
   }
 }
