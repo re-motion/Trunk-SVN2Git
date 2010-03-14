@@ -55,12 +55,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       }
 
       string styleFileKey = typeof (BocBooleanValueRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleFileKey))
-      {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocBooleanValueRenderer), ResourceType.Html, ResourceTheme, "BocBooleanValue.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
-      }
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocBooleanValueRenderer), ResourceType.Html, "BocBooleanValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     /// <summary>

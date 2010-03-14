@@ -16,8 +16,11 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
 {
@@ -35,43 +38,91 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
           IBocIndexColumnRendererFactory,
           IBocSelectorColumnRendererFactory
   {
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, BocSimpleColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocSimpleColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocSimpleColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory>(), CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocCompoundColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocCompoundColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory>(), CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, BocCommandColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocCommandColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocCommandColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory>(), CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocCustomColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, BocCustomColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocCustomColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocCustomColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory>(), CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocDropDownMenuColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocDropDownMenuColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory>(), CssClassContainer.Instance);
     }
 
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new BocRowEditModeColumnRenderer (context, list, columnDefinition, CssClassContainer.Instance);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocRowEditModeColumnRenderer (
+          context, list, columnDefinition, serviceLocator.GetInstance<IResourceUrlFactory>(), CssClassContainer.Instance);
     }
 
     IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+
       return new BocIndexColumnRenderer (context, list, CssClassContainer.Instance);
     }
 
     IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (HttpContextBase context, IBocList list)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+
       return new BocSelectorColumnRenderer (context, list, CssClassContainer.Instance);
     }
   }

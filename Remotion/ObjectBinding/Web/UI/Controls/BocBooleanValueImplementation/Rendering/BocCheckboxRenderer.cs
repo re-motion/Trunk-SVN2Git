@@ -54,12 +54,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       }
 
       string styleFileKey = typeof (BocCheckboxRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleFileKey))
-      {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxRenderer), ResourceType.Html, ResourceTheme, "BocCheckbox.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
-      }
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocCheckboxRenderer), ResourceType.Html, "BocCheckbox.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     /// <summary>
@@ -162,15 +158,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     private void PrepareImage (Image imageControl, string description)
     {
-      string imageUrl = ResourceUrlResolver.GetResourceUrl (
-          Control,
-          Context,
+      var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
           typeof (BocCheckBox),
           ResourceType.Image,
-          ResourceTheme,
           Control.Value.Value ? c_trueIcon : c_falseIcon);
 
-      imageControl.ImageUrl = imageUrl;
+      imageControl.ImageUrl = imageUrl.GetUrl();
       imageControl.AlternateText = StringUtility.NullToEmpty(description);
       imageControl.GenerateEmptyAlternateText = true;
       imageControl.Style["vertical-align"] = "middle";

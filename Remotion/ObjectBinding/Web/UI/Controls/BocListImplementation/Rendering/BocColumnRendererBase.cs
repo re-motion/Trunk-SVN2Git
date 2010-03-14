@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
-using System.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -47,28 +46,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
 
     private readonly TBocColumnDefinition _column;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
     private readonly CssClassContainer _cssClasses;
     private readonly int _columnIndex;
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
 
-    /// <summary>
-    /// Constructs the renderer, initializing the List, Writer and <see cref="Column"/> properties.
-    /// </summary>
-    /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
-    /// <param name="context">The <see cref="HttpContextBase"/> that contains the response for which to render the list.</param>
-    /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
-    protected BocColumnRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
+    protected BocColumnRendererBase (
+        HttpContextBase context,
+        IBocList list,
+        TBocColumnDefinition columnDefinition,
+        IResourceUrlFactory resourceUrlFactory,
+        CssClassContainer cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
       _context = context;
       _list = list;
       _column = columnDefinition;
+      _resourceUrlFactory = resourceUrlFactory;
       _columnIndex = Array.IndexOf (list.GetColumns(), columnDefinition);
       _cssClasses = cssClasses;
     }
@@ -93,14 +93,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _columnIndex; }
     }
 
+    public IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return _resourceUrlFactory; }
+    }
+
     public CssClassContainer CssClasses
     {
       get { return _cssClasses; }
-    }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
     }
 
     public virtual void RenderTitleCell (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
@@ -137,7 +137,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       {
         if (!List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive && List.HasClientScript)
         {
-          string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
+          string argument = BocList.SortCommandPrefix + ColumnIndex;
           string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
           postBackEvent += "; return false;";
           writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
@@ -166,8 +166,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private void RenderTitleCellSortingButton (HtmlTextWriter writer, SortingDirection sortingDirection, int orderIndex)
     {
-      string imageUrl = GetImageUrl (sortingDirection);
-
       if (sortingDirection == SortingDirection.None)
         return;
 
@@ -176,13 +174,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.SortingOrder);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Controls.BocList.ResourceIdentifier alternateTextID;
+      BocList.ResourceIdentifier alternateTextID;
       if (sortingDirection == SortingDirection.Ascending)
         alternateTextID = BocList.ResourceIdentifier.SortAscendingAlternateText;
       else
         alternateTextID = BocList.ResourceIdentifier.SortDescendingAlternateText;
 
-      var icon = new IconInfo (imageUrl);
+      var imageUrl = GetImageUrl (sortingDirection);
+      Assertion.IsNotNull (imageUrl);
+
+      var icon = new IconInfo (imageUrl.GetUrl());
       icon.AlternateText = List.GetResourceManager().GetString (alternateTextID);
       icon.Render (writer);
 
@@ -191,30 +192,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       writer.RenderEndTag();
     }
 
-    private string GetImageUrl (SortingDirection sortingDirection)
+    private IResourceUrl GetImageUrl (SortingDirection sortingDirection)
     {
-      string imageUrl = string.Empty;
       //  Button Asc -> Button Desc -> No Button
       switch (sortingDirection)
       {
         case SortingDirection.Ascending:
-        {
-          imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, Context, typeof (BocColumnRendererBase<>), ResourceType.Image, ResourceTheme, c_sortAscendingIcon);
-          break;
-        }
+          return ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocColumnRendererBase<>), ResourceType.Image, c_sortAscendingIcon);
         case SortingDirection.Descending:
-        {
-          imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, Context, typeof (BocColumnRendererBase<>), ResourceType.Image, ResourceTheme, c_sortDescendingIcon);
-          break;
-        }
+          return ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocColumnRendererBase<>), ResourceType.Image, c_sortDescendingIcon);
         case SortingDirection.None:
-        {
-          break;
-        }
+          return null;
+        default:
+          throw new ArgumentOutOfRangeException ("sortingDirection");
       }
-      return imageUrl;
     }
 
     private void RenderEndTagTitleCellSortCommand (HtmlTextWriter writer)
@@ -235,7 +226,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// the table cell (&lt;td&gt;) element.
     /// </remarks>
     public virtual void RenderDataCell (
-        HtmlTextWriter writer, 
+        HtmlTextWriter writer,
         int rowIndex,
         bool showIcon,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
@@ -265,6 +256,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <param name="dataRowRenderEventArgs">The row-specific rendering arguments.</param>
     /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRenderer.List"/>.</param>
     /// <param name="showIcon">Specifies if the cell should contain an icon of the current <see cref="IBusinessObject"/>.</param>
-    protected abstract void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon);
+    protected abstract void RenderCellContents (
+        HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon);
   }
 }

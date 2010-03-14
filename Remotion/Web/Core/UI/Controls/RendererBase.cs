@@ -17,9 +17,7 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Factories;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -28,11 +26,11 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl> : IRenderer
-      where TControl : IStyledControl
+      where TControl: IStyledControl
   {
     private readonly HttpContextBase _context;
     private readonly TControl _control;
-    private IResourceUrlFactory _resourceUrlFactory;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
 
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
@@ -60,19 +58,17 @@ namespace Remotion.Web.UI.Controls
       get { return _control; }
     }
 
+    /// <summary>
+    /// Gets the <see cref="IResourceUrlFactory"/> that can be used for resolving resource urls.
+    /// </summary>
     protected IResourceUrlFactory ResourceUrlFactory
     {
-      get { return _resourceUrlFactory;  }
+      get { return _resourceUrlFactory; }
     }
 
     public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
 
     public abstract void Render (HtmlTextWriter writer);
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
-    }
 
     protected void AddStandardAttributesToRender (HtmlTextWriter writer)
     {
@@ -85,9 +81,7 @@ namespace Remotion.Web.UI.Controls
 
       CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
       foreach (string style in styles.Keys)
-      {
         writer.AddStyleAttribute (style, styles[style]);
-      }
 
       foreach (string attribute in Control.Attributes.Keys)
       {

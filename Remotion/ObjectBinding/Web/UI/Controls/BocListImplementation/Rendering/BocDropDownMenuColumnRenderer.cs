@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -36,8 +37,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocDropDownMenuColumnRenderer (HttpContextBase context, IBocList list, BocDropDownMenuColumnDefinition column, CssClassContainer cssClasses)
-        : base (context, list, column, cssClasses)
+    public BocDropDownMenuColumnRenderer (
+        HttpContextBase context,
+        IBocList list,
+        BocDropDownMenuColumnDefinition column,
+        IResourceUrlFactory resourceUrlFactory,
+        CssClassContainer cssClasses)
+        : base (context, list, column, resourceUrlFactory, cssClasses)
     {
     }
 
@@ -51,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// the <see cref="IBocList.RowMenus"/> property of <see cref="BocListRenderer.List"/>.
     /// </remarks>
     protected override void RenderCellContents (
-        HtmlTextWriter writer, 
+        HtmlTextWriter writer,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)

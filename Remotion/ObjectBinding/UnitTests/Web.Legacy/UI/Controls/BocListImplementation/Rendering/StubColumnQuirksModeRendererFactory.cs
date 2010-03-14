@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 
@@ -23,7 +24,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 {
   public class StubColumnQuirksModeRendererFactory : IBocColumnRendererFactory<StubColumnDefinition>
   {
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
       return new StubColumnQuirksModeRenderer (context, list, columnDefinition);
     }

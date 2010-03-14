@@ -15,11 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Utilities;
-using System.Web;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -31,8 +32,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
-        : base (context, list, columnDefintion, cssClasses)
+    protected BocValueColumnRendererBase (
+        HttpContextBase context,
+        IBocList list,
+        TBocColumnDefinition columnDefintion,
+        IResourceUrlFactory resourceUrlFactory,
+        CssClassContainer cssClasses)
+        : base (context, list, columnDefintion, resourceUrlFactory, cssClasses)
     {
     }
 
@@ -41,7 +47,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <see cref="BocCommandEnabledColumnRendererBase{TBocColumnDefinition}.RenderCellIcon"/>
     /// and <see cref="RenderCellText"/>, which have to be defined in deriving classes.
     /// </summary>
-    protected override void RenderCellContents (HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
+    protected override void RenderCellContents (
+        HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);

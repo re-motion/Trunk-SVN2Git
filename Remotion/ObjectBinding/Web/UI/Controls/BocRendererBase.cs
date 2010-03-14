@@ -44,12 +44,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
       string key = typeof (BocRendererBase<>).FullName + "_BrowserCompatibilityScript";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocRendererBase<>), ResourceType.Html, ResourceTheme, "BocBrowserCompatibility.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
-      }
+      var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocRendererBase<>), ResourceType.Html, "BocBrowserCompatibility.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (key, url);
     }
 
     /// <summary>

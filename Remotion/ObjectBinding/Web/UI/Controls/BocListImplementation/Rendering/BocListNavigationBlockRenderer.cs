@@ -85,6 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private readonly HttpContextBase _context;
     private readonly IBocList _list;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
     private readonly CssClassContainer _cssClasses;
 
     /// <summary>
@@ -94,14 +95,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses)
+    public BocListNavigationBlockRenderer (HttpContextBase context, IBocList list, IResourceUrlFactory resourceUrlFactory, CssClassContainer cssClasses)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
       _context = context;
       _list = list;
+      _resourceUrlFactory = resourceUrlFactory;
       _cssClasses = cssClasses;
     }
 
@@ -115,14 +118,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _list; }
     }
 
+    protected IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return _resourceUrlFactory; }
+    }
+
     public CssClassContainer CssClasses
     {
       get { return _cssClasses; }
-    }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
     }
 
     /// <summary> 
@@ -168,12 +171,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       if (isInactive || List.EditModeController.IsRowEditModeActive)
       {
-        string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
-        new IconInfo (imageUrl).Render (writer);
+        var imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
+        new IconInfo (imageUrl.GetUrl()).Render (writer);
       }
       else
       {
-        string imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
+        var imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
 
         string argument = BocList.GoToCommandPrefix + command;
         string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
@@ -181,7 +184,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-        var icon = new IconInfo (imageUrl);
+        var icon = new IconInfo (imageUrl.GetUrl());
         icon.AlternateText = List.GetResourceManager().GetString (s_alternateTexts[command]);
         icon.Render (writer);
 
@@ -191,10 +194,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
     }
 
-    private string GetResolvedImageUrl (string imageUrl)
+    private IResourceUrl GetResolvedImageUrl (string imageUrl)
     {
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (BocListNavigationBlockRenderer), ResourceType.Image, ResourceTheme, imageUrl);
-      return imageUrl;
+      return ResourceUrlFactory.CreateThemedResourceUrl(typeof (BocListNavigationBlockRenderer), ResourceType.Image, imageUrl);
     }
   }
 }

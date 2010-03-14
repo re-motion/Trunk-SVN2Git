@@ -36,24 +36,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
     private const string c_nullIcon = "CheckBoxNull.gif";
     private const string c_defaultResourceGroup = "default";
 
-    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control)
+    public BocBooleanValueResourceSetFactory ()
+    {
+    }
+
+    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
-      return control.CreateResourceSet() ?? CreateDefaultResourceSet (context, control);
+      return control.CreateResourceSet() ?? CreateDefaultResourceSet (context, control, resourceUrlFactory);
     }
 
-    private BocBooleanValueResourceSet CreateDefaultResourceSet (HttpContextBase context, IBocBooleanValue control)
+    private BocBooleanValueResourceSet CreateDefaultResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory)
     {
       IResourceManager resourceManager = control.GetResourceManager();
-      ResourceTheme resourceTheme = SafeServiceLocator.Current.GetInstance<ResourceTheme>();
 
       BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
           c_defaultResourceGroup,
-          GetResourceUrl (control, context, resourceTheme, c_trueIcon),
-          GetResourceUrl (control, context, resourceTheme, c_falseIcon),
-          GetResourceUrl (control, context, resourceTheme, c_nullIcon),
+          GetResourceUrl (control, context, resourceUrlFactory, c_trueIcon),
+          GetResourceUrl (control, context, resourceUrlFactory, c_falseIcon),
+          GetResourceUrl (control, context, resourceUrlFactory, c_nullIcon),
           resourceManager.GetString (BocBooleanValue.ResourceIdentifier.TrueDescription),
           resourceManager.GetString (BocBooleanValue.ResourceIdentifier.FalseDescription),
           resourceManager.GetString (BocBooleanValue.ResourceIdentifier.NullDescription)
@@ -62,10 +66,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       return resourceSet;
     }
 
-    private string GetResourceUrl (IBocBooleanValue control, HttpContextBase context, ResourceTheme resourceTheme, string icon)
+    private string GetResourceUrl (IBocBooleanValue control, HttpContextBase context, IResourceUrlFactory resourceUrlFactory, string icon)
     {
-      return ResourceUrlResolver.GetResourceUrl (
-          control, context, typeof (BocBooleanValueResourceSetFactory), ResourceType.Image, resourceTheme, icon);
+      return resourceUrlFactory.CreateThemedResourceUrl (typeof (BocBooleanValueResourceSetFactory), ResourceType.Image, icon).GetUrl();
     }
   }
 }

@@ -37,12 +37,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       var resourceSetFactory = serviceLocator.GetInstance<IBocBooleanValueResourceSetFactory>();
+      var resourceUrlFactory = serviceLocator.GetInstance<IResourceUrlFactory>();
 
       return new BocBooleanValueRenderer (
           context, 
           control, 
-          serviceLocator.GetInstance<IResourceUrlFactory>(), 
-          resourceSetFactory.CreateResourceSet (context, control));
+          resourceUrlFactory, 
+          resourceSetFactory.CreateResourceSet (context, control, resourceUrlFactory));
     }
   }
 }

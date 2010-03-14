@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.Security;
 using Remotion.Utilities;
-using System.Web;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -32,8 +33,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRendererBase (HttpContextBase context, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
-        : base (context, list, columnDefintion, cssClasses)
+    protected BocCommandEnabledColumnRendererBase (
+        HttpContextBase context,
+        IBocList list,
+        TBocColumnDefinition columnDefintion,
+        IResourceUrlFactory resourceUrlFactory,
+        CssClassContainer cssClasses)
+        : base (context, list, columnDefintion, resourceUrlFactory, cssClasses)
     {
     }
 
@@ -57,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       writer.AddAttribute ("class", CssClasses.CommandText);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      
+
       contents = HttpUtility.HtmlEncode (contents);
       if (StringUtility.IsNullOrEmpty (contents))
         contents = c_whiteSpace;
@@ -81,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
                       || !isReadOnly && command.Show == CommandShow.EditMode;
 
       bool isCommandAllowed = (command.Type != CommandType.None) && !List.EditModeController.IsRowEditModeActive;
-      bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled ( List, businessObject, Column);
+      bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled (List, businessObject, Column);
       bool isCommandWaiCompliant = (!WcagHelper.Instance.IsWaiConformanceLevelARequired() || command.Type == CommandType.Href);
       if (isActive && isCommandAllowed && isCommandEnabled && isCommandWaiCompliant)
       {
@@ -98,7 +104,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         command.RenderBegin (writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 
         return true;
-        
       }
       return false;
     }

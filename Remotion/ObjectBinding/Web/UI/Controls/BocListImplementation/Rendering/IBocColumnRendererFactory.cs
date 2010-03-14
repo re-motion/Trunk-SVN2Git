@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -26,6 +27,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   public interface IBocColumnRendererFactory<T>
       where T: BocColumnDefinition
   {
-    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, T columnDefinition);
+    IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, T columnDefinition, IServiceLocator serviceLocator);
   }
 }

@@ -125,11 +125,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
       string styleFileKey = typeof (BocListRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListRenderer), ResourceType.Html, ResourceTheme, "BocList.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
 
       string scriptFileKey = typeof (BocListRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))

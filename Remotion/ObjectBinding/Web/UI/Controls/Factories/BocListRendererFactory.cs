@@ -37,17 +37,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Factories
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
+      var resourceUrlFactory = serviceLocator.GetInstance<IResourceUrlFactory>();
+
       return new BocListRenderer (
           context,
           control,
-          serviceLocator.GetInstance<IResourceUrlFactory>(),
+          resourceUrlFactory,
           CssClassContainer.Instance,
           new BocListTableBlockRenderer (
               context,
               control,
               CssClassContainer.Instance,
               new BocRowRenderer (context, control, CssClassContainer.Instance, serviceLocator)),
-          new BocListNavigationBlockRenderer (context, control, CssClassContainer.Instance),
+          new BocListNavigationBlockRenderer (context, control, resourceUrlFactory, CssClassContainer.Instance),
           new BocListMenuBlockRenderer (context, control, CssClassContainer.Instance)
           );
     }

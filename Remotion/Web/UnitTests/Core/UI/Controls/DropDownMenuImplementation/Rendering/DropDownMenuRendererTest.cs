@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Web.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -50,7 +51,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     public void SetUp ()
     {
       _htmlHelper = new HtmlHelper ();
-      _httpContext = MockRepository.GenerateStub<HttpContextBase> ();
+      _httpContext = MockRepository.GenerateStub<HttpContextBase>();
 
       _control = MockRepository.GenerateStub<IDropDownMenu> ();
       _control.ID = "DropDownMenu1";
@@ -121,12 +122,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
     {
       var span = titleDiv.GetAssertedChildElement ("span", 1);
       string imageFileName = _control.Enabled ? "DropDownMenuArrow.gif" : "DropDownMenuArrow_disabled.gif";
-      string imageFilePath = ResourceUrlResolver.GetResourceUrl (
-          _control, _httpContext, typeof (DropDownMenuRenderer), ResourceType.Image, ResourceTheme.ClassicBlue, imageFileName);
+      string imageFilePath = "/res/Remotion.Web/Themes/ClassicBlue/Image/" + imageFileName;
       string styleValue = string.Format ("url({0})", imageFilePath);
 
-      span.AssertStyleAttribute (
-          "background-image", styleValue);
+      span.AssertStyleAttribute ("background-image", styleValue);
 
       var image = span.GetAssertedChildElement ("img", 0);
       image.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);
@@ -154,7 +153,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
     private XmlNode GetAssertedContainerSpan ()
     {
-      var renderer = new DropDownMenuRenderer (_httpContext, _control, MockRepository.GenerateStub<IResourceUrlFactory> ());
+      var renderer = new DropDownMenuRenderer (_httpContext, _control, new ResourceUrlFactory (ResourceTheme.ClassicBlue));
       renderer.Render (_htmlHelper.Writer);
       var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);

@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -38,8 +39,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (HttpContextBase context, IBocList list, BocRowEditModeColumnDefinition columnDefinition, CssClassContainer cssClasses)
-        : base (context, list, columnDefinition, cssClasses)
+    public BocRowEditModeColumnRenderer (
+        HttpContextBase context,
+        IBocList list,
+        BocRowEditModeColumnDefinition columnDefinition,
+        IResourceUrlFactory resourceUrlFactory,
+        CssClassContainer cssClasses)
+        : base (context, list, columnDefinition, resourceUrlFactory, cssClasses)
     {
     }
 
@@ -54,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// Since the "Save", "Cancel" and "Edit" controls are structurally identical, their actual rendering is done by <see cref="RenderCommandControl"/>
     /// </remarks>
     protected override void RenderCellContents (
-        HtmlTextWriter writer, 
+        HtmlTextWriter writer,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon)
@@ -81,10 +87,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private void RenderEditableRowCellContents (HtmlTextWriter writer, int originalRowIndex)
     {
       RenderCommandControl (
-          writer, 
+          writer,
           originalRowIndex,
-          Controls.BocList.RowEditModeCommand.Edit,
-          Controls.BocList.ResourceIdentifier.RowEditModeEditAlternateText,
+          BocList.RowEditModeCommand.Edit,
+          BocList.ResourceIdentifier.RowEditModeEditAlternateText,
           Column.EditIcon,
           Column.EditText);
     }
@@ -94,8 +100,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderCommandControl (
           writer,
           originalRowIndex,
-          Controls.BocList.RowEditModeCommand.Save,
-          Controls.BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
+          BocList.RowEditModeCommand.Save,
+          BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
           Column.SaveIcon,
           Column.SaveText);
 
@@ -104,8 +110,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderCommandControl (
           writer,
           originalRowIndex,
-          Controls.BocList.RowEditModeCommand.Cancel,
-          Controls.BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
+          BocList.RowEditModeCommand.Cancel,
+          BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
           Column.CancelIcon,
           Column.CancelText);
     }
@@ -123,10 +129,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// To skip the icon, set <see cref="IconInfo.Url"/> to <see langword="null" />.</param>
     /// <param name="text">The text to render after the icon. May be <see langword="null"/>, in which case no text is rendered.</param>
     protected virtual void RenderCommandControl (
-        HtmlTextWriter writer, 
+        HtmlTextWriter writer,
         int originalRowIndex,
-        Controls.BocList.RowEditModeCommand command,
-        Controls.BocList.ResourceIdentifier alternateText,
+        BocList.RowEditModeCommand command,
+        BocList.ResourceIdentifier alternateText,
         IconInfo icon,
         string text)
     {

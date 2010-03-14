@@ -47,7 +47,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (ListMenuRenderer).FullName + "_Style";
-      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, typeof (ListMenuRenderer), ResourceType.Html, ResourceTheme, "ListMenu.css");
+      var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 

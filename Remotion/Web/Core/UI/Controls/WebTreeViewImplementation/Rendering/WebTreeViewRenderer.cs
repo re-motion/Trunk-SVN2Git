@@ -34,12 +34,8 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       string styleKey = typeof (WebTreeViewRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleKey))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebTreeViewRenderer), ResourceType.Html, ResourceTheme, "TreeView.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
+      var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebTreeViewRenderer), ResourceType.Html, "TreeView.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public override void Render (HtmlTextWriter writer)

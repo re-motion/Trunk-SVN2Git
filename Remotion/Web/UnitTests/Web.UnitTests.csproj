@@ -188,7 +188,6 @@
     <Compile Include="Core\ResourceUrlTest.cs" />
     <Compile Include="Core\UI\Controls\StubResourceUrlResolver.cs" />
     <Compile Include="Core\UI\Controls\StubResourceUrlResolverFactory.cs" />
-    <Compile Include="Legacy\UI\Controls\DatePickerButtonQuirksModeRendererTest.cs" />
     <Compile Include="Legacy\UI\Controls\DropDownMenuQuirksModeRendererTest.cs">
       <SubType>Code</SubType>
     </Compile>

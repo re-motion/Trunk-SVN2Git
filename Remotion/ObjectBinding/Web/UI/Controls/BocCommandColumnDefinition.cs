@@ -38,10 +38,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, HttpContextBase context, IBocList list)
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator serviceLocator, HttpContextBase context, IBocList list)
     {
-      var factory = locator.GetInstance<IBocColumnRendererFactory<BocCommandColumnDefinition>>();
-      return factory.CreateRenderer (context, list, this);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("list", list);
+
+      var columnRendererFactory = serviceLocator.GetInstance<IBocColumnRendererFactory<BocCommandColumnDefinition>>();
+
+      return columnRendererFactory.CreateRenderer (context, list, this, serviceLocator);
     }
 
     /// <summary> Returns a <see cref="string"/> that represents this <see cref="BocColumnDefinition"/>. </summary>

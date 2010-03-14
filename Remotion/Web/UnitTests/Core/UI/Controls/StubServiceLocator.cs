@@ -19,10 +19,6 @@ using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.Factories;
-using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
-using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
@@ -34,8 +30,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory ());
-      _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
+      _instances.Add (typeof (IThemedResourceUrlResolverFactory), new StubResourceUrlResolverFactory());
       _instances.Add (typeof (IScriptUtility), MockRepository.GenerateStub<IScriptUtility>());
     }
 

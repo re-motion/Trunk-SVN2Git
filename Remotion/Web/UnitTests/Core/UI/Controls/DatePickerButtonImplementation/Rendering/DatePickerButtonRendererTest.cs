@@ -17,6 +17,7 @@
 using System;
 using System.Web;
 using NUnit.Framework;
+using Remotion.Web.Factories;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Rhino.Mocks;
@@ -76,7 +77,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var renderer = new DatePickerButtonRenderer (_httpContext, _datePickerButton, MockRepository.GenerateStub<IResourceUrlFactory> ());
+      var renderer = new DatePickerButtonRenderer (_httpContext, _datePickerButton, new ResourceUrlFactory (ResourceTheme.ClassicBlue));
       renderer.Render (_htmlHelper.Writer);
       var buttonDocument = _htmlHelper.GetResultDocument();
 
@@ -87,7 +88,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
           "document.getElementById ('{1}'), '{2}', '{3}', '{4}');return false;",
           _datePickerButton.ContainerControlID,
           _datePickerButton.TargetControlID,
-          renderer.GetDatePickerUrl(),
+          "/res/Remotion.Web/Themes/ClassicBlue/UI/DatePickerForm.aspx",
           "14em",
           "16em"
           );
@@ -107,7 +108,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
       {
         var image = _htmlHelper.GetAssertedChildElement (button, "img", 0);
         _htmlHelper.AssertAttribute (image, "alt", _datePickerButton.AlternateText);
-        _htmlHelper.AssertAttribute (image, "src", renderer.GetResolvedImageUrl());
+        _htmlHelper.AssertAttribute (image, "src", renderer.GetResolvedImageUrl().GetUrl());
       }
     }
   }

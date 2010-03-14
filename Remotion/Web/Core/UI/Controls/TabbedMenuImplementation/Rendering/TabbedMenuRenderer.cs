@@ -38,12 +38,8 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       string key = typeof (TabbedMenuRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (TabbedMenuRenderer), ResourceType.Html, ResourceTheme, "TabbedMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
-      }
+      var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (TabbedMenuRenderer), ResourceType.Html, "TabbedMenu.css");
+      htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 
     public override void Render (HtmlTextWriter writer)

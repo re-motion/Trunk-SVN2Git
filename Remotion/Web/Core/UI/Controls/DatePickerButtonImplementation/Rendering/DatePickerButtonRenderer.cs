@@ -48,8 +48,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       string styleFileKey = typeof (DatePickerButtonRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))
       {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Html, ResourceTheme, "DatePicker.css");
+        var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerButtonRenderer), ResourceType.Html, "DatePicker.css");
         htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -85,9 +84,9 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 
       writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-      string imageUrl = GetResolvedImageUrl();
+      var imageUrl = GetResolvedImageUrl();
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
+      writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl.GetUrl());
       writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
       writer.RenderEndTag();
@@ -95,16 +94,14 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
       writer.RenderEndTag();
     }
 
-    public string GetDatePickerUrl ()
+    public IResourceUrl GetDatePickerUrl ()
     {
-      return ResourceUrlResolver.GetResourceUrl (
-          Control.Parent, Context, typeof (DatePickerPageRenderer), ResourceType.UI, ResourceTheme, c_datePickerPopupForm);
+      return ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerPageRenderer), ResourceType.UI, c_datePickerPopupForm);
     }
 
-    public string GetResolvedImageUrl ()
+    public IResourceUrl GetResolvedImageUrl ()
     {
-      return ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (DatePickerButtonRenderer), ResourceType.Image, ResourceTheme, c_datePickerIcon);
+      return ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerButtonRenderer), ResourceType.Image, c_datePickerIcon);
     }
 
     private string GetClickScript (bool hasClientScript)
@@ -117,7 +114,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
         string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace ('$', '_') + "')";
         string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
 
-        string pickerUrl = "'" + GetDatePickerUrl () + "'";
+        string pickerUrl = "'" + GetDatePickerUrl().GetUrl() + "'";
 
         Unit popUpWidth = PopUpWidth;
         string pickerWidth = "'" + popUpWidth + "'";

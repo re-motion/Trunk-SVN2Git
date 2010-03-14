@@ -20,13 +20,14 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using System.Web;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
   public class StubColumnRenderer : BocColumnRendererBase<StubColumnDefinition>
   {
-    public StubColumnRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
-        : base (context, list, columnDefinition, CssClassContainer.Instance)
+    public StubColumnRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IResourceUrlFactory resourceUrlFactory)
+        : base (context, list, columnDefinition, resourceUrlFactory, CssClassContainer.Instance)
     {
     }
 

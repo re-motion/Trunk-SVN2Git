@@ -46,8 +46,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
       string styleKey = typeof (WebButtonRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (WebButtonRenderer), ResourceType.Html, ResourceTheme, "WebButton.css");
+        var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebButtonRenderer), ResourceType.Html, "WebButton.css");
         htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

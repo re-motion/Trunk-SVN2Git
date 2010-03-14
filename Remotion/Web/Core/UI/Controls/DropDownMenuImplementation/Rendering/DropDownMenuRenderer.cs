@@ -55,8 +55,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       key = typeof (DropDownMenuRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
+        var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -115,14 +114,14 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     private void RenderDropdownButton (HtmlTextWriter writer)
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
-      string imageUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (DropDownMenuRenderer), ResourceType.Image, ResourceTheme, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
+      var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
+          typeof (DropDownMenuRenderer), ResourceType.Image, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url({0})", imageUrl));
+      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl()));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       IconInfo.Spacer.Render (writer);
-      
+
       writer.RenderEndTag();
     }
 

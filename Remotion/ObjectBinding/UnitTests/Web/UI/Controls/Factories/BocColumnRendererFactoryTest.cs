@@ -16,11 +16,13 @@
 // 
 using System;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using System.Web;
+using Remotion.Web;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
@@ -119,11 +121,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Factories
       column.ColumnTitle = "TestColumn1";
       List.FixedColumns.Add (column);
 
-      IBocColumnRenderer renderer = rendererFactory.CreateRenderer (HttpContext, List, column);
+      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator>();
+      var resourceUrlFactory = MockRepository.GenerateStub<IResourceUrlFactory>();
+      serviceLocatorStub.Stub (stub => stub.GetInstance<IResourceUrlFactory> ()).Return (resourceUrlFactory);
+
+      IBocColumnRenderer renderer = rendererFactory.CreateRenderer (HttpContext, List, column, serviceLocatorStub);
 
       Assert.IsInstanceOfType (typeof (BocColumnRendererBase<T>), renderer);
       Assert.AreSame (List, ((BocColumnRendererBase<T>) renderer).List);
       Assert.AreSame (column, ((BocColumnRendererBase<T>) renderer).Column);
+      Assert.AreSame (resourceUrlFactory, ((BocColumnRendererBase<T>) renderer).ResourceUrlFactory);
     }
   }
 }

@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
@@ -47,7 +48,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderBasicCell ()
     {
-      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -67,7 +69,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
 
-      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
 
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -86,7 +89,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderIconCell ()
     {
-      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
 
       renderer.RenderDataCell (Html.Writer, 0, true, EventArgs);
       var document = Html.GetResultDocument();
@@ -101,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 1);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 2);
-      Html.AssertTextNode(textWrapper, BusinessObject.GetPropertyString ("FirstValue"), 0);
+      Html.AssertTextNode (textWrapper, BusinessObject.GetPropertyString ("FirstValue"), 0);
     }
 
     [Test]
@@ -126,7 +130,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
-      var renderer = new BocSimpleColumnRenderer (HttpContext, List, Column, CssClassContainer.Instance);
+      var renderer = new BocSimpleColumnRenderer (
+          HttpContext, List, Column, MockRepository.GenerateStub<IResourceUrlFactory>(), CssClassContainer.Instance);
       renderer.RenderDataCell (Html.Writer, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

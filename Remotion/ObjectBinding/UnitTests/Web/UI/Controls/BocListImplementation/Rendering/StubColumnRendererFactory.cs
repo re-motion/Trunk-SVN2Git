@@ -16,16 +16,20 @@
 // 
 using System;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web;
+using Remotion.Web.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
   public class StubColumnRendererFactory : IBocColumnRendererFactory<StubColumnDefinition>
   {
-    public IBocColumnRenderer CreateRenderer (HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition)
+    public IBocColumnRenderer CreateRenderer (
+        HttpContextBase context, IBocList list, StubColumnDefinition columnDefinition, IServiceLocator serviceLocator)
     {
-      return new StubColumnRenderer (context, list, columnDefinition);
+      return new StubColumnRenderer (context, list, columnDefinition, new ResourceUrlFactory (ResourceTheme.ClassicBlue));
     }
   }
 }

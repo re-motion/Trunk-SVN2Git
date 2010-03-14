@@ -19,7 +19,6 @@ using System.Web;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
-using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -28,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// <summary>
   /// Responsible for creating the <see cref="BocBooleanValue"/> <see cref="BocBooleanValueResourceSet"/> for quirks mode rendering.
   /// </summary>
-  public class BocBooleanValueQuirksModeResourceSetFactory : IBocBooleanValueResourceSetFactory
+  public class BocBooleanValueQuirksModeResourceSetFactory
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";

@@ -46,8 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string key = typeof (BocEnumValueRenderer).FullName + "_Style";
-      string url = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocEnumValueRenderer), ResourceType.Html, ResourceTheme, "BocEnumValue.css");
+      var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocEnumValueRenderer), ResourceType.Html, "BocEnumValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 

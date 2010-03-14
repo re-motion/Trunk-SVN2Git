@@ -40,10 +40,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
 
       Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender);
 
-      string styleKey = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
-      string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (BocMultilineTextValueRenderer), ResourceType.Html, ResourceTheme, "BocMultilineTextValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      string key = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
+      var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocMultilineTextValueRenderer), ResourceType.Html, "BocMultilineTextValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 
     protected override Label GetLabel ()

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -24,6 +25,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// </summary>
   public interface IBocBooleanValueResourceSetFactory
   {
-    BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control);
+    BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory);
   }
 }

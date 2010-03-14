@@ -15,11 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Utilities;
-using System.Web;
+using Remotion.Web;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -36,8 +37,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCompoundColumnRenderer (HttpContextBase context, IBocList list, BocCompoundColumnDefinition columnDefinition, CssClassContainer cssClasses)
-        : base (context, list, columnDefinition, cssClasses)
+    public BocCompoundColumnRenderer (
+        HttpContextBase context,
+        IBocList list,
+        BocCompoundColumnDefinition columnDefinition,
+        IResourceUrlFactory resourceUrlFactory,
+        CssClassContainer cssClasses)
+        : base (context, list, columnDefinition, resourceUrlFactory, cssClasses)
     {
     }
 

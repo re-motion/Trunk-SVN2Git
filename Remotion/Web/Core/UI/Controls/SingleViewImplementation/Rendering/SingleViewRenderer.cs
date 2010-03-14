@@ -44,8 +44,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
       string keyScript = typeof (SingleViewRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (keyStyle))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (SingleViewRenderer), ResourceType.Html, ResourceTheme, "SingleView.css");
+        var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (SingleViewRenderer), ResourceType.Html, "ViewLayout.js");

@@ -82,24 +82,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string styleKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (
           styleKey,
-          ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+          ResourceUrlFactory.CreateThemedResourceUrl (
               typeof (BocAutoCompleteReferenceValueRenderer),
               ResourceType.Html,
-              ResourceTheme,
               "BocAutoCompleteReferenceValue.css"),
           HtmlHeadAppender.Priority.Library);
 
       string jqueryAutocompleteStyleKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteStyle";
       htmlHeadAppender.RegisterStylesheetLink (
           jqueryAutocompleteStyleKey,
-          ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+          ResourceUrlFactory.CreateThemedResourceUrl (
               typeof (BocAutoCompleteReferenceValueRenderer),
               ResourceType.Html,
-              ResourceTheme,
               "BocAutoCompleteReferenceValue.jquery.css"),
           HtmlHeadAppender.Priority.Library);
     }
@@ -392,9 +386,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
-      string imgUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (BocAutoCompleteReferenceValueRenderer), ResourceType.Image, ResourceTheme, "DropDownMenuArrow.gif");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl));
+      var imgUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocAutoCompleteReferenceValueRenderer), ResourceType.Image, "DropDownMenuArrow.gif");
+      writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl.GetUrl()));
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
       IconInfo.Spacer.Render (writer);
       writer.RenderEndTag();

@@ -66,13 +66,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       }
 
       string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, ResourceTheme, "BocReferenceValue.css");
-
-        htmlHeadAppender.RegisterStylesheetLink (styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public override void Render (HtmlTextWriter writer)

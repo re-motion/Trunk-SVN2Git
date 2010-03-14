@@ -204,6 +204,30 @@ namespace Remotion.Web.UI
     /// <param name="key"> 
     ///   The unique key identifying the stylesheet file in the headers collection. Must not be <see langword="null"/> or empty.
     /// </param>
+    /// <param name="url"> The url of the stylesheet file. Must not be <see langword="null"/>. </param>
+    /// <param name="priority"> 
+    ///   The priority level of the head element. Elements are rendered in the following order:
+    ///   Library, UserControl, Page.
+    /// </param>
+    /// <exception cref="HttpException"> 
+    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// </exception>
+    public void RegisterStylesheetLink (string key, IResourceUrl url, Priority priority)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNull ("url", url);
+
+      RegisterStylesheetLink (key, url.GetUrl(), priority);
+    }
+
+    /// <summary> Registers a stylesheet file. </summary>
+    /// <remarks>
+    ///   All calls to <see cref="RegisterStylesheetLink(string, string, Priority)"/> must be completed before
+    ///   <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    /// </remarks>
+    /// <param name="key"> 
+    ///   The unique key identifying the stylesheet file in the headers collection. Must not be <see langword="null"/> or empty.
+    /// </param>
     /// <param name="href"> The url of the stylesheet file. Must not be <see langword="null"/> or empty. </param>
     /// <param name="priority"> 
     ///   The priority level of the head element. Elements are rendered in the following order:
@@ -225,6 +249,28 @@ namespace Remotion.Web.UI
       RegisterHeadElement (key, headElement, priority);
     }
 
+    /// <summary> Registers a stylesheet file. </summary>
+    /// <remarks>
+    ///   <para>
+    ///     All calls to <see cref="RegisterStylesheetLink(string, string)"/> must be completed before
+    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///   </para><para>
+    ///     Registeres the javascript file with a default priority of Page.
+    ///   </para>
+    /// </remarks>
+    /// <param name="key"> 
+    ///   The unique key identifying the stylesheet file in the headers collection. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="url"> 
+    /// The url of the stylesheet file. Must not be <see langword="null"/>. 
+    /// </param>
+    /// <exception cref="HttpException"> 
+    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// </exception>
+    public void RegisterStylesheetLink (string key, IResourceUrl url)
+    {
+      RegisterStylesheetLink (key, url, Priority.Page);
+    }
 
     /// <summary> Registers a stylesheet file. </summary>
     /// <remarks>
@@ -247,6 +293,32 @@ namespace Remotion.Web.UI
     public void RegisterStylesheetLink (string key, string href)
     {
       RegisterStylesheetLink (key, href, Priority.Page);
+    }
+
+        /// <summary> Registers a javascript file. </summary>
+    /// <remarks>
+    ///   <para>
+    ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
+    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///   </para><para>
+    ///     Registeres the javascript file with a default priority of Page.
+    ///   </para>
+    /// </remarks>
+    /// <param name="key">
+    ///   The unique key identifying the javascript file in the headers collection. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="url"> 
+    ///   The url of the javascript file. Must not be <see langword="null"/>. 
+    /// </param>
+    /// <exception cref="HttpException"> 
+    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// </exception>
+    public void RegisterJavaScriptInclude (string key, IResourceUrl url)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNull ("url", url);
+
+      RegisterJavaScriptInclude (key, url.GetUrl());
     }
 
     /// <summary> Registers a javascript file. </summary>
@@ -282,14 +354,14 @@ namespace Remotion.Web.UI
     public void RegisterUtilitiesJavaScriptInclude (IControl control)
     {
       ArgumentUtility.CheckNotNull ("control", control);
-      
+
       string jqueryKey = typeof (HtmlHeadContents).FullName + "_JQuery";
       if (!IsRegistered (jqueryKey))
       {
         string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
         RegisterJavaScriptInclude (jqueryKey, href);
       }
-      
+
       string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";
       if (! IsRegistered (utilitiesKey))
       {
@@ -333,7 +405,7 @@ namespace Remotion.Web.UI
       ArgumentUtility.CheckNotNull ("headElement", headElement);
 
       EnsureStateIsClearedAfterServerTransfer();
-      
+
       if (_hasAppendExecuted)
         throw new HttpException ("RegisterHeadElement must not be called after EnsureAppended has executed.");
       if (! IsRegistered (key))
@@ -394,7 +466,7 @@ namespace Remotion.Web.UI
       if (context != null)
       {
         var handler = context.Handler;
-        if (!object.ReferenceEquals (handler, _handler.Target))
+        if (!ReferenceEquals (handler, _handler.Target))
         {
           _registeredHeadElements.Clear();
           _sortedHeadElements.Clear();
