@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
-using Remotion.Web;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// Base class for renderers of <see cref="IBocRenderableControl"/> objects.
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
-  public abstract class BocQuirksModeRendererBase<TControl> : RendererBase<TControl>
+  public abstract class BocQuirksModeRendererBase<TControl> : QuirksModeRendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
     protected BocQuirksModeRendererBase (HttpContextBase context, TControl control)
@@ -43,14 +43,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
-
-      string key = typeof (BocQuirksModeRendererBase<>).FullName + "_BrowserCompatibilityScript";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocQuirksModeRendererBase<>), ResourceType.Html, ResourceTheme, "BocBrowserCompatibility.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
-      }
     }
 
     /// <summary>
