@@ -114,6 +114,10 @@
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
     <Compile Include="Design\DesignTimeResourceUrl.cs" />
+    <Compile Include="IResourceUrlFactory.cs" />
+    <Compile Include="Factories\ResourceUrlFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ThemedResourceUrl.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
