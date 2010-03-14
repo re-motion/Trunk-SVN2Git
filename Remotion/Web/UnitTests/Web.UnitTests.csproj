@@ -156,6 +156,9 @@
   <ItemGroup>
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="Core\Design\DesignTimeResourceUrlTest.cs" />
+    <Compile Include="Core\Design\DesignTimeThemedResourceUrlTest.cs" />
+    <Compile Include="Core\ThemedResourceUrlTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\ChildTransactionExecutionListenerTest.cs" />
     <Compile Include="Core\ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
@@ -181,6 +184,7 @@
     <Compile Include="Core\ExecutionEngine\WxeContextFactory.cs" />
     <Compile Include="Core\ExecutionEngine\WxeFunctionTests\Execute.cs" />
     <Compile Include="Core\ExecutionEngine\WxeTransactionModeTest.cs" />
+    <Compile Include="Core\ResourceUrlTest.cs" />
     <Compile Include="Core\UI\Controls\StubResourceUrlResolver.cs" />
     <Compile Include="Core\UI\Controls\StubResourceUrlResolverFactory.cs" />
     <Compile Include="Legacy\UI\Controls\DatePickerButtonQuirksModeRendererTest.cs" />

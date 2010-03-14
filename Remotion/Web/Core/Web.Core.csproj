@@ -112,6 +112,9 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
+    <Compile Include="Design\DesignTimeResourceUrl.cs" />
+    <Compile Include="ThemedResourceUrl.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
@@ -146,6 +149,8 @@
     <Compile Include="Infrastructure\PageWrapper.cs" />
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />
+    <Compile Include="ResourceUrl.cs" />
+    <Compile Include="ResourceUrlBase.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />

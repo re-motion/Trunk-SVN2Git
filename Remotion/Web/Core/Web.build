@@ -41,6 +41,7 @@
         <include name="Compilation/**/*.cs" />
         <include name="Configuration/**/*.cs" />
         <include name="Context/**/*.cs" />
+        <include name="Design/**/*.cs" />
         <include name="ExecutionEngine/**/*.cs" />
         <include name="Infrastructure/**/*.cs" />
         <include name="Legacy/**/*.cs" />
