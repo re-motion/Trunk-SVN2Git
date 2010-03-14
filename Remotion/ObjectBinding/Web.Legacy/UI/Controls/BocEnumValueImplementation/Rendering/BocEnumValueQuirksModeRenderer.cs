@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementati
   /// <seealso cref="IBocEnumValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocEnumValueRenderer.xml' path='BocEnumValueRenderer/Class'/>
-  public class BocEnumValueQuirksModeRenderer : BocRendererBase<IBocEnumValue>
+  public class BocEnumValueQuirksModeRenderer : BocQuirksModeRendererBase<IBocEnumValue>
   {
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";

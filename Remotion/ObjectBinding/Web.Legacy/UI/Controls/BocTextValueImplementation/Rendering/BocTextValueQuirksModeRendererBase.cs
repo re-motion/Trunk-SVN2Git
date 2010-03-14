@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
   /// <seealso cref="BocMultilineTextValueRenderer"/>
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
-  public abstract class BocTextValueQuirksModeRendererBase<T> : BocRendererBase<T>
+  public abstract class BocTextValueQuirksModeRendererBase<T> : BocQuirksModeRendererBase<T>
       where T: IBocTextValueBase
   {
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>

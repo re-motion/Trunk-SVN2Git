@@ -17,7 +17,6 @@
 using System;
 using System.Web.UI;
 using System.Web;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 
@@ -29,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocBooleanValueImplement
   /// <seealso cref="BocCheckboxRenderer"/>
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
-  public abstract class BocBooleanValueQuirksModeRendererBase<T> : BocRendererBase<T>
+  public abstract class BocBooleanValueQuirksModeRendererBase<T> : BocQuirksModeRendererBase<T>
       where T: IBocBooleanValueBase
   {
     private const string c_defaultControlWidth = "100pt";

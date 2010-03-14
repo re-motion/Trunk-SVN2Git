@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Drawing;
 using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -27,7 +30,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="TabbedMenu"/> controls.
   /// <seealso cref="ITabbedMenu"/>
   /// </summary>
-  public class TabbedMenuQuirksModeRenderer : Web.UI.Controls.TabbedMenuImplementation.Rendering.TabbedMenuRenderer
+  public class TabbedMenuQuirksModeRenderer : QuirksModeRendererBase<ITabbedMenu>
   {
     public TabbedMenuQuirksModeRenderer (HttpContextBase context, ITabbedMenu control)
         : base(context, control)
@@ -38,9 +41,6 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      // Do not call base implementation
-      //base.RegisterHtmlHeadContents
-
       string key = typeof (TabbedMenuQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {
@@ -49,5 +49,124 @@ namespace Remotion.Web.Legacy.UI.Controls
         htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
       }
     }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddAttributesToRender (writer);
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin main menu row
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Colspan, "2");
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassMainMenuCell);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin main menu cell
+      Control.MainMenuTabStrip.CssClass = CssClassMainMenu;
+      Control.MainMenuTabStrip.Width = Unit.Percentage (100);
+      Control.MainMenuTabStrip.RenderControl (writer);
+      writer.RenderEndTag (); // End main menu cell
+
+      writer.RenderEndTag (); // End main menu row
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSubMenuCell);
+      if (!Control.SubMenuBackgroundColor.IsEmpty)
+      {
+        string backGroundColor = ColorTranslator.ToHtml (Control.SubMenuBackgroundColor);
+        writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, backGroundColor);
+      }
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin sub menu cell
+      Control.SubMenuTabStrip.Style["width"] = "auto";
+      Control.SubMenuTabStrip.CssClass = CssClassSubMenu;
+      Control.SubMenuTabStrip.RenderControl (writer);
+      writer.RenderEndTag (); // End sub menu cell
+
+      Control.StatusStyle.AddAttributesToRender (writer);
+      if (string.IsNullOrEmpty (Control.StatusStyle.CssClass))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassStatusCell);
+      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin status cell
+
+      if (string.IsNullOrEmpty (Control.StatusText))
+        writer.Write ("&nbsp;");
+      else
+        writer.Write (Control.StatusText); // Do not HTML encode
+
+      writer.RenderEndTag (); // End status cell
+      writer.RenderEndTag (); // End sub menu row
+      writer.RenderEndTag (); // End table
+    }
+
+    protected void AddAttributesToRender (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      AddStandardAttributesToRender (writer);
+
+      if (Control.IsDesignMode)
+        writer.AddStyleAttribute ("width", "100%");
+      if (StringUtility.IsNullOrEmpty (Control.CssClass) && StringUtility.IsNullOrEmpty (Control.Attributes["class"]))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+    }
+
+    #region protected virtual string CssClass...
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStrip</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
+    /// </remarks>
+    protected virtual string CssClassBase
+    {
+      get { return "tabbedMenu"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the main menu's tab strip. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMainMenu</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassMainMenu
+    {
+      get { return "tabbedMainMenu"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the sub menu's tab strip. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedSubMenu</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassSubMenu
+    {
+      get { return "tabbedSubMenu"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the main menu cell. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMainMenuCell</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassMainMenuCell
+    {
+      get { return "tabbedMainMenuCell"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the sub menu cell. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedSubMenuCell</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassSubMenuCell
+    {
+      get { return "tabbedSubMenuCell"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the status cell. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMenuStatusCell</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassStatusCell
+    {
+      get { return "tabbedMenuStatusCell"; }
+    }
+
+    #endregion
   }
 }

@@ -314,7 +314,6 @@
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\BocCheckboxRendererFactory.cs" />
-    <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRendererBase.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocDateTimeValueRendererFactory.cs" />

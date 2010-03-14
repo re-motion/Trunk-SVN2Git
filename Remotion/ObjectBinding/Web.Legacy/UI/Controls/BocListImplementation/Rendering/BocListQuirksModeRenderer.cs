@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// <include file='doc\include\UI\Controls\BocListRenderer.xml' path='BocListRenderer/Class'/>
   /// <seealso cref="BocListNavigationBlockQuirksModeRenderer"/>
   /// <seealso cref="BocListQuirksModeRendererFactory"/>
-  public class BocListQuirksModeRenderer : BocRendererBase<IBocList>
+  public class BocListQuirksModeRenderer : BocQuirksModeRendererBase<IBocList>
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";

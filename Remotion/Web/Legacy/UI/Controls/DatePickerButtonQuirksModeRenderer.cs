@@ -29,7 +29,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonQuirksModeRenderer : RendererBase<IDatePickerButton>
+  public class DatePickerButtonQuirksModeRenderer : QuirksModeRendererBase<IDatePickerButton>
   {
     private const int c_defaultDatePickerLengthInPoints = 150;
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";

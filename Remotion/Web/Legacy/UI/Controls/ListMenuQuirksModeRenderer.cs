@@ -30,7 +30,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Responsible for registering scripts and the style sheet for <see cref="ListMenu"/> controls in quirks mode.
   /// <seealso cref="IListMenu"/>
   /// </summary>
-  public class ListMenuQuirksModeRenderer : RendererBase<IListMenu>
+  public class ListMenuQuirksModeRenderer : QuirksModeRendererBase<IListMenu>
   {
     protected const string c_whiteSpace = "&nbsp;";
 

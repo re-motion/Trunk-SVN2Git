@@ -36,6 +36,8 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       string key = typeof (WebTabStripRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
       {

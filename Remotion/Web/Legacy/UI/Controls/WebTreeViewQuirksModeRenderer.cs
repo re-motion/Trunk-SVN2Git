@@ -27,7 +27,7 @@ namespace Remotion.Web.Legacy.UI.Controls
   /// Implements <see cref="IRenderer"/> for quirks mode rendering of <see cref="WebTreeView"/> controls.
   /// <seealso cref="IWebTreeView"/>
   /// </summary>
-  public class WebTreeViewQuirksModeRenderer : RendererBase<IWebTreeView>
+  public class WebTreeViewQuirksModeRenderer : QuirksModeRendererBase<IWebTreeView>
   {
     public WebTreeViewQuirksModeRenderer (HttpContextBase context, IWebTreeView control)
         : base (context, control)
