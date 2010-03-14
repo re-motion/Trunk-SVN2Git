@@ -20,6 +20,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
+using Remotion.Web.Design;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web
@@ -30,7 +31,6 @@ public sealed class ResourceUrlResolver
 {
   private const string c_designTimeRootDefault = "C:\\Remotion.Resources";
   private const string c_designTimeRootEnvironmentVaribaleName = "REMOTIONRESOURCES";
-  private const string c_themesFolder = "Themes";
 
   /// <summary>
   ///   Returns the physical URL of a resource item.
@@ -112,9 +112,7 @@ public sealed class ResourceUrlResolver
   /// <param name="relativeUrl"> The resource file name. Must not be <see langword="null"/> or empty.</param>
   public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, string relativeUrl)
   {
-    bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
-
-    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
+    return GetResourceUrl (control, definingType, resourceType, null, relativeUrl);
   }
 
   /// <summary>
@@ -148,24 +146,27 @@ public sealed class ResourceUrlResolver
     ArgumentUtility.CheckNotNull ("resourceType", resourceType);
     ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
+    ResourceUrlBase resourceUrl;
+
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
-    string assemblyRoot = GetAssemblyRoot (isDesignMode, definingType.Assembly);
-    string separator = isDesignMode ? @"\" : "/";
-    string themeFolder = (theme != null) ? c_themesFolder + separator + theme.Name + separator : string.Empty;
-    return assemblyRoot + themeFolder + resourceType.Name + separator + relativeUrl;
+    if (isDesignMode)
+    {
+      if (theme == null)
+
+        resourceUrl = new DesignTimeResourceUrl (definingType, resourceType, relativeUrl);
+      else
+        resourceUrl = new DesignTimeThemedResourceUrl (definingType, resourceType, theme, relativeUrl);
+    }
+    else
+    {
+      if (theme == null)
+        resourceUrl = new ResourceUrl (definingType, resourceType, relativeUrl);
+      else
+        resourceUrl = new ThemedResourceUrl (definingType, resourceType, theme, relativeUrl);
+    }
+
+    return resourceUrl.GetUrl();
   }
-
-  private static string GetResourceUrl (bool isDesignMode,Type definingType,ResourceType resourceType,string relativeUrl)
-  {
-    ArgumentUtility.CheckNotNull ("definingType", definingType);
-    ArgumentUtility.CheckNotNull ("resourceType", resourceType);
-    ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
-
-    string assemblyRoot = GetAssemblyRoot (isDesignMode, definingType.Assembly);
-    string separator = isDesignMode ? @"\" : "/";
-    return assemblyRoot + resourceType.Name + separator + relativeUrl;
-  }
-
 
   /// <summary> Returns the root folder for all resources belonging to the <paramref name="assembly"/>. </summary>
   /// <param name="isDesignMode"> <see langword="true"/> if the application is in design mode. </param>
