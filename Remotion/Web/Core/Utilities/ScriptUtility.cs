@@ -216,7 +216,7 @@ namespace Remotion.Web.Utilities
         var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
         string url = themedResourceUrlResolver.GetResourceUrl (control, ResourceType.Html, "StyleUtility.js");
 
-        htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
+        htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
       }
     }

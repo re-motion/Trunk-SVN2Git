@@ -42,7 +42,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       var page = PageWrapper.CastOrCreate (Page);
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DatePickerPageQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))

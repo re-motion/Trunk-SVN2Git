@@ -18,6 +18,7 @@
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
+using Remotion.ServiceLocation;
 using Remotion.Web;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
@@ -26,14 +27,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
   {
     protected override BocBooleanValueResourceSet CreateResourceSet ()
     {
+      var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
+
       return new BocBooleanValueResourceSet (
           "Permission",
-          ResourceUrlResolver.GetResourceUrl (
-              this, Context, typeof (PermissionBooleanValue), ResourceType.Image, ResourceTheme, "PermissionGranted.gif"),
-          ResourceUrlResolver.GetResourceUrl (
-              this, Context, typeof (PermissionBooleanValue), ResourceType.Image, ResourceTheme, "PermissionDenied.gif"),
-          ResourceUrlResolver.GetResourceUrl (
-              this, Context, typeof (PermissionBooleanValue), ResourceType.Image, ResourceTheme, "PermissionUndefined.gif"),
+          resourceUrlFactory.CreateThemedResourceUrl (typeof (PermissionBooleanValue), ResourceType.Image, "PermissionGranted.gif").GetUrl(),
+          resourceUrlFactory.CreateThemedResourceUrl (typeof (PermissionBooleanValue), ResourceType.Image, "PermissionDenied.gif").GetUrl(),
+          resourceUrlFactory.CreateThemedResourceUrl (typeof (PermissionBooleanValue), ResourceType.Image, "PermissionUndefined.gif").GetUrl(),
           "Granted",
           "Denied",
           "Undefined"

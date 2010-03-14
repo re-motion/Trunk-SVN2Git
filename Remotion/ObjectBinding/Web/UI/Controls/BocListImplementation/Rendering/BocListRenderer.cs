@@ -122,18 +122,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string styleFileKey = typeof (BocListRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.css");
       htmlHeadAppender.RegisterStylesheetLink (styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
 
       string scriptFileKey = typeof (BocListRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (BocListRenderer), ResourceType.Html, "BocList.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocListRenderer), ResourceType.Html, "BocList.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
       Control.EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
     }

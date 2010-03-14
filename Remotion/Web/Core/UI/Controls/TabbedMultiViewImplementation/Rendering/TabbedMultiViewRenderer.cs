@@ -38,19 +38,15 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 
       string keyStyle = typeof (TabbedMultiViewRenderer).FullName + "_Style";
-      string keyScript = typeof (TabbedMultiViewRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (keyStyle))
-      {
-        var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (TabbedMultiViewRenderer), ResourceType.Html, "TabbedMultiView.css");
-        htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (TabbedMultiViewRenderer), ResourceType.Html, "TabbedMultiView.css");
+      htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
-        string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (TabbedMultiViewRenderer), ResourceType.Html, "ViewLayout.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
-      }
+      string keyScript = typeof (TabbedMultiViewRenderer).FullName + "_Script";
+      var scriptFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (TabbedMultiViewRenderer), ResourceType.Html, "ViewLayout.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }

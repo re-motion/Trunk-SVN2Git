@@ -304,16 +304,19 @@ namespace Remotion.Web.UI
 
       if (!ControlHelper.IsDesignMode (_page))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (SmartPageInfo), ResourceType.Html, c_smartNavigationScriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_smartNavigationScriptKey, url);
+        HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude ();
 
-        HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude (_page);
-        url = ResourceUrlResolver.GetResourceUrl (_page, typeof (SmartPageInfo), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
+        var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory> ();
+        
+        var smartNavigationUrl = resourceUrlFactory.CreateResourceUrl (typeof (SmartPageInfo), ResourceType.Html, c_smartNavigationScriptFileUrl);
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_smartNavigationScriptKey, smartNavigationUrl);
+
+        var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (SmartPageInfo), ResourceType.Html, c_scriptFileUrl);
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
 
         var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-        url = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+        string url3 = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
+        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url3, HtmlHeadAppender.Priority.Library);
       }
     }
 

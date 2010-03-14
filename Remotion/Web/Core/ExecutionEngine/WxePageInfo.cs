@@ -120,17 +120,13 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
-      string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
-      HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
+      var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
+      var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
+      HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
 
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver ();
-      url = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
-      HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-    }
-
-    protected ResourceTheme ResourceTheme
-    {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
+      var styleUrl = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
+      HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public NameValueCollection EnsurePostBackModeDetermined (HttpContext context)
@@ -245,7 +241,7 @@ namespace Remotion.Web.ExecutionEngine
           + "  __doPostBack (control, argument); \r\n"
           + "}");
 
-      HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude (_page);
+      HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude ();
 
       RegisterWxeInitializationScript ();
       SetCacheSettings ();

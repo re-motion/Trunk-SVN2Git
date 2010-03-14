@@ -43,27 +43,13 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       var page = PageWrapper.CastOrCreate (Page);
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DatePickerPageRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            page,
-            Context,
-            typeof (DatePickerPageRenderer),
-            ResourceType.Html,
-            "DatePicker.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DatePickerPageRenderer), ResourceType.Html, "DatePicker.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
 
-      string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          page,
-          Context,
-          typeof (DatePickerPageRenderer),
-          ResourceType.Html,
-          ResourceTheme,
-          "Style.css");
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DatePickerPageRenderer), ResourceType.Html, "Style.css");
       htmlHeadAppender.RegisterStylesheetLink (typeof (DatePickerPageRenderer).FullName + "_Style", styleUrl);
     }
 
@@ -84,7 +70,7 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
 
     protected ResourceTheme ResourceTheme
     {
-      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme> (); }
+      get { return SafeServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
   }
 }

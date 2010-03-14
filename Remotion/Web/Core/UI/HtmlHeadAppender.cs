@@ -21,6 +21,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Context;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -295,7 +296,7 @@ namespace Remotion.Web.UI
       RegisterStylesheetLink (key, href, Priority.Page);
     }
 
-        /// <summary> Registers a javascript file. </summary>
+    /// <summary> Registers a javascript file. </summary>
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
@@ -351,34 +352,22 @@ namespace Remotion.Web.UI
       RegisterHeadElement (key, headElement, Priority.Script);
     }
 
-    public void RegisterUtilitiesJavaScriptInclude (IControl control)
+    public void RegisterUtilitiesJavaScriptInclude ()
     {
-      ArgumentUtility.CheckNotNull ("control", control);
-
       string jqueryKey = typeof (HtmlHeadContents).FullName + "_JQuery";
-      if (!IsRegistered (jqueryKey))
-      {
-        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
-        RegisterJavaScriptInclude (jqueryKey, href);
-      }
+      var jqueryFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
+      RegisterJavaScriptInclude (jqueryKey, jqueryFileUrl);
 
       string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";
-      if (! IsRegistered (utilitiesKey))
-      {
-        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
-        RegisterJavaScriptInclude (utilitiesKey, href);
-      }
+      var utilitiesScripFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
+      RegisterJavaScriptInclude (utilitiesKey, utilitiesScripFileUrl);
     }
 
-    public void RegisterJQueryBgiFramesJavaScriptInclude (IControl control)
+    public void RegisterJQueryBgiFramesJavaScriptInclude ()
     {
-      ArgumentUtility.CheckNotNull ("control", control);
       string key = typeof (HtmlHeadContents).FullName + "_JQueryBgiFrames";
-      if (!IsRegistered (key))
-      {
-        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.bgiframe.min.js");
-        RegisterJavaScriptInclude (key, href);
-      }
+      var href = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.bgiframe.min.js");
+      RegisterJavaScriptInclude (key, href);
     }
 
     /// <summary> Registers a <see cref="Control"/> containing an HTML head element. </summary>
@@ -474,6 +463,11 @@ namespace Remotion.Web.UI
           _handler = new WeakReference (handler);
         }
       }
+    }
+
+    private IResourceUrlFactory ResourceUrlFactory
+    {
+      get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
     }
   }
 }

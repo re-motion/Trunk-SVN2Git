@@ -54,14 +54,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
-      htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude();
 
       string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_JQueryAutoCompleteScript";
       htmlHeadAppender.RegisterJavaScriptInclude (
           jqueryAutocompleteScriptKey,
-          ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
+          ResourceUrlFactory.CreateResourceUrl (
               typeof (BocAutoCompleteReferenceValueRenderer),
               ResourceType.Html,
               "BocAutoCompleteReferenceValue.jquery.js"));
@@ -69,12 +67,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string scriptKey = typeof (BocAutoCompleteReferenceValueRenderer).FullName + "_Script";
       htmlHeadAppender.RegisterJavaScriptInclude (
           scriptKey,
-          ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
-              typeof (BocAutoCompleteReferenceValueRenderer),
-              ResourceType.Html,
-              "BocAutoCompleteReferenceValue.js"));
+          ResourceUrlFactory.CreateResourceUrl (typeof (BocAutoCompleteReferenceValueRenderer), ResourceType.Html, "BocAutoCompleteReferenceValue.js"));
     }
 
     private void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)

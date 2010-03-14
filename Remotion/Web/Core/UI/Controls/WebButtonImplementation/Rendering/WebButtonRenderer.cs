@@ -28,7 +28,7 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   public class WebButtonRenderer : RendererBase<IWebButton>
   {
     public WebButtonRenderer (HttpContextBase context, IWebButton control, IResourceUrlFactory resourceUrlFactory)
-      : base (context, control, resourceUrlFactory)
+        : base (context, control, resourceUrlFactory)
     {
     }
 
@@ -37,18 +37,12 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string scriptKey = typeof (WebButtonRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (scriptKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (WebButtonRenderer), ResourceType.Html, "WebButton.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, url);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (WebButtonRenderer), ResourceType.Html, "WebButton.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, scriptUrl);
 
       string styleKey = typeof (WebButtonRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleKey))
-      {
-        var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebButtonRenderer), ResourceType.Html, "WebButton.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
-      }
+      var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebButtonRenderer), ResourceType.Html, "WebButton.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public override void Render (HtmlTextWriter writer)

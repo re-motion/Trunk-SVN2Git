@@ -38,18 +38,16 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 
       string keyStyle = typeof (SingleViewRenderer).FullName + "_Style";
-      string keyScript = typeof (SingleViewRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (keyStyle))
-      {
-        var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "SingleView.css");
-        htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (SingleViewRenderer), ResourceType.Html, "ViewLayout.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
-      }
+      var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "SingleView.css");
+      htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+
+      string keyScript = typeof (SingleViewRenderer).FullName + "_Script";
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "ViewLayout.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (Control, htmlHeadAppender);
     }

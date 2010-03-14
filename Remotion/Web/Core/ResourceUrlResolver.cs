@@ -69,23 +69,6 @@ public sealed class ResourceUrlResolver
       return GetResourceUrl (control, definingType, resourceType, relativeUrl);
   }
 
-  public static string GetResourceUrl (
-      IControl control,
-      HttpContextBase context,
-      Type definingType,
-      ResourceType resourceType,
-      ResourceTheme theme,
-      string relativeUrl)
-  {
-    IResourceUrlResolver resolver = null;
-    if (context != null)
-      resolver = context.ApplicationInstance as IResourceUrlResolver;
-    if (resolver != null)
-      return resolver.GetResourceUrl (control, definingType, resourceType, theme, relativeUrl);
-    else
-      return GetResourceUrl (control, definingType, resourceType, theme, relativeUrl);
-  }
-
   /// <summary>
   ///   Returns the physical URL of a resource item.
   /// </summary>

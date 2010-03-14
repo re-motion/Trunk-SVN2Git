@@ -46,7 +46,7 @@ namespace Remotion.Web.Legacy.UI.Controls
       // Do not call base implementation
       //base.RegisterHtmlHeadContents
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string scriptFileKey = typeof (ListMenuQuirksModeRenderer).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (

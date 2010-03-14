@@ -46,12 +46,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       string scriptFileKey = typeof (BocCheckboxRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckboxRenderer), ResourceType.Html, "BocCheckbox.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocCheckboxRenderer), ResourceType.Html, "BocCheckbox.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
       string styleFileKey = typeof (BocCheckboxRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocCheckboxRenderer), ResourceType.Html, "BocCheckbox.css");

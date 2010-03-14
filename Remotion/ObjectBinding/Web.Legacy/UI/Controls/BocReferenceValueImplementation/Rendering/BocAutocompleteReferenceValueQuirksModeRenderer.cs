@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
 
     private void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
-      htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterJQueryBgiFramesJavaScriptInclude ();
 
       string jqueryAutocompleteScriptKey = typeof (BocAutoCompleteReferenceValueQuirksModeRenderer).FullName + "_JQueryAutoCompleteScript";
       htmlHeadAppender.RegisterJavaScriptInclude (

@@ -46,13 +46,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       string scriptFileKey = typeof (BocBooleanValueRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocBooleanValueRenderer), ResourceType.Html, "BocBooleanValue.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocBooleanValueRenderer), ResourceType.Html, "BocBooleanValue.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
       string styleFileKey = typeof (BocBooleanValueRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocBooleanValueRenderer), ResourceType.Html, "BocBooleanValue.css");

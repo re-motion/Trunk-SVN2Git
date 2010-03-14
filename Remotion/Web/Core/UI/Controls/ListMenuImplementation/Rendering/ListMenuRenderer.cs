@@ -40,10 +40,10 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string scriptFileKey = typeof (ListMenuRenderer).FullName + "_Script";
-      string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.js");
+      var scriptFileUrl = ResourceUrlFactory.CreateResourceUrl(typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (ListMenuRenderer).FullName + "_Style";

@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string scriptFileKey = typeof (BocReferenceValueQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (scriptFileKey))

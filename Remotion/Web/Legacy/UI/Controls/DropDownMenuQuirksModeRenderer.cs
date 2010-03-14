@@ -43,7 +43,7 @@ namespace Remotion.Web.Legacy.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (DropDownMenuQuirksModeRenderer).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))

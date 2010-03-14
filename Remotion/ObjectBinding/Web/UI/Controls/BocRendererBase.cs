@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string key = typeof (BocRendererBase<>).FullName + "_BrowserCompatibilityScript";
       var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocRendererBase<>), ResourceType.Html, "BocBrowserCompatibility.js");

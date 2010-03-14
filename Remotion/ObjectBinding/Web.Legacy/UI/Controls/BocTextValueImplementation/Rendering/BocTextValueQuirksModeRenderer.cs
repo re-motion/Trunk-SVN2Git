@@ -19,7 +19,9 @@ using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
@@ -39,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender);
+      Control.TextBoxStyle.RegisterJavaScriptInclude (SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(), htmlHeadAppender);
     }
 
     protected override Label GetLabel ()

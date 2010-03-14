@@ -42,22 +42,15 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 
-      string key = typeof (DropDownMenuRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
-      }
+      string scriptKey = typeof (DropDownMenuRenderer).FullName + "_Script";
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, scriptUrl);
 
-      key = typeof (DropDownMenuRenderer).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
+      string styleSheetKey = typeof (DropDownMenuRenderer).FullName + "_Style";
+      var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public override void Render (HtmlTextWriter writer)

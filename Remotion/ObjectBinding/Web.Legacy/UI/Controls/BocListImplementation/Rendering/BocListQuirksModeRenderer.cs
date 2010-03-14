@@ -130,7 +130,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       string styleFileKey = typeof (BocListQuirksModeRenderer).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (styleFileKey))

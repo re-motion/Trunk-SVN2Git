@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender);
+      Control.TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
 
       string key = typeof (BocMultilineTextValueRenderer).FullName + "_Style";
       var url = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocMultilineTextValueRenderer), ResourceType.Html, "BocMultilineTextValue.css");

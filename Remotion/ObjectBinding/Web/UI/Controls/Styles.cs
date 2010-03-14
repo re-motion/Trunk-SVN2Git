@@ -16,12 +16,10 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -373,24 +371,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           && MaxLength != null
           && CheckClientSideMaxLength != false
           && ! ControlHelper.IsDesignModeForControl (textBox))
-      {
         textBox.Attributes.Add ("onkeydown", "return TextBoxStyle_OnKeyDown (this, " + MaxLength.Value + ");");
-      }
 
       textBox.TextMode = _textMode;
     }
 
-    public void RegisterJavaScriptInclude (IControl control, HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterJavaScriptInclude (IResourceUrlFactory resourceUrlFactory, HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
-        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-      }
+      var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
+      htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
     }
 
     public override void CopyFrom (Style s)

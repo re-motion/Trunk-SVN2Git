@@ -53,17 +53,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
 
       RegisterBrowserCompatibilityScript (htmlHeadAppender);
 
       string scriptFileKey = typeof (BocReferenceValueRenderer).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
-      }
+      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.js");
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptUrl);
 
       string styleFileKey = typeof (BocReferenceValueRenderer).FullName + "_Style";
       var styleUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocReferenceValueRenderer), ResourceType.Html, "BocReferenceValue.css");
