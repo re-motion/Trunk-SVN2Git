@@ -22,16 +22,26 @@ namespace Remotion.Web
   /// <summary>
   /// Represents the absolute URL for a resource file that changes with the <see cref="ResourceTheme"/>.
   /// </summary>
-  public class ThemedResourceUrl : ResourceUrlBase
+  public class ThemedResourceUrl : IResourceUrl
   {
     protected const string ThemesFolder = "Themes";
+
+    private readonly Type _definingType;
+    private readonly ResourceType _resourceType;
     private readonly ResourceTheme _resourceTheme;
+    private readonly string _relativeUrl;
 
     public ThemedResourceUrl (Type definingType, ResourceType resourceType, ResourceTheme resourceTheme, string relativeUrl)
-        : base (definingType, resourceType, relativeUrl)
     {
+      ArgumentUtility.CheckNotNull ("definingType", definingType);
+      ArgumentUtility.CheckNotNull ("resourceType", resourceType);
       ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
+      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
+
+      _definingType = definingType;
+      _resourceType = resourceType;
       _resourceTheme = resourceTheme;
+      _relativeUrl = relativeUrl;
     }
 
     public ResourceTheme ResourceTheme
@@ -39,7 +49,22 @@ namespace Remotion.Web
       get { return _resourceTheme; }
     }
 
-    public override string GetUrl ()
+    public Type DefiningType
+    {
+      get { return _definingType; }
+    }
+
+    public ResourceType ResourceType
+    {
+      get { return _resourceType; }
+    }
+
+    public string RelativeUrl
+    {
+      get { return _relativeUrl; }
+    }
+
+    public virtual string GetUrl ()
     {
       string assemblyRoot = ResourceUrlResolver.GetAssemblyRoot (false, DefiningType.Assembly);
       Assertion.IsTrue (assemblyRoot.EndsWith ("/"));

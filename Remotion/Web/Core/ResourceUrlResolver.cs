@@ -146,7 +146,7 @@ public sealed class ResourceUrlResolver
     ArgumentUtility.CheckNotNull ("resourceType", resourceType);
     ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
-    ResourceUrlBase resourceUrl;
+    IResourceUrl resourceUrl;
 
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
     if (isDesignMode)

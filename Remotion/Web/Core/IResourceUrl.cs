@@ -15,45 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Web
 {
   /// <summary>
   /// Represents the absolute URL for a resource file (css-file, js-file, etc).
+  /// <seealso cref="ResourceUrl"/>
+  /// <seealso cref="ThemedResourceUrl"/>
   /// </summary>
-  public abstract class ResourceUrlBase
+  public interface IResourceUrl
   {
-    private readonly Type _definingType;
-    private readonly ResourceType _resourceType;
-    private readonly string _relativeUrl;
-
-    protected ResourceUrlBase (Type definingType, ResourceType resourceType, string relativeUrl)
-    {
-      ArgumentUtility.CheckNotNull ("definingType", definingType);
-      ArgumentUtility.CheckNotNull ("resourceType", resourceType);
-      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
-
-      _definingType = definingType;
-      _resourceType = resourceType;
-      _relativeUrl = relativeUrl;
-    }
-
-    public abstract string GetUrl ();
-
-    public Type DefiningType
-    {
-      get { return _definingType; }
-    }
-
-    public ResourceType ResourceType
-    {
-      get { return _resourceType; }
-    }
-
-    public string RelativeUrl
-    {
-      get { return _relativeUrl; }
-    }
+    string GetUrl ();
   }
 }

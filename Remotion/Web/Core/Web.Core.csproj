@@ -150,7 +150,7 @@
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />
     <Compile Include="ResourceUrl.cs" />
-    <Compile Include="ResourceUrlBase.cs" />
+    <Compile Include="IResourceUrl.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
