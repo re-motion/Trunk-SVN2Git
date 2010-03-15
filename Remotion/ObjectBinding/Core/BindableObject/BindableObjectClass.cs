@@ -22,13 +22,15 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  //TODO: doc
+  /// <summary>
+  /// Impelements <see cref="IBusinessObjectClass"/> for the <b>Bindable Object</b> implementation of <see cref="IBusinessObject"/>.
+  /// </summary>
   public class BindableObjectClass : IBusinessObjectClass
   {
     private readonly Type _targetType;
     private readonly Type _concreteType;
     private readonly BindableObjectProvider _businessObjectProvider;
-    private readonly PropertyCollection _properties = new PropertyCollection();
+    private readonly PropertyCollection _properties;
     private readonly BusinessObjectProviderAttribute _businessObjectProviderAttribute;
 
     public BindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider, IEnumerable<PropertyBase> properties)
@@ -41,11 +43,12 @@ namespace Remotion.ObjectBinding.BindableObject
       _targetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
-      
-      var attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
-      _businessObjectProviderAttribute = attribute;
+      _businessObjectProviderAttribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
 
-      SetPropertyDefinitions (properties);
+      foreach (PropertyBase property in properties)
+        property.SetReflectedClass (this);
+
+      _properties = new PropertyCollection (properties);
     }
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
@@ -65,15 +68,21 @@ namespace Remotion.ObjectBinding.BindableObject
             string.Format ("The property '{0}' was not found on business object class '{1}'.", propertyIdentifier, Identifier));
       }
 
-      return _properties[propertyIdentifier];
+      return Properties[propertyIdentifier];
     }
 
-    //TODO: doc
+    /// <summary>
+    ///   Returns a flag that indicates whether the <paramref name="propertyIdentifier"/> is valid.
+    /// </summary>
+    /// <param name="propertyIdentifier">The name of the property.</param>
+    /// <returns>
+    ///   <see langword="true" /> if a property with the <paramref name="propertyIdentifier"/> exists, otherwise <see langword="false" />.
+    /// </returns>
     public bool HasPropertyDefinition (string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
 
-      return _properties.Contains (propertyIdentifier);
+      return Properties.Contains (propertyIdentifier);
     }
 
     /// <summary> 
@@ -82,7 +91,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <returns> An array of <see cref="IBusinessObjectProperty"/> instances.</returns>
     public IBusinessObjectProperty[] GetPropertyDefinitions ()
     {
-      return _properties.ToArray();
+      return Properties.ToArray();
     }
 
     /// <summary> Gets the <see cref="IBusinessObjectProvider"/> for this business object class. </summary>
@@ -118,7 +127,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </value>
     public string Identifier
     {
-      get { return Utilities.TypeUtility.GetPartialAssemblyQualifiedName (_targetType); }
+      get { return TypeUtility.GetPartialAssemblyQualifiedName (_targetType); }
     }
 
     public Type TargetType
@@ -136,13 +145,12 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _businessObjectProviderAttribute; }
     }
 
-    private void SetPropertyDefinitions (IEnumerable<PropertyBase> properties)
+    /// <summary>
+    /// Gets the <see cref="PropertyCollection"/> containing the properties for this <see cref="BindableObjectClass"/>.
+    /// </summary>
+    protected virtual PropertyCollection Properties
     {
-      foreach (PropertyBase property in properties)
-      {
-        property.SetReflectedClass (this);
-        _properties.Add (property);
-      }
+      get { return _properties; }
     }
   }
 }

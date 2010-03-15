@@ -15,26 +15,53 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  public class PropertyCollection : KeyedCollection<string, PropertyBase>
+  /// <summary>
+  /// Provides a read-only collection for <see cref="PropertyBase"/> objects.
+  /// </summary>
+  public sealed class PropertyCollection
   {
-    public PropertyCollection ()
+    private class PropertyKeyedCollection : KeyedCollection<string, PropertyBase>
     {
+      public PropertyKeyedCollection ()
+      {
+      }
+
+      protected override string GetKeyForItem (PropertyBase item)
+      {
+        return item.Identifier;
+      }
     }
 
-    protected override string GetKeyForItem (PropertyBase item)
+    private readonly PropertyKeyedCollection _innerCollection = new PropertyKeyedCollection();
+
+    public PropertyCollection (IEnumerable<PropertyBase> properties)
     {
-      return item.Identifier;
+      ArgumentUtility.CheckNotNull ("properties", properties);
+
+      foreach (var property in properties)
+        _innerCollection.Add (property);
+    }
+
+    public bool Contains (string propertyIdentifier)
+    {
+      return _innerCollection.Contains (propertyIdentifier);
+    }
+
+    public PropertyBase this[string propertyIdentifier]
+    {
+      get { return _innerCollection[propertyIdentifier]; }
     }
 
     public PropertyBase[] ToArray ()
     {
-      return ArrayUtility.Convert (Items);
+      return ArrayUtility.Convert (_innerCollection);
     }
   }
 }

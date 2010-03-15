@@ -23,13 +23,37 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
   [TestFixture]
   public class BindableObjectClassTest : TestBase
   {
-    #region Setup/Teardown
+    private class StubBindableObjectClass : BindableObjectClass
+    {
+      private PropertyCollection _properties;
+
+      public StubBindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider)
+        : base (concreteType, businessObjectProvider, new PropertyBase[0])
+      {
+      }
+
+      protected override PropertyCollection Properties
+      {
+        get
+        {
+          return _properties;
+        }
+      }
+
+      public void SetProperties (PropertyCollection properties)
+      {
+        _properties = properties;
+      }
+    }
+
+    private BindableObjectProvider _bindableObjectProvider;
 
     public override void SetUp ()
     {
@@ -37,10 +61,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _bindableObjectProvider = new BindableObjectProvider();
     }
-
-    #endregion
-
-    private BindableObjectProvider _bindableObjectProvider;
 
     public void Initialize_WithTypeNotUsingBindableObjectMixin ()
     {
@@ -109,6 +129,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void GetPropertyDefinition_FromOverriddenPropertiesProperty ()
+    {
+      var property = CreateStubProperty();
+      StubBindableObjectClass bindableObjectClass = CreateStubBindableObjectClass (property);
+
+      Assert.That (bindableObjectClass.GetPropertyDefinition ("Scalar"), Is.SameAs(property));
+    }
+
+    [Test]
     [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage =
         "The property 'Invalid' was not found on business object class "
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests'.")]
@@ -164,6 +193,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void GetPropertyDefinitions_FromOverriddenPropertiesProperty ()
+    {
+      var property = CreateStubProperty();
+      StubBindableObjectClass bindableObjectClass = CreateStubBindableObjectClass (property);
+
+      Assert.That (bindableObjectClass.GetPropertyDefinitions(), Is.EqualTo (new []{property}));
+    }
+
+    [Test]
     public void HasPropertyDefinition ()
     {
       var classReflector = new ClassReflector (
@@ -181,6 +219,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass.HasPropertyDefinition ("MixedProperty"), Is.True);
+    }
+
+    [Test]
+    public void HasPropertyDefinition_FromOverriddenPropertiesProperty ()
+    {
+      StubBindableObjectClass bindableObjectClass = CreateStubBindableObjectClass(CreateStubProperty());
+
+      Assert.That (bindableObjectClass.HasPropertyDefinition ("Scalar"), Is.True);
+      Assert.That (bindableObjectClass.HasPropertyDefinition ("Invalid"), Is.False);
     }
 
     [Test]
@@ -237,6 +284,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (actualProperties, Is.EqualTo (expectedProperties));
       foreach (IBusinessObjectProperty actualProperty in actualProperties)
         Assert.That (((PropertyBase) actualProperty).ReflectedClass, Is.SameAs (bindableObjectClass));
+    }
+
+    private StubBindableObjectClass CreateStubBindableObjectClass (PropertyBase property)
+    {
+      var bindableObjectClass = new StubBindableObjectClass (typeof (ClassWithAllDataTypes), _bindableObjectProvider);
+      bindableObjectClass.SetProperties (new PropertyCollection (new[] { property }));
+      return bindableObjectClass;
+    }
+
+    private StubPropertyBase CreateStubProperty ()
+    {
+      return new StubPropertyBase (
+          new PropertyBase.Parameters (
+              new BindableObjectProvider (
+                  MockRepository.GenerateStub<IMetadataFactory> (), MockRepository.GenerateStub<IBusinessObjectServiceFactory> ()),
+              GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
+              typeof (SimpleReferenceType),
+              typeof (SimpleReferenceType),
+              null,
+              false,
+              false));
     }
   }
 }

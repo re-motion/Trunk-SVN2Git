@@ -59,18 +59,19 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _businessObjectProvider; }
     }
 
-    public BindableObjectClass GetMetadata ()
+    /// <summary>
+    /// Builds the <see cref="BindableObjectClass"/> for the provided metadata (<see cref="TargetType"/>) and the properties calculated with
+    /// <see cref="GetProperties"/>.
+    /// </summary>
+    public virtual BindableObjectClass GetMetadata ()
     {
-      BindableObjectClass bindableObjectClass;
-      if (typeof (IBusinessObjectWithIdentity).IsAssignableFrom (ConcreteType))
-        bindableObjectClass = new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider, GetProperties ());
+      if (typeof (IBusinessObjectWithIdentity).IsAssignableFrom (_concreteType))
+        return new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider, GetProperties ());
       else
-        bindableObjectClass = new BindableObjectClass (_concreteType, _businessObjectProvider, GetProperties ());
-
-      return bindableObjectClass;
+        return new BindableObjectClass (_concreteType, _businessObjectProvider, GetProperties ());
     }
 
-    private IEnumerable<PropertyBase> GetProperties ()
+    protected IEnumerable<PropertyBase> GetProperties ()
     {
       IPropertyFinder propertyFinder = _metadataFactory.CreatePropertyFinder (_concreteType);
 
