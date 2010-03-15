@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -23,15 +23,15 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Remotion Data UberProf Integration Library")]
-[assembly: AssemblyDescription ("Library for integrating the UberProf profiling API into re-store")]
-[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: debug")]
-[assembly: AssemblyCompany ("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct ("re-motion core framework (www.re-motion.org)")]
-[assembly: AssemblyCopyright ("(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu")]
-[assembly: AssemblyTrademark ("")]
-[assembly: AssemblyCulture ("")]
-[assembly: CLSCompliant (true)]
+[assembly: AssemblyTitle("Remotion Data UberProf Integration Library")]
+[assembly: AssemblyDescription("Library for integrating the UberProf profiling API into re-store")]
+[assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: debug")]
+[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
+[assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
+[assembly: AssemblyCopyright("(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: CLSCompliant(true)]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -44,4 +44,4 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion ("1.13.41.2")]
+[assembly: AssemblyVersion("1.13.50.2")]
