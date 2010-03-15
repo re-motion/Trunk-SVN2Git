@@ -204,6 +204,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void SpecificTenantField_SelectionChanged (object sender, EventArgs e)
     {
+      AdjustSpecificUserField (true);
       AdjustSpecificGroupField (true);
     }
 
