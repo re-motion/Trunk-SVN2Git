@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Castle.Core;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
@@ -49,17 +50,17 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces ()));
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces ()));
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme> ().Instance (ResourceTheme.ClassicBlue));
 
-      container.Register (Component.For<IClientTransactionListenerFactory, IPersistenceListenerFactory> ().Instance (new LinqToSqlListenerFactory()));
+      //container.Register (Component.For<IClientTransactionListenerFactory, IPersistenceListenerFactory> ().Instance (new LinqToSqlListenerFactory()));
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
