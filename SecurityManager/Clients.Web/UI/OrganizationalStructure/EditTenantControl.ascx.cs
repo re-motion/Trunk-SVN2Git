@@ -75,5 +75,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       return isValid;
     }
+
+    protected void ChildrenList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      if (e.Item.ItemID == "RemoveItem")
+        ChildrenList.RemoveRows (ChildrenList.GetSelectedBusinessObjects());
+
+      ChildrenList.ClearSelectedRows ();
+    }
   }
 }
