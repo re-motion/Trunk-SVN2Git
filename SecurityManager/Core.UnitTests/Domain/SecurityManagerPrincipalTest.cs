@@ -109,6 +109,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       User oldUser = principal.User;
       Substitution oldSubstitution = principal.Substitution;
 
+      ClientTransactionScope.ResetActiveScope ();
+
       principal.Refresh();
 
       Assert.That (principal.Tenant, Is.SameAs (oldTenant));
@@ -130,6 +132,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       Substitution oldSubstitution = principal.Substitution;
 
       Revision.IncrementRevision();
+      
+      ClientTransactionScope.ResetActiveScope ();
 
       principal.Refresh();
 

@@ -102,7 +102,7 @@ namespace Remotion.SecurityManager.Domain
 
     public void Refresh ()
     {
-      if (Revision.GetRevision() > _revision)
+      if (GetRevision() > _revision)
         InitializeClientTransaction();
     }
 
@@ -142,7 +142,7 @@ namespace Remotion.SecurityManager.Domain
     private void InitializeClientTransaction ()
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
-      _revision = Revision.GetRevision();
+      _revision = GetRevision();
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
         _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
@@ -173,6 +173,14 @@ namespace Remotion.SecurityManager.Domain
         }
 
         return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
+      }
+    }
+
+    private int GetRevision ()
+    {
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        return Revision.GetRevision();
       }
     }
   }
