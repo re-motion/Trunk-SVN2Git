@@ -17,7 +17,7 @@
 using System;
 
 namespace Remotion
-{
+{ 
   // TODO: Remove finalizer, check derivations whether they really need a finalizer (unmanaged resources only); document the change
   /// <summary>
   /// This class can be used as a base class for any class that needs to implement <see cref="IDisposable"/>, but does not want to 
