@@ -168,6 +168,12 @@
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\IsActive.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\SubstitutionTestBase.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\BindableObjectImplementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\GetPossibleParentTenants.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\GetHierachy.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\Find.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\SecurableObjectImpelementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\TenantTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\AccessControl.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\DeleteUser.cs" />
@@ -199,7 +205,6 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTypePositionTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureFactoryTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupPropertiesSearchServiceTest.cs" />
-    <Compile Include="Domain\OrganizationalStructure\TenantTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypeTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureTestHelper.cs" />

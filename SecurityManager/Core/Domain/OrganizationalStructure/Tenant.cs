@@ -36,16 +36,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [SecurityManagerStorageGroup]
   public abstract class Tenant : OrganizationalStructureObject
   {
-    // constants
-
-    // types
-
     public enum Methods
     {
       Search
     }
-
-    // static members
 
     internal static Tenant NewObject ()
     {
@@ -84,16 +78,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
 
-    // member fields
-
-    // construction and disposing
-
     protected Tenant ()
     {
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
       UniqueIdentifier = Guid.NewGuid().ToString();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
     }
-
-    // methods and properties
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
     public abstract string Name { get; set; }
@@ -119,21 +109,28 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return UniqueIdentifier;
     }
 
-    // TODO: UnitTests
-    public List<Tenant> GetPossibleParentTenants (ObjectID tenantID)
+    /// <summary>
+    /// Gets the <see cref="Tenant"/> objects that can be used as the parent for this <see cref="Tenant"/>, 
+    /// provided the user as read access for the respective object.
+    /// </summary>
+    /// <returns>
+    /// Returns all <see cref="Tenant"/> objects in the system, except those in the child-hierarchy
+    /// and those for which the user does not have <see cref="GeneralAccessTypes.Read"/> access.
+    /// </returns>
+    public IEnumerable<Tenant> GetPossibleParentTenants ()
     {
-      List<Tenant> clients = new List<Tenant>();
-
-      foreach (Tenant tenant in FindAll())
+      Tenant[] hierarchy;
+      using (new SecurityFreeSection())
       {
-        if ((!Children.Contains (tenant.ID)) && (tenant.ID != this.ID))
-          clients.Add (tenant);
+        hierarchy = GetHierachy().ToArray();
       }
-      return clients;
+
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+      return Tenant.FindAll().Except (hierarchy).Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>
-    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access to the respective object.
+    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective object.
     /// </summary>
     /// <remarks>This collection will be empty, if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
     public IEnumerable<Tenant> GetHierachy ()

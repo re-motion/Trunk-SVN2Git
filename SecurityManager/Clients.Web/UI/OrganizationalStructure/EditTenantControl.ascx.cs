@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
@@ -64,7 +65,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private void FillParentField ()
     {
-      ParentField.SetBusinessObjectList (CurrentFunction.Tenant.GetPossibleParentTenants (CurrentFunction.TenantID));
+      ParentField.SetBusinessObjectList (CurrentFunction.Tenant.GetPossibleParentTenants().ToArray());
     }
 
     public override bool Validate ()
