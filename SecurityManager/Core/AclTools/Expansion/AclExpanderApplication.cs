@@ -27,7 +27,7 @@ using Remotion.Utilities;
 using Remotion.Utilities.ConsoleApplication;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
-{
+{ 
   public class AclExpanderApplication : IApplicationRunner<AclExpanderApplicationSettings>
   {
     public const string CssFileName = "AclExpansion";
