@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon               
+                // matches also semicolon                 
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab             
+                // re-motion: do not block event bubbling for tab               
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -513,7 +513,8 @@
             return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
         },
         scroll: true,
-        scrollHeight: 180
+        scrollHeight: 180,
+        repositionInterval: 200
     };
 
     $.Autocompleter.Cache = function(options) {
@@ -725,6 +726,62 @@
 			: available;
         }
 
+        var repositionTimer = null;
+
+        function applyPositionToDropDown() {
+
+            var whereToPen, whereToPenPosition, elementWidth, newHeight;
+
+            var offset = $(input).offset();
+            // re-motion: calculate best position where to open dropdown list
+            var position = $.Autocompleter.calculateSpaceAround(input);
+
+            if (position.spaceVertical == 'T') {
+
+                //element.css('bottom', position.bottom + input.offsetHeight);
+                topPosition = 'auto';
+                bottomPosition = position.bottom + input.offsetHeight;
+
+                if (options.scrollHeight > position.bottom) {
+                    var maxHeight = position.top;
+                } else {
+                    var maxHeight = options.scrollHeight;
+                }
+
+            } else {
+                //element.css('top', offset.top + input.offsetHeight);
+                bottomPosition = 'auto';
+                topPosition = offset.top + input.offsetHeight;
+                if (options.scrollHeight > position.bottom) {
+                    var maxHeight = position.bottom;
+                } else {
+                    var maxHeight = options.scrollHeight;
+                }
+
+            }
+
+            // re-motion: need to resize list to specified width in css not in plugin config
+            var elementWidth;
+            if (options.width > 0) {
+                elementWidth = options.width;
+            } else if (parseInt(element.css('width')) > 0) {
+                elementWidth = element.css('width');
+            } else {
+                elementWidth = $(input).width() + $('#' + options.dropDownButtonId).width();
+            }
+
+            element.css({
+                width: elementWidth,
+                left: offset.left,
+                'max-height': maxHeight,
+                top: topPosition,
+                bottom: bottomPosition,
+                overflow: 'auto'
+            });
+
+            //console.log(topPosition + ': ' + bottomPosition);
+        }
+
         function fillList() {
             list.empty();
             var max = data.length;
@@ -778,6 +835,7 @@
                 element && element.hide();
                 listItems && listItems.removeClass(CLASSES.ACTIVE);
                 active = -1;
+                if (repositionTimer) clearInterval(repositionTimer);
             },
             visible: function() {
                 return element && element.is(":visible");
@@ -786,37 +844,16 @@
                 return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst() && listItems[0]);
             },
             show: function() {
-                var offset = $(input).offset();
-                // re-motion: calculate best position where to open dropdown list
-                var position = $.Autocompleter.calculateSpaceAround(input);
 
-                var newScrollHeight = options.scrollHeight;
-                
-                if (position.spaceVertical == 'T') {
-                    if (options.scrollHeight > position.top)
-                        newScrollHeight = position.top;
-                    var newTop = position.top - newScrollHeight;
-                } else {
-                    var newTop = offset.top + input.offsetHeight;
-                    if (options.scrollHeight > position.bottom)
-                        newScrollHeight = position.bottom;
-                }
-
-                element.css({
-                    // re-motion: changed width to span the entire control, including dropdown button
-                    height: newScrollHeight,
-                    width: $(input).parent().width(),
-                    top: newTop,
-                    left: offset.left
-                }).show();
+                // re-motion: reposition element 
+                applyPositionToDropDown();
+                element.show();
+                // re-motion: start interval to reposition element 
+                if (repositionTimer) clearInterval(repositionTimer);
+                repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
 
                 if (options.scroll) {
                     list.scrollTop(0);
-                    // re-motion: need to resize list to fit available space
-                    list.css({
-                        maxHeight: options.scrollHeight,
-                        overflow: 'auto'
-                    });
 
                     if ($.browser.msie && typeof document.body.style.maxHeight === "undefined") {
                         var listHeight = 0;
