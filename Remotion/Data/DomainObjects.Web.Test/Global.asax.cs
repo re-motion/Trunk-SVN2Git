@@ -50,12 +50,12 @@ namespace Remotion.Data.DomainObjects.Web.Test
       container.Register (
           AllTypes.Pick()
               .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces()));
       container.Register (
           AllTypes.Pick()
               .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces()));
       container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
