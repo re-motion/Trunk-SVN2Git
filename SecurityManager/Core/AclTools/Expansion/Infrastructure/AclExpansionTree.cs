@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -27,7 +26,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
-  public class AclExpansionTree : IToTextConvertible
+  public class AclExpansionTree
   {
     private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
  
@@ -111,12 +110,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
     {
       return grouping.Distinct (AclExpansionEntryIgnoreStateEqualityComparer).Count ();
-    }
-
-
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      toTextBuilder.e (Tree);
     }
   }
 }

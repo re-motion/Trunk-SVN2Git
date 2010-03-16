@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
@@ -55,10 +54,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     {
       ArgumentUtility.CheckNotNull ("fromName", fromName);
       ArgumentUtility.CheckNotNull ("toName", toName);
+
       if (!TextWriterExists(toName))
-      {
-        throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s ("registered => no relative path exists.").ToString ());
-      }
+        throw new ArgumentException (string.Format ("No TextWriter with name \"{0}\" registered => no relative path exists.", toName));
       return Path.Combine(".", AppendExtension (toName, Extension)); 
     }
 

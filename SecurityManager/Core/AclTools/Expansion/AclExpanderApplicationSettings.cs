@@ -16,14 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Diagnostics.ToText;
 using Remotion.Text.CommandLine;
-using Remotion.Utilities;
 using Remotion.Utilities.ConsoleApplication;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpanderApplicationSettings : ConsoleApplicationSettings, IToTextConvertible
+  public class AclExpanderApplicationSettings : ConsoleApplicationSettings
   {
     [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
     public string UserName;
@@ -46,16 +44,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineFlagArgument ("multifile", false, Description = "Create a single file for all users + permissions or a master file and several detail files.")]
     public bool UseMultipleFileOutput;
 
-    [CommandLineFlagArgument ("verbose", false, Description = "Verbose output (e.g. /verbose+).")]
-    public bool Verbose;
-
     [CommandLineFlagArgument ("rc", false, Description = "Output row count for user, role.... (/multifile- only)")]
     public bool OutputRowCount;
-
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.sb ().e ("user", UserName).e ("last", UserLastName).e ("first", UserFirstName).e ("dir", Directory).e ("culture", CultureName).e ("multifile", UseMultipleFileOutput).e ("verbose", Verbose).se ();
-    }
   }
 }

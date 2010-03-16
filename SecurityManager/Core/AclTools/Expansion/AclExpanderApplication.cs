@@ -34,7 +34,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
     private AclExpanderApplicationSettings _settings;
-    private ToTextBuilder _logToTextBuilder; 
     private ToTextBuilder _errorToTextBuilder; 
 
     private readonly ITextWriterFactory _textWriterFactory;
@@ -57,11 +56,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _settings; }
     }
 
-    public ToTextBuilder LogToTextBuilder
-    {
-      get { return _logToTextBuilder; }
-    }
-
     public ToTextBuilder ErrorToTextBuilder
     {
       get { return _errorToTextBuilder; }
@@ -73,7 +67,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("errorWriter", errorWriter);
       ArgumentUtility.CheckNotNull ("logWriter", logWriter);
       
-      Init (settings, errorWriter, logWriter);
+      Init (settings);
 
       string cultureName = GetCultureName();
 
@@ -82,9 +76,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
         {
           List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
-
-          if (Settings.Verbose)
-            LogAclExpansion (aclExpansion);
 
           WriteAclExpansionAsHtmlToStreamWriter (aclExpansion);
         }
@@ -101,23 +92,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return cultureName;
     }
 
-
-    public void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
+    public void Init (AclExpanderApplicationSettings settings)
     {
+      ArgumentUtility.CheckNotNull ("settings", settings);
       _settings = settings;
-      _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
-      _errorToTextBuilder = new ToTextBuilder (To.ToTextProvider, errorWriter);
     }
-
-    public virtual void LogAclExpansion (List<AclExpansionEntry> aclExpansion)
-    {
-      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      LogToTextBuilder.nl (2).s ("AclExpander").nl().s ("==========").nl();
-      LogToTextBuilder.e (Settings);
-      foreach (AclExpansionEntry entry in aclExpansion)
-        LogToTextBuilder.nl().e (entry);
-    }
-
 
     public virtual void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {

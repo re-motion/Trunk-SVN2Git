@@ -64,15 +64,5 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var result = aclExpansionEntry.GetStateCombinations ();
       Assert.That (result, Is.EqualTo(Acl.StateCombinations));
     }
-
-    [Test]
-    public void ToTextTest ()
-    {
-      var aclExpansionEntry = new AclExpansionEntry (User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
-      var resultEpected = @"[user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""Read""],[""Write""],[""Delete""]},denied={[""Read""],[""Delete""]},conditions=[]]";
-      var result = To.String.e (aclExpansionEntry).ToString ();
-      Assert.That (result, Is.EqualTo (resultEpected));
-    }
-
   }
 }

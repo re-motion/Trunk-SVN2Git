@@ -171,21 +171,6 @@
     <Compile Include="Domain\Revision.cs" />
     <Compile Include="Domain\SecurityManagerAccessTypes.cs" />
     <Compile Include="Domain\SecurityManagerStorageGroupAttribute.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\AbstractRoleDefinition_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\AccessControlEntry_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\AccessControlList_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\AccessTypeDefinition_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\AclProbe_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\Group_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\ListOfAclExpansionEntry_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\Permission_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\Position_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\Role_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\SecurableClassDefinition_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\SecurityToken_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\StateDefinition_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Domain\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Globalization\AclTools\Expansion\AclToolsExpansion.de.Designer.cs">
       <DependentUpon>AclToolsExpansion.de.resx</DependentUpon>
       <DesignTime>True</DesignTime>

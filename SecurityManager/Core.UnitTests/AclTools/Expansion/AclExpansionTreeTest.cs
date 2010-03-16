@@ -158,72 +158,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         new AclExpansionEntry (a.User, a.Role, a.AccessControlList, a.AccessConditions, a.AllowedAccessTypes, aDifferent.DeniedAccessTypes)), Is.False);
     }
 
-
-
-    [Test]
-    public void ToTextTest ()
-    {
-      using (new CultureScope ("de-DE"))
-      {
-        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
-        var statelessAcl = CreateStatelessAcl (Ace);
-        var acls = ListMother.New (Acl, statelessAcl);
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
-        var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
-        var result = To.String.e (aclExpansionTree).ToString();
-        var resultExpected =
-        #region
- @"{
-([""DaUs""],2,
-{
-  ([""DaUs"",""Da Group"",""Supreme Being""],2,
-  {
-    ([""Remotion.SecurityManager.UnitTests.TestDomain.Order""],1,
-    {
-      ([user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""Write""]},denied={},conditions=[tenantMustOwn=True]],1,
-      [
-        [user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""Write""]},denied={},conditions=[tenantMustOwn=True]],
-        ])}),
-    ([""Bestellung""],1,
-    {
-      ([user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""FirstAccessType""],[""Read""],[""Delete""]},denied={},conditions=[]],2,
-      [
-        [user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""FirstAccessType""],[""Read""],[""Delete""]},denied={},conditions=[]],
-        [user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""FirstAccessType""],[""Read""],[""Delete""]},denied={},conditions=[]],
-        ])})})})}";
-        #endregion
-        Assert.That (result, Is.EqualTo (resultExpected));
-      }
-    }
-
-
-
-
-    public static void LogAclExpansionTree (AclExpansionTree aclExpansionTree)
-    {
-      To.Console.IndentationString = "  ";
-      To.Console.AllowNewline = true;
-      To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
-    }
-
-    public void WriteAclExpansionTreeToConsole (AclExpansionTree aclExpansionTree)
-    {
-      To.Console.IndentationString = "  ";
-      To.Console.AllowNewline = true;
-      To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
-    }
-
-    public void WriteAclExpansionAsHtmlToDisk (List<AclExpansionEntry> aclExpansion, string fileName)
-    {
-      using (var textWriter = new StreamWriter (fileName))
-      {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true,
-            new AclExpansionHtmlWriterSettings { OutputRowCount = true });
-        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
-      }
-    }
-
-
     private AccessControlList CreateStatelessAcl (params AccessControlEntry[] aces)
     {
       SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
@@ -234,8 +168,5 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
       return statlessAcl;
     }
-
-
- 
   }
 }

@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <summary>
   /// Represents a row in an access control list expansion (see <see cref="AclExpander"/>).
   /// </summary>
- public class AclExpansionEntry : IToTextConvertible
+ public class AclExpansionEntry
   {
     private readonly AccessControlList _accessControlList;
 
@@ -82,15 +82,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AccessControlList AccessControlList
     {
       get { return _accessControlList; }
-    }
-
-
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role);
-      toTextBuilder.e ("allowed",AllowedAccessTypes).e ("denied",DeniedAccessTypes);
-      toTextBuilder.e ("conditions", AccessConditions).ie ();
     }
   }
 }

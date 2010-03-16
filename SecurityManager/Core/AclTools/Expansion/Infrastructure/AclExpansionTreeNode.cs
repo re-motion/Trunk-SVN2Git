@@ -16,12 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System.Collections.Generic;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
-  public class AclExpansionTreeNode<TParent, TChildren> : IToTextConvertible
+  public class AclExpansionTreeNode<TParent, TChildren>
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
@@ -36,10 +35,5 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     public TParent Key { get; private set; }
     public virtual IList<TChildren> Children { get; private set; }
     public virtual int NumberLeafNodes { get; private set; }
-    
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      toTextBuilder.nl ().sb ().e (Key).e (NumberLeafNodes).nl ().indent ().e (Children).unindent ().se ();
-    }
   }
 }

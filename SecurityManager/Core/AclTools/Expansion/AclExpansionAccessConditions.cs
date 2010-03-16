@@ -16,17 +16,15 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpansionAccessConditions  : IToTextConvertible  
+  public class AclExpansionAccessConditions  
   {
     private static readonly CompoundValueEqualityComparer<AclExpansionAccessConditions> _equalityComparer =
       new CompoundValueEqualityComparer<AclExpansionAccessConditions> (a => new object[] {
@@ -78,22 +76,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public override int GetHashCode ()
     {
       return EqualityComparer.GetHashCode (this);
-    }
-
-
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<AclExpansionAccessConditions>("");
-      toTextBuilder.eIfNotEqualTo ("userMustOwn", IsOwningUserRequired, false);
-      
-      //toTextBuilder.eIfNotEqualTo ("groupMustOwn", HasOwningGroupCondition, false);
-      toTextBuilder.eIfNotNull ("owningGroup", OwningGroup);
-      toTextBuilder.eIfNotEqualTo ("groupHierarchyCondition", GroupHierarchyCondition, GroupHierarchyCondition.Undefined);
-
-      toTextBuilder.eIfNotEqualTo ("tenantMustOwn", HasOwningTenantCondition, false);
-      toTextBuilder.eIfNotEqualTo ("abstractRoleMustMatch", IsAbstractRoleRequired, false).eIfNotNull ("abstractRole", AbstractRole);
-      toTextBuilder.ie ();
     }
   }
 }

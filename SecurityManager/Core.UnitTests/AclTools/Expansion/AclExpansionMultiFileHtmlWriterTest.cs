@@ -106,19 +106,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    public string WriteStringWriterFactory (StringWriterFactory stringWriterFactory)
-    {
-      ArgumentUtility.CheckNotNull ("stringWriterFactory", stringWriterFactory);
-      var toTextBuilderString = To.String;
-      foreach (KeyValuePair<string, TextWriterData> pair in stringWriterFactory.NameToTextWriterData)
-      {
-        toTextBuilderString.nl ().s ("AssertTextWriterFactoryMemberEquals(stringWriterFactory,").e (pair.Key).s (", ").e (pair.Value.TextWriter.ToString ().Escape ()).s (");");
-      }
-      return toTextBuilderString.ToString();
-    }
-
-
-  
     [Test]
     public void ToValidFileNameTest ()
     {
@@ -142,31 +129,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That(aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings, Is.EqualTo(settings));
     }
 
-
-    [Test]
-    [Explicit]
-    public void WriteUserFileTest ()
-    {
-      using (new CultureScope ("de-AT", "de-AT"))
-      {
-        var aclExpander = new AclExpander ();
-        var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
-        var streamWriterFactory = new StreamWriterFactory ();
-        streamWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + StringUtility.GetFileNameTimestampNow ());
-        var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (streamWriterFactory, true);
-        aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
-      }
-    }
-
-
-
     private void AssertTextWriterFactoryMemberEquals (StringWriterFactory stringWriterFactory, string name, string resultExpected)
     {
       var textWriterData = stringWriterFactory.GetTextWriterData (name);
       string result = textWriterData.TextWriter.ToString ();
       Assert.That (result, Is.EqualTo (resultExpected));
     }
-
-
   }
 }

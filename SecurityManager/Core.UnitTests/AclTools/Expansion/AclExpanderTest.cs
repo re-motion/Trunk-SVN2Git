@@ -704,28 +704,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
     }
 
-
-
-
-    [Test]
-    [Explicit]
-    public void GetAclExpansionEntryList_ComplexExpansionTest ()
-    {
-      var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User, User2, User3);
-      var numberRoles = users.SelectMany (x => x.Roles).Count ();
-      To.ConsoleLine.e(() => numberRoles);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.ListMother.New<AccessControlList> (Acl, Acl2);
-      var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
-      To.ConsoleLine.e (() => numberAces);
-      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
-      WriteAclExpansionAsHtmlToStreamWriter (aclExpansionEntryList, true);
-    }
-
-
-
-
-
-
     //--------------------------------------------------------------------------------------------------------------------------------
     // Helper Methods
     //--------------------------------------------------------------------------------------------------------------------------------
@@ -830,37 +808,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         }
       }
     }
-
-
-    private void OutputAccessStatistics (List<User> userList, List<AccessControlList> aclList)
-    {
-      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
-      userFinderStub.Expect (mock => mock.FindUsers ()).Return (userList);
-
-      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
-      aclFinderStub.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
-
-      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
-      foreach (User user in userList)
-      {
-        foreach (Role role in user.Roles)
-        {
-          foreach (AccessControlList acl in aclList)
-          {
-            foreach (AccessControlEntry ace in acl.AccessControlEntries)
-            {
-              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace));
-             // Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
-              To.ConsoleLine.s ("--------------------------------------------------------------------------------");
-              To.ConsoleLine.sb ().e (() => user).e (() => role).e (() => ace).e (() => acl).se();
-              To.ConsoleLine.e ("MatchingAces", accessTypesResult.AccessTypeStatistics.MatchingAces);
-              To.ConsoleLine.e ("AccessTypesSupplyingAces", accessTypesResult.AccessTypeStatistics.AccessTypesSupplyingAces);
-            }
-          }
-        }
-      }
-    }
-
   }
 
 }

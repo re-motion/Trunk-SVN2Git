@@ -16,14 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
-  public class StreamWriterFactory : TextWriterFactoryBase, IToTextConvertible
+  public class StreamWriterFactory : TextWriterFactoryBase
   {
     public override TextWriter CreateTextWriter (string directory, string name, string extension)
     {
@@ -36,9 +34,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       }
 
       if (NameToTextWriterData.ContainsKey (name))
-      {
-        throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s ("already exists.").ToString ());
-      }
+        throw new ArgumentException (string.Format ("TextWriter with name \"{0}\" already exists.", name));
 
       string nameWithExtension = AppendExtension (name, extension);
 
@@ -56,19 +52,5 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       }
       return CreateTextWriter (Directory, name, Extension);
     }
-
-
-    public void ToText (IToTextBuilder toTextBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.s ("StreamWriterFactory");
-      toTextBuilder.sb ();
-      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
-      {
-        toTextBuilder.e (pair.Key);
-      }
-      toTextBuilder.se ();
-    }
-
   }
 }

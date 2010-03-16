@@ -59,30 +59,5 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionAccessConditions.GetHashCode(), 
         Is.EqualTo (AclExpansionAccessConditions.EqualityComparer.GetHashCode (aclExpansionAccessConditions)));
     }
-
-
-    [Test]
-    public void ToTextDefaultConstructed ()
-    {
-      var accessConditions = new AclExpansionAccessConditions ();
-      var result = To.String.e (accessConditions).ToString ();
-      Assert.That (result, Is.EqualTo ("[]"));
-    }
-
-    [Test]
-    public void ToTextTest ()
-    {
-      var accessConditions = new AclExpansionAccessConditions ();
-      accessConditions.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("xyz", 123);
-      accessConditions.IsOwningUserRequired = true;
-      accessConditions.OwningGroup = Group2;
-      accessConditions.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren;
-      accessConditions.OwningTenant = Tenant;
-      accessConditions.TenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
-      var result = To.String.e (accessConditions).ToString ();
-      Assert.That (result, Is.EqualTo (@"[userMustOwn=True,owningGroup=[""Anotha Group""],groupHierarchyCondition=ThisAndParentAndChildren,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole=[""xyz""]]"));
-    }
-
-
   }
 }
