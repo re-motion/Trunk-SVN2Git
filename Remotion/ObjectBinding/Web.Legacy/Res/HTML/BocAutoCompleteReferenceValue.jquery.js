@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                 
+                // matches also semicolon                  
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab               
+                // re-motion: do not block event bubbling for tab                
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -698,16 +698,20 @@
             $(input).val(result);
             $.Autocompleter.Selection(input, 0, input.value.length);
 
+            var resultsElement = $('.' + options.resultsClass);
+
             if (options.scroll) {
                 var offset = 0;
                 listItems.slice(0, active).each(function() {
                     offset += this.offsetHeight;
                 });
-                if ((offset + activeItem[0].offsetHeight - list.scrollTop()) > list[0].clientHeight) {
-                    list.scrollTop(offset + activeItem[0].offsetHeight - list.innerHeight());
-                } else if (offset < list.scrollTop()) {
-                    list.scrollTop(offset);
+
+                if ((offset + activeItem[0].offsetHeight - resultsElement.scrollTop()) > resultsElement[0].clientHeight) {
+                    resultsElement.scrollTop(offset + activeItem[0].offsetHeight - resultsElement.innerHeight());
+                } else if (offset < resultsElement.scrollTop()) {
+                    resultsElement.scrollTop(offset);
                 }
+
             }
         };
 
@@ -775,11 +779,9 @@
                 left: offset.left,
                 'max-height': maxHeight,
                 top: topPosition,
-                bottom: bottomPosition,
-                overflow: 'auto'
+                bottom: bottomPosition
             });
 
-            //console.log(topPosition + ': ' + bottomPosition);
         }
 
         function fillList() {
@@ -852,6 +854,20 @@
                 if (repositionTimer) clearInterval(repositionTimer);
                 repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
 
+                //re-motion: block blur bind as long we scroll dropDown list 
+                var revertInputStausTimeout = null;
+                function revertInputStaus() {
+                    config.mouseDownOnSelect = false;
+                    $(input).focus();
+                }
+                element.scroll(function() {
+                    config.mouseDownOnSelect = true;
+                    if (revertInputStausTimeout) clearTimeout(revertInputStausTimeout);
+                    revertInputStausTimeout = setTimeout(revertInputStaus, 50);
+                });
+
+
+
                 if (options.scroll) {
                     list.scrollTop(0);
 
@@ -869,6 +885,7 @@
                     }
 
                 }
+
             },
             selected: function() {
                 // re-motion: removing the CSS class does not provide any benefits, but prevents us from highlighting the currently selected value
