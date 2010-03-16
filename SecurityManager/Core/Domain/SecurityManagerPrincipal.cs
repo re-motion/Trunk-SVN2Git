@@ -63,6 +63,7 @@ namespace Remotion.SecurityManager.Domain
     }
 
     private ClientTransaction _transaction;
+    private int _revision;
     private readonly ObjectID _tenantID;
     private readonly ObjectID _userID;
     private readonly ObjectID _substitutionID;
@@ -104,7 +105,8 @@ namespace Remotion.SecurityManager.Domain
 
     public void Refresh ()
     {
-      InitializeClientTransaction ();
+      if (Revision.GetRevision() > _revision)
+        InitializeClientTransaction();
     }
 
     private Tenant GetTenant (ClientTransaction transaction)
@@ -143,6 +145,7 @@ namespace Remotion.SecurityManager.Domain
     private void InitializeClientTransaction ()
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
+      _revision = Revision.GetRevision();
       //TODO: Test SecurityClientTransactionExtension
       //TODO: Has effect on Tenant.GetPossibleParentTenants and Tenant.GetHierarchy
       //if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
