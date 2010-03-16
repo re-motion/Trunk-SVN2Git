@@ -51,10 +51,7 @@ namespace Remotion.SecurityManager.Domain
 
     public static ISecurityManagerPrincipal Current
     {
-      get
-      {
-        return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (s_currentKey) ?? SecurityManagerPrincipal.Null;
-      }
+      get { return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (s_currentKey) ?? Null; }
       set
       {
         ArgumentUtility.CheckNotNull ("value", value);
@@ -146,10 +143,9 @@ namespace Remotion.SecurityManager.Domain
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
       _revision = Revision.GetRevision();
-      //TODO: Test SecurityClientTransactionExtension
-      //TODO: Has effect on Tenant.GetPossibleParentTenants and Tenant.GetHierarchy
-      //if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-      //  _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
+
+      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+        _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
     }
 
     bool INullObject.IsNull
@@ -159,12 +155,11 @@ namespace Remotion.SecurityManager.Domain
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
-      string substitutedUser = null;
-      SecurityPrincipalRole substitutedRole = null;
-
-      //TODO: Test SecurityFreeSection
       using (new SecurityFreeSection())
       {
+        string substitutedUser = null;
+        SecurityPrincipalRole substitutedRole = null;
+
         Substitution substitution = Substitution;
         if (substitution != null)
         {

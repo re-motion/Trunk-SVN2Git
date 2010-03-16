@@ -20,10 +20,13 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
+using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain
 {
@@ -44,6 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       base.SetUp();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
+      SecurityConfiguration.Current.SecurityProvider = null;
       ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
     }
 
@@ -51,6 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       base.TearDown();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
+      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
@@ -221,6 +226,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     }
 
     [Test]
+    public void GetSecurityPrincipal_UsesSecurityFreeSection ()
+    {
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
+      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions().Where (s => s.SubstitutedRole != null).First();
+
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+
+      ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
+      Assert.That (securityPrincipal.IsNull, Is.False);
+      Assert.That (securityPrincipal.User, Is.EqualTo (user.UserName));
+    }
+
+    [Test]
     public void Serialization ()
     {
       User user = User.FindByUserName ("substituting.user");
@@ -249,6 +272,41 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       ISecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, null);
 
       Assert.That (principal.IsNull, Is.False);
+    }
+
+    [Test]
+    public void ActiveSecurityProviderAddsSecurityClientTransactionExtension ()
+    {
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      securityProviderStub.Stub (stub => stub.IsNull).Return (false);
+      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions().First();
+
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+
+      var bindingTransaction = principal.User.GetBindingTransaction();
+      Assert.That (bindingTransaction.Extensions.Count, Is.EqualTo (1));
+      Assert.That (bindingTransaction.Extensions[0], Is.InstanceOfType (typeof (SecurityClientTransactionExtension)));
+    }
+
+    [Test]
+    public void NullSecurityProviderDoesNotAddSecurityClientTransactionExtension ()
+    {
+      var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      securityProviderStub.Stub (stub => stub.IsNull).Return (true);
+      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions().First();
+
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+
+      var bindingTransaction = principal.User.GetBindingTransaction();
+      Assert.That (bindingTransaction.Extensions, Is.Empty);
     }
   }
 }
