@@ -27,7 +27,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
 
     // static members
 
-    public new static Cache<Tuple<Type, Type, string, BindingFlags>, Enum[]> Cache
+    public new static ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> Cache
     {
       get { return PermissionReflector.Cache; }
     }

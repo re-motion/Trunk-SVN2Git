@@ -38,9 +38,10 @@ namespace Remotion.Security.Metadata
 
     // static members
 
-    private static Cache<Tuple<Type, Type, string, BindingFlags>, Enum[]> s_cache = new Cache<Tuple<Type, Type, string, BindingFlags>, Enum[]>();
+    private static readonly ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> s_cache = 
+        new InterlockedCache<Tuple<Type, Type, string, BindingFlags>, Enum[]>();
 
-    protected static Cache<Tuple<Type, Type, string, BindingFlags>, Enum[]> Cache
+    protected static ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> Cache
     {
       get { return s_cache; }
     }
@@ -116,20 +117,7 @@ namespace Remotion.Security.Metadata
         where TAttribute: BaseDemandPermissionAttribute
     {
       var cacheKey = new Tuple<Type, Type, string, BindingFlags> (typeof (TAttribute), type, memberName, bindingFlags);
-      Enum[] cachedPermissions;
-      if (!s_cache.TryGetValue (cacheKey, out cachedPermissions))
-      {
-        Enum[] permissions = GetPermissions<TAttribute> (type, memberName, bindingFlags);
-        lock (s_cache)
-        {
-          if (!s_cache.TryGetValue (cacheKey, out cachedPermissions))
-          {
-            s_cache.Add (cacheKey, permissions);
-            cachedPermissions = permissions;
-          }
-        }
-      }
-      return cachedPermissions;
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (key.Item2, key.Item3, key.Item4));
     }
 
     private Enum[] GetPermissions<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
