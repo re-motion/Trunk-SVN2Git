@@ -16,16 +16,18 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Security;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -51,6 +53,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       _testHelper = new OrganizationalStructureTestHelper ();
       _testHelper.Transaction.EnterNonDiscardingScope();
+      SecurityConfiguration.Current.SecurityProvider = null;
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown ();
+
+      SecurityConfiguration.Current.SecurityProvider = null;
     }
 
     [Test]
@@ -82,7 +92,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [ExpectedException (typeof (RdbmsProviderException))]
     public void UniqueIdentifier_SameidentifierTwice ()
     {
-      Tenant tenant = _testHelper.CreateTenant ("TestTenant", "UID: testTenant");
+      _testHelper.CreateTenant ("TestTenant", "UID: testTenant");
 
       ClientTransactionScope.CurrentTransaction.Commit ();
     }
@@ -165,10 +175,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       Tenant root = _testHelper.CreateTenant ("Root", "UID: Root");
 
-      ObjectList<Tenant> tenants = root.GetHierachy ();
+      var tenants = root.GetHierachy().ToArray();
 
-      Assert.AreEqual (1, tenants.Count);
-      Assert.Contains (root, tenants);
+      Assert.That (tenants, Is.EquivalentTo (new[] { root }));
     }
 
     [Test]
@@ -180,12 +189,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Tenant child2 = _testHelper.CreateTenant ("Child2", "UID: Child2");
       child2.Parent = root;
 
-      ObjectList<Tenant> tenants = root.GetHierachy ();
+      var tenants = root.GetHierachy().ToArray();
 
-      Assert.AreEqual (3, tenants.Count);
-      Assert.Contains (root, tenants);
-      Assert.Contains (child1, tenants);
-      Assert.Contains (child2, tenants);
+      Assert.That (tenants, Is.EquivalentTo (new[] { root, child1, child2 }));
     }
 
     [Test]
@@ -199,13 +205,69 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Tenant grandChild1 = _testHelper.CreateTenant ("GrandChild1", "UID: GrandChild1");
       grandChild1.Parent = child1;
 
-      ObjectList<Tenant> tenants = root.GetHierachy ();
+      var tenants = root.GetHierachy().ToArray();
 
-      Assert.AreEqual (4, tenants.Count);
-      Assert.Contains (root, tenants);
-      Assert.Contains (child1, tenants);
-      Assert.Contains (child2, tenants);
-      Assert.Contains (grandChild1, tenants);
+      Assert.That (tenants, Is.EquivalentTo (new[] { root, child1, child2, grandChild1 }));
+    }
+
+    [Test]
+    public void GetHierachy_WithSecurity_PermissionDeniedOnChild ()
+    {
+      Tenant root = _testHelper.CreateTenant ("Root", "UID: Root");
+      Tenant child1 = _testHelper.CreateTenant ("Child1", "UID: Child1");
+      child1.Parent = root;
+      Tenant child2 = _testHelper.CreateTenant ("Child2", "UID: Child2");
+      child2.Parent = root;
+      Tenant grandChild1 = _testHelper.CreateTenant ("GrandChild1", "UID: GrandChild1");
+      grandChild1.Parent = child1;
+
+      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+
+      var child1SecurityContext = ((ISecurityContextFactory) child1).CreateSecurityContext();
+      securityProviderStub.Stub (
+          stub => stub.GetAccess (
+                      Arg<ISecurityContext>.Is.NotEqual (child1SecurityContext),
+                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+      securityProviderStub.Stub (
+          stub => stub.GetAccess (
+                      Arg.Is (child1SecurityContext),
+                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        var tenants = root.GetHierachy().ToArray();
+
+        Assert.That (tenants, Is.EquivalentTo (new[] { root, child2 }));
+      }
+    }
+
+    [Test]
+    public void GetHierachy_WithSecurity_PermissionDeniedOnRoot ()
+    {
+      Tenant root = _testHelper.CreateTenant ("Root", "UID: Root");
+      Tenant child1 = _testHelper.CreateTenant ("Child1", "UID: Child1");
+      child1.Parent = root;
+
+      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
+      SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
+
+      var rootSecurityContext = ((ISecurityContextFactory) root).CreateSecurityContext();
+      securityProviderStub.Stub (
+          stub => stub.GetAccess (
+                      Arg<ISecurityContext>.Is.NotEqual (rootSecurityContext),
+                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
+      securityProviderStub.Stub (
+          stub => stub.GetAccess (
+                      Arg.Is (rootSecurityContext),
+                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        var tenants = root.GetHierachy().ToArray();
+
+        Assert.That (tenants, Is.Empty);
+      }
     }
 
     #region IBusinessObjectWithIdentifier.UniqueIdentifier tests

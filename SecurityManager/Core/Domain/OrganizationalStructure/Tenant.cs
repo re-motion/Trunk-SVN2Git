@@ -19,8 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
@@ -51,12 +49,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     internal static Tenant NewObject ()
     {
-      return NewObject<Tenant> ();
+      return NewObject<Tenant>();
     }
 
-    public static new Tenant GetObject (ObjectID id)
+    public new static Tenant GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<Tenant> (id);
+      return GetObject<Tenant> (id);
     }
 
     public static ObjectList<Tenant> FindAll ()
@@ -92,7 +90,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected Tenant ()
     {
-      UniqueIdentifier = Guid.NewGuid ().ToString ();
+      UniqueIdentifier = Guid.NewGuid().ToString();
     }
 
     // methods and properties
@@ -124,9 +122,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     // TODO: UnitTests
     public List<Tenant> GetPossibleParentTenants (ObjectID tenantID)
     {
-      List<Tenant> clients = new List<Tenant> ();
+      List<Tenant> clients = new List<Tenant>();
 
-      foreach (Tenant tenant in FindAll ())
+      foreach (Tenant tenant in FindAll())
       {
         if ((!Children.Contains (tenant.ID)) && (tenant.ID != this.ID))
           clients.Add (tenant);
@@ -134,14 +132,17 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return clients;
     }
 
-    public ObjectList<Tenant> GetHierachy ()
+    /// <summary>
+    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access to the respective object.
+    /// </summary>
+    /// <remarks>This collection will be empty, if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
+    public IEnumerable<Tenant> GetHierachy ()
     {
-      ObjectList<Tenant> tenants = new ObjectList<Tenant> ();
-      tenants.Add (this);
-      foreach (Tenant tenant in Children)
-        tenants.UnionWith (tenant.GetHierachy ());
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
+        return new Tenant[0];
 
-      return tenants;
+      return new[] { this }.Union (Children.SelectMany (c => c.GetHierachy()));
     }
   }
 }
