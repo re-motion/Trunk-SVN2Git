@@ -23,16 +23,16 @@ namespace Remotion.Security
   /// <summary>
   /// Represents a nullable <see cref="IPrincipalProvider"/> according to the "Null Object Pattern".
   /// </summary>
-  public class PrincipalUserProvider : ExtendedProviderBase, IPrincipalProvider
+  public class NullPrincipalProvider : ExtendedProviderBase, IPrincipalProvider
   {
     private readonly NullSecurityPrincipal _securityPrincipal = new NullSecurityPrincipal();
 
-    public PrincipalUserProvider ()
+    public NullPrincipalProvider ()
         : this ("Null", new NameValueCollection())
     {
     }
 
-    public PrincipalUserProvider (string name, NameValueCollection config)
+    public NullPrincipalProvider (string name, NameValueCollection config)
         : base (name, config)
     {
     }

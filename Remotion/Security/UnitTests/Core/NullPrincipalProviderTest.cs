@@ -29,7 +29,7 @@ namespace Remotion.Security.UnitTests.Core
     [SetUp]
     public void SetUp()
     {
-      _provider = new PrincipalUserProvider();
+      _provider = new NullPrincipalProvider();
     }
 
     [Test]
@@ -38,7 +38,7 @@ namespace Remotion.Security.UnitTests.Core
       NameValueCollection config = new NameValueCollection ();
       config.Add ("description", "The Description");
 
-      ExtendedProviderBase provider = new PrincipalUserProvider ("Provider", config);
+      ExtendedProviderBase provider = new NullPrincipalProvider ("Provider", config);
 
       Assert.AreEqual ("Provider", provider.Name);
       Assert.AreEqual ("The Description", provider.Description);
