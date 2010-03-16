@@ -25,6 +25,7 @@ namespace Remotion.Security
   /// Provides an implementation of a nullable object according to the "Null Object Pattern", 
   /// extending <see cref="ProviderBase"/> and implementing <see cref="ISecurityProvider"/>.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class NullSecurityProvider : ExtendedProviderBase, ISecurityProvider
   {
     public NullSecurityProvider ()

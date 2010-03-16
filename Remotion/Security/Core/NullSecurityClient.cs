@@ -24,6 +24,7 @@ namespace Remotion.Security
   /// <summary>
   /// Represents a nullable <see cref="SecurityClient"/> according to the "Null Object Pattern".
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
   public class NullSecurityClient : SecurityClient, INullObject
   {
     public NullSecurityClient ()
@@ -36,7 +37,7 @@ namespace Remotion.Security
     {
     }
 
-    public override bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal user, AccessType[] requiredAccessTypes)
+    public override bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal user, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNull ("user", user);
@@ -45,7 +46,7 @@ namespace Remotion.Security
       return true;
     }
 
-    public override bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, AccessType[] requiredAccessTypes)
+    public override bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNull ("user", principal);

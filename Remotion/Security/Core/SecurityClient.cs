@@ -24,12 +24,14 @@ namespace Remotion.Security
 {
   public class SecurityClient : INullObject
   {
+    public static readonly SecurityClient Null = new NullSecurityClient();
+
     public static SecurityClient CreateSecurityClientFromConfiguration ()
     {
       ISecurityProvider securityProvider = SecurityConfiguration.Current.SecurityProvider;
 
       if (securityProvider.IsNull)
-        return new NullSecurityClient();
+        return SecurityClient.Null;
 
       return new SecurityClient (
           securityProvider,
