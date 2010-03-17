@@ -232,3 +232,24 @@ tr.underlinedMarkerCellRow td.formGridMarkersCell
   border-top: 0;
   border-bottom: 0;
 }
+
+div.listControlContent
+{
+  height: 100%;
+  position: relative;
+}
+
+div.listControlContent .listControlList
+{
+  position: absolute;
+  top: 0;
+  bottom: 2em;
+  overflow: auto;
+}
+
+div.listControlContent .listControlButtons
+{
+  position: absolute;
+  height: 1.8em;
+  bottom: 0;
+}
