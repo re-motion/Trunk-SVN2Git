@@ -347,6 +347,9 @@
     <Compile Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx.designer.cs">
       <DependentUpon>EditAccessControlEntryHeaderControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Classes\OrganizationalStructure\BaseListControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UI\SecurityManagerSearchWebService.asmx.cs">
       <DependentUpon>SecurityManagerSearchWebService.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -957,9 +960,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\OrganizationalStructure\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" Condition="" />

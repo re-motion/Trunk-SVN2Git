@@ -16,39 +16,27 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.Security.Configuration;
-using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (GroupTypeListControlResources))]
-  public partial class GroupTypeListControl : BaseControl
+  public partial class GroupTypeListControl : BaseListControl
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
-    }
-
-    protected new GroupTypeListFormFunction CurrentFunction
-    {
-      get { return (GroupTypeListFormFunction) base.CurrentFunction; }
     }
 
     protected override void OnLoad (EventArgs e)
@@ -56,42 +44,44 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       base.OnLoad (e);
 
       if (!IsPostBack)
-        GroupTypeList.SetSortingOrder (new BocListSortingOrderEntry ((IBocSortableColumnDefinition) GroupTypeList.FixedColumns[0], SortingDirection.Ascending));
-      GroupTypeList.LoadUnboundValue (GroupType.FindAll (), false);
-
-      if (SecurityConfiguration.Current.SecurityProvider != null)
       {
-        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+        GroupTypeList.SetSortingOrder (
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) GroupTypeList.FixedColumns[0], SortingDirection.Ascending));
+      }
+      GroupTypeList.LoadUnboundValue (GetValues(), false);
+
+      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+      {
+        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
         NewGroupTypeButton.Visible = securityClient.HasConstructorAccess (typeof (GroupType));
       }
     }
 
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      ResetListOnTenantChange (GroupTypeList);
+    }
+
     protected void GroupTypeList_ListItemCommandClick (object sender, BocListItemCommandClickEventArgs e)
     {
-      if (!Page.IsReturningPostBack)
-      {
-        EditGroupTypeFormFunction editGroupTypeFormFunction = new EditGroupTypeFormFunction (WxeTransactionMode.None, ((GroupType) e.BusinessObject).ID);
-        Page.ExecuteFunction (editGroupTypeFormFunction, WxeCallArguments.Default);
-      }
-      else
-      {
-        if (!((EditGroupTypeFormFunction) Page.ReturningFunction).HasUserCancelled)
-          GroupTypeList.LoadUnboundValue (GroupType.FindAll (), false);
-      }
+      HandleEditItemClick (GroupTypeList, e);
     }
 
     protected void NewGroupTypeButton_Click (object sender, EventArgs e)
     {
-      if (!Page.IsReturningPostBack)
-      {
-        EditGroupTypeFormFunction editGroupTypeFormFunction = new EditGroupTypeFormFunction (WxeTransactionMode.None, null);
-        Page.ExecuteFunction (editGroupTypeFormFunction, WxeCallArguments.Default);
-      }
-      else
-      {
-        if (!((EditGroupTypeFormFunction) Page.ReturningFunction).HasUserCancelled)
-          GroupTypeList.LoadUnboundValue (GroupType.FindAll (), false);
-      }
+      HandleNewButtonClick (GroupTypeList);
+    }
+
+    protected override IList GetValues ()
+    {
+      return GroupType.FindAll();
+    }
+
+    protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)
+    {
+      return new EditGroupTypeFormFunction (transactionMode, objectID);
     }
   }
 }

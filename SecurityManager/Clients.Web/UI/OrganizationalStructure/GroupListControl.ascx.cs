@@ -16,10 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.Security.Configuration;
-using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
@@ -31,25 +33,11 @@ using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (GroupListControlResources))]
-  public partial class GroupListControl : BaseControl
+  public partial class GroupListControl : BaseListControl
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
-    }
-
-    protected new GroupListFormFunction CurrentFunction
-    {
-      get { return (GroupListFormFunction) base.CurrentFunction; }
     }
 
     protected override void OnLoad (EventArgs e)
@@ -57,8 +45,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       base.OnLoad (e);
 
       if (!IsPostBack)
-        GroupList.SetSortingOrder (new BocListSortingOrderEntry ((IBocSortableColumnDefinition) GroupList.FixedColumns[0], SortingDirection.Ascending));
-      GroupList.LoadUnboundValue (Group.FindByTenantID (CurrentTenantID), IsPostBack);
+      {
+        GroupList.SetSortingOrder (
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) GroupList.FixedColumns[0], SortingDirection.Ascending));
+      }
+      GroupList.LoadUnboundValue (GetValues(), IsPostBack);
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
       {
@@ -72,36 +63,27 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnPreRender (e);
 
-      if (HasTenantChanged)
-        GroupList.LoadUnboundValue (Group.FindByTenantID (CurrentTenantID), false);
+      ResetListOnTenantChange (GroupList);
     }
 
     protected void GroupList_ListItemCommandClick (object sender, BocListItemCommandClickEventArgs e)
     {
-      if (!Page.IsReturningPostBack)
-      {
-        EditGroupFormFunction editGroupFormFunction = new EditGroupFormFunction (WxeTransactionMode.None, ((Group) e.BusinessObject).ID);
-        Page.ExecuteFunction (editGroupFormFunction, WxeCallArguments.Default);
-      }
-      else
-      {
-        if (!((EditGroupFormFunction) Page.ReturningFunction).HasUserCancelled)
-          GroupList.LoadUnboundValue (Group.FindByTenantID (CurrentFunction.TenantID), false);
-      }
+      HandleEditItemClick (GroupList, e);
     }
 
     protected void NewGroupButton_Click (object sender, EventArgs e)
     {
-      if (!Page.IsReturningPostBack)
-      {
-        EditGroupFormFunction editGroupFormFunction = new EditGroupFormFunction (WxeTransactionMode.None, null);
-        Page.ExecuteFunction (editGroupFormFunction, WxeCallArguments.Default);
-      }
-      else
-      {
-        if (!((EditGroupFormFunction) Page.ReturningFunction).HasUserCancelled)
-          GroupList.LoadUnboundValue (Group.FindByTenantID (CurrentFunction.TenantID), false);
-      }
+      HandleNewButtonClick (GroupList);
+    }
+
+    protected override IList GetValues ()
+    {
+      return Group.FindByTenantID (CurrentFunction.TenantID);
+    }
+
+    protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)
+    {
+      return new EditGroupFormFunction (transactionMode, objectID);
     }
   }
 }

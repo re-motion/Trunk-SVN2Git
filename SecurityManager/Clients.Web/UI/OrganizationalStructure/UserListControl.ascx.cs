@@ -16,41 +16,28 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.Security.Configuration;
-using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
-using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
   [WebMultiLingualResources (typeof (UserListControlResources))]
-  public partial class UserListControl : BaseControl
+  public partial class UserListControl : BaseListControl
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
-
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
-    }
-
-    protected new UserListFormFunction CurrentFunction
-    {
-      get { return (UserListFormFunction) base.CurrentFunction; }
     }
 
     protected override void OnLoad (EventArgs e)
@@ -58,13 +45,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       base.OnLoad (e);
 
       if (!IsPostBack)
-        UserList.SetSortingOrder (new BocListSortingOrderEntry ((IBocSortableColumnDefinition) UserList.FixedColumns[0], SortingDirection.Ascending));
-      UserList.LoadUnboundValue (User.FindByTenantID (CurrentTenantID), IsPostBack);
+      {
+        UserList.SetSortingOrder (
+            new BocListSortingOrderEntry ((IBocSortableColumnDefinition) UserList.FixedColumns[0], SortingDirection.Ascending));
+      }
+      UserList.LoadUnboundValue (GetValues(), IsPostBack);
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
       {
-        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-        Type userType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetUserType ();
+        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+        Type userType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetUserType();
         NewUserButton.Visible = securityClient.HasConstructorAccess (userType);
       }
     }
@@ -73,36 +63,27 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnPreRender (e);
 
-      if (HasTenantChanged)
-        UserList.LoadUnboundValue (User.FindByTenantID (CurrentTenantID), false);
+      ResetListOnTenantChange (UserList);
     }
 
     protected void UserList_ListItemCommandClick (object sender, BocListItemCommandClickEventArgs e)
     {
-      if (!Page.IsReturningPostBack)
-      {
-        EditUserFormFunction editUserFormFunction = new EditUserFormFunction (WxeTransactionMode.None, ((User) e.BusinessObject).ID);
-        Page.ExecuteFunction (editUserFormFunction, WxeCallArguments.Default);
-      }
-      else
-      {
-        if (!((EditUserFormFunction) Page.ReturningFunction).HasUserCancelled)
-          UserList.LoadUnboundValue (User.FindByTenantID (CurrentFunction.TenantID), false);
-      }
+      HandleEditItemClick (UserList, e);
     }
 
     protected void NewUserButton_Click (object sender, EventArgs e)
     {
-      if (!Page.IsReturningPostBack)
-      {
-        EditUserFormFunction editUserFormFunction = new EditUserFormFunction (WxeTransactionMode.None, null);
-        Page.ExecuteFunction (editUserFormFunction, WxeCallArguments.Default);
-      }
-      else
-      {
-        if (!((EditUserFormFunction) Page.ReturningFunction).HasUserCancelled)
-          UserList.LoadUnboundValue (User.FindByTenantID (CurrentFunction.TenantID), false);
-      }
+      HandleNewButtonClick (UserList);
+    }
+
+    protected override IList GetValues ()
+    {
+      return User.FindByTenantID (CurrentFunction.TenantID);
+    }
+
+    protected override FormFunction CreateEditFunction (ITransactionMode transactionMode, ObjectID objectID)
+    {
+      return new EditUserFormFunction (transactionMode, objectID);
     }
   }
 }
