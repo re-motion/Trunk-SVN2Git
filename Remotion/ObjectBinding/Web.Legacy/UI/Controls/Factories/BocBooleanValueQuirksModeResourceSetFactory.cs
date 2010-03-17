@@ -19,6 +19,7 @@ using System.Web;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -27,17 +28,18 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories
   /// <summary>
   /// Responsible for creating the <see cref="BocBooleanValue"/> <see cref="BocBooleanValueResourceSet"/> for quirks mode rendering.
   /// </summary>
-  public class BocBooleanValueQuirksModeResourceSetFactory
+  public class BocBooleanValueQuirksModeResourceSetFactory : IBocBooleanValueResourceSetFactory
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
     private const string c_nullIcon = "CheckBoxNull.gif";
     private const string c_defaultResourceGroup = "default";
 
-    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control)
+    public BocBooleanValueResourceSet CreateResourceSet (HttpContextBase context, IBocBooleanValue control, IResourceUrlFactory resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("httpContext", context);
       ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
       return control.CreateResourceSet() ?? CreateDefaultResourceSet (context, control);
     }
