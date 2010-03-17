@@ -189,21 +189,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       }
     }
 
-    // TODO: UnitTests
-    public List<Group> GetPossibleParentGroups (ObjectID tenantID)
-    {
-      ArgumentUtility.CheckNotNull ("tenantID", tenantID);
-
-      List<Group> groups = new List<Group>();
-
-      foreach (Group group in FindByTenantID (tenantID))
-      {
-        if ((!Children.Contains (group.ID)) && (group.ID != ID))
-          groups.Add (group);
-      }
-      return groups;
-    }
-
     protected override string GetOwningTenant ()
     {
       return Tenant == null ? null : Tenant.UniqueIdentifier;
@@ -212,6 +197,26 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     protected override string GetOwningGroup ()
     {
       return UniqueIdentifier;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="Group"/> objects that can be used as the parent for this <see cref="Group"/>, 
+    /// provided the user as read access for the respective object.
+    /// </summary>
+    /// <returns>
+    /// Returns all <see cref="Group"/> objects in the system, except those in the child-hierarchy
+    /// and those for which the user does not have <see cref="GeneralAccessTypes.Read"/> access.
+    /// </returns>
+    public IEnumerable<Group> GetPossibleParentGroups ()
+    {
+      Group[] hierarchy;
+      using (new SecurityFreeSection ())
+      {
+        hierarchy = GetHierachy ().ToArray ();
+      }
+
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      return Group.FindByTenantID (Tenant.ID).Except (hierarchy).Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>

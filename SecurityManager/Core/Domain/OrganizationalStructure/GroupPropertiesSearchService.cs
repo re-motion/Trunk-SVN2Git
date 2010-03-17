@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
@@ -41,7 +42,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
       if (group.Tenant == null)
         return new IBusinessObject[0];
-      return group.GetPossibleParentGroups (group.Tenant.ID).ToArray();
+      return group.GetPossibleParentGroups().ToArray();
     }
   }
 }

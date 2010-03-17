@@ -16,7 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -85,7 +85,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void Search ()
     {
-      List<Group> expectedParentGroups = _group.GetPossibleParentGroups (_group.Tenant.ID);
+      var expectedParentGroups = _group.GetPossibleParentGroups().ToArray();
       Assert.That (expectedParentGroups, Is.Not.Empty);
 
       IBusinessObject[] actualParentGroups = _searchService.Search (_group, _parentGroupProperty, null);
