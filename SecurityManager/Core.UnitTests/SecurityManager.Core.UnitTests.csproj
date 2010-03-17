@@ -153,6 +153,12 @@
     <Compile Include="Domain\DomainObjectDeleteHandlerTest.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\BindableObjectImplementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\Common.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\DeleteGroup.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\FindGroup.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\GroupTestBase.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\SecurableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\RolePropertiesSearchServiceTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\RoleTests\BindableObjectImpelementation.cs" />
@@ -169,9 +175,10 @@
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\IsActive.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\SubstitutionTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\BindableObjectImplementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetPossibleParentTenants.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetHierachy.cs" />
-    <Compile Include="Domain\OrganizationalStructure\TenantTests\Find.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\FindTenant.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\SecurableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\TenantTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\BindableObjectImplementation.cs" />
@@ -205,7 +212,7 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTypePositionTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureFactoryTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupPropertiesSearchServiceTest.cs" />
-    <Compile Include="Domain\OrganizationalStructure\GroupTest.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\GetPossibleParentGroups.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypeTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureTestHelper.cs" />
     <Compile Include="Domain\OrganizationalStructure\PositionTest.cs" />

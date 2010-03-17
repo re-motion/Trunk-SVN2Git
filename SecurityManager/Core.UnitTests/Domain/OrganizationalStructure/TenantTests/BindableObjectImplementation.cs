@@ -17,8 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -28,22 +26,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
   [TestFixture]
   public class BindableObjectImplementation : TenantTestBase
   {
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException))]
-    public void UniqueIdentifier_SameIdentifierTwice ()
-    {
-      var dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateEmptyDomain ();
-      
-      TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
-
-      ClientTransactionScope.CurrentTransaction.Commit();
-
-      TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
-
-      ClientTransactionScope.CurrentTransaction.Commit ();
-    }
-
     [Test]
     public void Get_UniqueIdentifier ()
     {

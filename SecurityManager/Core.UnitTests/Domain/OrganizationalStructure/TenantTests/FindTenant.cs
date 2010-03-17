@@ -23,7 +23,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.TenantTests
 {
   [TestFixture]
-  public class Find : TenantTestBase
+  public class FindTenant : TenantTestBase
   {
     private DatabaseFixtures _dbFixtures;
     private ObjectID _expectedTenantID;

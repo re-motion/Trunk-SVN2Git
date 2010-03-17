@@ -19,18 +19,21 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
 {
   [TestFixture]
-  public class Common : UserTestBase
+  public class Common : GroupTestBase
   {
     [Test]
     [ExpectedException (typeof (RdbmsProviderException))]
-    public void UserName_SameNameTwice ()
+    public void UniqueIdentifier_SameIdentifierTwice ()
     {
-      CreateUser();
-      CreateUser ();
+      Tenant tenant = _testHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "NewTenant2", Guid.NewGuid().ToString());
+      string groupUniqueIdentifier = Guid.NewGuid().ToString();
+      _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "NewGroup2", groupUniqueIdentifier, null, tenant);
+      _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "NewGroup3", groupUniqueIdentifier, null, tenant);
 
       ClientTransactionScope.CurrentTransaction.Commit();
     }
