@@ -132,14 +132,35 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <summary>
     /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective object.
     /// </summary>
-    /// <remarks>This sequence will be empty if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
+    /// <exception cref="PermissionDeniedException">
+    /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// </exception>
+    [DemandMethodPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Tenant> GetHierachy ()
     {
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      securityClient.CheckMethodAccess (this, "GetHierachy");
+
+      IEnumerable<Tenant> hierarchy = new[] { this };
+      foreach (var child in Children)
+        hierarchy = hierarchy.Concat (child.GetChildHierarchy (this));
+
+      return hierarchy;
+    }
+
+    private IEnumerable<Tenant> GetChildHierarchy (Tenant startPoint)
+    {
+      if (this == startPoint)
+      {
+        throw new InvalidOperationException (
+            string.Format ("The hierarchy for tenant '{0}' cannot be resolved because a circular reference exists.", startPoint.ID));
+      }
+
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
       if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
         return new Tenant[0];
 
-      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierachy()));
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetChildHierarchy (startPoint)));
     }
   }
 }
