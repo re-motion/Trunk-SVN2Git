@@ -23,6 +23,7 @@ using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -73,9 +74,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     private void RegisterStyleSheets ()
     {
-      string url = ResourceUrlResolver.GetResourceUrl (this, typeof (ResourceUrlResolver), ResourceType.Html,  ResourceTheme, "style.css");
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
 
-      HtmlHeadAppender.Current.RegisterStylesheetLink (this.GetType () + "style", url);
+      HtmlHeadAppender.Current.RegisterStylesheetLink (this.GetType () + "style", href);
 
       if (!HtmlHeadAppender.Current.IsRegistered (c_globalStyleFileKey))
       {

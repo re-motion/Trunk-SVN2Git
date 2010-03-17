@@ -168,3 +168,23 @@ table.accessControlEntryExpanded td.formGridTitleCell
 {
   display: none;
 }
+
+div.listControlContent
+{
+  height: 100%;
+  position: relative;
+}
+
+div.listControlContent .listControlList
+{
+  position: relative;
+  height: 95%;
+  overflow-y: auto;
+}
+
+div.listControlContent .listControlButtons
+{
+  position: absolute;
+  height: 1.8em;
+  bottom: 0;
+}
