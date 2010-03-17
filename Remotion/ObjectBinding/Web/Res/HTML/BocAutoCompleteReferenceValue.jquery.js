@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                 
+                // matches also semicolon                   
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab               
+                // re-motion: do not block event bubbling for tab                 
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -866,7 +866,16 @@
                     revertInputStausTimeout = setTimeout(revertInputStaus, 50);
                 });
                 
-                
+                //re-motion: scroll dropDown list to value from input
+                listItems.each(function(i) {
+                    if (this.outerText == $(input).val()) {
+                        element.scrollTop(this.offsetTop);
+                        $(this).addClass(CLASSES.ACTIVE);;
+                        active = i;
+                        return;
+                    }
+                });
+
 
                 if (options.scroll) {
                     list.scrollTop(0);
