@@ -83,6 +83,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     }
 
     [Test]
+    public void Test_WithCircularHierarchy_ThrowsInvalidOperationException ()
+    {
+      Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
+      Group child1 = TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
+      Group grandChild1 = TestHelper.CreateGroup ("GrandChild1", "UID: GrandChild1", child1, tenant);
+      Group grandChild2 = TestHelper.CreateGroup ("GrandChild2", "UID: GrandChild2", grandChild1, tenant);
+      root.Parent = grandChild2;
+
+      try
+      {
+        grandChild1.GetHierachy().ToArray();
+        Assert.Fail();
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo ("The hierarchy for group '" + grandChild1 + "' cannot be resolved because a circular reference exists."));
+      }
+    }
+
+    [Test]
     public void Test_WithSecurity_PermissionDeniedOnChild ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
@@ -113,30 +134,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     }
 
     [Test]
+    [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_WithSecurity_PermissionDeniedOnRoot ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
-      TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
 
       ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      var rootSecurityContext = ((ISecurityContextFactory) root).CreateSecurityContext ();
       securityProviderStub.Stub (
-          stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Is.NotEqual (rootSecurityContext),
-                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
-      securityProviderStub.Stub (
-          stub => stub.GetAccess (
-                      Arg.Is (rootSecurityContext),
-                      Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
+          stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        var groups = root.GetHierachy ().ToArray ();
-
-        Assert.That (groups, Is.Empty);
+        root.GetHierachy();
       }
     }
   }
