@@ -157,6 +157,7 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTests\Common.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\DeleteGroup.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\FindGroup.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GroupTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\SecurableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\RolePropertiesSearchServiceTestBase.cs" />

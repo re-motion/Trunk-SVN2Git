@@ -139,7 +139,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
         return new Tenant[0];
 
-      return new[] { this }.Union (Children.SelectMany (c => c.GetHierachy()));
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierachy()));
     }
   }
 }

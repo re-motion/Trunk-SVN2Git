@@ -213,5 +213,18 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       return UniqueIdentifier;
     }
+
+    /// <summary>
+    /// Gets the <see cref="Group"/> and all of its <see cref="Children"/>, provided the user as read access for the respective object.
+    /// </summary>
+    /// <remarks>This collection will be empty, if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
+    public IEnumerable<Group> GetHierachy ()
+    {
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
+        return new Group[0];
+
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierachy()));
+    }
   }
 }
