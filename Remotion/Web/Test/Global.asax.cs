@@ -46,7 +46,7 @@ namespace Remotion.Web.Test
 
       IWindsorContainer container = new WindsorContainer ();
 
-      RegisterRendererFactories (container, ".StandardMode.Factories");
+      RegisterRendererFactories (container, ".Factories");
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme> ().Instance (Remotion.Web.ResourceTheme.NovaBlue));
 
