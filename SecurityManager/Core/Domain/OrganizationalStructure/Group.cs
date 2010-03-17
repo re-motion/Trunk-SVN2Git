@@ -207,22 +207,28 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// Returns all <see cref="Group"/> objects in the system, except those in the child-hierarchy
     /// and those for which the user does not have <see cref="GeneralAccessTypes.Read"/> access.
     /// </returns>
+    /// <remarks>
+    /// <remarks>This sequence will be empty if <see cref="Group"/>'s <see cref="Tenant"/> property is null.</remarks>
+    /// </remarks>
     public IEnumerable<Group> GetPossibleParentGroups ()
     {
+      if (Tenant == null)
+        return new Group[0];
+
       Group[] hierarchy;
-      using (new SecurityFreeSection ())
+      using (new SecurityFreeSection())
       {
-        hierarchy = GetHierachy ().ToArray ();
+        hierarchy = GetHierachy().ToArray();
       }
 
-      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
       return Group.FindByTenantID (Tenant.ID).Except (hierarchy).Where (t => securityClient.HasAccess (t, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>
     /// Gets the <see cref="Group"/> and all of its <see cref="Children"/>, provided the user as read access for the respective object.
     /// </summary>
-    /// <remarks>This collection will be empty, if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
+    /// <remarks>This sequence will be empty if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
     public IEnumerable<Group> GetHierachy ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();

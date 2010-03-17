@@ -131,5 +131,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Assert.That (groups, Is.Not.Empty);
       Assert.That (groups, Is.EquivalentTo (expectedGroups));
     }
+
+    [Test]
+    public void Test_TenantNullReturnsEmptyList ()
+    {
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, null);
+
+      var groups = root.GetPossibleParentGroups().ToArray();
+
+      Assert.That (groups, Is.Empty);
+    }
   }
 }

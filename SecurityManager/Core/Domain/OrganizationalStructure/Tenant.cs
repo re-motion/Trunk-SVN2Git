@@ -132,7 +132,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <summary>
     /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective object.
     /// </summary>
-    /// <remarks>This collection will be empty, if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
+    /// <remarks>This sequence will be empty if the user does not have <see cref="GeneralAccessTypes.Read"/> access on the current object.</remarks>
     public IEnumerable<Tenant> GetHierachy ()
     {
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();

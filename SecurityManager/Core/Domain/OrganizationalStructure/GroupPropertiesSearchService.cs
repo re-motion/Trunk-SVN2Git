@@ -40,8 +40,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("group", group);
 
-      if (group.Tenant == null)
-        return new IBusinessObject[0];
       return group.GetPossibleParentGroups().ToArray();
     }
   }
