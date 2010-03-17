@@ -777,7 +777,7 @@
             element.css({
                 width: elementWidth,
                 left: offset.left,
-                'max-height': maxHeight,
+                height: maxHeight,
                 top: topPosition,
                 bottom: bottomPosition
             });
