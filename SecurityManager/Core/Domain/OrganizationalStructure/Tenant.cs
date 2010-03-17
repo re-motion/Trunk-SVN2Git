@@ -117,6 +117,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// Returns all <see cref="Tenant"/> objects in the system, except those in the child-hierarchy
     /// and those for which the user does not have <see cref="GeneralAccessTypes.Read"/> access.
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the child-hierarchy of this <see cref="Tenant"/> contains a circular reference.
+    /// </exception>
     public IEnumerable<Tenant> GetPossibleParentTenants ()
     {
       Tenant[] hierarchy;
@@ -130,10 +133,13 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     }
 
     /// <summary>
-    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective object.
+    /// Gets the <see cref="Tenant"/> and all of its <see cref="Children"/>, provided the user as read access for the respective child-object.
     /// </summary>
     /// <exception cref="PermissionDeniedException">
     /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the hierarchy contains a circular reference.
     /// </exception>
     [DemandMethodPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Tenant> GetHierachy ()

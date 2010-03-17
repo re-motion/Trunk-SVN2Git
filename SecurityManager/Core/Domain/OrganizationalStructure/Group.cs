@@ -210,6 +210,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// <remarks>
     /// <remarks>This sequence will be empty if <see cref="Group"/>'s <see cref="Tenant"/> property is null.</remarks>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the child-hierarchy of this <see cref="Group"/> contains a circular reference.
+    /// </exception>
     public IEnumerable<Group> GetPossibleParentGroups ()
     {
       if (Tenant == null)
@@ -230,6 +233,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     /// </summary>
     /// <exception cref="PermissionDeniedException">
     /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the hierarchy contains a circular reference.
     /// </exception>
     [DemandMethodPermission (GeneralAccessTypes.Read)]
     public IEnumerable<Group> GetHierachy ()
