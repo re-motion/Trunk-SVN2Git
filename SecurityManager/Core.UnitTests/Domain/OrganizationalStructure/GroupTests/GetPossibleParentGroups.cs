@@ -30,6 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   public class GetPossibleParentGroups : GroupTestBase
   {
     private DatabaseFixtures _dbFixtures;
+    private ObjectID _expectedTenantID;
 
     public override void TestFixtureSetUp ()
     {
@@ -38,27 +39,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       _dbFixtures = new DatabaseFixtures();
       Tenant tenant = _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
       _expectedTenantID = tenant.ID;
-    }
-
-    //TODO: Refactor to mock
-    [Test]
-    public void SearchParentGroups ()
-    {
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
-          typeof (GroupPropertiesSearchService), new GroupPropertiesSearchService());
-      IBusinessObjectClass groupClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (Group));
-      IBusinessObjectReferenceProperty parentGroupProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Parent");
-      Assert.That (parentGroupProperty, Is.Not.Null);
-
-      Group group = Group.FindByUnqiueIdentifier ("UID: group0");
-      Assert.That (group, Is.Not.Null);
-      List<Group> expectedParentGroups = group.GetPossibleParentGroups (group.Tenant.ID);
-      Assert.That (expectedParentGroups, Is.Not.Empty);
-
-      Assert.That (parentGroupProperty.SupportsSearchAvailableObjects, Is.True);
-
-      IBusinessObject[] actualParentGroups = parentGroupProperty.SearchAvailableObjects (group, null);
-      Assert.That (actualParentGroups, Is.EquivalentTo (expectedParentGroups));
     }
   }
 }

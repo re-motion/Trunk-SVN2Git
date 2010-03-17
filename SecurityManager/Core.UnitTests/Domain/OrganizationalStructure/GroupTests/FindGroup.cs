@@ -26,6 +26,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   public class FindGroup : GroupTestBase
   {
     private DatabaseFixtures _dbFixtures;
+    private ObjectID _expectedTenantID;
 
     public override void TestFixtureSetUp ()
     {
@@ -55,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     [Test]
     public void Find_GroupsByTenantID ()
     {
-      DomainObjectCollection groups = Group.FindByTenantID (ExpectedTenantID);
+      DomainObjectCollection groups = Group.FindByTenantID (_expectedTenantID);
 
       Assert.AreEqual (9, groups.Count);
     }

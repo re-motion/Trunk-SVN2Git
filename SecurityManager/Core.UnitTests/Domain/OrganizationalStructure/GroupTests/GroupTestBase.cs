@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -26,12 +25,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
   public class GroupTestBase : DomainTest
   {
     protected OrganizationalStructureTestHelper _testHelper;
-    protected ObjectID _expectedTenantID;
-
-    public ObjectID ExpectedTenantID
-    {
-      get { return _expectedTenantID; }
-    }
 
     public override void SetUp ()
     {
@@ -47,6 +40,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     {
       base.TearDown();
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+    }
+
+    public OrganizationalStructureTestHelper TestHelper
+    {
+      get { return _testHelper; }
     }
 
     protected Group CreateGroup ()
