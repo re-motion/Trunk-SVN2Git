@@ -20,7 +20,6 @@ using System.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
@@ -51,12 +50,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       }
       TenantList.LoadUnboundValue (GetValues(), IsPostBack);
 
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-      {
-        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-        Type tenantType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetTenantType();
-        NewTenantButton.Visible = securityClient.HasConstructorAccess (tenantType);
-      }
+      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+      Type tenantType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetTenantType();
+      NewTenantButton.Visible = securityClient.HasConstructorAccess (tenantType);
     }
 
     protected override void OnPreRender (EventArgs e)

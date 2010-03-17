@@ -51,12 +51,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       }
       PositionList.LoadUnboundValue (GetValues(), false);
 
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-      {
-        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-        Type positionType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetPositionType();
-        NewPositionButton.Visible = securityClient.HasConstructorAccess (positionType);
-      }
+      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+      Type positionType = SecurityManagerConfiguration.Current.OrganizationalStructureFactory.GetPositionType();
+      NewPositionButton.Visible = securityClient.HasConstructorAccess (positionType);
     }
 
     protected override void OnPreRender (EventArgs e)

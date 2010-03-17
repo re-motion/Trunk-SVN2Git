@@ -50,11 +50,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       }
       GroupTypeList.LoadUnboundValue (GetValues(), false);
 
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-      {
-        SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
-        NewGroupTypeButton.Visible = securityClient.HasConstructorAccess (typeof (GroupType));
-      }
+      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
+      NewGroupTypeButton.Visible = securityClient.HasConstructorAccess (typeof (GroupType));
     }
 
     protected override void OnPreRender (EventArgs e)
