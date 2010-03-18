@@ -1,8 +1,53 @@
 /* Style applied to the BocList. */
-.bocList
+div.bocList
+{
+    display: block;
+    width: 100%;
+    height: 100%;
+	position: relative;
+	min-height: 5em;
+}
+
+/*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
+div.bocList.hasHeight div.bocListTableBlock,
+div.bocList.hasWidth div.bocListTableBlock,
+div.bocList.hasHeight div.bocListTableBlock div.bocListTable,
+div.bocList.hasWidth div.bocListTableBlock div.bocListTable
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+div.bocListTableBlock.withoutMenuBlock div.bocListTable
+{
+  right: 0;  
+}
+
+div.bocListTableBlock.hasMenuBlock div.bocListTable
+{
+  right: 9.5em;  
+}
+
+div.bocListNavigator
 {
 }
 
+div.bocList.hasHeight div.bocListNavigator,
+div.bocList.hasWidth div.bocListNavigator
+{
+	position: absolute;
+	bottom: 0;
+}
+
+div.bocListMenuBlock
+{
+    display: block;
+    float: right;
+    width: 9em;
+}
 /* Style applied to the BocList in read-only mode. */
 .bocList.readOnly
 {
@@ -12,11 +57,18 @@
 /* Style applied to the div surrounding the BocList's table. */
 div.bocListTable
 {
+    display: block;
+    width: auto;
+    height: auto;
+	overflow: auto;
 }
+
 
 /*  Style applied to the div surrounding the BocList's table when the list is read-only. */
 .bocList.readOnly div.bocListTable
 {
+  border-collapse: collapse;
+  border-style: none;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -26,6 +78,17 @@ table.bocListTable
   border-collapse: collapse;
   border-style: none;
 }
+
+/*  Style applied to the BocList's table's inner structure.  */
+div.bocListTableBlock
+{
+    display: block;
+    width: auto;
+	overflow: hidden;
+	margin-right: 10em;
+}
+
+
 
 td.bocListMenuBlock
 {
