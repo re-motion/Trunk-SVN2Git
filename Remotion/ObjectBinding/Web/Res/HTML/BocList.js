@@ -108,7 +108,19 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
     }
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
+
+  BocList_CheckWidthHeightStyle(bocList); 
 }
+
+/*BocList_OnResize*/
+function BocList_CheckWidthHeightStyle(bocList) 
+{
+    var curr_width = parseInt(bocList.style.width) || 0;
+    if (curr_width > 0) $(bocList).addClass('hasWidth');
+    var curr_height = parseInt(bocList.style.height) || 0;
+    if (curr_height > 0) $(bocList).addClass('hasHeight');
+}
+
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
 {
