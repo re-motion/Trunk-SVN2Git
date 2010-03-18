@@ -2,10 +2,8 @@
 div.bocList
 {
     display: block;
-    width: 100%;
-    height: 100%;
 	position: relative;
-	min-height: 5em;
+	min-height: 10em;
 }
 
 /*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
@@ -19,6 +17,13 @@ div.bocList.hasWidth div.bocListTableBlock div.bocListTable
 	left: 0;
 	bottom: 0;
 	right: 0;
+	overflow: auto;
+}
+
+div.bocList.hasHeight div.bocListTableBlock.hasListNavigator div.bocListTable,
+div.bocList.hasWidth div.bocListTableBlock.hasListNavigator div.bocListTable
+{
+	bottom: 1.5em;
 }
 
 div.bocListTableBlock.withoutMenuBlock div.bocListTable
@@ -33,6 +38,8 @@ div.bocListTableBlock.hasMenuBlock div.bocListTable
 
 div.bocListNavigator
 {
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 div.bocList.hasHeight div.bocListNavigator,
@@ -60,7 +67,6 @@ div.bocListTable
     display: block;
     width: auto;
     height: auto;
-	overflow: auto;
 }
 
 
