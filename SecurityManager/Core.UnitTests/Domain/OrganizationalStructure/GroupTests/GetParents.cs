@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.GroupTests
 {
   [TestFixture]
-  public class GetHierarchy : GroupTestBase
+  public class GetParents : GroupTestBase
   {
     public override void SetUp ()
     {
@@ -45,93 +45,111 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     }
 
     [Test]
-    public void Test_NoChildren ()
+    public void Test_NoParents ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
 
-      var groups = root.GetHierachy().ToArray();
+      var groups = root.GetParents().ToArray();
 
-      Assert.That (groups, Is.EquivalentTo (new[] { root }));
+      Assert.That (groups, Is.Empty);
     }
 
     [Test]
-    public void Test_NoGrandChildren ()
+    public void Test_NoGrandParents ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
-      Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
-      Group child1 = TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
-      Group child2 = TestHelper.CreateGroup ("Child2", "UID: Child2", root, tenant);
+      Group parent = TestHelper.CreateGroup ("parent1", "UID: parent", null, tenant);
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
 
-      var groups = root.GetHierachy().ToArray();
+      var groups = root.GetParents().ToArray();
 
-      Assert.That (groups, Is.EquivalentTo (new[] { root, child1, child2 }));
+      Assert.That (groups, Is.EquivalentTo (new[] { parent }));
     }
 
     [Test]
-    public void Test_WithGrandChildren ()
+    public void Test_WithGrandParents ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
-      Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
-      Group child1 = TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
-      Group child2 = TestHelper.CreateGroup ("Child2", "UID: Child2", root, tenant);
-      Group grandChild1 = TestHelper.CreateGroup ("GrandChild1", "UID: GrandChild1", child1, tenant);
+      Group grandParent = TestHelper.CreateGroup ("Grandparent1", "UID: Grandparent1", null, tenant);
+      Group parent = TestHelper.CreateGroup ("parent1", "UID: parent", grandParent, tenant);
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
 
-      var groups = root.GetHierachy().ToArray();
+      var groups = root.GetParents().ToArray();
 
-      Assert.That (groups, Is.EquivalentTo (new[] { root, child1, child2, grandChild1 }));
+      Assert.That (groups, Is.EquivalentTo (new[] { parent, grandParent }));
     }
 
     [Test]
     public void Test_WithCircularHierarchy_ThrowsInvalidOperationException ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
-      Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
-      Group child1 = TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
-      Group grandChild1 = TestHelper.CreateGroup ("GrandChild1", "UID: GrandChild1", child1, tenant);
-      Group grandChild2 = TestHelper.CreateGroup ("GrandChild2", "UID: GrandChild2", grandChild1, tenant);
-      root.Parent = grandChild2;
+      Group grandParent2 = TestHelper.CreateGroup ("Grandparent2", "UID: Grandparent2", null, tenant);
+      Group grandParent1 = TestHelper.CreateGroup ("Grandparent1", "UID: Grandparent1", grandParent2, tenant);
+      Group parent = TestHelper.CreateGroup ("parent1", "UID: parent", grandParent1, tenant);
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
+      grandParent2.Parent = root;
 
       try
       {
-        grandChild1.GetHierachy().ToArray();
+        grandParent1.GetParents().ToArray();
         Assert.Fail();
       }
       catch (InvalidOperationException ex)
       {
         Assert.That (
             ex.Message,
-            Is.EqualTo ("The hierarchy for group '" + grandChild1.ID + "' cannot be resolved because a circular reference exists."));
+            Is.EqualTo ("The parent hierarchy for group '" + grandParent1.ID + "' cannot be resolved because a circular reference exists."));
       }
     }
 
     [Test]
-    public void Test_WithSecurity_PermissionDeniedOnChild ()
+    public void Test_WithCircularHierarchy_GroupIsOwnParent_ThrowsInvalidOperationException ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
-      Group child1 = TestHelper.CreateGroup ("Child1", "UID: Child1", root, tenant);
-      Group child2 = TestHelper.CreateGroup ("Child2", "UID: Child2", root, tenant);
-      TestHelper.CreateGroup ("GrandChild1", "UID: GrandChild1", child1, tenant);
+      root.Parent = root;
 
-      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      try
+      {
+        root.GetParents ().ToArray ();
+        Assert.Fail ();
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (
+            ex.Message,
+            Is.EqualTo ("The parent hierarchy for group '" + root.ID + "' cannot be resolved because a circular reference exists."));
+      }
+    }
+
+    [Test]
+    public void Test_WithSecurity_PermissionDeniedOnParent ()
+    {
+      Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+      Group grandParent2 = TestHelper.CreateGroup ("Grandparent1", "UID: Grandparent2", null, tenant);
+      Group grandParent1 = TestHelper.CreateGroup ("Grandparent1", "UID: Grandparent1", grandParent2, tenant);
+      Group parent = TestHelper.CreateGroup ("parent1", "UID: parent", grandParent1, tenant);
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", parent, tenant);
+
+      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
-      var child1SecurityContext = ((ISecurityContextFactory) child1).CreateSecurityContext ();
+      var grandParent1SecurityContext = ((ISecurityContextFactory) grandParent1).CreateSecurityContext();
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Is.NotEqual (child1SecurityContext),
+                      Arg<ISecurityContext>.Is.NotEqual (grandParent1SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg.Is (child1SecurityContext),
+                      Arg.Is (grandParent1SecurityContext),
                       Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        var groups = root.GetHierachy ().ToArray ();
+        var groups = root.GetParents().ToArray();
 
-        Assert.That (groups, Is.EquivalentTo (new[] { root, child2 }));
+        Assert.That (groups, Is.EquivalentTo (new[] { parent }));
       }
     }
 
@@ -142,15 +160,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
       Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
 
-      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider> ();
+      ISecurityProvider securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
 
       securityProviderStub.Stub (
           stub => stub.GetAccess (Arg<SecurityContext>.Is.Anything, Arg<ISecurityPrincipal>.Is.Anything)).Return (new AccessType[0]);
 
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        root.GetHierachy();
+        root.GetParents().ToArray();
       }
     }
   }

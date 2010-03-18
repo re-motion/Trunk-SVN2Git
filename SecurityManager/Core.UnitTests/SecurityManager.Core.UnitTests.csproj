@@ -155,6 +155,7 @@
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\Common.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\GetParents.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\DeleteGroup.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\FindGroup.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />
