@@ -46,10 +46,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithPrincipalInOwningGroup_Matches ()
+    public void TokenWithPrincipalInOwningGroup_OwningGroupIsBelowBranchRoot_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
+      TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void TokenWithPrincipalInOwningGroup_OwningGroupIsBranchRoot_Matches ()
+    {
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      Group owningGroup = _companyHelper.AustrianDivsion;
       TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
 
       SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);

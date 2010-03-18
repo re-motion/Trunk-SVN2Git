@@ -18,8 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Diagnostics.ToText;
-using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -180,7 +178,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 
     private static Group FindFirstGroupInThisAndParentHierarchyWhichHasGroupType (Group group, GroupType groupType)
     {
-      var thisAndParents = group.CreateSequence (t => t.Parent);
+      var thisAndParents = new[] { group }.Concat (group.GetParents());
       Group matchingGroup = thisAndParents.Where (g => g.GroupType == groupType).FirstOrDefault ();
       return matchingGroup;
     }

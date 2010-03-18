@@ -75,6 +75,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
+    public void AceWithGroupAndParentGroup_TokenWithPrincipalInGroup_Matches ()
+    {
+      _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      User owningUser = user;
+      Group owningGroup = _companyHelper.AustrianProjectsDepartment;
+      TestHelper.CreateRole (user, owningGroup, _companyHelper.MemberPosition);
+
+      SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, owningUser, null);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
     public void AceWithGroupAndParentGroup_TokenWithPrincipalInParent_Matches ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
@@ -84,6 +100,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Group parentGroup = owningGroup.Parent;
       Assert.That (parentGroup, Is.Not.Null);
       TestHelper.CreateRole (user, parentGroup, _companyHelper.MemberPosition);
+
+      SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, owningUser, null);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void AceWithGroupAndChildGroup_TokenWithPrincipalInGroup_Matches ()
+    {
+      _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren;
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      User owningUser = user;
+      Group owningGroup = _companyHelper.AustrianCarTeam;
+      TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
 
       SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, owningUser, null);
 

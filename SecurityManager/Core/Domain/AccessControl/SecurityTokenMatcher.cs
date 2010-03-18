@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.FunctionalProgramming;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -93,7 +92,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           throw CreateInvalidOperationException ("The value 'Parent' is not a valid value for matching the 'TenantHierarchyCondition'.");
 
         case TenantHierarchyCondition.ThisAndParent:
-          return referenceTenant.CreateSequence (t => t.Parent).Contains (principal.Tenant);
+          return new[] { referenceTenant }.Concat (referenceTenant.GetParents()).Contains (principal.Tenant);
 
         default:
           throw CreateInvalidOperationException (
@@ -186,7 +185,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
 
-      return referenceGroup.CreateSequence (g1 => g1.Parent).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
+      if (referenceGroup == null)
+        return null;
+
+      return new[] { referenceGroup }.Concat (referenceGroup.GetParents()).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
     }
 
     private bool MatchPrincipalAgainstGroup (Principal principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
@@ -198,10 +200,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       var principalGroups = roles.Select (r => r.Group);
 
       Func<bool> isPrincipalMatchingReferenceGroupOrParents =
-          () => principalGroups.Intersect (referenceGroup.CreateSequence (g => g.Parent)).Any();
-      
+          () => principalGroups.Intersect (new[] { referenceGroup }.Concat (referenceGroup.GetParents())).Any();
+
       Func<bool> isPrincipalMatchingReferenceGroupOrChildren =
-          () => principalGroups.SelectMany (g => g.CreateSequence (g1 => g1.Parent)).Contains (referenceGroup);
+          () => principalGroups.SelectMany (g => new[] { g }.Concat (g.GetParents())).Contains (referenceGroup);
 
       switch (groupHierarchyCondition)
       {
