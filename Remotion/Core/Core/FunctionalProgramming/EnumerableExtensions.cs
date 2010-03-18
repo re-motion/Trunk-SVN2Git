@@ -183,7 +183,8 @@ namespace Remotion.FunctionalProgramming
     /// <param name="source">The object to be transformed into a sequence.</param>
     /// <param name="nextElementSelector">A function to retrieve the next element in the sequence. Must not be <see langword="null" />.</param>
     /// <returns>
-    /// A sequence of elements containing the <paramref name="source"/> and all subsequent elements where each element satisfies a specified condition.
+    /// A sequence of elements containing the <paramref name="source"/> and all subsequent elements 
+    /// until the <paramref name="nextElementSelector"/> returns <see langword="null" />.
     /// </returns>
     public static IEnumerable<TSource> CreateSequence<TSource> (this TSource source, Func<TSource, TSource> nextElementSelector)
         where TSource : class
