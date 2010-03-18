@@ -412,7 +412,6 @@
     </Compile>
     <Compile Include="UI\OrganizationalStructure\TenantListControl.ascx.cs">
       <DependentUpon>TenantListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\TenantListControl.ascx.designer.cs">
       <DependentUpon>TenantListControl.ascx</DependentUpon>
@@ -531,7 +530,6 @@
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupListControl.ascx.cs">
       <DependentUpon>GroupListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupListControl.ascx.designer.cs">
       <DependentUpon>GroupListControl.ascx</DependentUpon>
@@ -545,7 +543,6 @@
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupTypeListControl.ascx.cs">
       <DependentUpon>GroupTypeListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupTypeListControl.ascx.designer.cs">
       <DependentUpon>GroupTypeListControl.ascx</DependentUpon>
@@ -559,7 +556,6 @@
     </Compile>
     <Compile Include="UI\OrganizationalStructure\PositionListControl.ascx.cs">
       <DependentUpon>PositionListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\PositionListControl.ascx.designer.cs">
       <DependentUpon>PositionListControl.ascx</DependentUpon>
@@ -587,7 +583,6 @@
     </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListControl.ascx.cs">
       <DependentUpon>UserListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListControl.ascx.designer.cs">
       <DependentUpon>UserListControl.ascx</DependentUpon>
