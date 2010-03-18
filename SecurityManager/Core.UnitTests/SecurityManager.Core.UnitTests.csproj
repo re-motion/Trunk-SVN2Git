@@ -160,6 +160,7 @@
     <Compile Include="Domain\OrganizationalStructure\GroupTests\FindGroup.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GroupTestBase.cs" />
+    <Compile Include="Domain\OrganizationalStructure\GroupTests\OnCommitting.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\SecurableObjectImpelementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\RolePropertiesSearchServiceTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />

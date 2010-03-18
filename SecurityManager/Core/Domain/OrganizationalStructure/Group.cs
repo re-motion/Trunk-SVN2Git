@@ -16,11 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
@@ -291,6 +291,46 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         return new Group[0];
 
       return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (startPoint)));
+    }
+
+    protected override void OnCommitting (EventArgs args)
+    {
+      base.OnCommitting (args);
+
+      CheckParentHierarchy();
+    }
+
+    private void CheckParentHierarchy ()
+    {
+      if (!Properties[typeof (Group), "Parent"].HasChanged)
+        return;
+
+      Func<Group, Group> parentResolver = g =>
+      {
+        if (g == this)
+        {
+          throw new InvalidOperationException (
+              string.Format ("Group '{0}' cannot be committed because it would result in a cirucular parent hierarchy.", ID));
+        }
+
+        return g.GetParentObjectReference();
+      };
+
+      foreach (var group in GetParentObjectReference().CreateSequence (parentResolver).Where (g => g.State != StateType.New))
+        group.MarkAsChanged();
+    }
+
+    private Group GetParentObjectReference ()
+    {
+      var parentID = Properties[typeof (Group), "Parent"].GetRelatedObjectID();
+      if (parentID == null)
+        return null;
+
+      var parent = (Group) LifetimeService.GetObjectReference (DefaultTransactionContext.ClientTransaction, parentID);
+      if (parent.State == StateType.Unchanged)
+        UnloadService.UnloadData (DefaultTransactionContext.ClientTransaction, parent.ID, UnloadTransactionMode.ThisTransactionOnly);
+     
+      return parent;
     }
   }
 }
