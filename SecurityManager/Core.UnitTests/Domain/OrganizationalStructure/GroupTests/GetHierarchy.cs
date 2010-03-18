@@ -106,6 +106,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     }
 
     [Test]
+    public void Test_WithCircularHierarchy_GroupIsOwnChild_ThrowsInvalidOperationException ()
+    {
+      Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");
+      Group root = TestHelper.CreateGroup ("Root", "UID: Root", null, tenant);
+      root.Parent = root;
+
+      try
+      {
+        root.GetHierachy ().ToArray ();
+        Assert.Fail ();
+      }
+      catch (InvalidOperationException ex)
+      {
+        Assert.That (
+            ex.Message,
+            Is.EqualTo ("The hierarchy for group '" + root.ID + "' cannot be resolved because a circular reference exists."));
+      }
+    }
+
+    [Test]
     public void Test_WithSecurity_PermissionDeniedOnChild ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Tenant", "UID: Tenant");

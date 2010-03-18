@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -268,11 +269,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
       securityClient.CheckMethodAccess (this, "GetHierachy");
 
-      IEnumerable<Group> hierarchy = new[] { this };
-      foreach (var child in Children)
-        hierarchy = hierarchy.Concat (child.GetHierarchy (this));
-
-      return hierarchy;
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (this)));
     }
 
     /// <summary>

@@ -168,7 +168,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        root.GetParents().ToArray();
+        root.GetParents();
       }
     }
   }

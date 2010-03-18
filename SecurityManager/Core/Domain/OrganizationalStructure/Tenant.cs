@@ -147,14 +147,16 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
       securityClient.CheckMethodAccess (this, "GetHierachy");
 
-      IEnumerable<Tenant> hierarchy = new[] { this };
-      foreach (var child in Children)
-        hierarchy = hierarchy.Concat (child.GetChildHierarchy (this));
-
-      return hierarchy;
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (this)));
     }
 
-    private IEnumerable<Tenant> GetChildHierarchy (Tenant startPoint)
+    /// <summary>
+    /// Resolves the hierarchy for the current tenant as long as the user has <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the current object equals the <paramref name="startPoint"/>.
+    /// </exception>
+    private IEnumerable<Tenant> GetHierarchy (Tenant startPoint)
     {
       if (this == startPoint)
       {
@@ -166,7 +168,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       if (!securityClient.HasAccess (this, AccessType.Get (GeneralAccessTypes.Read)))
         return new Tenant[0];
 
-      return new[] { this }.Concat (Children.SelectMany (c => c.GetChildHierarchy (startPoint)));
+      return new[] { this }.Concat (Children.SelectMany (c => c.GetHierarchy (startPoint)));
     }
   }
 }
