@@ -22,6 +22,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -107,6 +108,32 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     protected override string GetOwningTenant ()
     {
       return UniqueIdentifier;
+    }
+
+    /// <summary>
+    /// Gets all the <see cref="Tenant"/> objects in the <see cref="Parent"/> hierarchy, 
+    /// provided the user has read access for the respective parent-object.
+    /// </summary>
+    /// <exception cref="PermissionDeniedException">
+    /// Thrown if the user does not have <see cref="GeneralAccessTypes.Read"/> permissions on the current object.
+    /// </exception>
+    [DemandMethodPermission (GeneralAccessTypes.Read)]
+    public IEnumerable<Tenant> GetParents ()
+    {
+      var securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      securityClient.CheckMethodAccess (this, "GetParents");
+
+      Func<Tenant, Tenant> parentResolver = g =>
+      {
+        if (g == this)
+        {
+          throw new InvalidOperationException (
+              string.Format ("The parent hierarchy for group '{0}' cannot be resolved because a circular reference exists.", ID));
+        }
+        return g.Parent;
+      };
+
+      return Parent.CreateSequence (parentResolver, g => g != null && securityClient.HasAccess (g, AccessType.Get (GeneralAccessTypes.Read)));
     }
 
     /// <summary>

@@ -178,6 +178,7 @@
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\SubstitutionTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\Common.cs" />
+    <Compile Include="Domain\OrganizationalStructure\TenantTests\GetParents.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetPossibleParentTenants.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\GetHierachy.cs" />
     <Compile Include="Domain\OrganizationalStructure\TenantTests\FindTenant.cs" />
