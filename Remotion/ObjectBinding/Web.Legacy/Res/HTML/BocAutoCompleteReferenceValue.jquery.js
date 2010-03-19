@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                         
+                // matches also semicolon                           
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab                       
+                // re-motion: do not block event bubbling for tab                         
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -253,10 +253,14 @@
         var dropdownButton = $('#' + options.dropDownButtonId);
         if (dropdownButton.length > 0) {
             dropdownButton.click(function() {
-                $input.focus();
-                onChange(1, true);
-                //adjustSelection( $input.val() );
-                clearTimeout(timeout);
+                if (select.visible()) {
+                    select.hide();
+                } else {
+                    $input.focus();
+                    onChange(1, true);
+                    //adjustSelection( $input.val() );
+                    clearTimeout(timeout);
+                }
             });
         }
 

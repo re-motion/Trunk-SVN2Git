@@ -253,10 +253,14 @@
         var dropdownButton = $('#' + options.dropDownButtonId);
         if (dropdownButton.length > 0) {
             dropdownButton.click(function() {
-                $input.focus();
-                onChange(1, true);
-                //adjustSelection( $input.val() );
-                clearTimeout(timeout);
+                if (select.visible()) {
+                    select.hide();
+                } else {
+                    $input.focus();
+                    onChange(1, true);
+                    //adjustSelection( $input.val() );
+                    clearTimeout(timeout);
+                } 
             });
         }
 
