@@ -49,7 +49,7 @@
                 // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
                 dropDownButtonId: null,
                 // re-motion: select first value in list unless textbox is empty
-                selectFirst: function() { return $input.val() != ''; }
+                selectFirst: function() { return false; }
             }, options);
 
             // if highlight is set to false, replace it with a do-nothing function
@@ -384,6 +384,9 @@
         };
 
         function hideResultsNow() {
+            if (config.mouseDownOnSelect)
+                return;
+
             var wasVisible = select.visible();
             select.hide();
             clearTimeout(timeout);
@@ -502,7 +505,7 @@
         mustMatch: false,
         extraParams: {},
         // re-motion: changed selectFirst from boolean field to function
-        selectFirst: function() { return true; },
+        selectFirst: function() { return false; },
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
@@ -696,7 +699,8 @@
             var activeItem = listItems.slice(active, active + 1).addClass(CLASSES.ACTIVE);
             var result = $.data(activeItem[0], "ac_data").result;
             $(input).val(result);
-            $.Autocompleter.Selection(input, 0, input.value.length);
+            // re-motion: do not select the text in the input element when moving the drop-down selection 
+            //$.Autocompleter.Selection(input, 0, input.value.length);
 
             var resultsElement = $('.' + options.resultsClass);
 
@@ -863,14 +867,14 @@
                 element.scroll(function() {
                     config.mouseDownOnSelect = true;
                     if (revertInputStausTimeout) clearTimeout(revertInputStausTimeout);
-                    revertInputStausTimeout = setTimeout(revertInputStaus, 50);
+                    revertInputStausTimeout = setTimeout(revertInputStaus, 500);
                 });
 
                 //re-motion: scroll dropDown list to value from input
                 listItems.each(function(i) {
                     if (this.outerText == $(input).val()) {
                         element.scrollTop(this.offsetTop);
-                        $(this).addClass(CLASSES.ACTIVE); ;
+                        $(this).addClass(CLASSES.ACTIVE);
                         active = i;
                         return;
                     }
