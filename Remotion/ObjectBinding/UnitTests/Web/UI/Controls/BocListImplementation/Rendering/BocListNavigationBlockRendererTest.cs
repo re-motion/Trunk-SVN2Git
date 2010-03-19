@@ -53,8 +53,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
-      Html.AssertStyleAttribute (div, "width", "100%");
-      Html.AssertStyleAttribute (div, "position", "relative");
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 1, 1) + c_tripleBlank, 0);
 
@@ -93,8 +91,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
-      Html.AssertStyleAttribute (div, "width", "100%");
-      Html.AssertStyleAttribute (div, "position", "relative");
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 1, 2) + c_tripleBlank, 0);
 
@@ -133,8 +129,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
-      Html.AssertStyleAttribute (div, "width", "100%");
-      Html.AssertStyleAttribute (div, "position", "relative");
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 2, 2) + c_tripleBlank, 0);
 
@@ -173,8 +167,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
-      Html.AssertStyleAttribute (div, "width", "100%");
-      Html.AssertStyleAttribute (div, "position", "relative");
 
       Html.AssertTextNode (div, string.Format (c_pageInfo, 2, 3) + c_tripleBlank, 0);
 

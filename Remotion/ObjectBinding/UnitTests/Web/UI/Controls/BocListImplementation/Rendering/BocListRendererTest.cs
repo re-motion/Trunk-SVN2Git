@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
@@ -27,57 +26,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   [TestFixture]
   public class BocListRendererTest : BocListRendererTestBase
   {
-    private StubServiceLocator ServiceLocator { get; set; }
+    private static readonly Unit s_menuBlockWidth = new Unit (123, UnitType.Pixel);
+    private static readonly Unit s_menuBlockOffset = new Unit (12, UnitType.Pixel);
 
     [SetUp]
     public void SetUp ()
     {
-      ServiceLocator = new StubServiceLocator();
-
       Initialize();
-
-      List.Stub (mock => mock.HasNavigator).Return (true);
     }
 
     [Test]
-    public void RenderWithMenuBlock ()
-    {
-      Unit menuBlockWidth = new Unit (123, UnitType.Pixel);
-      Unit menuBlockOffset = new Unit (12, UnitType.Pixel);
-
-      List.Stub (mock => mock.HasMenuBlock).Return (true);
-      List.Stub (mock => mock.MenuBlockWidth).Return (menuBlockWidth);
-      List.Stub (mock => mock.MenuBlockOffset).Return (menuBlockOffset);
-
-      XmlNode colgroup;
-      RenderAndAssertTable (out colgroup);
-
-      var colMenu = Html.GetAssertedChildElement (colgroup, "col", 1);
-      Html.AssertStyleAttribute (colMenu, "width", menuBlockWidth.ToString());
-      Html.AssertStyleAttribute (colMenu, "padding-left", menuBlockOffset.ToString());
-    }
-
-    [Test]
-    public void RenderWithoutMenuBlock ()
+    public void RenderOnlyTableBlock ()
     {
       List.Stub (mock => mock.HasMenuBlock).Return (false);
 
-      XmlNode colgroup;
-      RenderAndAssertTable (out colgroup);
-
-      Html.AssertChildElementCount (colgroup, 1);
-    }
-
-    private void RenderAndAssertTable (out XmlNode colgroup)
-    {
       var renderer = new BocListRenderer (
           HttpContext,
           List,
           MockRepository.GenerateStub<IResourceUrlFactory>(),
           CssClassContainer.Instance,
-          new StubRenderer(),
-          new StubRenderer(),
-          new StubRenderer());
+          new StubRenderer ("table"),
+          new StubRenderer ("navigation"),
+          new StubRenderer ("menu"));
       renderer.Render (Html.Writer);
 
       var document = Html.GetResultDocument();
@@ -85,21 +55,105 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (div, "id", "MyList");
 
-      var table = Html.GetAssertedChildElement (div, "table", 0);
-      Html.AssertAttribute (table, "cellspacing", "0");
-      Html.AssertAttribute (table, "cellpadding", "0");
-      Html.AssertStyleAttribute (table, "width", "100%");
+      var tableBlock = Html.GetAssertedChildElement (div, "div", 0);
+      Html.AssertAttribute (tableBlock, "class", "bocListTableBlock");
+      Html.AssertChildElementCount (tableBlock, 1);
+      Html.GetAssertedChildElement (tableBlock, "table", 0);
+    }
 
-      colgroup = Html.GetAssertedChildElement (table, "colgroup", 0);
+    [Test]
+    public void RenderWithMenuBlock ()
+    {
+      List.Stub (mock => mock.HasMenuBlock).Return (true);
+      List.Stub (mock => mock.MenuBlockWidth).Return (s_menuBlockWidth);
+      List.Stub (mock => mock.MenuBlockOffset).Return (s_menuBlockOffset);
 
-      var colTableAndNavigation = Html.GetAssertedChildElement (colgroup, "col", 0);
+      var renderer = new BocListRenderer (
+          HttpContext,
+          List,
+          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          CssClassContainer.Instance,
+          new StubRenderer ("table"),
+          new StubRenderer ("navigation"),
+          new StubRenderer ("menu"));
+      renderer.Render (Html.Writer);
 
-      var tr = Html.GetAssertedChildElement (table, "tr", 1);
+      var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (tr, "td", 0);
-      Html.AssertStyleAttribute (td, "vertical-align", "top");
+      var div = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (div, "id", "MyList");
 
-      Html.GetAssertedChildElement (td, "div", 0);
+      var menuBlock = Html.GetAssertedChildElement (div, "div", 0);
+      Html.AssertAttribute (menuBlock, "class", CssClassContainer.Instance.MenuBlock);
+      Html.AssertStyleAttribute (menuBlock, "width", s_menuBlockWidth.ToString());
+      Html.AssertStyleAttribute (menuBlock, "margin-left", s_menuBlockOffset.ToString());
+      Html.GetAssertedChildElement (menuBlock, "menu", 0);
+
+
+      var tableBlock = Html.GetAssertedChildElement (div, "div", 1);
+      Html.AssertAttribute (tableBlock, "class", "bocListTableBlock hasMenuBlock");
+
+      Html.AssertStyleAttribute (tableBlock, "right", s_menuBlockWidth.ToString ());
+
+      Html.GetAssertedChildElement (tableBlock, "table", 0);
+    }
+
+    [Test]
+    public void RenderWithMenuBlockWithoutWidth ()
+    {
+      List.Stub (mock => mock.HasMenuBlock).Return (true);
+
+      var renderer = new BocListRenderer (
+          HttpContext,
+          List,
+          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          CssClassContainer.Instance,
+          new StubRenderer ("table"),
+          new StubRenderer ("navigation"),
+          new StubRenderer ("menu"));
+      renderer.Render (Html.Writer);
+
+      var document = Html.GetResultDocument();
+
+      var div = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (div, "id", "MyList");
+
+      var menuBlock = Html.GetAssertedChildElement (div, "div", 0);
+      Html.AssertAttribute (menuBlock, "class", CssClassContainer.Instance.MenuBlock);
+      Html.GetAssertedChildElement (menuBlock, "menu", 0);
+
+
+      var tableBlock = Html.GetAssertedChildElement (div, "div", 1);
+      Html.AssertAttribute (tableBlock, "class", "bocListTableBlock hasMenuBlock");
+
+      Html.GetAssertedChildElement (tableBlock, "table", 0);
+    }
+
+    [Test]
+    public void RenderWithNavigationBlock ()
+    {
+      List.Stub (mock => mock.HasNavigator).Return (true);
+
+      var renderer = new BocListRenderer (
+          HttpContext,
+          List,
+          MockRepository.GenerateStub<IResourceUrlFactory>(),
+          CssClassContainer.Instance,
+          new StubRenderer ("table"),
+          new StubRenderer ("navigation"),
+          new StubRenderer ("menu"));
+      renderer.Render (Html.Writer);
+
+      var document = Html.GetResultDocument();
+
+      var div = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (div, "id", "MyList");
+
+      var tableBlock = Html.GetAssertedChildElement (div, "div", 0);
+      Html.AssertAttribute (tableBlock, "class", "bocListTableBlock hasNavigator");
+      Html.AssertChildElementCount (tableBlock, 2);
+      Html.GetAssertedChildElement (tableBlock, "table", 0);
+      Html.GetAssertedChildElement (tableBlock, "navigation", 1);
     }
   }
 }

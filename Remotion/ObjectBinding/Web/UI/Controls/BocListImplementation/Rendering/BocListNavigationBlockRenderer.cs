@@ -138,9 +138,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       bool isFirstPage = List.CurrentPage == 0;
       bool isLastPage = List.CurrentPage + 1 >= List.PageCount;
 
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
-      writer.AddStyleAttribute ("position", "relative");
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //  Page info

@@ -1,80 +1,86 @@
 /* Style applied to the BocList. */
 div.bocList
 {
-    display: block;
-	position: relative;
-	min-height: 10em;
+  display: block;
+  position: relative;
+  min-height: 3em;
 }
 
-/*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
-div.bocList.hasHeight div.bocListTableBlock,
-div.bocList.hasWidth div.bocListTableBlock,
-div.bocList.hasHeight div.bocListTableBlock div.bocListTable,
-div.bocList.hasWidth div.bocListTableBlock div.bocListTable
-{
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	overflow: auto;
-}
-
-div.bocList.hasHeight div.bocListTableBlock.hasListNavigator div.bocListTable,
-div.bocList.hasWidth div.bocListTableBlock.hasListNavigator div.bocListTable
-{
-	bottom: 1.5em;
-}
-
-div.bocListTableBlock.withoutMenuBlock div.bocListTable
-{
-  right: 0;  
-}
-
-div.bocListTableBlock.hasMenuBlock div.bocListTable
-{
-  right: 9.5em;  
-}
-
-div.bocListNavigator
-{
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-div.bocList.hasHeight div.bocListNavigator,
-div.bocList.hasWidth div.bocListNavigator
-{
-	position: absolute;
-	bottom: 0;
-}
-
-div.bocListMenuBlock
-{
-    display: block;
-    float: right;
-    width: 9em;
-}
 /* Style applied to the BocList in read-only mode. */
 .bocList.readOnly
 {
 }
 
+/*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
+/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
+div.bocList.hasHeight div.bocListTableBlock,
+div.bocList.hasWidth div.bocListTableBlock,
+div.bocList.hasHeight div.bocListTableBlock div.bocListTable,
+div.bocList.hasWidth div.bocListTableBlock div.bocListTable
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
+div.bocList.hasHeight div.bocListTableBlock.hasNavigator div.bocListTable,
+div.bocList.hasWidth div.bocListTableBlock.hasNavigator div.bocListTable
+{
+  bottom: 1.5em;
+}
+
+div.bocList.hasHeight div.bocListNavigator,
+div.bocList.hasWidth div.bocListNavigator
+{
+  position: absolute;
+  bottom: 0;
+}
+
+/*  Style applied to the BocList's navigator. */
+div.bocListNavigator
+{
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/*  Style applied to the BocList's menu block. */
+div.bocListMenuBlock
+{
+  display: block;
+  float: right;
+  width: 9.5em;
+  padding-left: 0.5em;
+}
+
+/*  Style applied to the list-area (table and navigation block) of the BocList.  */
+div.bocListTableBlock
+{
+  display: block;
+  width: auto;
+  overflow: hidden;
+}
+
+/* Style applied to the list-area (table and navigation block) of the BocList if there is a menu block. */
+div.bocListTableBlock.hasMenuBlock
+{
+}
+
+/* Style applied to the div surrounding the BocList's table if there is a menu block. */
+div.bocListTableBlock.hasMenuBlock div.bocListTable
+{
+  right: 9.5em;  
+}
 
 /* Style applied to the div surrounding the BocList's table. */
 div.bocListTable
 {
-    display: block;
-    width: auto;
-    height: auto;
-}
-
-
-/*  Style applied to the div surrounding the BocList's table when the list is read-only. */
-.bocList.readOnly div.bocListTable
-{
-  border-collapse: collapse;
-  border-style: none;
+  display: block;
+  width: auto;
+  height: auto;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
@@ -83,22 +89,6 @@ table.bocListTable
   width: 100%;
   border-collapse: collapse;
   border-style: none;
-}
-
-/*  Style applied to the BocList's table's inner structure.  */
-div.bocListTableBlock
-{
-    display: block;
-    width: auto;
-	overflow: hidden;
-	margin-right: 10em;
-}
-
-
-
-td.bocListMenuBlock
-{
-  padding-left: 5pt;
 }
 
 /*  Style applied to the table head block of the BocList's table.  */
@@ -297,11 +287,6 @@ span.bocListSortingOrder
   color: Gray;
   font-size: 80%;
   font-weight: normal;
-}
-
-/*  Style applied to the BocList's navigator. */
-div.bocListNavigator
-{
 }
 
 /*  Style applied to the BocList's list of available views. */

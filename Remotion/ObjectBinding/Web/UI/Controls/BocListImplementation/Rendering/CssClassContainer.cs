@@ -168,6 +168,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return "bocListAvailableViewsListLabel"; }
     }
 
+    public string TableBlock
+    {
+      get { return "bocListTableBlock"; }
+    }
+
+    public string HasMenuBlock
+    {
+      get { return "hasMenuBlock"; }
+    }
+
+    public string HasNavigator
+    {
+      get { return "hasNavigator"; }
+    }
+
     public virtual string MenuBlock
     {
       get { return "bocListMenuBlock"; }
@@ -187,6 +202,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         return DataCellOdd;
       else
         return DataCellEven;
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s table block. </summary>
+    /// <param name="hasMenuBlock"><see langword="true" /> if the list has a menu block, otherwise <see langword="false" />.</param>
+    /// <param name="hasNavigator"><see langword="true" /> if the list has a navigation block, otherwise <see langword="false" />.</param>
+    public string GetTableBlock (bool hasMenuBlock, bool hasNavigator)
+    {
+      string cssClass = TableBlock;
+      
+      if (hasMenuBlock)
+        cssClass = cssClass + " " + HasMenuBlock;
+
+      if (hasNavigator)
+        cssClass = cssClass + " " + HasNavigator;
+
+      return cssClass;
     }
   }
 }
