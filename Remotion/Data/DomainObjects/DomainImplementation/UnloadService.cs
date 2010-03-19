@@ -69,8 +69,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <summary>
     /// Unloads the data held by the given <see cref="ClientTransaction"/> for the <see cref="DomainObject"/> with the specified 
     /// <paramref name="objectID"/>. The <see cref="DomainObject"/> reference and <see cref="DomainObjectCollection"/> instances held by the
-    /// object are not removed, only the data is. The object can only be unloaded if its <see cref="DataContainer"/> as well as any collection-valued
-    /// relation the object is part of are in unchanged state.
+    /// object are not removed, only the data is. The object can only be unloaded if it is in unchanged state.
     /// </summary>
     /// <param name="clientTransaction">The client transaction.</param>
     /// <param name="objectID">The object ID.</param>
