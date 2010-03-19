@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                    
+                // matches also semicolon                         
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab                  
+                // re-motion: do not block event bubbling for tab                       
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -700,7 +700,7 @@
             var result = $.data(activeItem[0], "ac_data").result;
             $(input).val(result);
             // re-motion: do not select the text in the input element when moving the drop-down selection 
-            //$.Autocompleter.Selection(input, 0, input.value.length);
+            $.Autocompleter.Selection(input, 0, input.value.length);
 
             var resultsElement = $('.' + options.resultsClass);
 
@@ -744,6 +744,9 @@
             // re-motion: calculate best position where to open dropdown list
             var position = $.Autocompleter.calculateSpaceAround(input);
 
+            var elementHeight = element.height();
+            var listHeight = list.height();
+
             if (position.spaceVertical == 'T') {
 
                 //element.css('bottom', position.bottom + input.offsetHeight);
@@ -766,6 +769,10 @@
                     var maxHeight = options.scrollHeight;
                 }
 
+            }
+            // evaluate if list is smaller than available space
+            if (maxHeight > listHeight && listHeight > 0) {
+                maxHeight = listHeight;
             }
 
             // re-motion: need to resize list to specified width in css not in plugin config
