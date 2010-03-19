@@ -49,7 +49,7 @@
                 // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
                 dropDownButtonId: null,
                 // re-motion: select first value in list unless textbox is empty
-                selectFirst: function() { return false; }
+                selectFirst: $.Autocompleter.defaults.selectFirst
             }, options);
 
             // if highlight is set to false, replace it with a do-nothing function
@@ -504,8 +504,7 @@
         max: 100,
         mustMatch: false,
         extraParams: {},
-        // re-motion: changed selectFirst from boolean field to function
-        selectFirst: function() { return false; },
+        selectFirst: 0,
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
@@ -808,7 +807,7 @@
                 $.data(li, "ac_data", data[i]);
             }
             listItems = list.find("li");
-            if (options.selectFirst()) {
+            if (options.selectFirst) {
                 listItems.slice(0, 1).addClass(CLASSES.ACTIVE);
                 active = 0;
             }
@@ -854,7 +853,7 @@
                 return element && element.is(":visible");
             },
             current: function() {
-                return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst() && listItems[0]);
+                return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst && listItems[0]);
             },
             show: function() {
 
