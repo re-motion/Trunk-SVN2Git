@@ -300,3 +300,9 @@ div.bocListEditModeValidationMessage
 {
 	color: Red;
 }
+
+/* Style applied to the fake table head used for scrolling */
+div.bocListFakeTableHead
+{
+  display: none;
+}

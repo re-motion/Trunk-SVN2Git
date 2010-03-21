@@ -233,7 +233,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private void RenderTableClosingTag (HtmlTextWriter writer)
     {
       writer.RenderEndTag(); // table
+
+      //RenderFakeTableHeadForScrolling (writer);
+
       writer.RenderEndTag(); // div
+    }
+
+    private void RenderFakeTableHeadForScrolling (HtmlTextWriter writer)
+    {
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.FakeTableHead);
+      writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      RenderTableHead (writer);
+      writer.RenderEndTag();
+
+      writer.RenderEndTag ();
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
