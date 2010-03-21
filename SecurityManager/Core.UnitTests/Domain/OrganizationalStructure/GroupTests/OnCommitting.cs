@@ -105,7 +105,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
 
     [Test]
     [ExpectedException (typeof (ConcurrencyViolationException))]
-    public void OnCommitting_WithCircularParentHierarchy_ChangesHappensInDifferentThreads_ThrowsInvalidOperationException ()
+    public void OnCommitting_WithCircularParentHierarchy_ChangesHappensInDifferentTransactions_ThrowsConcurrencyViolationException ()
     {
       Tenant tenant = _testHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "Tenant", Guid.NewGuid().ToString());
       Group grandParent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "GrandParent", Guid.NewGuid().ToString(), null, tenant);
@@ -132,7 +132,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       Tenant tenant = _testHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "Tenant", Guid.NewGuid().ToString());
       Group grandParent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "GrandParent", Guid.NewGuid().ToString(), null, tenant);
       Group parent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Parent", Guid.NewGuid().ToString(), grandParent, tenant);
-      Group child = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Child", Guid.NewGuid ().ToString (), parent, tenant);
+      Group child = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Child", Guid.NewGuid().ToString(), parent, tenant);
 
       ClientTransactionScope.CurrentTransaction.Commit();
 
@@ -149,25 +149,25 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
     }
 
     [Test]
-    [Ignore ("Unloading a DomainObject that has an unchanged DataContainer but a changed RelationEndPoint is supported but cannot be resolved.")]
-    public void OnCommitting_ReloadsParentGroupsHavingAChangedVirtualEndPointDuringOnCommittingToPreventConcurrencyExceptions ()
+    [ExpectedException (typeof (ConcurrencyViolationException))]
+    public void OnCommitting_SimultanousChangesToParentInDifferentTransactions_ThrowsConcurrencyExceptions ()
     {
-      Tenant tenant = _testHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "Tenant", Guid.NewGuid ().ToString ());
-      Group grandParent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "GrandParent", Guid.NewGuid ().ToString (), null, tenant);
-      Group parent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Parent", Guid.NewGuid ().ToString (), grandParent, tenant);
+      Tenant tenant = _testHelper.CreateTenant (ClientTransactionScope.CurrentTransaction, "Tenant", Guid.NewGuid().ToString());
+      Group grandParent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "GrandParent", Guid.NewGuid().ToString(), null, tenant);
+      Group parent = _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Parent", Guid.NewGuid().ToString(), grandParent, tenant);
 
-      ClientTransactionScope.CurrentTransaction.Commit ();
+      ClientTransactionScope.CurrentTransaction.Commit();
 
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Group parentInOtherThread = Group.GetObject (parent.ID);
         parentInOtherThread.Name = "NewName";
-        ClientTransaction.Current.Commit ();
+        ClientTransaction.Current.Commit();
       }
 
-      _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Child", Guid.NewGuid ().ToString (), parent, tenant);
+      _testHelper.CreateGroup (ClientTransactionScope.CurrentTransaction, "Child", Guid.NewGuid().ToString(), parent, tenant);
 
-      ClientTransactionScope.CurrentTransaction.Commit ();
+      ClientTransactionScope.CurrentTransaction.Commit();
     }
   }
 }
