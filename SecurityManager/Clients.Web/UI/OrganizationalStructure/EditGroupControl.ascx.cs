@@ -16,6 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
+using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
@@ -151,6 +154,36 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         ChildrenList.RemoveRows (ChildrenList.GetSelectedBusinessObjects ());
 
       ChildrenList.ClearSelectedRows ();
+    }
+
+    protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
+    {
+      Group parent = (Group) ParentField.Value;
+      if (parent == null)
+        args.IsValid = true;
+      else
+        args.IsValid = IsParentHierarchyValid (parent);
+    }
+
+    protected void ChildrenValidator_ServerValidate (object source, ServerValidateEventArgs args)
+    {
+      args.IsValid = true;
+      foreach (Group child in ChildrenList.Value)
+      {
+        if (!IsParentHierarchyValid (child))
+        {
+          args.IsValid = false;
+          break;
+        }
+      }
+    }
+
+    private bool IsParentHierarchyValid (Group group)
+    {
+      var groups = group.CreateSequence (g => g.Parent, g => g != null && g != CurrentObject.BusinessObject).ToArray();
+      if (groups.Length > 0 && groups[groups.Length-1].Parent != null)
+        return false;
+      return true;
     }
   }
 }

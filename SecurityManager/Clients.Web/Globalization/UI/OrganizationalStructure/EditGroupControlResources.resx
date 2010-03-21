@@ -129,4 +129,10 @@
   <data name="auto:RolesField:FixedColumns:PositionNameItem:ColumnTitle" xml:space="preserve">
     <value>Position</value>
   </data>
+  <data name="auto:ChildrenValidator:Text" xml:space="preserve">
+    <value>One of the child groups form a circular hierarchy with the group being edited.</value>
+  </data>
+  <data name="auto:ParentValidator:Text" xml:space="preserve">
+    <value>The selected group cannot be selected as parent because it would result in a circular hierarchy with the group being edited.</value>
+  </data>
 </root>

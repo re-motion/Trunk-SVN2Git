@@ -17,7 +17,7 @@
 --%>
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="EditGroupControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditGroupControl" %>
 
-<remotion:FormGridManager ID="FormGridManager" runat="server" ValidatorVisibility="HideValidators" />
+<remotion:FormGridManager ID="FormGridManager" runat="server" ValidatorVisibility="ValidationMessageInControlsColumn" />
 <remotion:BindableObjectDataSourceControl id="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.OrganizationalStructure.Group, Remotion.SecurityManager" />
 <table id="FormGrid" runat="server" cellpadding="0" cellspacing="0">
   <tr class="underlinedMarkerCellRow">
@@ -61,6 +61,7 @@
           <remotion:BocCommand />
         </PersistedCommand>
       </remotion:BocReferenceValue>
+      <asp:CustomValidator ID="ParentValidator" runat="server" OnServerValidate="ParentValidator_ServerValidate" ControlToValidate="ParentField" Text="###" />
     </td>
   </tr>
   <tr>
@@ -87,6 +88,7 @@
           </remotion:BocMenuItem>
         </ListMenuItems>
       </remotion:BocList>
+      <asp:CustomValidator ID="ChildrenValidator" runat="server" OnServerValidate="ChildrenValidator_ServerValidate" Text="###" />
     </td>
   </tr>
   <tr>
