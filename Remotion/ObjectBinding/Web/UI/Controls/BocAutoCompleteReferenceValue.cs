@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web;
@@ -55,22 +54,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // types
 
-    /// <summary> A list of control specific resources. </summary>
-    /// <remarks> 
-    ///   Resources will be accessed using 
-    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
-    ///   See the documentation of <b>GetString</b> for further details.
-    /// </remarks>
-    [ResourceIdentifiers]
-    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocAutoCompleteReferenceValue")]
-    protected enum ResourceIdentifier
-    {
-      /// <summary> Label displayed in the OptionsMenu. </summary>
-      OptionsTitle,
-      /// <summary> The validation error message displayed when the null item is selected. </summary>
-      NullItemValidationMessage,
-    }
-
     // static members
 
     // member fields
@@ -88,8 +71,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
     private string _displayName;
 
-    private readonly ArrayList _validators;
-
     private string _serviceMethod = string.Empty;
     private string _servicePath = string.Empty;
     private string _args = string.Empty;
@@ -105,7 +86,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _commonStyle = new Style();
       _textBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
-      _validators = new ArrayList();
 
       EnableIcon = true;
       ShowOptionsMenu = true;
@@ -275,28 +255,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
-    }
-
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/CreateValidators/*' />
-    public override BaseValidator[] CreateValidators ()
-    {
-      if (IsReadOnly || !IsRequired)
-        return new BaseValidator[0];
-
-      BaseValidator[] validators = new BaseValidator[1];
-
-      RequiredFieldValidator notNullItemValidator = new RequiredFieldValidator();
-      notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
-      notNullItemValidator.ControlToValidate = ID;
-      if (string.IsNullOrEmpty (ErrorMessage))
-        notNullItemValidator.ErrorMessage = GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
-      else
-        notNullItemValidator.ErrorMessage = ErrorMessage;
-      validators[0] = notNullItemValidator;
-
-      _validators.AddRange (validators);
-      return validators;
     }
 
     string IBocAutoCompleteReferenceValue.GetLabelText ()

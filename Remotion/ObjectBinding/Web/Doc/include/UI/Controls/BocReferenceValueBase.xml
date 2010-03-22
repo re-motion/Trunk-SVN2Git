@@ -71,4 +71,12 @@
       Use this method to change the menu items' properties (such as their visibility).
     </remarks>
   </PreRenderMenusItems>
+
+  <CreateValidators>
+    <remarks>
+      Generates a <see cref="CompareValidator"/> checking that the selected item is not the null-item if the
+      control is in edit mode and input is required.
+    </remarks>
+    <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+  </CreateValidators>
 </BocReferenceValueBase>

@@ -35,6 +35,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   public abstract class BocReferenceValueBase : BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IPostBackEventHandler, IBocMenuItemContainer
   {
     protected const string c_nullIdentifier = "==null==";
+
+    /// <summary> A list of control specific resources. </summary>
+    /// <remarks> 
+    ///   Resources will be accessed using 
+    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
+    ///   See the documentation of <b>GetString</b> for further details.
+    /// </remarks>
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocReferenceValueBase")]
+    protected enum ResourceIdentifier
+    {
+      /// <summary> Label displayed in the OptionsMenu. </summary>
+      OptionsTitle,
+      /// <summary> The validation error message displayed when the null item is selected. </summary>
+      NullItemValidationMessage,
+    }
+    
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
     protected static readonly object SelectionChangedEvent = new object();
@@ -161,9 +178,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       set
       {
         _errorMessage = value;
-        for (int i = 0; i < Validators.Count; i++)
+        for (int i = 0; i < _validators.Count; i++)
         {
-          BaseValidator validator = (BaseValidator) Validators[i];
+          BaseValidator validator = (BaseValidator) _validators[i];
           validator.ErrorMessage = _errorMessage;
         }
       }
@@ -263,11 +280,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         return _hiddenMenuItems;
       }
       set { _hiddenMenuItems = value; }
-    }
-
-    protected ArrayList Validators
-    {
-      get { return _validators; }
     }
 
     /// <summary>
@@ -691,6 +703,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
     protected abstract IResourceManager GetResourceManager ();
+
+    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValueBase/CreateValidators/*' />
+    public override BaseValidator[] CreateValidators ()
+    {
+      if (IsReadOnly || !IsRequired)
+        return new BaseValidator[0];
+
+      BaseValidator[] validators = new BaseValidator[1];
+
+      RequiredFieldValidator notNullItemValidator = new RequiredFieldValidator ();
+      notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
+      notNullItemValidator.ControlToValidate = ID;
+      if (string.IsNullOrEmpty (ErrorMessage))
+        notNullItemValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
+      else
+        notNullItemValidator.ErrorMessage = ErrorMessage;
+      validators[0] = notNullItemValidator;
+
+      _validators.AddRange (validators);
+      return validators;
+    }
 
     protected virtual void PreRenderOptionsMenu ()
     {

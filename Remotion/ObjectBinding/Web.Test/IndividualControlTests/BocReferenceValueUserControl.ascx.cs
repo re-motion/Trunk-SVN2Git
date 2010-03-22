@@ -190,6 +190,13 @@ public class BocReferenceValueUserControl : BaseUserControl
     }
   }
 
+  public override bool Validate ()
+  {
+    bool isValid = base.Validate ();
+    isValid &= FormGridManager.Validate();
+    return isValid;
+  }
+
   override protected void OnPreRender (EventArgs e)
   {
     base.OnPreRender (e);

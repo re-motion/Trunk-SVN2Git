@@ -63,22 +63,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // types
 
-    /// <summary> A list of control specific resources. </summary>
-    /// <remarks> 
-    ///   Resources will be accessed using 
-    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
-    ///   See the documentation of <b>GetString</b> for further details.
-    /// </remarks>
-    [ResourceIdentifiers]
-    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocReferenceValue")]
-    protected enum ResourceIdentifier
-    {
-      /// <summary> Label displayed in the OptionsMenu. </summary>
-      OptionsTitle,
-      /// <summary> The validation error message displayed when the null item is selected. </summary>
-      NullItemValidationMessage
-    }
-
     // static members
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
@@ -434,33 +418,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override string GetOptionsMenuTitle ()
     {
       return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
-    }
-
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/CreateValidators/*' />
-    public override BaseValidator[] CreateValidators ()
-    {
-      if (IsReadOnly || ! IsRequired)
-        return new BaseValidator[0];
-
-      BaseValidator[] validators = new BaseValidator[1];
-
-      CompareValidator notNullItemValidator = new CompareValidator();
-      notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
-      notNullItemValidator.ControlToValidate = TargetControl.ID;
-      notNullItemValidator.ValueToCompare = c_nullIdentifier;
-      notNullItemValidator.Operator = ValidationCompareOperator.NotEqual;
-      if (string.IsNullOrEmpty (ErrorMessage))
-      {
-        notNullItemValidator.ErrorMessage =
-            GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
-      }
-      else
-        notNullItemValidator.ErrorMessage = ErrorMessage;
-      validators[0] = notNullItemValidator;
-
-      Validators.AddRange (validators);
-      return validators;
     }
 
     /// <summary> Sets the <see cref="IBusinessObjectWithIdentity"/> objects to be displayed in edit mode. </summary>

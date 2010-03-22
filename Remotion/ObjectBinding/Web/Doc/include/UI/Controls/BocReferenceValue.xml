@@ -66,7 +66,7 @@
 
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
-        See the <see cref="CreateValidators"/> method for the validators provided by this control.        
+        See the <see cref="BocReferenceValueBase.CreateValidators"/> method for the validators provided by this control.        
       </para><para>
         Provide the external resources for this control. See <see cref="T:Remotion.Web.ResourceUrlResolver"/> 
         for details on this subject.
@@ -100,7 +100,7 @@
       <h4 class="dtH4">Localization Support</h4>
       <para>
         The resources required by this control are defined by the 
-        <see cref="BocReferenceValue.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation
+        <see cref="BocReferenceValueBase.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation
         for details on localization.
       </para><para>
         The control supports resource dispatching to its properties through the <see cref="ResourceDispatcher"/>.
@@ -257,12 +257,5 @@
     </remarks>
     <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
   </SaveValue>
-  <CreateValidators>
-    <remarks>
-      Generates a <see cref="CompareValidator"/> checking that the selected item is not the null-item if the 
-      control is in edit mode and input is required.
-    </remarks>
-    <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-  </CreateValidators>
   
 </BocReferenceValue>

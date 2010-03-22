@@ -484,12 +484,6 @@
     <Content Include="Res\Themes\NovaBlue\Image\MovePreviousInactive.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortDescending.gif" />
-    <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\BocBooleanValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -526,10 +520,10 @@
     <EmbeddedResource Include="Globalization\BocMultilineTextValue.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BocReferenceValue.de.resx">
+    <EmbeddedResource Include="Globalization\BocReferenceValueBase.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\BocReferenceValue.resx">
+    <EmbeddedResource Include="Globalization\BocReferenceValueBase.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\BocTextValue.de.resx">
