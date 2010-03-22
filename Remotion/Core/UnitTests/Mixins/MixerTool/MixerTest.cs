@@ -23,6 +23,9 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTool;
 using Remotion.Mixins.Validation;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy;
 using Rhino.Mocks;
 using ErrorEventArgs=Remotion.Mixins.MixerTool.ErrorEventArgs;
@@ -228,6 +231,34 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       _mixer.Execute (_configuration);
 
       concreteTypeBuilderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Create ()
+    {
+      var fakeTypeNameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
+      
+      var mixer = Mixer.Create ("A", "B", "C", fakeTypeNameProvider);
+      Assert.That (mixer.ConcreteTypeBuilderFactory, Is.TypeOf (typeof (ConcreteTypeBuilderFactory)));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (fakeTypeNameProvider));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).SignedAssemblyName, Is.EqualTo ("A"));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).UnsignedAssemblyName, Is.EqualTo ("B"));
+
+      Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo ("C"));
+
+      Assert.That (mixer.ClassContextFinder, Is.TypeOf (typeof (ClassContextFinder)));
+      Assert.That (((ClassContextFinder) mixer.ClassContextFinder).TypeDiscoveryService, Is.TypeOf (typeof (AssemblyFinderTypeDiscoveryService)));
+
+      var service = (AssemblyFinderTypeDiscoveryService) ((ClassContextFinder) mixer.ClassContextFinder).TypeDiscoveryService;
+      Assert.That (service.AssemblyFinder, Is.TypeOf (typeof (AssemblyFinder)));
+
+      var assemblyFinder = (AssemblyFinder) service.AssemblyFinder;
+      Assert.That (assemblyFinder.RootAssemblyFinder, Is.TypeOf (typeof (SearchPathRootAssemblyFinder)));
+      Assert.That (((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder).BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+      Assert.That (((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder).ConsiderDynamicDirectory, Is.False);
+
+      Assert.That (assemblyFinder.AssemblyLoader, Is.TypeOf (typeof (FilteringAssemblyLoader)));
+      Assert.That (((FilteringAssemblyLoader) assemblyFinder.AssemblyLoader).Filter, Is.TypeOf (typeof (LoadAllAssemblyLoaderFilter)));
     }
 
     private void RedefineFactoryStub (IConcreteTypeBuilder concreteTypeBuilderMock)

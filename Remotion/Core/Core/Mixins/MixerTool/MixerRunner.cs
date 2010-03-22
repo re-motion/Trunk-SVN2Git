@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel.Design;
 using System.IO;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Validation;
+using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTool
@@ -82,11 +84,16 @@ namespace Remotion.Mixins.MixerTool
 
     private Mixer CreateMixer ()
     {
+      var typeNameProvider = 
+          _parameters.KeepTypeNames 
+          ? (IConcreteMixedTypeNameProvider) NamespaceChangingNameProvider.Instance 
+          : GuidNameProvider.Instance;
+
       var mixer = Mixer.Create (
           _parameters.SignedAssemblyName, 
-          _parameters.UnsignedAssemblyName,
-          _parameters.KeepTypeNames ? (IConcreteMixedTypeNameProvider) NamespaceChangingNameProvider.Instance : GuidNameProvider.Instance, 
-          _parameters.AssemblyOutputDirectory);
+          _parameters.UnsignedAssemblyName, 
+          _parameters.AssemblyOutputDirectory, 
+          typeNameProvider);
       
       mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;
       mixer.ErrorOccurred += Mixer_ErrorOccurred;

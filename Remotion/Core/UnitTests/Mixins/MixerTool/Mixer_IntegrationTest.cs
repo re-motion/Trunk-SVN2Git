@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -55,9 +56,12 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       AppDomainRunner.Run (
           delegate
           {
-            using (MixinConfiguration.BuildNew().ForClass<BaseType1>().AddMixins (typeof (BT1Mixin1)).EnterScope())
+            using (MixinConfiguration.BuildNew()
+                .ForClass<BaseType1>().AddMixins (typeof (BT1Mixin1))
+                .ForClass<Page> ().AddMixin (typeof (NullMixin))
+                .EnterScope())
             {
-              Mixer mixer = Mixer.Create ("Signed", "Unsigned", GuidNameProvider.Instance, _assemblyOutputDirectory);
+              Mixer mixer = Mixer.Create ("Signed", "Unsigned", _assemblyOutputDirectory, GuidNameProvider.Instance);
               mixer.PrepareOutputDirectory();
               mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
@@ -73,6 +77,9 @@ namespace Remotion.UnitTests.Mixins.MixerTool
               object instance = Activator.CreateInstance (concreteType);
               Assert.That (Mixin.Get<BT1Mixin1> (instance), Is.Not.Null);
 
+              var concreteTypeFromSystemAssembly = types.Where (t => t.BaseType == typeof (Page)).SingleOrDefault ();
+              Assert.That (concreteTypeFromSystemAssembly, Is.Not.Null);
+              
               ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (theAssembly);
               Type concreteTypeFromFactory = TypeFactory.GetConcreteType (typeof (BaseType1));
               Assert.That (concreteTypeFromFactory, Is.SameAs (concreteType));

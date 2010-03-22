@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     public void CreateMixer_Default ()
     {
       var runner = new MixerRunner (_parameters);
-      var mixer = (Mixer) PrivateInvoke.InvokeNonPublicMethod (runner, "CreateMixer");
+      var mixer = CallCreateMixer (runner);
 
       Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).SignedAssemblyName, Is.EqualTo (_parameters.SignedAssemblyName));
       Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).UnsignedAssemblyName, Is.EqualTo (_parameters.UnsignedAssemblyName));
@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     {
       var runner = new MixerRunner (_parameters);
       _parameters.KeepTypeNames = true;
-      var mixer = (Mixer) PrivateInvoke.InvokeNonPublicMethod (runner, "CreateMixer");
+      var mixer = CallCreateMixer (runner);
 
       Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (NamespaceChangingNameProvider.Instance));
     }
@@ -98,6 +98,12 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       {
         Directory.Delete (_parameters.AssemblyOutputDirectory, true);
       }
+    }
+
+
+    private Mixer CallCreateMixer (MixerRunner runner)
+    {
+      return (Mixer) PrivateInvoke.InvokeNonPublicMethod (runner, "CreateMixer");
     }
   }
 }

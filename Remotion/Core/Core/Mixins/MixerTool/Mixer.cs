@@ -25,23 +25,33 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTool
 {
+  /// <summary>
+  /// Provides functionality for pre-generating mixed types and saving them to disk to be later loaded via 
+  /// <see cref="ConcreteTypeBuilder.LoadAssemblyIntoCache(System.Reflection.Assembly)"/>.
+  /// </summary>
   public class Mixer
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (Mixer));
 
     public static Mixer Create (
         string signedAssemblyName, 
-        string unsignedAssemblyName,
-        IConcreteMixedTypeNameProvider typeNameProvider, 
-        string assemblyOutputDirectory)
+        string unsignedAssemblyName, 
+        string assemblyOutputDirectory, 
+        IConcreteMixedTypeNameProvider typeNameProvider)
     {
       var builderFactory = new ConcreteTypeBuilderFactory (typeNameProvider, signedAssemblyName, unsignedAssemblyName);
-      
-      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
+
+      var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
+      var assemblyLoader = new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter());
+      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      var typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
+
       var finder = new ClassContextFinder (typeDiscoveryService);
 
       return new Mixer (finder, builderFactory, assemblyOutputDirectory);

@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTool;
 using Remotion.UnitTests.Mixins.MixerTool.TestDomain;
@@ -51,7 +52,11 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       var classContexts = new ClassContextCollection (_configuredClassContext1, _configuredClassContext2, _genericClassContext, _interfaceClassContext);
       _configuration = new MixinConfiguration (classContexts);
 
-      _configuredTypeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub (_configuredClassContext1.Type, _configuredClassContext2.Type, _genericClassContext.Type, _interfaceClassContext.Type);
+      _configuredTypeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub (
+          _configuredClassContext1.Type, 
+          _configuredClassContext2.Type, 
+          _genericClassContext.Type, 
+          _interfaceClassContext.Type);
     }
 
     [Test]
@@ -135,6 +140,19 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
       Assert.That (result, Is.EqualTo (0));
     }
+
+    [Test]
+    public void FindClassContexts_NoMixedTypes ()
+    {
+      var generatedType = ConcreteTypeBuilder.Current.GetConcreteType (_configuredClassContext1);
+      var typeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub (generatedType);
+
+      var finder = new ClassContextFinder (typeDiscoveryServiceStub);
+      var result = finder.FindClassContexts (_configuration).ToArray ();
+
+      Assert.That (result, Is.Empty);
+    }
+
 
     private ITypeDiscoveryService CreateTypeDiscoveryServiceStub (params Type[] stubResult)
     {

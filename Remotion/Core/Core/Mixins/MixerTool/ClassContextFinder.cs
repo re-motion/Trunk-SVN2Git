@@ -37,6 +37,11 @@ namespace Remotion.Mixins.MixerTool
       _typeDiscoveryService = typeDiscoveryService;
     }
 
+    public ITypeDiscoveryService TypeDiscoveryService
+    {
+      get { return _typeDiscoveryService; }
+    }
+
     public IEnumerable<ClassContext> FindClassContexts (MixinConfiguration configuration)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
@@ -50,7 +55,7 @@ namespace Remotion.Mixins.MixerTool
       return from t in types.Cast<Type>()
              where !t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false)
              let context = configuration.GetContext (t)
-             where context != null && ShouldProcessContext (context)
+             where context != null && !MixinTypeUtility.IsGeneratedConcreteMixedType (t) && ShouldProcessContext (context)
              select context;
     }
 
