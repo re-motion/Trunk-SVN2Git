@@ -21,47 +21,33 @@ using System.Reflection;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// Helper class for resolving assemblies when executing code in a separate <see cref="AppDomain"/>.
+  /// Helper class for resolving assemblies when executing code in a separate <see cref="AppDomain"/>. Register the <see cref="ResolveAssembly"/>
+  /// method as a handler for the <see cref="AppDomain.AssemblyResolve"/> event of the <see cref="AppDomain"/>.
   /// </summary>
   [Serializable]
-  public sealed class AppDomainAssemblyResolver : DisposableBase
+  public sealed class AppDomainAssemblyResolver
   {
-    private readonly AppDomainSetup _parentAppDomainSetup;
-    private readonly AppDomainSetup _appDomainSetup;
+    private readonly string _parentApplicationBase;
     private readonly string _dynamicDirectory;
 
-    public AppDomainAssemblyResolver (AppDomainSetup parentAppDomainSetup, AppDomain appDomain)
+    public AppDomainAssemblyResolver (string parentApplicationBase, string dynamicDirectory)
     {
-      ArgumentUtility.CheckNotNull ("parentAppDomainSetup", parentAppDomainSetup);
-      ArgumentUtility.CheckNotNull ("appDomain", appDomain);
+      ArgumentUtility.CheckNotNullOrEmpty ("parentApplicationBase", parentApplicationBase);
+      ArgumentUtility.CheckNotNullOrEmpty ("dynamicDirectory", dynamicDirectory);
+      
+      _parentApplicationBase = parentApplicationBase;
 
-      if (string.IsNullOrEmpty (appDomain.SetupInformation.DynamicBase))
-        throw new ArgumentException ("The AppDomain must specify a DynamicBase", "appDomain");
-
-      _parentAppDomainSetup = parentAppDomainSetup;
-      _appDomainSetup = appDomain.SetupInformation;
-      _dynamicDirectory = appDomain.DynamicDirectory;
+      _dynamicDirectory = dynamicDirectory;
 
       if (Directory.Exists (_dynamicDirectory))
         Directory.Delete (_dynamicDirectory, true);
       Directory.CreateDirectory (_dynamicDirectory);
       CopyAssembly (_dynamicDirectory, typeof (AppDomainAssemblyResolver).Assembly.Location);
-
-      appDomain.AssemblyResolve += new ResolveEventHandler (AssemblyResolveHandler);
     }
 
-    protected override void Dispose (bool disposing)
+    public Assembly ResolveAssembly (object sender, ResolveEventArgs args)
     {
-      if (disposing)
-      {
-        if (Directory.Exists (_appDomainSetup.DynamicBase))
-          Directory.Delete (_appDomainSetup.DynamicBase, true);
-      }
-    }
-
-    private Assembly AssemblyResolveHandler (object sender, ResolveEventArgs args)
-    {
-      AssemblyName assemblyName = new AssemblyName (args.Name);
+      var assemblyName = new AssemblyName (args.Name);
       string localAssemblyLocation = CopyAssemblyToDynamicDirectory (args, assemblyName.Name + ".dll");
       if (localAssemblyLocation == null)
         localAssemblyLocation = CopyAssemblyToDynamicDirectory (args, assemblyName.Name + ".exe");
@@ -69,11 +55,12 @@ namespace Remotion.Utilities
         throw CreateFileNotFoundException (args.Name);
 
       return Assembly.LoadFrom (localAssemblyLocation);
+      //throw CreateFileNotFoundException (args.Name);
     }
 
     private string CopyAssemblyToDynamicDirectory (ResolveEventArgs args, string assemblyFileName)
     {
-      string assemblyLocation = Path.Combine (_parentAppDomainSetup.ApplicationBase, assemblyFileName);
+      string assemblyLocation = Path.Combine (_parentApplicationBase, assemblyFileName);
       if (!File.Exists (assemblyLocation))
         return null;
       

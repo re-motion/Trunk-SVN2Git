@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 
 namespace Remotion.Utilities
 {
@@ -30,6 +31,9 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("appDomainSetup", appDomainSetup);
 
+      if (string.IsNullOrEmpty (appDomainSetup.DynamicBase))
+        throw new ArgumentException ("The AppDomain must specify a DynamicBase", "appDomainSetup");
+
       _appDomainSetup = appDomainSetup;
     }
 
@@ -43,11 +47,16 @@ namespace Remotion.Utilities
     public void Run ()
     {
       AppDomain appDomain = null;
-      AppDomainAssemblyResolver appDomainAssemblyResolver = null;
+      AppDomainAssemblyResolver appDomainAssemblyResolver;
+
       try
       {
         appDomain = AppDomain.CreateDomain (_appDomainSetup.ApplicationName, AppDomain.CurrentDomain.Evidence, _appDomainSetup);
-        appDomainAssemblyResolver = new AppDomainAssemblyResolver (AppDomain.CurrentDomain.SetupInformation, appDomain);
+        AppDomainSetup parentAppDomainSetup = AppDomain.CurrentDomain.SetupInformation;
+
+        appDomainAssemblyResolver = new AppDomainAssemblyResolver (parentAppDomainSetup.ApplicationBase, appDomain.DynamicDirectory);
+        appDomain.AssemblyResolve += appDomainAssemblyResolver.ResolveAssembly;
+
         appDomain.DoCallBack (CrossAppDomainCallbackHandler);
       }
       finally
@@ -55,8 +64,8 @@ namespace Remotion.Utilities
         if (appDomain != null)
           AppDomain.Unload (appDomain);
 
-        if (appDomainAssemblyResolver != null)
-          appDomainAssemblyResolver.Dispose();
+        if (Directory.Exists (_appDomainSetup.DynamicBase))
+          Directory.Delete (_appDomainSetup.DynamicBase, true);
       }
     }
   }
