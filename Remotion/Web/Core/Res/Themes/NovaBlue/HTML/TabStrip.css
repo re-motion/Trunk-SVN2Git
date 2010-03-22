@@ -13,19 +13,11 @@
 
 *.tabStripTabsPane ul
 {
-  margin: 0px;
+  margin: 0 0 -1px 0;
   padding: 0px;  
-
   list-style: none;
   width: 100%; 
 }
-
-/* HACK: Webkit-based browsers (Chrome, Safari) won't apply this, IE and Firefox will */
-*.tabStripTabsPane ul
-{
-  margin-bottom: -1px;
-}
-
 
 *.tabStripTabsPane ul li
 {
