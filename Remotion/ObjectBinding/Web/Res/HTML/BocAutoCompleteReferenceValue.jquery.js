@@ -754,7 +754,7 @@
                 topPosition = 'auto';
                 bottomPosition = position.bottom + input.offsetHeight;
 
-                if (options.scrollHeight > position.bottom) {
+                if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
                     var maxHeight = position.top;
                 } else {
                     var maxHeight = options.scrollHeight;

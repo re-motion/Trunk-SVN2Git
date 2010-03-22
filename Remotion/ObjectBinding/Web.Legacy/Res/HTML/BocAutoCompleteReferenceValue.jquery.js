@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                           
+                // matches also semicolon                            
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab                         
+                // re-motion: do not block event bubbling for tab                          
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -756,7 +756,7 @@
                 topPosition = 'auto';
                 bottomPosition = position.bottom + input.offsetHeight;
 
-                if (options.scrollHeight > position.bottom) {
+                if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
                     var maxHeight = position.top;
                 } else {
                     var maxHeight = options.scrollHeight;
