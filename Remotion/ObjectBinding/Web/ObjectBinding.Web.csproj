@@ -137,7 +137,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessObjectWithIdentifierProxy.cs" />
+    <Compile Include="BusinessObjectWithIdentityProxy.cs" />
     <Compile Include="ISearchAvailableObjectWebService.cs" />
     <Compile Include="UI\Controls\BindableObjectDataSourceControl.cs">
     </Compile>

@@ -166,14 +166,12 @@ namespace OBWTest.IndividualControlTests
         persons.Add (new BusinessObjectWithIdentityProxy ((IBusinessObjectWithIdentity) person));
 
       foreach (string value in s_values)
-        persons.Add (new BusinessObjectWithIdentityProxy ("invalid", value));
+        persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value });
 
       List<BusinessObjectWithIdentityProxy> filteredPersons =
-          persons.FindAll (
-              delegate (BusinessObjectWithIdentityProxy person) { return person.DisplayName.StartsWith (prefixText, StringComparison.OrdinalIgnoreCase); });
+          persons.FindAll (person => person.DisplayName.StartsWith (prefixText, StringComparison.OrdinalIgnoreCase));
 
-      filteredPersons.Sort (delegate (BusinessObjectWithIdentityProxy left, BusinessObjectWithIdentityProxy right)
-      { return string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase); });
+      filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
       
       return filteredPersons.ToArray();
     }
