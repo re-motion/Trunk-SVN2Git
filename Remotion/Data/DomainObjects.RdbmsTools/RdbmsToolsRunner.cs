@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
       AppDomainSetup appDomainSetup = new AppDomainSetup();
       appDomainSetup.ApplicationName = "RdbmsTools";
       appDomainSetup.ApplicationBase = rdbmsToolsParameter.BaseDirectory;
-      appDomainSetup.DynamicBase = Path.Combine (Path.GetTempPath(), "Remotion");
+
       if (!string.IsNullOrEmpty (rdbmsToolsParameter.ConfigFile))
       {
         appDomainSetup.ConfigurationFile = Path.GetFullPath (rdbmsToolsParameter.ConfigFile);

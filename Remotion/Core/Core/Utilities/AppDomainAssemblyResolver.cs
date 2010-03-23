@@ -21,79 +21,87 @@ using System.Reflection;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// Helper class for resolving assemblies when executing code in a separate <see cref="AppDomain"/>. Register the <see cref="ResolveAssembly"/>
-  /// method as a handler for the <see cref="AppDomain.AssemblyResolve"/> event of the <see cref="AppDomain"/>.
+  /// Helper class for resolving assemblies when executing code in a separate <see cref="AppDomain"/>. Create an instance of this class in the
+  /// target app domain, then use <see cref="Register"/> to register the resolver with the <see cref="AppDomain"/>. The class derives from
+  /// <see cref="MarshalByRefObject"/> in order to allow <see cref="Register"/> to be called from the parent <see cref="AppDomain"/>. After 
+  /// <see cref="Register"/> was called, the resolver tries to resolve all assembly references from the given assembly directory.
   /// </summary>
   [Serializable]
-  public sealed class AppDomainAssemblyResolver
+  public sealed class AppDomainAssemblyResolver : MarshalByRefObject
   {
-    private readonly string _parentApplicationBase;
-    private readonly string _dynamicDirectory;
-
-    public AppDomainAssemblyResolver (string parentApplicationBase, string dynamicDirectory)
+    public static AppDomainAssemblyResolver CreateInAppDomain (AppDomain appDomain, string applicationBase)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("parentApplicationBase", parentApplicationBase);
-      ArgumentUtility.CheckNotNullOrEmpty ("dynamicDirectory", dynamicDirectory);
+      ArgumentUtility.CheckNotNull ("appDomain", appDomain);
+      ArgumentUtility.CheckNotNullOrEmpty ("applicationBase", applicationBase);
+
+      return (AppDomainAssemblyResolver) appDomain.CreateInstanceFromAndUnwrap (
+                                             typeof (AppDomainAssemblyResolver).Assembly.Location,
+                                             typeof (AppDomainAssemblyResolver).FullName,
+                                             false,
+                                             BindingFlags.Public | BindingFlags.Instance,
+                                             null,
+                                             new[] { applicationBase },
+                                             null,
+                                             null,
+                                             null);
+    }
+
+    private readonly string _assemblyDirectory;
+
+    public AppDomainAssemblyResolver (string assemblyDirectory)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("assemblyDirectory", assemblyDirectory);
       
-      _parentApplicationBase = parentApplicationBase;
+      _assemblyDirectory = assemblyDirectory;
+    }
 
-      _dynamicDirectory = dynamicDirectory;
+    public string AssemblyDirectory
+    {
+      get { return _assemblyDirectory; }
+    }
 
-      if (Directory.Exists (_dynamicDirectory))
-        Directory.Delete (_dynamicDirectory, true);
-      Directory.CreateDirectory (_dynamicDirectory);
-      CopyAssembly (_dynamicDirectory, typeof (AppDomainAssemblyResolver).Assembly.Location);
+    public void Register (AppDomain appDomain)
+    {
+      appDomain.AssemblyResolve += ResolveAssembly;
     }
 
     public Assembly ResolveAssembly (object sender, ResolveEventArgs args)
     {
-      var assemblyName = new AssemblyName (args.Name);
-      string localAssemblyLocation = CopyAssemblyToDynamicDirectory (args, assemblyName.Name + ".dll");
-      if (localAssemblyLocation == null)
-        localAssemblyLocation = CopyAssemblyToDynamicDirectory (args, assemblyName.Name + ".exe");
-      if (localAssemblyLocation == null)
-        throw CreateFileNotFoundException (args.Name);
+      ArgumentUtility.CheckNotNull ("sender", sender);
+      ArgumentUtility.CheckNotNull ("args", args);
 
-      return Assembly.LoadFrom (localAssemblyLocation);
-      //throw CreateFileNotFoundException (args.Name);
-    }
+      var reference = new AssemblyName (args.Name);
+      var assemblyLocation = GetAssemblyLocation (reference);
 
-    private string CopyAssemblyToDynamicDirectory (ResolveEventArgs args, string assemblyFileName)
-    {
-      string assemblyLocation = Path.Combine (_parentApplicationBase, assemblyFileName);
-      if (!File.Exists (assemblyLocation))
+      if (assemblyLocation == null)
         return null;
-      
-      AssemblyName assemblyName = AssemblyName.GetAssemblyName (assemblyLocation);
-      if (assemblyName.FullName != args.Name)
+
+      var assemblyName = AssemblyName.GetAssemblyName (assemblyLocation);
+      if (!AssemblyName.ReferenceMatchesDefinition (reference, assemblyName))
         throw CreateFileLoadException (args.Name);
 
-      return CopyAssembly (_dynamicDirectory, assemblyLocation);
+      return Assembly.LoadFile (assemblyLocation);
     }
 
-    private string CopyAssembly (string dynamicDirectory, string assemblyLocation)
+    private string GetAssemblyLocation (AssemblyName assemblyName)
     {
-      string destinationFileName = Path.Combine (dynamicDirectory, Path.GetFileName (assemblyLocation));
-      if (File.Exists (destinationFileName))
-        File.Delete (destinationFileName);
-      File.Copy (assemblyLocation, destinationFileName);
-      File.SetAttributes (destinationFileName, FileAttributes.Normal);
+      var dllLocation = Path.Combine (_assemblyDirectory, assemblyName.Name + ".dll");
+      if (File.Exists (dllLocation))
+        return dllLocation;
 
-      return destinationFileName;
+      var exeLocation = Path.Combine (_assemblyDirectory, assemblyName.Name + ".exe");
+      if (File.Exists (exeLocation))
+        return exeLocation;
+
+      return null;
     }
 
     private FileLoadException CreateFileLoadException (string assemblyName)
     {
       return new FileLoadException (
-          string.Format (
+          String.Format (
               "Could not load file or assembly '{0}'. The located assembly's manifest definition does not match the assembly reference.", 
               assemblyName));
-    }
-
-    private FileNotFoundException CreateFileNotFoundException (string assemblyName)
-    {
-      return new FileNotFoundException (
-          string.Format ("Could not load file or assembly '{0}'. The system cannot find the file specified.", assemblyName));
     }
   }
 }

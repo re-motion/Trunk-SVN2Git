@@ -16,6 +16,7 @@
 // 
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Remotion.Utilities
 {
@@ -31,9 +32,6 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("appDomainSetup", appDomainSetup);
 
-      if (string.IsNullOrEmpty (appDomainSetup.DynamicBase))
-        throw new ArgumentException ("The AppDomain must specify a DynamicBase", "appDomainSetup");
-
       _appDomainSetup = appDomainSetup;
     }
 
@@ -47,15 +45,14 @@ namespace Remotion.Utilities
     public void Run ()
     {
       AppDomain appDomain = null;
-      AppDomainAssemblyResolver appDomainAssemblyResolver;
 
       try
       {
         appDomain = AppDomain.CreateDomain (_appDomainSetup.ApplicationName, AppDomain.CurrentDomain.Evidence, _appDomainSetup);
         AppDomainSetup parentAppDomainSetup = AppDomain.CurrentDomain.SetupInformation;
 
-        appDomainAssemblyResolver = new AppDomainAssemblyResolver (parentAppDomainSetup.ApplicationBase, appDomain.DynamicDirectory);
-        appDomain.AssemblyResolve += appDomainAssemblyResolver.ResolveAssembly;
+        var resolverInAppDomain = AppDomainAssemblyResolver.CreateInAppDomain (appDomain, parentAppDomainSetup.ApplicationBase);
+        resolverInAppDomain.Register (appDomain);
 
         appDomain.DoCallBack (CrossAppDomainCallbackHandler);
       }

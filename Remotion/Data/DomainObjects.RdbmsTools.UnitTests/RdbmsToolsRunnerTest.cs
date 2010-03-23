@@ -35,7 +35,6 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       AppDomainSetup setup = RdbmsToolsRunner.CreateAppDomainSetup (parameter);
       Assert.That (setup.ApplicationName, Is.EqualTo ("RdbmsTools"));
       Assert.That (setup.ApplicationBase, Is.EqualTo (@"c:\foobar"));
-      Assert.That (setup.DynamicBase, Text.StartsWith (Path.Combine (Path.GetTempPath (), "Remotion")));
       Assert.That (setup.ConfigurationFile, Is.Null);
     }
 

@@ -35,8 +35,7 @@ namespace Remotion.Mixins.MixerTool
       var setup = new AppDomainSetup
                   {
                       ApplicationName = "Mixer",
-                      ApplicationBase = parameters.BaseDirectory,
-                      DynamicBase = Path.Combine (Path.GetTempPath(), "Remotion")
+                      ApplicationBase = parameters.BaseDirectory
                   };
 
       if (!string.IsNullOrEmpty (parameters.ConfigFile))

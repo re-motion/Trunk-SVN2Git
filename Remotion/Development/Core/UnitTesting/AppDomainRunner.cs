@@ -32,13 +32,12 @@ namespace Remotion.Development.UnitTesting
     {
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.ApplicationBase = applicationBase;
-      setup.DynamicBase = Path.GetTempPath ();
-      AppDomainRunner runner = new AppDomainRunner (setup, action, args);
+      var runner = new AppDomainRunner (setup, action, args);
       runner.Run ();
     }
 
-    private Action<object[]> _action;
-    private object[] _args;
+    private readonly Action<object[]> _action;
+    private readonly object[] _args;
 
     public AppDomainRunner (AppDomainSetup domainSetup, Action<object[]> action, params object[] args)
       : base (domainSetup)

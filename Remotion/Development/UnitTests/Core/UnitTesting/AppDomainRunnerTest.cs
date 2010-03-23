@@ -19,6 +19,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
@@ -61,6 +62,18 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     public void TypesFromCurrentAssemblyCanBeAccessed ()
     {
       AppDomainRunner.Run (delegate { new AppDomainRunnerTest(); });
+    }
+
+    [Test]
+    public void TypesFromCurrentAssemblyCanBeAccessed_EvenWithDifferentBaseDirectory ()
+    {
+      AppDomainRunner.Run (@"c:\", delegate { new AppDomainRunnerTest (); });
+    }
+
+    [Test]
+    public void TypesFromRunnerBaseAssemblyCanBeAccessed_EvenWithDifferentBaseDirectory ()
+    {
+      AppDomainRunner.Run (@"c:\", delegate { Dev.Null = typeof (AppDomainRunnerBase); });
     }
 
     [Test]
