@@ -92,6 +92,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Grou
       try
       {
         // Order of DomainObjects is stable and equal to order in which the objects have been added to DataManager
+        // Should this ever change, call OnCommitting manually in order to ensure that the parent check is skipped and the child causes the exception
         ClientTransactionScope.CurrentTransaction.Commit();
         Assert.Fail();
       }
