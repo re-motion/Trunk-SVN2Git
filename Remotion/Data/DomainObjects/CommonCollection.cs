@@ -372,10 +372,5 @@ public class CommonCollection : ICollection
   {
     _isReadOnly = isReadOnly;
   }
-
-  private ArgumentException CreateArgumentException (string message, params object[] args)
-  {
-    return new ArgumentException (string.Format (message, args));
-  }
 }
 }
