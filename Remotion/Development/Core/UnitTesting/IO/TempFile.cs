@@ -76,7 +76,14 @@ namespace Remotion.Development.UnitTesting.IO
       File.WriteAllBytes (_fileName, bytes);
     }
 
-    public long Lenght
+    public void WriteAllText (string text)
+    {
+      ArgumentUtility.CheckNotNull ("text", text);
+
+      File.WriteAllText (_fileName, text);
+    }
+
+    public long Length
     {
       get
       {

@@ -108,5 +108,18 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.IO
         Assert.That (actual, Is.EqualTo (expectedText));
       }
     }
+
+    [Test]
+    public void WriteAllText ()
+    {
+      using (TempFile tempFile = new TempFile ())
+      {
+        string expectedText = "Some\r\nText";
+        tempFile.WriteAllText (expectedText);
+
+        string actual = File.ReadAllText (tempFile.FileName);
+        Assert.That (actual, Is.EqualTo (expectedText));
+      }
+    }
   }
 }
