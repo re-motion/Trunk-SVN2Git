@@ -4,7 +4,9 @@ span.bocReferenceValue
   width: 100%;
   display: inline-block;
   overflow: hidden;
-  height: 2em;
+  min-height: 1.65em;
+  max-height: 2em;
+  vertical-align: middle;
 }
 
 span.bocReferenceValue select
@@ -25,8 +27,8 @@ span.bocReferenceValue a.bocReferenceValueCommand
 {
   cursor: default;
   display: inline-block;
-  margin-top: 2px;
-  margin-left: 2px;
+  margin-top: 1px;
+  margin-left: 1px;
   border: solid 1px transparent;
   height: 1.3em; 
 }
@@ -55,7 +57,11 @@ span.bocReferenceValue span.bocReferenceValueCommand
 {
   display: inline-block;
   margin-top: 3px;
-  margin-left: 3px;
+  margin-left: 2px;
+}
+span.bocReferenceValue.readOnly span.bocReferenceValueCommand
+{
+  margin-top: 2px;
 }
 
 /* withoutOptionsMenu */
@@ -65,20 +71,47 @@ span.bocReferenceValue span.content.withoutOptionsMenu
 }
 
 /* embeddedOptionsMenu */
-span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect
+span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect,
+span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
 {
   height: 1.7em;
 }
+
+span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSelect
+{
+  height: 1.6em;
+}
+
+/* Mozilla only (Firefox) */
+html:not([dummy]) span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSelect
+{ 
+  height: 1.55em;
+}
+
+
 /* WebKit browsers only (Safari, Chrome) */
 @media screen and (-webkit-min-device-pixel-ratio:0) { 
-    span.bocReferenceValue span.DropDownMenuContainer  span.DropDownMenuSelect
+    span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
+    {
+      height: 1.6em !important;
+    }
+
+    span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
     {
       height: 1.8em;
     }
+
+
     span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
     {
       margin-top: 0.2em;
-    }  
+    }
+    
+    span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+    {
+      height: 1.4em;
+    }
+    
 }
 
 span.bocReferenceValue span.content.embeddedOptionsMenu
@@ -87,7 +120,9 @@ span.bocReferenceValue span.content.embeddedOptionsMenu
 }
 
 /* separateOptionsMenu */
-span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
+span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
+span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
 {
   height: 1.4em;
 }
