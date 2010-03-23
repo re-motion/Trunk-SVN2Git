@@ -38,6 +38,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       partnerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (partnerClass, "Name", "Name", typeof (string), 100));
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
 
+      companyClass.SetReadOnly ();
+      partnerClass.SetReadOnly ();
+      
       new ClassDefinitionValidator (companyClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
 
@@ -54,6 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       supplierClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (supplierClass, "Name", "Name", typeof (string), 100));
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
+
+      companyClass.SetReadOnly ();
+      partnerClass.SetReadOnly ();
+      supplierClass.SetReadOnly ();
 
       new ClassDefinitionValidator (companyClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }

@@ -49,6 +49,11 @@ public class RelationDefinitionCollection : CommonCollection
 
   // methods and properties
 
+  public void SetReadOnly ()
+  {
+    SetIsReadOnly (true);
+  }
+
   public RelationDefinition GetMandatory (string relationDefinitionID)
   {
     ArgumentUtility.CheckNotNullOrEmpty ("relationDefinitionID", relationDefinitionID);

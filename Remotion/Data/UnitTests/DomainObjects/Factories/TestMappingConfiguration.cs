@@ -64,6 +64,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       _classDefinitions = CreateClassDefinitions();
       _relationDefinitions = CreateRelationDefinitions();
+
+      foreach (ClassDefinition classDefinition in _classDefinitions)
+        classDefinition.SetReadOnly ();
     }
 
     // methods and properties
@@ -139,7 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       classDefinitions.Add (CreateEmployeeDefinition (null));
       classDefinitions.Add (CreateComputerDefinition (null));
       classDefinitions.Add (CreateClassWithRelatedClassIDColumnAndNoInheritanceDefinition (null));
-
 
       return classDefinitions;
     }

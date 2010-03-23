@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -55,6 +56,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (actual.ClassType, Is.SameAs (typeof (Order)));
       Assert.That (actual.BaseClass, Is.Null);
       Assert.That (actual.DerivedClasses.AreResolvedTypesRequired, Is.True);
+      Assert.That (actual.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void SetReadOnly ()
+    {
+      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      Assert.That (actual.IsReadOnly, Is.False);
+
+      actual.SetReadOnly ();
+
+      Assert.That (actual.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void SetReadOnly_SetsCollectionsReadOnly ()
+    {
+      ClassDefinition actual = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      Assert.That (actual.MyPropertyDefinitions.IsReadOnly, Is.False);
+      Assert.That (actual.MyRelationDefinitions.IsReadOnly, Is.False);
+
+      actual.SetReadOnly ();
+
+      Assert.That (actual.MyPropertyDefinitions.IsReadOnly, Is.True);
+      Assert.That (actual.MyRelationDefinitions.IsReadOnly, Is.True);
     }
 
     [Test]
@@ -114,7 +140,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void GetAllRelationDefinitions()
+    public void GetAllRelationDefinitions_SucceedsWhenReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+      
+      var result = classDefinition.GetRelationDefinitions ();
+
+      Assert.That (result, Is.Not.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.")]
+    public void GetAllRelationDefinitions_ThrowsWhenNotReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.GetRelationDefinitions ();
+    }
+
+    [Test]
+    public void GetAllRelationDefinitions_Cached ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result1 = classDefinition.GetRelationDefinitions ();
+      var result2 = classDefinition.GetRelationDefinitions ();
+
+      Assert.That (result1, Is.SameAs (result2));
+    }
+
+    [Test]
+    public void GetAllRelationDefinitions_ReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result = classDefinition.GetRelationDefinitions ();
+
+      Assert.That (result.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void GetAllRelationDefinitions_Contents()
     {
       RelationDefinitionCollection relations = _distributorClass.GetRelationDefinitions();
 
@@ -226,6 +295,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetInheritedPropertyDefinition()
     {
       Assert.IsNotNull (_distributorClass.GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson"));
+    }
+
+    [Test]
+    public void GetAllPropertyDefinitions_SucceedsWhenReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+      
+      var result = classDefinition.GetPropertyDefinitions ();
+
+      Assert.That (result, Is.Not.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.")]
+    public void GetAllPropertyDefinitions_ThrowsWhenNotReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.GetPropertyDefinitions ();
+    }
+
+    [Test]
+    public void GetAllPropertyDefinitions_Cached ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result1 = classDefinition.GetPropertyDefinitions ();
+      var result2 = classDefinition.GetPropertyDefinitions ();
+
+      Assert.That (result1, Is.SameAs (result2));
+    }
+
+    [Test]
+    public void GetAllPropertyDefinitions_ReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result = classDefinition.GetPropertyDefinitions ();
+
+      Assert.That (result.IsReadOnly, Is.True);
     }
 
     [Test]
@@ -365,9 +477,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void GetAllRelationEndPointDefinitions()
+    public void GetAllRelationEndPointDefinitions_SucceedsWhenReadOnly ()
     {
-      IRelationEndPointDefinition[] relationEndPointDefinitions = _orderClass.GetRelationEndPointDefinitions();
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result = classDefinition.GetRelationEndPointDefinitions ();
+
+      Assert.That (result, Is.Not.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "ClassDefinition must be read-only when retrieving data that spans the inheritance hierarchy.")]
+    public void GetAllRelationEndPointDefinitions_ThrowsWhenNotReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.GetRelationEndPointDefinitions ();
+    }
+
+    [Test]
+    public void GetAllRelationEndPointDefinitions_Cached ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result1 = classDefinition.GetRelationEndPointDefinitions ();
+      var result2 = classDefinition.GetRelationEndPointDefinitions ();
+
+      Assert.That (result1, Is.SameAs (result2));
+    }
+
+    [Test]
+    public void GetAllRelationEndPointDefinitionss_ReadOnly ()
+    {
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false);
+      classDefinition.SetReadOnly ();
+
+      var result = classDefinition.GetRelationEndPointDefinitions();
+
+      Assert.That (((ICollection<IRelationEndPointDefinition>) result).IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void GetAllRelationEndPointDefinitions_Content()
+    {
+      var relationEndPointDefinitions = _orderClass.GetRelationEndPointDefinitions();
 
       IRelationEndPointDefinition customerEndPoint =
           _orderClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
@@ -378,11 +533,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       IRelationEndPointDefinition officialEndPoint =
           _orderClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official");
 
-      Assert.AreEqual (4, relationEndPointDefinitions.Length);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, customerEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, orderTicketEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, orderItemsEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, officialEndPoint) >= 0);
+      Assert.That (relationEndPointDefinitions, Is.EquivalentTo (new[] { customerEndPoint, orderTicketEndPoint, orderItemsEndPoint, officialEndPoint }));
     }
 
     [Test]
@@ -399,7 +550,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetAllRelationEndPointDefinitionsWithInheritance()
     {
-      IRelationEndPointDefinition[] relationEndPointDefinitions = _distributorClass.GetRelationEndPointDefinitions();
+      var relationEndPointDefinitions = _distributorClass.GetRelationEndPointDefinitions();
 
       IRelationEndPointDefinition classWithoutRelatedClassIDColumnEndPoint =
           _distributorClass.GetRelationEndPointDefinition (
@@ -415,12 +566,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           _distributorClass.GetRelationEndPointDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.IndustrialSector");
 
       Assert.IsNotNull (relationEndPointDefinitions);
-      Assert.AreEqual (5, relationEndPointDefinitions.Length);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, classWithoutRelatedClassIDColumnEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, contactPersonEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, ceoEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, classWithoutRelatedClassIDColumnAndDerivationEndPoint) >= 0);
-      Assert.IsTrue (Array.IndexOf (relationEndPointDefinitions, industrialSectorEndPoint) >= 0);
+      Assert.That (relationEndPointDefinitions, Is.EquivalentTo (new[] { 
+          classWithoutRelatedClassIDColumnEndPoint, 
+          contactPersonEndPoint, 
+          ceoEndPoint, 
+          classWithoutRelatedClassIDColumnAndDerivationEndPoint, 
+          industrialSectorEndPoint }));
     }
 
     [Test]
@@ -528,9 +679,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (FileSystemItem));
 
-      IRelationEndPointDefinition[] endPointDefinitions = fileSystemItemDefinition.GetRelationEndPointDefinitions();
+      var endPointDefinitions = fileSystemItemDefinition.GetRelationEndPointDefinitions();
 
-      Assert.AreEqual (1, endPointDefinitions.Length);
+      Assert.AreEqual (1, endPointDefinitions.Count);
       Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.TestDomain.FileSystemItem.ParentFolder"));
     }
 
@@ -539,9 +690,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       ClassDefinition folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
 
-      IRelationEndPointDefinition[] endPointDefinitions = folderDefinition.GetRelationEndPointDefinitions();
+      var endPointDefinitions = folderDefinition.GetRelationEndPointDefinitions();
 
-      Assert.AreEqual (2, endPointDefinitions.Length);
+      Assert.AreEqual (2, endPointDefinitions.Count);
       Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Folder.FileSystemItems"));
       Assert.IsTrue (Contains (endPointDefinitions, "Remotion.Data.UnitTests.DomainObjects.TestDomain.FileSystemItem.ParentFolder"));
     }
@@ -816,9 +967,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsTrue (companyClass.IsSameOrBaseClassOf (_distributorClass));
     }
 
-    private bool Contains (IRelationEndPointDefinition[] endPointDefinitions, string propertyName)
+    private bool Contains (IEnumerable<IRelationEndPointDefinition> endPointDefinitions, string propertyName)
     {
-      foreach (IRelationEndPointDefinition endPointDefinition in endPointDefinitions)
+      foreach (var endPointDefinition in endPointDefinitions)
       {
         if (endPointDefinition.PropertyName == propertyName)
           return true;

@@ -179,5 +179,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.That (_collection.GetAllPersistent().ToArray(), Is.EqualTo(new[] {_propertyDefinition1, _propertyDefinition2}));
     }
+
+    [Test]
+    public void SetReadOnly ()
+    {
+      Assert.That (_collection.IsReadOnly, Is.False);
+
+      _collection.SetReadOnly ();
+
+      Assert.That (_collection.IsReadOnly, Is.True);
+    }
   }
 }

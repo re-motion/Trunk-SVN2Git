@@ -61,6 +61,11 @@ public class PropertyDefinitionCollection : CommonCollection
 
   // methods and properties
 
+  public void SetReadOnly ()
+  {
+    SetIsReadOnly (true);
+  }
+
   public bool ContainsColumnName (string columnName)
   {
     ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);

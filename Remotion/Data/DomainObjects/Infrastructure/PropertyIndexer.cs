@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public int GetPropertyCount ()
     {
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
-      IRelationEndPointDefinition[] endPointDefinitions = classDefinition.GetRelationEndPointDefinitions();
+      var endPointDefinitions = classDefinition.GetRelationEndPointDefinitions();
       int count = classDefinition.GetPropertyDefinitions().Count;
       foreach (IRelationEndPointDefinition endPointDefinition in endPointDefinitions)
       {

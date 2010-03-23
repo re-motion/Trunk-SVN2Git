@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -37,10 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     private ReflectionBasedClassDefinition _classDefinition;
 
     // construction and disposing
-
-    public ClassDefinitionCollectionTest ()
-    {
-    }
 
     // methods and properties
 
@@ -149,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       _collection.Add (_classDefinition);
 
-      ClassDefinitionCollection copiedCollection = new ClassDefinitionCollection (_collection, false);
+      var copiedCollection = new ClassDefinitionCollection (_collection, false);
 
       Assert.AreEqual (1, copiedCollection.Count);
       Assert.AreSame (_classDefinition, copiedCollection[0]);
@@ -161,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         ExpectedMessage = "Mapping does not contain class 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.ClassDefinitionCollectionTest'.")]
     public void GetMandatoryForInvalidClass ()
     {
-      TestMappingConfiguration.Current.ClassDefinitions.GetMandatory (this.GetType ());
+      TestMappingConfiguration.Current.ClassDefinitions.GetMandatory (GetType ());
     }
 
     [Test]
@@ -191,6 +186,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       _collection.Add (_classDefinition);
       Assert.IsTrue (_collection.Contains (_classDefinition.ID));
+    }
+
+    [Test]
+    public void Validate_MarksClassDefinitionsReadOnly ()
+    {
+      _collection.Add (_classDefinition);
+      Assert.That (_classDefinition.IsReadOnly, Is.False);
+
+      _collection.Validate ();
+
+      Assert.That (_classDefinition.IsReadOnly, Is.True);
     }
   }
 }

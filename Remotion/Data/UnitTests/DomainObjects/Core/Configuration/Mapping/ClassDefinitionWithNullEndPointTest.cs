@@ -16,7 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
@@ -35,12 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     private AnonymousRelationEndPointDefinition _clientEndPoint;
     private ClassDefinition _locationClass;
     private RelationEndPointDefinition _locationEndPoint;
-
-    // construction and disposing
-
-    public ClassDefinitionWithNullEndPointTest ()
-    {
-    }
 
     // methods and properties
 
@@ -66,26 +60,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetRelationEndPointDefinitions ()
     {
-      Assert.IsTrue (Contains (_locationClass.GetRelationEndPointDefinitions (), _locationEndPoint));
-      Assert.IsFalse (Contains (_clientClass.GetRelationEndPointDefinitions (), _clientEndPoint));
+      Assert.That (_locationClass.GetRelationEndPointDefinitions (), List.Contains (_locationEndPoint));
+      Assert.That (_clientClass.GetRelationEndPointDefinitions (), List.Not.Contains (_clientEndPoint));
     }
 
     [Test]
     public void GetMyRelationEndPointDefinitions ()
     {
-      Assert.IsTrue (Contains (_locationClass.GetMyRelationEndPointDefinitions (), _locationEndPoint));
-      Assert.IsFalse (Contains (_clientClass.GetMyRelationEndPointDefinitions (), _clientEndPoint));
-    }
-
-    private bool Contains (IRelationEndPointDefinition[] endPoints, IRelationEndPointDefinition value)
-    {
-      foreach (IRelationEndPointDefinition endPoint in endPoints)
-      {
-        if (ReferenceEquals (endPoint, value))
-          return true;
-      }
-
-      return false;
+      Assert.That (_locationClass.GetMyRelationEndPointDefinitions (), List.Contains (_locationEndPoint));
+      Assert.That (_clientClass.GetMyRelationEndPointDefinitions (), List.Not.Contains (_clientEndPoint));
     }
   }
 }

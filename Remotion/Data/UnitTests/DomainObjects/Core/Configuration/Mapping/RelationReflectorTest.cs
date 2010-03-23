@@ -109,8 +109,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.GetPropertyDefinitions ()[0]));
+      
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithManySideRelationPropertiesClassDefinition));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
@@ -166,8 +168,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+      
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.GetPropertyDefinitions ()[0]));
+      
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithManySideRelationPropertiesClassDefinition));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
@@ -238,8 +242,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.GetPropertyDefinitions ()[0]));
+
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithManySideRelationPropertiesClassDefinition));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }
@@ -308,8 +314,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
       Assert.That (actualRelationDefinition.EndPointDefinitions[0], Is.InstanceOfType (typeof (RelationEndPointDefinition)));
+
       var endPointDefinition = (RelationEndPointDefinition) actualRelationDefinition.EndPointDefinitions[0];
-      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithBothEndPointsOnSameClassClassDefinition.GetPropertyDefinitions ()[0]));
+      
+      Assert.That (endPointDefinition.PropertyDefinition, Is.EqualTo (_classWithBothEndPointsOnSameClassClassDefinition.MyPropertyDefinitions[0]));
       Assert.That (endPointDefinition.ClassDefinition, Is.SameAs (_classWithBothEndPointsOnSameClassClassDefinition));
       Assert.That (endPointDefinition.RelationDefinition, Is.SameAs (actualRelationDefinition));
     }

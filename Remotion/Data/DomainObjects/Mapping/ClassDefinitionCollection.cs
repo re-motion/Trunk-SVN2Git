@@ -69,10 +69,11 @@ public class ClassDefinitionCollection : CommonCollection
 
     using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to validate mapping configuration: {elapsed}."))
     {
+      foreach (ClassDefinition classDefinition in this)
+        classDefinition.SetReadOnly ();
+
       foreach (ClassDefinition rootClass in GetInheritanceRootClasses())
-      {
         ValidateRootClass (rootClass);
-      }
     }
   }
 

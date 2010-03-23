@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -40,6 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "Name", "NameColumn", typeof (string), 100));
       organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (organizationalUnit, "OtherName", "NameColumn", typeof (string), 100));
 
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
+      organizationalUnit.SetReadOnly ();
+
       new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
 
@@ -56,6 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "Name", "NameColumn", typeof (string), 100));
       organizationalUnit.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (organizationalUnit, "OtherName", "NameColumn", typeof (string), 100));
 
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
+      organizationalUnit.SetReadOnly ();
+
       new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
 
@@ -70,6 +77,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (domainBaseClass, "Name", "NameColumn", typeof (string), 100));
       personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "OtherName", "NameColumn", typeof (string), 100));
+
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
 
       new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
@@ -87,6 +97,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (domainBaseClass, "Name", "NameColumn", typeof (string), 100));
       customerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (customerClass, "OtherName", "NameColumn", typeof (string), 100));
 
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
+      customerClass.SetReadOnly ();
+      
       new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
 
@@ -101,6 +115,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
       domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (domainBaseClass, "Name", "NameColumn", typeof (string), 100));
       personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (personClass, "OtherName", "NameColumn", typeof (string), 100));
+
+      domainBaseClass.SetReadOnly ();
+      personClass.SetReadOnly ();
 
       new ClassDefinitionValidator (domainBaseClass).ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     }
