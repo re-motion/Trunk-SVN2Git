@@ -36,7 +36,7 @@ namespace Remotion.Web
       ArgumentUtility.CheckNotNull ("definingType", definingType);
       ArgumentUtility.CheckNotNull ("resourceType", resourceType);
       ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
-      ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
+      ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
 
       _definingType = definingType;
       _resourceType = resourceType;

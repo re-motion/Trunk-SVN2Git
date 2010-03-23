@@ -127,7 +127,7 @@ public sealed class ResourceUrlResolver
   {
     ArgumentUtility.CheckNotNull ("definingType", definingType);
     ArgumentUtility.CheckNotNull ("resourceType", resourceType);
-    ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
+    ArgumentUtility.CheckNotNull ("relativeUrl", relativeUrl);
 
     IResourceUrl resourceUrl;
 
