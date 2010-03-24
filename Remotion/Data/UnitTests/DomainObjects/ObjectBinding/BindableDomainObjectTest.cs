@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -80,6 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var instance = SampleBindableDomainObject.NewObject ();
       instance = Serializer.SerializeAndDeserialize (instance);
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+      Assert.That (implementation, Is.Not.Null);
       Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
     }
 
@@ -111,6 +113,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       }
     }
 
+    [Test]
+    public void ObjectReference ()
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (SampleBindableDomainObject));
+      var instance = classDefinition.GetDomainObjectCreator().CreateObjectReference (new ObjectID (classDefinition, Guid.NewGuid()), ClientTransactionMock);
+      
+      var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+      Assert.That (implementation, Is.Not.Null);
+      Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
+    }
+    
     [Test]
     public void GetProperty()
     {
