@@ -27,15 +27,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     /// <summary>
     /// Creates a new <see cref="DomainObject"/> instance and initializes it with the given <paramref name="objectID"/> and 
-    /// <paramref name="bindingTransaction"/>. The object is not enlisted with a transaction and no <see cref="DataContainer"/> is created for it.
+    /// <paramref name="clientTransaction"/>. The object is enlisted with the transaction, but no <see cref="DataContainer"/> is created for it.
     /// The instance is created without a constructor being called.
     /// </summary>
     /// <param name="objectID">The <see cref="ObjectID"/> to assign to the object.</param>
-    /// <param name="bindingTransaction">The transaction to bind the object to, or <see langword="null" /> if the object should not be bound to
-    /// a transaction.</param>
-    /// <returns>A <see cref="DomainObject"/> instance with the given <paramref name="objectID"/>, optionally bound to 
-    /// <paramref name="bindingTransaction"/>, that is not enlisted in any transaction.</returns>
-    DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction bindingTransaction);
+    /// <param name="clientTransaction">The transaction to create the object reference with. The reference is automatically enlisted in the given
+    /// transaction. If the transaction is a binding transaction, the reference is automatically bound to it.</param>
+    /// <returns>A <see cref="DomainObject"/> instance with the given <paramref name="objectID"/> that is enlisted in the given transaction.</returns>
+    DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction);
 
     /// <summary>
     /// Gets a <see cref="ConstructorLookupInfo"/> that can be used to construct a <see cref="DomainObject"/> of the given 

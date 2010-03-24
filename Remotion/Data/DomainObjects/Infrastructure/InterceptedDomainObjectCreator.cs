@@ -39,9 +39,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public InterceptedDomainObjectTypeFactory Factory { get; set; }
 
-    public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction bindingTransaction)
+    public DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       objectID.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
 
@@ -50,8 +51,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       Factory.PrepareUnconstructedInstance (instance);
 
-      instance.Initialize (objectID, bindingTransaction);
+      instance.Initialize (objectID, clientTransaction as BindingClientTransaction);
 
+      clientTransaction.EnlistDomainObject (instance);
       return instance;
     }
 

@@ -379,7 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, null);
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
     }
 
@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, null);
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
       PrivateInvoke.InvokeNonPublicMethod (order, typeof (DomainObject), "OnLoaded");
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, null);
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
 
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
@@ -431,7 +431,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, null);
+      var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, ClientTransactionMock);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
 

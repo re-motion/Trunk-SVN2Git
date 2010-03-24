@@ -945,10 +945,8 @@ public abstract class ClientTransaction : IDataSource
     else
     {
       var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
-      var instance = creator.CreateObjectReference (objectID, this as BindingClientTransaction);
 
-      EnlistDomainObject (instance);
-      return instance;
+      return creator.CreateObjectReference (objectID, this);
     }
   }
   

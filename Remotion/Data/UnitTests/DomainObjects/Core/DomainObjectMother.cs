@@ -47,18 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static T CreateFakeObject<T> () where T: DomainObject
     {
-      var objectID = new ObjectID (typeof (T), Guid.NewGuid());
-      return (T) objectID.ClassDefinition.GetDomainObjectCreator ().CreateObjectReference (objectID, null);
+      return CreateObjectInOtherTransaction<T> ();
     }
 
     public static T GetObjectReference<T> (ClientTransaction clientTransaction, ObjectID objectID) where T : DomainObject
     {
       return (T) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, typeof (ClientTransaction), "GetObjectReference", objectID);
-    }
-
-    public static T CreateObjectReference<T> (ObjectID objectID) where T : DomainObject
-    {
-      return (T) objectID.ClassDefinition.GetDomainObjectCreator ().CreateObjectReference (objectID, null);
     }
   }
 }

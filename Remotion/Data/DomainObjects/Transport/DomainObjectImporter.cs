@@ -101,7 +101,6 @@ namespace Remotion.Data.DomainObjects.Transport
         newDataContainer.RegisterWithTransaction (bindingTargetTransaction);
         newDataContainer.SetDomainObject (instance);
 
-        bindingTargetTransaction.EnlistDomainObject (instance);
         return newDataContainer;
       }
     }

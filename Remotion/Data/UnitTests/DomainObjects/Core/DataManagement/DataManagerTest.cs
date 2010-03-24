@@ -628,11 +628,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private void RegisterContainerAndSetDomainObject (DataContainer dataContainer)
     {
       var creator = dataContainer.ClassDefinition.GetDomainObjectCreator ();
-      var instance = creator.CreateObjectReference (dataContainer.ID, null);
+      var instance = creator.CreateObjectReference (dataContainer.ID, _dataManager.ClientTransaction);
 
       dataContainer.SetDomainObject (instance);
       dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
-      ClientTransactionMock.EnlistDomainObject (instance);
     }
   }
 }
