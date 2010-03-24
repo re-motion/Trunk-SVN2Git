@@ -20,48 +20,48 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
-  public class SqlLiteralExpression : ExtensionExpression
+  /// <summary>
+  /// <see cref="SqlColumnExpression"/> represents a sql-specific column expression.
+  /// </summary>
+  public class SqlColumnExpression : ExtensionExpression
   {
-    private readonly object _value;
+    private readonly string _owningTableAlias;
+    private readonly string _columnName;
 
-    public SqlLiteralExpression (object value)
-        : base (ArgumentUtility.CheckNotNull ("value", value).GetType())
+    public SqlColumnExpression (Type type, string owningTableAlias, string columnName)
+        : base(type)
     {
-      if (Type != typeof (int))
-      {
-        var message = string.Format ("SqlLiteralExpression does not support values of type '{0}'.", Type);
-        throw new ArgumentTypeException (message, "value", Type, typeof (int));
-      }
+      ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
+      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
 
-      _value = value;
+      _columnName = columnName;
+      _owningTableAlias = owningTableAlias;
     }
 
-    public object Value
+    public string OwningTableAlias
     {
-      get { return _value; }
+      get { return _owningTableAlias; }
     }
 
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    public string ColumnName
+    {
+      get { return _columnName; }
+    }
+
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
       return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
-      if (specificVisitor != null)
-        return specificVisitor.VisitSqlLiteralExpression (this);
+      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
+      if(specificVisitor!=null)
+        return specificVisitor.VisitSqlColumnExpression (this);
       else
         return base.Accept (visitor);
-    }
-
-    public override string ToString ()
-    {
-      return Value.ToString();
     }
   }
 }

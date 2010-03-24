@@ -652,6 +652,7 @@
     <zip zipfile="${relinq-zipfile.name}">
       <fileset basedir="${build.basedir}">
         <include name="**/Remotion.Data.Linq.*" />
+		<include name="**/Remotion.Data.Linq.SqlBackend.*" />
         <include name="relinq-release-notes/**" />
         <exclude name="*/bin/documentation/**" />
       </fileset>
@@ -666,9 +667,10 @@
     <delete file="${relinq-sourcezipfile.name}"/>
     <zip zipfile="${relinq-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
-        <include name="Remotion.sln" />
+        <include name="Remotion-Linq.sln" />
         <include name="prereq/Assemblies/**" />
         <include name="Remotion/Data/Linq/**" />
+		<include name="Remotion/Data/Linq/SqlBackend2/*" />
         <include name="Remotion/Data/Linq.UnitTests/**" />
         <include name="Remotion/license/**/*"/>
 

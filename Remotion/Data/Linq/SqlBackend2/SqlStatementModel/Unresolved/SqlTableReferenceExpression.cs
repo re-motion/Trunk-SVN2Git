@@ -20,48 +20,45 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="SqlColumnExpression"/> represents a sql-specific column expression.
+  /// <see cref="SqlTableReferenceExpression"/> represents a data row in a <see cref="SqlTable"/>.
   /// </summary>
-  public class SqlColumnExpression : ExtensionExpression
+  public class SqlTableReferenceExpression : ExtensionExpression
   {
-    private readonly string _owningTableAlias;
-    private readonly string _columnName;
+    private readonly SqlTableBase _sqlTable;
 
-    public SqlColumnExpression (Type type, string owningTableAlias, string columnName)
-        : base(type)
+    public SqlTableReferenceExpression (SqlTableBase sqlTable)
+        : base(sqlTable.ItemType)
     {
-      ArgumentUtility.CheckNotNull ("owningTableAlias", owningTableAlias);
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
 
-      _columnName = columnName;
-      _owningTableAlias = owningTableAlias;
+      _sqlTable = sqlTable;
     }
 
-    public string OwningTableAlias
+    public SqlTableBase SqlTable
     {
-      get { return _owningTableAlias; }
+      get { return _sqlTable; }
     }
 
-    public string ColumnName
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      get { return _columnName; }
-    }
-
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
-    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
       return this;
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
-      if(specificVisitor!=null)
-        return specificVisitor.VisitSqlColumnExpression (this);
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+
+      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
+      if (specificVisitor != null)
+        return specificVisitor.VisitSqlTableReferenceExpression (this);
       else
         return base.Accept (visitor);
     }
+
+
   }
 }

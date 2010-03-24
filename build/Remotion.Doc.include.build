@@ -48,6 +48,7 @@
       <include name="Remotion.Data.DomainObjects.Security.dll" />
       <include name="Remotion.Data.Interfaces.dll" />
       <include name="Remotion.Data.Linq.dll" />
+	  <include name="Remotion.Data.Linq.SqlBackend.dll" />
       <include name="Remotion.ObjectBinding.dll" />
       <include name="Remotion.ObjectBinding.Interfaces.dll" />
       <include name="Remotion.ObjectBinding.Web.dll" />
@@ -68,6 +69,7 @@
       <include name="Remotion/ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>
       <include name="Remotion/Data/DomainObjects/Doc/include/NamespaceDoc.xml"/>
       <include name="Remotion/Data/Linq/Doc/include/NamespaceDoc.xml"/>
+	  <include name="Remotion/Data/Linq/SqlBackend2/Doc/include/NamespaceDoc.xml"/>
     </fileset>
   </target>
 

@@ -49,6 +49,7 @@
         <include name="${build.outputdir}/Remotion.Data.DomainObjects.dll" />
         <include name="${build.outputdir}/Remotion.Data.DomainObjects.Security.dll" />
         <include name="${build.outputdir}/Remotion.Data.Linq.dll"/>
+		<include name="${build.outputdir}/Remotion.Data.Linq.SqlBackend.dll"/>
         <include name="${build.outputdir}/Remotion.ObjectBinding.dll" />
         <include name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.ObjectBinding.Web.dll" />

@@ -20,31 +20,31 @@ using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions
 {
-  /// <summary>
-  /// <see cref="SqlTableReferenceExpression"/> represents a data row in a <see cref="SqlTable"/>.
-  /// </summary>
-  public class SqlTableReferenceExpression : ExtensionExpression
+  public class SqlLiteralExpression : ExtensionExpression
   {
-    private readonly SqlTableBase _sqlTable;
+    private readonly object _value;
 
-    public SqlTableReferenceExpression (SqlTableBase sqlTable)
-        : base(sqlTable.ItemType)
+    public SqlLiteralExpression (object value)
+        : base (ArgumentUtility.CheckNotNull ("value", value).GetType())
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      if (Type != typeof (int))
+      {
+        var message = string.Format ("SqlLiteralExpression does not support values of type '{0}'.", Type);
+        throw new ArgumentTypeException (message, "value", Type, typeof (int));
+      }
 
-      _sqlTable = sqlTable;
+      _value = value;
     }
 
-    public SqlTableBase SqlTable
+    public object Value
     {
-      get { return _sqlTable; }
+      get { return _value; }
     }
 
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
       return this;
     }
 
@@ -52,13 +52,16 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
+      var specificVisitor = visitor as ISqlSpecificExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlTableReferenceExpression (this);
+        return specificVisitor.VisitSqlLiteralExpression (this);
       else
         return base.Accept (visitor);
     }
 
-
+    public override string ToString ()
+    {
+      return Value.ToString();
+    }
   }
 }

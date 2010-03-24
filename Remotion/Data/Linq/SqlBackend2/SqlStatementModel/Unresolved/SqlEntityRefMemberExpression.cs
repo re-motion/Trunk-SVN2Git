@@ -16,36 +16,44 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
 {
   /// <summary>
-  /// <see cref="SqlSubStatementExpression"/> represents a SQL database subquery. The <see cref="QueryModel"/> of the subquery is translated to 
-  /// this model, and the <see cref="SqlSubStatementExpression"/> is transformed several times until it can easily be translated to SQL text.
+  /// Describes a member reference representing an entity rather than a simple column.
   /// </summary>
-  public class SqlSubStatementExpression : ExtensionExpression
+  public class SqlEntityRefMemberExpression : ExtensionExpression
   {
-    private readonly SqlStatement _sqlStatement;
-    
-    public SqlSubStatementExpression (SqlStatement sqlStatement, Type type)
-        : base(type)
-    {
-      ArgumentUtility.CheckNotNull ("sqlStatement", sqlStatement);
+    private readonly SqlTableBase _sqlTable;
+    private readonly MemberInfo _memberInfo;
 
-      _sqlStatement = sqlStatement;
+    public SqlEntityRefMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo)
+      : base (ReflectionUtility.GetFieldOrPropertyType (ArgumentUtility.CheckNotNull ("memberInfo", memberInfo)))
+    {
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      _sqlTable = sqlTable;
+      _memberInfo = memberInfo;
     }
 
-    public SqlStatement SqlStatement
+    public SqlTableBase SqlTable
     {
-      get { return _sqlStatement; }
+      get { return _sqlTable; }
     }
 
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    public MemberInfo MemberInfo
     {
+      get { return _memberInfo; }
+    }
+
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
       return this;
     }
 
@@ -53,9 +61,9 @@ namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-      var specificVisitor = visitor as ISqlSubStatementExpressionVisitor;
+      var specificVisitor = visitor as IUnresolvedSqlExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitSqlSubStatementExpression(this);
+        return specificVisitor.VisitSqlEntityRefMemberExpression(this);
       else
         return base.Accept (visitor);
     }

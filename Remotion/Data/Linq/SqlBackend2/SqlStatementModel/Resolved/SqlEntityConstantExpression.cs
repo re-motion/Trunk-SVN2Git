@@ -18,44 +18,50 @@ using System;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved
+namespace Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved
 {
   /// <summary>
-  /// <see cref="JoinConditionExpression"/> represents the data source defined by a member access in the from part of a linq expression.
+  /// <see cref="SqlEntityConstantExpression"/> holds the primary key for a constant entity.
   /// </summary>
-  public class JoinConditionExpression : ExtensionExpression
+  public class SqlEntityConstantExpression : ExtensionExpression
   {
-    private readonly SqlJoinedTable _sqlTable;
+    private readonly object _value;
+    private readonly object _primaryKeyValue;
 
-    public JoinConditionExpression (SqlJoinedTable sqlTable) : base(typeof(bool))
+    public SqlEntityConstantExpression (Type type, object value, object primaryKeyValue)
+        : base(type)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("primaryKeyValue", primaryKeyValue);
 
-      _sqlTable = sqlTable;
+      _value = value;
+      _primaryKeyValue = primaryKeyValue;
     }
 
-    public SqlJoinedTable JoinTable
+    public object Value
     {
-      get { return _sqlTable; }
+      get { return _value; }
     }
 
-    protected internal override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    public object PrimaryKeyValue
     {
-      return this;
+      get { return _primaryKeyValue; }
     }
 
     public override Expression Accept (ExpressionTreeVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-      
       var specificVisitor = visitor as IResolvedSqlExpressionVisitor;
       if (specificVisitor != null)
-        return specificVisitor.VisitJoinConditionExpression(this);
+        return specificVisitor.VisitSqlEntityConstantExpression (this);
       else
         return base.Accept (visitor);
+    }
+
+    protected override Expression VisitChildren (ExpressionTreeVisitor visitor)
+    {
+      return this;
     }
   }
 }
