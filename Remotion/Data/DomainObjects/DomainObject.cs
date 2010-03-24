@@ -608,6 +608,15 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Calls the <see cref="OnReferenceInitialized"/> method, setting a flag indicating that no mapped properties must be used.
+    /// </summary>
+    internal void FinishReferenceInitialization ()
+    {
+      OnReferenceInitialized ();
+      DomainObjectMixinCodeGenerationBridge.OnDomainObjectReferenceInitialized (this);
+    }
+
+    /// <summary>
     /// Calls the <see cref="OnLoaded(LoadMode)"/> method with the right <see cref="LoadMode"/> parameter.
     /// </summary>
     internal void OnLoaded ()
@@ -617,6 +626,40 @@ namespace Remotion.Data.DomainObjects
 
       DomainObjectMixinCodeGenerationBridge.OnDomainObjectLoaded (this, loadMode);
       OnLoaded (loadMode);
+    }
+
+    /// <summary>
+    /// This method is invoked after this <see cref="DomainObject"/> reference has been initialized. This occurs whenever a <see cref="DomainObject"/> 
+    /// is initialized, no matter whether the object is created, loaded, transported, cloned, or somehow else instantiated, and it occurs at a point 
+    /// of time where it is safe to access the <see cref="ID"/> of the object. The <see cref="OnReferenceInitialized"/> notification occurs exactly 
+    /// once per DomainObject, and its purpose is the initialization of DomainObject fields that do not depend on the object's mapped data properties. 
+    /// See restrictions in the Remarks section.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Override this method to initialize fields and properties of a <see cref="DomainObject"/> that do not depend on the object's mapped data
+    /// properties, no matter how the object is created. Object deserialization is not regarded as the initialization of a reference. Use the 
+    /// deserialization hooks provided by the .NET framework (deserialization constructor, <see cref="IDeserializationCallback"/>) to react on the 
+    /// deserialization of an object, or simply include the fields in the serialization process. 
+    /// </para>
+    /// <para>
+    /// While this method is being executed, it is not possible to access any properties or methods of the DomainObject that read or modify the state 
+    /// or data of the object in a <see cref="ClientTransaction"/>. All automatically implemented properties, <see cref="CurrentProperty"/>, 
+    /// <see cref="Properties"/>, <see cref="State"/>, <see cref="Timestamp"/>, <see cref="MarkAsChanged"/>, <see cref="EnsureDataAvailable"/>, etc. 
+    /// will throw <see cref="InvalidOperationException"/>. It is possible to call <see cref="GetBindingTransaction"/> on the object (if the object 
+    /// is bound), and the object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
+    /// </para>
+    /// <para>The reason why it is explicitly disallowed to access mapped properties from the notification method is that 
+    /// <see cref="OnReferenceInitialized"/> is usually called when no data has yet been loaded for the object. Accessing a property would cause the 
+    /// data to be loaded, defeating lazy loading via object references.
+    /// </para>
+    /// <para>
+    /// To initialize an object based on its data, use the constructor, <see cref="OnLoaded(Remotion.Data.DomainObjects.LoadMode)"/>, or the facility 
+    /// callbacks. <see cref="OnLoaded(Remotion.Data.DomainObjects.LoadMode)"/> might be called more than once per object.
+    /// </para>
+    /// </remarks>
+    protected virtual void OnReferenceInitialized ()
+    {
     }
 
     /// <summary>

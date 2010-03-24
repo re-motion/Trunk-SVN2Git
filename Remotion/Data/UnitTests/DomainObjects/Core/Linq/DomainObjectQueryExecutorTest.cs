@@ -450,13 +450,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'LastLoadMode' is a 'Field', which cannot be fetched by "
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'OnLoadedLoadMode' is a 'Field', which cannot be fetched by "
         + "this LINQ provider. Only properties can be fetched.")]
     public void CreateQuery_EagerFetchQueries_ForField ()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ParseQuery (query.Expression);
-      var relationMember = typeof (Order).GetField ("LastLoadMode");
+      var relationMember = typeof (Order).GetField ("OnLoadedLoadMode");
       var fetchRequest = new FetchOneRequest (relationMember);
       var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
 

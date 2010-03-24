@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -44,6 +45,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static DataContainerCollection CallLoadRelatedDataContainers (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       return (DataContainerCollection) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "LoadRelatedDataContainers", endPointID);
+    }
+
+    public static DomainObject CallNewObject (ClientTransaction clientTransaction, Type domainObjectType, ParamList constructorParameters)
+    {
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "NewObject", domainObjectType, constructorParameters);
     }
 
     public static DomainObject CallGetObject (ClientTransaction clientTransaction, ObjectID objectID, bool includeDeleted)

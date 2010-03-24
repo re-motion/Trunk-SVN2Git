@@ -23,8 +23,11 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
+using Remotion.Mixins.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
@@ -161,6 +164,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var obj = Order.NewObject ();
       Dev.Null = obj.GetBindingTransaction();
+    }
+
+    [Test]
+    public void FinishReferenceInitialization_IDAndBindingTransaction ()
+    {
+      var domainObject = Order.NewObject(); // indirect call of FinishReferenceInitialization
+      Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
+
+      Assert.That (domainObject.OnReferenceInitializedID, Is.EqualTo (domainObject.ID));
+      Assert.That (domainObject.OnReferenceInitializedBindingTransaction, Is.Null);
+
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var boundDomainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
+      Assert.That (boundDomainObject.OnReferenceInitializedBindingTransaction, Is.SameAs (bindingTransaction));
+    }
+
+    [Test]
+    [Ignore ("TODO 2256")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "?")]
+    public void FinishReferenceInitialization_CallsReferenceInitialized_PropertyAccessForbidden ()
+    {
+      EventHandler handler = (sender, args) => Dev.Null = ((Order) sender).OrderNumber;
+
+      Order.StaticInitializationHandler += handler;
+      try
+      {
+        Order.NewObject (); // indirect call of FinishReferenceInitialization
+      }
+      finally
+      {
+        Order.StaticInitializationHandler -= handler;
+      }
+    }
+
+    [Test]
+    public void FinishReferenceInitialization_InvokesMixinHook ()
+    {
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
+      {
+        var order = Order.NewObject(); // indirect call of FinishReferenceInitialization
+        var mixinInstance = Mixin.Get<HookedDomainObjectMixin> (order);
+
+        Assert.That (mixinInstance.OnDomainObjectReferenceInitializedCalled, Is.True);
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO 2256")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "?")]
+    public void FinishReferenceInitialization_InvokesMixinHook_WhilePropertyAccessForbidden ()
+    {
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
+      {
+        var mixinInstance = new HookedDomainObjectMixin ();
+        mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((Order) sender).OrderNumber;
+
+        using (new MixedObjectInstantiationScope (mixinInstance))
+        {
+          Order.NewObject(); // indirect call of FinishReferenceInitialization
+        }
+      }
     }
 
     [Test]

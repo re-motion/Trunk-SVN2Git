@@ -28,9 +28,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   public class MixinWithAccessToDomainObjectProperties<TDomainObject> : DomainObjectMixin<TDomainObject>
       where TDomainObject : DomainObject
   {
-    public bool OnDomainObjectCreatedCalled = false;
-    public bool OnDomainObjectLoadedCalled = false;
+    public bool OnDomainObjectCreatedCalled;
+    public bool OnDomainObjectLoadedCalled;
     public LoadMode OnDomainObjectLoadedLoadMode;
+    public bool OnDomainObjectReferenceInitializedCalled;
 
     [StorageClassNone]
     public new ObjectID ID
@@ -65,6 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     public new TDomainObject This
     {
       get { return base.This; }
+    }
+
+    protected override void OnDomainObjectReferenceInitialized ()
+    {
+      OnDomainObjectReferenceInitializedCalled = true;
     }
 
     protected override void OnDomainObjectCreated ()

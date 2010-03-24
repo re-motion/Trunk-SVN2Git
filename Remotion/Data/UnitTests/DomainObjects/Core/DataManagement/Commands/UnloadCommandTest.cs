@@ -304,12 +304,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
       command.Begin ();
 
-      Assert.That (loadedObject.UnloadingCalled, Is.True);
+      Assert.That (loadedObject.OnUnloadingCalled, Is.True);
 
-      Assert.That (loadedObject.UnloadedCalled, Is.False);
+      Assert.That (loadedObject.OnUnloadedCalled, Is.False);
 
-      Assert.That (unloadedObject.UnloadingCalled, Is.False);
-      Assert.That (unloadedObject.UnloadedCalled, Is.False);
+      Assert.That (unloadedObject.OnUnloadingCalled, Is.False);
+      Assert.That (unloadedObject.OnUnloadedCalled, Is.False);
     }
 
     [Test]
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         command.Begin();
       }
 
-      Assert.That (loadedObject.UnloadingTx, Is.SameAs (ClientTransactionMock));
+      Assert.That (loadedObject.OnUnloadingTx, Is.SameAs (ClientTransactionMock));
     }
 
     [Test]
@@ -338,10 +338,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var command = CreateCommand (order1.ID, order2.ID);
       command.Begin ();
 
-      Assert.That (order1.UnloadingCalled, Is.True);
-      Assert.That (order2.UnloadingCalled, Is.True);
+      Assert.That (order1.OnUnloadingCalled, Is.True);
+      Assert.That (order2.OnUnloadingCalled, Is.True);
 
-      Assert.That (order1.UnloadingDateTime, Is.LessThan (order2.UnloadingDateTime), "order1 was called first");
+      Assert.That (order1.OnUnloadingDateTime, Is.LessThan (order2.OnUnloadingDateTime), "order1 was called first");
     }
 
     [Test]
@@ -357,12 +357,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
       command.End ();
 
-      Assert.That (loadedObject.UnloadedCalled, Is.True);
+      Assert.That (loadedObject.OnUnloadedCalled, Is.True);
 
-      Assert.That (loadedObject.UnloadingCalled, Is.False);
+      Assert.That (loadedObject.OnUnloadingCalled, Is.False);
 
-      Assert.That (unloadedObject.UnloadingCalled, Is.False);
-      Assert.That (unloadedObject.UnloadedCalled, Is.False);
+      Assert.That (unloadedObject.OnUnloadingCalled, Is.False);
+      Assert.That (unloadedObject.OnUnloadedCalled, Is.False);
     }
 
     [Test]
@@ -377,7 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         command.End();
       }
 
-      Assert.That (loadedObject.UnloadedTx, Is.SameAs (ClientTransactionMock));
+      Assert.That (loadedObject.OnUnloadedTx, Is.SameAs (ClientTransactionMock));
     }
 
     [Test]
@@ -390,10 +390,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var command = CreateCommand (order1.ID, order2.ID);
       command.End ();
 
-      Assert.That (order1.UnloadedCalled, Is.True);
-      Assert.That (order2.UnloadedCalled, Is.True);
+      Assert.That (order1.OnUnloadedCalled, Is.True);
+      Assert.That (order2.OnUnloadedCalled, Is.True);
 
-      Assert.That (order1.UnloadedDateTime, Is.GreaterThan (order2.UnloadedDateTime), "order2 was called first");
+      Assert.That (order1.OnUnloadedDateTime, Is.GreaterThan (order2.OnUnloadedDateTime), "order2 was called first");
     }
 
     [Test]

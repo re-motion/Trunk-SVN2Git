@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
@@ -54,6 +53,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       instance.Initialize (objectID, clientTransaction as BindingClientTransaction);
 
       clientTransaction.EnlistDomainObject (instance);
+      clientTransaction.Execute (instance.FinishReferenceInitialization);
+
       return instance;
     }
 

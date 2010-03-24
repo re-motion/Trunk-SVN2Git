@@ -25,6 +25,8 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -44,6 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction = ClientTransaction.CreateRootTransaction ();
       _dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
       _orderItemsEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+    }
+
+    [Test]
+    public void NewObject_CallsReferenceInitialized ()
+    {
+      var domainObject = (Order) ClientTransactionTestHelper.CallNewObject (_transaction, typeof (Order), ParamList.Empty);
+      Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
+    }
+
+    [Test]
+    public void NewObject_CallsReferenceInitialized_InRightTransaction ()
+    {
+      var domainObject = (Order) ClientTransactionTestHelper.CallNewObject (_transaction, typeof (Order), ParamList.Empty);
+      Assert.That (domainObject.OnReferenceInitializedTx, Is.SameAs (_transaction));
     }
 
     [Test]
@@ -586,7 +602,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       eventListenerMock.VerifyAllExpectations ();
 
-      Assert.That (((Order) result[0]).LoadTransaction, Is.SameAs (clientTransaction));
+      Assert.That (((Order) result[0]).OnLoadedTx, Is.SameAs (clientTransaction));
     }
 
     [Test]

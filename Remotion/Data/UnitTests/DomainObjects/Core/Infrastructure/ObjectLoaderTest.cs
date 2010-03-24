@@ -654,7 +654,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                 ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).OnLoadedCalled),
                 "ObjectsLoaded must be raised after OnLoaded is called");
             Assert.That (
-                ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).LoadTransaction == _clientTransaction),
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).OnLoadedTx == _clientTransaction),
                 "ObjectsLoaded must be raised after OnLoaded is called");
             if (transactionEventReceiver != null)
             {

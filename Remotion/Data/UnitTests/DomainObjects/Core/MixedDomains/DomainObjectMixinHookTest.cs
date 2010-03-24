@@ -36,6 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializedCalled);
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
@@ -45,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         Assert.IsTrue (mixinInstance.OnLoadedCalled);
         Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializedCalled);
       }
     }
 
@@ -57,6 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializedCalled);
 
         Order order;
         using (new MixedObjectInstantiationScope (mixinInstance))
@@ -81,6 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
         Assert.AreEqual (1, mixinInstance.OnLoadedCount);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializedCalled);
       }
     }
 
@@ -93,6 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializedCalled);
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
@@ -106,6 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         Assert.AreEqual (2, mixinInstance.OnLoadedCount);
         Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializedCalled);
       }
     }
 
@@ -118,6 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializedCalled);
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
@@ -125,6 +132,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
           Assert.IsTrue (mixinInstance.OnLoadedCalled);
           Assert.AreEqual (1, mixinInstance.OnLoadedCount);
           Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, mixinInstance.OnLoadedLoadMode);
+          Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializedCalled);
+          Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializedCount);
 
           using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
           {
@@ -135,6 +144,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         Assert.AreEqual (2, mixinInstance.OnLoadedCount);
         Assert.AreEqual (LoadMode.DataContainerLoadedOnly, mixinInstance.OnLoadedLoadMode);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializedCalled);
+        Assert.AreEqual (1, mixinInstance.OnDomainObjectReferenceInitializedCount);
       }
     }
 
@@ -147,6 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);
         Assert.IsFalse (mixinInstance.OnCreatedCalled);
+        Assert.IsFalse (mixinInstance.OnDomainObjectReferenceInitializedCalled);
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
@@ -155,6 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);
         Assert.IsTrue (mixinInstance.OnCreatedCalled);
+        Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializedCalled);
       }
     }
   }

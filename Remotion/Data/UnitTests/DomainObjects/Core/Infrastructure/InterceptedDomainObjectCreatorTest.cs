@@ -26,18 +26,28 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class InterceptedDomainObjectCreatorTest : ClientTransactionBaseTest
+  public class InterceptedDomainObjectCreatorTest : StandardMappingTest
   {
+    private ClientTransaction _transaction;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _transaction = ClientTransaction.CreateRootTransaction ();
+    }
+
     [Test]
     public void CreateObjectReference ()
     {
-      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
       Assert.That (order, Is.InstanceOfType (typeof (Order)));
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
@@ -46,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_UsesFactoryGeneratedType ()
     {
-      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
       var factory = InterceptedDomainObjectCreator.Instance.Factory;
       Assert.That (factory.WasCreatedByFactory ((((object) order).GetType ())), Is.True);
@@ -55,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_CallsNoCtor ()
     {
-      var order = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var order = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (order.CtorCalled, Is.False);
     }
 
@@ -63,39 +73,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateObjectReference_PreparesMixins ()
     {
       var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, ClientTransactionMock);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, _transaction);
       Assert.That (Mixin.Get<MixinAddingPersistentProperties> (instance), Is.Not.Null);
     }
 
     [Test]
     public void CreateObjectReference_InitializesObjectID ()
     {
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (instance.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
     public void CreateObjectReference_EnlistsObjectInTransaction ()
     {
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
-      Assert.That (ClientTransactionMock.GetEnlistedDomainObject (instance.ID), Is.SameAs (instance));
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      Assert.That (_transaction.GetEnlistedDomainObject (instance.ID), Is.SameAs (instance));
     }
 
     [Test]
     public void CreateObjectReference_BindingTransaction ()
     {
-      var transaction = ClientTransaction.CreateBindingTransaction ();
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
 
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, transaction);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
 
       Assert.That (instance.HasBindingTransaction, Is.True);
-      Assert.That (instance.GetBindingTransaction (), Is.SameAs (transaction));
+      Assert.That (instance.GetBindingTransaction (), Is.SameAs (bindingTransaction));
     }
 
     [Test]
     public void CreateObjectReference_NoBindingTransaction ()
     {
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (instance.HasBindingTransaction, Is.False);
     }
 
@@ -106,8 +116,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
         var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid ());
-        InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, ClientTransactionMock);
+        InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, _transaction);
       }
+    }
+
+    [Test]
+    public void CreateObjectReference_CallsReferenceInitialized ()
+    {
+      var domainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
+    }
+
+    [Test]
+    public void CreateObjectReference_CallsReferenceInitialized_InRightTransaction ()
+    {
+      var domainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      Assert.That (domainObject.OnReferenceInitializedTx, Is.SameAs (_transaction));
     }
 
     [Test]

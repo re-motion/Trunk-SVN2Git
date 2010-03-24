@@ -43,18 +43,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     public event EventHandler ProtectedLoaded;
     public static event EventHandler StaticLoadHandler;
+    public static event EventHandler StaticInitializationHandler;
 
-    public readonly bool CtorCalled = false;
-    public bool OnLoadedCalled = false;
-    public ClientTransaction LoadTransaction;
-    public LoadMode LastLoadMode;
+    public readonly bool CtorCalled;
 
-    public bool UnloadingCalled = false;
-    public ClientTransaction UnloadingTx;
-    public DateTime UnloadingDateTime;
-    public bool UnloadedCalled = false;
-    public ClientTransaction UnloadedTx;
-    public DateTime UnloadedDateTime;
+    public bool OnReferenceInitializedCalled;
+    public ClientTransaction OnReferenceInitializedTx;
+    public ObjectID OnReferenceInitializedID;
+    public ClientTransaction OnReferenceInitializedBindingTransaction;
+
+    public bool OnLoadedCalled;
+    public ClientTransaction OnLoadedTx;
+    public LoadMode OnLoadedLoadMode;
+
+    public bool OnUnloadingCalled;
+    public ClientTransaction OnUnloadingTx;
+    public DateTime OnUnloadingDateTime;
+    public bool OnUnloadedCalled;
+    public ClientTransaction OnUnloadedTx;
+    public DateTime OnUnloadedDateTime;
     
     protected Order ()
     {
@@ -152,12 +159,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       get { return CurrentProperty.GetValue<ObjectList<OrderItem>> (); }
     }
 
+    protected override void OnReferenceInitialized ()
+    {
+      base.OnReferenceInitialized ();
+
+      OnReferenceInitializedCalled = true;
+      OnReferenceInitializedTx = ClientTransaction.Current;
+      OnReferenceInitializedID = ID;
+      OnReferenceInitializedBindingTransaction = HasBindingTransaction ? GetBindingTransaction() : null;
+
+      if (StaticInitializationHandler != null)
+        StaticInitializationHandler (this, EventArgs.Empty);
+    }
+
     protected override void OnLoaded (LoadMode loadMode)
     {
       base.OnLoaded (loadMode);
       OnLoadedCalled = true;
-      LoadTransaction = ClientTransaction.Current;
-      LastLoadMode = loadMode;
+      OnLoadedTx = ClientTransaction.Current;
+      OnLoadedLoadMode = loadMode;
       if (ProtectedLoaded != null)
         ProtectedLoaded (this, EventArgs.Empty);
       if (StaticLoadHandler != null)
@@ -167,11 +187,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     protected override void OnUnloading ()
     {
       base.OnUnloading ();
-      UnloadingCalled = true;
-      UnloadingTx = ClientTransaction.Current;
+      OnUnloadingCalled = true;
+      OnUnloadingTx = ClientTransaction.Current;
 
-      UnloadingDateTime = DateTime.Now;
-      while (DateTime.Now == UnloadingDateTime)
+      OnUnloadingDateTime = DateTime.Now;
+      while (DateTime.Now == OnUnloadingDateTime)
       {
       }
     }
@@ -179,11 +199,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     protected override void OnUnloaded ()
     {
       base.OnUnloading ();
-      UnloadedCalled = true;
-      UnloadedTx = ClientTransaction.Current;
+      OnUnloadedCalled = true;
+      OnUnloadedTx = ClientTransaction.Current;
 
-      UnloadedDateTime = DateTime.Now;
-      while (DateTime.Now == UnloadedDateTime)
+      OnUnloadedDateTime = DateTime.Now;
+      while (DateTime.Now == OnUnloadedDateTime)
       {
       }
     }

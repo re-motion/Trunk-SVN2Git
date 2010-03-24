@@ -106,13 +106,26 @@ namespace Remotion.Data.DomainObjects
       get { return This.Properties; }
     }
 
+    void IDomainObjectMixin.OnDomainObjectReferenceInitialized ()
+    {
+      OnDomainObjectReferenceInitialized ();
+    }
+
+    /// <summary>
+    /// Called when the mixin's target domain object has been initialized. This is executed right after 
+    /// <see cref="DomainObject.OnReferenceInitialized"/>, see <see cref="DomainObject.OnReferenceInitialized"/> for details.
+    /// </summary>
+    protected virtual void OnDomainObjectReferenceInitialized ()
+    {
+    }
+
     void IDomainObjectMixin.OnDomainObjectCreated ()
     {
       OnDomainObjectCreated ();
     }
 
     /// <summary>
-    /// Called when the mixin's target domain object has been created.
+    /// Called when the mixin's target domain object has been newly created, after the constructors have finished execution.
     /// </summary>
     protected virtual void OnDomainObjectCreated ()
     {

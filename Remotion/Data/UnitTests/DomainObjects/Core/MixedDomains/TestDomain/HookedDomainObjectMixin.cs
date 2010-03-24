@@ -25,10 +25,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [NonIntroduced (typeof (IDomainObjectMixin))]
   public class HookedDomainObjectMixin : Mixin<Order>, IDomainObjectMixin
   {
-    public bool OnLoadedCalled = false;
-    public int OnLoadedCount = 0;
+    public event EventHandler InitializationHandler;
+
+    public bool OnLoadedCalled;
+    public int OnLoadedCount;
     public LoadMode OnLoadedLoadMode;
-    public bool OnCreatedCalled = false;
+    public bool OnCreatedCalled;
+    
+    public bool OnDomainObjectReferenceInitializedCalled;
+    public int OnDomainObjectReferenceInitializedCount;
 
     public void OnDomainObjectLoaded (LoadMode loadMode)
     {
@@ -46,6 +51,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       Assert.IsNotNull (This.ID);
       This.OrderNumber += 2;
       Assert.IsNotNull (This.OrderItems);
+    }
+
+    public void OnDomainObjectReferenceInitialized ()
+    {
+      OnDomainObjectReferenceInitializedCalled = true;
+      ++OnDomainObjectReferenceInitializedCount;
+      Assert.IsNotNull (This.ID);
+      if (InitializationHandler != null)
+        InitializationHandler (this, EventArgs.Empty);
     }
   }
 }
