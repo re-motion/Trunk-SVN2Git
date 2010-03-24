@@ -17,12 +17,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -33,6 +35,9 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     public AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
+      ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableInfo.ItemType];
       if (classDefinition == null)
       {
@@ -53,12 +58,15 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
+      ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+      
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableReferenceExpression.SqlTable.ItemType];
 
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       if (classDefinition == null)
-        return null;
+        return null; //TODO: throw UnmappedItemException
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
@@ -76,11 +84,43 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("memberExpression", memberExpression);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+
+      var tableAlias = memberExpression.SqlTable.GetResolvedTableInfo().TableAlias;
+      var property = memberExpression.MemberInfo;
+      
+      if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
+        return new SqlColumnExpression (property.GetType(), tableAlias, "ID");
+      
+      
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[memberExpression.MemberInfo.DeclaringType];
+      if (classDefinition == null)
+      {
+        string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
+        throw new UnmappedItemException (message);
+      }
+      
+
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName ((PropertyInfo) memberExpression.MemberInfo);
+      PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
+
+      if (propertyDefinition == null)
+      {
+        string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
+        throw new UnmappedItemException (message);
+      }
+
+      if (propertyDefinition.IsObjectID)
+        return new SqlEntityRefMemberExpression (memberExpression.SqlTable, property);
+      else
+        return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
+      ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);
+
       if (constantExpression.Value is DomainObject)
         return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, ((DomainObject) constantExpression.Value).ID);
       else

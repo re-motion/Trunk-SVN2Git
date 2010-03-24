@@ -34,19 +34,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     private MappingResolver _resolver;
     private UniqueIdentifierGenerator _generator;
+    private SqlTable _sqlTable;
 
     [SetUp]
     public void SetUp ()
     {
       _resolver = new MappingResolver();
       _generator = new UniqueIdentifierGenerator();
+      _sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
     }
 
     [Test]
     public void ResolveTableReferenceExpression ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo(typeof(Order), "Order", "o"));
-      var tableReferenceExpression = new SqlTableReferenceExpression(sqlTable);
+      var tableReferenceExpression = new SqlTableReferenceExpression(_sqlTable);
 
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
       var column1 = new SqlColumnExpression (typeof (int), "o", "OrderNo");
@@ -116,6 +117,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (expression, Is.TypeOf (typeof (SqlEntityConstantExpression)));
       Assert.That (((SqlEntityConstantExpression) expression).Value, Is.EqualTo (order));
+    }
+
+    [Test]
+    public void ResolveMemberExpression_ReturnsSqlColumnExpression ()
+    {
+      var property = typeof (Order).GetProperty ("OrderNumber");
+      var memberExpression = new SqlMemberExpression (_sqlTable, property);
+
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+
+      Assert.That (sqlColumnExpression, Is.Not.Null);
+      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
+      Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
+    public void ResolveMemberExpression_ReturnsSqlEntityRefMemberExpression ()
+    {
+      var property = typeof (Order).GetProperty ("Customer");
+      var memberExpression = new SqlMemberExpression (_sqlTable, property);
+
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+
+      Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);      
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException))]
+    public void ResolveMemberExpression_ThrowsUnmappedItemExpression ()
+    {
+      var property = typeof (Student).GetProperty ("First");
+      var memberExpression = new SqlMemberExpression (_sqlTable, property);
+
+      _resolver.ResolveMemberExpression (memberExpression, _generator);
     }
   }
 }
