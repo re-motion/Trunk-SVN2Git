@@ -24,6 +24,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -66,6 +67,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (sqlEntityExpression.ProjectionColumns[2].OwningTableAlias, Is.EqualTo (column3.OwningTableAlias));
       Assert.That (sqlEntityExpression.ProjectionColumns[3].ColumnName, Is.EqualTo (column4.ColumnName));
       Assert.That (sqlEntityExpression.ProjectionColumns[3].OwningTableAlias, Is.EqualTo (column4.OwningTableAlias));      
+    }
+
+    [Test]
+    public void ResolveTableInfo ()
+    {
+      var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
+
+      ResolvedSimpleTableInfo resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
+
+      Assert.That (resolvedTableInfo, Is.Not.Null);
+      Assert.That (resolvedTableInfo.TableName, Is.EqualTo ("OrderView"));
+      Assert.That (resolvedTableInfo.TableAlias, Is.EqualTo("t0"));
+    }
+
+    [Test]
+    [ExpectedException(typeof(UnmappedItemException))]
+    public void ResolveTableInfo_NoDomainObject_ThrowsException ()
+    {
+      var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Student));
+
+      _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
     }
   }
 }

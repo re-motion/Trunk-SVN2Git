@@ -33,7 +33,17 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     public AbstractTableInfo ResolveTableInfo (UnresolvedTableInfo tableInfo, UniqueIdentifierGenerator generator)
     {
-      throw new NotImplementedException();
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableInfo.ItemType];
+      if (classDefinition == null)
+      {
+        string message = string.Format ("The item type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
+        throw new UnmappedItemException (message);
+      }
+      else
+      {
+        var viewName = classDefinition.GetViewName ();
+        return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
+      }
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
