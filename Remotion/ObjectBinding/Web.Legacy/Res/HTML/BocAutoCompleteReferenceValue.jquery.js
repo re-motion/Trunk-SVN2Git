@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                            
+                // matches also semicolon                              
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab                          
+                // re-motion: do not block event bubbling for tab                            
                 case KEY.TAB:
                     if (selectCurrent()) {
                         onChange(0, true);
@@ -737,40 +737,34 @@
 
         function applyPositionToDropDown() {
 
-            var whereToPen, whereToPenPosition, elementWidth, newHeight;
-
+            var maxHeight = 0;
             var offset = $(input).offset();
             // re-motion: calculate best position where to open dropdown list
             var position = $.Autocompleter.calculateSpaceAround(input);
-
             var elementHeight = element.height();
-            var listHeight = list.height();
+            var listHeight = list.outerHeight();
+
+            if (listHeight > options.scrollHeight)
+                maxHeight = options.scrollHeight;
 
             if (position.spaceVertical == 'T') {
-
-                //element.css('bottom', position.bottom + input.offsetHeight);
                 topPosition = 'auto';
                 bottomPosition = position.bottom + input.offsetHeight;
-
                 if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
-                    var maxHeight = position.top;
-                } else {
-                    var maxHeight = options.scrollHeight;
+                    maxHeight = position.top;
                 }
 
             } else {
-                //element.css('top', offset.top + input.offsetHeight);
+
                 bottomPosition = 'auto';
                 topPosition = offset.top + input.offsetHeight;
                 if (options.scrollHeight > position.bottom) {
-                    var maxHeight = position.bottom;
-                } else {
-                    var maxHeight = options.scrollHeight;
+                    maxHeight = position.bottom;
                 }
 
             }
             // evaluate if list is smaller than available space
-            if (maxHeight > listHeight && listHeight > 0) {
+            if (maxHeight && maxHeight > listHeight && listHeight > 0) {
                 maxHeight = listHeight;
             }
 
@@ -784,14 +778,23 @@
                 elementWidth = $(input).outerWidth() + $('#' + options.dropDownButtonId).outerWidth();
             }
 
-            element.css({
-                width: elementWidth,
-                left: offset.left,
-                height: maxHeight,
-                top: topPosition,
-                bottom: bottomPosition
-            });
-
+            if (maxHeight > 0) {
+                element.css({
+                    width: elementWidth,
+                    left: offset.left,
+                    top: topPosition,
+                    bottom: bottomPosition,
+                    'overflow-y': 'auto',
+                    height: maxHeight
+                });
+            } else {
+                element.css({
+                    width: elementWidth,
+                    left: offset.left,
+                    top: topPosition,
+                    bottom: bottomPosition
+                });
+            }
         }
 
         function fillList() {
@@ -857,13 +860,6 @@
             },
             show: function() {
 
-                // re-motion: reposition element 
-                applyPositionToDropDown();
-                element.show();
-                // re-motion: start interval to reposition element 
-                if (repositionTimer) clearInterval(repositionTimer);
-                repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
-
                 //re-motion: block blur bind as long we scroll dropDown list 
                 var revertInputStausTimeout = null;
                 function revertInputStaus() {
@@ -886,24 +882,12 @@
                     }
                 });
 
+                element.show();
+                applyPositionToDropDown();
+                // re-motion: start interval to reposition element 
+                if (repositionTimer) clearInterval(repositionTimer);
+                repositionTimer = setInterval(applyPositionToDropDown, options.repositionInterval);
 
-                if (options.scroll) {
-                    list.scrollTop(0);
-
-                    if ($.browser.msie && typeof document.body.style.maxHeight === "undefined") {
-                        var listHeight = 0;
-                        listItems.each(function() {
-                            listHeight += this.offsetHeight;
-                        });
-                        var scrollbarsVisible = listHeight > options.scrollHeight;
-                        list.css('height', scrollbarsVisible ? options.scrollHeight : listHeight);
-                        if (!scrollbarsVisible) {
-                            // IE doesn't recalculate width when scrollbar disappears
-                            listItems.width(list.width() - parseInt(listItems.css("padding-left")) - parseInt(listItems.css("padding-right")));
-                        }
-                    }
-
-                }
 
             },
             selected: function() {
