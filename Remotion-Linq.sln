@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq", "Remotion\Data\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.UnitTests", "Remotion\Data\Linq.UnitTests\Data.Linq.UnitTests.csproj", "{1D56FFB7-8118-463A-81EA-37A8668BCD31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.SqlBackend", "Remotion\Data\Linq\SqlBackend2\Data.Linq.SqlBackend.csproj", "{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Linq.SqlBackend", "Remotion\Data\Linq.SqlBackend\Data.Linq.SqlBackend.csproj", "{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

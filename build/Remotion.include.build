@@ -670,7 +670,7 @@
         <include name="Remotion-Linq.sln" />
         <include name="prereq/Assemblies/**" />
         <include name="Remotion/Data/Linq/**" />
-		<include name="Remotion/Data/Linq/SqlBackend2/*" />
+		<include name="Remotion/Data/Linq.SqlBackend/*" />
         <include name="Remotion/Data/Linq.UnitTests/**" />
         <include name="Remotion/license/**/*"/>
 

@@ -63,7 +63,7 @@
         <include asis="true" name="${build.outputdir}/Remotion.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.Linq.dll"/>
-		<include asis="true" name="${build.outputdir}/Remotion.Data.Linq.SqlBackend.dll"/>
+		    <include asis="true" name="${build.outputdir}/Remotion.Data.Linq.SqlBackend.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.ObjectBinding.dll"/>
         <include name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>

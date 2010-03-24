@@ -204,7 +204,7 @@
   
   <target name="Data.Linq.SqlBackend" depends="Core.Core">
 	<property name="project.name" value="Data.Linq.SqlBackend" />
-    <property name="project.dir" value="Remotion/Data/Linq/SqlBackend2" />
+    <property name="project.dir" value="Remotion/Data/Linq.SqlBackend" />
     <property name="project.output" value="Remotion.Data.Linq.SqlBackend" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />  
