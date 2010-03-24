@@ -211,12 +211,7 @@
                 hideResults();
             }
         }).click(function() {
-            // show select when clicking in a focused field
-            if (hasFocus++ > 1 && !select.visible()) {
-                onChange(1, true);
-                //adjustSelection( $input.val() );
 
-            }
         }).bind("search", function() {
             // TODO why not just specifying both arguments?
             var fn = (arguments.length > 1) ? arguments[1] : null;

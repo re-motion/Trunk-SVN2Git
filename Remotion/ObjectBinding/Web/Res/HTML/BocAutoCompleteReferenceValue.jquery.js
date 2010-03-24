@@ -161,7 +161,7 @@
                     }
                     break;
 
-                // matches also semicolon                   
+                // matches also semicolon                    
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                     if (selectCurrent()) {
@@ -179,7 +179,7 @@
                         return false;
                     }
                     break;
-                // re-motion: do not block event bubbling for tab                 
+                // re-motion: do not block event bubbling for tab                  
                 case KEY.TAB:
                     if (selectCurrent()) {
                     }
@@ -211,12 +211,7 @@
                 hideResults();
             }
         }).click(function() {
-            // show select when clicking in a focused field
-            if (hasFocus++ > 1 && !select.visible()) {
-                onChange(1, true);
-                //adjustSelection( $input.val() );
 
-            }
         }).bind("search", function() {
             // TODO why not just specifying both arguments?
             var fn = (arguments.length > 1) ? arguments[1] : null;
@@ -260,7 +255,7 @@
                     onChange(1, true);
                     //adjustSelection( $input.val() );
                     clearTimeout(timeout);
-                } 
+                }
             });
         }
 
@@ -873,7 +868,7 @@
                     if (revertInputStausTimeout) clearTimeout(revertInputStausTimeout);
                     revertInputStausTimeout = setTimeout(revertInputStaus, 500);
                 });
-                
+
                 //re-motion: scroll dropDown list to value from input
                 listItems.each(function(i) {
                     if (this.outerText == $(input).val()) {
