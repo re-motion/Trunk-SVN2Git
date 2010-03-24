@@ -46,6 +46,7 @@
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.Security.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.Linq.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.Linq.SqlBackend.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Development.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Development.Data.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Development.Web.dll"/>
