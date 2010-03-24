@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Relations are not cloned, foreign key properties default to null.
     /// </summary>
     /// <returns>A clone of the given <paramref name="source"/> object.</returns>
-    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
+    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. The actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <remarks>
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// relations being set.
     /// </summary>
     /// <returns>A clone of the given <paramref name="source"/> object.</returns>
-    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
+    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. The actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <remarks>
@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Referenced objects are cloned according to the given strategy.
     /// </summary>
     /// <returns>A clone of the given <paramref name="source"/> object.</returns>
-    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
+    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. The actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <param name="strategy">The <see cref="ICloneStrategy"/> to be used when cloning the object's references.</param>
@@ -121,7 +121,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Referenced objects are cloned according to the given strategy, the given context is used instead of creating a new one.
     /// </summary>
     /// <returns>A clone of the given <paramref name="source"/> object.</returns>
-    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
+    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. The actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <param name="strategy">The <see cref="ICloneStrategy"/> to be used when cloning the object's references.</param>
