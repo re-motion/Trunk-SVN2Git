@@ -36,6 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private DomainObjectTransactionContext _notYetLoadedOrder2Context;
     private DomainObjectTransactionContext _newOrderContext;
     private DomainObjectTransactionContext _invalidContext;
+    
+    private DomainObjectTransactionContext _referenceInitializationContext;
 
     public override void SetUp ()
     {
@@ -50,7 +52,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _notYetLoadedOrder2Context = new DomainObjectTransactionContext (_notYetLoadedOrder2, ClientTransactionMock);
       _newOrderContext = new DomainObjectTransactionContext (_newOrder, ClientTransactionMock);
 
-      _invalidContext = new DomainObjectTransactionContext (_newOrder, ClientTransaction.CreateRootTransaction());
+      _invalidContext = new DomainObjectTransactionContext (_newOrder, ClientTransaction.CreateRootTransaction ());
+
+      var objectBeingInitialized = Order.NewObject ();
+      PrivateInvoke.SetNonPublicField (objectBeingInitialized, "_isReferenceInitializeEventExecuting", true);
+      _referenceInitializationContext = new DomainObjectTransactionContext (objectBeingInitialized, ClientTransactionMock);
     }
 
     [Test]
@@ -315,6 +321,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
         Assert.That (currentInDelegate, Is.SameAs (_loadedOrder1Context.ClientTransaction));
       }
+    }
+    
+    [Test]
+    public void ClientTransaction_DuringReferenceInitialization_Allowed ()
+    {
+      Assert.That (_referenceInitializationContext.ClientTransaction, Is.SameAs (ClientTransactionMock));
     }
 
     private void DeleteOrder (Order order)

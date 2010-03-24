@@ -24,16 +24,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public struct DomainObjectTransactionContextIndexer
   {
     private readonly DomainObject _domainObject;
+    private readonly bool _isInitializedEventExecuting;
 
-    public DomainObjectTransactionContextIndexer (DomainObject domainObject)
+    public DomainObjectTransactionContextIndexer (DomainObject domainObject, bool isInitializedEventExecuting)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       _domainObject = domainObject;
+      _isInitializedEventExecuting = isInitializedEventExecuting;
     }
 
     public IDomainObjectTransactionContext this[ClientTransaction clientTransaction]
     {
-      get { return new DomainObjectTransactionContext (_domainObject, clientTransaction); }
+      get
+      {
+        var context = new DomainObjectTransactionContext (_domainObject, clientTransaction);
+        if (_isInitializedEventExecuting)
+          return new InitializedEventDomainObjectTransactionContextDecorator (context);
+        else
+          return context;
+      }
     }
   }
 }

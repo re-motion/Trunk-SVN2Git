@@ -215,6 +215,7 @@ namespace Remotion.Data.DomainObjects
     private ObjectID _id;
     private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
     private bool _needsLoadModeDataContainerOnly; // true if the object was created by a constructor call or OnLoaded has already been called once
+    private bool _isReferenceInitializeEventExecuting; // true only while OnReferenceInitialized is executed
 
     [NonSerialized] // required when ISerializable is not implemented by subclass
     private PropertyIndexer _properties; // lazily initialized
@@ -368,7 +369,7 @@ namespace Remotion.Data.DomainObjects
     /// <value>The transaction context.</value>
     public DomainObjectTransactionContextIndexer TransactionContext
     {
-      get { return new DomainObjectTransactionContextIndexer (this); }
+      get { return new DomainObjectTransactionContextIndexer (this, _isReferenceInitializeEventExecuting); }
     }
 
     /// <summary>
@@ -571,6 +572,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>To perform custom actions when a <see cref="DomainObject"/> is deleted <see cref="OnDeleting"/> and <see cref="OnDeleted"/> should be overridden.</remarks>
     protected void Delete ()
     {
+      CheckInitializeEventNotExecuting ();
       LifetimeService.DeleteObject (DefaultTransactionContext.ClientTransaction, this);
     }
 
@@ -588,6 +590,8 @@ namespace Remotion.Data.DomainObjects
     {
       get
       {
+        CheckInitializeEventNotExecuting ();
+
         string propertyName = CurrentPropertyManager.GetAndCheckCurrentPropertyName();
         return Properties[propertyName];
       }
@@ -600,7 +604,9 @@ namespace Remotion.Data.DomainObjects
     protected internal PropertyIndexer Properties
     {
       get
-      { 
+      {
+        CheckInitializeEventNotExecuting();
+
         if (_properties == null)
           _properties = new PropertyIndexer (this);
         return _properties;
@@ -612,8 +618,16 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     internal void FinishReferenceInitialization ()
     {
-      OnReferenceInitialized ();
-      DomainObjectMixinCodeGenerationBridge.OnDomainObjectReferenceInitialized (this);
+      _isReferenceInitializeEventExecuting = true;
+      try
+      {
+        OnReferenceInitialized ();
+        DomainObjectMixinCodeGenerationBridge.OnDomainObjectReferenceInitialized (this);
+      }
+      finally
+      {
+        _isReferenceInitializeEventExecuting = false;
+      }
     }
 
     /// <summary>
@@ -810,6 +824,12 @@ namespace Remotion.Data.DomainObjects
     {
       if (Deleted != null)
         Deleted (this, args);
+    }
+
+    private void CheckInitializeEventNotExecuting ()
+    {
+      if (_isReferenceInitializeEventExecuting)
+        throw new InvalidOperationException ("While the OnReferenceInitialized event is executing, this member cannot be used.");
     }
   }
 }

@@ -61,5 +61,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
       if (InitializationHandler != null)
         InitializationHandler (this, EventArgs.Empty);
     }
+
+    public new Order This 
+    { 
+      get { return base.This; } 
+    }
   }
 }

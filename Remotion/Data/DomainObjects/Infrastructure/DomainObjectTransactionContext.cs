@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void MarkAsChanged()
     {
-      DataContainer dataContainer = ClientTransaction.GetDataContainer(DomainObject);
+      DataContainer dataContainer = ClientTransaction.GetDataContainer (DomainObject);
       try
       {
         dataContainer.MarkAsChanged ();

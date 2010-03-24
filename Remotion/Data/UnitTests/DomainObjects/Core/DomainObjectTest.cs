@@ -181,21 +181,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [Ignore ("TODO 2256")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "?")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
     public void FinishReferenceInitialization_CallsReferenceInitialized_PropertyAccessForbidden ()
     {
-      EventHandler handler = (sender, args) => Dev.Null = ((Order) sender).OrderNumber;
+      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.OrderNumber);
+    }
 
-      Order.StaticInitializationHandler += handler;
-      try
-      {
-        Order.NewObject (); // indirect call of FinishReferenceInitialization
-      }
-      finally
-      {
-        Order.StaticInitializationHandler -= handler;
-      }
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
+    public void FinishReferenceInitialization_CallsReferenceInitialized_PropertiesForbidden ()
+    {
+      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.Properties);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
+    public void FinishReferenceInitialization_CallsReferenceInitialized_CurrentPropertyForbidden ()
+    {
+      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.CurrentProperty);
+    }
+
+    [Test]
+    public void FinishReferenceInitialization_CallsReferenceInitialized_TransactionContextIsRestricted ()
+    {
+      var result = DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.DefaultTransactionContext);
+      Assert.That (result, Is.TypeOf (typeof (InitializedEventDomainObjectTransactionContextDecorator)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
+    public void FinishReferenceInitialization_CallsReferenceInitialized_DeleteForbidden ()
+    {
+      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => { o.Delete (); return o; });
     }
 
     [Test]
@@ -211,20 +232,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [Ignore ("TODO 2256")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "?")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "While the OnReferenceInitialized event is executing, this member cannot be used.")]
     public void FinishReferenceInitialization_InvokesMixinHook_WhilePropertyAccessForbidden ()
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
       {
         var mixinInstance = new HookedDomainObjectMixin ();
-        mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((Order) sender).OrderNumber;
+        mixinInstance.InitializationHandler += (sender, args) => Dev.Null = ((HookedDomainObjectMixin) sender).This.OrderNumber;
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
           Order.NewObject(); // indirect call of FinishReferenceInitialization
         }
       }
+    }
+
+    [Test]
+    public void FinishReferenceInitialization_ResetsFlagAfterNotification ()
+    {
+      var order = DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o);
+      Dev.Null = order.OrderNumber; // succeeds
     }
 
     [Test]
