@@ -81,7 +81,10 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
-      throw new NotImplementedException();
+      if (constantExpression.Value is DomainObject)
+        return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, ((DomainObject) constantExpression.Value).ID);
+      else
+        return constantExpression;
     }
   }
 }

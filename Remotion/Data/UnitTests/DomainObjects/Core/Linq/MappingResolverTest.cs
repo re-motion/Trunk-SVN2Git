@@ -25,6 +25,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
+using System.Linq.Expressions;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -88,6 +89,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Student));
 
       _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
+    }
+
+    [Test]
+    public void ResolveConstantExpression_ConstantExpression ()
+    {
+      var constantExpression = Expression.Constant (10);
+
+      var expression = _resolver.ResolveConstantExpression(constantExpression);
+
+      Assert.That (expression, Is.TypeOf (typeof (ConstantExpression)));
+      Assert.That (expression, Is.SameAs (constantExpression));
+    }
+
+    [Test]
+    public void ResolveConstantExpression_EntityExpression ()
+    {
+      Order order;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        order = Order.NewObject();
+      }
+      var constantExpression = Expression.Constant (order);
+
+      var expression = _resolver.ResolveConstantExpression (constantExpression);
+
+      Assert.That (expression, Is.TypeOf (typeof (SqlEntityConstantExpression)));
+      Assert.That (((SqlEntityConstantExpression) expression).Value, Is.EqualTo (order));
     }
   }
 }
