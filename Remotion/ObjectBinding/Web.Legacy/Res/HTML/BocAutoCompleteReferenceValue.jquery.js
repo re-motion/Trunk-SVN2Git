@@ -182,6 +182,7 @@
                 // re-motion: do not block event bubbling for tab                          
                 case KEY.TAB:
                     if (selectCurrent()) {
+                        onChange(0, true);
                     }
                     else if ($input.val() == '') {
                         hideResults();
