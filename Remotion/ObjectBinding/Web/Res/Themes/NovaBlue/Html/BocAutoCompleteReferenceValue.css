@@ -127,6 +127,13 @@ span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuS
     }  
 }
 
+span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
+{
+  right: 0;
+  width: 16px;
+  left: auto;
+}
+
 span.bocAutoCompleteReferenceValue span.content.embeddedOptionsMenu
 {
   right: 1.25em; /* width of span.DropDownMenuButton + desired space between */
