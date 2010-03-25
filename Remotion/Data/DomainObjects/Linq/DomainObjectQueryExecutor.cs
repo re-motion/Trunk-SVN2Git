@@ -16,17 +16,19 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Logging;
 using Remotion.Utilities;
 using System.Reflection;
@@ -206,9 +208,10 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      SqlCommand command = CreateSqlCommand (queryModel);
+      SqlStatement sqlStatement = TransformAndResolveQueryModel (queryModel);
+      CheckProjection (sqlStatement.SelectProjection);
+      SqlCommand command = CreateSqlCommand (sqlStatement);
       
-      //CheckProjection (commandData.SqlGenerationData.SelectEvaluation); //TODO: 2440 refactor method
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = command.CommandText;
@@ -218,7 +221,6 @@ namespace Remotion.Data.DomainObjects.Linq
       return query;
     }
 
-    //TODO: 2404 check that no reference to Backend is set
     /// <summary>
     /// Creates a <see cref="IQuery"/> object.
     /// </summary>
@@ -304,37 +306,17 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
-    ///// <summary>
-    ///// Uses the given <see cref="ISqlGenerator"/> to generate sql code for the linq query.
-    ///// </summary>
-    ///// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    ///// <returns>A <see cref="CommandData"/> object for the given <see cref="QueryModel"/>.</returns>
-    //public virtual CommandData CreateStatement (QueryModel queryModel)
-    //{
-    //  return SqlGenerator.BuildCommand (queryModel);
-    //}
-
-    ///// <summary>
-    ///// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
-    ///// </summary>
-    //private void CheckProjection (IEvaluation evaluation)
-    //{
-    //  if (!(evaluation is Column))
-    //  {
-    //    string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
-    //                                    + "single DomainObject instances, because re-store does not support this kind of select projection.", evaluation.GetType ().Name);
-    //    throw new InvalidOperationException (message);
-    //  }
-
-    //  var column = (Column) evaluation;
-    //  if (column.Name != "*")
-    //  {
-    //    string message = string.Format (
-    //        "This query provider does not support selecting single columns ('{0}'). The projection must select whole DomainObject instances.",
-    //        column.ColumnSource.AliasString + "." + column.Name);
-    //    throw new InvalidOperationException (message);
-    //  }
-    //}
+    private void CheckProjection (Expression selectProjection)
+    {
+      if (selectProjection is SqlColumnExpression)
+      {
+        string message = string.Format (
+            "This query provider does not support the given select projection ('{0}'). The projection must select "
+            + "single DomainObject instances, because re-store does not support this kind of select projection.",
+            selectProjection.Type.Name);
+        throw new InvalidOperationException (message);
+      }
+    }
 
     /// <summary>
     /// Check to avoid fetch requests that are followed by result operators. re-store cannot fetch without actually selecting the source objects.
@@ -354,9 +336,9 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    private SqlCommand CreateSqlCommand (QueryModel queryModel)
+    //TODO: add comment
+    protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
-      //TODO 2440 add MappingResolver as parameter in ctor
       var preparationContext = new SqlPreparationContext ();
       var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
@@ -367,7 +349,14 @@ namespace Remotion.Data.DomainObjects.Linq
       var resolver = new MappingResolver ();
       var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
       mappingResolutionStage.ResolveSqlStatement (sqlStatement);
+      
+      return sqlStatement;
+    }
 
+    //TODO: add comment
+    private SqlCommand CreateSqlCommand (SqlStatement sqlStatement)
+    {
+      //TODO 2440 add MappingResolver as parameter in ctor
       var commandBuilder = new SqlCommandBuilder ();
       var sqlGenerationStage = new DefaultSqlGenerationStage ();
       sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);

@@ -25,12 +25,17 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -534,6 +539,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
       Assert.That (fetchQuery2.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
+    }
+
+    [Test]
+    [ExpectedException (typeof(InvalidOperationException))]
+    public void CreateQuery_ColumnInSelectProjection_ThrowsException ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer));
+      QueryModel queryModel = ParseQuery (expression);
+      
+      var unresolvedTableInfo = new UnresolvedTableInfo (typeof(int));
+      var sqlTable = new SqlTable (unresolvedTableInfo);
+      var sqlStatement = new SqlStatement (new SqlColumnExpression (typeof (Order), "o", "ID"), new[] { sqlTable }, new Ordering[] { });
+
+      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_computerClassDefinition);
+      executorMock
+        .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
+        .Return(sqlStatement);
+      executorMock.Replay();
+      executorMock.CreateQuery("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
     //TODO: 2404 uncomment when DomainObjectQueryable is refactored
