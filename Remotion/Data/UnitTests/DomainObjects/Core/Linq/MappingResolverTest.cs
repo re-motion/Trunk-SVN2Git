@@ -93,6 +93,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResolveJoinInfo ()
+    {
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Customer).GetProperty ("Orders"), JoinCardinality.Many);
+
+      var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
+
+      Assert.That (resolvedJoinInfo, Is.Not.Null);
+      Assert.That (resolvedJoinInfo.ItemType, Is.EqualTo (typeof (Order)));
+      
+      Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).TableName, Is.EqualTo ("OrderView"));
+      Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).TableAlias, Is.EqualTo ("t0"));
+      Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).ItemType, Is.EqualTo (typeof(Order)));
+
+      Assert.That (resolvedJoinInfo.PrimaryColumn.ColumnName, Is.EqualTo ("ID"));
+      Assert.That (resolvedJoinInfo.ForeignColumn.ColumnName, Is.EqualTo ("CustomerID"));
+    }
+
+    [Test]
     public void ResolveConstantExpression_ConstantExpression ()
     {
       var constantExpression = Expression.Constant (10);

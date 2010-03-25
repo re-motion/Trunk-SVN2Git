@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -37,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      
+
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableInfo.ItemType];
       if (classDefinition == null)
       {
@@ -46,21 +47,74 @@ namespace Remotion.Data.DomainObjects.Linq
       }
       else
       {
-        var viewName = classDefinition.GetViewName ();
+        var viewName = classDefinition.GetViewName();
         return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
       }
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
+      ArgumentUtility.CheckNotNull ("generator", generator);
+
+      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (joinInfo.MemberInfo);
+      if (relationData == null)
+      {
+        string message =
+            string.Format ("The member '{0}.{1}' does not identify a relation.", joinInfo.MemberInfo.DeclaringType.FullName, joinInfo.MemberInfo.Name);
+        throw new UnmappedItemException (message);
+      }
+
+      RelationDefinition relationDefinition = relationData.Item1;
+      ClassDefinition classDefinition = relationData.Item2;
+      string propertyIdentifier = relationData.Item3;
+
+      var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
+      var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
+
+      var alias = generator.GetUniqueIdentifier ("t");
+      var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
+          rightEndPoint.ClassDefinition.ClassType, rightEndPoint.ClassDefinition.GetViewName(), alias);
+
+      var primaryColumn = new SqlColumnExpression (leftEndPoint.PropertyType, alias, GetJoinColumnName (leftEndPoint));
+      var foreignColumn = new SqlColumnExpression (
+          rightEndPoint.PropertyType, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (rightEndPoint));
+
+      return new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryColumn, foreignColumn);
+    }
+
+    private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)
+    {
+      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
+      var property = relationMember as PropertyInfo;
+      if (property == null)
+        return null;
+
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
+      if (classDefinition == null)
+        return null;
+
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
+      RelationDefinition relationDefinition = classDefinition.GetRelationDefinition (propertyIdentifier);
+      if (relationDefinition == null)
+        return null;
+      else
+        return Tuple.Create (relationDefinition, classDefinition, propertyIdentifier);
+    }
+
+    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
+    {
+      ClassDefinition classDefinition = endPoint.ClassDefinition;
+      return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
     }
 
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      
+
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableReferenceExpression.SqlTable.ItemType];
 
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
@@ -72,11 +126,11 @@ namespace Remotion.Data.DomainObjects.Linq
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
       var columns = new List<SqlColumnExpression>();
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions ())
+      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
       {
-          var storageSpecificName = propertyDefinition.StorageSpecificName;
-          if (!string.IsNullOrEmpty (storageSpecificName))
-            columns.Add (new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, storageSpecificName));
+        var storageSpecificName = propertyDefinition.StorageSpecificName;
+        if (!string.IsNullOrEmpty (storageSpecificName))
+          columns.Add (new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, storageSpecificName));
       }
 
       return new SqlEntityExpression (tableReferenceExpression.SqlTable.ItemType, primaryKeyColumn, columns.ToArray());
@@ -89,18 +143,18 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var tableAlias = memberExpression.SqlTable.GetResolvedTableInfo().TableAlias;
       var property = memberExpression.MemberInfo;
-      
+
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.GetType(), tableAlias, "ID");
-      
-      
+
+
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[memberExpression.MemberInfo.DeclaringType];
       if (classDefinition == null)
       {
         string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
         throw new UnmappedItemException (message);
       }
-      
+
 
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName ((PropertyInfo) memberExpression.MemberInfo);
       PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
