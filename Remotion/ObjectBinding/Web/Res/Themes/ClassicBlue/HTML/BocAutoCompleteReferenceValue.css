@@ -129,9 +129,14 @@ span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuS
 
 span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
 {
-  right: 0;
-  width: 16px;
+  right: 0.25em;
+  width: 17px;
   left: auto;
+}
+
+span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput
+{
+  right: 2em;
 }
 
 span.bocAutoCompleteReferenceValue span.content.embeddedOptionsMenu
