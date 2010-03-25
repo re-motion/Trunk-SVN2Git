@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Provider_PassedIn ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      var expectedProvider = new DefaultQueryProvider (typeof (DomainObjectQueryable<>), new DomainObjectQueryExecutor (_sqlGenerator, classDefinition));
+      var expectedProvider = new DefaultQueryProvider (typeof (DomainObjectQueryable<>), new LegacyDomainObjectQueryExecutor (_sqlGenerator, classDefinition));
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));

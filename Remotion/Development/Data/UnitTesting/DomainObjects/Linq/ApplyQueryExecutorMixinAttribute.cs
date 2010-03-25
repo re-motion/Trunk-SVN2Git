@@ -21,13 +21,13 @@ using Remotion.Mixins;
 namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
 {
   /// <summary>
-  /// This attribute applies the <see cref="QueryExecutorMixin"/> to the <see cref="DomainObjectQueryExecutor"/> type.
+  /// This attribute applies the <see cref="QueryExecutorMixin"/> to the <see cref="LegacyDomainObjectQueryExecutor"/> type.
   /// Apply this attribute to your (unit test) assembly.
   /// </summary>
   public class ApplyQueryExecutorMixinAttribute : MixAttribute
   {
     public ApplyQueryExecutorMixinAttribute ()
-        : base (typeof (DomainObjectQueryExecutor), typeof (QueryExecutorMixin))
+        : base (typeof (LegacyDomainObjectQueryExecutor), typeof (QueryExecutorMixin))
     {
     }
   }

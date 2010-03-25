@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
       var provider = queryable.Provider as QueryProviderBase;
-      var queryExecutor = provider != null ? provider.Executor as DomainObjectQueryExecutor : null;
+      var queryExecutor = provider != null ? provider.Executor as LegacyDomainObjectQueryExecutor : null;
       if (provider == null || queryExecutor == null)
       {
         string message = string.Format ("The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"

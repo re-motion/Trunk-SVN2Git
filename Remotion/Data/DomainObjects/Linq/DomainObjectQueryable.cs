@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
+      var executor = ObjectFactory.Create<LegacyDomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
       
       var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
 
@@ -91,9 +91,9 @@ namespace Remotion.Data.DomainObjects.Linq
       return "DomainObjectQueryable<" + typeof (T).Name + ">";
     }
 
-    public DomainObjectQueryExecutor GetExecutor ()
+    public LegacyDomainObjectQueryExecutor GetExecutor ()
     {
-      return (DomainObjectQueryExecutor) ((QueryProviderBase) Provider).Executor;
+      return (LegacyDomainObjectQueryExecutor) ((QueryProviderBase) Provider).Executor;
     }
   }
 }

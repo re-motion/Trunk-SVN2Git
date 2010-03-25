@@ -39,17 +39,17 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class DomainObjectQueryExecutorTest : ClientTransactionBaseTest
+  public class LegacyDomainObjectQueryExecutorTest : ClientTransactionBaseTest
   {
     private SqlServerGenerator _sqlGenerator;
     private ClassDefinition _computerClassDefinition;
     private ClassDefinition _orderClassDefinition;
     private ClassDefinition _customerClassDefinition;
     private ClassDefinition _companyClassDefinition;
-    private DomainObjectQueryExecutor _computerExecutor;
-    private DomainObjectQueryExecutor _orderExecutor;
-    private DomainObjectQueryExecutor _customerExecutor;
-    private DomainObjectQueryExecutor _companyExecutor;
+    private LegacyDomainObjectQueryExecutor _computerExecutor;
+    private LegacyDomainObjectQueryExecutor _orderExecutor;
+    private LegacyDomainObjectQueryExecutor _customerExecutor;
+    private LegacyDomainObjectQueryExecutor _companyExecutor;
 
     public override void SetUp ()
     {
@@ -59,10 +59,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _customerClassDefinition = DomainObjectIDs.Customer1.ClassDefinition;
       _companyClassDefinition = DomainObjectIDs.Company1.ClassDefinition;
-      _computerExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _computerClassDefinition);
-      _orderExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _orderClassDefinition);
-      _customerExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _customerClassDefinition);
-      _companyExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _companyClassDefinition);
+      _computerExecutor = new LegacyDomainObjectQueryExecutor (_sqlGenerator, _computerClassDefinition);
+      _orderExecutor = new LegacyDomainObjectQueryExecutor (_sqlGenerator, _orderClassDefinition);
+      _customerExecutor = new LegacyDomainObjectQueryExecutor (_sqlGenerator, _customerClassDefinition);
+      _companyExecutor = new LegacyDomainObjectQueryExecutor (_sqlGenerator, _companyClassDefinition);
     }
     
     [Test]
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           "SELECT COUNT(*) FROM [Order] [o] WHERE [o].[OrderNo] = 1",
           new QueryParameterCollection ());
 
-      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_sqlGenerator, _orderClassDefinition);
+      var executorMock = new MockRepository ().PartialMock<LegacyDomainObjectQueryExecutor> (_sqlGenerator, _orderClassDefinition);
       executorMock
           .Expect (mock => mock.CreateQuery (
               Arg<string>.Is.Anything,
@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection(), 
           typeof (DomainObjectCollection));
 
-      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_sqlGenerator, _orderClassDefinition);
+      var executorMock = new MockRepository ().PartialMock<LegacyDomainObjectQueryExecutor> (_sqlGenerator, _orderClassDefinition);
       executorMock
           .Expect (mock => mock.CreateQuery (
               Arg<string>.Is.Anything, 
@@ -536,7 +536,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
@@ -546,7 +546,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void GetStatement_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Computer> (_sqlGenerator);
         var executor = queryable.GetExecutor();
@@ -560,7 +560,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
         var executor = queryable.GetExecutor();
@@ -577,11 +577,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQueryFromModel_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
         var queryModel = ParseQuery (query.Expression);
-        var executor = ObjectFactory.Create<DomainObjectQueryExecutor>(ParamList.Create (_sqlGenerator, _orderClassDefinition));
+        var executor = ObjectFactory.Create<LegacyDomainObjectQueryExecutor>(ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
@@ -591,11 +591,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQueryFromModelWithClassDefinition_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
         var queryModel = ParseQuery (query.Expression);
-        var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (_sqlGenerator, _orderClassDefinition));
+        var executor = ObjectFactory.Create<LegacyDomainObjectQueryExecutor> (ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);

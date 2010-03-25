@@ -38,17 +38,17 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <summary>
   /// Provides an implementation of <see cref="IQueryExecutor"/> for <see cref="DomainObject"/> queries.
   /// </summary>
-  public class DomainObjectQueryExecutor : IQueryExecutor
+  public class LegacyDomainObjectQueryExecutor : IQueryExecutor
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (DomainObjectQueryExecutor));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor));
 
     /// <summary>
-    /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
+    /// Initializes a new instance of this <see cref="LegacyDomainObjectQueryExecutor"/> class.
     /// </summary>
     /// <param name="sqlGenerator">The sql generator <see cref="ISqlGenerator"/> which is used for querying re-store.</param>
     /// <param name="startingClassDefinition">The <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started 
     /// with. This determines the <see cref="StorageProvider"/> used for the query.</param>
-    public DomainObjectQueryExecutor (ISqlGenerator sqlGenerator, ClassDefinition startingClassDefinition)
+    public LegacyDomainObjectQueryExecutor (ISqlGenerator sqlGenerator, ClassDefinition startingClassDefinition)
     {
       ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
