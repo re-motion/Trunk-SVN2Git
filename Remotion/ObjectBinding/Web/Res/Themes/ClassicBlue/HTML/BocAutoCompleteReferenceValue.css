@@ -1,10 +1,12 @@
 ﻿span.bocAutoCompleteReferenceValue
 {
-  position: relative;
   width: 100%;
+  position: relative;
   display: inline-block;
+  vertical-align: middle;
   overflow: hidden;
-  height: 2em;
+  min-height: 1.7em;
+  max-height: 2em;
 }
 
 span.bocAutoCompleteReferenceValue input
@@ -176,8 +178,28 @@ span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput
     right: 22px;
 }
 
+/* WebKit browsers only (Safari, Chrome) */
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+    span.content.separateOptionsMenu span.bocAutoCompleteReferenceValueInput,
+    span.content.withoutOptionsMenu span.bocAutoCompleteReferenceValueInput,
+    span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput
+    {
+        top: -2px;
+    }
+    span.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueOptionsMenu span.DropDownMenuSelect
+    {
+        margin-top: 0.1em;
+    }    
+    
+}
+
 /* embeddedOptionsMenu */
 span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput
 {
     right: 0.5em;
+}
+
+span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput input
+{
+    height: 1.2em;
 }
