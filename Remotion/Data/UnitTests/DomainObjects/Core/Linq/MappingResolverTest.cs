@@ -177,6 +177,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResolveMemberExpression_RedirectedProperty_ReturnsSqlColumnExpression ()
+    {
+      var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
+      var memberExpression = new SqlMemberExpression (_sqlTable, property);
+
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+
+      Assert.That (sqlColumnExpression, Is.Not.Null);
+      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
+      Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
     public void ResolveMemberExpression_ReturnsSqlEntityRefMemberExpression ()
     {
       var property = typeof (Order).GetProperty ("Customer");

@@ -148,8 +148,9 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty ((PropertyInfo) property);
 
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName ((PropertyInfo) memberExpression.MemberInfo);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
       PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
 
       if (propertyDefinition == null)
