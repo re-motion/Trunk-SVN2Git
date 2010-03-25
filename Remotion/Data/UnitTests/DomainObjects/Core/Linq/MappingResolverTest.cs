@@ -72,6 +72,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The type 'Student' does not identify a queryable table.")]
+    public void ResolveTableReferenceExpression_NoTable_ThrowsException ()
+    {
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Student), "Student", "s"));
+      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+    }
+
+    [Test]
     public void ResolveTableInfo ()
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
@@ -108,6 +117,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       Assert.That (resolvedJoinInfo.PrimaryColumn.ColumnName, Is.EqualTo ("ID"));
       Assert.That (resolvedJoinInfo.ForeignColumn.ColumnName, Is.EqualTo ("CustomerID"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Student.Scores' does not identify a relation.")]
+    public void ResolveJoinInfo_NoRelation_ThrowsExcpetion ()
+    {
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Student).GetProperty ("Scores"), JoinCardinality.Many);
+
+      _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
     }
 
     [Test]

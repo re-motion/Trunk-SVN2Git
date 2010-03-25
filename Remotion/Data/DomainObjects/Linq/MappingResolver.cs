@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (relationData == null)
       {
         string message =
-            string.Format ("The member '{0}.{1}' does not identify a relation.", joinInfo.MemberInfo.DeclaringType.FullName, joinInfo.MemberInfo.Name);
+            string.Format ("The member '{0}.{1}' does not identify a relation.", joinInfo.MemberInfo.DeclaringType.Name, joinInfo.MemberInfo.Name);
         throw new UnmappedItemException (message);
       }
 
@@ -83,33 +83,6 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryColumn, foreignColumn);
     }
 
-    private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)
-    {
-      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
-      var property = relationMember as PropertyInfo;
-      if (property == null)
-        return null;
-
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
-      if (classDefinition == null)
-        return null;
-
-      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
-      RelationDefinition relationDefinition = classDefinition.GetRelationDefinition (propertyIdentifier);
-      if (relationDefinition == null)
-        return null;
-      else
-        return Tuple.Create (relationDefinition, classDefinition, propertyIdentifier);
-    }
-
-    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
-    {
-      ClassDefinition classDefinition = endPoint.ClassDefinition;
-      return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
-    }
-
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
@@ -120,8 +93,11 @@ namespace Remotion.Data.DomainObjects.Linq
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       if (classDefinition == null)
-        return null; //TODO: throw UnmappedItemException
-
+      {
+        string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.SqlTable.ItemType.Name);
+        throw new UnmappedItemException (message);
+      }
+     
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
       var columns = new List<SqlColumnExpression>();
@@ -179,6 +155,33 @@ namespace Remotion.Data.DomainObjects.Linq
         return new SqlEntityConstantExpression (constantExpression.Type, constantExpression.Value, ((DomainObject) constantExpression.Value).ID);
       else
         return constantExpression;
+    }
+
+    private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)
+    {
+      ArgumentUtility.CheckNotNull ("relationMember", relationMember);
+      var property = relationMember as PropertyInfo;
+      if (property == null)
+        return null;
+
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
+      if (classDefinition == null)
+        return null;
+
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
+      RelationDefinition relationDefinition = classDefinition.GetRelationDefinition (propertyIdentifier);
+      if (relationDefinition == null)
+        return null;
+      else
+        return Tuple.Create (relationDefinition, classDefinition, propertyIdentifier);
+    }
+
+    private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
+    {
+      ClassDefinition classDefinition = endPoint.ClassDefinition;
+      return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
     }
   }
 }
