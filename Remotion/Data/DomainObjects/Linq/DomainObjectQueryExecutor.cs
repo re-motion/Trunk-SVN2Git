@@ -20,12 +20,14 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Logging;
 using Remotion.Utilities;
 using System.Reflection;
@@ -37,26 +39,23 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <summary>
   /// Provides an implementation of <see cref="IQueryExecutor"/> for <see cref="DomainObject"/> queries.
   /// </summary>
-  public class LegacyDomainObjectQueryExecutor : IQueryExecutor
+  public class DomainObjectQueryExecutor : IQueryExecutor
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor));
 
     /// <summary>
-    /// Initializes a new instance of this <see cref="LegacyDomainObjectQueryExecutor"/> class.
+    /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
     /// </summary>
-    /// <param name="sqlGenerator">The sql generator <see cref="ISqlGenerator"/> which is used for querying re-store.</param>
     /// <param name="startingClassDefinition">The <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started 
     /// with. This determines the <see cref="StorageProvider"/> used for the query.</param>
-    public LegacyDomainObjectQueryExecutor (ISqlGenerator sqlGenerator, ClassDefinition startingClassDefinition)
+    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition)
     {
-      ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
 
       StartingClassDefinition = startingClassDefinition;
-      SqlGenerator = sqlGenerator;
+      
     }
 
-    public ISqlGenerator SqlGenerator { get; private set; }
     public ClassDefinition StartingClassDefinition { get; private set; }
 
     /// <summary>
@@ -208,11 +207,15 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      CommandData commandData = CreateStatement (queryModel);
-      CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
+      //CommandData commandData = CreateStatement (queryModel);
+      SqlCommand command = CreateSqlCommand (queryModel);
+
+
+      //CheckProjection (commandData.SqlGenerationData.SelectEvaluation); //TODO: 2440 refactor method
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
-      var statement = commandData.Statement;
+      //var statement = commandData.Statement;
+      var statement = command.CommandText;
       if (!string.IsNullOrEmpty (sortExpression))
       {
         Assertion.IsFalse (queryModel.BodyClauses.OfType<OrderByClause> ().Any (), 
@@ -220,11 +223,12 @@ namespace Remotion.Data.DomainObjects.Linq
         statement = statement + " ORDER BY " + sortExpression;
       }
 
-      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, commandData.Parameters, queryType);
+      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;
     }
 
+    //TODO: 2404 check that no reference to Backend is set
     /// <summary>
     /// Creates a <see cref="IQuery"/> object.
     /// </summary>
@@ -310,37 +314,37 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
-    /// <summary>
-    /// Uses the given <see cref="ISqlGenerator"/> to generate sql code for the linq query.
-    /// </summary>
-    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <returns>A <see cref="CommandData"/> object for the given <see cref="QueryModel"/>.</returns>
-    public virtual CommandData CreateStatement (QueryModel queryModel)
-    {
-      return SqlGenerator.BuildCommand (queryModel);
-    }
+    ///// <summary>
+    ///// Uses the given <see cref="ISqlGenerator"/> to generate sql code for the linq query.
+    ///// </summary>
+    ///// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
+    ///// <returns>A <see cref="CommandData"/> object for the given <see cref="QueryModel"/>.</returns>
+    //public virtual CommandData CreateStatement (QueryModel queryModel)
+    //{
+    //  return SqlGenerator.BuildCommand (queryModel);
+    //}
 
-    /// <summary>
-    /// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
-    /// </summary>
-    private void CheckProjection (IEvaluation evaluation)
-    {
-      if (!(evaluation is Column))
-      {
-        string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
-                                        + "single DomainObject instances, because re-store does not support this kind of select projection.", evaluation.GetType ().Name);
-        throw new InvalidOperationException (message);
-      }
+    ///// <summary>
+    ///// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
+    ///// </summary>
+    //private void CheckProjection (IEvaluation evaluation)
+    //{
+    //  if (!(evaluation is Column))
+    //  {
+    //    string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
+    //                                    + "single DomainObject instances, because re-store does not support this kind of select projection.", evaluation.GetType ().Name);
+    //    throw new InvalidOperationException (message);
+    //  }
 
-      var column = (Column) evaluation;
-      if (column.Name != "*")
-      {
-        string message = string.Format (
-            "This query provider does not support selecting single columns ('{0}'). The projection must select whole DomainObject instances.",
-            column.ColumnSource.AliasString + "." + column.Name);
-        throw new InvalidOperationException (message);
-      }
-    }
+    //  var column = (Column) evaluation;
+    //  if (column.Name != "*")
+    //  {
+    //    string message = string.Format (
+    //        "This query provider does not support selecting single columns ('{0}'). The projection must select whole DomainObject instances.",
+    //        column.ColumnSource.AliasString + "." + column.Name);
+    //    throw new InvalidOperationException (message);
+    //  }
+    //}
 
     /// <summary>
     /// Check to avoid fetch requests that are followed by result operators. re-store cannot fetch without actually selecting the source objects.
@@ -358,6 +362,27 @@ namespace Remotion.Data.DomainObjects.Linq
           throw new InvalidOperationException (message);
         }
       }
+    }
+
+    private SqlCommand CreateSqlCommand (QueryModel queryModel)
+    {
+      //TODO 2440 add MappingResolver as parameter in ctor
+      var preparationContext = new SqlPreparationContext ();
+      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
+      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
+          queryModel,
+          preparationContext,
+          new DefaultSqlPreparationStage (preparationContext, uniqueIdentifierGenerator));
+
+      var resolver = new MappingResolver ();
+      var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
+      mappingResolutionStage.ResolveSqlStatement (sqlStatement);
+
+      var commandBuilder = new SqlCommandBuilder ();
+      var sqlGenerationStage = new DefaultSqlGenerationStage ();
+      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
+
+      return commandBuilder.GetCommand();
     }
   }
 }

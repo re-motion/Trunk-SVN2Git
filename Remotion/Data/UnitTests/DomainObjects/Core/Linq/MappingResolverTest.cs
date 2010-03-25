@@ -50,25 +50,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var tableReferenceExpression = new SqlTableReferenceExpression(_sqlTable);
 
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
-      var column1 = new SqlColumnExpression (typeof (int), "o", "OrderNo");
-      var column2 = new SqlColumnExpression (typeof (DateTime), "o", "DeliveryDate");
-      var column3 = new SqlColumnExpression (typeof (ObjectID), "o", "OfficialID");
-      var column4 = new SqlColumnExpression (typeof (ObjectID), "o", "CustomerID");
+      var column1 = new SqlColumnExpression (typeof (string), "o", "ClassID");
+      var column2 = new SqlColumnExpression (typeof (DateTime), "o", "Timestamp");
+      var column3 = new SqlColumnExpression (typeof (int), "o", "OrderNo");
+      var column4 = new SqlColumnExpression (typeof (DateTime), "o", "DeliveryDate");
+      var column5 = new SqlColumnExpression (typeof (ObjectID), "o", "OfficialID");
+      var column6 = new SqlColumnExpression (typeof (ObjectID), "o", "CustomerID");
       
       SqlEntityExpression sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
       Assert.That (sqlEntityExpression, Is.Not.Null);
-      Assert.That (sqlEntityExpression.ProjectionColumns.Count, Is.EqualTo (4));
+      Assert.That (sqlEntityExpression.ProjectionColumns.Count, Is.EqualTo (7));
       Assert.That (sqlEntityExpression.PrimaryKeyColumn.ColumnName, Is.EqualTo (primaryKeyColumn.ColumnName));
       Assert.That (sqlEntityExpression.PrimaryKeyColumn.OwningTableAlias, Is.EqualTo (primaryKeyColumn.OwningTableAlias));
-      Assert.That (sqlEntityExpression.ProjectionColumns[0].ColumnName, Is.EqualTo (column1.ColumnName));
-      Assert.That (sqlEntityExpression.ProjectionColumns[0].OwningTableAlias, Is.EqualTo (column1.OwningTableAlias));
-      Assert.That (sqlEntityExpression.ProjectionColumns[1].ColumnName, Is.EqualTo (column2.ColumnName));
-      Assert.That (sqlEntityExpression.ProjectionColumns[1].OwningTableAlias, Is.EqualTo (column2.OwningTableAlias));
-      Assert.That (sqlEntityExpression.ProjectionColumns[2].ColumnName, Is.EqualTo (column3.ColumnName));
-      Assert.That (sqlEntityExpression.ProjectionColumns[2].OwningTableAlias, Is.EqualTo (column3.OwningTableAlias));
-      Assert.That (sqlEntityExpression.ProjectionColumns[3].ColumnName, Is.EqualTo (column4.ColumnName));
-      Assert.That (sqlEntityExpression.ProjectionColumns[3].OwningTableAlias, Is.EqualTo (column4.OwningTableAlias));      
+      Assert.That (sqlEntityExpression.ProjectionColumns[0].ColumnName, Is.EqualTo (primaryKeyColumn.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[0].OwningTableAlias, Is.EqualTo (primaryKeyColumn.OwningTableAlias));
+      Assert.That (sqlEntityExpression.ProjectionColumns[1].ColumnName, Is.EqualTo (column1.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[1].OwningTableAlias, Is.EqualTo (column1.OwningTableAlias));
+      Assert.That (sqlEntityExpression.ProjectionColumns[2].ColumnName, Is.EqualTo (column2.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[2].OwningTableAlias, Is.EqualTo (column2.OwningTableAlias));
+      Assert.That (sqlEntityExpression.ProjectionColumns[3].ColumnName, Is.EqualTo (column3.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[3].OwningTableAlias, Is.EqualTo (column3.OwningTableAlias));
+      Assert.That (sqlEntityExpression.ProjectionColumns[4].ColumnName, Is.EqualTo (column4.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[4].OwningTableAlias, Is.EqualTo (column4.OwningTableAlias));
+      Assert.That (sqlEntityExpression.ProjectionColumns[5].ColumnName, Is.EqualTo (column5.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[5].OwningTableAlias, Is.EqualTo (column5.OwningTableAlias));
+      Assert.That (sqlEntityExpression.ProjectionColumns[6].ColumnName, Is.EqualTo (column6.ColumnName));
+      Assert.That (sqlEntityExpression.ProjectionColumns[6].OwningTableAlias, Is.EqualTo (column6.OwningTableAlias));      
     }
 
     [Test]

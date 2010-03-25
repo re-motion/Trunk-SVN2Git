@@ -192,6 +192,7 @@
     <Compile Include="Infrastructure\NullClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLoader.cs" />
     <Compile Include="LinqPropertyRedirectionAttribute.cs" />
+    <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Linq\MappedTable.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Queries\IEagerFetcher.cs" />

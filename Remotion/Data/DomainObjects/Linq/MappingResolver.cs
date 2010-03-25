@@ -97,16 +97,32 @@ namespace Remotion.Data.DomainObjects.Linq
         string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.SqlTable.ItemType.Name);
         throw new UnmappedItemException (message);
       }
-     
+
+      //TODO: 2404 Class ID and primaryColumn and Timestamp only added for re-store reasons
+      var classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
+      var classIDColumn = new SqlColumnExpression (classIDPropertyInfo.PropertyType, tableAlias, classIDPropertyInfo.Name);
+
+      var timestampPropertyInfo = typeof (DomainObject).GetProperty ("Timestamp");
+      var timestampColumn = new SqlColumnExpression (timestampPropertyInfo.PropertyType, tableAlias, timestampPropertyInfo.Name);
+
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
+
       var columns = new List<SqlColumnExpression>();
+      
+      columns.Add (primaryKeyColumn);
+      columns.Add (classIDColumn);
+      columns.Add (timestampColumn);
 
       foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
       {
-        var storageSpecificName = propertyDefinition.StorageSpecificName;
-        if (!string.IsNullOrEmpty (storageSpecificName))
-          columns.Add (new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, storageSpecificName));
+        //TODO 2404 test
+        if (propertyDefinition.StorageClass == StorageClass.Persistent)
+        {
+          var storageSpecificName = propertyDefinition.StorageSpecificName;
+          if (!string.IsNullOrEmpty (storageSpecificName))
+            columns.Add (new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, storageSpecificName));
+        }
       }
 
       return new SqlEntityExpression (tableReferenceExpression.SqlTable.ItemType, primaryKeyColumn, columns.ToArray());
