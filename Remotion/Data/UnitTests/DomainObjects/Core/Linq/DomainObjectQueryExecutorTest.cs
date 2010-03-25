@@ -25,9 +25,9 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -393,6 +393,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
       var fetchQuery = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
+      Console.WriteLine (fetchQuery.Value.Statement);
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
           "SELECT DISTINCT [#fetch1].* FROM (SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)) [#fetch0], [OrderItemView] [#fetch1] "
           + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[OrderID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[OrderID])"));
@@ -420,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO: check query model transformation.")]
+    //[Ignore ("TODO: check query model transformation.")]
     public void CreateQuery_EagerFetchQueries_AfterOtherResultOperators ()
     {
       var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);

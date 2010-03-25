@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
@@ -207,10 +206,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      //CommandData commandData = CreateStatement (queryModel);
       SqlCommand command = CreateSqlCommand (queryModel);
-
-
+      
       //CheckProjection (commandData.SqlGenerationData.SelectEvaluation); //TODO: 2440 refactor method
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 

@@ -72,13 +72,14 @@ namespace Remotion.Data.DomainObjects.Linq
       var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
       var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
 
+      var type = typeof (DomainObject).GetProperty ("ID").PropertyType;
+
       var alias = generator.GetUniqueIdentifier ("t");
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
           rightEndPoint.ClassDefinition.ClassType, rightEndPoint.ClassDefinition.GetViewName(), alias);
 
-      var primaryColumn = new SqlColumnExpression (leftEndPoint.PropertyType, alias, GetJoinColumnName (leftEndPoint));
-      var foreignColumn = new SqlColumnExpression (
-          rightEndPoint.PropertyType, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (rightEndPoint));
+      var primaryColumn = new SqlColumnExpression (type, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
+      var foreignColumn = new SqlColumnExpression (type, alias, GetJoinColumnName (rightEndPoint));
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryColumn, foreignColumn);
     }
