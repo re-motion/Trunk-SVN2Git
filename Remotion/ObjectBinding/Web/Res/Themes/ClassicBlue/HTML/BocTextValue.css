@@ -1,9 +1,18 @@
 /*  This style file is only used for documenting the classes. 
     It is not automatically included by the BocTextValue. */
 
-.bocTextValue
+span.bocTextValue
 {
+  width: 15em;
+  position: relative;
   display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+span.bocTextValue input
+{
+    width: 100%;
 }
 
 .bocTextValue.readOnly

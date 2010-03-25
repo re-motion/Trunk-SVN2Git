@@ -3,6 +3,15 @@
 
 .bocAutoCompleteTextValue
 {
+  width: 15em;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.bocAutoCompleteTextValue input
+{
+    width: 100%;
 }
 
 .bocAutoCompleteTextValue.readOnly

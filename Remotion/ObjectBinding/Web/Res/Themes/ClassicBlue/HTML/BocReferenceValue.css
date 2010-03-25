@@ -1,12 +1,12 @@
 span.bocReferenceValue
 {
+  width: 21.5em;
   position: relative;
-  width: 100%;
   display: inline-block;
+  vertical-align: middle;
   overflow: hidden;
   min-height: 1.65em;
   max-height: 2em;
-  vertical-align: middle;
 }
 
 span.bocReferenceValue select

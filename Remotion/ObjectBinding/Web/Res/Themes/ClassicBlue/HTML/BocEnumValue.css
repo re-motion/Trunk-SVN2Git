@@ -1,8 +1,14 @@
-.bocEnumValue
+span.bocEnumValue
 {
+  width: 15em;
+  position: relative;
   display: inline-block;
   vertical-align: middle;
-  position: relative;
+  overflow: hidden;
+}
+span.bocEnumValue select
+{
+  width: 100%;
 }
 
 .bocEnumValue.readOnly

@@ -57,18 +57,18 @@ span.bocDate12HoursWithSeconds
 span.bocDateTimeValue,
 span.bocDateValue
 {
-    position:relative;
-    display:inline-block;
+    width: 15em;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
     height:2em;
     line-height:2em;
     margin-right:0.2em;
     min-width:12em;
-    overflow:hidden;
     padding:0;
-    vertical-align:middle;
-    width:100%;
     white-space:nowrap;
-    zoom:1;
+    zoom: 1;
 }
 
 span.bocDateValue
