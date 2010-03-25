@@ -362,14 +362,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       using (IDbCommand command = commandBuilder.Create())
       {
+        object timestamp;
         try
         {
-          dataContainer.SetTimestamp (command.ExecuteScalar());
+          timestamp = command.ExecuteScalar();
         }
         catch (Exception e)
         {
           throw CreateRdbmsProviderException (e, "Error while setting timestamp for object '{0}'.", dataContainer.ID);
         }
+
+        // TODO: Check timestamp for null or DbNull.Value.
+        dataContainer.SetTimestamp (timestamp);
       }
     }
 
