@@ -339,7 +339,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
       return ClientID + c_textboxIDPostfix;
     }
 
-    private string GetTextBoxUniqueID ()
+    public string GetTextBoxUniqueID ()
     {
       return UniqueID + c_textboxIDPostfix;
     }
