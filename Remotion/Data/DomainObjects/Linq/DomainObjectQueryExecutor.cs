@@ -211,15 +211,8 @@ namespace Remotion.Data.DomainObjects.Linq
       //CheckProjection (commandData.SqlGenerationData.SelectEvaluation); //TODO: 2440 refactor method
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
-      //var statement = commandData.Statement;
       var statement = command.CommandText;
-      if (!string.IsNullOrEmpty (sortExpression))
-      {
-        Assertion.IsFalse (queryModel.BodyClauses.OfType<OrderByClause> ().Any (), 
-            "We assume that fetch request query models cannot have OrderBy clauses.");
-        statement = statement + " ORDER BY " + sortExpression;
-      }
-
+     
       var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;

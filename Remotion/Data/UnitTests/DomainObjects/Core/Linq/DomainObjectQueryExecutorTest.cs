@@ -376,7 +376,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO: check query model transformation -")]
     public void CreateQuery_EagerFetchQueries ()
     {
       var queryable = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
@@ -393,10 +392,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
       var fetchQuery = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
-      Console.WriteLine (fetchQuery.Value.Statement);
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
-          "SELECT DISTINCT [#fetch1].* FROM (SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)) [#fetch0], [OrderItemView] [#fetch1] "
-          + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[OrderID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[OrderID])"));
+          "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[Position],[t2].[Product],[t2].[OrderID] "
+          +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[OrderNo],[t1].[DeliveryDate],[t1].[OfficialID],[t1].[CustomerID] "
+          +"FROM [OrderView] AS [t1] WHERE ([t1].[OrderNo] = @1)) AS [q0] "
+          +"CROSS JOIN [OrderItemView] AS [t2] WHERE ([q0].[ID] = [t2].[OrderID])"));
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo (1));
@@ -421,7 +421,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    //[Ignore ("TODO: check query model transformation.")]
     public void CreateQuery_EagerFetchQueries_AfterOtherResultOperators ()
     {
       var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
@@ -464,7 +463,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO: check query model transformation")]
     public void CreateQuery_EagerFetchQueries_WithSortExpression ()
     {
       var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
@@ -482,8 +480,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery.Key, Is.SameAs (ordersRelationEndPointDefinition));
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
-        "SELECT DISTINCT [#fetch1].* FROM (SELECT [c].* FROM [CustomerView] [c] WHERE ([c].[Name] = @1)) [#fetch0], [OrderView] [#fetch1] "
-        + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[CustomerID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[CustomerID]) ORDER BY OrderNo asc"));
+        "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
+	      +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[CustomerSince],[t1].[CustomerType],[t1].[Name],[t1].[IndustrialSectorID] "
+	      +"FROM [CustomerView] AS [t1] WHERE ([t1].[Name] = @1)) AS [q0] CROSS JOIN [OrderView] AS [t2] WHERE ([q0].[ID] = [t2].[CustomerID])"));
 
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -492,7 +491,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO: check query model transformation")]
     public void CreateQuery_EagerFetchQueries_Recursive ()
     {
       var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
@@ -513,40 +511,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery1 = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery1.Key, Is.SameAs (ordersRelationEndPointDefinition));
       Assert.That (fetchQuery1.Value.Statement, Is.EqualTo (
-          "SELECT DISTINCT [#fetch1].* FROM (SELECT [c].* FROM [CustomerView] [c] WHERE ([c].[Name] = @1)) [#fetch0], [OrderView] [#fetch1] "
-        + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[CustomerID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[CustomerID]) ORDER BY OrderNo asc"));
+          "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
+          +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[CustomerSince],[t1].[CustomerType],[t1].[Name],[t1].[IndustrialSectorID] "
+          +"FROM [CustomerView] AS [t1] WHERE ([t1].[Name] = @1)) AS [q0] CROSS JOIN [OrderView] AS [t2] "
+          +"WHERE ([q0].[ID] = [t2].[CustomerID])"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
       Assert.That (fetchQuery1.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer)).StorageProviderID));
-
       Assert.That (fetchQuery1.Value.EagerFetchQueries.Count, Is.EqualTo (1));
+
       var fetchQuery2 = fetchQuery1.Value.EagerFetchQueries.Single ();
       Assert.That (fetchQuery2.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
       Assert.That (fetchQuery2.Value.Statement, Is.EqualTo (
-          "SELECT DISTINCT [#fetch0].* FROM ("
-            + "SELECT [#fetch1].* FROM ("
-              + "SELECT [c].* FROM [CustomerView] [c] WHERE ([c].[Name] = @1)) [#fetch0]"
-            + ", [OrderView] [#fetch1] WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[CustomerID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[CustomerID])) [#fetch2]"
-          + ", [OrderItemView] [#fetch0] WHERE (([#fetch2].[ID] IS NULL AND [#fetch0].[OrderID] IS NULL) OR [#fetch2].[ID] = [#fetch0].[OrderID])"));
+          "SELECT DISTINCT [t4].[ID],[t4].[ClassID],[t4].[Timestamp],[t4].[Position],[t4].[Product],[t4].[OrderID] "
+          +"FROM (SELECT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID] "
+          +"FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[CustomerSince],[t2].[CustomerType],[t2].[Name],[t2].[IndustrialSectorID] "
+          +"FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q0] CROSS JOIN [OrderView] AS [t3] "
+          +"WHERE ([q0].[ID] = [t3].[CustomerID])) AS [q1] CROSS JOIN [OrderItemView] AS [t4] "
+          +"WHERE ([q1].[ID] = [t4].[OrderID])"));
       Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
       Assert.That (fetchQuery2.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
     }
 
-    //TODO 2404
+    //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
     //public void CanBeMixed ()
     //{
-    //  using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+    //  using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
     //  {
     //    var queryable = new DomainObjectQueryable<Order> ();
     //    Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
     //  }
     //}
 
-    //TODO 2404
+    //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
     //public void GetStatement_CanBeMixed ()
     //{
@@ -561,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     //  }
     //}
 
-    //TODO 2404
+    //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
     //public void CreateQuery_CanBeMixed ()
     //{
@@ -583,7 +584,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     //[Test]
     //public void CreateQueryFromModel_CanBeMixed ()
     //{
-    //  using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+    //  using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
     //  {
     //    var query = from computer in QueryFactory.CreateLinqQuery<Computer> () select computer;
     //    var queryModel = ParseQuery (query.Expression);
