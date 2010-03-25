@@ -122,6 +122,8 @@
 
         // only opera doesn't trigger keydown multiple times while pressed, others don't work with keypress at all
         $input.bind(($.browser.opera ? "keypress" : "keydown") + ".autocomplete", function(event) {
+            // re-motion: block event bubbling
+            event.stopPropagation();
             // track last key pressed
             lastKeyPressCode = event.keyCode;
             switch (event.keyCode) {
@@ -248,8 +250,11 @@
         // re-motion: bind onChange to the dropDownButton's click event
         var dropdownButton = $('#' + options.dropDownButtonId);
         if (dropdownButton.length > 0) {
-            dropdownButton.click(function() {
-                if (select.visible()) {
+            dropdownButton.click(function(event) {
+            // re-motion: block event bubbling
+            event.stopPropagation();
+
+            if (select.visible()) {
                     select.hide();
                 } else {
                     $input.focus();
