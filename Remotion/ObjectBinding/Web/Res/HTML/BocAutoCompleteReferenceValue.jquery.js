@@ -738,13 +738,11 @@
 
         function applyPositionToDropDown() {
 
-            var whereToPen, whereToPenPosition, elementWidth, newHeight;
-
             var offset = $(input).offset();
             // re-motion: calculate best position where to open dropdown list
             var position = $.Autocompleter.calculateSpaceAround(input);
 
-            if (position.spaceVertical == 'T') {
+            if (position.spaceVertical == 'T' && position.bottom < options.scrollHeight) {
 
                 //element.css('bottom', position.bottom + input.offsetHeight);
                 topPosition = 'auto';

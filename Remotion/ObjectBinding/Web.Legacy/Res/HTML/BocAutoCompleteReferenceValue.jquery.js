@@ -747,7 +747,7 @@
             if (listHeight > options.scrollHeight)
                 maxHeight = options.scrollHeight;
 
-            if (position.spaceVertical == 'T') {
+            if (position.spaceVertical == 'T' && position.bottom < listHeight) {
                 topPosition = 'auto';
                 bottomPosition = position.bottom + input.offsetHeight;
                 if (options.scrollHeight > position.bottom && options.scrollHeight > position.top) {
