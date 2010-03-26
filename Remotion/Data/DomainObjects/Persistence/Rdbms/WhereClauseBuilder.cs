@@ -16,7 +16,10 @@
 // 
 using System;
 using System.Data;
+using System.Data.SqlTypes;
+using System.IO;
 using System.Text;
+using System.Xml;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -75,6 +78,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _commandBuilder.AddCommandParameter (_command, columnName, value);
     }
 
+    /// <summary>
+    /// Defines a SQL IN expression matching the column defined by <paramref name="columnName"/> with the given <paramref name="values"/>. The 
+    /// values are embedded in an XML <see cref="IDataParameter"/>, so they must be convertable to <see cref="string"/> values via their
+    /// <see cref="object.ToString"/> method.
+    /// </summary>
+    /// <param name="columnName">The name of the column to check.</param>
+    /// <param name="values">The values to match the column against.</param>
     public virtual void SetInExpression (string columnName, object[] values)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
@@ -85,17 +95,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       _whereClauseBuilder.AppendFormat ("{0} IN (", _commandBuilder.Provider.DelimitIdentifier (columnName));
 
-      for (int i = 0; i < values.Length; i++)
-      {
-        if (i > 0)
-          _whereClauseBuilder.Append (", ");
+      var xmlString = new StringBuilder ("<L>");
 
-        string incrementedColumnName = string.Format ("{0}{1}", columnName, i + 1);
-        string parameterName = _commandBuilder.Provider.GetParameterName (incrementedColumnName);
+      foreach (var value in values)
+        xmlString.Append ("<I>").Append (value).Append ("</I>");
 
-        _whereClauseBuilder.Append (parameterName);
-        _commandBuilder.AddCommandParameter (_command, parameterName, values[i]);
-      }
+      xmlString.Append ("</L>");
+      
+      string parameterName = _commandBuilder.Provider.GetParameterName (columnName);
+      var parameter = _commandBuilder.AddCommandParameter (_command, parameterName, xmlString.ToString());
+      parameter.DbType = DbType.Xml;
+
+      _whereClauseBuilder.Append ("SELECT T.c.value('.', 'uniqueidentifier') FROM "); // TODO: Parameterize this
+      _whereClauseBuilder.Append (parameterName);
+      _whereClauseBuilder.Append (".nodes('/L/I') T(c)");
 
       _whereClauseBuilder.Append (")");
     }

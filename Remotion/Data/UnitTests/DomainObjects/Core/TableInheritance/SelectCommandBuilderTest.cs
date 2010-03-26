@@ -43,11 +43,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       Provider.Connect ();
       using (IDbCommand command = sqlCommandBuilder.Create ())
       {
-        string expectedCommandText = "SELECT * FROM [TableInheritance_Person] WHERE [ID] IN (@ID1, @ID2);";
+        string expectedCommandText = "SELECT * FROM [TableInheritance_Person] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c));";
         Assert.AreEqual (expectedCommandText, command.CommandText);
-        Assert.AreEqual (2, command.Parameters.Count);
-        Assert.AreEqual (DomainObjectIDs.Person.Value, ((SqlParameter) command.Parameters["@ID1"]).Value);
-        Assert.AreEqual (DomainObjectIDs.Customer.Value, ((SqlParameter) command.Parameters["@ID2"]).Value);
+        Assert.AreEqual (1, command.Parameters.Count);
+
+        var expectedXml = "<L><I>" + DomainObjectIDs.Person.Value + "</I><I>" + DomainObjectIDs.Customer.Value + "</I></L>";
+        Assert.AreEqual (expectedXml, ((SqlParameter) command.Parameters["@ID"]).Value);
+        Assert.AreEqual (SqlDbType.Xml, ((SqlParameter) command.Parameters["@ID"]).SqlDbType);
       }
     }
 

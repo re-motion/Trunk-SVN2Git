@@ -53,16 +53,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var builder = WhereClauseBuilder.Create (_commandBuilderMock, _commandMock);
 
-      _commandBuilderMock.Expect (mock => mock.AddCommandParameter (_commandMock, "@WhateverID1", _guid1)).Return (null);
-      _commandBuilderMock.Expect (mock => mock.AddCommandParameter (_commandMock, "@WhateverID2", _guid2)).Return (null);
-      _commandBuilderMock.Expect (mock => mock.AddCommandParameter (_commandMock, "@WhateverID3", _guid3)).Return (null);
+      var expectedXml = "<L><I>" + _guid1 + "</I><I>" + _guid2 + "</I><I>" + _guid3 + "</I></L>";
+      var parameterMock = MockRepository.GenerateStrictMock<IDataParameter> ();
+      _commandBuilderMock.Expect (mock => mock.AddCommandParameter (_commandMock, "@WhateverID", expectedXml)).Return (parameterMock);
       _commandBuilderMock.Replay ();
+
+      parameterMock.Expect (mock => mock.DbType = DbType.Xml);
+      parameterMock.Replay ();
 
       builder.SetInExpression ("WhateverID", new object[] { _guid1, _guid2, _guid3 });
       var resultText = builder.ToString();
 
       _commandBuilderMock.VerifyAllExpectations ();
-      Assert.That (resultText, Is.EqualTo ("[WhateverID] IN (@WhateverID1, @WhateverID2, @WhateverID3)"));
+      parameterMock.VerifyAllExpectations ();
+      Assert.That (resultText, Is.EqualTo ("[WhateverID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @WhateverID.nodes('/L/I') T(c))"));
     }
 
     [Test]

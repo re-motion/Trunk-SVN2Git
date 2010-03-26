@@ -145,7 +145,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1793")]
     public void Relation_WithMoreThan2100Objects_WithTableInheritance ()
     {
       SetDatabaseModifyable ();
