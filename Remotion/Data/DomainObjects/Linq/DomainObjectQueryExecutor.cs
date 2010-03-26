@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor)); // TODO Review: Invalid logger type
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
