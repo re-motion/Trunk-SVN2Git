@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -114,6 +116,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           newCompany, newCompany.IndustrialSector, newCompany.IndustrialSector == industrialSector);
       Console.WriteLine ("{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
           industrialSector, industrialSector.Companies.Count, industrialSector.Companies.ContainsObject (industrialSector));
+    }
+
+    [Test]
+    public void Relation_WithMoreThan2100Objects ()
+    {
+      SetDatabaseModifyable ();
+      
+      var transaction = ClientTransaction.CreateRootTransaction();
+      var orderInOtherTx = DomainObjectMother.GetObjectInTransaction<Order> (transaction, DomainObjectIDs.Order1);
+      var orderItemsInOtherTx = transaction.Execute (() => Enumerable.Range (0, 4000).Select (i =>
+      {
+        var orderItem = OrderItem.NewObject();
+        orderInOtherTx.OrderItems.Add (orderItem);
+        return orderItem;
+      }).ToArray());
+
+      transaction.Commit ();
+
+      var orderInThisTx = Order.GetObject (orderInOtherTx.ID);
+      var orderItems = orderInThisTx.OrderItems;
+
+      Assert.That (orderItems.Count, Is.EqualTo (4002));
+      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem1), Is.True);
+      Assert.That (orderItems.Contains (DomainObjectIDs.OrderItem2), Is.True);
+      foreach (var orderItemInOtherTx in orderItemsInOtherTx)
+        Assert.That (orderItems.Contains (orderItemInOtherTx.ID), Is.True);
+    }
+
+    [Test]
+    [Ignore ("TODO 1793")]
+    public void Relation_WithMoreThan2100Objects_WithTableInheritance ()
+    {
+      SetDatabaseModifyable ();
+
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      var folderInOtherTx = DomainObjectMother.CreateObjectInTransaction<TableInheritance.TestDomain.Folder> (transaction);
+      transaction.Execute (() => folderInOtherTx.CreatedAt = new DateTime(2010, 01, 01));
+      var filesInOtherTx = transaction.Execute(() => Enumerable.Range (0, 4000).Select (i =>
+      {
+        var file = TableInheritance.TestDomain.File.NewObject();
+        file.CreatedAt = new DateTime (2010, 01, 01);
+        folderInOtherTx.FileSystemItems.Add (file);
+        return file;
+      }).ToArray());
+
+      transaction.Commit ();
+
+      var folderInThisTx = TableInheritance.TestDomain.Folder.GetObject (folderInOtherTx.ID);
+      var fileSystemItems = folderInThisTx.FileSystemItems;
+
+      Assert.That (fileSystemItems.Count, Is.EqualTo (4000));
+      foreach (var fileInOtherTx in filesInOtherTx)
+        Assert.That (fileSystemItems.Contains (fileInOtherTx.ID), Is.True);
     }
 
     private IndustrialSector CreateNewIndustrialSector ()

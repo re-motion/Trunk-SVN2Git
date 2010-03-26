@@ -268,6 +268,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\InitializedEventDomainObjectTransactionContextDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLoaderTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
