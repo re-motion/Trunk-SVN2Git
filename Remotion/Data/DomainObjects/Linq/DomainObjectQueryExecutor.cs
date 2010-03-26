@@ -359,7 +359,7 @@ namespace Remotion.Data.DomainObjects.Linq
       //TODO 2440 add MappingResolver as parameter in ctor
       var commandBuilder = new SqlCommandBuilder ();
       var sqlGenerationStage = new DefaultSqlGenerationStage ();
-      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
+      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement,SqlExpressionContext.ValueRequired);
 
       return commandBuilder.GetCommand();
     }
