@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public abstract class CommandBuilder
+  public abstract class CommandBuilder : ICommandBuilder
   {
     // types
 
