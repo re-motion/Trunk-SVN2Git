@@ -359,11 +359,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (dataContainer.State == StateType.Deleted)
         throw CreateArgumentException ("dataContainer", "Timestamp cannot be set for a deleted DataContainer.");
 
-      var commandBuilder = SingleIDLookupCommandBuilder.CreateForIDLookup (
-          this,
-          DelimitIdentifier ("Timestamp"),
-          dataContainer.ClassDefinition.GetEntityName(),
-          new[] { dataContainer.ID });
+      string columnName = DelimitIdentifier ("Timestamp");
+      string entityName = dataContainer.ClassDefinition.GetEntityName();
+      var commandBuilder = new SingleIDLookupCommandBuilder (this, columnName, entityName, "ID", dataContainer.ID, null);
 
       using (IDbCommand command = commandBuilder.Create())
       {

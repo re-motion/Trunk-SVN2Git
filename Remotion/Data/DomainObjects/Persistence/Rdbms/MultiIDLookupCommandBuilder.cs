@@ -20,29 +20,64 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Builds a command that allows retrieving a set of records whose ID column is contained in a range of <see cref="ObjectID"/> values.
+  /// </summary>
   public class MultiIDLookupCommandBuilder: CommandBuilder
   {
     private readonly string _selectColumns;
     private readonly string _entityName;
-    private readonly ObjectID[] _objectIDs;
-
-    // construction and disposing
+    private readonly string _checkedColumnName;
+    private readonly string _checkedColumnTypeName;
+    private readonly ObjectID[] _expectedValues;
 
     public MultiIDLookupCommandBuilder (
         RdbmsProvider provider,
         string selectColumns, 
-        string entityName, 
+        string entityName,
+        string checkedColumnName,
+        string checkedColumnTypeName,
         ObjectID[] ids)
       : base (provider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
+      ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnName", checkedColumnName);
+      ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnTypeName", checkedColumnTypeName);
       ArgumentUtility.CheckNotNull ("ids", ids);
+
+      _checkedColumnName = checkedColumnName;
+      _checkedColumnTypeName = checkedColumnTypeName;
 
       _selectColumns = selectColumns;
       _entityName = entityName;
-      _objectIDs = ids;
+      _expectedValues = ids;
+    }
+
+    public string SelectColumns
+    {
+      get { return _selectColumns; }
+    }
+
+    public string EntityName
+    {
+      get { return _entityName; }
+    }
+
+    public string CheckedColumnName
+    {
+      get { return _checkedColumnName; }
+    }
+
+    public string CheckedColumnTypeName
+    {
+      get { return _checkedColumnTypeName; }
+    }
+
+    public ObjectID[] ExpectedValues
+    {
+      get { return _expectedValues; }
     }
 
     public override IDbCommand Create()
@@ -50,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       IDbCommand command = Provider.CreateDbCommand();
       var whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
-      whereClauseBuilder.SetInExpression ("ID", Provider.GetIDColumnTypeName(), GetValueArrayForParameter (_objectIDs));
+      whereClauseBuilder.SetInExpression (_checkedColumnName, _checkedColumnTypeName, GetValueArrayForParameter (_expectedValues));
 
       command.CommandText = string.Format (
           "SELECT {0} FROM {1} WHERE {2}{3}",

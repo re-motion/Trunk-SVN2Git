@@ -28,7 +28,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      return SingleIDLookupCommandBuilder.CreateForIDLookup (provider, "*", entityName, objectIDs);
+      if (objectIDs.Length == 1)
+        return new SingleIDLookupCommandBuilder (provider, "*", entityName, "ID", objectIDs[0], null);
+      else
+        return new MultiIDLookupCommandBuilder (provider, "*", entityName, "ID", provider.GetIDColumnTypeName(), objectIDs);
     }
 
     public virtual ICommandBuilder GetCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)

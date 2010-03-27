@@ -16,63 +16,42 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
+  /// <summary>
+  /// Builds a command that allows retrieving a set of records where a certain column matches a given <see cref="ObjectID"/> value.
+  /// </summary>
   public class SingleIDLookupCommandBuilder: CommandBuilder
   {
-    // types
-
-    // static members and constants
-
-    public static ICommandBuilder CreateForIDLookup (RdbmsProvider provider, string selectColumns, string entityName, ObjectID[] ids)
-    {
-      ArgumentUtility.CheckNotNull ("provider", provider);
-      ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
-      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("ids", ids);
-
-      if (ids.Length == 1)
-        return new SingleIDLookupCommandBuilder (provider, selectColumns, entityName, "ID", ids[0], null);
-      else
-        return new MultiIDLookupCommandBuilder (provider, selectColumns, entityName, ids);
-    }
-
-    // member fields
-
     private readonly string _selectColumns;
     private readonly string _entityName;
-    private readonly string _whereClauseColumnName;
-    private readonly ObjectID _whereClauseID;
+    private readonly string _checkedColumnName;
+    private readonly ObjectID _expectedValue;
     private readonly string _orderExpression;
-
-    // construction and disposing
 
     public SingleIDLookupCommandBuilder (
         RdbmsProvider provider, 
         string selectColumns, 
         string entityName, 
-        string whereClauseColumnName, 
-        ObjectID whereClauseID, 
+        string checkedColumnName, 
+        ObjectID expectedValue, 
         string orderExpression)
       : base (provider)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
-      ArgumentUtility.CheckNotNullOrEmpty ("whereClauseColumnName", whereClauseColumnName);
-      ArgumentUtility.CheckNotNull ("whereClauseID", whereClauseID);
+      ArgumentUtility.CheckNotNullOrEmpty ("checkedColumnName", checkedColumnName);
+      ArgumentUtility.CheckNotNull ("expectedValue", expectedValue);
 
       _selectColumns = selectColumns;
       _entityName = entityName;
-      _whereClauseColumnName = whereClauseColumnName;
-      _whereClauseID = whereClauseID;
+      _checkedColumnName = checkedColumnName;
+      _expectedValue = expectedValue;
       _orderExpression = orderExpression;
     }
-
-    // methods and properties
 
     public string SelectColumns
     {
@@ -84,14 +63,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _entityName; }
     }
 
-    public string WhereClauseColumnName
+    public string CheckedColumnName
     {
-      get { return _whereClauseColumnName; }
+      get { return _checkedColumnName; }
     }
 
-    public ObjectID WhereClauseID
+    public ObjectID ExpectedValue
     {
-      get { return _whereClauseID; }
+      get { return _expectedValue; }
     }
 
     public string OrderExpression
@@ -104,15 +83,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       IDbCommand command = Provider.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
-      whereClauseBuilder.Add (_whereClauseColumnName, GetObjectIDValueForParameter (_whereClauseID));
+      whereClauseBuilder.Add (_checkedColumnName, GetObjectIDValueForParameter (_expectedValue));
 
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
       // the code below must be selectively actived to run only for integer primary keys.
       // Note: This behaviour is not desired in case of GUID primary keys, because two same foreign key GUIDs pointing 
       //       to different classIDs must be an error! In this case PersistenceManager.CheckClassIDForVirtualEndPoint raises an exception. 
-      //if (_whereClauseValueIsRelatedID && _whereClauseID.ClassDefinition.IsPartOfInheritanceHierarchy && IsOfSameStorageProvider (_whereClauseID))
-      //  whereClauseBuilder.Add (RdbmsProvider.GetClassIDColumnName (_whereClauseColumnName), _whereClauseID.ClassID);
+      //if (_whereClauseValueIsRelatedID && _expectedValue.ClassDefinition.IsPartOfInheritanceHierarchy && IsOfSameStorageProvider (_expectedValue))
+      //  whereClauseBuilder.Add (RdbmsProvider.GetClassIDColumnName (_checkedColumnName), _expectedValue.ClassID);
 
       command.CommandText = string.Format (
           "SELECT {0} FROM {1} WHERE {2}{3}{4}",

@@ -29,14 +29,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void RelationClassIDColumnRefersToAbstractClass ()
     {
-      ObjectID id = new ObjectID (typeof (Order), new Guid ("{F404FD2C-B92F-46d8-BEAC-F92C0599BFD3}"));
-      var builder = SingleIDLookupCommandBuilder.CreateForIDLookup (Provider, "*", "TableInheritance_Order", new[] { id });
+      var id = new ObjectID (typeof (Order), new Guid ("{F404FD2C-B92F-46d8-BEAC-F92C0599BFD3}"));
+      var builder = new SingleIDLookupCommandBuilder (Provider, "*", "TableInheritance_Order", "ID", id, null);
 
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
         {
-          DataContainerFactory factory = new DataContainerFactory (Provider, reader);
+          var factory = new DataContainerFactory (Provider, reader);
 
           try
           {

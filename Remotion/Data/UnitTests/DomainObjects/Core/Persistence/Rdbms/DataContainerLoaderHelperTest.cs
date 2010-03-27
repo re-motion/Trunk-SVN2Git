@@ -45,8 +45,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.That (builder.EntityName, Is.EqualTo ("Order"));
       Assert.That (builder.OrderExpression, Is.EqualTo ("OrderNo asc"));
       Assert.That (builder.SelectColumns, Is.EqualTo ("*"));
-      Assert.That (builder.WhereClauseColumnName, Is.EqualTo ("CustomerID"));
-      Assert.That (builder.WhereClauseID, Is.EqualTo (DomainObjectIDs.Customer1));
+      Assert.That (builder.CheckedColumnName, Is.EqualTo ("CustomerID"));
+      Assert.That (builder.ExpectedValue, Is.EqualTo (DomainObjectIDs.Customer1));
+    }
+
+    [Test]
+    public void GetCommandBuilderForIDLookup_SingleID ()
+    {
+      Provider.Connect ();
+
+      var builder = (SingleIDLookupCommandBuilder) _loaderHelper.GetCommandBuilderForIDLookup (Provider, "Order", new[] { DomainObjectIDs.Customer1 });
+
+      Assert.That (builder.EntityName, Is.EqualTo ("Order"));
+      Assert.That (builder.OrderExpression, Is.Null);
+      Assert.That (builder.SelectColumns, Is.EqualTo ("*"));
+      Assert.That (builder.CheckedColumnName, Is.EqualTo ("ID"));
+      Assert.That (builder.ExpectedValue, Is.EqualTo (DomainObjectIDs.Customer1));
+    }
+
+    [Test]
+    public void GetCommandBuilderForIDLookup_MultipleIDs ()
+    {
+      Provider.Connect ();
+
+      var builder = (MultiIDLookupCommandBuilder) _loaderHelper.GetCommandBuilderForIDLookup (
+          Provider, "Order", new[] { DomainObjectIDs.Customer1, DomainObjectIDs.Customer2 });
+
+      Assert.That (builder.EntityName, Is.EqualTo ("Order"));
+      Assert.That (builder.SelectColumns, Is.EqualTo ("*"));
+      Assert.That (builder.CheckedColumnName, Is.EqualTo ("ID"));
+      Assert.That (builder.CheckedColumnTypeName, Is.EqualTo ("uniqueidentifier"));
+      Assert.That (builder.ExpectedValues, Is.EqualTo (new[] { DomainObjectIDs.Customer1, DomainObjectIDs.Customer2 }));
     }
   }
 }

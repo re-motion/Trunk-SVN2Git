@@ -30,7 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void Create ()
     {
       Provider.Connect ();
-      var builder = new MultiIDLookupCommandBuilder (Provider, "*", "Order", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var builder = new MultiIDLookupCommandBuilder (
+          Provider, 
+          "*", 
+          "Order", 
+          "ID", 
+          "uniqueidentifier", 
+          new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       using (IDbCommand command = builder.Create ())
       {
@@ -48,7 +54,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      new MultiIDLookupCommandBuilder (Provider, "*", "Order", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      new MultiIDLookupCommandBuilder (
+          Provider,
+          "*",
+          "Order",
+          "ID",
+          "uniqueidentifier",
+          new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
     }
 
     [Test]
@@ -57,7 +69,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = new MultiIDLookupCommandBuilder (Provider, "*", "Order", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+        var builder = new MultiIDLookupCommandBuilder (
+          Provider,
+          "*",
+          "Order",
+          "ID",
+          "uniqueidentifier",
+          new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
         using (IDbCommand command = builder.Create())
         {
