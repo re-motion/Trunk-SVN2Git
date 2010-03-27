@@ -38,7 +38,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-      return SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (provider, entityName, relationProperty, relatedID);
+      var oppositeRelationEndPointDefinition = 
+          (VirtualRelationEndPointDefinition) relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
+
+      return new SingleIDLookupCommandBuilder (
+          provider,
+          "*",
+          entityName,
+          relationProperty.StorageSpecificName,
+          relatedID,
+          oppositeRelationEndPointDefinition.SortExpression);
     }
 
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,

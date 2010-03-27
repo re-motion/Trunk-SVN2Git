@@ -16,32 +16,31 @@
 // 
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
   [TestFixture]
-  public class SelectCommandBuilderTest : SqlProviderBaseTest
+  public class MultiIDLookupCommandBuilderTest : SqlProviderBaseTest
   {
     [Test]
-    public void CreateWithOrderClause ()
+    public void Create ()
     {
-      ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
-
       Provider.Connect ();
-      var builder = SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (
-          Provider, orderDefinition.GetEntityName(), orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), DomainObjectIDs.Customer1);
+      var builder = new MultiIDLookupCommandBuilder (Provider, "*", "Order", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
       using (IDbCommand command = builder.Create ())
       {
-        Assert.AreEqual (
-            "SELECT * FROM [Order] WHERE [CustomerID] = @CustomerID ORDER BY OrderNo asc;",
-            command.CommandText);
+        string expectedCommandText = "SELECT * FROM [Order] WHERE [ID] IN (SELECT T.c.value('.', 'uniqueidentifier') FROM @ID.nodes('/L/I') T(c));";
+        Assert.AreEqual (expectedCommandText, command.CommandText);
+        Assert.AreEqual (1, command.Parameters.Count);
+
+        var expectedXml = "<L><I>" + DomainObjectIDs.Order1.Value + "</I><I>" + DomainObjectIDs.Order2.Value + "</I></L>";
+        Assert.AreEqual (expectedXml, ((SqlParameter) command.Parameters["@ID"]).Value);
+        Assert.AreEqual (SqlDbType.Xml, ((SqlParameter) command.Parameters["@ID"]).SqlDbType);
       }
     }
 
@@ -49,27 +48,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Provider must be connected first.\r\nParameter name: provider")]
     public void ConstructorChecksForConnectedProvider ()
     {
-      ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
-      SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (
-          Provider,
-          orderDefinition.GetEntityName (), 
-          orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), 
-          DomainObjectIDs.Customer1);
+      new MultiIDLookupCommandBuilder (Provider, "*", "Order", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
     }
 
     [Test]
     public void WhereClauseBuilder_CanBeMixed ()
     {
-      ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
-
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        var builder = SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (
-            Provider,
-            orderDefinition.GetEntityName (),
-            orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"),
-            DomainObjectIDs.Customer1);
+        var builder = new MultiIDLookupCommandBuilder (Provider, "*", "Order", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
         using (IDbCommand command = builder.Create())
         {

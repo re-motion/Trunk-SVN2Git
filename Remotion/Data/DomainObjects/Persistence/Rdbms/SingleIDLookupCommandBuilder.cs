@@ -40,29 +40,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return new MultiIDLookupCommandBuilder (provider, selectColumns, entityName, ids);
     }
 
-    public static ICommandBuilder CreateForRelatedIDLookup (
-        RdbmsProvider provider,
-        string entityName,
-        PropertyDefinition relationProperty,
-        ObjectID relatedID)
-    {
-      ArgumentUtility.CheckNotNull ("provider", provider);
-      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
-      ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
-      ArgumentUtility.CheckNotNull ("relatedID", relatedID);
-
-      var oppositeRelationEndPointDefinition = (VirtualRelationEndPointDefinition) 
-          relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
-
-      return new SingleIDLookupCommandBuilder (
-          provider,
-          "*",
-          entityName,
-          relationProperty.StorageSpecificName,
-          relatedID,
-          oppositeRelationEndPointDefinition.SortExpression);
-    }
-
     // member fields
 
     private readonly string _selectColumns;
@@ -96,6 +73,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     // methods and properties
+
+    public string SelectColumns
+    {
+      get { return _selectColumns; }
+    }
+
+    public string EntityName
+    {
+      get { return _entityName; }
+    }
+
+    public string WhereClauseColumnName
+    {
+      get { return _whereClauseColumnName; }
+    }
+
+    public ObjectID WhereClauseID
+    {
+      get { return _whereClauseID; }
+    }
+
+    public string OrderExpression
+    {
+      get { return _orderExpression; }
+    }
 
     public override IDbCommand Create()
     {

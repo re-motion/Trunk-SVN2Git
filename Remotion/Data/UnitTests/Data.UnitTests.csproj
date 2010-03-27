@@ -273,6 +273,8 @@
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\MultiIDLookupCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\ReadOnlyDomainObjectCollectionAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\CollectionEndPointRemoveCommandTest.cs" />
@@ -891,7 +893,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\RdbmsProviderDefinitionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SelectCommandBuilderTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SingleIDLookupCommandBuilderTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlProviderBaseTest.cs">
@@ -996,9 +998,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\ObjectIDTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\TableInheritance\SelectCommandBuilderTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\TableInheritance\TableInheritanceSetupFixture.cs" />

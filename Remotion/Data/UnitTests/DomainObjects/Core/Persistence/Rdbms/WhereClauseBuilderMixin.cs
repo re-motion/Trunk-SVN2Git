@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Text;
-using Remotion.Data.DomainObjects;
 using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -28,9 +27,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       StringBuilder Builder { get; }
     }
 
-    protected override void OnInitialized ()
+    [OverrideTarget]
+    public virtual void Add (string columnName, object value)
     {
-      base.OnInitialized ();
+      This.Builder.Append ("Mixed!");
+    }
+
+    [OverrideTarget]
+    public virtual void SetInExpression (string columnName, string columnType, object[] values)
+    {
       This.Builder.Append ("Mixed!");
     }
   }
