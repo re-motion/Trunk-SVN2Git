@@ -564,7 +564,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       executorMock.CreateQuery("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
-    // TODO Review 2440: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
+    // TODO Review 2404: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
     
     //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
