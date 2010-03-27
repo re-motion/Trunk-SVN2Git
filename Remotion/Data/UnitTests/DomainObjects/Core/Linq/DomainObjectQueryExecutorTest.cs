@@ -484,6 +484,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
       var fetchQuery = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery.Key, Is.SameAs (ordersRelationEndPointDefinition));
+      
+      // TODO Review 2440: Sort expression missing: ORDER BY OrderNo asc
+      
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
         "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
 	      +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[CustomerSince],[t1].[CustomerType],[t1].[Name],[t1].[IndustrialSectorID] "
@@ -515,6 +518,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
       var fetchQuery1 = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery1.Key, Is.SameAs (ordersRelationEndPointDefinition));
+      // TODO Review 2440: Sort expression missing: ORDER BY OrderNo asc
       Assert.That (fetchQuery1.Value.Statement, Is.EqualTo (
           "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
           +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[CustomerSince],[t1].[CustomerType],[t1].[Name],[t1].[IndustrialSectorID] "
@@ -560,6 +564,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       executorMock.CreateQuery("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
+    // TODO Review 2440: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
+    
     //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
     //public void CanBeMixed ()

@@ -42,8 +42,9 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor)); // TODO Review: Invalid logger type
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor)); // TODO Review 2440: Invalid logger type
 
+    // TODO Review 2440: Parameterize with stages
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
     /// </summary>
@@ -54,7 +55,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
 
       StartingClassDefinition = startingClassDefinition;
-      
     }
 
     public ClassDefinition StartingClassDefinition { get; private set; }
@@ -208,13 +208,16 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
+      // TODO Review 2440: Add a single public virtual CreateSqlCommand method that calls TransformAndResolve and CreateSqlCommand in order to support the same extensibility points as the legacy executor
       SqlStatement sqlStatement = TransformAndResolveQueryModel (queryModel);
-      CheckProjection (sqlStatement.SelectProjection);
+
+      CheckProjection (sqlStatement.SelectProjection); // TODO Review 2440: Change to check queryModel instead of projection (see below) and move up to before TransformAndResolve is called
       SqlCommand command = CreateSqlCommand (sqlStatement);
       
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = command.CommandText;
+      // TODO Review 2440: sortExpression handling is missing - this is required when eager fetching is used; see LegacyDomainObjectQueryExecutor
      
       var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
@@ -306,15 +309,17 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
+    // TODO Review 2440: Change this method to check that: queryModel.GetOutputDataInfo() is StreamedScalarValueInfo - or - StreamedSingleValueInfo and typeof (DomainObject).IsAssignableFrom (valueinfo.DataType) - or - StreamedSequenceInfo and typeof (DomainObject).IsAssignableFrom (sequenceInfo.ItemExpression).
     private void CheckProjection (Expression selectProjection)
     {
       if (selectProjection is SqlColumnExpression)
       {
+        // TODO Review 2440: Change to "This query provider does not support the given query ('[use queryModel here]'). re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects."
         string message = string.Format (
             "This query provider does not support the given select projection ('{0}'). The projection must select "
             + "single DomainObject instances, because re-store does not support this kind of select projection.",
             selectProjection.Type.Name);
-        throw new InvalidOperationException (message);
+        throw new InvalidOperationException (message); // TODO Review 2440: Throw NotSupportedException instead.
       }
     }
 
@@ -336,6 +341,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
+    // TODO Review 2440: Add documentation before closing task.
     //TODO: add comment
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
@@ -353,10 +359,10 @@ namespace Remotion.Data.DomainObjects.Linq
       return sqlStatement;
     }
 
+    // TODO Review 2440: Make protected virtual. Add documentation before closing task.
     //TODO: add comment
     private SqlCommand CreateSqlCommand (SqlStatement sqlStatement)
     {
-      //TODO 2440 add MappingResolver as parameter in ctor
       var commandBuilder = new SqlCommandBuilder ();
       var sqlGenerationStage = new DefaultSqlGenerationStage ();
       sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement,SqlExpressionContext.ValueRequired);
