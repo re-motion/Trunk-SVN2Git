@@ -243,7 +243,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dataContainerLoader.LoadDataContainersFromIDs (ids);
     }
 
-    protected internal virtual DataContainer[] LoadDataContainers (CommandBuilder commandBuilder, bool allowNulls)
+    protected internal virtual DataContainer[] LoadDataContainers (ICommandBuilder commandBuilder, bool allowNulls)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -346,6 +346,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return new ObjectID (classDefinition.ID, Guid.NewGuid());
     }
 
+    public virtual string GetIDColumnTypeName ()
+    {
+      return "uniqueidentifier";
+    }
+
     protected virtual void SetTimestamp (DataContainer dataContainer)
     {
       CheckDisposed();
@@ -354,7 +359,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (dataContainer.State == StateType.Deleted)
         throw CreateArgumentException ("dataContainer", "Timestamp cannot be set for a deleted DataContainer.");
 
-      SelectCommandBuilder commandBuilder = SelectCommandBuilder.CreateForIDLookup (
+      var commandBuilder = SingleIDLookupCommandBuilder.CreateForIDLookup (
           this,
           DelimitIdentifier ("Timestamp"),
           dataContainer.ClassDefinition.GetEntityName(),

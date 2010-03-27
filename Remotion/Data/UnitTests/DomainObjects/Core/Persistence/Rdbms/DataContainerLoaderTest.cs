@@ -151,15 +151,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (_mockRepository.Unordered ())
       {
-        Expect.Call (loaderHelperMock.GetSelectCommandBuilder (null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
             .Constraints (Mocks_Is.Same (Provider), Mocks_Is.Equal ("Order"),
                 Mocks_List.Equal (new[] {DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3}))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (loaderHelperMock.GetSelectCommandBuilder (null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
             .Constraints (Mocks_Is.Same (Provider), Mocks_Is.Equal ("OrderItem"),
             Mocks_List.Equal (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (loaderHelperMock.GetSelectCommandBuilder (null, null, null))
+        Expect.Call (loaderHelperMock.GetCommandBuilderForIDLookup (null, null, null))
             .Constraints (Mocks_Is.Same (Provider), Mocks_Is.Equal ("Company"),
             Mocks_List.Equal (new[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
@@ -211,8 +211,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void LoadDataContainersFromCommandBuilder ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
-      SelectCommandBuilder builder =
-          SelectCommandBuilder.CreateForIDLookup (Provider, "*", "OrderItem", new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
+      var builder =
+          SingleIDLookupCommandBuilder.CreateForIDLookup (Provider, "*", "OrderItem", new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
       List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
 
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           {
             loader.Provider.Connect ();
 
-            SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (
+            var builder = SingleIDLookupCommandBuilder.CreateForIDLookup (
                 loader.Provider, 
                 "*",
                 "OrderItem",
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper> ();
 
-      Expect.Call (loaderHelperMock.GetSelectCommandBuilderForRelatedIDLookup (Provider, relatedClassDefinition.GetEntityName(), 
+      Expect.Call (loaderHelperMock.GetCommandBuilderForRelatedIDLookup (Provider, relatedClassDefinition.GetEntityName(), 
           relationPropertyDefinition, DomainObjectIDs.Order1)).IgnoreArguments ().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
 
       _mockRepository.ReplayAll ();

@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void RelationClassIDColumnRefersToAbstractClass ()
     {
       ObjectID id = new ObjectID (typeof (Order), new Guid ("{F404FD2C-B92F-46d8-BEAC-F92C0599BFD3}"));
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", "TableInheritance_Order", new[] { id });
+      var builder = SingleIDLookupCommandBuilder.CreateForIDLookup (Provider, "*", "TableInheritance_Order", new[] { id });
 
       using (IDbCommand command = builder.Create ())
       {

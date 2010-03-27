@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       parameterMock.Expect (mock => mock.DbType = DbType.Xml);
       parameterMock.Replay ();
 
-      builder.SetInExpression ("WhateverID", new object[] { _guid1, _guid2, _guid3 });
+      builder.SetInExpression ("WhateverID", "uniqueidentifier", new object[] { _guid1, _guid2, _guid3 });
       var resultText = builder.ToString();
 
       _commandBuilderMock.VerifyAllExpectations ();
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       ((StringBuilder) PrivateInvoke.GetNonPublicProperty(builder, "Builder")).Append ("Holerö");
 
-      builder.SetInExpression ("WhateverID", new object[] { _guid1, _guid2, _guid3 });
+      builder.SetInExpression ("WhateverID", "uniqueIdentifier", new object[] { _guid1, _guid2, _guid3 });
     }
   }
 }

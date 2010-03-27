@@ -79,13 +79,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     /// <summary>
-    /// Defines a SQL IN expression matching the column defined by <paramref name="columnName"/> with the given <paramref name="values"/>. The 
+    /// Defines a SQL IN expression matching the column defined by <paramref name="columnName"/> with the given <paramref name="values"/>. The
     /// values are embedded in an XML <see cref="IDataParameter"/>, so they must be convertable to <see cref="string"/> values via their
     /// <see cref="object.ToString"/> method.
     /// </summary>
     /// <param name="columnName">The name of the column to check.</param>
     /// <param name="values">The values to match the column against.</param>
-    public virtual void SetInExpression (string columnName, object[] values)
+    /// <param name="columnType">The database type of the column to check. The values must be convertable from the textual representation
+    /// embedded in the XML file to this type.</param>
+    public virtual void SetInExpression (string columnName, string columnType, object[] values)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("values", values);
@@ -106,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       var parameter = _commandBuilder.AddCommandParameter (_command, parameterName, xmlString.ToString());
       parameter.DbType = DbType.Xml;
 
-      _whereClauseBuilder.Append ("SELECT T.c.value('.', 'uniqueidentifier') FROM "); // TODO: Parameterize this
+      _whereClauseBuilder.Append ("SELECT T.c.value('.', '").Append (columnType).Append ("') FROM ");
       _whereClauseBuilder.Append (parameterName);
       _whereClauseBuilder.Append (".nodes('/L/I') T(c)");
 

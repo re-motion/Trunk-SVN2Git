@@ -17,6 +17,7 @@
 using System;
 using System.Data.SqlClient;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -55,6 +56,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       RdbmsProvider rdbmsProvider = Provider;
       Assert.IsFalse (rdbmsProvider.IsConnected);
+    }
+
+    [Test]
+    public void GetIDColumnTypeName ()
+    {
+      Assert.That (Provider.GetIDColumnTypeName (), Is.EqualTo ("uniqueidentifier"));
     }
 
     [Test]

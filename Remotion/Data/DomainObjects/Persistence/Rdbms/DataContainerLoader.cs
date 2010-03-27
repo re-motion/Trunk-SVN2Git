@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilder (Provider, id.ClassDefinition.GetEntityName (), new[] { id });
+      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (Provider, id.ClassDefinition.GetEntityName (), new[] { id });
       using (IDbCommand command = commandBuilder.Create ())
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleRow))
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private DataContainerCollection GetDataContainers (string entityName, ObjectID[] objectIDs)
     {
-      SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilder(Provider, entityName, objectIDs);
+      var commandBuilder = _loaderHelper.GetCommandBuilderForIDLookup (Provider, entityName, objectIDs);
 
       using (IDbCommand command = commandBuilder.Create ())
       {
@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return objectIDsPerEntityName;
     }
 
-    public DataContainer[] LoadDataContainersFromCommandBuilder (CommandBuilder commandBuilder, bool allowNulls)
+    public DataContainer[] LoadDataContainersFromCommandBuilder (ICommandBuilder commandBuilder, bool allowNulls)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return new DataContainerCollection ();
       else if (classDefinition.GetEntityName () != null)
       {
-        SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilderForRelatedIDLookup (
+        var commandBuilder = _loaderHelper.GetCommandBuilderForRelatedIDLookup (
             Provider, classDefinition.GetEntityName(), propertyDefinition, relatedID);
         return new DataContainerCollection (Provider.LoadDataContainers (commandBuilder, false), false);
       }

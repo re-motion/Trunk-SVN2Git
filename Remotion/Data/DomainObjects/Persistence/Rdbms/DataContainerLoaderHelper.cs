@@ -22,23 +22,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class DataContainerLoaderHelper : IDataContainerLoaderHelper
   {
-    public virtual SelectCommandBuilder GetSelectCommandBuilder (RdbmsProvider provider, string entityName, ObjectID[] objectIDs)
+    public virtual ICommandBuilder GetCommandBuilderForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      return SelectCommandBuilder.CreateForIDLookup (provider, "*", entityName, objectIDs);
+      return SingleIDLookupCommandBuilder.CreateForIDLookup (provider, "*", entityName, objectIDs);
     }
 
-    public virtual SelectCommandBuilder GetSelectCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)
+    public virtual ICommandBuilder GetCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-      return SelectCommandBuilder.CreateForRelatedIDLookup (provider, entityName, relationProperty, relatedID);
+      return SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (provider, entityName, relationProperty, relatedID);
     }
 
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,

@@ -21,42 +21,45 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
-  public class SelectCommandBuilder: CommandBuilder
+  public class SingleIDLookupCommandBuilder: CommandBuilder
   {
     // types
 
     // static members and constants
 
-    public static SelectCommandBuilder CreateForIDLookup (RdbmsProvider provider, string selectColumns, string entityName, ObjectID[] ids)
+    public static ICommandBuilder CreateForIDLookup (RdbmsProvider provider, string selectColumns, string entityName, ObjectID[] ids)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("ids", ids);
 
-      return new SelectCommandBuilder (provider, selectColumns, entityName, "ID", ids, null);
+      if (ids.Length == 1)
+        return new SingleIDLookupCommandBuilder (provider, selectColumns, entityName, "ID", ids[0], null);
+      else
+        return new MultiIDLookupCommandBuilder (provider, selectColumns, entityName, ids);
     }
 
-    public static SelectCommandBuilder CreateForRelatedIDLookup (
+    public static ICommandBuilder CreateForRelatedIDLookup (
         RdbmsProvider provider,
         string entityName,
-        PropertyDefinition propertyDefinition,
+        PropertyDefinition relationProperty,
         ObjectID relatedID)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
-      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
       var oppositeRelationEndPointDefinition = (VirtualRelationEndPointDefinition) 
-          propertyDefinition.ClassDefinition.GetMandatoryOppositeEndPointDefinition (propertyDefinition.PropertyName);
+          relationProperty.ClassDefinition.GetMandatoryOppositeEndPointDefinition (relationProperty.PropertyName);
 
-      return new SelectCommandBuilder (
+      return new SingleIDLookupCommandBuilder (
           provider,
           "*",
           entityName,
-          propertyDefinition.StorageSpecificName,
-          new[] {relatedID},
+          relationProperty.StorageSpecificName,
+          relatedID,
           oppositeRelationEndPointDefinition.SortExpression);
     }
 
@@ -65,24 +68,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     private readonly string _selectColumns;
     private readonly string _entityName;
     private readonly string _whereClauseColumnName;
-    private readonly ObjectID[] _whereClauseIDs;
+    private readonly ObjectID _whereClauseID;
     private readonly string _orderExpression;
 
     // construction and disposing
 
-    private SelectCommandBuilder (
+    public SingleIDLookupCommandBuilder (
         RdbmsProvider provider, 
         string selectColumns, 
         string entityName, 
         string whereClauseColumnName, 
-        ObjectID[] whereClauseIDs, 
+        ObjectID whereClauseID, 
         string orderExpression)
       : base (provider)
     {
+      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
+      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
+      ArgumentUtility.CheckNotNullOrEmpty ("whereClauseColumnName", whereClauseColumnName);
+      ArgumentUtility.CheckNotNull ("whereClauseID", whereClauseID);
+
       _selectColumns = selectColumns;
       _entityName = entityName;
       _whereClauseColumnName = whereClauseColumnName;
-      _whereClauseIDs = whereClauseIDs;
+      _whereClauseID = whereClauseID;
       _orderExpression = orderExpression;
     }
 
@@ -93,10 +102,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       IDbCommand command = Provider.CreateDbCommand();
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
 
-      if (_whereClauseIDs.Length == 1)
-        whereClauseBuilder.Add (_whereClauseColumnName, GetObjectIDValueForParameter (_whereClauseIDs[0]));
-      else
-        whereClauseBuilder.SetInExpression (_whereClauseColumnName, GetValueArrayForParameter (_whereClauseIDs));
+      whereClauseBuilder.Add (_whereClauseColumnName, GetObjectIDValueForParameter (_whereClauseID));
 
       // TODO in case of integer primary keys: 
       // If RdbmsProvider or one of its derived classes will support integer primary keys in addition to GUIDs,
@@ -115,16 +121,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           Provider.StatementDelimiter);
 
       return command;
-    }
-
-    private object[] GetValueArrayForParameter (ObjectID[] objectIDs)
-    {
-      var values = new object[objectIDs.Length];
-
-      for (int i = 0; i < objectIDs.Length; i++)
-        values[i] = GetObjectIDValueForParameter (objectIDs[i]);
-
-      return values;
     }
   }
 }

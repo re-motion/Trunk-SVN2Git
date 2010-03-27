@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     {
       ClassDefinition personClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Person));
 
-      SelectCommandBuilder sqlCommandBuilder = SelectCommandBuilder.CreateForIDLookup (
+      var sqlCommandBuilder = SingleIDLookupCommandBuilder.CreateForIDLookup (
           Provider, 
           "*", 
           personClass.GetEntityName(), 

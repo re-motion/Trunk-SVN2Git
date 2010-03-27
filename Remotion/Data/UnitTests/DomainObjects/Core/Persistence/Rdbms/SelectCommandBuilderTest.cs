@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
 
       Provider.Connect ();
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForRelatedIDLookup (
+      var builder = SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (
           Provider, orderDefinition.GetEntityName(), orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), DomainObjectIDs.Customer1);
 
       using (IDbCommand command = builder.Create ())
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void ConstructorChecksForConnectedProvider ()
     {
       ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
-      SelectCommandBuilder.CreateForRelatedIDLookup (
+      SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (
           Provider,
           orderDefinition.GetEntityName (), 
           orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), 
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Provider.Connect ();
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (WhereClauseBuilder)).Clear().AddMixins (typeof (WhereClauseBuilderMixin)).EnterScope())
       {
-        SelectCommandBuilder builder = SelectCommandBuilder.CreateForRelatedIDLookup (
+        var builder = SingleIDLookupCommandBuilder.CreateForRelatedIDLookup (
             Provider,
             orderDefinition.GetEntityName (),
             orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"),
