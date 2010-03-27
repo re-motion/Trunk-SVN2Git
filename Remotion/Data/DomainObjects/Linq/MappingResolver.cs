@@ -30,7 +30,7 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
-  /// The implementation of <see cref="IMappingResolver"/>  for getting detailed information from re-store which is the underlying data source.
+  /// Implements <see cref="IMappingResolver"/> to supply information from re-store to the re-linq SQL backend.
   /// </summary>
   public class MappingResolver : IMappingResolver
   {
@@ -72,16 +72,18 @@ namespace Remotion.Data.DomainObjects.Linq
       var leftEndPoint = relationDefinition.GetEndPointDefinition (classDefinition.ID, propertyIdentifier);
       var rightEndPoint = relationDefinition.GetOppositeEndPointDefinition (leftEndPoint);
 
-      var type = typeof (DomainObject).GetProperty ("ID").PropertyType;
+      var keyType = typeof (DomainObject).GetProperty ("ID").PropertyType;
 
       var alias = generator.GetUniqueIdentifier ("t");
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
-          rightEndPoint.ClassDefinition.ClassType, rightEndPoint.ClassDefinition.GetViewName(), alias);
+          rightEndPoint.ClassDefinition.ClassType, 
+          rightEndPoint.ClassDefinition.GetViewName(), 
+          alias);
 
-      var primaryColumn = new SqlColumnExpression (type, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
-      var foreignColumn = new SqlColumnExpression (type, alias, GetJoinColumnName (rightEndPoint));
+      var leftKey = new SqlColumnExpression (keyType, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
+      var rightKey = new SqlColumnExpression (keyType, alias, GetJoinColumnName (rightEndPoint));
 
-      return new ResolvedJoinInfo (resolvedSimpleTableInfo, primaryColumn, foreignColumn);
+      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
 
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
@@ -91,23 +93,22 @@ namespace Remotion.Data.DomainObjects.Linq
 
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableReferenceExpression.SqlTable.ItemType];
 
-      var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
-
       if (classDefinition == null)
       {
         string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.SqlTable.ItemType.Name);
         throw new UnmappedItemException (message);
       }
 
-      //TODO: 2404 Class ID and primaryColumn and Timestamp only added for re-store reasons
+      var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo ().TableAlias;
+
+      var propertyInfo = typeof (DomainObject).GetProperty ("ID");
+      var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
+
       var classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
       var classIDColumn = new SqlColumnExpression (classIDPropertyInfo.PropertyType, tableAlias, classIDPropertyInfo.Name);
 
       var timestampPropertyInfo = typeof (DomainObject).GetProperty ("Timestamp");
       var timestampColumn = new SqlColumnExpression (timestampPropertyInfo.PropertyType, tableAlias, timestampPropertyInfo.Name);
-
-      var propertyInfo = typeof (DomainObject).GetProperty ("ID");
-      var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
 
       var columns = new List<SqlColumnExpression>();
       
@@ -115,9 +116,12 @@ namespace Remotion.Data.DomainObjects.Linq
       columns.Add (classIDColumn);
       columns.Add (timestampColumn);
 
+      // TODO Review 2439: Use a LINQ expression to get the sql columns, use AddRange to add them to the list of columns
+
       foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
       {
-        //TODO 2404 test
+        //TODO 2439 test
+        // TODO Review 2439: To test this, use a Computer table reference.
         if (propertyDefinition.StorageClass == StorageClass.Persistent)
         {
           var storageSpecificName = propertyDefinition.StorageSpecificName;
@@ -126,6 +130,7 @@ namespace Remotion.Data.DomainObjects.Linq
         }
       }
 
+      // TODO Review 2439: Use tableReferenceExpression.Type instead of tableReferenceExpression.SqlTable.ItemType, it's the same, but faster
       return new SqlEntityExpression (tableReferenceExpression.SqlTable.ItemType, primaryKeyColumn, columns.ToArray());
     }
 
@@ -135,26 +140,33 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("generator", generator);
 
       var tableAlias = memberExpression.SqlTable.GetResolvedTableInfo().TableAlias;
-      var property = memberExpression.MemberInfo;
+      var property = (PropertyInfo) memberExpression.MemberInfo;
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.GetType(), tableAlias, "ID");
 
-
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[memberExpression.MemberInfo.DeclaringType];
+      // TODO Review 2439: Extract a method for these lookups, they occur in nearly every member of this class
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
       if (classDefinition == null)
       {
+        // TODO Review 2439: Change to "The type '{0}' declaring member '{1}' does not ..."
         string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
         throw new UnmappedItemException (message);
       }
 
-      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty ((PropertyInfo) property);
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+
+      // TODO Review 2439: This does not work for 1:1 properties when the propery is the non-foreign key side. For example: Order.OrderTicket.
+      // TODO Review 2439: At the non-key side, there is no property definition. However, there's a relation definition.
+      // TODO Review 2439: Add a test with Employee.Computer - it should fail. Then, change code to first try to get the relation data (GetRelationData). If this succeeds, return a SqlEntityRefMemberExpression.
+      // TODO Review 2439: If it doesn't, try to get the property definition. If there is no property definition at this point, throw the exception. Otherwise, return a SqlColumnExpression.
 
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
-      PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
+      var propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
 
       if (propertyDefinition == null)
       {
+        // TODO Review 2439: Change to: "The member '{0}.{1}' does not have a queryable database mapping."
         string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
         throw new UnmappedItemException (message);
       }
@@ -198,8 +210,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
-      ClassDefinition classDefinition = endPoint.ClassDefinition;
-      return endPoint.IsVirtual ? "ID" : classDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
+      return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
     }
   }
 }

@@ -41,13 +41,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       _resolver = new MappingResolver();
       _generator = new UniqueIdentifierGenerator();
-      _sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
+      _sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o")); // TODO Review 2439: Rename to _orderTable
     }
 
     [Test]
     public void ResolveTableReferenceExpression ()
     {
       var tableReferenceExpression = new SqlTableReferenceExpression(_sqlTable);
+
+      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
       var column1 = new SqlColumnExpression (typeof (string), "o", "ClassID");
@@ -56,11 +58,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var column4 = new SqlColumnExpression (typeof (DateTime), "o", "DeliveryDate");
       var column5 = new SqlColumnExpression (typeof (ObjectID), "o", "OfficialID");
       var column6 = new SqlColumnExpression (typeof (ObjectID), "o", "CustomerID");
-      
-      SqlEntityExpression sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      // TODO Review 2439: Create an expectedExpresion with above columns, then use ExpressionTreeComparer to compare the sqlEntityExpression to the expectedExpresion instead of manually comparing each column
 
       Assert.That (sqlEntityExpression, Is.Not.Null);
       Assert.That (sqlEntityExpression.ProjectionColumns.Count, Is.EqualTo (7));
+
       Assert.That (sqlEntityExpression.PrimaryKeyColumn.ColumnName, Is.EqualTo (primaryKeyColumn.ColumnName));
       Assert.That (sqlEntityExpression.PrimaryKeyColumn.OwningTableAlias, Is.EqualTo (primaryKeyColumn.OwningTableAlias));
       Assert.That (sqlEntityExpression.ProjectionColumns[0].ColumnName, Is.EqualTo (primaryKeyColumn.ColumnName));
@@ -93,11 +96,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));
 
-      ResolvedSimpleTableInfo resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
+      var resolvedTableInfo = (ResolvedSimpleTableInfo) _resolver.ResolveTableInfo (unresolvedTableInfo, _generator);
 
       Assert.That (resolvedTableInfo, Is.Not.Null);
       Assert.That (resolvedTableInfo.TableName, Is.EqualTo ("OrderView"));
       Assert.That (resolvedTableInfo.TableAlias, Is.EqualTo("t0"));
+      // TODO Review 2439: Check item type
     }
 
     [Test]
@@ -112,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveJoinInfo ()
     {
-      var unresolvedJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Customer).GetProperty ("Orders"), JoinCardinality.Many);
+      var unresolvedJoinInfo = new UnresolvedJoinInfo (_sqlTable, typeof (Customer).GetProperty ("Orders"), JoinCardinality.Many); // TODO Review 2439: Use a _customerTable here
 
       var resolvedJoinInfo = _resolver.ResolveJoinInfo (unresolvedJoinInfo, _generator);
 
@@ -123,10 +127,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).TableAlias, Is.EqualTo ("t0"));
       Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).ItemType, Is.EqualTo (typeof(Order)));
 
+      // TODO Review 2439: also test types and aliases of key columns
       Assert.That (resolvedJoinInfo.PrimaryColumn.ColumnName, Is.EqualTo ("ID"));
       Assert.That (resolvedJoinInfo.ForeignColumn.ColumnName, Is.EqualTo ("CustomerID"));
     }
 
+    // TODO Review 2439: Also test with Order.OrderNumber
     [Test]
     [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Student.Scores' does not identify a relation.")]
     public void ResolveJoinInfo_NoRelation_ThrowsExcpetion ()
@@ -172,12 +178,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
+      // TODO Review 2439: test table alias
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
       Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
     }
 
     [Test]
-    public void ResolveMemberExpression_RedirectedProperty_ReturnsSqlColumnExpression ()
+    public void ResolveMemberExpression_RedirectedProperty ()
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
       var memberExpression = new SqlMemberExpression (_sqlTable, property);
@@ -197,17 +204,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
 
+      // TODO Review 2439: Test properties
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);      
     }
 
+    // TODO Review 2439: Test with non-key property, e.g., Order.OrderTicket
+
+    // TODO Review 2439: check exception message
     [Test]
     [ExpectedException (typeof (UnmappedItemException))]
-    public void ResolveMemberExpression_ThrowsUnmappedItemExpression ()
+    public void ResolveMemberExpression_InvalidDeclaringType_ThrowsUnmappedItemExpression ()
     {
       var property = typeof (Student).GetProperty ("First");
       var memberExpression = new SqlMemberExpression (_sqlTable, property);
 
       _resolver.ResolveMemberExpression (memberExpression, _generator);
     }
+
+    // TODO Review 2439: Also test for invalid member, e.g., Order.NotInMapping
   }
 }
