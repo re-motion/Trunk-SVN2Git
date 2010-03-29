@@ -519,6 +519,17 @@ function BocList_GetSelectionCount (bocListID)
                 target.children("thead").children().eq(0).children().eq(index).width(item);
 
             });
+            
+            // keep checkboxes on sync
+            var checkboxes = $("th input:checkbox");
+            checkboxes.live('click', function() {
+
+                var checkName = $(this).attr('name');
+                var realCheckName = checkName.replace('_fake', '');
+                var checkStatus = $(this).attr('checked');
+
+                $('input[name*=' + realCheckName + ']').attr('checked', checkStatus);
+            });
         });
     }
 
