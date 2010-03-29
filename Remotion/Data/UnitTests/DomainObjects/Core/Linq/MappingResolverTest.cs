@@ -206,14 +206,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "The member 'Order.OrderTicket' does not have a queryable database mapping.")]
-    public void ResolveMemberExpression_NonKeyProperty ()
+    public void ResolveMemberExpression_CardibalityOne_MemberIsTheNonForeignKeySide ()
     {
-      var property = typeof (Order).GetProperty ("OrderTicket");
-      var memberExpression = new SqlMemberExpression (_orderTable, property);
+      var property = typeof (Employee).GetProperty ("Computer");
+      var memberExpression = new SqlMemberExpression (_customerTable, property);
 
-      _resolver.ResolveMemberExpression (memberExpression, _generator);
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+
+      Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
+      Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
+      Assert.That (sqlEntityRefMemberExpression.SqlTable, Is.SameAs (_customerTable));
     }
 
     [Test]

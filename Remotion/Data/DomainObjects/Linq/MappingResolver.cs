@@ -112,10 +112,10 @@ namespace Remotion.Data.DomainObjects.Linq
       columns.Add (timestampColumn);
 
       var propertyColumns = from pd in classDefinition.GetPropertyDefinitions().GetAllPersistent()
-                 where !string.IsNullOrEmpty (pd.StorageSpecificName)
-                 select new SqlColumnExpression (pd.PropertyType, tableAlias, pd.StorageSpecificName);
-      columns.AddRange (propertyColumns);     
-     
+                            where !string.IsNullOrEmpty (pd.StorageSpecificName)
+                            select new SqlColumnExpression (pd.PropertyType, tableAlias, pd.StorageSpecificName);
+      columns.AddRange (propertyColumns);
+
       return new SqlEntityExpression (tableReferenceExpression.Type, primaryKeyColumn, columns.ToArray());
     }
 
@@ -130,18 +130,18 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.GetType(), tableAlias, "ID");
 
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+      Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
+      if (relationData != null)
+        return new SqlEntityRefMemberExpression (memberExpression.SqlTable, property);
+
       var classDefinition = GetClassDefinition (property.DeclaringType);
       if (classDefinition == null)
       {
-        string message = string.Format ("The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
+        string message = string.Format (
+            "The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
-      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-
-      // TODO Review 2439: This does not work for 1:1 properties when the propery is the non-foreign key side. For example: Order.OrderTicket.
-      // TODO Review 2439: At the non-key side, there is no property definition. However, there's a relation definition.
-      // TODO Review 2439: Add a test with Employee.Computer - it should fail. Then, change code to first try to get the relation data (GetRelationData). If this succeeds, return a SqlEntityRefMemberExpression.
-      // TODO Review 2439: If it doesn't, try to get the property definition. If there is no property definition at this point, throw the exception. Otherwise, return a SqlColumnExpression.
 
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
       var propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
@@ -153,10 +153,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      if (propertyDefinition.IsObjectID)
-        return new SqlEntityRefMemberExpression (memberExpression.SqlTable, property);
-      else
-        return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName);
+      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName);
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
