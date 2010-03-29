@@ -63,7 +63,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         throw new ClientTransactionsDifferException (message);
       }
 
-      Assertion.IsTrue (transaction.IsEnlisted (domainObject), "Guaranteed by CanBeUsedInTransaction");
       return true;
     }
 
