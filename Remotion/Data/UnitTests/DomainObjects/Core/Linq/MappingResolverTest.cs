@@ -128,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).ItemType, Is.EqualTo (typeof(Order)));
 
       // TODO Review 2439: also test types and aliases of key columns
-      Assert.That (resolvedJoinInfo.PrimaryColumn.ColumnName, Is.EqualTo ("ID"));
-      Assert.That (resolvedJoinInfo.ForeignColumn.ColumnName, Is.EqualTo ("CustomerID"));
+      Assert.That (resolvedJoinInfo.LeftKeyColumn.ColumnName, Is.EqualTo ("ID"));
+      Assert.That (resolvedJoinInfo.RightKeyColumn.ColumnName, Is.EqualTo ("CustomerID"));
     }
 
     // TODO Review 2439: Also test with Order.OrderNumber

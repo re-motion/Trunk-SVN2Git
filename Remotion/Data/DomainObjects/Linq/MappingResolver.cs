@@ -22,7 +22,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
@@ -76,8 +75,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var alias = generator.GetUniqueIdentifier ("t");
       var resolvedSimpleTableInfo = new ResolvedSimpleTableInfo (
-          rightEndPoint.ClassDefinition.ClassType, 
-          rightEndPoint.ClassDefinition.GetViewName(), 
+          rightEndPoint.ClassDefinition.ClassType,
+          rightEndPoint.ClassDefinition.GetViewName(),
           alias);
 
       var leftKey = new SqlColumnExpression (keyType, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
@@ -99,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo ().TableAlias;
+      var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
@@ -111,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var timestampColumn = new SqlColumnExpression (timestampPropertyInfo.PropertyType, tableAlias, timestampPropertyInfo.Name);
 
       var columns = new List<SqlColumnExpression>();
-      
+
       columns.Add (primaryKeyColumn);
       columns.Add (classIDColumn);
       columns.Add (timestampColumn);
@@ -149,8 +148,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
       if (classDefinition == null)
       {
-        // TODO Review 2439: Change to "The type '{0}' declaring member '{1}' does not ..."
-        string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
+        string message = string.Format (
+            "The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
 
@@ -166,8 +165,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (propertyDefinition == null)
       {
-        // TODO Review 2439: Change to: "The member '{0}.{1}' does not have a queryable database mapping."
-        string message = string.Format ("The member type '{0}' does not identify a queryable table.", property.DeclaringType.Name);
+        string message = string.Format (
+            "The member '{0}.{1}' does not have a queryable database mapping.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
 
