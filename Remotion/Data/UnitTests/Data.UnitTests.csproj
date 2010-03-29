@@ -271,6 +271,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqPropertyRedirectionAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryExecutorTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExpressionTreeComparer.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
