@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Collections;
@@ -38,17 +39,14 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("tableInfo", tableInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableInfo.ItemType];
+      var classDefinition = GetClassDefinition (tableInfo.ItemType);
       if (classDefinition == null)
       {
-        string message = string.Format ("The item type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
+        string message = string.Format ("The type '{0}' does not identify a queryable table.", tableInfo.ItemType.Name);
         throw new UnmappedItemException (message);
       }
-      else
-      {
-        var viewName = classDefinition.GetViewName();
-        return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
-      }
+      var viewName = classDefinition.GetViewName();
+      return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
     }
 
     public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
@@ -90,14 +88,12 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[tableReferenceExpression.SqlTable.ItemType];
-
+      var classDefinition = GetClassDefinition (tableReferenceExpression.Type);
       if (classDefinition == null)
       {
-        string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.SqlTable.ItemType.Name);
+        string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.Type.Name);
         throw new UnmappedItemException (message);
       }
-
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
@@ -115,22 +111,12 @@ namespace Remotion.Data.DomainObjects.Linq
       columns.Add (classIDColumn);
       columns.Add (timestampColumn);
 
-      // TODO Review 2439: Use a LINQ expression to get the sql columns, use AddRange to add them to the list of columns
-
-      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
-      {
-        //TODO 2439 test
-        // TODO Review 2439: To test this, use a Computer table reference.
-        if (propertyDefinition.StorageClass == StorageClass.Persistent)
-        {
-          var storageSpecificName = propertyDefinition.StorageSpecificName;
-          if (!string.IsNullOrEmpty (storageSpecificName))
-            columns.Add (new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, storageSpecificName));
-        }
-      }
-
-      // TODO Review 2439: Use tableReferenceExpression.Type instead of tableReferenceExpression.SqlTable.ItemType, it's the same, but faster
-      return new SqlEntityExpression (tableReferenceExpression.SqlTable.ItemType, primaryKeyColumn, columns.ToArray());
+      var propertyColumns = from pd in classDefinition.GetPropertyDefinitions().GetAllPersistent()
+                 where !string.IsNullOrEmpty (pd.StorageSpecificName)
+                 select new SqlColumnExpression (pd.PropertyType, tableAlias, pd.StorageSpecificName);
+      columns.AddRange (propertyColumns);     
+     
+      return new SqlEntityExpression (tableReferenceExpression.Type, primaryKeyColumn, columns.ToArray());
     }
 
     public Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
@@ -144,15 +130,12 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.GetType(), tableAlias, "ID");
 
-      // TODO Review 2439: Extract a method for these lookups, they occur in nearly every member of this class
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
+      var classDefinition = GetClassDefinition (property.DeclaringType);
       if (classDefinition == null)
       {
-        string message = string.Format (
-            "The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
+        string message = string.Format ("The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
-
       var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
 
       // TODO Review 2439: This does not work for 1:1 properties when the propery is the non-foreign key side. For example: Order.OrderTicket.
@@ -205,6 +188,11 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
       else
         return Tuple.Create (relationDefinition, classDefinition, propertyIdentifier);
+    }
+
+    private ClassDefinition GetClassDefinition (Type type)
+    {
+      return MappingConfiguration.Current.ClassDefinitions[type];
     }
 
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
