@@ -33,12 +33,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>Returns <see langword="true"/> if the method succeeds without throwing an exception. This return value is available so that the 
     /// method can be used from within an expression.</returns>
     /// <exception cref="ObjectDiscardedException">The object was discarded in the given <see cref="ClientTransaction"/>.</exception>
-    public static bool CheckIfObjectIsDiscarded (DomainObject domainObject, ClientTransaction transaction)
+    public static void CheckIfObjectIsDiscarded (DomainObject domainObject, ClientTransaction transaction)
     {
       if (domainObject.TransactionContext[transaction].IsDiscarded)
         throw new ObjectDiscardedException (domainObject.ID);
-
-      return true;
     }
 
     /// <summary>
@@ -51,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>Returns <see langword="true"/> if the method succeeds without throwing an exception. This return value is available so that the 
     /// method can be used from within an expression.</returns>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
-    public static bool CheckIfRightTransaction (DomainObject domainObject, ClientTransaction transaction)
+    public static void CheckIfRightTransaction (DomainObject domainObject, ClientTransaction transaction)
     {
       if (!transaction.IsEnlisted (domainObject))
       {
@@ -62,8 +60,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             domainObject.ID);
         throw new ClientTransactionsDifferException (message);
       }
-
-      return true;
     }
 
     [Obsolete ("This method has been removed. Use DomainObject.DefaultTransactionContext.ClientTransaction instead. (1.13.41)", true)]

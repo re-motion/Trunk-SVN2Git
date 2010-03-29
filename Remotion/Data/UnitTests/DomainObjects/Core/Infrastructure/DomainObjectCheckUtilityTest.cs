@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -32,8 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var order = Order.NewObject ();
 
-      var result = DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
-      Assert.That (result, Is.True);
+      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
     }
 
     [Test]
@@ -50,8 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var order = Order.NewObject ();
 
-      var result = DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
-      Assert.That (result, Is.True);
+      DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
     }
 
     [Test]
