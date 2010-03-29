@@ -3,7 +3,8 @@ div.bocList
 {
   display: block;
   position: relative;
-  min-height: 3em;
+  min-height: 10em;
+  width: 1000px;
 }
 
 /* Style applied to the BocList in read-only mode. */
@@ -24,6 +25,12 @@ div.bocList.hasWidth div.bocListTableBlock div.bocListTable
   bottom: 0;
   right: 0;
   overflow: auto;
+}
+
+div.bocList.hasHeight div.bocListTableBlock,
+div.bocList.hasWidth div.bocListTableBlock
+{
+  right: 10em; /* width of BocList menu block + some space */
 }
 
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */

@@ -109,16 +109,32 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  BocList_CheckWidthHeightStyle(bocList); 
+  BocList_CheckWidthHeightStyle(bocList);
+
+
+  // ***** START Temporary code (Remove this code after implementation in backend of "Fake Header") ***** //  
+  // initiate cloning of table header
+  var thisTable = $(bocList).find('table').eq(1);
+  setTimeout(function() {
+      thisTable.floatHeader({
+          parentElement: $(bocList).find('div.bocListTable')
+      });
+  }, 200);
+  // ***** END Temporary code (Remove this code after implementation in backend of "Fake Header") ***** //  
 }
 
 /*BocList_OnResize*/
 function BocList_CheckWidthHeightStyle(bocList) 
 {
-    var curr_width = parseInt(bocList.style.width) || 0;
+    var curr_width = parseInt($(bocList).css('width')) || 0;
     if (curr_width > 0) $(bocList).addClass('hasWidth');
-    var curr_height = parseInt(bocList.style.height) || 0;
-    if (curr_height > 0) $(bocList).addClass('hasHeight');
+    var curr_height = parseInt($(bocList).css('height')) || 0;
+    if (curr_height > 0) {
+        $(bocList).addClass('hasHeight');
+    } else {
+        // Set height of bocList based on parent
+        $(bocList).height($(bocList).parent().height());
+    }
 }
 
 
@@ -321,3 +337,198 @@ function BocList_GetSelectionCount (bocListID)
     return 0;
   return selectedRows.Length;
 }
+
+
+
+// ***** START Temporary code (Remove this code after implementation in backend of "Fake Header") ***** //  
+// jQuery floating table header plugin
+(function($) {
+    /**
+    * Clone the table header floating and binds its to the browser scrolling
+    * so that it will be displayed when the original table header is out of sight.
+    *
+    * @param config
+    *		An optional dictionary with configuration for the plugin.
+    *		
+    *		fadeOut		The length of the fade out animation in ms. Default: 250
+    *		faceIn		The length of the face in animation in ms. Default: 250
+    *		floatClass	The class of the div that contains the floating header. The style should
+    *					contain an appropriate z-index value. Default: 'floatHeader'
+    *		cbFadeOut	A callback that is called when the floating header should be faded out.
+    *					The method is called with the wrapped header as argument.
+    *		cbFadeIn	A callback that is called when the floating header should be faded in.
+    *					The method is called with the wrapped header as argument.
+    *
+    * @version 1.1.0
+    * @see http://slackers.se/2009/jquery-floating-header-plugin
+    */
+    $.fn.floatHeader = function(config) {
+        config = $.extend({
+            floatClass: 'floatHeader',
+            parentElement: ''
+        }, config);
+
+        return this.each(function() {
+            var self = $(this);
+            var table = self.clone();
+            table.empty();
+
+            // create the floating container
+            self.floatBox = $('<div class="' + config.floatClass + '"style="display:none"></div>');
+            self.floatBox.append(table);
+            self.floatBoxVisible = false;
+
+            // Fix for the IE resize handling
+            self.IEWindowWidth = document.documentElement.clientWidth;
+            self.IEWindowHeight = document.documentElement.clientHeight;
+
+            // create the table header
+            createHeader(table, self, config);
+            var scrollTimer = null;
+
+            // bind to the scroll event
+            $(config.parentElement).scroll(function() {
+
+
+                var headerCells = self.find('thead tr').children();
+                headerCells.each(function(index) {
+                    var cell = $(this);
+                    cell.attr('final_Width', cell.attr('clientWidth'));
+
+                });
+
+                var headerOutsideScreen = isHeaderOutsideScreen(self, this);
+                if (self.floatBoxVisible && !headerOutsideScreen) {
+                    // hide the floatbox			
+                    var offset = self.offset();
+                    self.floatBox.css({
+                        'position': 'absolute',
+                        'left': '0',
+                        'background-color': 'white',
+                        'white-space': 'nowrap',
+                        'top': $(this).scrollTop()
+                    });
+
+                    if (scrollTimer) clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(function() { fixHeaderPosition(containerDiv, scrollPosition) }, 200);
+
+                    self.floatBoxVisible = false;
+                    self.floatBox.hide();
+                } else if (headerOutsideScreen) {
+                    self.floatBoxVisible = true;
+
+                    // show the table header
+                    self.floatBox.show();
+
+                }
+
+                // if the box is visible update the position
+                if (self.floatBoxVisible) {
+                    self.floatBox.css({
+                        'position': 'absolute',
+                        'left': '0',
+                        'background-color': 'white',
+                        'white-space': 'nowrap',
+                        'top': $(this).scrollTop()
+                    });
+                }
+            });
+
+            /*
+            * Unfortunately IE gets rather stroppy with the non-IE version,
+            * constantly resizing, thus cooking your CPU with 100% usage whilst
+            * the browser crashes. So, test for IE and add additional code.
+            */
+            if ($.browser.msie && $.browser.version <= 8) {
+                $(window).resize(function() {
+                    // check if the window size has changed
+                    if (self.IEWindowWidth != document.documentElement.clientWidth ||
+						self.IEWindowHeight != document.documentElement.clientHeight) {
+                        // update the client width and height with the Microsoft version.
+                        self.IEWindowWidth = document.documentElement.clientWidth;
+                        self.IEWindowHeight = document.documentElement.clientHeight;
+                        table.empty();
+                        createHeader(table, self, config);
+                    }
+                });
+            } else {
+                // bind to the resize event
+                $(window).resize(function() {
+                    // recreate the table header
+                    table.empty();
+                    createHeader(table, self, config);
+                });
+            }
+
+            // append the floatBox to the dom
+            $(self).after(self.floatBox);
+
+            if ($.browser.safari) {
+                // fix for Safari
+                $(this).one('scroll', function() {
+                    table.empty();
+                    createHeader(table, self, config);
+                });
+            }
+        });
+    };
+
+    /**
+    * Copies the template table and inserts each element into target.
+    */
+    function createHeader(target, template, config) {
+        if (template.children('thead').length === 0) {
+            // the table contains no header
+            return;
+        }
+
+        var originalWidth = template.width() - 1;
+        target.width(originalWidth);
+
+        target.append('<thead>');
+        var items = template.children('thead').eq(0).children();
+
+        // store cell widths in array
+        var realTheadCellWidths = new Array();
+
+        // iterate though each row that should be floating
+        items.each(function() {
+            var row = $(this);
+            var floatRow = row.clone();
+            floatRow.empty();
+
+            // adjust the column width for each header cell
+            row.children().each(function(index) {
+                var cell = $(this);
+                cell.attr('finalWidth', cell.outerWidth());
+                var floatCell = cell.clone();
+
+                if ($.browser.msie) {
+                    realTheadCellWidths[index] = cell.width();
+                    //floatCell.css('padding', '0 0 0 0');
+                } else {
+                    realTheadCellWidths[index] = cell.outerWidth();
+                }
+                floatRow.append(floatCell);
+            });
+
+            // append the row to the table
+            target.children("thead").eq(0).append(floatRow);
+            // apply widths to fake header
+            $.each(realTheadCellWidths, function(index, item) {
+                target.children("thead").children().eq(0).children().eq(index).width(item);
+
+            });
+        });
+    }
+
+    /**
+    * Determines if the element is outside the browser view area.
+    */
+    function isHeaderOutsideScreen(element, parentElement) {
+        var top = $(parentElement).scrollTop();
+        var y0 = $(parentElement).offset().top;
+        return top <= $(element).height();
+    }
+})(jQuery);
+// ***** END Temporary code (Remove this code after implementation in backend of "Fake Header") ***** //  
