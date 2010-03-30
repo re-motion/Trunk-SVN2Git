@@ -25,5 +25,6 @@
 		<add id="ViewPersons" type="OBWTest::ViewPersonsWxeFunction" resource="ViewPersons.wxe"/>
 		<add id="IndividualControlTest" type="OBWTest::IndividualControlTests.TestFunction" resource="IndividualControlTest.wxe"/>
 		<add id="ViewLayoutTest" type="OBWTest::ViewLayoutTests.TestFunction" resource="ViewLayoutTest.wxe"/>
-		
+    <add id="ControlLayoutTest" type="OBWTest::ControlLayoutTests.TestFunction" resource="ControlLayoutTest.wxe"/>
+
 </urlMapping>

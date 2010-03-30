@@ -93,9 +93,16 @@
 <remotion:NavigationCommand Type="None"></remotion:NavigationCommand>
 </PersistedCommand>
 </remotion:MainMenuTab>
+
 <remotion:MainMenuTab Text="Tests for View Layout" ItemID="ViewLayoutTests">
 <persistedcommand>
 <remotion:navigationcommand Type="WxeFunction" WxeFunctionCommand-MappingID="ViewLayoutTest"></remotion:navigationcommand>
+</PersistedCommand>
+</remotion:MainMenuTab>
+
+<remotion:MainMenuTab Text="Tests for Control Layout Compatility" ItemID="ControlLayoutTests">
+<persistedcommand>
+<remotion:navigationcommand Type="WxeFunction" WxeFunctionCommand-MappingID="ControlLayoutTest"></remotion:navigationcommand>
 </PersistedCommand>
 </remotion:MainMenuTab>
 
