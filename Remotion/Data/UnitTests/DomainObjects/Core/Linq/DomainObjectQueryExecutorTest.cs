@@ -38,6 +38,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -616,7 +617,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       executorMock.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
-    // TODO Review 2404: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
+    // TODO Review 2404: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., 
+    //add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
 
     //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]

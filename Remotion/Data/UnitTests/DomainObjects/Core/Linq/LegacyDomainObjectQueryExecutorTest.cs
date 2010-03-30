@@ -536,31 +536,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
+        Assert.That (Mixin.Get<TestLegacyQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
       }
     }
 
     [Test]
     public void GetStatement_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Computer> (_sqlGenerator);
         var executor = queryable.GetExecutor();
 
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
         executor.CreateStatement (ParseQuery (query.Expression));
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).GetStatementCalled, Is.True);
+        Assert.That (Mixin.Get<TestLegacyQueryExecutorMixin> (executor).GetStatementCalled, Is.True);
       }
     }
 
     [Test]
     public void CreateQuery_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
         var executor = queryable.GetExecutor();
@@ -570,35 +570,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         CommandData statement = executor.CreateStatement(ParseQuery (query.Expression));
 
         executor.CreateQuery ("<dynamic query>", classDefinition.StorageProviderID, statement.Statement, statement.Parameters, QueryType.Collection);
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
+        Assert.That (Mixin.Get<TestLegacyQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
       }
     }
 
     [Test]
     public void CreateQueryFromModel_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
         var queryModel = ParseQuery (query.Expression);
         var executor = ObjectFactory.Create<LegacyDomainObjectQueryExecutor>(ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
+        Assert.That (Mixin.Get<TestLegacyQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
       }
     }
 
     [Test]
     public void CreateQueryFromModelWithClassDefinition_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
         var queryModel = ParseQuery (query.Expression);
         var executor = ObjectFactory.Create<LegacyDomainObjectQueryExecutor> (ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
+        Assert.That (Mixin.Get<TestLegacyQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
       }
     }
 

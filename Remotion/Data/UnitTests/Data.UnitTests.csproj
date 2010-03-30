@@ -274,6 +274,7 @@
     <Compile Include="DomainObjects\Core\Linq\ExpressionTreeComparer.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\MultiIDLookupCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />
@@ -358,7 +359,7 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\TestQueryable.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestLegacyQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetcherTest.cs" />

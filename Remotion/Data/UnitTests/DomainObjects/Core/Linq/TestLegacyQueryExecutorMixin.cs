@@ -14,20 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.EagerFetching;
-using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Mixins;
-using CommandParameter=Remotion.Data.Linq.SqlBackend.SqlGeneration.CommandParameter;
+using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
-  public class TestQueryExecutorMixin : Mixin<object, TestQueryExecutorMixin.IBaseCallRequirements>
+  public class TestLegacyQueryExecutorMixin : Mixin<object, TestLegacyQueryExecutorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements
     {
@@ -42,13 +40,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           ClassDefinition classDefinitionOfResult,
           string sortExpression);
 
-      SqlCommand CreateStatement (QueryModel queryModel);
+      CommandData CreateStatement (QueryModel queryModel);
     }
 
-    public bool CreateQueryCalled;
-    public bool CreateQueryFromModelCalled;
-    public bool CreateQueryFromModelWithClassDefinitionCalled;
-    public bool GetStatementCalled;
+    public bool CreateQueryCalled = false;
+    public bool CreateQueryFromModelCalled = false;
+    public bool CreateQueryFromModelWithClassDefinitionCalled = false;
+    public bool GetStatementCalled = false;
 
     [OverrideTarget]
     public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
@@ -78,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public SqlCommand CreateStatement (QueryModel queryModel)
+    public CommandData CreateStatement (QueryModel queryModel)
     {
       GetStatementCalled = true;
       return Base.CreateStatement (queryModel);
