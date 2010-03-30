@@ -110,31 +110,29 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   _bocList_selectedRows[bocList.id] = selectedRows;
 
   BocList_CheckWidthHeightStyle(bocList);
-}
+  BocList_syncCheckboxes(bocList);
 
-/*BocList_OnResize*/
-function BocList_CheckWidthHeightStyle(bocList) 
-{
-    var curr_width = parseInt($(bocList).css('width')) || 0;
-    if (curr_width > 0) $(bocList).addClass('hasWidth');
-    var curr_height = parseInt($(bocList).css('height')) || 0;
-    if (curr_height > 0) {
-        $(bocList).addClass('hasHeight');
-    } else {
-        // Set height of bocList when is not specified
-        var bocListTableDiv = $(bocList).find('div.bocListTable');
-        var bocListTableTable = bocListTableDiv.children().eq(0);
-        var bocListTableTableHeight = bocListTableTable.attr('scrollHeight');
-        var bocListNavigator = $(bocList).children().eq(1).children().eq(1);
-        var bocListNavigatorHeight = bocListNavigator.attr('scrollHeight');
-        var scrollHeight = 5;
-        // detect presence of horizontal scroll bar
-        var bocListTableDivWidth = bocListTableDiv.attr('offsetWidth');
-        var bocListTableDivScrollWidth = bocListTableDiv.attr('scrollWidth');
-        if (bocListTableDivScrollWidth > bocListTableDivWidth) 
-            scrollHeight = 20;
-        $(bocList).height(bocListTableTableHeight + bocListNavigatorHeight + scrollHeight);
-    }
+  //activateTableHeader only on first scroll
+  var scrollTimer = null;
+  var container = $(bocList).find('div.bocListTable');
+  container.bind('scroll', function(event)
+  {
+      var currentBocList = $(this);
+      BocList_activateTableHeader(currentBocList);
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() { BocList_fixHeaderPosition(currentBocList) }, 50);
+  });
+
+  //activateTableHeader on window resize
+  var resizeTimer = null;
+  $(window).bind('resize', function()
+  {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() { BocList_activateTableHeader(container); }, 50);
+
+      BocList_CheckWidthHeightStyle(bocList);
+
+  });
 }
 
 
@@ -337,3 +335,91 @@ function BocList_GetSelectionCount (bocListID)
     return 0;
   return selectedRows.Length;
 }
+
+function BocList_activateTableHeader(container)
+{
+    BocList_syncCheckboxes(container);
+
+    var cointainerChildrens = container.children();
+    var realThead = cointainerChildrens.eq(0).find('thead');
+    var realTheadRow = realThead.children().eq(0);
+    var realTheadRowChildrens = realTheadRow.children();
+
+    var fakeTableContainer = cointainerChildrens.eq(1);
+    var fakeThead = fakeTableContainer.find('thead');
+    var fakeTheadRow = fakeThead.children().eq(0);
+    var fakeTheadRowChildrens = fakeTheadRow.children();
+
+
+    // store cell widths in array
+    var realTheadCellWidths = new Array();
+
+    realTheadRowChildrens.each(function(index)
+    {
+        realTheadCellWidths[index] = $(this).width();
+    });
+
+    // apply widths to fake header
+    $.each(realTheadCellWidths, function(index, item)
+    {
+        fakeTheadRowChildrens.eq(index).width(item);
+    });
+
+    fakeTableContainer.width(realTheadRow.width());
+}
+
+function BocList_fixHeaderPosition(containerDiv)
+{
+    var bocListFakeTableHead = containerDiv.find('div.bocListFakeTableHead');
+    var scrollPosition = containerDiv.scrollTop();
+    if (scrollPosition == 0)
+    {
+        bocListFakeTableHead.hide();
+    } else
+    {
+        bocListFakeTableHead.show();
+    }
+    bocListFakeTableHead.css({ 'top': scrollPosition });
+}
+
+function BocList_syncCheckboxes(container)
+{
+    // sync checkboxes
+    var checkboxes = $(container).find("th input:checkbox");
+    checkboxes.click(function()
+    {
+        var checkName = $(this).attr('name');
+        var realCheckName = checkName.replace('_fake', '');
+        var checkStatus = $(this).attr('checked');
+        $('input[name*=' + realCheckName + ']').attr('checked', checkStatus);
+    });
+}
+
+/*BocList_OnResize*/
+function BocList_CheckWidthHeightStyle(bocList)
+{
+    var curr_width = parseInt($(bocList).css('width')) || 0;
+    if (curr_width > 0) $(bocList).addClass('hasWidth');
+    var curr_height = parseInt($(bocList).css('height')) || 0;
+    if (curr_height > 0)
+    {
+        $(bocList).addClass('hasHeight');
+    } else
+    {
+        // Set height of bocList when is not specified
+        var bocListTableDiv = $(bocList).find('div.bocListTable');
+        var bocListTableTable = bocListTableDiv.children().eq(0);
+        var bocListTableTableHeight = bocListTableTable.attr('scrollHeight');
+        var bocListNavigator = $(bocList).children().eq(1).children().eq(1);
+        var bocListNavigatorHeight = bocListNavigator.attr('scrollHeight');
+        var scrollHeight = 5;
+        // detect presence of horizontal scroll bar
+        var bocListTableDivWidth = bocListTableDiv.attr('offsetWidth');
+        var bocListTableDivScrollWidth = bocListTableDiv.attr('scrollWidth');
+        if (bocListTableDivScrollWidth > bocListTableDivWidth)
+            scrollHeight = 20;
+        $(bocList).height(bocListTableTableHeight + bocListNavigatorHeight + scrollHeight);
+    }
+}
+
+

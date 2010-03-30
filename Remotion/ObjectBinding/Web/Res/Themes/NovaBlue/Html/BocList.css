@@ -3,8 +3,9 @@ div.bocList
 {
     display: block;
     position: relative;
-    min-height: 10em;
-    width: auto; /* give it a value to make bocList scrollable  */
+    min-height: 3em;
+    height: 10em;
+    width: 100%; /* give it a value to make bocList scrollable  */
 }
 
 /* Style applied to the BocList in read-only mode. */
@@ -90,7 +91,8 @@ div.bocListTable
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
-table.bocListTable
+table.bocListTable,
+div.bocListFakeTableHead table
 {
     width: 100%;
     border-collapse: collapse;
@@ -113,7 +115,7 @@ th.bocListTitleCell
     border-right: none;
     border-left: none;
     border-bottom: 1px solid #002e46;
-
+    background-color: white;
     white-space: nowrap;
 }
 
@@ -311,4 +313,17 @@ div.bocListEditModeValidationMessage
 div.bocListFakeTableHead
 {
     display: none;
+    position: absolute;
+    top: 0;
+    left: -1px;
+    right: 0;
+    margin: 0;
+    padding:0;
 }
+
+/* modern browsers only (IE8+, Safari, Chrome, FF) */
+html>/**/body div.bocListFakeTableHead
+{
+    left: 0;
+    left: -1px\9;/*IE8*/
+} 
