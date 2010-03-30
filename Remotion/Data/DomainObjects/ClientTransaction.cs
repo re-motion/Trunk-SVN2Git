@@ -1275,7 +1275,6 @@ public abstract class ClientTransaction : IDataSource
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
-    Assertion.IsTrue (_enlistedObjectManager.IsEnlisted (domainObject), "Guaranteed by CheckIfRightTransaction.");
 
     EnsureDataAvailable (domainObject.ID);
     
