@@ -4,8 +4,7 @@ div.bocList
     display: block;
     position: relative;
     min-height: 3em;
-    height: 10em;
-    width: 100%; /* give it a value to make bocList scrollable  */
+    width: auto; /* give it a value to make bocList scrollable  */
 }
 
 /* Style applied to the BocList in read-only mode. */
