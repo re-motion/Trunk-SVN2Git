@@ -16,11 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
@@ -28,12 +31,8 @@ using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Logging;
 using Remotion.Utilities;
-using System.Reflection;
-using System.Linq;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -42,19 +41,39 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor)); // TODO Review 2440: Invalid logger type
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (DomainObjectQueryExecutor));
+    private readonly ISqlPreparationStage _preparationStage;
+    private readonly IMappingResolutionStage _resolutionStage;
+    private readonly ISqlGenerationStage _generationStage;
+    private readonly SqlPreparationContext _context;
 
-    // TODO Review 2440: Parameterize with stages
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
     /// </summary>
     /// <param name="startingClassDefinition">The <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started 
     /// with. This determines the <see cref="StorageProvider"/> used for the query.</param>
-    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition)
+    /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
+    /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
+    /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
+    /// <param name="context">The <see cref="SqlPreparationContext"/> is a helper class for mapping.</param>
+    public DomainObjectQueryExecutor (
+        ClassDefinition startingClassDefinition,
+        ISqlPreparationStage preparationStage,
+        IMappingResolutionStage resolutionStage,
+        ISqlGenerationStage generationStage,
+        SqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
+      ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
+      ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
+      ArgumentUtility.CheckNotNull ("generationStage", generationStage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       StartingClassDefinition = startingClassDefinition;
+      _generationStage = generationStage;
+      _resolutionStage = resolutionStage;
+      _preparationStage = preparationStage;
+      _context = context;
     }
 
     public ClassDefinition StartingClassDefinition { get; private set; }
@@ -100,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var sequence = ExecuteCollection<T> (queryModel);
 
       if (returnDefaultWhenEmpty)
-        return sequence.SingleOrDefault ();
+        return sequence.SingleOrDefault();
       else
         return sequence.Single();
     }
@@ -125,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var groupResultOperator = queryModel.ResultOperators.OfType<GroupResultOperator>().FirstOrDefault();
       if (groupResultOperator != null)
       {
-        if (fetchQueryModelBuilders.Any ())
+        if (fetchQueryModelBuilders.Any())
         {
           var message = "Cannot execute a query with a GroupBy clause that specifies fetch requests because GroupBy is simulated in-memory.";
           throw new NotSupportedException (message);
@@ -156,7 +175,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (queryModel.ResultOperators[lastResultOperatorIndex] != groupResultOperator)
       {
         var message = "Cannot execute a query with a GroupBy clause that contains other result operators after the GroupResultOperator because "
-            + "GroupBy is simulated in-memory.";
+                      + "GroupBy is simulated in-memory.";
         throw new NotSupportedException (message);
       }
 
@@ -178,7 +197,8 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType)
+    public virtual IQuery CreateQuery (
+        string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -201,27 +221,49 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression)
+    protected virtual IQuery CreateQuery (
+        string id,
+        QueryModel queryModel,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
+        QueryType queryType,
+        ClassDefinition classDefinitionOfResult,
+        string sortExpression)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      // TODO Review 2440: Add a single public virtual CreateSqlCommand method that calls TransformAndResolve and CreateSqlCommand in order to support the same extensibility points as the legacy executor
-      SqlStatement sqlStatement = TransformAndResolveQueryModel (queryModel);
+      CheckStreamedDataInfo (queryModel);
+      var command = CreateSqlCommand (queryModel);
 
-      CheckProjection (sqlStatement.SelectProjection); // TODO Review 2440: Change to check queryModel instead of projection (see below) and move up to before TransformAndResolve is called
-      SqlCommand command = CreateSqlCommand (sqlStatement);
-      
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = command.CommandText;
-      // TODO Review 2440: sortExpression handling is missing - this is required when eager fetching is used; see LegacyDomainObjectQueryExecutor
-     
+      if (!string.IsNullOrEmpty (sortExpression))
+      {
+        Assertion.IsFalse (
+            queryModel.BodyClauses.OfType<OrderByClause>().Any(),
+            "We assume that fetch request query models cannot have OrderBy clauses.");
+        statement = statement + " ORDER BY " + sortExpression;
+      }
+
       var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, command.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;
+    }
+
+    /// <summary>
+    /// Creates a sql query from a given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated.</param>
+    /// <returns></returns>
+    public SqlCommand CreateSqlCommand (QueryModel queryModel)
+    {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
+      var sqlStatement = TransformAndResolveQueryModel (queryModel);
+      return CreateSqlCommand (sqlStatement);
     }
 
     /// <summary>
@@ -233,14 +275,15 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="commandParameters">The parameters of the sql statement.</param>
     /// <param name="queryType">The type of query to create.</param>
     /// <returns>A <see cref="IQuery"/> object.</returns>
-    public virtual IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
+    public virtual IQuery CreateQuery (
+        string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
 
-      var queryParameters = new QueryParameterCollection ();
+      var queryParameters = new QueryParameterCollection();
       foreach (CommandParameter commandParameter in commandParameters)
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
@@ -254,13 +297,15 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
       {
-        IRelationEndPointDefinition relationEndPointDefinition = 
+        IRelationEndPointDefinition relationEndPointDefinition =
             GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, classDefinition);
 
         string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
 
-        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ().Clone(); // clone because we don't want to modify the source model of all inner requests
-        fetchQueryModel.ResultOperators.Add (new DistinctResultOperator ()); // fetch queries should always be distinct even when the query would return duplicates
+        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel().Clone();
+        // clone because we don't want to modify the source model of all inner requests
+        fetchQueryModel.ResultOperators.Add (new DistinctResultOperator());
+        // fetch queries should always be distinct even when the query would return duplicates
 
         var fetchQuery = CreateQuery (
             "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
@@ -270,7 +315,7 @@ namespace Remotion.Data.DomainObjects.Linq
             relationEndPointDefinition.GetOppositeClassDefinition(),
             sortExpression);
 
-          query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+        query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
     }
 
@@ -294,7 +339,7 @@ namespace Remotion.Data.DomainObjects.Linq
       catch (MappingException ex)
       {
         var message = string.Format (
-            "The property '{0}' is not a relation end point. Fetching it is not supported by this LINQ provider.", 
+            "The property '{0}' is not a relation end point. Fetching it is not supported by this LINQ provider.",
             propertyName);
         throw new NotSupportedException (message, ex);
       }
@@ -309,18 +354,25 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
-    // TODO Review 2440: Change this method to check that: queryModel.GetOutputDataInfo() is StreamedScalarValueInfo - or - StreamedSingleValueInfo and typeof (DomainObject).IsAssignableFrom (valueinfo.DataType) - or - StreamedSequenceInfo and typeof (DomainObject).IsAssignableFrom (sequenceInfo.ItemExpression).
-    private void CheckProjection (Expression selectProjection)
+    private void CheckStreamedDataInfo (QueryModel queryModel)
     {
-      if (selectProjection is SqlColumnExpression)
-      {
-        // TODO Review 2440: Change to "This query provider does not support the given query ('[use queryModel here]'). re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects."
-        string message = string.Format (
-            "This query provider does not support the given select projection ('{0}'). The projection must select "
-            + "single DomainObject instances, because re-store does not support this kind of select projection.",
-            selectProjection.Type.Name);
-        throw new InvalidOperationException (message); // TODO Review 2440: Throw NotSupportedException instead.
-      }
+      var streamedScalarValueInfo = queryModel.GetOutputDataInfo() as StreamedScalarValueInfo;
+      if (streamedScalarValueInfo != null)
+        return;
+
+      var streamedSingleValueInfo = queryModel.GetOutputDataInfo() as StreamedSingleValueInfo;
+      if (streamedSingleValueInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSingleValueInfo.DataType))
+        return;
+
+      var streamedSequenceInfo = queryModel.GetOutputDataInfo() as StreamedSequenceInfo;
+      if (streamedSequenceInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSequenceInfo.ItemExpression.Type))
+        return;
+
+      string message = string.Format (
+          "This query provider does not support the given query ('{0}'). "
+          + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
+          queryModel);
+      throw new NotSupportedException (message);
     }
 
     /// <summary>
@@ -333,40 +385,39 @@ namespace Remotion.Data.DomainObjects.Linq
         if (fetchQueryModelBuilder.ResultOperatorPosition < fetchQueryModelBuilder.SourceItemQueryModel.ResultOperators.Count)
         {
           string message = "This query provider does not support result operators occurring after fetch requests. The objects on which the fetching "
-              + "is performed must be the same objects that are returned from the query. Rewrite the query to perform the fetching after applying "
-              + "all other result operators or call AsEnumerable after the last fetch request in order to execute all subsequent result operators in "
-              + "memory.";
+                           +
+                           "is performed must be the same objects that are returned from the query. Rewrite the query to perform the fetching after applying "
+                           +
+                           "all other result operators or call AsEnumerable after the last fetch request in order to execute all subsequent result operators in "
+                           + "memory.";
           throw new InvalidOperationException (message);
         }
       }
     }
 
-    // TODO Review 2440: Add documentation before closing task.
-    //TODO: add comment
+    /// <summary>
+    /// Transforms and resolves <see cref="QueryModel"/> to build a <see cref="SqlStatement"/> which represents an AST to generate query text.
+    /// </summary>
+    /// <param name="queryModel">The <see cref="QueryModel"/> which should be transformed.</param>
+    /// <returns>the generated <see cref="SqlStatement"/></returns>
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
-      var preparationContext = new SqlPreparationContext ();
-      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
-      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (
-          queryModel,
-          preparationContext,
-          new DefaultSqlPreparationStage (preparationContext, uniqueIdentifierGenerator));
+      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, _preparationStage);
 
-      var resolver = new MappingResolver ();
-      var mappingResolutionStage = new DefaultMappingResolutionStage (resolver, uniqueIdentifierGenerator);
-      mappingResolutionStage.ResolveSqlStatement (sqlStatement);
-      
+      _resolutionStage.ResolveSqlStatement (sqlStatement);
+
       return sqlStatement;
     }
 
-    // TODO Review 2440: Make protected virtual. Add documentation before closing task.
-    //TODO: add comment
-    private SqlCommand CreateSqlCommand (SqlStatement sqlStatement)
+    /// <summary>
+    /// Creates sql text based on a given <see cref="SqlStatement"/>.
+    /// </summary>
+    /// <param name="sqlStatement">The <see cref="SqlStatement"/> a sql query has to be generated.</param>
+    /// <returns><see cref="SqlCommand"/> which represents the sql query.</returns>
+    protected virtual SqlCommand CreateSqlCommand (SqlStatement sqlStatement)
     {
-      var commandBuilder = new SqlCommandBuilder ();
-      var sqlGenerationStage = new DefaultSqlGenerationStage ();
-      sqlGenerationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement,SqlExpressionContext.ValueRequired);
-
+      var commandBuilder = new SqlCommandBuilder();
+      _generationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
       return commandBuilder.GetCommand();
     }
   }

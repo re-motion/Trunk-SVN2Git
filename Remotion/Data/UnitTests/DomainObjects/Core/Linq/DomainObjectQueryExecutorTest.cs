@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
@@ -24,17 +25,18 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -51,24 +53,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
     private DomainObjectQueryExecutor _companyExecutor;
+    private DefaultSqlPreparationStage _preparationStage;
+    private DefaultMappingResolutionStage _resolutionStage;
+    private DefaultSqlGenerationStage _generationStage;
+    private SqlPreparationContext _context;
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       _computerClassDefinition = DomainObjectIDs.Computer1.ClassDefinition;
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _customerClassDefinition = DomainObjectIDs.Customer1.ClassDefinition;
       _companyClassDefinition = DomainObjectIDs.Company1.ClassDefinition;
-      _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition);
-      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition);
-      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition);
-      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition);
+
+      var resolver = new MappingResolver();
+      var generator = new UniqueIdentifierGenerator();
+      _context = new SqlPreparationContext();
+      _preparationStage = new DefaultSqlPreparationStage (_context, generator);
+      _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
+      _generationStage = new DefaultSqlGenerationStage();
+
+      _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
     }
 
     [Test]
     public void ExecuteScalar ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Count ());
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() select computer).Count());
       QueryModel model = ParseQuery (expression);
 
       var count = _computerExecutor.ExecuteScalar<int> (model);
@@ -79,10 +93,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteScalar_NoCurrentTransaction ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Count ());
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() select computer).Count());
       QueryModel model = ParseQuery (expression);
 
-      using (ClientTransactionScope.EnterNullScope ())
+      using (ClientTransactionScope.EnterNullScope())
       {
         _computerExecutor.ExecuteScalar<int> (model);
       }
@@ -91,8 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteScalar_WithFetches ()
     {
-      var expression = ExpressionHelper.MakeExpression (() =>
-          (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
+      var expression = ExpressionHelper.MakeExpression (
+          () =>
+          (from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order).Count());
       QueryModel queryModel = ParseQuery (expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
@@ -102,29 +117,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           "test",
           DomainObjectIDs.Order1.StorageProviderID,
           "SELECT COUNT(*) FROM [Order] [o] WHERE [o].[OrderNo] = 1",
-          new QueryParameterCollection ());
+          new QueryParameterCollection());
 
-      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_orderClassDefinition);
+      var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
       executorMock
-          .Expect (mock => mock.CreateQuery (
-              Arg<string>.Is.Anything,
-              Arg.Is (queryModel),
-              Arg<IEnumerable<FetchQueryModelBuilder>>.Matches (rs => rs.Count () == 1 && rs.Single ().FetchRequest == fetchRequest),
-              Arg.Is (QueryType.Scalar)))
+          .Expect (
+          mock => mock.CreateQuery (
+                      Arg<string>.Is.Anything,
+                      Arg.Is (queryModel),
+                      Arg<IEnumerable<FetchQueryModelBuilder>>.Matches (rs => rs.Count() == 1 && rs.Single().FetchRequest == fetchRequest),
+                      Arg.Is (QueryType.Scalar)))
           .Return (mockQuery);
 
-      executorMock.Replay ();
+      executorMock.Replay();
 
       var result = executorMock.ExecuteScalar<int> (queryModel);
       Assert.That (result, Is.EqualTo (1));
 
-      executorMock.VerifyAllExpectations ();
+      executorMock.VerifyAllExpectations();
     }
 
     [Test]
     public void ExecuteSingle ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
+      var expression =
+          ExpressionHelper.MakeExpression (
+              () => (from computer in QueryFactory.CreateLinqQuery<Computer>() orderby computer.ID select computer).First());
       QueryModel model = ParseQuery (expression);
 
       var result = _computerExecutor.ExecuteSingle<Computer> (model, true);
@@ -135,10 +154,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteSingle_NoCurrentTransaction ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
+      var expression =
+          ExpressionHelper.MakeExpression (
+              () => (from computer in QueryFactory.CreateLinqQuery<Computer>() orderby computer.ID select computer).First());
       QueryModel model = ParseQuery (expression);
 
-      using (ClientTransactionScope.EnterNullScope ())
+      using (ClientTransactionScope.EnterNullScope())
       {
         _computerExecutor.ExecuteSingle<int> (model, true);
       }
@@ -147,7 +168,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteSingle_DefaultIfEmpty_True ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () where false select computer).First ());
+      var expression =
+          ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() where false select computer).First());
       QueryModel model = ParseQuery (expression);
 
       var result = _computerExecutor.ExecuteSingle<Computer> (model, true);
@@ -159,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteSingle_DefaultIfEmpty_False ()
     {
       var expression =
-          ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () where false select computer).First ());
+          ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() where false select computer).First());
       QueryModel model = ParseQuery (expression);
 
       _computerExecutor.ExecuteSingle<Computer> (model, false);
@@ -168,30 +190,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteCollection ()
     {
-      var query = from computer in QueryFactory.CreateLinqQuery<Computer> () select computer;
+      var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
       QueryModel model = ParseQuery (query.Expression);
 
       IEnumerable<Computer> computers = _computerExecutor.ExecuteCollection<Computer> (model);
 
-      var computerList = new ArrayList ();
+      var computerList = new ArrayList();
       foreach (Computer computer in computers)
         computerList.Add (computer);
 
       var expected = new[]
-                            {
-                                Computer.GetObject (DomainObjectIDs.Computer1),
-                                Computer.GetObject (DomainObjectIDs.Computer2),
-                                Computer.GetObject (DomainObjectIDs.Computer3),
-                                Computer.GetObject (DomainObjectIDs.Computer4),
-                                Computer.GetObject (DomainObjectIDs.Computer5),
-                            };
-      Assert.That (computerList.ToArray (), Is.EquivalentTo (expected));
+                     {
+                         Computer.GetObject (DomainObjectIDs.Computer1),
+                         Computer.GetObject (DomainObjectIDs.Computer2),
+                         Computer.GetObject (DomainObjectIDs.Computer3),
+                         Computer.GetObject (DomainObjectIDs.Computer4),
+                         Computer.GetObject (DomainObjectIDs.Computer5),
+                     };
+      Assert.That (computerList.ToArray(), Is.EquivalentTo (expected));
     }
 
     [Test]
     public void ExecuteCollection_WithFetches ()
     {
-      var query = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       QueryModel queryModel = ParseQuery (query.Expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
@@ -201,34 +223,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           "test",
           DomainObjectIDs.Order1.StorageProviderID,
           "SELECT [o].* FROM [Order] [o] WHERE [o].[OrderNo] = 1",
-          new QueryParameterCollection (),
+          new QueryParameterCollection(),
           typeof (DomainObjectCollection));
 
-      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_orderClassDefinition);
+      var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
       executorMock
-          .Expect (mock => mock.CreateQuery (
-              Arg<string>.Is.Anything,
-              Arg.Is (queryModel),
-              Arg<IEnumerable<FetchQueryModelBuilder>>.Matches (rs => rs.Count () == 1 && rs.Single ().FetchRequest == fetchRequest),
-              Arg.Is (QueryType.Collection)))
+          .Expect (
+          mock => mock.CreateQuery (
+                      Arg<string>.Is.Anything,
+                      Arg.Is (queryModel),
+                      Arg<IEnumerable<FetchQueryModelBuilder>>.Matches (rs => rs.Count() == 1 && rs.Single().FetchRequest == fetchRequest),
+                      Arg.Is (QueryType.Collection)))
           .Return (mockQuery);
 
-      executorMock.Replay ();
+      executorMock.Replay();
 
-      var orders = executorMock.ExecuteCollection<Order> (queryModel).ToArray ();
+      var orders = executorMock.ExecuteCollection<Order> (queryModel).ToArray();
       Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1) }));
 
-      executorMock.VerifyAllExpectations ();
+      executorMock.VerifyAllExpectations();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteCollection_NoCurrentTransaction ()
     {
-      var query = from computer in QueryFactory.CreateLinqQuery<Computer> () select computer;
+      var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
       QueryModel model = ParseQuery (query.Expression);
 
-      using (ClientTransactionScope.EnterNullScope ())
+      using (ClientTransactionScope.EnterNullScope())
       {
         _computerExecutor.ExecuteCollection<Computer> (model);
       }
@@ -237,19 +261,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteCollection_ExecutesGroupByInMemory ()
     {
-      var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
+      var query = from computer in QueryFactory.CreateLinqQuery<Computer>() group computer by computer;
       QueryModel model = ParseQuery (query.Expression);
 
-      var computers = _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model).ToArray ();
+      var computers = _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model).ToArray();
       Assert.That (computers.Length, Is.EqualTo (5));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot execute a query with a GroupBy clause that specifies fetch requests "
-        + "because GroupBy is simulated in-memory.")]
+    [ExpectedException (typeof (NotSupportedException),
+        ExpectedMessage = "Cannot execute a query with a GroupBy clause that specifies fetch requests "
+                          + "because GroupBy is simulated in-memory.")]
     public void ExecuteCollection_WithGroupBy_WithFetchRequests ()
     {
-      var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
+      var query = from computer in QueryFactory.CreateLinqQuery<Computer>() group computer by computer;
       QueryModel queryModel = ParseQuery (query.Expression);
 
       var relationMember = typeof (IGrouping<Computer, Computer>).GetProperty ("Key");
@@ -259,26 +284,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore("TODO: Implement support for Cast")]
+    [Ignore ("TODO: Implement support for Cast")]
     public void ExecuteCollection_WithGroupBy_WithOtherOperators_Before ()
     {
-      var query = (from company1 in QueryFactory.CreateLinqQuery<Company> ()
-                   from company2 in QueryFactory.CreateLinqQuery<Company> ()
+      var query = (from company1 in QueryFactory.CreateLinqQuery<Company>()
+                   from company2 in QueryFactory.CreateLinqQuery<Company>()
                    where company1.ID == DomainObjectIDs.Partner1
-                   select company1).Distinct ().Cast<Partner> ().GroupBy (p => p, p => p.ContactPerson);
+                   select company1).Distinct().Cast<Partner>().GroupBy (p => p, p => p.ContactPerson);
       QueryModel model = ParseQuery (query.Expression);
 
-      var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model).ToArray ();
+      var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model).ToArray();
       Assert.That (partners.Length, Is.EqualTo (1));
-      Assert.That (partners.First ().Key.ID, Is.EqualTo (DomainObjectIDs.Partner1));
+      Assert.That (partners.First().Key.ID, Is.EqualTo (DomainObjectIDs.Partner1));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot execute a query with a GroupBy clause that contains other result "
-        + "operators after the GroupResultOperator because GroupBy is simulated in-memory.")]
+                                                                          +
+                                                                          "operators after the GroupResultOperator because GroupBy is simulated in-memory."
+        )]
     public void ExecuteCollection_WithGroupBy_WithOtherOperators_After ()
     {
-      var query = (from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer).Distinct ();
+      var query = (from computer in QueryFactory.CreateLinqQuery<Computer>() group computer by computer).Distinct();
       QueryModel model = ParseQuery (query.Expression);
 
       _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model);
@@ -287,7 +314,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteScalar_WithParameters ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
+      var expression =
+          ExpressionHelper.MakeExpression (
+              () => (from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order).Count());
       QueryModel model = ParseQuery (expression);
 
       var count = _orderExecutor.ExecuteScalar<int> (model);
@@ -296,23 +325,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore("TODO 2404 problem - missing column")]
+    [Ignore ("TODO 2404 problem - missing column")]
     public void ExecuteCollection_WithParameters ()
     {
-      var query = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       QueryModel queryModel = ParseQuery (query.Expression);
 
       IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (queryModel);
 
-      var orderList = new ArrayList ();
+      var orderList = new ArrayList();
       foreach (Order order in orders)
         orderList.Add (order);
 
       var expected = new[]
-                         {
-                             Order.GetObject (DomainObjectIDs.Order1),
-
-                         };
+                     {
+                         Order.GetObject (DomainObjectIDs.Order1),
+                     };
       Assert.That (orderList, Is.EquivalentTo (expected));
     }
 
@@ -351,7 +379,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery_FromModel_Scalar ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
+      var expression =
+          ExpressionHelper.MakeExpression (
+              () => (from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order).Count());
       var queryModel = ParseQuery (expression);
 
       var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Scalar);
@@ -359,7 +389,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
-      Assert.That (query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID));
+      Assert.That (
+          query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Scalar));
     }
@@ -367,15 +398,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery_FromModel_Collection ()
     {
-      var queryable = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      var queryable = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ParseQuery (queryable.Expression);
 
       var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
-      Assert.That (query.Statement, Is.EqualTo ("SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[OrderNo],[t0].[DeliveryDate],[t0].[OfficialID],[t0].[CustomerID] FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] = @1)"));
+      Assert.That (
+          query.Statement,
+          Is.EqualTo (
+              "SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[OrderNo],[t0].[DeliveryDate],[t0].[OfficialID],[t0].[CustomerID] FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
-      Assert.That (query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID));
+      Assert.That (
+          query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
     }
@@ -383,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery_EagerFetchQueries ()
     {
-      var queryable = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      var queryable = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
@@ -395,28 +430,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
 
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
-      var fetchQuery = query.EagerFetchQueries.Single ();
+      var fetchQuery = query.EagerFetchQueries.Single();
       Assert.That (fetchQuery.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
-      Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
-          "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[Position],[t2].[Product],[t2].[OrderID] "
-          +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[OrderNo],[t1].[DeliveryDate],[t1].[OfficialID],[t1].[CustomerID] "
-          +"FROM [OrderView] AS [t1] WHERE ([t1].[OrderNo] = @1)) AS [q0] "
-          +"CROSS JOIN [OrderItemView] AS [t2] WHERE ([q0].[ID] = [t2].[OrderID])"));
+      Assert.That (
+          fetchQuery.Value.Statement,
+          Is.EqualTo (
+              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[Position],[t3].[Product],[t3].[OrderID] "
+              + "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
+              + "FROM [OrderView] AS [t2] WHERE ([t2].[OrderNo] = @1)) AS [q1] "
+              + "CROSS JOIN [OrderItemView] AS [t3] WHERE ([q1].[ID] = [t3].[OrderID])"));
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo (1));
-      Assert.That (fetchQuery.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
+      Assert.That (
+          fetchQuery.Value.StorageProviderID,
+          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
       Assert.That (fetchQuery.Value.QueryType, Is.EqualTo (QueryType.Collection));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support result operators occurring after "
-        + "fetch requests. The objects on which the fetching is performed must be the same objects that are returned from the query. Rewrite the "
-        + "query to perform the fetching after applying all other result operators or call AsEnumerable after the last fetch request in order to "
-        + "execute all subsequent result operators in memory.")]
+                                                                              +
+                                                                              "fetch requests. The objects on which the fetching is performed must be the same objects that are returned from the query. Rewrite the "
+                                                                              +
+                                                                              "query to perform the fetching after applying all other result operators or call AsEnumerable after the last fetch request in order to "
+                                                                              + "execute all subsequent result operators in memory.")]
     public void CreateQuery_EagerFetchQueries_BeforeOtherResultOperators ()
     {
-      var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
+      var queryable = (from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order).Take (1);
       var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
@@ -428,7 +469,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery_EagerFetchQueries_AfterOtherResultOperators ()
     {
-      var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
+      var queryable = (from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order).Take (1);
       var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
@@ -440,11 +481,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The property "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMappingRelatedObjects' is not a relation end point. Fetching it is not "
-        + "supported by this LINQ provider.")]
+                                                                          +
+                                                                          "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMappingRelatedObjects' is not a relation end point. Fetching it is not "
+                                                                          + "supported by this LINQ provider.")]
     public void CreateQuery_EagerFetchQueries_ForNonRelationProperty ()
     {
-      var query = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ParseQuery (query.Expression);
       var relationMember = typeof (Order).GetProperty ("NotInMappingRelatedObjects");
       var fetchRequest = new FetchManyRequest (relationMember);
@@ -455,10 +497,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'OnLoadedLoadMode' is a 'Field', which cannot be fetched by "
-        + "this LINQ provider. Only properties can be fetched.")]
+                                                                          + "this LINQ provider. Only properties can be fetched.")]
     public void CreateQuery_EagerFetchQueries_ForField ()
     {
-      var query = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ParseQuery (query.Expression);
       var relationMember = typeof (Order).GetField ("OnLoadedLoadMode");
       var fetchRequest = new FetchOneRequest (relationMember);
@@ -470,7 +512,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery_EagerFetchQueries_WithSortExpression ()
     {
-      var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
+      var queryable = from c in QueryFactory.CreateLinqQuery<Customer>() where c.Name == "Kunde 1" select c;
       var queryModel = ParseQuery (queryable.Expression);
       var relationMember = typeof (Customer).GetProperty ("Orders");
       var fetchRequest = new FetchManyRequest (relationMember);
@@ -482,26 +524,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
 
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
-      var fetchQuery = query.EagerFetchQueries.Single ();
+      var fetchQuery = query.EagerFetchQueries.Single();
       Assert.That (fetchQuery.Key, Is.SameAs (ordersRelationEndPointDefinition));
-      
-      // TODO Review 2440: Sort expression missing: ORDER BY OrderNo asc
-      
-      Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
-        "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
-	      +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[CustomerSince],[t1].[CustomerType],[t1].[Name],[t1].[IndustrialSectorID] "
-	      +"FROM [CustomerView] AS [t1] WHERE ([t1].[Name] = @1)) AS [q0] CROSS JOIN [OrderView] AS [t2] WHERE ([q0].[ID] = [t2].[CustomerID])"));
+      Assert.That (
+          fetchQuery.Value.Statement,
+          Is.EqualTo (
+              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID] "
+              + "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[CustomerSince],[t2].[CustomerType],[t2].[Name],[t2].[IndustrialSectorID] "
+              + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] WHERE ([q1].[ID] = [t3].[CustomerID]) "
+              + "ORDER BY OrderNo asc"));
 
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
-      Assert.That (fetchQuery.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
+      Assert.That (
+          fetchQuery.Value.StorageProviderID,
+          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
     }
 
     [Test]
     public void CreateQuery_EagerFetchQueries_Recursive ()
     {
-      var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
+      var queryable = from c in QueryFactory.CreateLinqQuery<Customer>() where c.Name == "Kunde 1" select c;
       var queryModel = ParseQuery (queryable.Expression);
 
       var fetchRequest = new FetchManyRequest (typeof (Customer).GetProperty ("Orders"));
@@ -516,56 +560,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
 
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
-      var fetchQuery1 = query.EagerFetchQueries.Single ();
+      var fetchQuery1 = query.EagerFetchQueries.Single();
       Assert.That (fetchQuery1.Key, Is.SameAs (ordersRelationEndPointDefinition));
-      // TODO Review 2440: Sort expression missing: ORDER BY OrderNo asc
-      Assert.That (fetchQuery1.Value.Statement, Is.EqualTo (
-          "SELECT DISTINCT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
-          +"FROM (SELECT [t1].[ID],[t1].[ClassID],[t1].[Timestamp],[t1].[CustomerSince],[t1].[CustomerType],[t1].[Name],[t1].[IndustrialSectorID] "
-          +"FROM [CustomerView] AS [t1] WHERE ([t1].[Name] = @1)) AS [q0] CROSS JOIN [OrderView] AS [t2] "
-          +"WHERE ([q0].[ID] = [t2].[CustomerID])"));
+      Assert.That (
+          fetchQuery1.Value.Statement,
+          Is.EqualTo (
+              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID] "
+              +
+              "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[CustomerSince],[t2].[CustomerType],[t2].[Name],[t2].[IndustrialSectorID] "
+              + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] "
+              + "WHERE ([q1].[ID] = [t3].[CustomerID]) ORDER BY OrderNo asc"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
-      Assert.That (fetchQuery1.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer)).StorageProviderID));
+      Assert.That (
+          fetchQuery1.Value.StorageProviderID,
+          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer)).StorageProviderID));
       Assert.That (fetchQuery1.Value.EagerFetchQueries.Count, Is.EqualTo (1));
 
-      var fetchQuery2 = fetchQuery1.Value.EagerFetchQueries.Single ();
+      var fetchQuery2 = fetchQuery1.Value.EagerFetchQueries.Single();
       Assert.That (fetchQuery2.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
-      Assert.That (fetchQuery2.Value.Statement, Is.EqualTo (
-          "SELECT DISTINCT [t4].[ID],[t4].[ClassID],[t4].[Timestamp],[t4].[Position],[t4].[Product],[t4].[OrderID] "
-          +"FROM (SELECT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID] "
-          +"FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[CustomerSince],[t2].[CustomerType],[t2].[Name],[t2].[IndustrialSectorID] "
-          +"FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q0] CROSS JOIN [OrderView] AS [t3] "
-          +"WHERE ([q0].[ID] = [t3].[CustomerID])) AS [q1] CROSS JOIN [OrderItemView] AS [t4] "
-          +"WHERE ([q1].[ID] = [t4].[OrderID])"));
+      Assert.That (
+          fetchQuery2.Value.Statement,
+          Is.EqualTo (
+              "SELECT DISTINCT [t8].[ID],[t8].[ClassID],[t8].[Timestamp],[t8].[Position],[t8].[Product],[t8].[OrderID] "
+              +"FROM (SELECT [t7].[ID],[t7].[ClassID],[t7].[Timestamp],[t7].[OrderNo],[t7].[DeliveryDate],[t7].[OfficialID],[t7].[CustomerID] "
+              +"FROM (SELECT [t6].[ID],[t6].[ClassID],[t6].[Timestamp],[t6].[CustomerSince],[t6].[CustomerType],[t6].[Name],[t6].[IndustrialSectorID] "
+              +"FROM [CustomerView] AS [t6] WHERE ([t6].[Name] = @1)) AS [q4] CROSS JOIN [OrderView] AS [t7] "
+              +"WHERE ([q4].[ID] = [t7].[CustomerID])) AS [q5] CROSS JOIN [OrderItemView] AS [t8] WHERE ([q5].[ID] = [t8].[OrderID])"));
       Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
-      Assert.That (fetchQuery2.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
+      Assert.That (
+          fetchQuery2.Value.StorageProviderID,
+          Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
     }
 
     [Test]
-    [ExpectedException (typeof(InvalidOperationException))]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void CreateQuery_ColumnInSelectProjection_ThrowsException ()
     {
-      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer));
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() select computer));
       QueryModel queryModel = ParseQuery (expression);
-      
-      var unresolvedTableInfo = new UnresolvedTableInfo (typeof(int));
+
+      var unresolvedTableInfo = new UnresolvedTableInfo (typeof (int));
       var sqlTable = new SqlTable (unresolvedTableInfo);
       var sqlStatement = new SqlStatement (new SqlColumnExpression (typeof (Order), "o", "ID"), new[] { sqlTable }, new Ordering[] { });
 
-      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_computerClassDefinition);
+      var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
+          _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
       executorMock
-        .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
-        .Return(sqlStatement);
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
+          .Return (sqlStatement);
       executorMock.Replay();
-      executorMock.CreateQuery("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
+      executorMock.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
     }
 
     // TODO Review 2404: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
-    
+
     //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
     //public void CanBeMixed ()
@@ -642,7 +694,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private static QueryModel ParseQuery (Expression queryExpression)
     {
-      var parser = new QueryParser ();
+      var parser = new QueryParser();
       return parser.GetParsedQuery (queryExpression);
     }
   }
