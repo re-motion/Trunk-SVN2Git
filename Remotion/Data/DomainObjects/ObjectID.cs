@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Threading;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -122,9 +123,9 @@ namespace Remotion.Data.DomainObjects
     private object _value;
 
     [NonSerialized]
-    private ClassDefinition _cachedClassDefinition;
+    private int _cachedHashCode;
     [NonSerialized]
-    private int? _cachedHashCode;
+    private ClassDefinition _cachedClassDefinition;
 
     // construction and disposing
 
@@ -294,7 +295,7 @@ namespace Remotion.Data.DomainObjects
       get 
       { 
         if (_cachedClassDefinition == null)
-          _cachedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classID);
+          _cachedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classID); // this method is thread-safe
 
         return _cachedClassDefinition;
       }
@@ -315,10 +316,18 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A 32-bit signed integer hash code.</returns>
     public override int GetHashCode ()
     {
-      if (!_cachedHashCode.HasValue)
+      // Use lazy initialization because of deserialization.
+      
+      // Note: The following code is not completely thread-safe - the hash code might be calculated twice on different threads. 
+      // However, we can assume that an int assignment is atomic (and the XOR operation is fully performed before the assignment takes place), 
+      // so no half-calculated values should become visible.
+
+      // Note: We assume that a hash code value of 0 means that it wasn't initialized. In the very unlikely situation that 
+      // _classID.GetHashCode () == _value.GetHashCode (), the XOR operation would yield 0 and thus the hash code would be recalculated on each call.
+      if (_cachedHashCode == 0)
         _cachedHashCode = _classID.GetHashCode () ^ _value.GetHashCode ();
       
-      return _cachedHashCode.Value;
+      return _cachedHashCode;
     }
 
     /// <summary>
