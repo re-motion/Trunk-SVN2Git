@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           query.Statement,
           Is.EqualTo (
-              "SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[OrderNo],[t0].[DeliveryDate],[t0].[OfficialID],[t0].[CustomerID] FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] = @1)"));
+              "SELECT [t0].* FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
@@ -436,8 +436,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[Position],[t3].[Product],[t3].[OrderID] "
-              + "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[OrderNo],[t2].[DeliveryDate],[t2].[OfficialID],[t2].[CustomerID] "
+              "SELECT DISTINCT [t3].* "
+              + "FROM (SELECT [t2].* "
               + "FROM [OrderView] AS [t2] WHERE ([t2].[OrderNo] = @1)) AS [q1] "
               + "CROSS JOIN [OrderItemView] AS [t3] WHERE ([q1].[ID] = [t3].[OrderID])"));
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
@@ -530,8 +530,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID] "
-              + "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[CustomerSince],[t2].[CustomerType],[t2].[Name],[t2].[IndustrialSectorID] "
+              "SELECT DISTINCT [t3].* "
+              + "FROM (SELECT [t2].* "
               + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] WHERE ([q1].[ID] = [t3].[CustomerID]) "
               + "ORDER BY OrderNo asc"));
 
@@ -566,9 +566,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery1.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t3].[ID],[t3].[ClassID],[t3].[Timestamp],[t3].[OrderNo],[t3].[DeliveryDate],[t3].[OfficialID],[t3].[CustomerID] "
+              "SELECT DISTINCT [t3].* "
               +
-              "FROM (SELECT [t2].[ID],[t2].[ClassID],[t2].[Timestamp],[t2].[CustomerSince],[t2].[CustomerType],[t2].[Name],[t2].[IndustrialSectorID] "
+              "FROM (SELECT [t2].* "
               + "FROM [CustomerView] AS [t2] WHERE ([t2].[Name] = @1)) AS [q1] CROSS JOIN [OrderView] AS [t3] "
               + "WHERE ([q1].[ID] = [t3].[CustomerID]) ORDER BY OrderNo asc"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
@@ -584,9 +584,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (
           fetchQuery2.Value.Statement,
           Is.EqualTo (
-              "SELECT DISTINCT [t8].[ID],[t8].[ClassID],[t8].[Timestamp],[t8].[Position],[t8].[Product],[t8].[OrderID] "
-              +"FROM (SELECT [t7].[ID],[t7].[ClassID],[t7].[Timestamp],[t7].[OrderNo],[t7].[DeliveryDate],[t7].[OfficialID],[t7].[CustomerID] "
-              +"FROM (SELECT [t6].[ID],[t6].[ClassID],[t6].[Timestamp],[t6].[CustomerSince],[t6].[CustomerType],[t6].[Name],[t6].[IndustrialSectorID] "
+              "SELECT DISTINCT [t8].* "
+              +"FROM (SELECT [t7].* "
+              +"FROM (SELECT [t6].* "
               +"FROM [CustomerView] AS [t6] WHERE ([t6].[Name] = @1)) AS [q4] CROSS JOIN [OrderView] AS [t7] "
               +"WHERE ([q4].[ID] = [t7].[CustomerID])) AS [q5] CROSS JOIN [OrderItemView] AS [t8] WHERE ([q5].[ID] = [t8].[OrderID])"));
       Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));

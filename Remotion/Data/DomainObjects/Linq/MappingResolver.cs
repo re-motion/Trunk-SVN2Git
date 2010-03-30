@@ -99,24 +99,9 @@ namespace Remotion.Data.DomainObjects.Linq
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
 
-      var classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
-      var classIDColumn = new SqlColumnExpression (classIDPropertyInfo.PropertyType, tableAlias, classIDPropertyInfo.Name);
+      var starColumn = new SqlColumnExpression (typeof (object), tableAlias, "*");
 
-      var timestampPropertyInfo = typeof (DomainObject).GetProperty ("Timestamp");
-      var timestampColumn = new SqlColumnExpression (timestampPropertyInfo.PropertyType, tableAlias, timestampPropertyInfo.Name);
-
-      var columns = new List<SqlColumnExpression>();
-
-      columns.Add (primaryKeyColumn);
-      columns.Add (classIDColumn);
-      columns.Add (timestampColumn);
-
-      var propertyColumns = from pd in classDefinition.GetPropertyDefinitions().GetAllPersistent()
-                            where !string.IsNullOrEmpty (pd.StorageSpecificName)
-                            select new SqlColumnExpression (pd.PropertyType, tableAlias, pd.StorageSpecificName);
-      columns.AddRange (propertyColumns);
-
-      return new SqlEntityExpression (tableReferenceExpression.Type, primaryKeyColumn, columns.ToArray());
+      return new SqlEntityExpression (tableReferenceExpression.Type, primaryKeyColumn, starColumn);
     }
 
     public Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)

@@ -54,15 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
-      var column1 = new SqlColumnExpression (typeof (string), "o", "ClassID");
-      var column2 = new SqlColumnExpression (typeof (object), "o", "Timestamp");
-      var column3 = new SqlColumnExpression (typeof (int), "o", "OrderNo");
-      var column4 = new SqlColumnExpression (typeof (DateTime), "o", "DeliveryDate");
-      var column5 = new SqlColumnExpression (typeof (ObjectID), "o", "OfficialID");
-      var column6 = new SqlColumnExpression (typeof (ObjectID), "o", "CustomerID");
+      var column = new SqlColumnExpression (typeof (object), "o", "*");
 
       var expectedExpression = new SqlEntityExpression (
-          typeof (Order), primaryKeyColumn, primaryKeyColumn, column1, column2, column3, column4, column5, column6);
+          typeof (Order), primaryKeyColumn, column);
 
       ExpressionTreeComparer.CheckAreEqualTrees (sqlEntityExpression, expectedExpression);
     }
