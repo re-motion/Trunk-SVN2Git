@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (queryModel.ResultOperators[lastResultOperatorIndex] != groupResultOperator)
       {
         var message = "Cannot execute a query with a GroupBy clause that contains other result operators after the GroupResultOperator because "
-                      + "GroupBy is simulated in-memory.";
+            + "GroupBy is simulated in-memory.";
         throw new NotSupportedException (message);
       }
 
@@ -315,7 +315,7 @@ namespace Remotion.Data.DomainObjects.Linq
             relationEndPointDefinition.GetOppositeClassDefinition(),
             sortExpression);
 
-        query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+          query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
     }
 
@@ -368,12 +368,12 @@ namespace Remotion.Data.DomainObjects.Linq
       if (streamedSequenceInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSequenceInfo.ItemExpression.Type))
         return;
 
-      string message = string.Format (
+        string message = string.Format (
           "This query provider does not support the given query ('{0}'). "
           + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
           queryModel);
       throw new NotSupportedException (message);
-    }
+      }
 
     /// <summary>
     /// Check to avoid fetch requests that are followed by result operators. re-store cannot fetch without actually selecting the source objects.
@@ -389,7 +389,7 @@ namespace Remotion.Data.DomainObjects.Linq
                            "is performed must be the same objects that are returned from the query. Rewrite the query to perform the fetching after applying "
                            +
                            "all other result operators or call AsEnumerable after the last fetch request in order to execute all subsequent result operators in "
-                           + "memory.";
+              + "memory.";
           throw new InvalidOperationException (message);
         }
       }
@@ -418,6 +418,7 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       var commandBuilder = new SqlCommandBuilder();
       _generationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
+      // TODO Review 2494: When the stage has been turned into a parameter, use a mock to test that ValueRequired is passed here (not SingleValueRequired)
       return commandBuilder.GetCommand();
     }
   }
