@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Form.aspx.cs" Inherits="OBWTest.ViewLayoutTests.Form" %>
+<%@ Register TagPrefix="obwt" TagName="NavigationTabs" Src="../UI/NavigationTabs.ascx" %>
 
 <asp:content contentplaceholderid="head" runat="server">
 </asp:content>
@@ -6,9 +7,7 @@
     <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" AsyncPostBackTimeout="3600" />
     <remotion:SingleView ID="OuterSingleView" runat="server">
       <TopControls>
-      <div style="background: lime">
-      Top Controls
-      </div>
+        <obwt:NavigationTabs ID="NavigationTabs" runat="server" />
       </TopControls>
       
       <View>

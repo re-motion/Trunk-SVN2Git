@@ -79,6 +79,8 @@ href="javascript:OpenClientWindow ('ClientFormFrameset.htm');">OpenClientWindow
 ('ClientFormFrameset.htm')</a></p>
 <p>Design Test<br /><a 
 href="WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest">WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest</a></p>
+<p>Tests for SingleView and TabbedMultiView Layout<br />
+<a href="ViewLayoutTest.wxe?WxeReturnToSelf=True&TabbedMenuSelection=ViewLayoutTests">ViewLayoutTest.wxe</a></p>
 </form>
   </body>
 </html>

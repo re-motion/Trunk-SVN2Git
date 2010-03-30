@@ -93,6 +93,12 @@
 <remotion:NavigationCommand Type="None"></remotion:NavigationCommand>
 </PersistedCommand>
 </remotion:MainMenuTab>
+<remotion:MainMenuTab Text="Tests for View Layout" ItemID="ViewLayoutTests">
+<persistedcommand>
+<remotion:navigationcommand Type="WxeFunction" WxeFunctionCommand-MappingID="ViewLayoutTest"></remotion:navigationcommand>
+</PersistedCommand>
+</remotion:MainMenuTab>
+
 </Tabs>
 </remotion:TabbedMenu>
 <div style="WIDTH: 100%;TEXT-ALIGN: right">

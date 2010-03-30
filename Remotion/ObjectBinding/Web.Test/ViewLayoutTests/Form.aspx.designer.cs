@@ -32,6 +32,15 @@ namespace OBWTest.ViewLayoutTests {
         protected global::Remotion.Web.UI.Controls.SingleView OuterSingleView;
         
         /// <summary>
+        /// NavigationTabs control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::OBWTest.UI.NavigationTabs NavigationTabs;
+        
+        /// <summary>
         /// InnerSingleView control.
         /// </summary>
         /// <remarks>
