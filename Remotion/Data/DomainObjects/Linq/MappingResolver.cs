@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Linq
           rightEndPoint.ClassDefinition.GetViewName(),
           alias);
 
-      var leftKey = new SqlColumnExpression (keyType, joinInfo.SqlTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
+      var leftKey = new SqlColumnExpression (keyType, joinInfo.OriginatingTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
       var rightKey = new SqlColumnExpression (keyType, alias, GetJoinColumnName (rightEndPoint));
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
