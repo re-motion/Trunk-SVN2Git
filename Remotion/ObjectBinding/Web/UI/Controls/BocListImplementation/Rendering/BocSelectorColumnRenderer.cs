@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
       writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderSelectorControl (writer, selectorControlID, originalRowIndex.ToString(), isChecked, false);
+      RenderSelectorControl (writer, selectorControlID, originalRowIndex, isChecked, false);
       writer.RenderEndTag();
     }
 
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       {
         string selectorControlName = List.GetSelectAllControlClientID();
         bool isChecked = (List.SelectorControlCheckedState.Contains (c_titleRowIndex));
-        RenderSelectorControl (writer, selectorControlName, c_titleRowIndex.ToString(), isChecked, true);
+        RenderSelectorControl (writer, selectorControlName, c_titleRowIndex, isChecked, true);
       }
       else
         writer.Write (c_whiteSpace);
@@ -104,17 +104,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <param name="isSelectAllSelectorControl"> 
     ///   <see langword="true"/> if the rendered check-box or radio-button is in the title row.
     /// </param>
-    private void RenderSelectorControl (HtmlTextWriter writer, string id, string value, bool isChecked, bool isSelectAllSelectorControl)
+    private void RenderSelectorControl (HtmlTextWriter writer, string id, int value, bool isChecked, bool isSelectAllSelectorControl)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
 
       if (List.Selection == RowSelection.SingleRadioButton)
         writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
       else
         writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
+      
+      //TODO: Remove the check for -1 when COMMONS-2544 is implemented
+      if (value != -1)
+        writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
+
       writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
 
       if (isChecked)
@@ -122,7 +125,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (List.EditModeController.IsRowEditModeActive)
         writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
+      writer.AddAttribute (HtmlTextWriterAttribute.Value, value.ToString());
 
       if (isSelectAllSelectorControl)
         AddSelectAllSelectorAttributes (writer);

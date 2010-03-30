@@ -3,8 +3,7 @@ div.bocList
 {
   display: block;
   position: relative;
-  min-height: 10em;
-  width: 1000px;
+  min-height: 3em;
 }
 
 /* Style applied to the BocList in read-only mode. */

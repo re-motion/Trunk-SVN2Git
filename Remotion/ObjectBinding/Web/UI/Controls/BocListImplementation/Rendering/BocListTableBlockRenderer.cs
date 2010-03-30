@@ -234,7 +234,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       writer.RenderEndTag(); // table
 
-      //RenderFakeTableHeadForScrolling (writer);
+      RenderFakeTableHeadForScrolling (writer);
 
       writer.RenderEndTag(); // div
     }
