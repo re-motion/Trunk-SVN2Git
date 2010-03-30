@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
-      var starColumn = new SqlColumnExpression (typeof (object), "o", "*");
+      var starColumn = new SqlColumnExpression (typeof (Order), "o", "*");
 
       var expectedExpression = new SqlEntityExpression (typeof (Order), primaryKeyColumn, starColumn);
 
