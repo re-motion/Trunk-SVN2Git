@@ -99,6 +99,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
 
+      // TODO Review 2533: The type of the column should be tableReferenceExpression.Type
       var starColumn = new SqlColumnExpression (typeof (object), tableAlias, "*");
 
       return new SqlEntityExpression (tableReferenceExpression.Type, primaryKeyColumn, starColumn);
