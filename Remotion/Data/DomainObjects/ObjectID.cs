@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Threading;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 using Remotion.Data.DomainObjects.Mapping;
