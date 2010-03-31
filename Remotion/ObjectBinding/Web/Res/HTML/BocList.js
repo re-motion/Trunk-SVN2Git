@@ -127,7 +127,6 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   var resizeTimer = null;
   $(window).bind('resize', function()
   {
-      console.log(container);
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() { BocList_activateTableHeader(container); }, 50);
 
