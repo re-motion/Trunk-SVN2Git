@@ -127,6 +127,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   var resizeTimer = null;
   $(window).bind('resize', function()
   {
+      console.log(container);
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() { BocList_activateTableHeader(container); }, 50);
 
@@ -338,8 +339,6 @@ function BocList_GetSelectionCount (bocListID)
 
 function BocList_activateTableHeader(container)
 {
-    BocList_syncCheckboxes(container);
-
     var cointainerChildrens = container.children();
     var realThead = cointainerChildrens.eq(0).find('thead');
     var realTheadRow = realThead.children().eq(0);
@@ -350,6 +349,14 @@ function BocList_activateTableHeader(container)
     var fakeTheadRow = fakeThead.children().eq(0);
     var fakeTheadRowChildrens = fakeTheadRow.children();
 
+    // hide bocListFakeTableHead if bocList is not scrollable
+    if (!checkScrollBarPresence(container))
+    {
+        fakeTableContainer.hide();
+        return;
+    }
+    
+    BocList_syncCheckboxes(container);
 
     // store cell widths in array
     var realTheadCellWidths = new Array();
@@ -379,7 +386,7 @@ function BocList_fixHeaderPosition(containerDiv)
     {
         bocListFakeTableHead.show();
     }
-    bocListFakeTableHead.css({ 'top': scrollPosition });
+    bocListFakeTableHead.css({ 'top': scrollPosition, 'left':'0' });
 }
 
 function BocList_syncCheckboxes(container)
@@ -394,6 +401,15 @@ function BocList_syncCheckboxes(container)
         $('input[name*=' + realCheckName + ']').attr('checked', checkStatus);
     });
 }
+
+
+
+function checkScrollBarPresence(element)
+{
+        return ((element.attr('scrollHeight') > element.innerHeight()) || (element.attr('scrollWidth') > element.innerWidth()));
+}
+
+
 
 /*BocList_OnResize*/
 function BocList_CheckWidthHeightStyle(bocList)
