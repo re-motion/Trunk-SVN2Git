@@ -30,8 +30,9 @@ span.bocAutoCompleteReferenceValueButton
 	position: absolute;
 	margin: 0;
 	padding: 0;
-	top: 0px;
+	top: 0;
 	right: 0;
+    bottom: 0;
 	background-color: #083779;
 	background-position: center center;
 	background-repeat:no-repeat;
@@ -214,4 +215,10 @@ span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput
 span.content.embeddedOptionsMenu span.bocAutoCompleteReferenceValueInput input
 {
     height: 1.2em;
+}
+/* IE7 only */
+*:first-child+html span.bocAutoCompleteReferenceValueInput,
+*:first-child+html span.bocAutoCompleteReferenceValueButton
+{
+    top: -0.1em;
 }

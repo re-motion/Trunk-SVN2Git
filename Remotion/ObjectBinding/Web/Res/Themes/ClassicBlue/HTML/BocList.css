@@ -3,7 +3,7 @@ div.bocList
 {
     display: block;
     position: relative;
-    min-height: 3em;
+    height: auto;
     width: auto; /* give it a value to make bocList scrollable  */
 }
 

@@ -30,6 +30,7 @@ span.bocDate12Hours
     position:absolute;
     right:8.8em;
     width:auto;
+    top: 0.15em;
 }
 
 span.bocDateValue span.bocDate24Hours,
@@ -41,6 +42,7 @@ span.bocDateValue span.bocDate12Hours
     position:absolute;
     right:3.2em;
     width:auto;
+    top: 0.15em;
 }
 
 span.bocDate24HoursWithSeconds,
@@ -52,6 +54,7 @@ span.bocDate12HoursWithSeconds
     position:absolute;
     right:9.8em;
     width:auto;
+    top: 0.15em;
 }
 
 span.bocDateTimeValue,
@@ -81,15 +84,15 @@ a.bocPicker24Hours,
 a.bocPicker12Hours
 {
     position:absolute;
-    top:0;
-    right:6em;
+    top: 0.15em;
+    right: 5.7em;
 }
 
 a.bocPicker24HoursWithSeconds,
 a.bocPicker12HoursWithSeconds
 {
     position:absolute;
-    top:0;
+    top: 0.15em;
     right:7em;
 }
 
@@ -98,9 +101,12 @@ span.bocDateValue a.bocPicker24Hours,
 span.bocDateValue a.bocPicker12Hours
 {
     position:absolute;
-    top:0;
+    top: 0.15em;
     right:0;
 }
+
+
+
 
 /* WebKit browsers only (Safari, Chrome) */
 @media screen and (-webkit-min-device-pixel-ratio:0)
@@ -170,4 +176,19 @@ span.bocTime12HoursWithSeconds
 {
     position:absolute;
     right:0;
+    top: 0.15em;
 }
+
+/* IE7 only */
+*:first-child+html span.bocDate24Hours,
+*:first-child+html span.bocDate12Hours,
+*:first-child+html span.bocDate24HoursWithSeconds,
+*:first-child+html span.bocDate12HoursWithSeconds,
+*:first-child+html span.bocTime24Hours,
+*:first-child+html span.bocTime12Hours,
+*:first-child+html span.bocTime24HoursWithSeconds,
+*:first-child+html span.bocTime12HoursWithSeconds
+{
+    top: 0.1em;
+}
+
