@@ -115,8 +115,16 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   //activateTableHeader only on first scroll
   var scrollTimer = null;
   var container = $(bocList).find('div.bocListTable');
+  var horizontalScroll = container.scrollLeft();
   container.bind('scroll', function(event)
   {
+      // don't do nothing if is horizontal scrolling
+      var currentHorizontalScroll = $(this).scrollLeft();
+      if (currentHorizontalScroll != horizontalScroll)
+      {
+          horizontalScroll = currentHorizontalScroll;
+          return;
+      }
       var currentBocList = $(this);
       BocList_activateTableHeader(currentBocList);
       if (scrollTimer) clearTimeout(scrollTimer);
