@@ -107,7 +107,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       RenderTableOpeningTag (writer);
       RenderTableBlockColumnGroup (writer);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableHead);
 
       if (tableHead)
         RenderTableHead (writer);
@@ -146,7 +145,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Thead);
+      writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClasses.TableHead);
+      writer.RenderBeginTag(HtmlTextWriterTag.Thead);
       RowRenderer.RenderTitlesRow (writer);
       writer.RenderEndTag();
     }
@@ -244,7 +244,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.FakeTableHead);
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);
+      writer.AddStyleAttribute(HtmlTextWriterStyle.Width, "100%");
+      writer.AddAttribute(HtmlTextWriterAttribute.Cellpadding, "0");
+      writer.AddAttribute(HtmlTextWriterAttribute.Cellspacing, "0");
+      writer.RenderBeginTag(HtmlTextWriterTag.Table);
       RenderTableHead (writer);
       writer.RenderEndTag();
 
