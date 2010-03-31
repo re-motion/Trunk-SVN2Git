@@ -26,23 +26,23 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallConvertTest
+  public class SubstringMethodCallSqlGeneratorTest
   {
     [Test]
-    public void GenerateSql ()
+    public void GenerateSql_Substring ()
     {
-      var method = typeof (Convert).GetMethod ("ToString", new[] { typeof (int) });
-      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (3));
+      var method = typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) });
+      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (0), Expression.Constant (1));
 
       var commandBuilder = new SqlCommandBuilder();
 
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new MethodCallConvert();
+      var methodCallUpper = new SubstringMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("CONVERT(nvarchar(max),)"));
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("SUBSTRING(,,)"));
     }
   }
 }

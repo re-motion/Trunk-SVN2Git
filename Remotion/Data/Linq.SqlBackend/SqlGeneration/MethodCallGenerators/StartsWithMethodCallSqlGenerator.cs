@@ -22,18 +22,19 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallUpper"/> implements <see cref="IMethodCallSqlGenerator"/> for the string upper method.
+  /// <see cref="StartsWithMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the string startswith method.
   /// </summary>
-  public class MethodCallUpper : IMethodCallSqlGenerator
+  public class StartsWithMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
+      ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
 
-      commandBuilder.Append ("UPPER(");
+      commandBuilder.Append ("LIKE(");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
-      commandBuilder.Append (")");
+      commandBuilder.Append ("%)");
     }
   }
 }

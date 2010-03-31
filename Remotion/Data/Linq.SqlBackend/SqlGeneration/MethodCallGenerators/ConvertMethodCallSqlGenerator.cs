@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Utilities;
@@ -22,20 +23,45 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallContains"/> implements <see cref="IMethodCallSqlGenerator"/> for the string like and contains method.
+  /// <see cref="ConvertMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the convert method.
   /// </summary>
-  // TODO Review 2364: Rename all generator classes to "...SqlGenerator", e.g., "ContainsSqlGenerator" or "ContainsMethodCallSqlGenerator".
-  public class MethodCallContains : IMethodCallSqlGenerator
+  public class ConvertMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
+    private Dictionary<Type, string> _mappingTypes;
+
+    public ConvertMethodCallSqlGenerator ()
+    {
+      _mappingTypes = new Dictionary<Type, string>();
+      _mappingTypes.Add (typeof (string), "nvarchar(max)");
+      _mappingTypes.Add (typeof (bool), "bit");
+      _mappingTypes.Add (typeof (Int64), "bigint");
+      _mappingTypes.Add (typeof (DateTime), "date");
+      _mappingTypes.Add (typeof (double), "FLOAT");
+      _mappingTypes.Add (typeof (int), "int");
+      _mappingTypes.Add (typeof (decimal), "numeric");
+      _mappingTypes.Add (typeof (char), "nvarchar(1)");
+      _mappingTypes.Add (typeof (byte), "tinyint");
+    }
+
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
 
-      commandBuilder.Append ("LIKE(%");
-      expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
-      commandBuilder.Append ("%)");
+      if (methodCallExpression.Arguments.Count != 1)
+        throw new ArgumentException ("Wrong number of arguments in evaluation");
+
+      Type type = methodCallExpression.Type;
+      string exp;
+      if (_mappingTypes.TryGetValue (type, out exp))
+      {
+        commandBuilder.Append ("CONVERT(" + exp + ",");
+        expressionTreeVisitor.VisitExpression (methodCallExpression.Arguments[0]);
+        commandBuilder.Append (")");
+      }
+      else
+        throw new NotSupportedException ("TypeCast is not supported by linq parser.");
     }
   }
 }

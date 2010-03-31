@@ -22,18 +22,24 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallEndsWith"/> implements <see cref="IMethodCallSqlGenerator"/> for the string endswith method.
+  /// <see cref="SubstringMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the string substring method.
   /// </summary>
-  public class MethodCallEndsWith : IMethodCallSqlGenerator
+  public class SubstringMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-      ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
 
-      commandBuilder.Append ("LIKE(%");
+      if (methodCallExpression.Arguments.Count != 2)
+        throw new ArgumentException ("wrong number of arguments");
+
+      commandBuilder.Append ("SUBSTRING(");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
+      commandBuilder.Append (",");
+       expressionTreeVisitor.VisitExpression(methodCallExpression.Arguments[0]);
+      commandBuilder.Append (",");
+      expressionTreeVisitor.VisitExpression (methodCallExpression.Arguments[1]);
       commandBuilder.Append (")");
     }
   }

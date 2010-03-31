@@ -22,24 +22,17 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallSubstring"/> implements <see cref="IMethodCallSqlGenerator"/> for the string substring method.
+  /// <see cref="UpperMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the string upper method.
   /// </summary>
-  public class MethodCallSubstring : IMethodCallSqlGenerator
+  public class UpperMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      if (methodCallExpression.Arguments.Count != 2)
-        throw new ArgumentException ("wrong number of arguments");
-
-      commandBuilder.Append ("SUBSTRING(");
+      commandBuilder.Append ("UPPER(");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
-      commandBuilder.Append (",");
-       expressionTreeVisitor.VisitExpression(methodCallExpression.Arguments[0]);
-      commandBuilder.Append (",");
-      expressionTreeVisitor.VisitExpression (methodCallExpression.Arguments[1]);
       commandBuilder.Append (")");
     }
   }

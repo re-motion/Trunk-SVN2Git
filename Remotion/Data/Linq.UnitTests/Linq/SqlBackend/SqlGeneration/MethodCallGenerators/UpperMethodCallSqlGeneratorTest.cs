@@ -14,7 +14,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallUpperTest
+  public class UpperMethodCallSqlGeneratorTest
   {
     [Test]
     public void GenerateSql_Upper ()
@@ -27,7 +27,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallG
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new MethodCallUpper();
+      var methodCallUpper = new UpperMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
       Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("UPPER()"));

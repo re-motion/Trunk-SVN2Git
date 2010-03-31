@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class MethodCallStartsWithTest
+  public class StartsWithMethodCallSqlGeneratorTest
   {
     [Test]
     public void GenerateSql_StartsWith ()
@@ -39,7 +39,7 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallG
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new MethodCallStartsWith();
+      var methodCallUpper = new StartsWithMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
       Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("LIKE(%)"));

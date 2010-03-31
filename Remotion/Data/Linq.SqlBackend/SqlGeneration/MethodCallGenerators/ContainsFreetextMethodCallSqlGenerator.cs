@@ -22,32 +22,18 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallRemove"/> implements <see cref="IMethodCallSqlGenerator"/> for the string remove method.
+  /// <see cref="ContainsFreetextMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the ContainsFreetext method.
   /// </summary>
-  public class MethodCallRemove : IMethodCallSqlGenerator
+  public class ContainsFreetextMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
-      
-      bool isFirst = true;
-      commandBuilder.Append ("STUFF(");
-      expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
 
-      commandBuilder.Append (",");
-      foreach (var argument in methodCallExpression.Arguments)
-      {
-        expressionTreeVisitor.VisitExpression (argument);
-        if (isFirst)
-          commandBuilder.Append (",");
-        isFirst = false;
-
-      }
-      commandBuilder.Append (",LEN(");
+      commandBuilder.Append ("FREETEXT (");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
-      commandBuilder.Append ("), \"\"");
       commandBuilder.Append (")");
     }
   }

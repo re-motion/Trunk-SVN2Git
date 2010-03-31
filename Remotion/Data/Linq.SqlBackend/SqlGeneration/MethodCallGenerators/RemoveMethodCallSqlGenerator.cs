@@ -22,17 +22,32 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallLower"/> implements <see cref="IMethodCallSqlGenerator"/> for the string lower method.
+  /// <see cref="RemoveMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the string remove method.
   /// </summary>
-  public class MethodCallLower : IMethodCallSqlGenerator
+  public class RemoveMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
-
-      commandBuilder.Append ("LOWER(");
+      ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
+      
+      bool isFirst = true;
+      commandBuilder.Append ("STUFF(");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
+
+      commandBuilder.Append (",");
+      foreach (var argument in methodCallExpression.Arguments)
+      {
+        expressionTreeVisitor.VisitExpression (argument);
+        if (isFirst)
+          commandBuilder.Append (",");
+        isFirst = false;
+
+      }
+      commandBuilder.Append (",LEN(");
+      expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
+      commandBuilder.Append ("), \"\"");
       commandBuilder.Append (")");
     }
   }

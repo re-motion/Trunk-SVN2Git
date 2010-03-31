@@ -22,9 +22,9 @@ using Remotion.Data.Linq.Utilities;
 namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   /// <summary>
-  /// <see cref="MethodCallContainsFreetext"/> implements <see cref="IMethodCallSqlGenerator"/> for the ContainsFreetext method.
+  /// <see cref="ContainsFulltextMethodCallSqlGenerator"/> implements <see cref="IMethodCallSqlGenerator"/> for the ContainsFulltext method.
   /// </summary>
-  public class MethodCallContainsFreetext : IMethodCallSqlGenerator
+  public class ContainsFulltextMethodCallSqlGenerator : IMethodCallSqlGenerator
   {
     public void GenerateSql (MethodCallExpression methodCallExpression, SqlCommandBuilder commandBuilder, ExpressionTreeVisitor expressionTreeVisitor)
     {
@@ -32,7 +32,7 @@ namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expressionTreeVisitor", expressionTreeVisitor);
 
-      commandBuilder.Append ("FREETEXT (");
+      commandBuilder.Append ("FULLTEXT (");
       expressionTreeVisitor.VisitExpression (methodCallExpression.Object);
       commandBuilder.Append (")");
     }
