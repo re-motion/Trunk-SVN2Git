@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _context = new SqlPreparationContext();
       _preparationStage = new DefaultSqlPreparationStage (_context, generator);
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
-      _generationStage = new DefaultSqlGenerationStage();
+      _generationStage = new DefaultSqlGenerationStage(MethodCallSqlGeneratorRegistry.CreateDefault());
 
       _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
       _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
