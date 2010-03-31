@@ -118,6 +118,12 @@ th.bocListTitleCell
     white-space: nowrap;
 }
 
+/* IE7 only */
+*:first-child+html th.bocListTitleCell *
+{
+    white-space: nowrap;
+}
+
 th.bocListTitleCell span
 {
     padding: 2px;
@@ -314,15 +320,8 @@ div.bocListFakeTableHead
     display: none;
     position: absolute;
     top: 0;
-    left: -1px;
+    left: 0;
     right: 0;
     margin: 0;
     padding:0;
 }
-
-/* modern browsers only (IE8+, Safari, Chrome, FF) */
-html>/**/body div.bocListFakeTableHead
-{
-    left: 0;
-    left: -1px\9;/*IE8*/
-} 

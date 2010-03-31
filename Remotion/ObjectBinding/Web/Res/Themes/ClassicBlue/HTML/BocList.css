@@ -120,6 +120,12 @@ th.bocListTitleCell
     white-space: nowrap;
 }
 
+/* IE7 only */
+*:first-child+html th.bocListTitleCell *
+{
+    white-space: nowrap;
+}
+
 th.bocListTitleCell span
 {
     padding: 2px;
