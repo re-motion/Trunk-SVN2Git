@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var resolver = new MappingResolver();
       var generator = new UniqueIdentifierGenerator();
       _context = new SqlPreparationContext();
-      _preparationStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault2(),_context, generator);
+      _preparationStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(),_context, generator);
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _generationStage = new DefaultSqlGenerationStage();
 
