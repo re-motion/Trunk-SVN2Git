@@ -92,7 +92,7 @@ namespace OBWTest
       {
         RegisterRendererFactories (container, typeof (RendererBase<>).Assembly);
         RegisterRendererFactories (container, typeof (BocRendererBase<>).Assembly);
-        container.Register (Component.For<ResourceTheme>().Instance (resourceTheme));
+        container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme).LifeStyle.Singleton);
       }
       container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
 
