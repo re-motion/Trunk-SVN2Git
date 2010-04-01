@@ -446,7 +446,6 @@
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteTextValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocBooleanValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocCheckBox.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocCheckboxValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocDateTimeValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocEnumValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocList.css" />

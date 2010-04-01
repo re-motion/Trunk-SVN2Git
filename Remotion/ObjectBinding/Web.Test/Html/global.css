@@ -11,12 +11,3 @@
 td.formGridControlsCell
 {
 }
-
-/*Next CSS should be removed from here when all controll will include a CSS file */
-span.bocTextValue,
-span.bocDateTimeValue span.bocDateInputWrapper,
-span.bocDateTimeValue span.bocTimeInputWrapper,
-span.bocBooleanValue
-{
-  vertical-align: middle;
-}

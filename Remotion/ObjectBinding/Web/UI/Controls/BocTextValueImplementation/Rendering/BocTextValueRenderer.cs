@@ -39,6 +39,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       Control.TextBoxStyle.RegisterJavaScriptInclude (ResourceUrlFactory, htmlHeadAppender);
+      
+      string styleKey = typeof (BocTextValueRenderer).FullName + "_Style";
+      var styleFile = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocTextValueRenderer), ResourceType.Html, "BocTextValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
     protected override Label GetLabel ()

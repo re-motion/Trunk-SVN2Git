@@ -1,3 +1,34 @@
+/* Style applied to the BocDateTimeValue. */
+
+span.bocDateTimeValue,
+span.bocDateValue
+{
+    width: 15em;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
+    height:2em;
+    line-height:2em;
+    margin-right:0.2em;
+    min-width:12em;
+    padding:0;
+    white-space:nowrap;
+    zoom: 1;
+}
+
+span.bocDateValue
+{
+    min-width:8em;
+}
+
+span.bocDateTimeValue span.bocDateInputWrapper,
+span.bocDateTimeValue span.bocTimeInputWrapper,
+span.bocDateValue span.bocDateInputWrapper
+{
+  vertical-align: middle;
+}
+
 input.bocDateTimeDate
 {
     width:100%;
@@ -56,29 +87,6 @@ span.bocDate12HoursWithSeconds
     width:auto;
     top: 0.15em;
 }
-
-span.bocDateTimeValue,
-span.bocDateValue
-{
-    width: 15em;
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    overflow: hidden;
-    height:2em;
-    line-height:2em;
-    margin-right:0.2em;
-    min-width:12em;
-    padding:0;
-    white-space:nowrap;
-    zoom: 1;
-}
-
-span.bocDateValue
-{
-    min-width:8em;
-}
-
 
 a.bocPicker24Hours,
 a.bocPicker12Hours
