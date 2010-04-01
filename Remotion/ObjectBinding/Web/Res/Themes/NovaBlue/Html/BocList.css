@@ -4,7 +4,7 @@ div.bocList
     display: block;
     position: relative;
     height: auto;
-    width: auto; /* give it a value to make bocList scrollable  */
+    width: auto; /* give it a value to make bocList scrollable, IE7 is buggy if you don't define height & width */
 }
 
 /* Style applied to the BocList in read-only mode. */

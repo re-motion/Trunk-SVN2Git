@@ -429,6 +429,9 @@ function BocList_CheckWidthHeightStyle(bocList)
         $(bocList).addClass('hasHeight');
     } else
     {
+        // In IE7 manipulating DOM is causing DropDownMenuContainer to disappear
+        ($.browser.msie && parseInt($.browser.version) < 8)
+        return;
         // Set height of bocList when is not specified
         var bocListTableDiv = $(bocList).find('div.bocListTable');
         var bocListTableTable = bocListTableDiv.children().eq(0);
