@@ -168,11 +168,13 @@ td.bocListDataCellEven
 tr.bocListDataRow td.bocListDataCellOdd
 {
     background-color: White;
+    position: relative;
 }
 
 tr.bocListDataRow td.bocListDataCellEven
 {
     background-color: #e1ecfc;
+    position: relative;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */
