@@ -113,6 +113,15 @@ namespace OBWTest.ControlLayoutTests {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue Line01DateTimeValue01;
         
         /// <summary>
+        /// Line01DateTimeValue02 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue Line01DateTimeValue02;
+        
+        /// <summary>
         /// Line01ReferenceValue01 control.
         /// </summary>
         /// <remarks>
@@ -176,6 +185,15 @@ namespace OBWTest.ControlLayoutTests {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue Line02DateTimeValue01;
         
         /// <summary>
+        /// Line02DateTimeValue02 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue Line02DateTimeValue02;
+        
+        /// <summary>
         /// Line02ReferenceValue01 control.
         /// </summary>
         /// <remarks>
@@ -192,5 +210,77 @@ namespace OBWTest.ControlLayoutTests {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue Line02AutoCompleteReferenceValue01;
+        
+        /// <summary>
+        /// Line11CheckBox01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox Line11CheckBox01;
+        
+        /// <summary>
+        /// Line11BooleanValue01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue Line11BooleanValue01;
+        
+        /// <summary>
+        /// Line11TextValue01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocTextValue Line11TextValue01;
+        
+        /// <summary>
+        /// Line11EnumValue01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue Line11EnumValue01;
+        
+        /// <summary>
+        /// Line11DateTimeValue01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue Line11DateTimeValue01;
+        
+        /// <summary>
+        /// Line11DateTimeValue02 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue Line11DateTimeValue02;
+        
+        /// <summary>
+        /// Line11ReferenceValue01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue Line11ReferenceValue01;
+        
+        /// <summary>
+        /// Line11AutoCompleteReferenceValue01 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue Line11AutoCompleteReferenceValue01;
     }
 }
