@@ -20,19 +20,23 @@ ViewLayout.AdjustSingleViewLayoutIE6 = function(containerElement)
         return;
 }
 
-ViewLayout.AdjustActiveViewContent = function(viewContent) 
+ViewLayout.AdjustActiveViewContent = function(viewContent)
 {
-    var viewContentBorder = viewContent.children().eq(0);
-    var viewBottomControls = viewContent.next();
+  var viewContentBorder = viewContent.children().eq(0);
+  var viewBottomControls = viewContent.next();
 
-    var viewContentBorderHeight = viewContentBorder.outerHeight(true) - viewContentBorder.height();
-    var viewBottomControlsBorderHeight = viewBottomControls.outerHeight(true) - viewBottomControls.height();
+  var viewContentBorderHeight = viewContentBorder.outerHeight(true) - viewContentBorder.height();
+  var viewBottomControlsBorderHeight = viewBottomControls.outerHeight(true) - viewBottomControls.height();
 
-    var viewTop = viewContent.offset().top;
-    var bottomTop = viewBottomControls.offset().top;
-    var viewNewHeight = bottomTop - viewTop - viewContentBorderHeight - viewBottomControlsBorderHeight;
+  var viewContentOffset = viewContent.offset();
+  var viewTop = viewContentOffset == null ? 0 : viewContentOffset.top;
+  
+  var viewBottomControlsOffset = viewBottomControls.offset();
+  var bottomTop = viewBottomControlsOffset == null ? 0 : viewBottomControlsOffset;
+  
+  var viewNewHeight = bottomTop - viewTop - viewContentBorderHeight - viewBottomControlsBorderHeight;
 
-    viewContentBorder.height(viewNewHeight);
+  viewContentBorder.height(viewNewHeight);
 }
 
 ViewLayout.AdjustSingleView = function(containerElement) 
