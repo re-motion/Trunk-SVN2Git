@@ -16,13 +16,14 @@
       <View>
         <table id=FormGrid runat="server">
           <tr>
-            <td>Line 1</td>
+            <td>Line&nbsp;1</td>
             <td>
               <remotion:BocCheckBox ID="Line01CheckBox01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em"/> 
               <remotion:BocBooleanValue ID="Line01BooleanValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" /> 
               <remotion:BocTextValue ID="Line01TextValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="LastName" Width="8em"/> 
               <remotion:BocEnumValue ID="Line01EnumValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" Width="8em"/> 
               <remotion:BocDateTimeValue ID="Line01DateTimeValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em"/> 
+              <remotion:BocDateTimeValue ID="Line01DateTimeValue02" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"/> 
               <remotion:BocReferenceValue ID="Line01ReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
                 <OptionsMenuItems>
                   <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
@@ -34,11 +35,11 @@
                 </OptionsMenuItems>
               </remotion:BocAutoCompleteReferenceValue> 
             </td>
-            <td>Line 1</td>
+            <td>Line&nbsp;1</td>
           </tr>
 
           <tr>
-            <td>Line 2</td>
+            <td>Line&nbsp;2</td>
             <td>
               M
               <remotion:BocCheckBox ID="Line02CheckBox01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em"/> 
@@ -50,6 +51,8 @@
               <remotion:BocEnumValue ID="Line02EnumValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" Width="8em"/> 
               M
               <remotion:BocDateTimeValue ID="Line02DateTimeValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em"/> 
+              M
+              <remotion:BocDateTimeValue ID="Line02DateTimeValue02" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"/> 
               M
               <remotion:BocReferenceValue ID="Line02ReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
                 <OptionsMenuItems>
@@ -64,7 +67,7 @@
               </remotion:BocAutoCompleteReferenceValue> 
               M
             </td>
-            <td>Line 2</td>
+            <td>Line&nbsp;2</td>
           </tr>
 
           <tr>
@@ -87,7 +90,36 @@
 
 
         </table>
-
+        
+        <div>
+          Line 11
+          M
+          <remotion:BocCheckBox ID="Line11CheckBox01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em"/> 
+          M
+          <remotion:BocBooleanValue ID="Line11BooleanValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Deceased" Width="3em" /> 
+          M
+          <remotion:BocTextValue ID="Line11TextValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="LastName" Width="8em"/> 
+          M
+          <remotion:BocEnumValue ID="Line11EnumValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="MarriageStatus" Width="8em"/> 
+          M
+          <remotion:BocDateTimeValue ID="Line11DateTimeValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfBirth" Width="15em"/> 
+          M
+          <remotion:BocDateTimeValue ID="Line11DateTimeValue02" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="DateOfDeath" Width="10em"/> 
+          M
+          <remotion:BocReferenceValue ID="Line11ReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
+            <OptionsMenuItems>
+              <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
+            </OptionsMenuItems>
+          </remotion:BocReferenceValue> 
+          M
+          <remotion:BocAutoCompleteReferenceValue ID="Line11AutoCompleteReferenceValue01" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" Width="15em">
+            <OptionsMenuItems>
+              <remotion:WebMenuItem ItemID="Item1" Text="Item 1"/>
+            </OptionsMenuItems>
+          </remotion:BocAutoCompleteReferenceValue> 
+          M
+        </div>
+        
       </View>
       
       <BottomControls>
