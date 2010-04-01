@@ -24,33 +24,33 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class SubstringMethodCallSqlGeneratorTest
+  public class ContainsMethodCallSqlGeneratorTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          SubstringMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) })));
+          ContainsMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Contains", new Type[] { typeof (string) })));
     }
 
     [Test]
-    public void GenerateSql_Substring ()
+    public void GenerateSql_Contains ()
     {
-      var method = typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) });
-      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (0), Expression.Constant (1));
+      var method = typeof (string).GetMethod ("Contains", new Type[] { typeof (string) });
+      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant ("s"));
 
       var commandBuilder = new SqlCommandBuilder();
 
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new SubstringMethodCallSqlGenerator();
+      var methodCallUpper = new ContainsMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("SUBSTRING(,,)"));
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("LIKE(%%)"));
     }
   }
 }

@@ -24,22 +24,22 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
 {
   [TestFixture]
-  public class ContainsMethodCallSqlGeneratorTest
+  public class EndsWithMethodCallSqlGeneratorTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          ContainsMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Contains", new Type[] { typeof (string) })));
+          EndsWithMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("EndsWith", new[] { typeof (string) })));
     }
 
     [Test]
-    public void GenerateSql_Contains ()
+    public void GenerateSql_EndsWith ()
     {
-      var method = typeof (string).GetMethod ("Contains", new Type[] { typeof (string) });
+      var method = typeof (string).GetMethod ("EndsWith", new Type[] { typeof (string) });
       var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant ("s"));
 
       var commandBuilder = new SqlCommandBuilder();
@@ -47,10 +47,10 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCall
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new ContainsMethodCallSqlGenerator();
+      var methodCallUpper = new EndsWithMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("LIKE(%%)"));
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("LIKE(%)"));
     }
   }
 }
