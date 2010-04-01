@@ -24,33 +24,33 @@ using Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallGenerators;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallGenerators
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallGenerators
 {
   [TestFixture]
-  public class ContainsMethodCallSqlGeneratorTest
+  public class SubstringMethodCallSqlGeneratorTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          ContainsMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Contains", new Type[] { typeof (string) })));
+          SubstringMethodCallSqlGenerator.SupportedMethods.Contains (typeof (string).GetMethod ("Substring", new[] { typeof (int), typeof (int) })));
     }
 
     [Test]
-    public void GenerateSql_Contains ()
+    public void GenerateSql_Substring ()
     {
-      var method = typeof (string).GetMethod ("Contains", new Type[] { typeof (string) });
-      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant ("s"));
+      var method = typeof (string).GetMethod ("Substring", new Type[] { typeof (int), typeof (int) });
+      var methodCallExpression = Expression.Call (Expression.Constant ("Test"), method, Expression.Constant (0), Expression.Constant (1));
 
       var commandBuilder = new SqlCommandBuilder();
 
       var sqlGeneratingExpressionMock = MockRepository.GenerateMock<ExpressionTreeVisitor>();
       sqlGeneratingExpressionMock.Expect (mock => mock.VisitExpression (methodCallExpression)).Return (methodCallExpression);
 
-      var methodCallUpper = new ContainsMethodCallSqlGenerator();
+      var methodCallUpper = new SubstringMethodCallSqlGenerator();
       methodCallUpper.GenerateSql (methodCallExpression, commandBuilder, sqlGeneratingExpressionMock);
 
-      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("LIKE(%%)"));
+      Assert.That (commandBuilder.GetCommandText(), Is.EqualTo ("SUBSTRING(,,)"));
     }
   }
 }
