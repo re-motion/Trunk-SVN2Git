@@ -32,7 +32,7 @@ ViewLayout.AdjustActiveViewContent = function(viewContent)
   var viewTop = viewContentOffset == null ? 0 : viewContentOffset.top;
   
   var viewBottomControlsOffset = viewBottomControls.offset();
-  var bottomTop = viewBottomControlsOffset == null ? 0 : viewBottomControlsOffset;
+  var bottomTop = viewBottomControlsOffset == null ? 0 : viewBottomControlsOffset.top;
   
   var viewNewHeight = bottomTop - viewTop - viewContentBorderHeight - viewBottomControlsBorderHeight;
 
