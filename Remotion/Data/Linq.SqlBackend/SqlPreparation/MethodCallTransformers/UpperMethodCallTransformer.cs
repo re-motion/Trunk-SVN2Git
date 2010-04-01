@@ -16,23 +16,22 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
+using System.Linq;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="StartsWithMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the starts-with method.
+  /// <see cref="UpperMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the string upper method.
   /// </summary>
-  public class StartsWithMethodCallTransformer : IMethodCallTransformer
+  public class UpperMethodCallTransformer : IMethodCallTransformer
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-
-      var rightExpression = Expression.Constant (string.Format ("'{0}%'", methodCallExpression.Arguments[0]));
-
-      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
+      return new SqlFunctionExpression (methodCallExpression.Type, "UPPER", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
     }
   }
 }

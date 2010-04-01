@@ -17,24 +17,21 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
-  /// <see cref="EndsWithMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the ends-with method.
+  /// <see cref="ReplaceMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the replace method.
   /// </summary>
-  public class EndsWithMethodCallTransformer : IMethodCallTransformer
+  public class ReplaceMethodCallTransformer : IMethodCallTransformer
   {
     public Expression Transform (MethodCallExpression methodCallExpression)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-
-      var rightExpression = Expression.Constant (string.Format ("'%{0}'", methodCallExpression.Arguments[0]));
-
-      return new SqlBinaryOperatorExpression ("LIKE", methodCallExpression.Object, rightExpression);
+      return new SqlFunctionExpression (methodCallExpression.Type, "REPLACE", methodCallExpression.Object, methodCallExpression.Arguments.ToArray ());
     }
   }
 }

@@ -16,10 +16,11 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.Utilities;
 
-namespace Remotion.Data.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   /// <summary>
   /// <see cref="SubstringMethodCallTransformer"/> implements <see cref="IMethodCallTransformer"/> for the substring method.
