@@ -15,23 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
-namespace Remotion.Web.Factories
+namespace Remotion.Web.Legacy.Factories
 {
   /// <summary>
-  /// Responsible for creating objects that implement <see cref="IResourceUrl"/>.
+  /// Responsible for creating objects that implement <see cref="IResourceUrl"/> in quirks mode rendering.
+  /// Uses a <see cref="ResourceTheme"/> with the theme-name <c>Legacy</c> for <see cref="ThemedResourceUrl"/>.
   /// <seealso cref="ResourceUrl"/>
   /// <seealso cref="ThemedResourceUrl"/>
   /// </summary>
-  public class ResourceUrlFactory : IResourceUrlFactory
+  public class QuirksModeResourceUrlFactory : IResourceUrlFactory
   {
-    private readonly ResourceTheme _resourceTheme;
+    private readonly ResourceTheme _resourceTheme = new ResourceTheme ("Legacy");
 
-    public ResourceUrlFactory (ResourceTheme resourceTheme)
+    public QuirksModeResourceUrlFactory ()
     {
-      ArgumentUtility.CheckNotNull ("resourceTheme", resourceTheme);
-      _resourceTheme = resourceTheme;
     }
 
     public IResourceUrl CreateResourceUrl (Type definingType, ResourceType resourceType, string relativeUrl)

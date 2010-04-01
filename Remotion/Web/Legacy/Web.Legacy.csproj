@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\QuirksModeResourceUrlFactory.cs" />
     <Compile Include="Infrastructure\Factories\QuirksModeResourceUrlResolverFactory.cs" />
     <Compile Include="Infrastructure\QuirksModeResourceUrlResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

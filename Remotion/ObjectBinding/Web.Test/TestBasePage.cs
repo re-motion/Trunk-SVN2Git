@@ -34,6 +34,11 @@ namespace OBWTest
       IObjectWithResources //  Provides the WebForm's ResourceManager via GetResourceManager() 
       where TFunction : WxeFunction
   {
+    public TestBasePage ()
+    {
+      MasterPageFile = (Global.PreferQuirksModeRendering) ? "~/QuirksMode.Master" : "~/StandardMode.Master";
+    }
+
     protected new TFunction CurrentFunction
     {
       get { return (TFunction) base.CurrentFunction; }

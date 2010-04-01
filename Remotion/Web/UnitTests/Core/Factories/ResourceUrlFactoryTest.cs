@@ -32,10 +32,8 @@ namespace Remotion.Web.UnitTests.Core.Factories
     [SetUp]
     public void SetUp ()
     {
-      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator>();
       _resourceTheme = new ResourceTheme ("TestTheme");
-      serviceLocatorStub.Stub (stub => stub.GetInstance<ResourceTheme>()).Return (_resourceTheme);
-      _factory = ResourceUrlFactory.CreateFromServiceLocator (serviceLocatorStub);
+      _factory = new ResourceUrlFactory (_resourceTheme);
     }
 
     [Test]

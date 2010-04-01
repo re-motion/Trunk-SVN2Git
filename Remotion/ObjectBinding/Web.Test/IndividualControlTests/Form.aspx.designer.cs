@@ -11,7 +11,7 @@
 namespace OBWTest.IndividualControlTests {
     
     
-    public partial class IndividualControlTestForm {
+    public partial class Form {
         
         /// <summary>
         /// ScriptManager control.

@@ -21,6 +21,8 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ServiceLocation;
+using Remotion.Web;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
 
@@ -48,14 +50,10 @@ namespace OBWTest.UI
       set { WebConfiguration.Current.Wcag.ConformanceLevel = (Remotion.Web.Configuration.WaiConformanceLevel) value; }
     }
 
-    public string StatusText
+    protected override void OnLoad (EventArgs e)
     {
-      get { return TabbedMenu.StatusText; }
-      set { TabbedMenu.StatusText = value; }
-    }
+      base.OnLoad (e);
 
-    private void Page_Load (object sender, EventArgs e)
-    {
       Type itemType = GetType();
       PropertyInfo propertyInfo = itemType.GetProperty ("ConformanceLevel");
       EnumerationProperty property = new EnumerationProperty (
@@ -70,6 +68,15 @@ namespace OBWTest.UI
 
       WaiConformanceLevelField.Property = property;
       WaiConformanceLevelField.LoadUnboundValue (ConformanceLevel, IsPostBack);
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
+      string theme = Global.PreferQuirksModeRendering ? "" : SafeServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
+      TabbedMenu.StatusText = mode + " " + theme;
     }
 
     private void WaiConformanceLevelField_SelectionChanged (object sender, EventArgs e)
@@ -96,7 +103,6 @@ namespace OBWTest.UI
     private void InitializeComponent ()
     {
       this.WaiConformanceLevelField.SelectionChanged += new System.EventHandler (this.WaiConformanceLevelField_SelectionChanged);
-      this.Load += new System.EventHandler (this.Page_Load);
     }
 
     #endregion

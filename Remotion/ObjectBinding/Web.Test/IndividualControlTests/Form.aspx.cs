@@ -19,8 +19,6 @@ using System.Text;
 using System.Web.UI;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ServiceLocation;
-using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
@@ -28,15 +26,10 @@ using Remotion.Web.UI.Globalization;
 namespace OBWTest.IndividualControlTests
 {
   [WebMultiLingualResources ("OBWTest.Globalization.SingleBocTestBasePage")]
-  public partial class IndividualControlTestForm : TestBasePage<TestFunction>
+  public partial class Form : TestBasePage<TestFunction>
   {
     private IDataEditControl _dataEditControl;
     private bool _isCurrentObjectSaved = false;
-
-    public IndividualControlTestForm ()
-    {
-      MasterPageFile = (Global.PreferQuirksModeRendering) ? "~/QuirksMode.Master" : "~/StandardMode.Master";
-    }
 
     protected override void RegisterEventHandlers ()
     {
@@ -73,10 +66,6 @@ namespace OBWTest.IndividualControlTests
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-
-      string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
-      string theme = SafeServiceLocator.Current.GetInstance<ResourceTheme>().Name;
-      NavigationTabs.StatusText = mode + " " + theme;
 
       StringBuilder sb = new StringBuilder();
       sb.Append ("<b>Stack:</b><br />");

@@ -21,11 +21,6 @@ namespace OBWTest.ViewLayoutTests
 {
   public partial class Form : TestBasePage<TestFunction>
   {
-    public Form ()
-    {
-      MasterPageFile = (Global.PreferQuirksModeRendering) ? "~/QuirksMode.Master" : "~/StandardMode.Master";
-    }
-
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);

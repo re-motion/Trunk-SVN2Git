@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -26,15 +25,16 @@ using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
 using log4net;
 using log4net.Config;
-using log4net.Layout;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web;
 using Remotion.Web.Configuration;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -66,8 +66,8 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      var resourceTheme = Remotion.Web.ResourceTheme.NovaBlue;
-      PreferQuirksModeRendering = resourceTheme == Remotion.Web.ResourceTheme.Legacy;
+      var resourceTheme = ResourceTheme.NovaBlue;
+      PreferQuirksModeRendering = false;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -85,17 +85,19 @@ namespace OBWTest
 
       if (PreferQuirksModeRendering)
       {
-        RegisterRendererFactories (container,Assembly.Load (new AssemblyName("Remotion.Web.Legacy")));
-        RegisterRendererFactories (container, Assembly.Load (new AssemblyName ("Remotion.ObjectBinding.Web.Legacy")));
-     }
+        RegisterRendererFactories (container, typeof (QuirksModeRendererBase<>).Assembly);
+        RegisterRendererFactories (container, typeof (BocQuirksModeRendererBase<>).Assembly);
+      }
+      else
+      {
+        RegisterRendererFactories (container, typeof (RendererBase<>).Assembly);
+        RegisterRendererFactories (container, typeof (BocRendererBase<>).Assembly);
+        container.Register (Component.For<ResourceTheme>().Instance (resourceTheme));
+      }
+      container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
 
-      RegisterRendererFactories (container, Assembly.Load (new AssemblyName ("Remotion.Web")));
-      RegisterRendererFactories (container, Assembly.Load (new AssemblyName ("Remotion.ObjectBinding.Web")));
-      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme));
-      
-      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
-      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
+      var windoswServiceLocator = new WindsorServiceLocator (container);
+      ServiceLocator.SetLocatorProvider (() => windoswServiceLocator);
     }
 
     private void RegisterRendererFactories (IWindsorContainer container, Assembly assembly)
@@ -105,7 +107,7 @@ namespace OBWTest
               .FromAssembly (assembly)
               .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces())
-              .Configure (c => c.Named (c.ServiceType.Name)));
+              .Configure (c => c.Named (c.ServiceType.Name).LifeStyle.Singleton));
     }
 
     protected void Session_Start (Object sender, EventArgs e)
@@ -129,14 +131,15 @@ namespace OBWTest
         Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture (Request.UserLanguages[0]);
       }
       catch (ArgumentException)
-      { }
+      {
+      }
       try
       {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo (Request.UserLanguages[0]);
       }
       catch (ArgumentException)
-      { }
-
+      {
+      }
     }
 
     protected void Application_PostRequestHandlerExecute (Object sender, EventArgs e)
