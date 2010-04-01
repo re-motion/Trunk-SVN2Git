@@ -118,7 +118,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
           + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
 
       var dataSource = Maybe.ForValue (Control.DataSource);
-      string businessObjectClass = dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault ("");
+      string businessObjectClass =
+          dataSource.Select (ds => ds.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault (
+              dataSource.Select (ds => ds.BusinessObject).Select (o => o.BusinessObjectClass).Select (c => c.Identifier).ValueOrDefault (""));
       string businessObjectProperty = Maybe.ForValue (Control.Property).Select (p => p.Identifier).ValueOrDefault ("");
       string businessObjectID =
           dataSource.Select (ds => (IBusinessObjectWithIdentity) ds.BusinessObject).Select (o => o.UniqueIdentifier).ValueOrDefault ("");
