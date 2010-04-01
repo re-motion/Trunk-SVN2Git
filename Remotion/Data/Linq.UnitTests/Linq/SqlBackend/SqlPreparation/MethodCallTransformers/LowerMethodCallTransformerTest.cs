@@ -17,38 +17,37 @@
 using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using System.Linq;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class ContainsMethodCallTransformerTest
+  public class LowerMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          ContainsMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("Contains", new Type[] { typeof (string) })));
+          LowerMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("ToLower", new Type[] { })));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("Contains", new Type[] { typeof(string)});
+      var method = typeof (string).GetMethod ("ToLower", new Type[] { });
       var objectExpression = Expression.Constant ("Test");
-      var argument1 = Expression.Constant ("test");
-      var expression = Expression.Call (objectExpression, method, argument1);
-      var transformer = new ContainsMethodCallTransformer ();
+      var expression = Expression.Call (objectExpression, method);
+      var transformer = new LowerMethodCallTransformer ();
       var result = transformer.Transform (expression);
 
-      var rightExpression = Expression.Constant (string.Format ("'%{0}%'", argument1));
-
-      var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
+      Assert.That (result.Type, Is.EqualTo (typeof (string)));
+      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("LOWER"));
+      Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
+      Assert.That (((SqlFunctionExpression) result).Args, Is.Empty);
     }
   }
 }

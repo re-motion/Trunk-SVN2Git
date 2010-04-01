@@ -18,37 +18,37 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
-using Remotion.Data.Linq.UnitTests.Linq.Core.Parsing;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.MethodCallTransformers
+namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.MethodCallTransformers
 {
   [TestFixture]
-  public class StartsWithMethodCallTransformerTest
+  public class ReplaceMethodCallTransformerTest
   {
     [Test]
     public void SupportedMethods ()
     {
       Assert.IsTrue (
-          StartsWithMethodCallTransformer.SupportedMethods.Contains (typeof (string).GetMethod ("StartsWith", new[] { typeof (string) })));
+          ReplaceMethodCallTransformer.SupportedMethods.Contains (
+              typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) })));
     }
 
     [Test]
     public void Transform ()
     {
-      var method = typeof (string).GetMethod ("StartsWith", new Type[] { typeof (string) });
-      var objectExpression = Expression.Constant ("Test");
-      var argument1 = Expression.Constant ("test");
-      var expression = Expression.Call (objectExpression, method, argument1);
-      var transformer = new StartsWithMethodCallTransformer();
+      var method = typeof (string).GetMethod ("Replace", new Type[] { typeof (string), typeof (string) });
+      var objectExpression = Expression.Constant ("TAst");
+      var expression = Expression.Call (objectExpression, method, Expression.Constant ("A"), Expression.Constant ("B"));
+      var transformer = new ReplaceMethodCallTransformer();
       var result = transformer.Transform (expression);
 
-      var rightExpression = Expression.Constant (string.Format ("'{0}%'", argument1));
-
-      var fakeResult = new SqlBinaryOperatorExpression ("LIKE", objectExpression, rightExpression);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (result, fakeResult);
+      Assert.That (result, Is.InstanceOfType (typeof (SqlFunctionExpression)));
+      Assert.That (result.Type, Is.EqualTo (typeof (string)));
+      Assert.That (((SqlFunctionExpression) result).SqlFunctioName, Is.EqualTo ("REPLACE"));
+      Assert.That (((SqlFunctionExpression) result).Prefix, Is.EqualTo (objectExpression));
+      Assert.That (((SqlFunctionExpression) result).Args.Length, Is.EqualTo (2));
     }
   }
 }
