@@ -5,7 +5,7 @@ span.bocReferenceValue
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
-  height: 1.7em;
+  min-height: 1.7em;
   top: 0;
 }
 

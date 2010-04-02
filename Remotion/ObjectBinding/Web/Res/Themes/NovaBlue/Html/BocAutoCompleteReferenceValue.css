@@ -5,7 +5,7 @@ span.bocAutoCompleteReferenceValue
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
-  height: 1.7em;
+  min-height: 1.7em;
   top: 0;
 }
 /* IE7 only */
@@ -120,6 +120,20 @@ span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuS
 {
   height: 1.7em;
 }
+span.bocAutoCompleteReferenceValue span.DropDownMenuContainer input
+{
+  height: 1.2em;
+}
+span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.bocAutoCompleteReferenceValueButton
+{
+  height: 1.5em;
+    margin-top: 0;
+}
+span.bocAutoCompleteReferenceValue span.DropDownMenuContainer a.bocAutoCompleteReferenceValueCommand
+{
+    margin-top: 0;
+}
+
 
 /* IE7 only */
 *:first-child+html span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect
@@ -129,8 +143,8 @@ span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuS
 
 span.bocAutoCompleteReferenceValue span.embeddedOptionsMenu span.bocAutoCompleteReferenceValueButton
 {
-  right: 0.25em;
-  top: 0.1em;
+  right: 0.3em;
+  top: 0.05em;
   width: 17px;
   left: auto;
 }

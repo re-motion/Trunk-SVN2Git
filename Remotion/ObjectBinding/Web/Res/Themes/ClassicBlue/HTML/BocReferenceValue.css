@@ -72,7 +72,9 @@ span.bocReferenceValue span.content.withoutOptionsMenu
 
 /* embeddedOptionsMenu */
 span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect,
-span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
+span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect,
+span.bocReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect select,
+span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect select
 {
   height: 1.7em;
 }

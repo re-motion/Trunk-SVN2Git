@@ -108,6 +108,10 @@ span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuS
 {
   height: 1.7em;
 }
+span.bocAutoCompleteReferenceValue span.DropDownMenuContainer a.bocAutoCompleteReferenceValueCommand
+{
+    margin-top: 0.05em;
+}
 
 /* IE7 only */
 *:first-child+html span.bocAutoCompleteReferenceValue span.DropDownMenuContainer span.DropDownMenuSelect
