@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
@@ -33,6 +34,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Logging;
 using Remotion.Utilities;
+using SqlCommandBuilder=Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -258,7 +260,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated.</param>
     /// <returns></returns>
-    public SqlCommand CreateSqlCommand (QueryModel queryModel)
+    public SqlCommandData CreateSqlCommand (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
@@ -414,7 +416,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="sqlStatement">The <see cref="SqlStatement"/> a sql query has to be generated.</param>
     /// <returns><see cref="SqlCommand"/> which represents the sql query.</returns>
-    protected virtual SqlCommand CreateSqlCommand (SqlStatement sqlStatement)
+    protected virtual SqlCommandData CreateSqlCommand (SqlStatement sqlStatement)
     {
       var commandBuilder = new SqlCommandBuilder();
       _generationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);

@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           ClassDefinition classDefinitionOfResult,
           string sortExpression);
 
-      SqlCommand CreateStatement (QueryModel queryModel);
+      SqlCommandData CreateStatement (QueryModel queryModel);
     }
 
     public bool CreateQueryCalled;
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public SqlCommand CreateStatement (QueryModel queryModel)
+    public SqlCommandData CreateStatement (QueryModel queryModel)
     {
       GetStatementCalled = true;
       return Base.CreateStatement (queryModel);

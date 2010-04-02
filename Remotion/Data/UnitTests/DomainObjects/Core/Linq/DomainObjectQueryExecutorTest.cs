@@ -618,7 +618,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     // TODO Review 2404: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., 
-    //add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommand
+    //add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommandData
 
     //TODO: 2404 uncomment when DomainObjectQueryable is refactored
     //[Test]
