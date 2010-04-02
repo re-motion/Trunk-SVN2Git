@@ -2380,7 +2380,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! HasSortingKeys)
         return null;
 
-      BocListRow[] sortedRows = GetIndexedRows (true);
+      BocListRow[] sortedRows = EnsureGotIndexedRowsSorted();
 
       IBusinessObject[] sortedBusinessObjects = new IBusinessObject[sortedRows.Length];
       for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
