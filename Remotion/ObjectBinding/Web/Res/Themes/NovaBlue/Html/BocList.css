@@ -3,8 +3,8 @@ div.bocList
 {
     display: block;
     position: relative;
-    height: auto;
-    width: auto; /* give it a value to make bocList scrollable, IE7 is buggy if you don't define height & width */
+    height: 10em;
+    width: 100%; /* give it a value to make bocList scrollable, IE7 is buggy if you don't define height & width */
 }
 
 /* Style applied to the BocList in read-only mode. */
@@ -164,13 +164,11 @@ td.bocListDataCellEven
 tr.bocListDataRow td.bocListDataCellOdd
 {
     background-color: White;
-    position: relative;
 }
 
 tr.bocListDataRow td.bocListDataCellEven
 {
     background-color: #f4f4f4;
-    position: relative;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */

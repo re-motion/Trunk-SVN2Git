@@ -12,6 +12,13 @@ span.bocTextValue
 span.bocTextValue input
 {
     width: 100%;
+    height: 1.2em;
+}
+
+/* IE7 only */
+*:first-child+html span.bocTextValue input
+{
+    height: 1.25em;
 }
 
 .bocTextValue.readOnly

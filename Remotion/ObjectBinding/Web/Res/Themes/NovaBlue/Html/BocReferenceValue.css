@@ -5,14 +5,15 @@ span.bocReferenceValue
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
-  min-height: 1.65em;
-  max-height: 2em;
+  height: 1.7em;
+  top: 0;
 }
 
 span.bocReferenceValue select
 {
    width: 100%;
    display: inline-block;
+   height: 1.68em;
 }
 
 span.bocReferenceValue.disabled img
@@ -82,16 +83,6 @@ span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSele
   height: 1.6em;
 }
 
-/* Mozilla only (Firefox) */
-html:not([dummy]) span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSelect
-{ 
-  height: 1.55em;
-}
-html:not([dummy]) span.bocReferenceValue.readOnly span.bocReferenceValueContent span.DropDownMenuSelect
-{ 
-  height: 1.4em;
-}
-
 /* WebKit browsers only (Safari, Chrome) */
 @media screen and (-webkit-min-device-pixel-ratio:0) { 
     span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
@@ -104,12 +95,6 @@ html:not([dummy]) span.bocReferenceValue.readOnly span.bocReferenceValueContent 
       height: 1.8em;
     }
 
-
-    span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
-    {
-      margin-top: 0.2em;
-    }
-    
     span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
     {
       height: 1.4em;
@@ -127,9 +112,16 @@ span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
 span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
 span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
 {
-  height: 1.4em;
+  height: 1.5em;
+  top: 0;
 }
-
+/* Mozilla only (Firefox) */
+html:not([dummy]) span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
+html:not([dummy]) span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
+html:not([dummy]) span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+{
+  height: 1.45em;
+}
 
 span.bocReferenceValue span.content,
 span.bocReferenceValue span.disabled span.content
@@ -145,9 +137,15 @@ span.bocReferenceValue span.bocReferenceValueOptionsMenu
 {
   position: absolute;
   display: inline-block;
-  top: 0;
   right: 0;
+  top: 0;
   width: 6em; /* Define width of span.bocReferenceValueOptionsMenu */
+}
+
+/* IE7 only */
+*:first-child+html span.bocReferenceValue span.bocReferenceValueOptionsMenu
+{
+  top: 0;
 }
 
 span.bocReferenceValue span.content.separateOptionsMenu

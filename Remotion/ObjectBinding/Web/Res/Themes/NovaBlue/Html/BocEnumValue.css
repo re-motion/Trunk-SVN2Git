@@ -11,6 +11,7 @@ span.bocEnumValue
 span.bocEnumValue select
 {
   width: 100%;
+  height: 1.68em;
 }
 
 .bocEnumValue.readOnly

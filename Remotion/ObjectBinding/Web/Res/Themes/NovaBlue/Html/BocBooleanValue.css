@@ -2,7 +2,8 @@
 
 .bocBooleanValue
 {
-  vertical-align: middle;
+    margin-right: 0.5em;
+    vertical-align: middle;
 }
 
 .bocBooleanValue.readOnly
@@ -11,4 +12,17 @@
 
 .bocBooleanValue.disabled
 {
+}
+
+.bocBooleanValue span
+{
+  vertical-align: middle;  
+}
+
+.bocBooleanValue.disabled img
+{
+  opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  -moz-opacity: 0.4;
 }
