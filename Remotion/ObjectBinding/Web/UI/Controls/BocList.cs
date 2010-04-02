@@ -2399,7 +2399,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       for (int idxRows = 0; idxRows < rowCount; idxRows++)
         rows.Add (new BocListRow (this, idxRows, (IBusinessObject) Value[idxRows]));
 
-      if (sorted)
+      if (sorted && HasSortingKeys)
         rows.Sort();
       return (BocListRow[]) rows.ToArray (typeof (BocListRow));
     }
