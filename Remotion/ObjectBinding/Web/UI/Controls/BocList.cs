@@ -2382,11 +2382,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       BocListRow[] sortedRows = EnsureGotIndexedRowsSorted();
 
-      IBusinessObject[] sortedBusinessObjects = new IBusinessObject[sortedRows.Length];
-      for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
-        sortedBusinessObjects[idxRows] = sortedRows[idxRows].BusinessObject;
-
-      return sortedBusinessObjects;
+      return sortedRows.Select (r => r.BusinessObject).ToArray();
     }
 
     /// <summary> Creates an array of indexed <see cref="IBusinessObject"/> instances, optionally sorted. </summary>
@@ -2404,7 +2400,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return (BocListRow[]) rows.ToArray (typeof (BocListRow));
     }
 
-    protected internal BocListRow[] EnsureGotIndexedRowsSorted ()
+    protected BocListRow[] EnsureGotIndexedRowsSorted ()
     {
       if (_indexedRowsSorted == null)
         _indexedRowsSorted = GetIndexedRows (true);
