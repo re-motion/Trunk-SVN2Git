@@ -78,6 +78,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void Query_WithCastInSubQuery ()
+    {
+      var query = from c in
+                      (from o in QueryFactory.CreateLinqQuery<Order>()
+                       where o.OrderNumber == 1
+                       select o).Cast<TestDomainBase>() select c;
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+    }
+
+    [Test]
     public void QueryWithFirst ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>() 
