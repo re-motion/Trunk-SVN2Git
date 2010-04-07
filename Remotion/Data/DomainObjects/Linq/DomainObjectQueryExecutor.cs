@@ -406,9 +406,7 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, _preparationStage);
 
-      _resolutionStage.ResolveSqlStatement (sqlStatement);
-
-      return sqlStatement;
+      return _resolutionStage.ResolveSqlStatement (sqlStatement);
     }
 
     /// <summary>

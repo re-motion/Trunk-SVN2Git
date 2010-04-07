@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo");
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      var sqlStatement = new SqlStatement(selectProjection, new[] { sqlTable }, new Ordering[]{ });
+      var sqlStatement = new SqlStatement(selectProjection, new[] { sqlTable }, new Ordering[]{ }, null, null, false, false);
       
       var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo(typeof (string), "q", sqlStatement));
       var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);

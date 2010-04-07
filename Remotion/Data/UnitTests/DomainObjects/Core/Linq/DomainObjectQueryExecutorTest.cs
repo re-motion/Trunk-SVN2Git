@@ -38,7 +38,6 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -70,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var resolver = new MappingResolver();
       var generator = new UniqueIdentifierGenerator();
       _context = new SqlPreparationContext();
-      _preparationStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(),_context, generator);
+      _preparationStage = new DefaultSqlPreparationStage (MethodCallTransformerRegistry.CreateDefault(), _context, generator);
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _generationStage = new DefaultSqlGenerationStage();
 
@@ -585,10 +584,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           fetchQuery2.Value.Statement,
           Is.EqualTo (
               "SELECT DISTINCT [t8].* "
-              +"FROM (SELECT [t7].* "
-              +"FROM (SELECT [t6].* "
-              +"FROM [CustomerView] AS [t6] WHERE ([t6].[Name] = @1)) AS [q4] CROSS JOIN [OrderView] AS [t7] "
-              +"WHERE ([q4].[ID] = [t7].[CustomerID])) AS [q5] CROSS JOIN [OrderItemView] AS [t8] WHERE ([q5].[ID] = [t8].[OrderID])"));
+              + "FROM (SELECT [t7].* "
+              + "FROM (SELECT [t6].* "
+              + "FROM [CustomerView] AS [t6] WHERE ([t6].[Name] = @1)) AS [q4] CROSS JOIN [OrderView] AS [t7] "
+              + "WHERE ([q4].[ID] = [t7].[CustomerID])) AS [q5] CROSS JOIN [OrderItemView] AS [t8] WHERE ([q5].[ID] = [t8].[OrderID])"));
       Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
@@ -606,7 +605,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (int));
       var sqlTable = new SqlTable (unresolvedTableInfo);
-      var sqlStatement = new SqlStatement (new SqlColumnExpression (typeof (Order), "o", "ID"), new[] { sqlTable }, new Ordering[] { });
+      var sqlStatement = new SqlStatement (
+          new SqlColumnExpression (typeof (Order), "o", "ID"), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
           _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
