@@ -109,39 +109,56 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  BocList_CheckWidthHeightStyle(bocList);
-  BocList_syncCheckboxes(bocList);
-
-  //activateTableHeader only on first scroll
-  var scrollTimer = null;
-  var container = $(bocList).find('div.bocListTable');
-  var horizontalScroll = container.scrollLeft();
-  container.bind('scroll', function(event)
+  var hasDimensions = false;
+  if ($.browser.msie)
   {
-      // don't do nothing if is horizontal scrolling
-      var currentHorizontalScroll = $(this).scrollLeft();
-      if (currentHorizontalScroll != horizontalScroll)
+      if ($(bocList).css('height') != 'auto' || $(bocList).css('width') != 'auto')
       {
-          horizontalScroll = currentHorizontalScroll;
-          return;
+          $(bocList).addClass('hasDimensions');
+          hasDimensions = true;
       }
-      var currentBocList = $(this);
-      BocList_activateTableHeader(currentBocList);
-      if (scrollTimer) clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(function() { BocList_fixHeaderPosition(currentBocList) }, 50);
-  });
-
-  //activateTableHeader on window resize
-  var resizeTimer = null;
-  $(window).bind('resize', function()
+  } else
   {
-      if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() { BocList_activateTableHeader(container); }, 50);
+      if ($(bocList).css('height') < $(bocList).children().eq(1).children().eq(0).children().eq(0).css('height'))
+      {
+          $(bocList).addClass('hasDimensions');
+          hasDimensions = true;
+      }
+  }
 
-      BocList_CheckWidthHeightStyle(bocList);
 
-  });
-}
+  if (hasDimensions)
+  {
+    //activateTableHeader only on first scroll
+    var scrollTimer = null;
+    var container = $(bocList).children().eq(1).children().eq(0);
+    var horizontalScroll = container.scrollLeft();
+    container.bind('scroll', function(event)
+    {
+    // don't do nothing if is horizontal scrolling
+    var currentHorizontalScroll = $(this).scrollLeft();
+    if (currentHorizontalScroll != horizontalScroll)
+    {
+        horizontalScroll = currentHorizontalScroll;
+        return;
+    }
+    var currentBocList = $(this);
+    BocList_activateTableHeader(currentBocList);
+    if (scrollTimer) clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function() { BocList_fixHeaderPosition(currentBocList) }, 50);
+    });
+
+    //activateTableHeader on window resize
+    var resizeTimer = null;
+    $(window).bind('resize', function()
+    {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() { BocList_activateTableHeader(container); }, 50);
+    });
+    } 
+      BocList_syncCheckboxes(bocList);
+  }
+
 
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
@@ -409,43 +426,7 @@ function BocList_syncCheckboxes(container)
     });
 }
 
-
-
 function checkScrollBarPresence(element)
 {
         return ((element.attr('scrollHeight') > element.innerHeight()) || (element.attr('scrollWidth') > element.innerWidth()));
 }
-
-
-
-/*BocList_OnResize*/
-function BocList_CheckWidthHeightStyle(bocList)
-{
-    var curr_width = parseInt($(bocList).css('width')) || 0;
-    if (curr_width > 0) $(bocList).addClass('hasWidth');
-    var curr_height = parseInt($(bocList).css('height')) || 0;
-    if (curr_height > 0)
-    {
-        $(bocList).addClass('hasHeight');
-    } else
-    {
-        // In IE7 manipulating DOM is causing DropDownMenuContainer to disappear
-        ($.browser.msie && parseInt($.browser.version) < 8)
-        return;
-        // Set height of bocList when is not specified
-        var bocListTableDiv = $(bocList).find('div.bocListTable');
-        var bocListTableTable = bocListTableDiv.children().eq(0);
-        var bocListTableTableHeight = bocListTableTable.attr('scrollHeight');
-        var bocListNavigator = $(bocList).children().eq(1).children().eq(1);
-        var bocListNavigatorHeight = bocListNavigator.attr('scrollHeight');
-        var scrollHeight = 5;
-        // detect presence of horizontal scroll bar
-        var bocListTableDivWidth = bocListTableDiv.attr('offsetWidth');
-        var bocListTableDivScrollWidth = bocListTableDiv.attr('scrollWidth');
-        if (bocListTableDivScrollWidth > bocListTableDivWidth)
-            scrollHeight = 20;
-        $(bocList).height(bocListTableTableHeight + bocListNavigatorHeight + scrollHeight);
-    }
-}
-
-

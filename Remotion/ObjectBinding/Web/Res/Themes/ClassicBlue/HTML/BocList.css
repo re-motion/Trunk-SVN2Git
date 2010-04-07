@@ -3,7 +3,7 @@ div.bocList
 {
     display: block;
     position: relative;
-    height: auto;
+    height: 10em;
     width: auto; /* give it a value to make bocList scrollable, IE7 is buggy if you don't define height & width */
 }
 
@@ -14,10 +14,8 @@ div.bocList
 
 /*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
-div.bocList.hasHeight div.bocListTableBlock,
-div.bocList.hasWidth div.bocListTableBlock,
-div.bocList.hasHeight div.bocListTableBlock div.bocListTable,
-div.bocList.hasWidth div.bocListTableBlock div.bocListTable
+div.bocList.hasDimensions div.bocListTableBlock,
+div.bocList.hasDimensions div.bocListTableBlock div.bocListTable
 {
     position: absolute;
     top: 0;
@@ -27,21 +25,18 @@ div.bocList.hasWidth div.bocListTableBlock div.bocListTable
     overflow: auto;
 }
 
-div.bocList.hasHeight div.bocListTableBlock,
-div.bocList.hasWidth div.bocListTableBlock
+div.bocList.hasDimensions div.bocListTableBlock
 {
     right: 10em; /* width of BocList menu block + some space */
 }
 
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
-div.bocList.hasHeight div.bocListTableBlock.hasNavigator div.bocListTable,
-div.bocList.hasWidth div.bocListTableBlock.hasNavigator div.bocListTable
+div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTable
 {
     bottom: 1.5em;
 }
 
-div.bocList.hasHeight div.bocListNavigator,
-div.bocList.hasWidth div.bocListNavigator
+div.bocList.hasDimensions div.bocListNavigator
 {
     position: absolute;
     bottom: 0;
