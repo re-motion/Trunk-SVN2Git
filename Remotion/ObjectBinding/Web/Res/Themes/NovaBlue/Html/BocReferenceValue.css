@@ -9,6 +9,11 @@ span.bocReferenceValue
   top: 0;
 }
 
+span.bocReferenceValue span.bocReferenceValueContent
+{
+	display: block;
+}
+
 span.bocReferenceValue select
 {
    width: 100%;

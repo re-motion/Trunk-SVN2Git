@@ -9,6 +9,11 @@ span.bocReferenceValue
   max-height: 2em;
 }
 
+span.bocReferenceValue span.bocReferenceValueContent
+{
+	display: block;
+}
+			
 span.bocReferenceValue select
 {
    width: 100%;
@@ -153,3 +158,4 @@ span.bocReferenceValue span.content.separateOptionsMenu
 {
   right: 6.25em; /* width of span.bocReferenceValueOptionsMenu + desired space between */
 }
+

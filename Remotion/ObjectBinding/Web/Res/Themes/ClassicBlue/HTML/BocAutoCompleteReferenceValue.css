@@ -9,6 +9,11 @@
   max-height: 2em;
 }
 
+span.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueContent
+{
+	display: block;
+}
+
 span.bocAutoCompleteReferenceValue input
 {
    width: 100%;
