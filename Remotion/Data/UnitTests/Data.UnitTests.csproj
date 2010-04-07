@@ -396,7 +396,7 @@
     <Compile Include="DomainObjects\Core\Serialization\VirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\LegacyDomainObjectQueryableTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DummyQueryable.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\FulltextIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />

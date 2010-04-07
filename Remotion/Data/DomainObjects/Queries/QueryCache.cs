@@ -40,13 +40,13 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to start the query with.</typeparam>
     /// <param name="id">The ID to associate with the LINQ queryable. This ID is used as the cache key of the parsed query.</param>
-    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="DomainObjectQueryable{T}"/>
+    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="LegacyDomainObjectQueryable{T}"/>
     /// to start the LINQ query with.</param>
     /// <returns>An <see cref="IQuery"/> implementation corresponding to the LINQ query returned by <paramref name="queryGenerator"/>.</returns>
     /// <remarks>
     /// The <paramref name="queryGenerator"/> delegate is only evaluated if no query with the given <paramref name="id"/> is found in the cache.
     /// </remarks>
-    public IQuery GetQuery<T> (string id, Func<DomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
+    public IQuery GetQuery<T> (string id, Func<LegacyDomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
@@ -66,14 +66,14 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <typeparam name="T">The <see cref="DomainObject"/> type to start the query with.</typeparam>
     /// <param name="transaction">The transaction whose <see cref="IQueryManager"/> is used to execute the query.</param>
     /// <param name="id">The ID to associate with the LINQ queryable. This ID is used as the cache key of the parsed query.</param>
-    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="DomainObjectQueryable{T}"/>
+    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="LegacyDomainObjectQueryable{T}"/>
     /// to start the LINQ query with.</param>
     /// <returns>An <see cref="ObjectList{T}"/> holding the query results.</returns>
     /// <remarks>
     /// The <paramref name="queryGenerator"/> delegate is only evaluated if no query with the given <paramref name="id"/> is found in the cache. However,
     /// the query is always executed.
     /// </remarks>
-    public QueryResult<T> ExecuteCollectionQuery<T> (ClientTransaction transaction, string id, Func<DomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
+    public QueryResult<T> ExecuteCollectionQuery<T> (ClientTransaction transaction, string id, Func<LegacyDomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);

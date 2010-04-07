@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Linq
   /// The implementation of <see cref="IQueryable{T}"/> for querying <see cref="DomainObject"/> instances.
   /// </summary>
   /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
-  public class DomainObjectQueryable<T> : QueryableBase<T> 
+  public class LegacyDomainObjectQueryable<T> : QueryableBase<T> 
   {
     private static IQueryProvider CreateProvider (ISqlGenerator sqlGenerator)
     {
@@ -51,24 +51,24 @@ namespace Remotion.Data.DomainObjects.Linq
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
 
-      return new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry);
+      return new DefaultQueryProvider (typeof (LegacyDomainObjectQueryable<>), executor, nodeTypeRegistry);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainObjectQueryable&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="LegacyDomainObjectQueryable{T}"/> class.
     /// </summary>
     /// <param name="provider">The provider to be used for querying.</param>
-    /// <param name="expression">The expression encapsulated by this <see cref="DomainObjectQueryable{T}"/> instance.</param>
+    /// <param name="expression">The expression encapsulated by this <see cref="LegacyDomainObjectQueryable{T}"/> instance.</param>
     /// <remarks>
     /// This constructor is used by the standard query methods defined in <see cref="Queryable"/> when a LINQ query is constructed.
     /// </remarks>
-    public DomainObjectQueryable (QueryProviderBase provider, Expression expression)
+    public LegacyDomainObjectQueryable (QueryProviderBase provider, Expression expression)
       : base (provider, expression)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainObjectQueryable&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="LegacyDomainObjectQueryable{T}"/> class.
     /// </summary>
     /// <param name="sqlGenerator">The <see cref="ISqlGenerator"/> to be used when this query is translated into SQL.</param>
     /// <remarks>
@@ -81,14 +81,14 @@ namespace Remotion.Data.DomainObjects.Linq
     /// direct constructor call.
     /// </para>
     /// </remarks>
-    public DomainObjectQueryable (ISqlGenerator sqlGenerator)
+    public LegacyDomainObjectQueryable (ISqlGenerator sqlGenerator)
       : base (CreateProvider(sqlGenerator))
     {
     }
 
     public override string ToString ()
     {
-      return "DomainObjectQueryable<" + typeof (T).Name + ">";
+      return "LegacyDomainObjectQueryable<" + typeof (T).Name + ">";
     }
 
     public LegacyDomainObjectQueryExecutor GetExecutor ()

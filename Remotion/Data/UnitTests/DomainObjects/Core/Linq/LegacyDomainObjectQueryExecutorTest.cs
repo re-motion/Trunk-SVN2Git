@@ -538,7 +538,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
-        var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+        var queryable = new LegacyDomainObjectQueryable<Order> (_sqlGenerator);
         Assert.That (Mixin.Get<TestLegacyQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
       }
     }
@@ -548,7 +548,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
-        var queryable = new DomainObjectQueryable<Computer> (_sqlGenerator);
+        var queryable = new LegacyDomainObjectQueryable<Computer> (_sqlGenerator);
         var executor = queryable.GetExecutor();
 
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
@@ -562,7 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestLegacyQueryExecutorMixin> ().EnterScope ())
       {
-        var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+        var queryable = new LegacyDomainObjectQueryable<Order> (_sqlGenerator);
         var executor = queryable.GetExecutor();
 
         ClassDefinition classDefinition = executor.StartingClassDefinition;

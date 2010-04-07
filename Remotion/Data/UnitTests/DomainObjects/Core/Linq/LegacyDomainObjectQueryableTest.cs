@@ -30,7 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class DomainObjectQueryableTest
+  public class LegacyDomainObjectQueryableTest
   {
     private SqlServerGenerator _sqlGenerator;
 
@@ -44,22 +44,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void Initialization_WrongType ()
     {
-      new DomainObjectQueryable<DomainObject> (_sqlGenerator);
+      new LegacyDomainObjectQueryable<DomainObject> (_sqlGenerator);
     }
 
     [Test]
     public void Provider_AutoInitialized()
     {
-      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+      var queryable = new LegacyDomainObjectQueryable<Order> (_sqlGenerator);
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
-      Assert.That (((DefaultQueryProvider) queryable.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
+      Assert.That (((DefaultQueryProvider) queryable.Provider).QueryableType, Is.SameAs (typeof (LegacyDomainObjectQueryable<>)));
     }
 
     [Test]
     public void Provider_AutoInitialized_ContainsObjectIsRegistered ()
     {
-      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+      var queryable = new LegacyDomainObjectQueryable<Order> (_sqlGenerator);
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
       Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (containsObjectMethod),
           Is.SameAs (typeof (ContainsObjectExpressionNode)));
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void Provider_AutoInitialized_ContainsFetchMethods ()
     {
-      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+      var queryable = new LegacyDomainObjectQueryable<Order> (_sqlGenerator);
 
       var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
       var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
@@ -90,8 +90,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Provider_PassedIn ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      var expectedProvider = new DefaultQueryProvider (typeof (DomainObjectQueryable<>), new LegacyDomainObjectQueryExecutor (_sqlGenerator, classDefinition));
-      var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
+      var expectedProvider = new DefaultQueryProvider (typeof (LegacyDomainObjectQueryable<>), new LegacyDomainObjectQueryExecutor (_sqlGenerator, classDefinition));
+      var queryable = new LegacyDomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (LegacyDomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));
     }

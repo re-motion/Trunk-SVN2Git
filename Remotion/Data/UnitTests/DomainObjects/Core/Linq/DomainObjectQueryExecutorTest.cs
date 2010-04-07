@@ -620,24 +620,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     // TODO Review 2404: These tests need to be enabled before the task can be closed. Rename the existing mixin to Legacy..., 
     //add identical TestQueryExecutorMixin but change signature of CreateStatement override to return SqlCommandData
 
-    //TODO: 2404 uncomment when DomainObjectQueryable is refactored
+    //TODO: 2404 uncomment when LegacyDomainObjectQueryable is refactored
     //[Test]
     //public void CanBeMixed ()
     //{
     //  using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
     //  {
-    //    var queryable = new DomainObjectQueryable<Order> ();
+    //    var queryable = new LegacyDomainObjectQueryable<Order> ();
     //    Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
     //  }
     //}
 
-    //TODO: 2404 uncomment when DomainObjectQueryable is refactored
+    //TODO: 2404 uncomment when LegacyDomainObjectQueryable is refactored
     //[Test]
     //public void GetStatement_CanBeMixed ()
     //{
     //  using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
     //  {
-    //    var queryable = new DomainObjectQueryable<Computer> (_sqlGenerator);
+    //    var queryable = new LegacyDomainObjectQueryable<Computer> (_sqlGenerator);
     //    var executor = queryable.GetExecutor ();
 
     //    var query = from computer in QueryFactory.CreateLinqQuery<Computer> () select computer;
@@ -646,13 +646,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     //  }
     //}
 
-    //TODO: 2404 uncomment when DomainObjectQueryable is refactored
+    //TODO: 2404 uncomment when LegacyDomainObjectQueryable is refactored
     //[Test]
     //public void CreateQuery_CanBeMixed ()
     //{
     //  using (MixinConfiguration.BuildNew ().ForClass (typeof (LegacyDomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
     //  {
-    //    var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+    //    var queryable = new LegacyDomainObjectQueryable<Order> (_sqlGenerator);
     //    var executor = queryable.GetExecutor ();
 
     //    ClassDefinition classDefinition = executor.StartingClassDefinition;

@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select o ).Distinct();
       query.Single();
 
-      Assert.That (query, Is.InstanceOfType (typeof(DomainObjectQueryable<Order>)));
+      Assert.That (query, Is.InstanceOfType (typeof(LegacyDomainObjectQueryable<Order>)));
     }
 
     [Test]

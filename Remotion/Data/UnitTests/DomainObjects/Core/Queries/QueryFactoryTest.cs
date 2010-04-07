@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, "
         + "it is of type 'EnumerableQuery`1', with a query provider of type 'EnumerableQuery`1'. Be sure to use QueryFactory.CreateLinqQuery to "
         + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
     public void CreateQuery_FromLinqQuery_InvalidQueryable ()
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, "
         + "it is of type 'TestQueryable`1', with a query provider of type 'DefaultQueryProvider'. Be sure to use QueryFactory.CreateLinqQuery to "
         + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
     public void CreateQuery_FromLinqQuery_InvalidQueryExecutor ()
