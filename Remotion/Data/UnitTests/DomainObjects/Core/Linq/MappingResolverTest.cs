@@ -26,6 +26,7 @@ using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -68,6 +69,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Student), "Student", "s"));
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
       _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+    }
+
+    [Test]
+    public void ResolveTableReferenceExpression_NoTable_InSubStatement ()
+    {
+      var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo");
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
+      var sqlStatement = new SqlStatement(selectProjection, new[] { sqlTable }, new Ordering[]{ });
+      
+      var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo(typeof (string), "q", sqlStatement));
+      var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);
+      var result = _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      var fakeTable = new SqlTable(subStatementTable.GetResolvedTableInfo());
+      
+      Assert.That (result, Is.TypeOf (typeof (SqlValueTableReferenceExpression)));
+      Assert.That (((SqlValueTableReferenceExpression) result).SqlTable.TableInfo, Is.EqualTo (fakeTable.TableInfo));
     }
 
     [Test]

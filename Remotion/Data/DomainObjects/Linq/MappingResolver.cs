@@ -15,14 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
@@ -91,6 +90,9 @@ namespace Remotion.Data.DomainObjects.Linq
       var classDefinition = GetClassDefinition (tableReferenceExpression.Type);
       if (classDefinition == null)
       {
+        if (tableReferenceExpression.SqlTable.GetResolvedTableInfo() is ResolvedSubStatementTableInfo)
+          return new SqlValueTableReferenceExpression (new SqlTable (tableReferenceExpression.SqlTable.GetResolvedTableInfo()));
+
         string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.Type.Name);
         throw new UnmappedItemException (message);
       }
