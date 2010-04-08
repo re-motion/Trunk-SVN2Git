@@ -24,7 +24,7 @@ ViewLayout.AdjustActiveViewContent = function(viewContent)
 {
   var viewContentBorder = viewContent.children().eq(0);
   var viewBottomControls = viewContent.next();
-  if ($.browser.opera) viewBottomControls.css({ 'border':'solid 0 transparent' });
+  if ($.browser.opera) viewBottomControls.addClass('tabbedMultiViewBottomControlsOperaWorkaround');
 
   var viewContentBorderHeight = viewContentBorder.outerHeight(true) - viewContentBorder.height();
   var viewBottomControlsBorderHeight = viewBottomControls.outerHeight(true) - viewBottomControls.height();

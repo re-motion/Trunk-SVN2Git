@@ -141,6 +141,11 @@ div.tabbedMultiViewBottomControls
   width: auto;
 }
 
+div.tabbedMultiViewBottomControlsOperaWorkaround
+{
+    border: solid 0 transparent;
+}
+
 div.tabbedMultiViewBottomControls div.content 
 {
   margin-top: 0.5em;
