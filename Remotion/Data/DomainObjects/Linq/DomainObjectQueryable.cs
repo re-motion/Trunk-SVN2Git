@@ -34,18 +34,24 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     private static IQueryProvider CreateProvider ()
     {
-      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      var generator = new UniqueIdentifierGenerator();
-      var context = new SqlPreparationContext();
-      var sqlPreparationStage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), context, generator);
-      var mappinResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), generator);
+      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
+
+      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+      var context = new SqlPreparationContext ();
+      var sqlPreparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, context, uniqueIdentifierGenerator);
+      var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), uniqueIdentifierGenerator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
 
-      var executor =
-          ObjectFactory.Create<DomainObjectQueryExecutor> (
-              ParamList.Create (classDefinition, sqlPreparationStage, mappinResolutionStage, sqlGenerationStage, context));
+      var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
+      var constructorParameters = ParamList.Create (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, context);
+      var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (constructorParameters);
 
+      var nodeTypeRegistry = CreateNodeTypeRegistry();
+      return new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry);
+    }
+
+    private static MethodCallExpressionNodeTypeRegistry CreateNodeTypeRegistry ()
+    {
       var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
 
       nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
@@ -54,8 +60,7 @@ namespace Remotion.Data.DomainObjects.Linq
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
       nodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
-
-      return new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry);
+      return nodeTypeRegistry;
     }
 
     /// <summary>

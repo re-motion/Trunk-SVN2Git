@@ -44,6 +44,8 @@ namespace Remotion.Data.DomainObjects.Linq
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (DomainObjectQueryExecutor));
+
+    private readonly ClassDefinition _startingClassDefinition;
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
@@ -71,14 +73,23 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      StartingClassDefinition = startingClassDefinition;
+      _startingClassDefinition = startingClassDefinition;
+
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
       _context = context;
     }
 
-    public ClassDefinition StartingClassDefinition { get; private set; }
+    /// <summary>
+    /// Gets the starting class definition, i.e., the <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started with.
+    /// This determines the <see cref="StorageProvider"/> used for the query.
+    /// </summary>
+    /// <value>The starting <see cref="ClassDefinition"/>.</value>
+    public ClassDefinition StartingClassDefinition
+    {
+      get { return _startingClassDefinition; }
+    }
 
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
@@ -260,7 +271,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="queryModel">The <see cref="QueryModel"/> a sql query is generated.</param>
     /// <returns></returns>
-    public SqlCommandData CreateSqlCommand (QueryModel queryModel)
+    public virtual SqlCommandData CreateSqlCommand (QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
@@ -404,6 +415,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>the generated <see cref="SqlStatement"/></returns>
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
+      // TODO 2564: Use _preparationStage.PrepareSqlStatement (queryModel) instead; remove _context field
       var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, _preparationStage);
 
       return _resolutionStage.ResolveSqlStatement (sqlStatement);
