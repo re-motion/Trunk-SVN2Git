@@ -67,6 +67,13 @@ namespace Remotion.Data.DomainObjects.Queries
       return new LegacyDomainObjectQueryable<T> (sqlGenerator);
     }
 
+    //public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlGenerator sqlGenerator)
+    //    where T : DomainObject
+    //{
+    //  ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
+    //  return new DomainObjectQueryable<T> ();
+    //}
+
     /// <summary>
     /// Creates a <see cref="LegacyDomainObjectQueryable{T}"/> used as the entry point to a LINQ query.
     /// </summary>
@@ -95,6 +102,12 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       return new LegacyDomainObjectQueryable<T> (GetDefaultSqlGenerator (typeof (T)));
     }
+
+    //public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
+    //    where T : DomainObject
+    //{
+    //  return new DomainObjectQueryable<T> ();
+    //}
 
     /// <summary>
     /// Returns the default <see cref="ISqlGenerator"/> associated with the given <paramref name="domainObjectType"/>.
@@ -167,6 +180,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var provider = queryable.Provider as QueryProviderBase;
       var queryExecutor = provider != null ? provider.Executor as LegacyDomainObjectQueryExecutor : null;
+      
       if (provider == null || queryExecutor == null)
       {
         string message = string.Format ("The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, it is of type '{0}',"
@@ -181,6 +195,30 @@ namespace Remotion.Data.DomainObjects.Queries
 
       return queryExecutor.CreateQuery (id, queryModel, fetchQueryModelBuilders, QueryType.Collection);
     }
+
+
+    //public static IQuery CreateQuery (string id, IQueryable queryable)
+    //{
+    //  ArgumentUtility.CheckNotNull ("queryable", queryable);
+    //  ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+
+    //  var provider = queryable.Provider as QueryProviderBase;
+    //  var queryExecutor = provider != null ? provider.Executor as DomainObjectQueryExecutor : null;
+
+    //  if (provider == null || queryExecutor == null)
+    //  {
+    //    string message = string.Format ("The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, it is of type '{0}',"
+    //        + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateLinqQuery to create the queryable instance, and only use "
+    //        + "standard query methods on it.", queryable.GetType ().Name, queryable.Provider.GetType ().Name);
+    //    throw new ArgumentException (message, "queryable");
+    //  }
+
+    //  var expression = queryable.Expression;
+    //  var queryModel = provider.GenerateQueryModel (expression);
+    //  var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
+
+    //  return queryExecutor.CreateQuery (id, queryModel, fetchQueryModelBuilders, QueryType.Collection);
+    //}
 
 
     /// <summary>

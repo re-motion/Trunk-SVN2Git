@@ -46,17 +46,31 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <remarks>
     /// The <paramref name="queryGenerator"/> delegate is only evaluated if no query with the given <paramref name="id"/> is found in the cache.
     /// </remarks>
+    //public IQuery GetQuery<T> (string id, Func<DomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
+    //{
+    //  ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+    //  ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
+
+    //  return _cache.GetOrCreateValue (id, delegate
+    //                                      {
+    //                                        var querySource = QueryFactory.CreateLinqQuery<T> ();
+    //                                        var query = queryGenerator (querySource);
+    //                                        return QueryFactory.CreateQuery (id, query);
+    //                                      });
+    //}
+
+
     public IQuery GetQuery<T> (string id, Func<LegacyDomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
 
       return _cache.GetOrCreateValue (id, delegate
-                                          {
-                                            var querySource = QueryFactory.CreateLinqQuery<T> ();
-                                            var query = queryGenerator (querySource);
-                                            return QueryFactory.CreateQuery (id, query);
-                                          });
+      {
+        var querySource = QueryFactory.CreateLinqQuery<T> ();
+        var query = queryGenerator (querySource);
+        return QueryFactory.CreateQuery (id, query);
+      });
     }
 
     /// <summary>
@@ -73,6 +87,16 @@ namespace Remotion.Data.DomainObjects.Queries
     /// The <paramref name="queryGenerator"/> delegate is only evaluated if no query with the given <paramref name="id"/> is found in the cache. However,
     /// the query is always executed.
     /// </remarks>
+    //public QueryResult<T> ExecuteCollectionQuery<T> (ClientTransaction transaction, string id, Func<DomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
+    //{
+    //  ArgumentUtility.CheckNotNull ("transaction", transaction);
+    //  ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+    //  ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
+
+    //  IQuery query = GetQuery (id, queryGenerator);
+    //  return transaction.QueryManager.GetCollection<T> (query);
+    //}
+
     public QueryResult<T> ExecuteCollectionQuery<T> (ClientTransaction transaction, string id, Func<LegacyDomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);

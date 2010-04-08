@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var property = (PropertyInfo) memberExpression.MemberInfo;
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return new SqlColumnExpression (property.GetType(), tableAlias, "ID");
+        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID");
 
       var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
