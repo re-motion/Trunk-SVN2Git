@@ -273,6 +273,7 @@
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExpressionTreeComparer.cs" />
+    <Compile Include="DomainObjects\Core\Linq\IntegrationTests\DifferentMappingScenariosIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
