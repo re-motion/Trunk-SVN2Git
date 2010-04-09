@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -54,7 +55,24 @@ namespace Remotion.Web.UI
       Page = 3
     }
 
-    private static HtmlHeadAppender s_designModeCurrent;
+    /// <summary>
+    ///   Gets the <see cref="HtmlHeadAppender"/> instance.
+    /// </summary>
+    public static HtmlHeadAppender Current
+    {
+      get
+      {
+        var current = (HtmlHeadAppender) SafeContext.Instance.GetData (c_contextKey);
+
+        if (current == null)
+        {
+          current = new HtmlHeadAppender ();
+          SafeContext.Instance.SetData (c_contextKey, current);
+        }
+
+        return current;
+      }
+    }
 
     /// <summary> ListDictionary&lt;string key, Control headElement&gt; </summary>
     private readonly ListDictionary _registeredHeadElements = new ListDictionary();
@@ -73,46 +91,6 @@ namespace Remotion.Web.UI
     /// <exclude/>
     private HtmlHeadAppender ()
     {
-    }
-
-    /// <summary>
-    ///   Gets the <see cref="HtmlHeadAppender"/> instance.
-    /// </summary>
-    public static HtmlHeadAppender Current
-    {
-      get
-      {
-        if (HtmlHeadContents.IsDesignMode)
-          return GetDesignModeCurrent();
-        else
-          return GetCurrent();
-      }
-    }
-
-    private static HtmlHeadAppender GetCurrent ()
-    {
-      HtmlHeadAppender current = (HtmlHeadAppender) SafeContext.Instance.GetData (c_contextKey);
-
-      if (current == null)
-      {
-        lock (typeof (HtmlHeadAppender))
-        {
-          current = (HtmlHeadAppender) SafeContext.Instance.GetData (c_contextKey);
-          if (current == null)
-          {
-            current = new HtmlHeadAppender();
-            SafeContext.Instance.SetData (c_contextKey, current);
-          }
-        }
-      }
-      return current;
-    }
-
-    private static HtmlHeadAppender GetDesignModeCurrent ()
-    {
-      if (s_designModeCurrent == null)
-        s_designModeCurrent = new HtmlHeadAppender();
-      return s_designModeCurrent;
     }
 
     /// <summary>
