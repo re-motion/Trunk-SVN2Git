@@ -254,3 +254,13 @@ div.listControlContent .listControlButtons
   height: 1.8em;
   bottom: 0;
 }
+
+td.buttonCell span.DropDownMenuSelect
+{
+    width: 1.2em;
+}
+
+td.buttonCell span.DropDownMenuSelect span.DropDownMenuButton
+{
+    left: 0;
+}
