@@ -133,23 +133,6 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     }
 
     [Test]
-    public void Run_WithTimedOutThread_CallsAbort_WithRightThread ()
-    {
-      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
-      Thread threadRunnerThread = null;
-      var threadRunnerMock =
-          _mockRepository.PartialMock<ThreadRunner> ((ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; }, timeout);
-      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
-      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "AbortThread", Arg<Thread>.Is.Anything)).
-          WhenCalled ( // when this expectation is reached, assert that the threadRunnerThread was passed to the method
-          invocation => Assert.That (invocation.Arguments[0], Is.SameAs (threadRunnerThread)));
-
-      threadRunnerMock.Replay ();
-      threadRunnerMock.Run ();
-      threadRunnerMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void WithMillisecondsTimeout ()
     {
       ThreadRunner threadRunner = ThreadRunner.WithMillisecondsTimeout (delegate { }, 250);
