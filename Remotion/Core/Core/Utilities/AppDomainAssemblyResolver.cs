@@ -50,8 +50,12 @@ namespace Remotion.Utilities
 
     public AppDomainAssemblyResolver (string assemblyDirectory)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("assemblyDirectory", assemblyDirectory);
-      
+      // Must not access any other assemblies before AssemblyResolve is registered - perform argument check manually
+      if (assemblyDirectory == null)
+        throw new ArgumentNullException ("assemblyDirectory");
+      if (assemblyDirectory == string.Empty)
+        throw new ArgumentException ("Assembly directory must not be empty.", "assemblyDirectory");
+
       _assemblyDirectory = assemblyDirectory;
     }
 
@@ -62,6 +66,10 @@ namespace Remotion.Utilities
 
     public void Register (AppDomain appDomain)
     {
+      // Must not access any other assemblies before AssemblyResolve is registered - perform argument check manually
+      if (appDomain == null)
+        throw new ArgumentNullException ("appDomain");
+
       appDomain.AssemblyResolve += ResolveAssembly;
     }
 

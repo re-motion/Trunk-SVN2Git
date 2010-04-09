@@ -26,6 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities
 {
   [TestFixture]
+  [Serializable]
   public class AppDomainAssemblyResolverTest
   {
     private string _testDllPath;
@@ -73,6 +74,27 @@ namespace Remotion.UnitTests.Utilities
       var resolver = AppDomainAssemblyResolver.CreateInAppDomain (_appDomain, AppDomain.CurrentDomain.BaseDirectory);
       Assert.That (RemotingServices.IsTransparentProxy (resolver), Is.True);
       Assert.That (resolver.AssemblyDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+    }
+
+    [Test]
+    public void CreateInAppDomain_FromShadowCopiedScenario ()
+    {
+      var setupInfo = AppDomain.CurrentDomain.SetupInformation;
+      setupInfo.ShadowCopyFiles = "true";
+      var shadowCopiedAppDomain = AppDomain.CreateDomain ("ShadowCopier", AppDomain.CurrentDomain.Evidence, setupInfo);
+      try
+      {
+        shadowCopiedAppDomain.DoCallBack (
+            delegate
+            {
+              var resolver = AppDomainAssemblyResolver.CreateInAppDomain (_appDomain, AppDomain.CurrentDomain.BaseDirectory);
+              Assert.That (resolver, Is.Not.Null);
+            });
+      }
+      finally
+      {
+        AppDomain.Unload (shadowCopiedAppDomain);
+      }
     }
 
     [Test]
