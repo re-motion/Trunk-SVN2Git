@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO: Not possible in current test domain!?")]
+    [Ignore("TODO 2517: Not possible in current test domain!?")]
     public void ConcreteObjects_MemberAccessInSameClass_ConcreteTableInheritance ()
     {
       
