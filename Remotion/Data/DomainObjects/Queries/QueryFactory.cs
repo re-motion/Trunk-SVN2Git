@@ -24,6 +24,8 @@ using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
@@ -35,7 +37,8 @@ namespace Remotion.Data.DomainObjects.Queries
   public static class QueryFactory
   {
     /// <summary>
-    /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query.
+    /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with default implementation 
+    /// of different sql transformating and generating stages.
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
@@ -60,10 +63,29 @@ namespace Remotion.Data.DomainObjects.Queries
       var generator = new UniqueIdentifierGenerator();
       var resolver = new MappingResolver();
       return new DomainObjectQueryable<T> (
-          new DefaultSqlPreparationStage (registry, context, generator),
-          new DefaultMappingResolutionStage (resolver, generator),
-          new DefaultSqlGenerationStage(),
-          context);
+        ObjectFactory.Create<DefaultSqlPreparationStage>(ParamList.Create(registry, context, generator)),
+        ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
+        ObjectFactory.Create<DefaultSqlGenerationStage>(ParamList.Empty),context);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query 
+    /// with user defined sql transformating and generating stages.
+    /// </summary>
+    /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
+    /// <param name="preparationStage">Implementation of <see cref="ISqlPreparationStage"/>.</param>
+    /// <param name="resolutionStage">Implementation of <see cref="IMappingResolutionStage"/>.</param>
+    /// <param name="generationStage">Implementation of <see cref="ISqlGenerationStage"/>.</param>
+    /// <param name="context">Instance of <see cref="SqlPreparationContext"/>.</param>
+    /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage, SqlPreparationContext context) where T : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
+      ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
+      ArgumentUtility.CheckNotNull ("generationStage", generationStage);
+      ArgumentUtility.CheckNotNull ("context", context);
+      
+      return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage, context);
     }
 
     /// <summary>
