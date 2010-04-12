@@ -122,7 +122,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    //[Ignore ("TODO Fix 2534 - Is...(typeof(DomainObjectQueryable<Order>)")]
     public void QueryDistinctTest ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber == 4
