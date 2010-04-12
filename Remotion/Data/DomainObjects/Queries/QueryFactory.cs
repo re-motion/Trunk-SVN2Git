@@ -20,8 +20,10 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
-
 using Remotion.Data.Linq.EagerFetching;
+using Remotion.Data.Linq.SqlBackend.MappingResolution;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
@@ -51,9 +53,17 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </code>
     /// </example>
     public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
-        where T : DomainObject
+        where T: DomainObject
     {
-      return new DomainObjectQueryable<T> ();
+      var context = new SqlPreparationContext();
+      var registry = MethodCallTransformerRegistry.CreateDefault();
+      var generator = new UniqueIdentifierGenerator();
+      var resolver = new MappingResolver();
+      return new DomainObjectQueryable<T> (
+          new DefaultSqlPreparationStage (registry, context, generator),
+          new DefaultMappingResolutionStage (resolver, generator),
+          new DefaultSqlGenerationStage(),
+          context);
     }
 
     /// <summary>
@@ -111,9 +121,12 @@ namespace Remotion.Data.DomainObjects.Queries
 
       if (provider == null || queryExecutor == null)
       {
-        string message = string.Format ("The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"
+        string message = string.Format (
+            "The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"
             + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateLinqQuery to create the queryable instance, and only use "
-            + "standard query methods on it.", queryable.GetType ().Name, queryable.Provider.GetType ().Name);
+            + "standard query methods on it.",
+            queryable.GetType().Name,
+            queryable.Provider.GetType().Name);
         throw new ArgumentException (message, "queryable");
       }
 
@@ -133,8 +146,8 @@ namespace Remotion.Data.DomainObjects.Queries
     /// held by the current <see cref="QueryConfiguration"/>.</returns>
     public static IQuery CreateQueryFromConfiguration (string id)
     {
-      ArgumentUtility.CheckNotNullOrEmpty("id", id);
-      return CreateQueryFromConfiguration (id, new QueryParameterCollection ());
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      return CreateQueryFromConfiguration (id, new QueryParameterCollection());
     }
 
     /// <summary>
@@ -186,7 +199,8 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="collectionType">The collection type to be returned from the query. Pass <see cref="DomainObjectCollection"/> if you don't care
     /// about the collection type. The type passed here is used by <see cref="QueryResult{T}.ToCustomCollection"/>.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
-    public static IQuery CreateCollectionQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
+    public static IQuery CreateCollectionQuery (
+        string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);

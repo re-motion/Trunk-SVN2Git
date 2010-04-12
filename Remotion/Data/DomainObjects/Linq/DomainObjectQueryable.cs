@@ -25,6 +25,7 @@ using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
+using Remotion.Data.Linq.Utilities;
 using Remotion.Mixins;
 using Remotion.Reflection;
 
@@ -32,15 +33,16 @@ namespace Remotion.Data.DomainObjects.Linq
 {
   public class DomainObjectQueryable<T> : QueryableBase<T>
   {
-    private static IQueryProvider CreateProvider ()
+    private static IQueryProvider CreateProvider (
+        ISqlPreparationStage sqlPreparationStage,
+        IMappingResolutionStage mappingResolutionStage,
+        ISqlGenerationStage sqlGenerationStage,
+        SqlPreparationContext context)
     {
-      var uniqueIdentifierGenerator = new UniqueIdentifierGenerator ();
-
-      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
-      var context = new SqlPreparationContext ();
-      var sqlPreparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, context, uniqueIdentifierGenerator);
-      var mappingResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), uniqueIdentifierGenerator);
-      var sqlGenerationStage = new DefaultSqlGenerationStage();
+      ArgumentUtility.CheckNotNull ("sqlPreparationStage", sqlPreparationStage);
+      ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
+      ArgumentUtility.CheckNotNull ("sqlGenerationStage", sqlGenerationStage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
       var constructorParameters = ParamList.Create (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, context);
@@ -66,19 +68,6 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class.
     /// </summary>
-    /// <param name="provider">The provider to be used for querying.</param>
-    /// <param name="expression">The expression encapsulated by this <see cref="DomainObjectQueryable{T}"/> instance.</param>
-    /// <remarks>
-    /// This constructor is used by the standard query methods defined in <see cref="Queryable"/> when a LINQ query is constructed.
-    /// </remarks>
-    public DomainObjectQueryable (QueryProviderBase provider, Expression expression)
-        : base (provider, expression)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class.
-    /// </summary>
     /// <remarks>
     /// <para>
     /// This constructor marks the default entry point into a LINQ query for <see cref="DomainObject"/> instances. It is normally used to define
@@ -89,10 +78,28 @@ namespace Remotion.Data.DomainObjects.Linq
     /// direct constructor call.
     /// </para>
     /// </remarks>
-    public DomainObjectQueryable ()
-        : base (CreateProvider ())
+    public DomainObjectQueryable (
+        ISqlPreparationStage sqlPreparationStage,
+        IMappingResolutionStage mappingResolutionStage,
+        ISqlGenerationStage sqlGenerationStage,
+        SqlPreparationContext context)
+        : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, context))
     {
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainObjectQueryable{T}"/> class.
+    /// </summary>
+    /// <param name="provider">The provider to be used for querying.</param>
+    /// <param name="expression">The expression encapsulated by this <see cref="DomainObjectQueryable{T}"/> instance.</param>
+    /// <remarks>
+    /// This constructor is used by the standard query methods defined in <see cref="Queryable"/> when a LINQ query is constructed.
+    /// </remarks>
+    public DomainObjectQueryable (QueryProviderBase provider, Expression expression)
+        : base (provider, expression)
+    {
+    }
+
 
     public override string ToString ()
     {
