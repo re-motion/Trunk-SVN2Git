@@ -57,14 +57,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Ignore("2534 add new transformer for ExtendString")]
     public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
     {
-      QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (
-          typeof (MethodExtensions).GetMethod ("ExtendString", new[] { typeof (string)}), new MethodExtendString ());
+      //QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (
+      //    typeof (MethodExtensions).GetMethod ("ExtendString", new[] { typeof (string)}), new MethodExtendString ());
       
-      var computers =
-          from c in QueryFactory.CreateLinqQuery<Computer>()
-          where c.Employee.Name.ExtendString () == "Trillian"
-          select c;
-      CheckQueryResult (computers, DomainObjectIDs.Computer2);
+      //var computers =
+      //    from c in QueryFactory.CreateLinqQuery<Computer>()
+      //    where c.Employee.Name.ExtendString () == "Trillian"
+      //    select c;
+      //CheckQueryResult (computers, DomainObjectIDs.Computer2);
+      Assert.Fail();
     }
 
     [Test]

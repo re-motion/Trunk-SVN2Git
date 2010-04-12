@@ -18,114 +18,42 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Backend.SqlGeneration;
-using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
   /// <summary>
-  /// Provides a central entry point to get instances of <see cref="IQuery"/> and <see cref="LegacyDomainObjectQueryable{T}"/> query objects. Use this 
+  /// Provides a central entry point to get instances of <see cref="IQuery"/> and <see cref="DomainObjectQueryable{T}"/> query objects. Use this 
   /// factory to create LINQ queries or to read queries from the <see cref="QueryConfiguration"/>.
   /// </summary>
   public static class QueryFactory
   {
     /// <summary>
-    /// Creates a <see cref="LegacyDomainObjectQueryable{T}"/> used as the entry point to a LINQ query.
+    /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query.
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
-    /// <param name="sqlGenerator">The <see cref="ISqlGenerator"/> object to be used for generating the query command string.</param>
-    /// <returns>A <see cref="LegacyDomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    /// <remarks>
-    /// Use this overload to explicitly specify the <see cref="ISqlGenerator"/> used to generate the query command string. To have the storage
-    /// provider automatically supply the right generator, use the <see cref="CreateLinqQuery{T}()"/> overload.
-    /// </remarks>
-    /// <example>
-    /// The following example creates a new instance of <see cref="SqlServerGenerator"/> and supplies it to 
-    /// <see cref="CreateLinqQuery{T}()"/>. The object returned by <see cref="CreateLinqQuery{T}()"/> method is then used as 
-    /// an entry point for a query that selects a number of <c>Order</c> objects, filters them by <c>OrderNumber</c>, and orders them by name of
-    /// customer (which includes an implicit join between <c>Order</c> and <c>Customer</c> objects).
-    /// <code>
-    /// var generator = new SqlServerGenerator (new DatabaseInfo());
-    /// var query =
-    ///     from o in QueryFactory.CreateLinqQuery&lt;Order&gt; (generator)
-    ///     where o.OrderNumber &lt;= 4
-    ///     orderby o.Customer.Name
-    ///     select o;
-    /// var result = query.ToArray();
-    /// </code>
-    /// </example>
-    //public static LegacyDomainObjectQueryable<T> CreateLinqQuery<T> (ISqlGenerator sqlGenerator)
-    //    where T : DomainObject
-    //{
-    //  ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
-    //  return new LegacyDomainObjectQueryable<T> (sqlGenerator);
-    //}
-
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlGenerator sqlGenerator)
-        where T : DomainObject
-    {
-      ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
-      return new DomainObjectQueryable<T> ();
-    }
-
-    /// <summary>
-    /// Creates a <see cref="LegacyDomainObjectQueryable{T}"/> used as the entry point to a LINQ query.
-    /// </summary>
-    /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
-    /// <returns>A <see cref="LegacyDomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    /// <remarks>
-    /// This overload uses the <see cref="ISqlGenerator"/> associated with <typeparamref name="T"/> via its <see cref="StorageProviderDefinition"/>.
-    /// Use the <see cref="CreateLinqQuery{T}()"/> overload to explicitly specify an <see cref="ISqlGenerator"/> instance.
-    /// </remarks>
+    /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
     /// <example>
     /// The following example used <see cref="CreateLinqQuery{T}()"/> to retrieve 
     /// an entry point for a query that selects a number of <c>Order</c> objects, filters them by <c>OrderNumber</c>, and orders them by name of
     /// customer (which includes an implicit join between <c>Order</c> and <c>Customer</c> objects).
     /// <code>
-    /// var generator = new SqlServerGenerator (new DatabaseInfo());
     /// var query =
-    ///     from o in QueryFactory.CreateLinqQuery&lt;Order&gt; (generator)
+    ///     from o in QueryFactory.CreateLinqQuery&lt;Order&gt; ()
     ///     where o.OrderNumber &lt;= 4
     ///     orderby o.Customer.Name
     ///     select o;
     /// var result = query.ToArray();
     /// </code>
     /// </example>
-    //public static LegacyDomainObjectQueryable<T> CreateLinqQuery<T> ()
-    //    where T : DomainObject
-    //{
-    //  return new LegacyDomainObjectQueryable<T> (GetDefaultSqlGenerator (typeof (T)));
-    //}
-
     public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
         where T : DomainObject
     {
       return new DomainObjectQueryable<T> ();
-    }
-
-    /// <summary>
-    /// Returns the default <see cref="ISqlGenerator"/> associated with the given <paramref name="domainObjectType"/>.
-    /// </summary>
-    /// <param name="domainObjectType">The <see cref="DomainObject"/> type whose <see cref="ISqlGenerator"/> should be retrieved.</param>
-    /// <returns>The <see cref="ISqlGenerator"/> associated with the <paramref name="domainObjectType"/>'s storage provider.</returns>
-    /// <remarks>
-    /// Each <see cref="DomainObject"/> type is associated with a <see cref="StorageProviderDefinition"/>, which defines the storage provider
-    /// used to load and store instances of the type. The <see cref="StorageProviderDefinition"/> also defines the <see cref="ISqlGenerator"/>
-    /// instance used for querying instances of the <see cref="DomainObject"/> type. This method can be used to retrieve that 
-    /// <see cref="ISqlGenerator"/> instance.
-    /// </remarks>
-    public static ISqlGenerator GetDefaultSqlGenerator (Type domainObjectType)
-    {
-      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-      var storageProviderID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType).StorageProviderID;
-      var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      return storageProviderDefinition.LinqSqlGenerator;
     }
 
     /// <summary>
@@ -158,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <param name="id">The ID to assign to the query.</param>
     /// <param name="queryable">The queryable constituting the LINQ query. This must be obtained by forming a LINQ query starting with an instance of 
-    /// <see cref="LegacyDomainObjectQueryable{T}"/>. Use <see cref="CreateLinqQuery{T}()"/> to create such a query source.</param>
+    /// <see cref="DomainObjectQueryable{T}"/>. Use <see cref="CreateLinqQuery{T}()"/> to create such a query source.</param>
     /// <returns>An implementation of <see cref="IQuery"/> holding the parsed LINQ query data.</returns>
     /// <remarks>
     /// <para>
@@ -173,30 +101,6 @@ namespace Remotion.Data.DomainObjects.Queries
     /// execute the query immediately instead of returning an <see cref="IQueryable"/>.)
     /// </para>
     /// </remarks>
-    //public static IQuery CreateQuery (string id, IQueryable queryable)
-    //{
-    //  ArgumentUtility.CheckNotNull ("queryable", queryable);
-    //  ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-
-    //  var provider = queryable.Provider as QueryProviderBase;
-    //  var queryExecutor = provider != null ? provider.Executor as LegacyDomainObjectQueryExecutor : null;
-      
-    //  if (provider == null || queryExecutor == null)
-    //  {
-    //    string message = string.Format ("The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, it is of type '{0}',"
-    //        + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateLinqQuery to create the queryable instance, and only use "
-    //        + "standard query methods on it.", queryable.GetType ().Name, queryable.Provider.GetType ().Name);
-    //    throw new ArgumentException (message, "queryable");
-    //  }
-
-    //  var expression = queryable.Expression;
-    //  var queryModel = provider.GenerateQueryModel (expression);
-    //  var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
-
-    //  return queryExecutor.CreateQuery (id, queryModel, fetchQueryModelBuilders, QueryType.Collection);
-    //}
-
-
     public static IQuery CreateQuery (string id, IQueryable queryable)
     {
       ArgumentUtility.CheckNotNull ("queryable", queryable);
@@ -207,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       if (provider == null || queryExecutor == null)
       {
-        string message = string.Format ("The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, it is of type '{0}',"
+        string message = string.Format ("The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"
             + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateLinqQuery to create the queryable instance, and only use "
             + "standard query methods on it.", queryable.GetType ().Name, queryable.Provider.GetType ().Name);
         throw new ArgumentException (message, "queryable");

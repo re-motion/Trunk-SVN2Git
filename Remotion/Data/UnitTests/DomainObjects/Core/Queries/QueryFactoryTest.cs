@@ -35,37 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class QueryFactoryTest : StandardMappingTest
   {
     [Test]
-    [Ignore("TODO Fix 2534 - can be removed")]
-    public void CreateLinqQuery_WithSqlGenerator ()
-    {
-      var sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
-      var queryable = QueryFactory.CreateLinqQuery<Order> (sqlGeneratorMock);
-      Assert.That (queryable, Is.Not.Null);
-      Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (LegacyDomainObjectQueryExecutor)));
-      //Assert.That (queryable.GetExecutor ().SqlGenerator, Is.SameAs (sqlGeneratorMock));
-    }
-
-    [Test]
-    [Ignore ("TODO Fix 2534 - can be removed")]
-    public void CreateLinqQuery_WithImplicitSqlGenerator ()
-    {
-      var queryable = QueryFactory.CreateLinqQuery<Order> ();
-      Assert.That (queryable, Is.Not.Null);
-      Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (LegacyDomainObjectQueryExecutor)));
-      //Assert.That (queryable.GetExecutor ().SqlGenerator, Is.Not.Null);
-
-      //Assert.That (queryable.GetExecutor ().SqlGenerator, Is.SameAs (QueryFactory.GetDefaultSqlGenerator (typeof (Order))));
-    }
-
-    [Test]
-    public void GetDefaultSqlGenerator ()
-    {
-      var providerID = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID;
-      var providerDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[providerID];
-      Assert.That (QueryFactory.GetDefaultSqlGenerator (typeof (Order)), Is.SameAs (providerDefinition.LinqSqlGenerator));
-    }
-
-    [Test]
     public void CreateQuery_FromDefinition ()
     {
       var definition = new QueryDefinition ("Test", "x", "y", QueryType.Collection, typeof (OrderCollection));
@@ -186,8 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [Ignore ("TODO Fix 2534 exception message")]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
         + "it is of type 'EnumerableQuery`1', with a query provider of type 'EnumerableQuery`1'. Be sure to use QueryFactory.CreateLinqQuery to "
         + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
     public void CreateQuery_FromLinqQuery_InvalidQueryable ()
@@ -197,8 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [Ignore ("TODO Fix 2534 exception message")]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of LegacyDomainObjectQueryable. Instead, "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
         + "it is of type 'TestQueryable`1', with a query provider of type 'DefaultQueryProvider'. Be sure to use QueryFactory.CreateLinqQuery to "
         + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
     public void CreateQuery_FromLinqQuery_InvalidQueryExecutor ()

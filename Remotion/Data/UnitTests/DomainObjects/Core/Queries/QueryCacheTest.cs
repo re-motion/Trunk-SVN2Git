@@ -37,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    //[Ignore ("TODO Fix 2534 - add AS [t0] and adapt alias")]
     public void GetOrCreateQuery_Uncached()
     {
       IQuery query = _cache.GetQuery<Order> ("id", orders => from o in orders where o.OrderNumber > 1 select o);

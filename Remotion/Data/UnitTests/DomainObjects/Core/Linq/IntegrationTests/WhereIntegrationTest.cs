@@ -280,9 +280,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO Fix 2534 - adapt exception type and message")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support the given select projection "
-                                                                              + "('NewObject'). The projection must select single DomainObject instances, because re-store does not support this kind of select projection.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This query provider does not support the given query "
+      +"('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select new <>f__AnonymousTypef`2(o = [o], Customer = [o].Customer)'). "
+      +"re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
     public void Query_WithUnsupportedType_NewObject ()
     {
       var query =
@@ -294,9 +294,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO Fix 2534 - adapt exception type and message")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support the given select projection "
-                                                                              + "('Constant'). The projection must select single DomainObject instances, because re-store does not support this kind of select projection.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This query provider does not support the given query "
+      +"('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select 1'). "
+      +"re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
     public void Query_WithUnsupportedType_Constant ()
     {
       var query =
@@ -308,9 +308,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO Fix 2534 - adapt exception type and message")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage=
-        "This query provider does not support selecting single columns ('o.ID'). The projection must select whole DomainObject instances.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage=
+        "This query provider does not support the given query "
+        +"('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select [o].ID'). "
+        +"re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
     public void Query_WithUnsupportedType_NonDomainObjectColumn ()
     {
       var query =

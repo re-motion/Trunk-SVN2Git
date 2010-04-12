@@ -120,9 +120,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO Fix 2534 - Adapt Exception and message")]
-    [ExpectedException (typeof (ParserException), 
-        ExpectedMessage = "This version of re-linq does not support subqueries in the select projection of a query.")]
+    [ExpectedException (typeof (NotSupportedException),
+        ExpectedMessage = "This query provider does not support the given query"
+        +" ('from Order o in DomainObjectQueryable<Order> select {DomainObjectQueryable<Computer>}'). "
+        +"re-store only supports queries selecting a scalar value, a single DomainObject, "
+        +"or a collection of DomainObjects.")]
     public void QueryWithSubQuery_InSelectClause ()
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()
