@@ -38,8 +38,9 @@
         <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll" />
         <include name="${build.test.outputdir}/Remotion.Data.Linq.dll" />
+        <include name="${build.test.outputdir}/Remotion.Data.Linq.SqlBackend.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
-        <include name="${build.test.outputdir}/Remotion.Development.Data.dll" />
+        <include name="${build.test.outputdir}/Remotion.Development.Data.dll" />        
         <include name="${build.test.outputdir}/Remotion.Development.Web.dll" />
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include name="${build.test.outputdir}/Rhino.Mocks.dll" />

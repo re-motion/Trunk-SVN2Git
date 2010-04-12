@@ -70,6 +70,10 @@
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
       <Name>Data.DomainObjects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Data\Linq.SqlBackend\Data.Linq.SqlBackend.csproj">
+      <Project>{F23F3422-D323-42CD-83D9-C0DEB2D3DC28}</Project>
+      <Name>Data.Linq.SqlBackend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\Linq\Data.Linq.csproj">
       <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
       <Name>Data.Linq</Name>

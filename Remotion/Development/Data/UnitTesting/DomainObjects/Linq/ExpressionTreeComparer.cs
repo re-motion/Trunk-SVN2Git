@@ -21,7 +21,7 @@ using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -50,19 +50,20 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("expected", expected);
       ArgumentUtility.CheckNotNull ("actual", actual);
 
-      CommandData expectedCommandData = GetCommandData (expected);
-      CommandData actualCommandData = GetCommandData (actual);
+      SqlCommandData expectedCommandData = GetCommandData (expected);
+      SqlCommandData actualCommandData = GetCommandData (actual);
 
-      _assertThatActualIsEqualToExpected (actualCommandData.Statement, expectedCommandData.Statement);
+      _assertThatActualIsEqualToExpected (actualCommandData.CommandText, expectedCommandData.CommandText);
       _assertThatActualIsEqualToExpected (actualCommandData.Parameters, expectedCommandData.Parameters);
     }
 
-    private CommandData GetCommandData<T> (IQueryable<T> queryable)
+    private SqlCommandData GetCommandData<T> (IQueryable<T> queryable)
     {
       QueryModel queryModel = MethodCaller.CallFunc<QueryModel> ("GenerateQueryModel", BindingFlags.Instance | BindingFlags.Public)
           .With ((QueryProviderBase) queryable.Provider, queryable.Expression);
-
-      return ((LegacyDomainObjectQueryExecutor) ((QueryProviderBase) queryable.Provider).Executor).CreateStatement (queryModel);
+      
+      //return ((LegacyDomainObjectQueryExecutor) ((QueryProviderBase) queryable.Provider).Executor).CreateStatement (queryModel);
+      return ((DomainObjectQueryExecutor) ((QueryProviderBase) queryable.Provider).Executor).CreateSqlCommand (queryModel);
     }
   }
 }

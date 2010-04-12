@@ -87,15 +87,12 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var classDefinition = GetClassDefinition (tableReferenceExpression.Type);
-      if (classDefinition == null)
+      if (!typeof (DomainObject).IsAssignableFrom (tableReferenceExpression.Type))
       {
         if (tableReferenceExpression.SqlTable.GetResolvedTableInfo() is ResolvedSubStatementTableInfo)
           return new SqlValueTableReferenceExpression (new SqlTable (tableReferenceExpression.SqlTable.GetResolvedTableInfo()));
-
-        string message = string.Format ("The type '{0}' does not identify a queryable table.", tableReferenceExpression.Type.Name);
-        throw new UnmappedItemException (message);
       }
+      
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");

@@ -54,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     // MethodExtension defines extension method "ExtendString"
     // MethodExtendString generates sql code for this method
     [Test]
+    [Ignore("2534 add new transformer for ExtendString")]
     public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
     {
       QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (
@@ -121,13 +122,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    //[Ignore ("TODO Fix 2534 - Is...(typeof(DomainObjectQueryable<Order>)")]
     public void QueryDistinctTest ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber == 4
                    select o ).Distinct();
       query.Single();
 
-      Assert.That (query, Is.InstanceOfType (typeof(LegacyDomainObjectQueryable<Order>)));
+      Assert.That (query, Is.InstanceOfType (typeof(DomainObjectQueryable<Order>)));
     }
 
     [Test]

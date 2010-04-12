@@ -41,8 +41,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
       var executor = ObjectFactory.Create<LegacyDomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
-      
-      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault ();
 
       nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
 

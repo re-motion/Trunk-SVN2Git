@@ -42,6 +42,7 @@
         <include name="${build.outputdir}/Remotion.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.Data.DomainObjects.dll" />
         <include name="${build.outputdir}/Remotion.Data.Linq.dll" />
+        <include name="${build.outputdir}/Remotion.Data.Linq.SqlBackend.dll" />
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Core.dll"/>
       </references>

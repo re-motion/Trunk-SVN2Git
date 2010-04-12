@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 using Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects.TestDomain;

@@ -21,12 +21,12 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -63,12 +63,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The type 'Student' does not identify a queryable table.")]
-    public void ResolveTableReferenceExpression_NoTable_ThrowsException ()
+    public void ResolveTableReferenceExpression_SubStatementTableInfo_TableTypeNotInheritedFromDomainObject ()
     {
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Student), "Student", "s"));
+      var sqlStatement = new SqlStatement (Expression.Constant ("test"), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var tableInfo = new ResolvedSubStatementTableInfo (typeof (Student), "Student",sqlStatement);
+      var sqlTable = new SqlTable (tableInfo);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-      _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      var sqlValueTableReferenceExpression =
+          (SqlValueTableReferenceExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      Assert.That (sqlValueTableReferenceExpression.SqlTable.TableInfo, Is.EqualTo (tableInfo));
     }
 
     [Test]
@@ -76,14 +81,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo");
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      var sqlStatement = new SqlStatement(selectProjection, new[] { sqlTable }, new Ordering[]{ }, null, null, false, false);
-      
-      var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo(typeof (string), "q", sqlStatement));
+      var sqlStatement = new SqlStatement (selectProjection, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+
+      var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo (typeof (string), "q", sqlStatement));
       var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);
       var result = _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
-      var fakeTable = new SqlTable(subStatementTable.GetResolvedTableInfo());
-      
+      var fakeTable = new SqlTable (subStatementTable.GetResolvedTableInfo());
+
       Assert.That (result, Is.TypeOf (typeof (SqlValueTableReferenceExpression)));
       Assert.That (((SqlValueTableReferenceExpression) result).SqlTable.TableInfo, Is.EqualTo (fakeTable.TableInfo));
     }
@@ -251,6 +256,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _resolver.ResolveMemberExpression (memberExpression, _generator);
     }
-
   }
 }
