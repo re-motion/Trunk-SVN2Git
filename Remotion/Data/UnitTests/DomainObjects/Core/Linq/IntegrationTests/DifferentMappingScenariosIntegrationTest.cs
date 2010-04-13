@@ -18,7 +18,9 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
 using @STI=Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using @CTI = Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
@@ -147,8 +149,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (fsi, _concreteObjectIDs.FileRoot, _concreteObjectIDs.Folder1);
     }
 
-    //TODO 2517: tests with properties defined in a base class above the class hierarchie
+    [Test]
+    public void ConcreteObjects_PropertyAccessInSameClass_ClassAboveInheritanceHierarchy ()
+    {
+      var storageClass = (from f in QueryFactory.CreateLinqQuery<StorageGroupClass> ()
+                 where f.StorageGroupClassIdentifier == "StorageGroupName1"
+                 select f);
+
+      CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
+    }
+
+    [Test]
+    [Ignore("TODO 2517: adapt MappingResolver to use properties of base classes above StorageGroup.")]
+    public void ConcreteObjects_PropertyAccessInBaseClass_ClassAboveInheritanceHierarchy ()
+    {
+      var storageClass = (from f in QueryFactory.CreateLinqQuery<StorageGroupClass> ()
+                          where f.AboveInheritanceIdentifier == "AboveInheritanceName1"
+                          select f);
+
+      CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
+    }
 
     //TODO 2517: tests with properties and relations defined in a mixin
+
   }
 }

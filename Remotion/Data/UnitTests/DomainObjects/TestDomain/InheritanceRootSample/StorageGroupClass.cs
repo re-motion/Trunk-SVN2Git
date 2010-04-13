@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample
     }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public string StorageGroupClassIdentifier { get; set; }
+    public virtual string StorageGroupClassIdentifier { get; set; }
 
   }
 }

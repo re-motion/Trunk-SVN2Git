@@ -26,6 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample
     }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
-    public string AboveInheritanceIdentifier { get; set; }
+    public virtual string AboveInheritanceIdentifier { get; set; }
   }
 }
