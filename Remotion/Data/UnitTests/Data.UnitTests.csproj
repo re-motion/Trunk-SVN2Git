@@ -617,6 +617,8 @@
     <Compile Include="DomainObjects\TestDomain\Color.cs" />
     <Compile Include="DomainObjects\TestDomain\ColorExtensions.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
+    <Compile Include="DomainObjects\TestDomain\InheritanceRootSample\AboveInheritanceRootClass.cs" />
+    <Compile Include="DomainObjects\TestDomain\InheritanceRootSample\StorageGroupClass.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithExtensibleEnumProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnum.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\TestExtensibleEnumExtensions.cs" />

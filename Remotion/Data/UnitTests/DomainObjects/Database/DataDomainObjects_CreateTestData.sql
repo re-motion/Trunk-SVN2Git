@@ -30,6 +30,7 @@ delete from [TableWithKeyOfInvalidType]
 delete from [TableWithoutIDColumn]
 delete from [TableWithoutClassIDColumn]
 delete from [TableWithoutTimestampColumn]
+delete from [StorageGroupClass]
 
 
 -- FileSystemItem
@@ -446,3 +447,11 @@ insert into [TableWithInvalidRelation] (ID, ClassID, TableWithGuidKeyID)
 -- TableWithRelatedClassIDColumnAndNoInheritance
 insert into [TableWithRelatedClassIDColumnAndNoInheritance] (ID, ClassID, TableWithGuidKeyID, TableWithGuidKeyIDClassID)
     values ('{CB72715D-F419-4ab9-8D49-ABCBA4E9EDB4}', 'ClassWithRelatedClassIDColumnAndNoInheritance', null, null)
+
+
+-- StorageGroupClass
+insert into [StorageGroupClass] (ID, ClassID, AboveInheritanceIdentifier, StorageGroupClassIdentifier)
+    values ('{09755471-E551-496d-941B-84D90D0C9ECA}', 'StorageGroupClass', 'AboveInheritanceName1', 'StorageGroupName1')
+    
+insert into [StorageGroupClass] (ID, ClassID, AboveInheritanceIdentifier, StorageGroupClassIdentifier)
+    values ('{F394AE2E-CB4E-4e38-8E08-9C847EE1F376}', 'StorageGroupClass', 'AboveInheritanceName2', 'StorageGroupName2')

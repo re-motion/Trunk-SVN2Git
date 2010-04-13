@@ -128,13 +128,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2517: Not possible in current test domain!?")]
-    public void ConcreteObjects_MemberAccessInSameClass_ConcreteTableInheritance ()
-    {
-      
-    }
-
-    [Test]
     public void BaseObjects_PropertyAccessInSameClass_ConcreteTableInheritance ()
     {
       var fsi = (from f in QueryFactory.CreateLinqQuery<CTI.FileSystemItem> ()

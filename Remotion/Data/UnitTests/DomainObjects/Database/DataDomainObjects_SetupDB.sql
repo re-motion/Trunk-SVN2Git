@@ -111,7 +111,11 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SampleBind
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TargetClassForPersistentMixinView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[SampleBindableDomainObjectView]
+  DROP VIEW [dbo].[TargetClassForPersistentMixinView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StorageGroupClassView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[StorageGroupClassView]
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
@@ -304,6 +308,10 @@ GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SampleBindableDomainObject') 
   DROP TABLE [SampleBindableDomainObject]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StorageGroupClass' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[StorageGroupClass]
 GO
 
 IF OBJECT_ID ('rpf_testSPQuery', 'P') IS NOT NULL 
@@ -991,6 +999,20 @@ CREATE TABLE [SampleBindableDomainObject] (
 )
 GO
 
+CREATE TABLE [dbo].[StorageGroupClass]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- StorageGroupClass columns
+  [AboveInheritanceIdentifier] nvarchar (100) NOT NULL,
+  [StorageGroupClassIdentifier] nvarchar (100) NOT NULL,
+
+  CONSTRAINT [PK_StorageGroupClass] PRIMARY KEY CLUSTERED ([ID])
+)
+GO
+
 CREATE PROCEDURE rpf_testSPQuery
 AS
   SELECT * FROM [Order] WHERE [OrderNo] = 1 OR [OrderNo] = 3 ORDER BY [OrderNo] ASC
@@ -1325,5 +1347,13 @@ CREATE VIEW [dbo].[TargetClassForPersistentMixinView] (
     [CollectionPropertyNSideID], [UnidirectionalRelationPropertyID]
     FROM [dbo].[MixedDomains_Target]
     WHERE [ClassID] IN ('TargetClassForPersistentMixin')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[StorageGroupClassView] ([ID], [ClassID], [Timestamp], [AboveInheritanceIdentifier], [StorageGroupClassIdentifier])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [AboveInheritanceIdentifier], [StorageGroupClassIdentifier]
+    FROM [dbo].[StorageGroupClass]
+    WHERE [ClassID] IN ('StorageGroupClass')
   WITH CHECK OPTION
 GO

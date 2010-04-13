@@ -399,6 +399,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     #endregion
 
+    #region StorageGroupClass
+
+    public readonly ObjectID StorageGroupClass1 = new ObjectID ("StorageGroupClass", new Guid ("{09755471-E551-496d-941B-84D90D0C9ECA}"));
+
+    public readonly ObjectID StorageGroupClass2 = new ObjectID ("StorageGroupClass", new Guid ("{F394AE2E-CB4E-4e38-8E08-9C847EE1F376}"));
+    
+    #endregion
+
     public DomainObjectIDs ()
     {
     }
