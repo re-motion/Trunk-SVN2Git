@@ -33,19 +33,14 @@ namespace Remotion.Data.DomainObjects.Linq
 {
   public class DomainObjectQueryable<T> : QueryableBase<T>
   {
-    private static IQueryProvider CreateProvider (
-        ISqlPreparationStage sqlPreparationStage,
-        IMappingResolutionStage mappingResolutionStage,
-        ISqlGenerationStage sqlGenerationStage,
-        SqlPreparationContext context)
+    private static IQueryProvider CreateProvider (ISqlPreparationStage sqlPreparationStage, IMappingResolutionStage mappingResolutionStage, ISqlGenerationStage sqlGenerationStage)
     {
       ArgumentUtility.CheckNotNull ("sqlPreparationStage", sqlPreparationStage);
       ArgumentUtility.CheckNotNull ("mappingResolutionStage", mappingResolutionStage);
       ArgumentUtility.CheckNotNull ("sqlGenerationStage", sqlGenerationStage);
-      ArgumentUtility.CheckNotNull ("context", context);
-
+      
       var startingClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      var constructorParameters = ParamList.Create (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, context);
+      var constructorParameters = ParamList.Create (startingClassDefinition, sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
       var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (constructorParameters);
 
       var nodeTypeRegistry = CreateNodeTypeRegistry();
@@ -78,12 +73,8 @@ namespace Remotion.Data.DomainObjects.Linq
     /// direct constructor call.
     /// </para>
     /// </remarks>
-    public DomainObjectQueryable (
-        ISqlPreparationStage sqlPreparationStage,
-        IMappingResolutionStage mappingResolutionStage,
-        ISqlGenerationStage sqlGenerationStage,
-        SqlPreparationContext context)
-        : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage, context))
+    public DomainObjectQueryable (ISqlPreparationStage sqlPreparationStage, IMappingResolutionStage mappingResolutionStage, ISqlGenerationStage sqlGenerationStage)
+        : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage))
     {
     }
 

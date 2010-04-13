@@ -52,14 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _sqlGenerationStage = new DefaultSqlGenerationStage();
 
-      _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _context);
+      _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage);
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void Initialization_WrongType ()
     {
-      new DomainObjectQueryable<DomainObject>(_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _context);
+      new DomainObjectQueryable<DomainObject>(_preparationStage, _mappingResolutionStage, _sqlGenerationStage);
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       
       var expectedProvider = new DefaultQueryProvider (
           typeof (DomainObjectQueryable<>),
-          new DomainObjectQueryExecutor (classDefinition, sqlPreparationStage, mappinResolutionStage, sqlGenerationStage, context));
+          new DomainObjectQueryExecutor (classDefinition, sqlPreparationStage, mappinResolutionStage, sqlGenerationStage));
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));

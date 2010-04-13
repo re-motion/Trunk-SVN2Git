@@ -73,10 +73,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _generationStage = new DefaultSqlGenerationStage();
 
-      _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
-      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
-      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
-      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+      _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage);
     }
 
     [Test]
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection());
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       executorMock
           .Expect (
           mock => mock.CreateQuery (
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           typeof (DomainObjectCollection));
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       executorMock
           .Expect (
           mock => mock.CreateQuery (
@@ -609,7 +609,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new SqlColumnExpression (typeof (Order), "o", "ID"), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+          _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       executorMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
           .Return (sqlStatement);

@@ -49,7 +49,6 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
-    private readonly SqlPreparationContext _context;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
@@ -59,26 +58,22 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
-    /// <param name="context">The <see cref="SqlPreparationContext"/> is a helper class for mapping.</param>
     public DomainObjectQueryExecutor (
         ClassDefinition startingClassDefinition,
         ISqlPreparationStage preparationStage,
         IMappingResolutionStage resolutionStage,
-        ISqlGenerationStage generationStage,
-        SqlPreparationContext context)
+        ISqlGenerationStage generationStage)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
-      ArgumentUtility.CheckNotNull ("context", context);
 
       _startingClassDefinition = startingClassDefinition;
 
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
-      _context = context;
     }
 
     /// <summary>
@@ -188,7 +183,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (queryModel.ResultOperators[lastResultOperatorIndex] != groupResultOperator)
       {
         var message = "Cannot execute a query with a GroupBy clause that contains other result operators after the GroupResultOperator because "
-            + "GroupBy is simulated in-memory.";
+                      + "GroupBy is simulated in-memory.";
         throw new NotSupportedException (message);
       }
 
@@ -328,7 +323,7 @@ namespace Remotion.Data.DomainObjects.Linq
             relationEndPointDefinition.GetOppositeClassDefinition(),
             sortExpression);
 
-          query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+        query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
     }
 
@@ -381,12 +376,12 @@ namespace Remotion.Data.DomainObjects.Linq
       if (streamedSequenceInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSequenceInfo.ItemExpression.Type))
         return;
 
-        string message = string.Format (
+      string message = string.Format (
           "This query provider does not support the given query ('{0}'). "
           + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
           queryModel);
       throw new NotSupportedException (message);
-      }
+    }
 
     /// <summary>
     /// Check to avoid fetch requests that are followed by result operators. re-store cannot fetch without actually selecting the source objects.
@@ -402,7 +397,7 @@ namespace Remotion.Data.DomainObjects.Linq
                            "is performed must be the same objects that are returned from the query. Rewrite the query to perform the fetching after applying "
                            +
                            "all other result operators or call AsEnumerable after the last fetch request in order to execute all subsequent result operators in "
-              + "memory.";
+                           + "memory.";
           throw new InvalidOperationException (message);
         }
       }
@@ -416,8 +411,8 @@ namespace Remotion.Data.DomainObjects.Linq
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
       // TODO 2564: Use _preparationStage.PrepareSqlStatement (queryModel) instead; remove _context field
-      var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, _preparationStage);
-
+      //var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, _preparationStage, _);
+      var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel);
       return _resolutionStage.ResolveSqlStatement (sqlStatement);
     }
 

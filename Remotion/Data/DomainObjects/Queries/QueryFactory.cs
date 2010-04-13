@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return new DomainObjectQueryable<T> (
         ObjectFactory.Create<DefaultSqlPreparationStage>(ParamList.Create(registry, context, generator)),
         ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
-        ObjectFactory.Create<DefaultSqlGenerationStage>(ParamList.Empty),context);
+        ObjectFactory.Create<DefaultSqlGenerationStage>(ParamList.Empty));
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
       ArgumentUtility.CheckNotNull ("context", context);
       
-      return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage, context);
+      return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage);
     }
 
     /// <summary>
