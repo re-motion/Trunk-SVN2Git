@@ -203,7 +203,7 @@ namespace Remotion.Security
       get { return _ownerTenant; }
     }
 
-    public ICollection<EnumWrapper> AbstractRoles
+    public IEnumerable<EnumWrapper> AbstractRoles
     {
       get { return _abstractRoles; }
     }

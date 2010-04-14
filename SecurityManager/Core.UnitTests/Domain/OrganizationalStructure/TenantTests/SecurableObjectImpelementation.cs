@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -79,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Tena
       Assert.IsNull (securityContext.Owner);
       Assert.IsNull (securityContext.OwnerGroup);
       Assert.AreEqual (tenant.UniqueIdentifier, securityContext.OwnerTenant);
-      Assert.IsEmpty (securityContext.AbstractRoles);
+      Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.IsFalse (securityContext.IsStateless);
     }
   }

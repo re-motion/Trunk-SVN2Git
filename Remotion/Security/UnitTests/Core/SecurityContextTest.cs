@@ -34,9 +34,9 @@ namespace Remotion.Security.UnitTests.Core
       Enum[] abstractRoles = new Enum[] { TestAbstractRoles.QualityEngineer, TestAbstractRoles.Developer };
       SecurityContext context = CreateTestSecurityContextWithAbstractRoles (abstractRoles);
 
-      Assert.That (context.AbstractRoles.Count, Is.EqualTo (2));
-      Assert.That (context.AbstractRoles, List.Contains (new EnumWrapper (TestAbstractRoles.QualityEngineer)));
-      Assert.That (context.AbstractRoles, List.Contains (new EnumWrapper (TestAbstractRoles.Developer)));
+      Assert.That (
+          context.AbstractRoles,
+          Is.EquivalentTo (new[] { new EnumWrapper (TestAbstractRoles.QualityEngineer), new EnumWrapper (TestAbstractRoles.Developer) }));
     }
 
     [Test]

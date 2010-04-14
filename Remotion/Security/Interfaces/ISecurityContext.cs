@@ -74,8 +74,8 @@ namespace Remotion.Security
     /// <summary>
     /// Gets the list of abstract roles the current user has in regards to the <see cref="ISecurableObject"/>.
     /// </summary>
-    /// <value>An <see cref="EnumWrapper"/> array containing zero or more abstract role identifiers.</value>
-    ICollection<EnumWrapper> AbstractRoles { get; }
+    /// <value>An <see cref="EnumWrapper"/> sequence containing zero or more abstract role identifiers.</value>
+    IEnumerable<EnumWrapper> AbstractRoles { get; }
 
     //TODO: MK: Determine if null is allowed for the state of a property.
     /// <summary>

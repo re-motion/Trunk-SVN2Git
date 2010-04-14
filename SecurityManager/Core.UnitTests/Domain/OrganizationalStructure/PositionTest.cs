@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Security;
@@ -178,8 +179,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Assert.IsNull (securityContext.Owner);
         Assert.IsNull (securityContext.OwnerGroup);
         Assert.IsNull (securityContext.OwnerTenant);
-        Assert.IsEmpty (securityContext.AbstractRoles);
-        Assert.AreEqual (1, securityContext.GetNumberOfStates());
+        Assert.That (securityContext.AbstractRoles, Is.Empty);
+        Assert.AreEqual (1, securityContext.GetNumberOfStates ());
         Assert.AreEqual (new EnumWrapper (Delegation.Enabled), securityContext.GetState ("Delegation"));
       }
     }

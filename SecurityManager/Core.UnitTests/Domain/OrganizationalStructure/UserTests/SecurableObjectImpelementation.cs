@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -79,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       Assert.AreEqual (user.UserName, securityContext.Owner);
       Assert.AreEqual (user.OwningGroup.UniqueIdentifier, securityContext.OwnerGroup);
       Assert.AreEqual (user.Tenant.UniqueIdentifier, securityContext.OwnerTenant);
-      Assert.IsEmpty (securityContext.AbstractRoles);
+      Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.IsFalse (securityContext.IsStateless);
     }
 
@@ -94,7 +95,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       Assert.AreEqual (user.UserName, securityContext.Owner);
       Assert.IsNull (securityContext.OwnerGroup);
       Assert.AreEqual (user.Tenant.UniqueIdentifier, securityContext.OwnerTenant);
-      Assert.IsEmpty (securityContext.AbstractRoles);
+      Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.IsFalse (securityContext.IsStateless);
     }
 
@@ -109,7 +110,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       Assert.AreEqual (user.UserName, securityContext.Owner);
       Assert.AreEqual (user.OwningGroup.UniqueIdentifier, securityContext.OwnerGroup);
       Assert.IsNull (securityContext.OwnerTenant);
-      Assert.IsEmpty (securityContext.AbstractRoles);
+      Assert.That (securityContext.AbstractRoles, Is.Empty);
       Assert.IsFalse (securityContext.IsStateless);
     }
   }
