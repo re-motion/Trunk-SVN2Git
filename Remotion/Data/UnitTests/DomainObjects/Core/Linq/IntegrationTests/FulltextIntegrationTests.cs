@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithContainsFullText ()
     {
       var ceos = from c in QueryFactory.CreateLinqQuery<Ceo>()
-                 where c.Name.ContainsFulltext ("Fischer")
+                 where c.Name.SqlContainsFulltext ("Fischer")
                  select c;
       CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
     }

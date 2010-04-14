@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithSubString ()
     {
       var query = from c in QueryFactory.CreateLinqQuery<Customer> ()
-                  where c.Name.Substring (2, 3).Contains ("und")
+                  where c.Name.Substring (1, 3).Contains ("und")
                   select c;
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
     }
