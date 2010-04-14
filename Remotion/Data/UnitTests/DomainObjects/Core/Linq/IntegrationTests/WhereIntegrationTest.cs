@@ -352,7 +352,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2534 add support for ConditionalExpression (IIF)")]
     public void QueryWithCustomParser ()
     {
       foreach (StorageProviderDefinition definition in DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions)
