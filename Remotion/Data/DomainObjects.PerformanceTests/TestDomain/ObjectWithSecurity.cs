@@ -27,6 +27,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
   [BindableDomainObject]
   public abstract class ObjectWithSecurity : DomainObject, ISecurableObject, IDomainObjectSecurityContextFactory
   {
+    private SecurityContext _securityContext;
+
     public static ObjectWithSecurity NewObject ()
     {
       return NewObject<ObjectWithSecurity>();
@@ -50,7 +52,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
-      return SecurityContext.Create (GetPublicDomainObjectType (), null, null, null, new Dictionary<string, EnumWrapper> (), new EnumWrapper[0]);
+      if (_securityContext == null)
+      {
+        _securityContext =
+            SecurityContext.Create (GetPublicDomainObjectType(), null, null, null, new Dictionary<string, EnumWrapper>(), new EnumWrapper[0]);
+      }
+      return _securityContext;
     }
 
     public bool IsNew

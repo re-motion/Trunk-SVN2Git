@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void BusinessObject_Property_IsAccessible ()
     {
-      Console.WriteLine ("Expected average duration of SecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.011 ms (release build)");
+      Console.WriteLine ("Expected average duration of SecurityTest for BusinessObject_Property_IsAccessible on reference system: ~6.5 µs (release build), ~10.5 µs (debug build)");
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -60,11 +60,11 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
           property.IsAccessible (obj.BusinessObjectClass, obj);
         stopwatch.Stop();
 
-        double averageMilliSeconds = (double) stopwatch.ElapsedMilliseconds / TestRepititions;
+        double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
         Console.WriteLine (
-            "BusinessObject_Property_IsAccessible (executed {0}x): Average duration: {1} ms",
+            "BusinessObject_Property_IsAccessible (executed {0}x): Average duration: {1} µs",
             TestRepititions,
-            averageMilliSeconds.ToString ("N3"));
+            averageMilliSeconds.ToString ("N"));
       }
     }
   }

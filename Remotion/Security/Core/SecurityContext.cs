@@ -162,6 +162,7 @@ namespace Remotion.Security
     private readonly bool _isStateless;
     private readonly Dictionary<string, EnumWrapper> _states;
     private readonly EnumWrapper[] _abstractRoles;
+    private readonly int _hashCode;
 
     private SecurityContext (
         Type classType,
@@ -179,6 +180,7 @@ namespace Remotion.Security
       _isStateless = isStateless;
       _states = states;
       _abstractRoles = abstractRoles;
+      _hashCode = EqualityUtility.GetRotatedHashCode (_class, _owner, _ownerGroup, _ownerTenant);
     }
 
     public string Class
@@ -201,7 +203,7 @@ namespace Remotion.Security
       get { return _ownerTenant; }
     }
 
-    public EnumWrapper[] AbstractRoles
+    public ICollection<EnumWrapper> AbstractRoles
     {
       get { return _abstractRoles; }
     }
@@ -228,15 +230,12 @@ namespace Remotion.Security
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_class, _owner, _ownerGroup, _ownerTenant);
+      return _hashCode;
     }
 
     public override bool Equals (object obj)
     {
-      SecurityContext other = obj as SecurityContext;
-      if (other == null)
-        return false;
-      return ((IEquatable<SecurityContext>) this).Equals (other);
+      return EqualityUtility.EqualsEquatable (this, obj);
     }
 
     bool IEquatable<SecurityContext>.Equals (SecurityContext other)

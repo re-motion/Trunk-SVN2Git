@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
@@ -42,7 +43,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return NewObject<AbstractRoleDefinition>(ParamList.Create (metadataItemID, name, value));
     }
 
-    public static ObjectList<AbstractRoleDefinition> Find (EnumWrapper[] abstractRoles)
+    public static ObjectList<AbstractRoleDefinition> Find (IEnumerable<EnumWrapper> abstractRoles)
     {
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 

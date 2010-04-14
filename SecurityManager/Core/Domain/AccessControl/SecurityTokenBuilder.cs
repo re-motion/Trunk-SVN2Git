@@ -169,7 +169,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return group;
     }
 
-    private IList<AbstractRoleDefinition> GetAbstractRoles (EnumWrapper[] abstractRoleNames)
+    private IList<AbstractRoleDefinition> GetAbstractRoles (IEnumerable<EnumWrapper> abstractRoleNames)
     {
       IList<AbstractRoleDefinition> abstractRolesCollection = AbstractRoleDefinition.Find (abstractRoleNames);
 
@@ -181,7 +181,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     }
 
     private EnumWrapper? FindFirstMissingAbstractRole (
-        EnumWrapper[] expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRoleDefinitions)
+        IEnumerable<EnumWrapper> expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRoleDefinitions)
     {
       var actualAbstractRoles = from r in actualAbstractRoleDefinitions select new EnumWrapper (r.Name);
       var result = from expected in expectedAbstractRoles

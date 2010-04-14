@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 
 namespace Remotion.Security
 {
@@ -74,7 +75,7 @@ namespace Remotion.Security
     /// Gets the list of abstract roles the current user has in regards to the <see cref="ISecurableObject"/>.
     /// </summary>
     /// <value>An <see cref="EnumWrapper"/> array containing zero or more abstract role identifiers.</value>
-    EnumWrapper[] AbstractRoles { get; }
+    ICollection<EnumWrapper> AbstractRoles { get; }
 
     //TODO: MK: Determine if null is allowed for the state of a property.
     /// <summary>
