@@ -85,7 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var query = from c in
                       (from o in QueryFactory.CreateLinqQuery<Order>()
                        where o.OrderNumber == 1
-                       select o).Cast<TestDomainBase>() select c;
+                       select o).Cast<TestDomainBase>()
+                  where c.ID == DomainObjectIDs.Order1
+                  select c;
       CheckQueryResult (query, DomainObjectIDs.Order1);
     }
 
