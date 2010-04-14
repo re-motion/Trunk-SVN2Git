@@ -17,11 +17,15 @@
 using Remotion.Collections;
 using Remotion.Implementation;
 
-namespace Remotion.Security.BridgeInterfaces
+namespace Remotion.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Security.BridgeImplementations.AccessTypeCacheImplementation, Remotion.Security, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
-  public interface IAccessTypeCacheImplementation
+  /// <summary>
+  /// This interface is used to separate the <see cref="T:Remotion.BridgeImplementations.InterlockedCacheFactoryImplementation"/>
+  /// from it's instantiation in the <see cref="VersionDependentImplementationBridge{T}"/>.
+  /// </summary>
+  [ConcreteImplementation ("Remotion.BridgeImplementations.InterlockedCacheFactoryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
+  public interface IInterlockedCacheFactoryImplementation
   {
-    ICache<EnumWrapper, AccessType> CreateCache ();
+    ICache<TKey, TValue> CreateCache<TKey, TValue> ();
   }
 }

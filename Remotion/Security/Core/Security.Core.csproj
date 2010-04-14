@@ -57,7 +57,6 @@
     </None>
     <None Include="Security.build" />
     <Compile Include="BaseDemandPermissionAttribute.cs" />
-    <Compile Include="BridgeImplementations\AccessTypeCacheImplementation.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
@@ -148,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BridgeImplementations\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

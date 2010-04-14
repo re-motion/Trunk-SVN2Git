@@ -62,7 +62,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("factory", factory);
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
       AccessType[] actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
 

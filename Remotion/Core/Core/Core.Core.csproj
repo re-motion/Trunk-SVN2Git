@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
+    <Compile Include="BridgeImplementations\InterlockedCacheFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\TypeDiscoveryServiceFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />

@@ -15,16 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.BridgeInterfaces;
 using Remotion.Collections;
-using Remotion.Security.BridgeInterfaces;
 
-namespace Remotion.Security.BridgeImplementations
+namespace Remotion.BridgeImplementations
 {
-  public class AccessTypeCacheImplementation : IAccessTypeCacheImplementation
+  /// <summary>
+  /// The <see cref="InterlockedCacheFactoryImplementation"/> is a factory class that creates instances of type 
+  /// <see cref="InterlockedCache{TKey,TValue}"/>.
+  /// </summary>
+  public class InterlockedCacheFactoryImplementation : IInterlockedCacheFactoryImplementation
   {
-    public ICache<EnumWrapper, AccessType> CreateCache ()
+    public ICache<TKey, TValue> CreateCache<TKey, TValue> ()
     {
-      return new InterlockedCache<EnumWrapper, AccessType> ();
+      return new InterlockedCache<TKey, TValue> ();
     }
   }
 }

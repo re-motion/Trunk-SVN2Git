@@ -34,11 +34,11 @@ namespace Remotion.Utilities
     /// </summary>
     private static class AbbreviationParser
     {
-      public static readonly Regex s_enclosedQualifiedTypeRegex;
-      public static readonly Regex s_enclosedTypeRegex;
-      public static readonly Regex s_typeRegex;
+      private static readonly Regex s_enclosedQualifiedTypeRegex;
+      private static readonly Regex s_enclosedTypeRegex;
+      private static readonly Regex s_typeRegex;
 
-      public static readonly InterlockedCache<string, string> s_fullTypeNames = new InterlockedCache<string, string>();
+      private static readonly InterlockedCache<string, string> s_fullTypeNames = new InterlockedCache<string, string>();
 
       static AbbreviationParser ()
       {
@@ -127,6 +127,8 @@ namespace Remotion.Utilities
       }
     }
 
+    private static readonly ICache<Type, string> s_partialAssemblyQualifiedNameCache = new InterlockedCache<Type, string> ();
+
     /// <summary>
     ///   Converts abbreviated qualified type names into standard qualified type names.
     /// </summary>
@@ -183,7 +185,7 @@ namespace Remotion.Utilities
     public static string GetPartialAssemblyQualifiedName (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return type.FullName + ", " + type.Assembly.GetName().Name;
+      return s_partialAssemblyQualifiedNameCache.GetOrCreateValue (type, key => type.FullName + ", " + type.Assembly.GetName ().Name);
     }
 
     public static Type GetDesignModeType (string abbreviatedTypeName, bool throwOnError)

@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterRegistry.cs" />
+    <Compile Include="BridgeInterfaces\IInterlockedCacheFactoryImplementation.cs" />
     <Compile Include="BridgeInterfaces\ITypeDiscoveryServiceFactoryImplementation.cs" />
     <Compile Include="BridgeInterfaces\IBoostrapStorageProvider.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />

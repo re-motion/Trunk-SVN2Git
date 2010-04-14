@@ -58,7 +58,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
       return _securityStrategy.HasAccess (_securityContextFactory, securityProvider, principal, requiredAccessTypes);
     }

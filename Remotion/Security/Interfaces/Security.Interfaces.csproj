@@ -43,7 +43,6 @@
     <Compile Include="AccessType.cs" />
     <Compile Include="AccessTypeAttribute.cs" />
     <Compile Include="ArgumentUtility.cs" />
-    <Compile Include="BridgeInterfaces\IAccessTypeCacheImplementation.cs" />
     <Compile Include="EnumWrapper.cs" />
     <Compile Include="IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
@@ -78,6 +77,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BridgeInterfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

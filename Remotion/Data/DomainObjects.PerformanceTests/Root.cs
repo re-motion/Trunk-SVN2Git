@@ -52,7 +52,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //RunSerializationTest();
 
-      RunHasRelationChangedTest();
+      //RunHasRelationChangedTest();
+
+      RunSecurityTests();
 
       setUpFixture.TearDown();
 
@@ -105,6 +107,15 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       }
 
       test.TestFixtureTearDown();
+    }
+
+    private static void RunSecurityTests ()
+    {
+      var test = new SecurityTest ();
+
+      test.SetUp ();
+      test.BusinessObject_Property_IsAccessible();
+      test.TearDown ();
     }
   }
 }

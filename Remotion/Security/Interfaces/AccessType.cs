@@ -15,10 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Serialization;
+using Remotion.BridgeInterfaces;
 using Remotion.Collections;
 using Remotion.Implementation;
-using Remotion.Security.BridgeInterfaces;
 
 namespace Remotion.Security
 {
@@ -28,21 +27,17 @@ namespace Remotion.Security
   /// <note>For the set of basic access types see <see cref="T:Remotion.Security.GeneralAccessTypes"/>.</note>
   /// </remarks>
   [Serializable]
-  public sealed class AccessType : IObjectReference
+  public struct AccessType : IEquatable<AccessType>
   {
-    // types
-
-    // static members and constants
-
-    private static readonly ICache<EnumWrapper, AccessType> s_cache =
-        VersionDependentImplementationBridge<IAccessTypeCacheImplementation>.Implementation.CreateCache();
+    private static readonly ICache<Type, bool> s_hasAccessTypeAttributeCache =
+        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Type, bool> ();
 
     public static AccessType Get (Enum accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
       Type type = accessType.GetType();
-      if (!Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
+      if (!s_hasAccessTypeAttributeCache.GetOrCreateValue (type, key => Attribute.IsDefined (key, typeof (AccessTypeAttribute), false)))
       {
         throw new ArgumentException (
             string.Format (
@@ -57,22 +52,15 @@ namespace Remotion.Security
 
     public static AccessType Get (EnumWrapper accessType)
     {
-      ArgumentUtility.CheckNotNull ("accessType", accessType);
-      return s_cache.GetOrCreateValue (accessType, key => new AccessType (key));
+      return new AccessType (accessType);
     }
 
-    // member fields
-
     private EnumWrapper _value;
-
-    // construction and disposing
 
     private AccessType (EnumWrapper accessType)
     {
       _value = accessType;
     }
-
-    // methods and properties
 
     public EnumWrapper Value
     {
@@ -84,9 +72,9 @@ namespace Remotion.Security
       return _value.ToString();
     }
 
-    object IObjectReference.GetRealObject (StreamingContext context)
+    public bool Equals (AccessType other)
     {
-      return Get (_value);
+      return _value.Equals (other._value);
     }
   }
 }

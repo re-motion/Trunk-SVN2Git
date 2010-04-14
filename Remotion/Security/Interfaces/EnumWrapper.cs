@@ -15,6 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.BridgeInterfaces;
+using Remotion.Collections;
+using Remotion.Implementation;
 
 namespace Remotion.Security
 {
@@ -28,9 +31,25 @@ namespace Remotion.Security
   [Serializable]
   public struct EnumWrapper : IEquatable<EnumWrapper>
   {
+    private static readonly ICache<Enum, string> s_enumNameCache =
+        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Enum, string>();
+
+    private static readonly ICache<Type, bool> s_hasFlagsAttributeCache =
+        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Type, bool>();
+
+    private static string GetEnumName (Enum enumValue)
+    {
+      return s_enumNameCache.GetOrCreateValue (enumValue, key => BuildEnumName (key.ToString(), GetPartialAssemblyQualifiedName (key.GetType())));
+    }
+
+    private static string BuildEnumName (string valueName, string typeName)
+    {
+      return valueName + "|" + typeName;
+    }
+
     private static string GetPartialAssemblyQualifiedName (Type type)
     {
-      return type.FullName + ", " + type.Assembly.GetName ().Name;
+      return type.FullName + ", " + type.Assembly.GetName().Name;
     }
 
     private readonly string _name;
@@ -40,14 +59,15 @@ namespace Remotion.Security
     /// </summary>
     /// <param name="enumValue">The enum value.</param>
     public EnumWrapper (Enum enumValue)
-        : this (ArgumentUtility.CheckNotNull ("enumValue", enumValue).ToString(), GetPartialAssemblyQualifiedName (enumValue.GetType()))
+        : this (GetEnumName (ArgumentUtility.CheckNotNull ("enumValue", enumValue)))
     {
-      Type type = enumValue.GetType ();
-      if (Attribute.IsDefined (type, typeof (FlagsAttribute), false))
+      Type type = enumValue.GetType();
+      if (s_hasFlagsAttributeCache.GetOrCreateValue (type, key => Attribute.IsDefined (key, typeof (FlagsAttribute), false)))
       {
-        throw new ArgumentException (string.Format (
-                "Enumerated type '{0}' cannot be wrapped. Only enumerated types without the {1} can be wrapped.", 
-                type.FullName, 
+        throw new ArgumentException (
+            string.Format (
+                "Enumerated type '{0}' cannot be wrapped. Only enumerated types without the {1} can be wrapped.",
+                type.FullName,
                 typeof (FlagsAttribute).FullName),
             "enumValue");
       }
@@ -70,9 +90,9 @@ namespace Remotion.Security
     /// <param name="valueName">The enum value name to be set.</param>
     /// <param name="typeName">The type name to be integrated into the name.</param>
     public EnumWrapper (string valueName, string typeName)
-        : this (string.Format ("{0}|{1}",
-          ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName), 
-          ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName)))
+        : this (BuildEnumName (
+                    ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName),
+                    ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName)))
     {
     }
 
@@ -88,7 +108,7 @@ namespace Remotion.Security
 
     public bool Equals (EnumWrapper other)
     {
-      return base.Equals (other);
+      return _name.Equals (other._name);
     }
   }
 }

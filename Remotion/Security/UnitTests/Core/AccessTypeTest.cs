@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -27,18 +25,6 @@ namespace Remotion.Security.UnitTests.Core
   [TestFixture]
   public class AccessTypeTest
   {
-    [SetUp]
-    public void SetUp ()
-    {
-      ClearAccessTypeCache ();
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      ClearAccessTypeCache ();
-    }
-
     [Test]
     public void GetAccessTypeFromEnum ()
     {
@@ -59,9 +45,9 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetFromCache ()
     {
-      Assert.AreSame (AccessType.Get (TestAccessTypes.First), AccessType.Get (TestAccessTypes.First));
-      Assert.AreSame (AccessType.Get (new EnumWrapper (TestAccessTypes.Second)), AccessType.Get (TestAccessTypes.Second));
-      Assert.AreSame (AccessType.Get (new EnumWrapper (TestAccessTypes.Third)), AccessType.Get (new EnumWrapper (TestAccessTypes.Third)));
+      Assert.AreEqual (AccessType.Get (TestAccessTypes.First), AccessType.Get (TestAccessTypes.First));
+      Assert.AreEqual (AccessType.Get (new EnumWrapper (TestAccessTypes.Second)), AccessType.Get (TestAccessTypes.Second));
+      Assert.AreEqual (AccessType.Get (new EnumWrapper (TestAccessTypes.Third)), AccessType.Get (new EnumWrapper (TestAccessTypes.Third)));
     }
 
     [Test]
@@ -79,13 +65,7 @@ namespace Remotion.Security.UnitTests.Core
       AccessType accessType = AccessType.Get (new EnumWrapper (TestAccessTypes.First));
       AccessType deserializedAccessType = Serializer.SerializeAndDeserialize (accessType);
 
-      Assert.AreSame (accessType, deserializedAccessType);
-    }
-
-    private void ClearAccessTypeCache ()
-    {
-      PrivateInvoke.SetNonPublicStaticField (typeof (AccessType), "s_cache", new InterlockedCache<EnumWrapper, AccessType> ());
+      Assert.AreEqual (accessType, deserializedAccessType);
     }
   }
-
 }

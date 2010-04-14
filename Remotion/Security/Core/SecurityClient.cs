@@ -72,7 +72,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
       if (SecurityFreeSection.IsActive)
         return true;
@@ -93,7 +93,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
       if (!HasAccess (securableObject, principal, requiredAccessTypes))
         throw CreatePermissionDeniedException ("Access has been denied.");
@@ -109,7 +109,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
       if (SecurityFreeSection.IsActive)
         return true;
@@ -126,7 +126,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNull ("principal", principal);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
+      ArgumentUtility.CheckNotNull ("requiredAccessTypes", requiredAccessTypes);
 
       if (!HasStatelessAccess (securableClass, principal, requiredAccessTypes))
         throw CreatePermissionDeniedException ("Access has been denied.");
