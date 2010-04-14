@@ -62,6 +62,7 @@ namespace Remotion.Collections
     private readonly T2 _item2;
     private readonly T3 _item3;
     private readonly T4 _item4;
+    private readonly int _hashCode;
 
     public Tuple (T1 item1, T2 item2, T3 item3, T4 item4)
     {
@@ -69,6 +70,7 @@ namespace Remotion.Collections
       _item2 = item2;
       _item3 = item3;
       _item4 = item4;
+      _hashCode = EqualityUtility.GetRotatedHashCode (_item1, _item2, _item3, _item4);
     }
 
     public T1 Item1
@@ -93,10 +95,8 @@ namespace Remotion.Collections
 
     public bool Equals (Tuple<T1, T2, T3, T4> other)
     {
-      if (other == null)
-        return false;
-
-      return EqualityUtility.Equals (_item1, other._item1)
+      return EqualityUtility.NotNullAndSameType (this, other)
+             && EqualityUtility.Equals (_item1, other._item1)
              && EqualityUtility.Equals (_item2, other._item2)
              && EqualityUtility.Equals (_item3, other._item3)
              && EqualityUtility.Equals (_item4, other._item4);
@@ -104,15 +104,12 @@ namespace Remotion.Collections
 
     public override bool Equals (object obj)
     {
-      Tuple<T1, T2, T3, T4> other = obj as Tuple<T1, T2, T3, T4>;
-      if (other == null)
-        return false;
-      return Equals (other);
+      return EqualityUtility.EqualsEquatable (this, obj);
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (_item1, _item2, _item3, _item4);
+      return _hashCode;
     }
 
     public override string ToString ()
