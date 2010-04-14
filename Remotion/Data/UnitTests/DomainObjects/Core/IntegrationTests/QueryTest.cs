@@ -325,7 +325,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClientTransactionMock.QueryManager.GetCollection (query);
 
       listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord(); // For Discarding
+      listenerMock.BackToRecord (); // For Discarding
+    }
+
+    [Test]
+    public void LinqQuery_CallsFilterQueryResult ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
+      ClientTransactionMock.AddListener (listenerMock);
+
+      using (ClientTransactionMock.EnterNonDiscardingScope ())
+      {
+        var query = from o in QueryFactory.CreateLinqQuery<Order> () where o.Customer.ID == DomainObjectIDs.Customer1 select o;
+        query.ToArray ();
+      }
+
+      listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord (); // For Discarding
+    }
+
+    [Test]
+    public void LinqQueryWithGroupBy_CallsFilterQueryResult ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
+      ClientTransactionMock.AddListener (listenerMock);
+
+      using (ClientTransactionMock.EnterNonDiscardingScope ())
+      {
+        var query = from o in QueryFactory.CreateLinqQuery<Order>() group o by o;
+        query.ToArray ();
+      }
+
+      listenerMock.VerifyAllExpectations ();
+      listenerMock.BackToRecord (); // For Discarding
     }
   }
 }
