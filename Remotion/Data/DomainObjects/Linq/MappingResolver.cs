@@ -89,7 +89,9 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (!typeof (DomainObject).IsAssignableFrom (tableReferenceExpression.Type))
       {
+        // TODO Review 2542: This check is not necessary
         if (tableReferenceExpression.SqlTable.GetResolvedTableInfo() is ResolvedSubStatementTableInfo)
+          // TODO Review 2542: Use tableReferenceExpression.SqlTable, do not create a new table!
           return new SqlValueTableReferenceExpression (new SqlTable (tableReferenceExpression.SqlTable.GetResolvedTableInfo()));
       }
       
