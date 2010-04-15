@@ -23,6 +23,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.Linq.Utilities;
 
@@ -149,7 +150,39 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("innerExpression", innerExpression);
+      ArgumentUtility.CheckNotNull ("desiredType", desiredType);
+
+      if (desiredType.IsAssignableFrom (innerExpression.Type))
+        return Expression.Constant (true);
+      else if(innerExpression.Type.IsAssignableFrom(desiredType))
+      {
+        if (!typeof (DomainObject).IsAssignableFrom (innerExpression.Type))
+        {
+          var message = string.Format("No database-level type check can be added for the expression '{0}'."+ 
+                                      "Only the types of DomainObjects can be checked in the database query.", innerExpression);
+          throw new UnmappedItemException (message);
+        }
+
+        var classDefinition = GetClassDefinition (desiredType);
+        if(classDefinition==null)
+        {
+          string message = string.Format (
+            "The type '{0}' does not identify a queryable table.", desiredType.Name);
+          throw new UnmappedItemException (message);
+        }
+
+        var entityExpression = innerExpression as SqlEntityExpression;
+        if (entityExpression == null)
+          throw new UnmappedItemException(string.Format("The queried expression '{0}' has to be an entity.", innerExpression));
+
+        var sqlColumnExpression = new SqlColumnExpression (typeof (string), entityExpression.PrimaryKeyColumn.OwningTableAlias, "ClassID");
+        return Expression.Equal (sqlColumnExpression, new SqlLiteralExpression (classDefinition.ID));
+      }
+      else
+      {
+        return Expression.Constant (false);
+      }
     }
 
     private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)

@@ -37,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private UniqueIdentifierGenerator _generator;
     private SqlTable _orderTable;
     private SqlTable _customerTable;
+    private SqlTable _companyTable;
 
     [SetUp]
     public void SetUp ()
@@ -45,6 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
       _customerTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Customer), "Customer", "c"));
+      _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"));
     }
 
     [Test]
@@ -255,6 +257,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var memberExpression = new SqlMemberExpression (_orderTable, property);
 
       _resolver.ResolveMemberExpression (memberExpression, _generator);
+    }
+
+    [Test]
+    public void ResolveTypeCheck_DesiredTypeIsAssignableFromExpressionType ()
+    {
+      var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
+      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Company));
+
+      Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
+    }
+
+    [Test]
+    public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType ()
+    {
+      var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
+      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+      
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Customer));
+
+      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
     }
   }
 }

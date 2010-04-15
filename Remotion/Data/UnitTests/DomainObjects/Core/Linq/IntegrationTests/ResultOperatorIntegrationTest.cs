@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -33,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var ceos =
           (from o in QueryFactory.CreateLinqQuery<Order>()
            where o.Customer.Ceo != null
-           select o.Customer.Ceo).Distinct ();
+           select o.Customer.Ceo).Distinct();
 
       CheckQueryResult (ceos, DomainObjectIDs.Ceo12, DomainObjectIDs.Ceo5, DomainObjectIDs.Ceo3);
     }
@@ -54,12 +53,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     // MethodExtension defines extension method "ExtendString"
     // MethodExtendString generates sql code for this method
     [Test]
-    [Ignore("2534 add new transformer for ExtendString")]
+    [Ignore ("2534 add new transformer for ExtendString")]
     public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
     {
       //QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (
       //    typeof (MethodExtensions).GetMethod ("ExtendString", new[] { typeof (string)}), new MethodExtendString ());
-      
+
       //var computers =
       //    from c in QueryFactory.CreateLinqQuery<Computer>()
       //    where c.Employee.Name.ExtendString () == "Trillian"
@@ -94,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithFirst ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() 
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
                    select o).First();
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
@@ -106,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    select o).FirstOrDefault();
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
-    
+
     [Test]
     public void QueryWithCount ()
     {
@@ -118,8 +117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithCount_InSubquery ()
     {
-      var number = (from o in QueryFactory.CreateLinqQuery<Order> ()
-                    where (from oi in QueryFactory.CreateLinqQuery <OrderItem> () where oi.Order == o select oi).Count () == 2
+      var number = (from o in QueryFactory.CreateLinqQuery<Order>()
+                    where (from oi in QueryFactory.CreateLinqQuery<OrderItem>() where oi.Order == o select oi).Count() == 2
                     select o);
       CheckQueryResult (number, DomainObjectIDs.Order1);
     }
@@ -138,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void QueryWithConvertToString ()
     {
       var query =
-          from o in QueryFactory.CreateLinqQuery<OrderItem> ()
+          from o in QueryFactory.CreateLinqQuery<OrderItem>()
           where Convert.ToString (o.Position).Contains ("2")
           select o;
 
@@ -157,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithSubString ()
     {
-      var query = from c in QueryFactory.CreateLinqQuery<Customer> ()
+      var query = from c in QueryFactory.CreateLinqQuery<Customer>()
                   where c.Name.Substring (1, 3).Contains ("und")
                   select c;
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
@@ -166,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithTake ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Take (3);
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Take (3);
       CheckQueryResult (query, DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem);
     }
 
@@ -186,8 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void Query_WithSupportForObjectList ()
     {
       var orders =
-          (from o in QueryFactory.CreateLinqQuery<Order> ()
-           from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+          (from o in QueryFactory.CreateLinqQuery<Order>()
+           from oi in QueryFactory.CreateLinqQuery<OrderItem>()
            where oi.Order == o
            select o).Distinct();
 
@@ -197,36 +196,92 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void Query_WithGroupBy ()
     {
-      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem>()
                   where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
                   orderby oi.Order.OrderNumber
                   group oi.Product by oi.Order;
 
-      var groupings = query.ToArray ();
+      var groupings = query.ToArray();
       Assert.That (groupings.Length, Is.EqualTo (2));
 
       Assert.That (groupings[0].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
-      Assert.That (groupings[0].ToArray (), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
+      Assert.That (groupings[0].ToArray(), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
 
       Assert.That (groupings[1].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order2)));
-      Assert.That (groupings[1].ToArray (), Is.EquivalentTo (new[] { "Harddisk" }));
+      Assert.That (groupings[1].ToArray(), Is.EquivalentTo (new[] { "Harddisk" }));
     }
 
     [Test]
     public void Query_WithGroupByAfterOtherOperator ()
     {
-      var query = (from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
-                  where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
-                  orderby oi.Order.OrderNumber
-                  select oi)
-                  .Take (2)
-                  .GroupBy (oi => oi.Order, oi => oi.Product);
+      var query = (from oi in QueryFactory.CreateLinqQuery<OrderItem>()
+                   where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
+                   orderby oi.Order.OrderNumber
+                   select oi)
+          .Take (2)
+          .GroupBy (oi => oi.Order, oi => oi.Product);
 
-      var groupings = query.ToArray ();
+      var groupings = query.ToArray();
       Assert.That (groupings.Length, Is.EqualTo (1));
 
       Assert.That (groupings[0].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
-      Assert.That (groupings[0].ToArray (), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
+      Assert.That (groupings[0].ToArray(), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
+    }
+
+    [Test]
+    public void Query_OfType1 ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Customer>().OfType<Company>();
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    public void Query_OfType2 ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Customer> ().OfType<Customer> ();
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    public void Query_OfType3 ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Company> ().OfType<Customer> ();
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
+    [Test]
+    public void Query_Is ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Company> ().Where(c => c is Customer);
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
     }
   }
 }

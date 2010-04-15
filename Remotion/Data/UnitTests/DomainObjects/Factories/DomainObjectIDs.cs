@@ -148,6 +148,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // Orders: Order3, Order4
     public readonly ObjectID Customer4 = new ObjectID ("Customer", new Guid ("{B3F0A333-EC2A-4ddd-9035-9ADA34052450}"));
 
+    public readonly ObjectID Customer5 = new ObjectID ("Customer", new Guid ("{DA658F26-8107-44CE-9DD0-1804503ECCAF}"));
+
     #endregion
 
     #region Partner
