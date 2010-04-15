@@ -21,6 +21,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  [Serializable]
   public class WxePageExecutor : IWxePageExecutor
   {
     public WxePageExecutor ()
