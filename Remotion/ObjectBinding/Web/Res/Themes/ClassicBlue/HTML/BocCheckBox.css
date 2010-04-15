@@ -31,7 +31,10 @@
   padding: 0px;
 }
 
-/* modern browsers only (IE8+, Safari, Chrome, FF) */
-html>/**/body .bocCheckBox img {
+body.mozilla  .bocCheckBox img,
+body.webkit   .bocCheckBox img,
+body.opera    .bocCheckBox img,
+body.msie       .bocCheckBox img
+{
 	margin-left: 0px;
 } 

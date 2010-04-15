@@ -1,36 +1,36 @@
 @import url("TabStrip.css");
 
-/* Non-IE Browsers hack \*/
-html > body div.tabbedMultiViewActiveView
+body.mozilla  div.tabbedMultiViewActiveView,
+body.webkit   div.tabbedMultiViewActiveView,
+body.opera    div.tabbedMultiViewActiveView
 {
   width: inherit;
 }
-/* End Non-IE Browsers hack\*/
 
 div.tabbedMultiView
 {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left:0;
-    display: block;
-    width: auto;
-    height: auto;
-    background-color: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left:0;
+  display: block;
+  width: auto;
+  height: auto;
+  background-color: white;
 }
 
 div.tabbedMultiView div.wrapper
 {
-   position: absolute;
-   top: 0.5em;
-   bottom: 0.5em;
-   right: 0.5em;
-   left:0.5em;
-   display: block;
-   width: auto;
-   height: auto;
-   background-color: white;
+ position: absolute;
+ top: 0.5em;
+ bottom: 0.5em;
+ right: 0.5em;
+ left:0.5em;
+ display: block;
+ width: auto;
+ height: auto;
+ background-color: white;
 }
 
 div.tabbedMultiView div.content
@@ -39,20 +39,20 @@ div.tabbedMultiView div.content
 
 div.tabbedMultiViewActiveView
 {
-    height: 80%;
+  height: 80%;
 }
 
 div.tabbedMultiViewActiveView div.contentBorder
 {
-   height: 60%;
-   position: relative;
-   border: solid 1px #02537c;
-   border-top: 0;
-   width: auto;
-   min-height: 50%;
-   background-color: white;
-   overflow: auto;
-   margin: 0; 
+ height: 60%;
+ position: relative;
+ border: solid 1px #02537c;
+ border-top: 0;
+ width: auto;
+ min-height: 50%;
+ background-color: white;
+ overflow: auto;
+ margin: 0; 
 }
 
 div.tabbedMultiViewActiveView *.top, 
@@ -118,8 +118,7 @@ div.tabbedMultiViewTopControls
   padding: 0 0 0.5em 0;
 }
 
-/* Mozilla only (Firefox) */
-html:not([dummy]) .tabbedMultiViewTopControls { 
+body.mozilla .tabbedMultiViewTopControls { 
   margin-bottom: 0.5em;
 }
 
@@ -139,7 +138,7 @@ div.tabbedMultiViewBottomControls
 
 div.tabbedMultiViewBottomControlsOperaWorkaround
 {
-    border: solid 0 transparent;
+  border: solid 0 transparent;
 }
 
 div.tabbedMultiViewBottomControls div.content 
@@ -180,7 +179,6 @@ div.tabbedMultiViewBottomControls *.bottomRight
 }*/
 
 /* Tab Strip */
-
 div.tabbedMultiViewTabStrip
 {
   position: relative;
@@ -230,7 +228,11 @@ div.tabbedMultiViewTabStrip span.tabStripTab a
   background-repeat: repeat-x;
   background-position: top;
   color: blue;
-  *padding-bottom: 2px; /* * CSS Hack for IE7 */
+}
+
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTab a
+{
+  padding-bottom: 2px;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
@@ -252,7 +254,11 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a
   border: none;
   background-color: White;
   color: #0D4EBA;
-  *padding-bottom: 2px; /* * CSS Hack for IE7 */
+}
+
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
+{
+  padding-bottom: 2px;
 }
 
 /* Bottom tab border */
@@ -288,8 +294,12 @@ div.tabbedMultiViewTabStrip a span.anchorBody
   padding-right: 0.5em;
 }
 
-html > body div.tabbedMultiViewTabStrip span.tabStripTab, 
-html > body div.tabbedMultiViewTabStrip span.tabStripTabSelected
+body.mozilla  div.tabbedMultiViewTabStrip span.tabStripTab,
+body.webkit   div.tabbedMultiViewTabStrip span.tabStripTab,
+body.opera    div.tabbedMultiViewTabStrip span.tabStripTab,
+body.mozilla  div.tabbedMultiViewTabStrip span.tabStripTabSelected,
+body.webkit   div.tabbedMultiViewTabStrip span.tabStripTabSelected,
+body.opera    div.tabbedMultiViewTabStrip span.tabStripTabSelected
 {
   margin-left: 1em; /* Provides room for the separator. */
 }
@@ -311,6 +321,3 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   height: 1.2em;
 }
-
-/* IE6 only */
-

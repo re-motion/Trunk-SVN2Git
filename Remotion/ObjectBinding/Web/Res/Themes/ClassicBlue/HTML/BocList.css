@@ -1,10 +1,10 @@
 /* Style applied to the BocList. */
 div.bocList
 {
-    display: block;
-    position: relative;
-    height: auto;
-    width: auto; /* give it a value to make bocList scrollable, IE7 is buggy if you don't define height & width */
+  display: block;
+  position: relative;
+  height: auto;
+  width: auto; /* give it a value to make bocList scrollable, IE7 is buggy if you don't define height & width */
 }
 
 /* Style applied to the BocList in read-only mode. */
@@ -17,53 +17,53 @@ div.bocList
 div.bocList.hasDimensions div.bocListTableBlock,
 div.bocList.hasDimensions div.bocListTableBlock div.bocListTable
 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
 }
 
 div.bocList.hasDimensions div.bocListTableBlock
 {
-    right: 10em; /* width of BocList menu block + some space */
+  right: 10em; /* width of BocList menu block + some space */
 }
 
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
 div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTable
 {
-    bottom: 1.5em;
+  bottom: 1.5em;
 }
 
 div.bocList.hasDimensions div.bocListNavigator
 {
-    position: absolute;
-    bottom: 0;
+  position: absolute;
+  bottom: 0;
 }
 
 /*  Style applied to the BocList's navigator. */
 div.bocListNavigator
 {
-    white-space: nowrap;
-    overflow: hidden;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /*  Style applied to the BocList's menu block. */
 div.bocListMenuBlock
 {
-    display: block;
-    float: right;
-    width: 9.5em;
-    padding-left: 0.5em;
+  display: block;
+  float: right;
+  width: 9.5em;
+  padding-left: 0.5em;
 }
 
 /*  Style applied to the list-area (table and navigation block) of the BocList.  */
 div.bocListTableBlock
 {
-    display: block;
-    width: auto;
-    overflow: hidden;
+  display: block;
+  width: auto;
+  overflow: hidden;
 }
 
 /* Style applied to the list-area (table and navigation block) of the BocList if there is a menu block. */
@@ -79,18 +79,18 @@ div.bocListTableBlock.hasMenuBlock div.bocListTable
 /* Style applied to the div surrounding the BocList's table. */
 div.bocListTable
 {
-    display: block;
-    width: auto;
-    height: auto;
+  display: block;
+  width: auto;
+  height: auto;
 }
 
 /*  Style applied to the BocList's table's outer structure.  */
 table.bocListTable,
 div.bocListFakeTableHead table
 {
-    width: 100%;
-    border-collapse: collapse;
-    border-style: none;
+  width: 100%;
+  border-collapse: collapse;
+  border-style: none;
 }
 
 /*  Style applied to the table head block of the BocList's table.  */
@@ -101,119 +101,118 @@ tbody.bocListTableBody
 /*  Style applied to the cells in the BocList's title row.  */
 th.bocListTitleCell
 {
-    font-weight: bold;
-    text-align: left;
+  font-weight: bold;
+  text-align: left;
 
-    padding: 2px 2px 2px 2px;
-    border-style: solid;
-    border-top-width: 0px;
-    border-right-width: 0px;
-    border-bottom-width: 2px;
-    border-left-width: 0px;
-    border-color: Black;
-    background-color: white;
-    white-space: nowrap;
+  padding: 2px 2px 2px 2px;
+  border-style: solid;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  border-left-width: 0px;
+  border-color: Black;
+  background-color: white;
+  white-space: nowrap;
 }
 
-/* IE7 only */
-*:first-child+html th.bocListTitleCell *
+body.msie7 th.bocListTitleCell *
 {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 th.bocListTitleCell span
 {
-    padding: 2px;
+  padding: 2px;
 }
 
 th.bocListTitleCell a
 {
-    color: Blue;
-    padding: 2px;
+  color: Blue;
+  padding: 2px;
 }
 
 th.bocListTitleCell a:hover
 {
-    color: Blue;
-    padding: 1px;
-    border-color: #005588;
-    border-width: 1px;
-    border-style: solid;
-    background-color: #fee197;	
+  color: Blue;
+  padding: 1px;
+  border-color: #005588;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #fee197;	
 }
 
 /*  Style applied to the cells in the BocList's odd and even data rows. */
 td.bocListDataCellOdd,
 td.bocListDataCellEven
 {
-    text-align: left;
+  text-align: left;
 
-    padding: 2px 5px 2px 2px;
-    border-style: solid;
-    border-top-width: 1px;
-    border-right-width: 0px;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-color: White;
+  padding: 2px 5px 2px 2px;
+  border-style: solid;
+  border-top-width: 1px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  border-color: White;
 
-    cursor: default;
+  cursor: default;
 }
 
 /*  Style applied to the cells in the BocList's not-selected odd and even data rows. */
 tr.bocListDataRow td.bocListDataCellOdd
 {
-    background-color: White;
-    position: relative;
+  background-color: White;
+  position: relative;
 }
 
 tr.bocListDataRow td.bocListDataCellEven
 {
-    background-color: #e1ecfc;
-    position: relative;
+  background-color: #e1ecfc;
+  position: relative;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */
 tr.bocListDataRowSelected td.bocListDataCellOdd,
 tr.bocListDataRowSelected td.bocListDataCellEven
 {
-    background-color: Highlight;
-    color: HighlightText;
+  background-color: Highlight;
+  color: HighlightText;
 }
 
 
 /*  Style applied to the cell in the BocList's data row that contains the index. */
 th.bocListTitleCellIndex
 {
-    text-align: center;
+  text-align: center;
 }
 
 /*  Style applied to the cell in the BocList's data row that contains the index. */
 td.bocListDataCellIndex
 {
-    text-align: center;
+  text-align: center;
 }
 
 /*  Style applied to the non-anchor content in the data rows.  */
 span.bocListContent,
 label.bocListContent
 {
-    padding: 2px;
+  padding: 2px;
 }
 
 /*  Style applied to the anchor tags in BocList's unselected odd and even data rows.  */
 tr.bocListDataRow td.bocListDataCellOdd a,
 tr.bocListDataRow td.bocListDataCellEven a
 {
-    color: Blue;
-    padding: 2px;
+  color: Blue;
+  padding: 2px;
 }
 
 /*  Style applied to the anchor tags in BocList's selected odd and even data rows.  */
 tr.bocListDataRowSelected td.bocListDataCellOdd a,
 tr.bocListDataRowSelected td.bocListDataCellEven a
 {
-    color: White;
-    padding: 2px;
+  color: White;
+  padding: 2px;
 }
 
 /*  Style applied to the anchor tags during hovering in BocList's selected odd and even data rows.  */
@@ -222,12 +221,12 @@ tr.bocListDataRow td.bocListDataCellEven a:hover,
 tr.bocListDataRowSelected td.bocListDataCellOdd a:hover,
 tr.bocListDataRowSelected td.bocListDataCellEven a:hover
 {
-    color: Blue;
-    padding: 1px;
-    border-color: #005588;
-    border-width: 1px;
-    border-style: solid;
-    background-color: #fee197;	
+  color: Blue;
+  padding: 1px;
+  border-color: #005588;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #fee197;	
 }
 
 /*  Style applied to the disabled anchor tags during hovering in BocList's selected odd and even data rows.  */
@@ -236,11 +235,11 @@ tr.bocListDataRow td.bocListDataCellEven a.disabled:hover,
 tr.bocListDataRowSelected td.bocListDataCellOdd a.disabled:hover,
 tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
 {
-    color: Blue;
-    padding: 2px;
-    border-width: 0px;
-    border-style: none;
-    background-color: transparent;	
+  color: Blue;
+  padding: 2px;
+  border-width: 0px;
+  border-style: none;
+  background-color: transparent;	
 }
 
 /* Style applied to SPAN elements in command-enabled column cells */
@@ -249,7 +248,7 @@ tr.bocListDataRow td.bocListDataCellEven span.CommandText,
 tr.bocListDataRowSelected td.bocListDataCellOdd span.CommandText,
 tr.bocListDataRowSelected td.bocListDataCellEven span.CommandText
 {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 
@@ -259,10 +258,10 @@ td.bocListDataCellEven div span.DropDownMenuSelect a,
 td.bocListDataCellOdd div span.DropDownMenuSelect a:hover,
 td.bocListDataCellEven div span.DropDownMenuSelect a:hover
 {
-    color: Blue;
-    padding: 0;
-    border: none;
-    background-color: Transparent;
+  color: Blue;
+  padding: 0;
+  border: none;
+  background-color: Transparent;
 }
 
 
@@ -271,10 +270,10 @@ td.bocListDataCellEven span.DropDownMenuSelect.disabled a,
 td.bocListDataCellOdd span.DropDownMenuSelect.disabled a:hover,
 td.bocListDataCellEven span.DropDownMenuSelect.disabled a:hover
 {
-    color: Gray;
-    padding: 0px;
-    border: none;
-    background-color: Transparent;
+  color: Gray;
+  padding: 0px;
+  border: none;
+  background-color: Transparent;
 }
 
 td.bocListDataCellOdd span.bocDateValue a,
@@ -286,17 +285,17 @@ td.bocListDataCellEven span.bocDateTimeValue a,
 td.bocListDataCellOdd span.bocDateTimeValue a:hover,
 td.bocListDataCellEven span.bocDateTimeValue a:hover
 {
-    padding: 0px;
-    border-style: none;
-    background-color: Transparent;
+  padding: 0px;
+  border-style: none;
+  background-color: Transparent;
 }
 
 /*  Style applied to the text providing the sorting order's index. */
 span.bocListSortingOrder
 {
-    color: Gray;
-    font-size: 80%;
-    font-weight: normal;
+  color: Gray;
+  font-size: 80%;
+  font-weight: normal;
 }
 
 /*  Style applied to the BocList's list of available views. */
@@ -312,24 +311,29 @@ span.bocListAvailableViewsListLabel
 /*  Style applied to the validation messages, applied if the EditDetailsValidator has no style it self.  */
 div.bocListEditModeValidationMessage
 {
-    color: Red;
+  color: Red;
 }
 
 /* Style applied to the fake table head used for scrolling */
 div.bocListFakeTableHead
 {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: -1px;
-    right: 0;
-    margin: 0;
-    padding:0;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: -1px;
+  right: 0;
+  margin: 0;
+  padding:0;
 }
 
-/* modern browsers only (IE8+, Safari, Chrome, FF) */
-html>/**/body div.bocListFakeTableHead
+body.mozilla  div.bocListFakeTableHead,
+body.webkit   div.bocListFakeTableHead,
+body.opera    div.bocListFakeTableHead
 {
-    left: 0;
-    left: -1px\9;/*IE8*/
+  left: 0;
+} 
+
+body.msie       div.bocListFakeTableHead
+{
+  left: -1px;
 } 

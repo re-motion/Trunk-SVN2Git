@@ -20,8 +20,7 @@ form
   width: 100%;
 }
 
-/* IE7 only */
-*:first-child+html div.content 
+body.msie7 div.content 
 {
   width: auto !important;
 }
@@ -102,13 +101,12 @@ td.stateCombinationsButtons
   vertical-align: top;  
 }
 
-/* IE7 only */
-*:first-child+html td.stateCombinationsButtons button.webButton
+body.msie7 td.stateCombinationsButtons button.webButton
 {
   max-width: 94%;
 }
-/* IE6 only */
-* html td.stateCombinationsButtons button.webButton
+
+body.msie6 td.stateCombinationsButtons button.webButton
 {
   width: 96%;
 }

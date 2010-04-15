@@ -155,13 +155,12 @@ div.singleViewView *.bottomRight
   right: 0px;
 }*/
 
-/* Non-IE Browsers hack \*/
-html > body div.singleViewView
+body.mozilla  div.singleViewView,
+body.webkit   div.singleViewView,
+body.opera    div.singleViewView
 {
  width: inherit;
 }
-/* End Non-IE Browsers hack\*/
-
 
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.singleViewTopControls
@@ -194,4 +193,3 @@ div.singleViewBottomControls.empty
   background-color: White;
 }
 
-/* CSS for IE6 */

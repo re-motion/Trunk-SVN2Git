@@ -8,23 +8,12 @@ body
   font-size: 80%; 
 }
 
-/*  First block catches for all browsers.
-    voice-family is "Tantek Celik Hack"
-    Second block catches for Opera 7, Mozilla, and Internet Explorer 6, 
-    thus overriding the settings from the first block. */
-td, 
-th
-{
-  font-size: 80%;
-  voice-family: "\"}\""; 
-  voice-family:inherit;
-  font-size: 100%;
-}
-
-/*  Catches for Opera 7 (5+?), Mozilla/Firefox. 
-    Stops tailspin for Internet Explorer 5.0.1, i.e. allowing subsequent style information to be applied. */
-html>body td,
-html>body th
+body.mozilla  td,
+body.webkit   td,
+body.opera    td,
+body.mozilla  th,
+body.webkit   th,
+body.opera    th
 {
   font-size: 100%;
 }
@@ -35,12 +24,14 @@ td.formGridTitleCell,
 td.formGridSubTitleCell
 {
   font-size: 100%;
-  voice-family: "\"}\""; 
-  voice-family:inherit;
-  font-size: 125%;
 }
 
-html>body td.formGridTitleCell
+body.mozilla  td.formGridTitleCell,
+body.webkit   td.formGridTitleCell,
+body.opera    td.formGridTitleCell,
+body.mozilla  td.formGridSubTitleCell,
+body.webkit   td.formGridSubTitleCell,
+body.opera    td.formGridSubTitleCell
 {
   font-size: 125%;
 }
@@ -49,12 +40,11 @@ html>body td.formGridTitleCell
 td.contentMenuRow
 {
   font-size: 64%;
-  voice-family: "\"}\""; 
-  voice-family:inherit;
-  font-size: 80%;
 }
 
-html>body td.contentMenuRow
+body.mozilla  td.contentMenuRow,
+body.webkit   td.contentMenuRow,
+body.opera    td.contentMenuRow
 {
   font-size: 80%;
 }

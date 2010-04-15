@@ -89,12 +89,13 @@ span.treeViewNodeHead a:hover
 span.treeViewNodeHeadSelected a:hover
 {
   color: #083779;
-	padding: 1px;
-	border-width: 1px;
-	border-color: #083779;
-	border-style: solid;
-	background-color: #e6f0ff;	
+  padding: 1px;
+  border-width: 1px;
+  border-color: #083779;
+  border-style: solid;
+  background-color: #e6f0ff;	
 }
+
 span.treeViewNode ul
 {
   right: auto;

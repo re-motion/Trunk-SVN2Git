@@ -15,8 +15,7 @@ span.bocTextValue input
     height: 1.2em;
 }
 
-/* IE7 only */
-*:first-child+html span.bocTextValue input
+body.msie7 span.bocTextValue input
 {
     height: 1.25em;
 }

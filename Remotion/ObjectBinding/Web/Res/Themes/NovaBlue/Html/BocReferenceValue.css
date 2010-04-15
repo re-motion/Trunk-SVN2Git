@@ -88,25 +88,21 @@ span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSele
   height: 1.6em;
 }
 
-/* WebKit browsers only (Safari, Chrome) */
-@media screen and (-webkit-min-device-pixel-ratio:0) { 
-    span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
-    {
-      height: 1.6em !important;
-    }
-
-    span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
-    {
-      height: 1.8em;
-    }
-
-    span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
-    {
-      height: 1.4em;
-    }
-    
+body.webkit span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
+{
+  height: 1.6em !important;
 }
 
+body.webkit span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
+{
+  height: 1.5em;
+}
+
+body.webkit span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+{
+  height: 1.4em;
+}
+    
 span.bocReferenceValue span.content.embeddedOptionsMenu
 {
   right: 1.3em; /* width of span.DropDownMenuButton + desired space between */
@@ -120,10 +116,10 @@ span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownM
   height: 1.5em;
   top: 0;
 }
-/* Mozilla only (Firefox) */
-html:not([dummy]) span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
-html:not([dummy]) span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
-html:not([dummy]) span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+
+body.mozilla span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
+body.mozilla span.bocReferenceValue.disabled span.bocReferenceValueOptionsMenu span.DropDownMenuSelect,
+body.mozilla span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
 {
   height: 1.45em;
 }
@@ -147,8 +143,7 @@ span.bocReferenceValue span.bocReferenceValueOptionsMenu
   width: 6em; /* Define width of span.bocReferenceValueOptionsMenu */
 }
 
-/* IE7 only */
-*:first-child+html span.bocReferenceValue span.bocReferenceValueOptionsMenu
+body.msie7 span.bocReferenceValue span.bocReferenceValueOptionsMenu
 {
   top: 0;
 }

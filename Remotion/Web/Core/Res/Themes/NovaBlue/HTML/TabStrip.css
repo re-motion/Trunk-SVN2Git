@@ -138,22 +138,27 @@
   display: none;
 }
 
-/* Non-IE Browsers hack \*/
-html>body *.tabStripTabsPane ul
+body.mozilla  *.tabStripTabsPane ul,
+body.webkit   *.tabStripTabsPane ul,
+body.opera    *.tabStripTabsPane ul
 {
   width: auto; 
 }
 
-html>body *.tabStripTab,
-html>body *.tabStripTabSelected
+body.mozilla  *.tabStripTab,
+body.webkit   *.tabStripTab,
+body.opera    *.tabStripTab,
+body.mozilla  *.tabStripTabSelected,
+body.webkit   *.tabStripTabSelected,
+body.opera    *.tabStripTabSelected
 {
   margin-left: 0.3em; /* Provides room for the separator. */
 }
 
-html>body *.tabStripTabSeparator span
+body.mozilla  *.tabStripTabSeparator span,
+body.webkit   *.tabStripTabSeparator span,
+body.opera    *.tabStripTabSeparator span
 {
   padding-top: 1px; /* The padding used for the content span. */
   padding-bottom: 1px; /* The padding used for the content span. */
 }
-
-/* End Non-IE Browsers hack\*/

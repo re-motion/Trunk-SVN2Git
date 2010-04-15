@@ -64,6 +64,7 @@ span.bocReferenceValue span.bocReferenceValueCommand
   margin-top: 3px;
   margin-left: 2px;
 }
+
 span.bocReferenceValue.readOnly span.bocReferenceValueCommand
 {
   margin-top: 2px;
@@ -89,38 +90,31 @@ span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSele
   height: 1.6em;
 }
 
-/* Mozilla only (Firefox) */
-html:not([dummy]) span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSelect
+body.mozilla span.bocReferenceValue.readOnly span.DropDownMenuContainer span.DropDownMenuSelect
 { 
   height: 1.55em;
 }
 
-
-/* WebKit browsers only (Safari, Chrome) */
-@media screen and (-webkit-min-device-pixel-ratio:0) { 
-    span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
-    {
-      height: 1.6em !important;
-    }
-
-    span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
-    {
-      height: 1.8em;
-    }
-
-
-    span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
-    {
-      margin-top: 0.2em;
-    }
-    
-    span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
-    {
-      height: 1.4em;
-    }
-    
+body.webkit span.bocReferenceValue.readOnly > span.DropDownMenuContainer > span.DropDownMenuSelect
+{
+  height: 1.6em !important;
 }
 
+body.webkit span.bocReferenceValue.disabled span.DropDownMenuContainer span.DropDownMenuSelect
+{
+  height: 1.8em;
+}
+
+body.webkit span.bocReferenceValue span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+{
+  margin-top: 0.2em;
+}
+    
+body.webkit span.bocReferenceValue.readOnly > span.bocReferenceValueContent span.bocReferenceValueOptionsMenu span.DropDownMenuSelect
+{
+  height: 1.4em;
+}
+    
 span.bocReferenceValue span.content.embeddedOptionsMenu
 {
   right: 1.3em; /* width of span.DropDownMenuButton + desired space between */
@@ -133,7 +127,6 @@ span.bocReferenceValue.readOnly span.bocReferenceValueOptionsMenu span.DropDownM
 {
   height: 1.4em;
 }
-
 
 span.bocReferenceValue span.content,
 span.bocReferenceValue span.disabled span.content
@@ -158,4 +151,3 @@ span.bocReferenceValue span.content.separateOptionsMenu
 {
   right: 6.25em; /* width of span.bocReferenceValueOptionsMenu + desired space between */
 }
-

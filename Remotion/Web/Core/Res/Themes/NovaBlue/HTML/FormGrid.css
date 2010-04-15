@@ -11,7 +11,6 @@ td.formGridSubTitleCell
 {
 	font-weight: bold;
 	/*  no inheritence from body */
-
   padding: 2px 2px 2px 2px;
   border: none;
 }
@@ -28,7 +27,6 @@ td.formGridLabelsCell
 {
 	background-color: #f4f4f4;
 	text-align: right;
-
   padding: 0.3em 1em 0.3em 1em;
   border-top: none;
   border-left: none;
@@ -41,7 +39,6 @@ td.formGridLabelsCell
 td.formGridMarkersCell
 {
   white-space: nowrap;
-
   padding: 0.3em 0.5em 0.3em 0.5em;
   border-top: none;
   border-left: none;

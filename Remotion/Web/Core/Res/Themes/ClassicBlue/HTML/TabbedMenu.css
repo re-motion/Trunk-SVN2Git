@@ -1,6 +1,5 @@
 @import url("TabStrip.css");
 
-/* Opera Bugfix*/
 table
 {
 }
@@ -139,13 +138,15 @@ div.tabbedMainMenu li span.anchorBody
   padding-right: 0.6em;
 }
 
-/* Non-IE Browsers hack \*/
-html>body div.tabbedMainMenu span.tabStripTab,
-html>body div.tabbedMainMenu span.tabStripTabSelected
+body.mozilla  div.tabbedMainMenu span.tabStripTab,
+body.webkit   div.tabbedMainMenu span.tabStripTab,
+body.opera    div.tabbedMainMenu span.tabStripTab,
+body.mozilla  div.tabbedMainMenu span.tabStripTabSelected,
+body.webkit   div.tabbedMainMenu span.tabStripTabSelected,
+body.opera    div.tabbedMainMenu span.tabStripTabSelected
 {
   margin-left: 0; /* No separator, no margin required. */
 }
-/* End Non-IE Browsers hack\*/
 
 
 /* Sub Menu Tabstrip */
@@ -172,7 +173,6 @@ div.tabbedSubMenu span.tabStripTab,
 div.tabbedSubMenu span.tabStripTabSelected
 {  
   border-right: solid 1px White;
-
   padding-top: 0.1em;
   padding-bottom: 0.1em;
   padding-left: 0.2em;
@@ -228,16 +228,19 @@ div.tabbedSubMenu span.anchorBody
   padding-right: 0.3em;
 }
 
-/* Non-IE Browsers hack \*/
-html>body div.tabbedSubMenu div.tabStripTabsPane.empty
+body.mozilla  div.tabbedSubMenu div.tabStripTabsPane.empty,
+body.webkit   div.tabbedSubMenu div.tabStripTabsPane.empty,
+body.opera    div.tabbedSubMenu div.tabStripTabsPane.empty
 {
   padding-top: 1.8em;
 }
 
-html>body div.tabbedSubMenu span.tabStripTab,
-html>body div.tabbedSubMenu span.tabStripTabSelected
+body.mozilla  div.tabbedSubMenu span.tabStripTab,
+body.webkit   div.tabbedSubMenu span.tabStripTab,
+body.opera    div.tabbedSubMenu span.tabStripTab,
+body.mozilla  div.tabbedSubMenu span.tabStripTabSelected,
+body.webkit   div.tabbedSubMenu span.tabStripTabSelected,
+body.opera    div.tabbedSubMenu span.tabStripTabSelected
 {
   margin-left: 0; /* No separator, no margin required. */
 }
-
-/* End Non-IE Browsers hack\*/

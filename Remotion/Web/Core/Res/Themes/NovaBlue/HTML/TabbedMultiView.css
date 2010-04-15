@@ -4,12 +4,13 @@ body
 {
     background-color: #083779;
 }
-/* Non-IE Browsers hack \*/
-html > body div.tabbedMultiViewActiveView
+
+body.mozilla  div.tabbedMultiViewActiveView,
+body.webkit   div.tabbedMultiViewActiveView,
+body.opera    div.tabbedMultiViewActiveView
 {
   width: inherit;
 }
-/* End Non-IE Browsers hack\*/
 
 div.tabbedMultiView
 {
@@ -122,8 +123,7 @@ div.tabbedMultiViewTopControls
   padding: 0;
 }
 
-/* Mozilla only (Firefox) */
-html:not([dummy]) .tabbedMultiViewTopControls { 
+body.mozilla div.tabbedMultiViewTopControls { 
   margin-bottom: 0.5em;
 }
 
@@ -184,7 +184,6 @@ div.tabbedMultiViewBottomControls *.bottomRight
 }*/
 
 /* Tab Strip */
-
 div.tabbedMultiViewTabStrip
 {
   position: relative;
@@ -219,7 +218,11 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator
 {
   width: 0.6em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
   border-bottom: solid 1px #083779;
-  *padding-bottom: 1px; /* * CSS Hack for IE7 */
+}
+
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSeparator
+{
+  padding-bottom: 1px;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab
@@ -235,7 +238,11 @@ div.tabbedMultiViewTabStrip span.tabStripTab a
   background-repeat: repeat-x;
   background-position: top;
   color: White;
-  *padding-bottom: 2px; /* * CSS Hack for IE7 */
+}
+
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTab a
+{
+  padding-bottom: 2px;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
@@ -257,7 +264,11 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a
   border: none;
   background-color: White;
   color: #0D4EBA;
-  *padding-bottom: 2px; /* * CSS Hack for IE7 */
+}
+
+body.msie7 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
+{
+  padding-bottom: 2px;
 }
 
 /* Bottom tab border */
@@ -293,8 +304,12 @@ div.tabbedMultiViewTabStrip a span.anchorBody
   padding-right: 0.5em;
 }
 
-html > body div.tabbedMultiViewTabStrip span.tabStripTab, 
-html > body div.tabbedMultiViewTabStrip span.tabStripTabSelected
+body.mozilla  div.tabbedMultiViewTabStrip span.tabStripTab,
+body.webkit   div.tabbedMultiViewTabStrip span.tabStripTab,
+body.opera    div.tabbedMultiViewTabStrip span.tabStripTab,
+body.mozilla  div.tabbedMultiViewTabStrip span.tabStripTabSelected,
+body.webkit   div.tabbedMultiViewTabStrip span.tabStripTabSelected,
+body.opera    div.tabbedMultiViewTabStrip span.tabStripTabSelected
 {
   margin: 0; /* Separator already has width. */
 }
@@ -316,5 +331,3 @@ div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   height: 1.2em;
 }
-
-/* IE6 only */
