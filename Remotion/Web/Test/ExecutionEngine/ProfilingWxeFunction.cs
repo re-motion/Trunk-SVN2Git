@@ -15,20 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.SessionState;
+using System.Diagnostics;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public class ProfilingWxeFunction: WxeFunction
+  [Serializable]
+  public class ProfilingWxeFunction : WxeFunction
   {
     private DateTime _start;
     private DateTime _end;
 
     public ProfilingWxeFunction ()
-      : base (new NoneTransactionMode ())
+        : base (new NoneTransactionMode())
     {
       ReturnUrl = "~/Start.aspx";
     }
@@ -41,28 +41,28 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     // steps
 
-    void Step10()
+    private void Step10 ()
     {
       _start = DateTime.Now;
     }
 
-    WxeStep Step21 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step22 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step23 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step24 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step25 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step26 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step27 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step28 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
-    WxeStep Step29 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step21 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step22 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step23 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step24 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step25 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step26 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step27 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step28 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
+    private WxeStep Step29 = new WxePageStep ("~/ExecutionEngine/ProfilingForm.aspx");
 
     // Tracing: 100ms/start-end
     // Profiling: 1sek/start-end
-    void Step30()
+    private void Step30 ()
     {
       _end = DateTime.Now;
       TimeSpan diff = _end - _start;
-      System.Diagnostics.Debug.WriteLine (string.Format ("Runtime: {0} ms", diff.Ticks / 10000));
+      Debug.WriteLine (string.Format ("Runtime: {0} ms", diff.Ticks / 10000));
     }
   }
 }

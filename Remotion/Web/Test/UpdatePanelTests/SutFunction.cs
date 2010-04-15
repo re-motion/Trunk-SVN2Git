@@ -20,6 +20,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.UpdatePanelTests
 {
+  [Serializable]
   public class SutFunction : WxeFunction
   {
     public SutFunction ()

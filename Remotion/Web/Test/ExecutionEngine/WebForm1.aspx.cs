@@ -191,7 +191,8 @@ namespace Remotion.Web.Test.ExecutionEngine
       }
     }
 
-    public class SubFunction: WxeFunction, ISampleFunctionVariables
+    [Serializable]
+    public class SubFunction : WxeFunction, ISampleFunctionVariables
     {
       public SubFunction (string var1, string var2)
           : base (new NoneTransactionMode(), var1, var2)

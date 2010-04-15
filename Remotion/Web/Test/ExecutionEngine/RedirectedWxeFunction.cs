@@ -15,31 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.SessionState;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public class RedirectedSubWxeFunction: WxeFunction
+  [Serializable]
+  public class RedirectedSubWxeFunction : WxeFunction
   {
     public RedirectedSubWxeFunction ()
-      : base (new NoneTransactionMode ())
+        : base (new NoneTransactionMode())
     {
     }
 
-    void Step1 (WxeContext context)
+    private void Step1 (WxeContext context)
     {
       context.HttpContext.Response.Redirect ("~/Start.aspx?Redirected");
     }
   }
 
-  public class RedirectedWxeFunction: WxeFunction
+  public class RedirectedWxeFunction : WxeFunction
   {
     public RedirectedWxeFunction ()
-      : base (new NoneTransactionMode ())
+        : base (new NoneTransactionMode())
     {
     }
 
@@ -50,8 +48,8 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     // steps
 
-    WxeStep Step1 = new RedirectedSubWxeFunction();
+    private WxeStep Step1 = new RedirectedSubWxeFunction();
 
-    WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/SessionForm.aspx");
+    private WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/SessionForm.aspx");
   }
 }

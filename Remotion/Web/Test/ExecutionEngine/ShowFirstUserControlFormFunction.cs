@@ -15,19 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public class ShowFirstUserControlFormFunction:WxeFunction
+  [Serializable]
+  public class ShowFirstUserControlFormFunction : WxeFunction
   {
     public ShowFirstUserControlFormFunction ()
-      : base (new NoneTransactionMode ())
+        : base (new NoneTransactionMode())
     {
       ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
     }

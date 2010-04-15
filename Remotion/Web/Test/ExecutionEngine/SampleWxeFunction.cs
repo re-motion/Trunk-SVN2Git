@@ -21,10 +21,11 @@ using Remotion.Web.ExecutionEngine.Obsolete;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public class SampleWxeFunction: WxeFunction, ISampleFunctionVariables
+  [Serializable]
+  public class SampleWxeFunction : WxeFunction, ISampleFunctionVariables
   {
     public SampleWxeFunction ()
-      : base (new NoneTransactionMode ())
+        : base (new NoneTransactionMode())
     {
       ReturnUrl = "~/Start.aspx";
     }
@@ -45,28 +46,32 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     // steps
 
-    void Step1 ()
+    private void Step1 ()
     {
       Var1 = "SampleWxeFunction Step1";
       Var2 = "Var2 - Step1";
-    } 
-    WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
-    WxeStep Step3 = new SampleWxeSubFunction (varref("Var2"), "constant for Var2");
-    WxeStep Step4 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+    }
+
+    private WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+    private WxeStep Step3 = new SampleWxeSubFunction (varref ("Var2"), "constant for Var2");
+    private WxeStep Step4 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
   }
 
-  public class SampleWxeSubFunction: WxeFunction, ISampleFunctionVariables
+  [Serializable]
+  public class SampleWxeSubFunction : WxeFunction, ISampleFunctionVariables
   {
     public SampleWxeSubFunction ()
-      : base (new NoneTransactionMode ())
+        : base (new NoneTransactionMode())
     {
     }
+
     public SampleWxeSubFunction (params object[] args)
-        : base (new NoneTransactionMode (), args)
+        : base (new NoneTransactionMode(), args)
     {
     }
+
     public SampleWxeSubFunction (string var1, string var2)
-        : base (new NoneTransactionMode (), var1, var2)
+        : base (new NoneTransactionMode(), var1, var2)
     {
     }
 
@@ -88,74 +93,98 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     // steps
 
-    class Step1: WxeTryCatch
+    [Serializable]
+    private class Step1 : WxeTryCatch
     {
-      class Try: WxeStepList
+      [Serializable]
+      private class Try : WxeStepList
       {
-        SampleWxeSubFunction Function { get { return (SampleWxeSubFunction) ParentFunction; } }
+        private SampleWxeSubFunction Function
+        {
+          get { return (SampleWxeSubFunction) ParentFunction; }
+        }
 
-        void Step1 (WxeContext context)
+        private void Step1 (WxeContext context)
         {
           // Var1 = "SampleWxeSubFunction Step1";
         }
 
-        WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+        private WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
 
-        void Step3 (WxeContext context)
+        private void Step3 (WxeContext context)
         {
           Function.Var1 = "SampleWxeSubFunction Step3";
         }
 
-        WxeStep Step4 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+        private WxeStep Step4 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
 
-        void Step5 ()
+        private void Step5 ()
         {
           Function.Var1 = "exit SampleWxeSubFunction";
-        }    
+        }
       }
 
+      [Serializable]
       [WxeException (typeof (ApplicationException))]
-      class Catch1: WxeCatchBlock
+      private class Catch1 : WxeCatchBlock
       {
-        SampleWxeSubFunction Function { get { return (SampleWxeSubFunction) ParentFunction; } }
-
-        class Step1: WxeIf 
+        private SampleWxeSubFunction Function
         {
-          SampleWxeSubFunction Function { get { return (SampleWxeSubFunction) ParentFunction; } }
+          get { return (SampleWxeSubFunction) ParentFunction; }
+        }
 
-          bool If ()
+        [Serializable]
+        private class Step1 : WxeIf
+        {
+          private SampleWxeSubFunction Function
+          {
+            get { return (SampleWxeSubFunction) ParentFunction; }
+          }
+
+          private bool If ()
           {
             return CurrentException.Message != null && CurrentException.Message.Length > 0;
           }
-          class Then: WxeStepList
-          {
-            SampleWxeSubFunction Function { get { return (SampleWxeSubFunction) ParentFunction; } }
 
-            void Step1()
+          [Serializable]
+          private class Then : WxeStepList
+          {
+            private SampleWxeSubFunction Function
+            {
+              get { return (SampleWxeSubFunction) ParentFunction; }
+            }
+
+            private void Step1 ()
             {
               Function.Var1 = CurrentException.Message;
             }
-            WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+
+            private WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
           }
         }
 
-        void Step2 (WxeContext context)
+        private void Step2 (WxeContext context)
         {
           Function.Var1 = "Exception caught.";
         }
 
-        WxeStep Step3 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+        private WxeStep Step3 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
       }
 
-      class Finally: WxeStepList
+      [Serializable]
+      private class Finally : WxeStepList
       {
-        SampleWxeSubFunction Function { get { return (SampleWxeSubFunction) ParentFunction; } }
+        private SampleWxeSubFunction Function
+        {
+          get { return (SampleWxeSubFunction) ParentFunction; }
+        }
 
-        void Step1()
+        private void Step1 ()
         {
           Function.Var2 = "finally";
         }
-        WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
+
+        private WxeStep Step2 = new WxePageStep ("~/ExecutionEngine/WebForm1.aspx");
       }
     }
   }

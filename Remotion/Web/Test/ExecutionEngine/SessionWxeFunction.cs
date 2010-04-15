@@ -15,13 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.SessionState;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
+  [Serializable]
   public class SessionWxeFunction: WxeFunction
   {
     public SessionWxeFunction ()
@@ -47,13 +46,15 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
     }
 
-    class Step2: WxeStepList
+    [Serializable]
+    class Step2 : WxeStepList
     {
       SessionWxeFunction Function { get { return (SessionWxeFunction) ParentFunction; } }
       WxeStep Step1_ = new WxePageStep ("~/ExecutionEngine/SessionForm.aspx");
     }
 
-    class Step3: WxeStepList
+    [Serializable]
+    class Step3 : WxeStepList
     {
       SessionWxeFunction Function { get { return (SessionWxeFunction) ParentFunction; } }
       WxeStep Step1_ = new WxePageStep ("~/ExecutionEngine/SessionForm.aspx");
