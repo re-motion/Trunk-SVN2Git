@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
+  [Serializable]
   public class ShowSecondUserControlFunction : WxeFunction
   {
     public ShowSecondUserControlFunction(ITransactionMode transactionMode, params object[] actualParameters) : base(transactionMode, actualParameters)

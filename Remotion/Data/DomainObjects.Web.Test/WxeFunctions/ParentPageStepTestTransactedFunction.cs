@@ -19,6 +19,7 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
+  [Serializable]
   public class ParentPageStepTestTransactedFunction : WxeFunction
   {
     private ClientTransaction _transactionInStep1;

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain
 {
+  [Serializable]
   [BindableObject]
   public class SearchObjectWithUndefinedEnum
   {
