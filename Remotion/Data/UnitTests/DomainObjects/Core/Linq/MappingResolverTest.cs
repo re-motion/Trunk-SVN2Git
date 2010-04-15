@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
       var starColumn = new SqlColumnExpression (typeof (Order), "o", "*");
 
-      var expectedExpression = new SqlEntityExpression (typeof (Order), primaryKeyColumn, starColumn);
+      var expectedExpression = new SqlEntityExpression (_orderTable, primaryKeyColumn, starColumn);
 
       ExpressionTreeComparer.CheckAreEqualTrees (sqlEntityExpression, expectedExpression);
     }
