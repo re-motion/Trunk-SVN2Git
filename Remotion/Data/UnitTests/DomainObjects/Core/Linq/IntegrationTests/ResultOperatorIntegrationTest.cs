@@ -127,11 +127,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryDistinctTest ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber == 4
-                   select o ).Distinct();
-      query.Single();
-
-      Assert.That (query, Is.InstanceOfType (typeof(DomainObjectQueryable<Order>)));
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   from oi in o.OrderItems
+                   where o.OrderNumber == 1
+                   select o).Distinct();
+      CheckQueryResult (query, DomainObjectIDs.Order1);
     }
 
     [Test]
