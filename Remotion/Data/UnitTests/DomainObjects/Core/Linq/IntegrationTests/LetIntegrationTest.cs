@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var query =
           from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
           let x = ot.Order
-          from oi in x.OrderItems
+          from oi in x.OrderItems // from oi in ot.Order.OrderItems => Member (Member (ot, "Order"), "OrderItems")
           where ot.Order.OrderNumber == 1
           select oi;
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);

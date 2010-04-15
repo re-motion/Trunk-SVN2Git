@@ -188,9 +188,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_ReturnsSqlColumnExpression ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      var memberExpression = new SqlMemberExpression (_orderTable, property);
-
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+      
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable,property, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
@@ -202,9 +201,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_RedirectedProperty ()
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
-      var memberExpression = new SqlMemberExpression (_orderTable, property);
-
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+      
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable, property, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
@@ -215,9 +213,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_ReturnsSqlEntityRefMemberExpression ()
     {
       var property = typeof (Order).GetProperty ("Customer");
-      var memberExpression = new SqlMemberExpression (_orderTable, property);
 
-      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (_orderTable,property, _generator);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
@@ -228,9 +225,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_CardibalityOne_MemberIsTheNonForeignKeySide ()
     {
       var property = typeof (Employee).GetProperty ("Computer");
-      var memberExpression = new SqlMemberExpression (_customerTable, property);
-
-      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (memberExpression, _generator);
+      
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (_customerTable, property, _generator);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
@@ -243,9 +239,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_InvalidDeclaringType_ThrowsUnmappedItemException ()
     {
       var property = typeof (Student).GetProperty ("First");
-      var memberExpression = new SqlMemberExpression (_orderTable, property);
-
-      _resolver.ResolveMemberExpression (memberExpression, _generator);
+      
+      _resolver.ResolveMemberExpression (_orderTable, property, _generator);
     }
 
     [Test]
@@ -254,9 +249,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_InvalidMember_ThrowsUnmappedItemException ()
     {
       var property = typeof (Order).GetProperty ("NotInMapping");
-      var memberExpression = new SqlMemberExpression (_orderTable, property);
-
-      _resolver.ResolveMemberExpression (memberExpression, _generator);
+      
+      _resolver.ResolveMemberExpression (_orderTable, property, _generator);
     }
 
     [Test]

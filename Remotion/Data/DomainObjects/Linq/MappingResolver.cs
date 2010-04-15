@@ -101,13 +101,14 @@ namespace Remotion.Data.DomainObjects.Linq
       return new SqlEntityExpression (tableReferenceExpression.SqlTable, primaryKeyColumn, starColumn);
     }
 
-    public Expression ResolveMemberExpression (SqlMemberExpression memberExpression, UniqueIdentifierGenerator generator)
+    public Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("memberExpression", memberExpression);
+      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
-
-      var tableAlias = memberExpression.SqlTable.GetResolvedTableInfo().TableAlias;
-      var property = (PropertyInfo) memberExpression.MemberInfo;
+      
+      var tableAlias = sqlTable.GetResolvedTableInfo().TableAlias;
+      var property = (PropertyInfo) memberInfo;
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.PropertyType, tableAlias, "ID");
@@ -115,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
       if (relationData != null)
-        return new SqlEntityRefMemberExpression (memberExpression.SqlTable, property);
+        return new SqlEntityRefMemberExpression (sqlTable, property);
 
       var classDefinition = GetClassDefinition (property.DeclaringType);
       if (classDefinition == null)
