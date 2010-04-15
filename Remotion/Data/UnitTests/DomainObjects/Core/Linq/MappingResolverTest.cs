@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlValueTableReferenceExpression =
           (SqlValueTableReferenceExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
-      Assert.That (sqlValueTableReferenceExpression.SqlTable.TableInfo, Is.EqualTo (tableInfo));
+      Assert.That (((SqlTable) sqlValueTableReferenceExpression.SqlTable).TableInfo, Is.EqualTo (tableInfo));
     }
 
     [Test]
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fakeTable = new SqlTable (subStatementTable.GetResolvedTableInfo());
 
       Assert.That (result, Is.TypeOf (typeof (SqlValueTableReferenceExpression)));
-      Assert.That (((SqlValueTableReferenceExpression) result).SqlTable.TableInfo, Is.EqualTo (fakeTable.TableInfo));
+      Assert.That (((SqlTable) ((SqlValueTableReferenceExpression) result).SqlTable).TableInfo, Is.EqualTo (fakeTable.TableInfo));
     }
 
     [Test]
