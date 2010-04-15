@@ -73,8 +73,12 @@ namespace Remotion.Data.DomainObjects.Linq
     /// direct constructor call.
     /// </para>
     /// </remarks>
-    public DomainObjectQueryable (ISqlPreparationStage sqlPreparationStage, IMappingResolutionStage mappingResolutionStage, ISqlGenerationStage sqlGenerationStage)
-        : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage))
+    // TODO Review 2582: Parameter descriptions missing from doc comments
+    public DomainObjectQueryable (
+        ISqlPreparationStage sqlPreparationStage, 
+        IMappingResolutionStage mappingResolutionStage, 
+        ISqlGenerationStage sqlGenerationStage)
+          : base (CreateProvider (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage))
     {
     }
 
@@ -90,7 +94,6 @@ namespace Remotion.Data.DomainObjects.Linq
         : base (provider, expression)
     {
     }
-
 
     public override string ToString ()
     {

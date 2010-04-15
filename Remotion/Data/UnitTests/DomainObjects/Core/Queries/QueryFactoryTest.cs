@@ -142,6 +142,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
     }
 
+    // TODO Review 2582: Test missing for the CreateLinqQuery overload taking the stages. Test by passing in stage mocks, return dummy SQL statements from the three stages, check that the generated query matches the dummy statement.
+    // TODO Review 2582: Add a test showing that the stages can be mixed. Define three test mixins (one for each stage) that override the Transform/Resolve/GenerateTextForSqlStatement methods and return dummy stuff. In test, use: using (MixinConfiguration.CreateNew().ForClass<Default...Stage>().AddMixin<Test...StageMixin>()....EnterScope()). Use CreateQuery to get the generated query and make sure the dummy statements specified by the mixins were used.
+
     [Test]
     public void CreateQuery_FromLinqQuery_WithEagerFetching ()
     {
