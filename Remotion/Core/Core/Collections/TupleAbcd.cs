@@ -62,7 +62,6 @@ namespace Remotion.Collections
     private readonly T2 _item2;
     private readonly T3 _item3;
     private readonly T4 _item4;
-    private readonly int _hashCode;
 
     public Tuple (T1 item1, T2 item2, T3 item3, T4 item4)
     {
@@ -70,7 +69,6 @@ namespace Remotion.Collections
       _item2 = item2;
       _item3 = item3;
       _item4 = item4;
-      _hashCode = EqualityUtility.GetRotatedHashCode (_item1, _item2, _item3, _item4);
     }
 
     public T1 Item1
@@ -109,7 +107,7 @@ namespace Remotion.Collections
 
     public override int GetHashCode ()
     {
-      return _hashCode;
+      return EqualityUtility.GetRotatedHashCode (_item1, _item2, _item3, _item4);
     }
 
     public override string ToString ()
