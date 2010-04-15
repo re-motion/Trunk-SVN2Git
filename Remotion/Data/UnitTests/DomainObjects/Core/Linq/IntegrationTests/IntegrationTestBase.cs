@@ -33,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       T[] results = query.ToArray ();
       T[] expected = GetExpectedObjects<T> (expectedObjectIDs);
+      Assert.That (results.Length, Is.EqualTo (expected.Length), "Number of returned objects doesn't match");
       Assert.That (results, Is.EquivalentTo (expected));
     }
 
