@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var test = new SecurityTest ();
 
       test.SetUp ();
-      test.BusinessObject_Property_IsAccessible();
+      test.BusinessObject_Property_IsAccessible ();
       test.TearDown ();
     }
   }

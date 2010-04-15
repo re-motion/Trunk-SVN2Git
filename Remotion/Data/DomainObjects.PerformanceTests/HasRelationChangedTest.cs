@@ -45,8 +45,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
         for (int i = 0; i < TestRepititions; i++)
-          changed = ClientTransaction.Current.HasChanged();
+          changed ^= ClientTransaction.Current.HasChanged();
         stopwatch.Stop();
+
+        Console.WriteLine (changed);
 
         double averageMilliSeconds = stopwatch.ElapsedMilliseconds / TestRepititions;
         Console.WriteLine (

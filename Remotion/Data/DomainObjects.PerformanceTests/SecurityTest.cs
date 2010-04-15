@@ -17,10 +17,13 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using Remotion.Context;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
 using Remotion.Security;
 using Remotion.Security.Configuration;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
@@ -52,13 +55,17 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
         var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
         var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
 
+        bool value = true;
+
         Assert.That (property.IsAccessible (obj.BusinessObjectClass, obj));
 
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
         for (int i = 0; i < TestRepititions; i++)
-          property.IsAccessible (obj.BusinessObjectClass, obj);
+          value ^= property.IsAccessible (obj.BusinessObjectClass, obj);
         stopwatch.Stop();
+
+        Console.WriteLine (value);
 
         double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
         Console.WriteLine (
