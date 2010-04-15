@@ -147,6 +147,11 @@ namespace Remotion.Data.DomainObjects.Linq
         return constantExpression;
     }
 
+    public Expression ResolveTypeCheck (Expression innerExpression, Type desiredType)
+    {
+      throw new NotImplementedException();
+    }
+
     private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)
     {
       ArgumentUtility.CheckNotNull ("relationMember", relationMember);
