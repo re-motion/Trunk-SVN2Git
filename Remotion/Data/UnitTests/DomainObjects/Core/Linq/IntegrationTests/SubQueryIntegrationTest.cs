@@ -105,7 +105,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
 
     [Test]
-    [Ignore ("TODO 1445: Should generate SELECT DISTINCT [oi].* FROM [OrderView] [o1] CROSS JOIN [OrderView] [o2] CROSS APPLY (SELECT [oi].* FROM [OrderItemView] [oi] WHERE ((([oi].[OrderID] IS NULL AND [o1].[ID] IS NULL) OR [oi].[OrderID] = [o1].[ID]) OR (([oi].[OrderID] IS NULL AND [o2].[ID] IS NULL) OR [oi].[OrderID] = [o2].[ID]))) [oi]")]
     public void QueryWithSubQuery_InThirdFrom ()
     {
       var orders =

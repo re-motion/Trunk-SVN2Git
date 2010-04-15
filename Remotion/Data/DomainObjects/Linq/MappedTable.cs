@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <summary>
   /// Augments the <see cref="Table"/> type with meta-information about the mapping.
   /// </summary>
+  // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
   public class MappedTable : Table
   {
     public MappedTable (string name, string alias, ClassDefinition classDefinition)

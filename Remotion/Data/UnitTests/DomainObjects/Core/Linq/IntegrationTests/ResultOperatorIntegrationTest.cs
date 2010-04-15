@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     // MethodExtension defines extension method "ExtendString"
     // MethodExtendString generates sql code for this method
     [Test]
-    [Ignore ("2534 add new transformer for ExtendString")]
+    [Ignore ("TODO 2612")]
     public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
     {
       //QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (

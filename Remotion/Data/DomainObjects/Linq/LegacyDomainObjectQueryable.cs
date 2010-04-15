@@ -26,9 +26,9 @@ using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-
 namespace Remotion.Data.DomainObjects.Linq
 {
+  // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
   /// <summary>
   /// The implementation of <see cref="IQueryable{T}"/> for querying <see cref="DomainObject"/> instances.
   /// </summary>

@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2517: adapt MappingResolver to use properties of base classes above StorageGroup.")]
+    [Ignore("TODO 2611: adapt MappingResolver to use properties of base classes above StorageGroup.")]
     public void ConcreteObjects_PropertyAccessInBaseClass_ClassAboveInheritanceHierarchy ()
     {
       var storageClass = (from f in QueryFactory.CreateLinqQuery<StorageGroupClass> ()
