@@ -394,6 +394,13 @@
   </target>
 
   <!--======================= Zip Targets =======================-->
+  <target name="complete-addzip">
+    <call target="addzip" />
+    <call target="relinq-addzip" />
+    <call target="dms-addzip" />
+    <call target="securityManager-addzip" />
+  </target>
+  
   <target name="checkzip" depends="zipfilename">
     <property name="ToDir" value="${publishing.base}\Framework\build\"/>
     <!-- ${publishing.web} can be left empty -->
