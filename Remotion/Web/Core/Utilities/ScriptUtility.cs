@@ -218,6 +218,8 @@ namespace Remotion.Web.Utilities
 
         htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+
+        control.Page.ClientScript.RegisterClientScriptBlock (control, typeof(ScriptUtility), key, "StyleUtility.AddBrowserSwitch();");        
       }
     }
 

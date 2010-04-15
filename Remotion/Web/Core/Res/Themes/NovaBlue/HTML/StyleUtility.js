@@ -91,3 +91,28 @@ StyleUtility.OnResize = function(element) {
 
   StyleUtility.ShowBorderSpans(element, topRight[0], bottomLeft[0], bottomRight[0]);
 }
+
+StyleUtility.AddBrowserSwitch = function()
+{
+    var browser;
+    var version = parseInt($.browser.version); ;
+    if ($.browser.msie)
+    {
+      (version < 8) ? browser = 'msie' + version : browser = 'msie';
+    }
+    if ($.browser.mozilla)
+    {
+      browser = 'mozilla';
+    }
+    if ($.browser.webkit)
+    {
+        browser = 'webkit';
+    }
+    if ($.browser.opera)
+    {
+        browser = 'opera';
+    }
+
+    if (!$('body').hasClass(browser))
+      $('body').addClass(browser);
+  }

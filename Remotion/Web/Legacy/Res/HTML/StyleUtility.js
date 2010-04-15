@@ -80,3 +80,7 @@ StyleUtility.OnResize = function(element)
 
   StyleUtility.CalculateBorderSpans(element[0], topRight, bottomLeft, bottomRight);
 }
+
+StyleUtility.AddBrowserSwitch = function()
+{
+}
