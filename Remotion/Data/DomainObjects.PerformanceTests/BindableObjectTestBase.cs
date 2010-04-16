@@ -17,8 +17,10 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject.Properties;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
@@ -28,51 +30,90 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     public virtual void BusinessObject_Property_IsAccessible ()
     {
-        var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
-        var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
+      var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
+      var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
 
-        bool value = true;
+      bool value = true;
 
-        Assert.That (property.IsAccessible (obj.BusinessObjectClass, obj));
+      Assert.That (property.IsAccessible (obj.BusinessObjectClass, obj));
 
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        for (int i = 0; i < TestRepititions; i++)
-          value ^= property.IsAccessible (obj.BusinessObjectClass, obj);
-        stopwatch.Stop();
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+      for (int i = 0; i < TestRepititions; i++)
+        value ^= property.IsAccessible (obj.BusinessObjectClass, obj);
+      stopwatch.Stop();
 
-        Console.WriteLine (value);
+      Trace.WriteLine (value);
 
-        double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
-        Console.WriteLine (
-            "BusinessObject_Property_IsAccessible (executed {0}x): Average duration: {1} 탎",
-            TestRepititions,
-            averageMilliSeconds.ToString ("N"));
+      double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
+      Console.WriteLine ("BusinessObject_Property_IsAccessible (executed {0:N0}x): Average duration: {1:N} 탎", TestRepititions, averageMilliSeconds);
     }
 
     public virtual void BusinessObject_GetProperty ()
     {
       var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
-        ((ObjectWithSecurity) obj).TheProperty = "value";
-        var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
+      ((ObjectWithSecurity) obj).TheProperty = "value";
+      var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
 
-        bool value = false;
+      bool value = false;
 
-        Assert.That (property.IsAccessible (obj.BusinessObjectClass, obj));
+      Assert.That (obj.GetProperty (property), Is.Not.Null);
 
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        for (int i = 0; i < TestRepititions; i++)
-          value ^= obj.GetProperty (property) == null;
-        stopwatch.Stop();
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+      for (int i = 0; i < TestRepititions; i++)
+        value ^= obj.GetProperty (property) == null;
+      stopwatch.Stop();
 
-        Console.WriteLine (value);
+      Trace.WriteLine (value);
 
-        double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
-        Console.WriteLine (
-            "BusinessObject_GetProperty (executed {0}x): Average duration: {1} 탎",
-            TestRepititions,
-            averageMilliSeconds.ToString ("N"));
+      double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
+      Console.WriteLine ("BusinessObject_GetProperty (executed {0:N0}x): Average duration: {1:N} 탎", TestRepititions, averageMilliSeconds);
+    }
+
+    public virtual void Reflection_GetProperty ()
+    {
+      var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
+      ((ObjectWithSecurity) obj).TheProperty = "value";
+      var property = (PropertyBase) obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
+
+      bool value = false;
+
+      var indexParameters = new object[0];
+      var propertyInfo = property.PropertyInfo;
+      Assert.That (propertyInfo.GetValue (obj, indexParameters), Is.Not.Null);
+
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+      for (int i = 0; i < TestRepititions; i++)
+        value ^= propertyInfo.GetValue (obj, indexParameters) == null;
+      stopwatch.Stop();
+
+      Trace.WriteLine (value);
+
+      double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
+      Console.WriteLine ("Reflection_GetProperty (executed {0:N0}x): Average duration: {1:N} 탎", TestRepititions, averageMilliSeconds);
+    }
+
+    public virtual void DomainObject_GetProperty ()
+    {
+      var obj = ObjectWithSecurity.NewObject();
+      obj.TheProperty = "value";
+
+      bool value = false;
+
+      Assert.That (obj.TheProperty, Is.Not.Null);
+
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
+      for (int i = 0; i < TestRepititions; i++)
+        value ^= obj.TheProperty == null;
+      stopwatch.Stop();
+
+      Trace.WriteLine (value);
+
+      double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
+      Console.WriteLine ("DomainObject_GetProperty ((executed {0:N0}x): Average duration: {1:N} 탎", TestRepititions, averageMilliSeconds);
     }
   }
 }

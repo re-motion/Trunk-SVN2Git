@@ -58,5 +58,27 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       
       Console.WriteLine ();
     }
+
+    [Test]
+    public override void Reflection_GetProperty ()
+    {
+      Console.WriteLine (
+          "Expected average duration of BindableObjectWithoutSecurityTest for Reflection_GetProperty on reference system: ~12 탎 (release build), ~17 탎 (debug build)");
+
+      base.Reflection_GetProperty ();
+
+      Console.WriteLine ();
+    }
+
+    [Test]
+    public override void DomainObject_GetProperty ()
+    {
+      Console.WriteLine (
+          "Expected average duration of BindableObjectWithoutSecurityTest for DomainObject_GetProperty on reference system: ~7.5 탎 (release build), ~12 탎 (debug build)");
+
+      base.DomainObject_GetProperty ();
+
+      Console.WriteLine ();
+    }
   }
 }

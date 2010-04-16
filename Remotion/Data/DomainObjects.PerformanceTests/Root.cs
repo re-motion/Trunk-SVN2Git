@@ -54,8 +54,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //RunHasRelationChangedTest();
 
-      BindableObjectWithSecurityTest ();
-      BindableObjectWithoutSecurityTest ();
+      BindableObjectWithSecurityTest();
+      BindableObjectWithoutSecurityTest();
 
       setUpFixture.TearDown();
 
@@ -112,22 +112,26 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     private static void BindableObjectWithSecurityTest ()
     {
-      var test = new BindableObjectWithSecurityTest ();
+      var test = new BindableObjectWithSecurityTest();
 
-      test.SetUp ();
-      test.BusinessObject_Property_IsAccessible ();
-      test.BusinessObject_GetProperty ();
-      test.TearDown ();
+      test.SetUp();
+      test.BusinessObject_Property_IsAccessible();
+      test.BusinessObject_GetProperty();
+      test.Reflection_GetProperty ();
+      test.DomainObject_GetProperty ();
+      test.TearDown();
     }
 
     private static void BindableObjectWithoutSecurityTest ()
     {
-      var test = new BindableObjectWithoutSecurityTest ();
+      var test = new BindableObjectWithoutSecurityTest();
 
-      test.SetUp ();
-      test.BusinessObject_Property_IsAccessible ();
-      test.BusinessObject_GetProperty ();
-      test.TearDown ();
+      test.SetUp();
+      test.BusinessObject_Property_IsAccessible();
+      test.BusinessObject_GetProperty();
+      test.Reflection_GetProperty ();
+      test.DomainObject_GetProperty ();
+      test.TearDown();
     }
   }
 }

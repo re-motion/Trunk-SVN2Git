@@ -60,12 +60,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
       return _securityContext;
     }
 
-    public bool IsNew
+    bool IDomainObjectSecurityContextFactory.IsNew
     {
       get { return State == StateType.New; }
     }
 
-    public bool IsDeleted
+    bool IDomainObjectSecurityContextFactory.IsDeleted
     {
       get { return State == StateType.Deleted; }
     }
