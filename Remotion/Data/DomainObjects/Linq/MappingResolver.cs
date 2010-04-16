@@ -139,6 +139,17 @@ namespace Remotion.Data.DomainObjects.Linq
       return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName);
     }
 
+    public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
+    {
+      ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
+      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
+
+      if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
+        return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID");
+
+      throw new UnmappedItemException (string.Format ("The member '{0}.{1}' does not identify a mapped property.",memberInfo.ReflectedType.Name, memberInfo.Name));
+    }
+
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
     {
       ArgumentUtility.CheckNotNull ("constantExpression", constantExpression);

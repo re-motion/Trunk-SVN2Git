@@ -254,6 +254,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The member 'Order.NotInMapping' does not identify a mapped property.")]
+    public void ResolveMemberExpression_NoMappedProperty ()
+    {
+      var property = typeof (Order).GetProperty ("NotInMapping");
+      var columnExpression = new SqlColumnExpression(typeof(string), "o", "Name");
+
+      _resolver.ResolveMemberExpression (columnExpression, property);
+    }
+
+    [Test]
+    public void ResolveMemberExpression_WithPropertyClassID ()
+    {
+      var property = typeof (ObjectID).GetProperty ("ClassID");
+      var columnExpression = new SqlColumnExpression (typeof (string), "o", "Name");
+
+      var result = _resolver.ResolveMemberExpression (columnExpression, property);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
+      Assert.That (((SqlColumnExpression) result).OwningTableAlias, Is.EqualTo (columnExpression.OwningTableAlias));
+      Assert.That (((SqlColumnExpression) result).ColumnName, Is.EqualTo ("ClassID"));
+    }
+
+    [Test]
     public void ResolveTypeCheck_DesiredTypeIsAssignableFromExpressionType ()
     {
       var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
