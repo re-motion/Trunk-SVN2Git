@@ -12,30 +12,6 @@ div.bocList
 {
 }
 
-/*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
-/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
-div.bocList.hasDimensions div.bocListTableBlock,
-div.bocList.hasDimensions div.bocListTableBlock div.bocListTable
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
-}
-
-div.bocList.hasDimensions div.bocListTableBlock
-{
-  right: 10em; /* width of BocList menu block + some space */
-}
-
-/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
-div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTable
-{
-  bottom: 1.5em;
-}
-
 div.bocList.hasDimensions div.bocListNavigator
 {
   position: absolute;
@@ -74,6 +50,30 @@ div.bocListTableBlock.hasMenuBlock
 /* Style applied to the div surrounding the BocList's table if there is a menu block. */
 div.bocListTableBlock.hasMenuBlock div.bocListTable
 {
+}
+
+/*  use JS to apply hasWidth and hasHeight depending on bocList-element on runtime */
+/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height.  */
+div.bocList.hasDimensions div.bocListTableBlock,
+div.bocList.hasDimensions div.bocListTableBlock div.bocListTable
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+div.bocList.hasDimensions div.bocListTableBlock.hasMenuBlock
+{
+  right: 10em; /* width of BocList menu block + some space */
+}
+
+/*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
+div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTable
+{
+  bottom: 1.5em;
 }
 
 /* Style applied to the div surrounding the BocList's table. */
