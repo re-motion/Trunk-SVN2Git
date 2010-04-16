@@ -20,7 +20,6 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -95,13 +94,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      if (DataManager.IsDiscarded (id))
-      {
-        // Trying to load a data container for a discarded object. To mimic the behavior of RootClientTransaction, we will throw an
-        // ObjectNotFoundException here.
-        throw new ObjectNotFoundException (id);
-      }
-      else
+      //if (DataManager.IsDiscarded (id))
+      //{
+      //  // Trying to load a data container for a discarded object. To mimic the behavior of RootClientTransaction, we will throw an
+      //  // ObjectNotFoundException here.
+      //  throw new ObjectNotFoundException (id);
+      //}
+      //else
       {
         using (TransactionUnlocker.MakeWriteable (ParentTransaction))
         {
@@ -118,12 +117,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (objectIDs.Count == 0)
         return new DataContainerCollection();
-
-      foreach (ObjectID id in objectIDs)
-      {
-        if (DataManager.IsDiscarded (id))
-          throw new ObjectDiscardedException (id);
-      }
 
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
@@ -142,6 +135,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      if (!relationEndPointID.Definition.IsVirtual)
+        throw new ArgumentException ("LoadRelatedDataContainer can only be called for virtual end points.", "relationEndPointID");
 
       DomainObject parentRelatedObject;
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
