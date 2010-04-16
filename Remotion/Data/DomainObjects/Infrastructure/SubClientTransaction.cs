@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ParentTransaction.CreateNewObjectID (classDefinition);
     }
 
-    protected internal override DataContainer LoadDataContainer (ObjectID id)
+    protected override DataContainer LoadDataContainer (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
 
-    protected internal override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       
@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var transferredContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
-          DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer (parentObject));
+          DataContainer transferredContainer = TransferParentObject (parentObject);
           transferredContainers.Add (transferredContainer);
           Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
         }
@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var transferredContainers = new List<DataContainer>();
         foreach (var parentObject in parentObjects)
         {
-          DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer (parentObject));
+          DataContainer transferredContainer = TransferParentObject (parentObject);
           transferredContainers.Add (transferredContainer);
           Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
         }

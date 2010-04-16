@@ -503,15 +503,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
 
       _clientTransaction = clientTransaction;
-
-      if (_state == DataContainerStateType.New)
-      {
-        clientTransaction.DataManager.RegisterDataContainer (this);
-      }
-      else
-      {
-        clientTransaction.DataManager.RegisterDataContainer (this);
-      }
+      clientTransaction.DataManager.RegisterDataContainer (this);
     }
 
     internal void PropertyValueChanging (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)

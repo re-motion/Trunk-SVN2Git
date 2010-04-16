@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      if (clientTransaction is SubClientTransaction)
+      if (clientTransaction.ParentTransaction != null) // parent transaction will listen
         return NullClientTransactionListener.Instance;
       else
         return new LinqToSqlListener (clientTransaction.ID);

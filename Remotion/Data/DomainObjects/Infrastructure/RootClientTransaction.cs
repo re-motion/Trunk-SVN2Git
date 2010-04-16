@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return newObjectID;
     }
 
-    protected internal override DataContainer LoadDataContainer (ObjectID id)
+    protected override DataContainer LoadDataContainer (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
+    protected override DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 

@@ -227,7 +227,7 @@ public abstract class ClientTransaction : IDataSource
   /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
   /// </para>
   /// </remarks>
-  protected internal abstract DataContainer LoadDataContainer (ObjectID id);
+  protected abstract DataContainer LoadDataContainer (ObjectID id);
 
   /// <summary>
   /// Loads a number of data containers from the underlying storage or the <see cref="ParentTransaction"/>.
@@ -250,7 +250,7 @@ public abstract class ClientTransaction : IDataSource
   /// All of these activities are performed by the caller. 
   /// </para>
   /// </remarks>
-  protected internal abstract DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
+  protected abstract DataContainerCollection LoadDataContainers (ICollection<ObjectID> objectIDs, bool throwOnNotFound);
 
   /// <summary>
   /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
@@ -283,7 +283,7 @@ public abstract class ClientTransaction : IDataSource
   ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
+  protected abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
 
   /// <summary>
   /// Loads all related <see cref="DataContainer"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
@@ -311,7 +311,7 @@ public abstract class ClientTransaction : IDataSource
   /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
   /// The StorageProvider for the related objects could not be initialized.
   /// </exception>
-  protected internal abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
+  protected abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
 
   /// <summary>
   /// Executes the given <see cref="IQuery"/> and returns its results as an array of <see cref="DataContainer"/> instances.
