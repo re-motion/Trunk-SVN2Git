@@ -145,6 +145,14 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
+      <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
+      <Name>Data.DomainObjects.Security</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
       <Name>Data.DomainObjects</Name>
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
@@ -190,6 +198,13 @@
     </Compile>
     <Compile Include="ImmediatelyReturningPage.aspx.designer.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Performance\Form.aspx.cs">
+      <DependentUpon>Form.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Performance\Form.aspx.designer.cs">
+      <DependentUpon>Form.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -249,6 +264,7 @@
     <Compile Include="SecondControl.ascx.designer.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="StubSecurityProvider.cs" />
     <Compile Include="TestFailureException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -256,6 +272,7 @@
       <DependentUpon>UndefinedEnumTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="WxeFunctions\PerformanceFunction.cs" />
     <Compile Include="WxeFunctions\ShowSecondUserControlFunction.cs" />
     <Compile Include="WxeFunctions\WxeUserControlTestPageFunction.cs" />
     <Compile Include="WxeFunctions\WxeTransactionMode.cs" />
@@ -297,6 +314,7 @@
       <SubType>UserControl</SubType>
     </Content>
     <Content Include="FirstControl.ascx" />
+    <Content Include="Performance\Form.aspx" />
     <Content Include="Queries2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

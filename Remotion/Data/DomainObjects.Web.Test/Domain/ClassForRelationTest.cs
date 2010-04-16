@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.ObjectBinding;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Globalization;
+using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain
 {
@@ -26,9 +29,11 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
   [DBTable ("TableForRelationTest")]
   [Instantiable]
   [DBStorageGroup]
-  public abstract class ClassForRelationTest: BindableDomainObject
+  public abstract class ClassForRelationTest : BindableDomainObject, ISecurableObject, IDomainObjectSecurityContextFactory
   {
-    public static ClassForRelationTest NewObject()
+    private SecurityContext _securityContext;
+    
+    public static ClassForRelationTest NewObject ()
     {
       return DomainObject.NewObject<ClassForRelationTest> ();
     }
@@ -77,5 +82,41 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     [DBBidirectionalRelation ("ClassForRelationTestOptional")]
     [ObjectBinding (ReadOnly = true)]
     public abstract ObjectList<ClassWithAllDataTypes> ClassesWithAllDataTypesOptionalNavigateOnly { get; }
+
+    IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
+    {
+      return new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, this);
+    }
+
+    Type ISecurableObject.GetSecurableType ()
+    {
+      return GetPublicDomainObjectType ();
+    }
+
+    ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
+    {
+      if (_securityContext == null)
+      {
+        _securityContext =
+            SecurityContext.Create (
+                GetPublicDomainObjectType(),
+                null,
+                null,
+                Name.Substring (0, Name.Length - 1),
+                new Dictionary<string, EnumWrapper>(),
+                new EnumWrapper[0]);
+      }
+      return _securityContext;
+    }
+
+    bool IDomainObjectSecurityContextFactory.IsNew
+    {
+      get { return State == StateType.New; }
+    }
+
+    bool IDomainObjectSecurityContextFactory.IsDeleted
+    {
+      get { return State == StateType.Deleted; }
+    }
   }
 }

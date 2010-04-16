@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
               .If (t => t.Namespace.EndsWith (".Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces()));
       container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
+      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.NovaBlue));
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
+using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Domain
@@ -27,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
   [DBTable ("TableWithAllDataTypes")]
   [Instantiable]
   [DBStorageGroup]
-  public abstract class ClassWithAllDataTypes : BindableDomainObject
+  public abstract class ClassWithAllDataTypes : BindableDomainObject, ISecurableObject, IDomainObjectSecurityContextFactory
   {
     // types
     [EnumDescriptionResource ("Remotion.Data.DomainObjects.Web.Test.Globalization.ClassWithAllDataTypes")]
@@ -57,6 +60,8 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
         return GetObject<ClassWithAllDataTypes> (id);
       }
     }
+
+    private SecurityContext _securityContext;
 
     protected ClassWithAllDataTypes ()
     {
@@ -290,6 +295,42 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
       var oppositeObject = ClassForRelationTest.NewObject ();
       ClassForRelationTestMandatory = oppositeObject;
       ClassesForRelationTestMandatoryNavigateOnly.Add (oppositeObject);
+    }
+
+    IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
+    {
+      return new DomainObjectSecurityStrategy (RequiredSecurityForStates.NewAndDeleted, this);
+    }
+
+    Type ISecurableObject.GetSecurableType ()
+    {
+      return GetPublicDomainObjectType ();
+    }
+
+    ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
+    {
+      if (_securityContext == null)
+      {
+        _securityContext =
+            SecurityContext.Create (
+                GetPublicDomainObjectType(),
+                null,
+                null,
+                ClassForRelationTestMandatory.Name.Substring (0, ClassForRelationTestMandatory.Name.Length - 1),
+                new Dictionary<string, EnumWrapper>(),
+                new EnumWrapper[0]);
+      }
+      return _securityContext;
+    }
+
+    bool IDomainObjectSecurityContextFactory.IsNew
+    {
+      get { return State == StateType.New; }
+    }
+
+    bool IDomainObjectSecurityContextFactory.IsDeleted
+    {
+      get { return State == StateType.Deleted; }
     }
   }
 }
