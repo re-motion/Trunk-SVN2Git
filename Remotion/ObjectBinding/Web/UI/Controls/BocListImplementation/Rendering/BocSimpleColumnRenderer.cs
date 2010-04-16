@@ -49,24 +49,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     }
 
     /// <summary>
-    /// Renders either the string value of the <paramref name="businessObject"/> or the edit mode controls, 
-    /// depending on <paramref name="showEditModeControl"/>
+    /// Renders the edit mode control.
     /// </summary>
-    /// <param name="writer">The <see cref="HtmlTextWriter"/>. </param>
-    /// <param name="businessObject">The <see cref="IBusinessObject"/> for the current row.</param>
-    /// <param name="showEditModeControl">Specifies if the edit controls will be rendered (<see langword="true"/>) or
-    /// a string representation of <paramref name="businessObject"/> will be displayed (<see langword="false"/>).</param>
-    /// <param name="editableRow">The <see cref="EditableRow"/> object used to actually render the edit row controls.
-    /// May be <see langword="null"/> if <paramref name="showEditModeControl"/> is <see langword="false"/>.</param>
-    protected override void RenderCellText (HtmlTextWriter writer, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
+    /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
+    /// <param name="editableRow">The <see cref="EditableRow"/> object used to actually render the edit row controls.</param>
+    protected override void RenderCellDataForEditMode (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.CheckNotNull ("editableRow", editableRow);
 
-      if (showEditModeControl)
-        RenderEditModeControl (writer, businessObject, editableRow);
-      else
-        RenderValueColumnCellText (writer, Column.GetStringValue (businessObject));
+      RenderEditModeControl (writer, businessObject, editableRow);
     }
 
     /// <summary>

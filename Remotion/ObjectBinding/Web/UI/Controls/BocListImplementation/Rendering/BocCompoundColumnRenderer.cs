@@ -52,18 +52,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <param name="writer">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
-    /// <param name="showEditModeControl">Prevents rendering if <see langword="true"/>.</param>
     /// <param name="editableRow">Ignored.</param>
-    protected override void RenderCellText (HtmlTextWriter writer, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
-    {
+    protected override void RenderCellDataForEditMode (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow)
+     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      string valueColumnText = null;
-      if (!showEditModeControl)
-        valueColumnText = Column.GetStringValue (businessObject);
-
-      RenderValueColumnCellText (writer, valueColumnText);
+      RenderValueColumnCellText (writer, Column.GetStringValue (businessObject));
     }
   }
 }

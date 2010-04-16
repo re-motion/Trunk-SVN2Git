@@ -43,9 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     }
 
     /// <summary>
-    /// Renders a table cell for a <see cref="BocValueColumnDefinition"/>. This is a template method using 
-    /// <see cref="BocCommandEnabledColumnRendererBase{TBocColumnDefinition}.RenderCellIcon"/>
-    /// and <see cref="RenderCellText"/>, which have to be defined in deriving classes.
+    /// Renders a table cell for a <see cref="BocValueColumnDefinition"/>.
     /// </summary>
     protected override void RenderCellContents (
         HtmlTextWriter writer, BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
@@ -59,8 +57,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       IEditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
-      bool showEditModeControl = hasEditModeControl
-                                 && !editableRow.GetEditControl (ColumnIndex).IsReadOnly;
+      bool showEditModeControl = hasEditModeControl && !editableRow.GetEditControl (ColumnIndex).IsReadOnly;
 
       string valueColumnText = null;
       if (!showEditModeControl)
@@ -76,14 +73,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
         RenderOtherIcons (writer, businessObject);
       }
-      RenderCellText (writer, businessObject, showEditModeControl, editableRow);
+      if (showEditModeControl)
+        RenderCellDataForEditMode (writer, businessObject, editableRow);
+      else
+        RenderValueColumnCellText (writer, valueColumnText);
 
       RenderEndTag (writer, isCommandEnabled);
       RenderCropSpanEndTag (writer, enforceWidth);
     }
 
-
-    protected abstract void RenderCellText (HtmlTextWriter writer, IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow);
+    protected abstract void RenderCellDataForEditMode (HtmlTextWriter writer, IBusinessObject businessObject, IEditableRow editableRow);
 
     /// <summary>
     /// Used by <see cref="RenderCellContents"/> to render icons in addition to the <paramref name="businessObject"/>'s icon.
