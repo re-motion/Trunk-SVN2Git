@@ -109,29 +109,31 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
+  var tableBlock = $(bocList).children().filter('.bocListTableBlock');
   var hasDimensions = false;
   if ($.browser.msie)
   {
-      if ($(bocList).css('height') != 'auto' || $(bocList).css('width') != 'auto')
-      {
-          $(bocList).addClass('hasDimensions');
-          hasDimensions = true;
-      }
-  } else
-  {
-      if ($(bocList).css('height') < $(bocList).children().eq(1).children().eq(0).children().eq(0).css('height'))
-      {
-          $(bocList).addClass('hasDimensions');
-          hasDimensions = true;
-      }
+    if ($(bocList).css('height') != 'auto' || $(bocList).css('width') != 'auto')
+    {
+      $(bocList).addClass('hasDimensions');
+      hasDimensions = true;
+    }
   }
-
+  else
+  {
+    var isTableBlockBiggerThanBocList = $(bocList).css('height') < tableBlock.children().eq(0).children().eq(0).css('height');
+    if (isTableBlockBiggerThanBocList)
+    {
+      $(bocList).addClass('hasDimensions');
+      hasDimensions = true;
+    }
+  }
 
   if (hasDimensions)
   {
     //activateTableHeader only on first scroll
     var scrollTimer = null;
-    var container = $(bocList).children().eq(1).children().eq(0);
+    var container = tableBlock.children().eq(0);
     var horizontalScroll = container.scrollLeft();
     container.bind('scroll', function(event)
     {
