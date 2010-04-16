@@ -351,6 +351,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, new TableInheritance.DomainObjectIDs ().ClassWithUnidirectionalRelation);
     }
 
+    // TODO Review 2589: This is no longer a query with a custom parser
+    // TODO Review 2589: Remove the ConditionalExpressionWhereConditionParser, remove the registration block
+    // TODO Review 2589: Then, change the test to resemble the other integration tests in this fixture; inline the GetQueryWithIif method; add an additional test that does not use a constant true/false but instead checks a property for some value
     [Test]
     public void QueryWithCustomParser ()
     {
