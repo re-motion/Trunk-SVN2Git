@@ -24,6 +24,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   {
     private readonly PropertyInfo _propertyInfo;
     private readonly PropertyInfo _interfacePropertyInfo;
+    private Type _type;
 
     public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
@@ -72,7 +73,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public Type GetOriginalDeclaringType ()
     {
-      return ReflectionUtility.GetOriginalDeclaringType (_propertyInfo);
+      if (_type == null)
+        _type = ReflectionUtility.GetOriginalDeclaringType (_propertyInfo);
+      return _type;
     }
 
     public bool CanBeSetFromOutside
