@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private void RenderClientSelectionScript ()
     {
-      if (List.HasClientScript && List.IsSelectionEnabled)
+      if (List.HasClientScript)
       {
         //  Render the init script for the client side selection handling
         int count = 0;
