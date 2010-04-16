@@ -149,7 +149,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SecurityTest.cs" />
+    <Compile Include="BindableObjectTestBase.cs" />
+    <Compile Include="BindableObjectWithoutSecurityTest.cs" />
+    <Compile Include="BindableObjectWithSecurityTest.cs" />
     <Compile Include="HasRelationChangedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

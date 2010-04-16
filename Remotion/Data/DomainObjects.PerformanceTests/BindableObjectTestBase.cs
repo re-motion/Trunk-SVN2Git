@@ -17,41 +17,17 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using Remotion.Context;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
-using Remotion.Security;
-using Remotion.Security.Configuration;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
-  [TestFixture]
-  public class SecurityTest
+  public class BindableObjectTestBase
   {
-    public const int TestRepititions = 100*1000;
+    public const int TestRepititions = 100 * 1000;
 
-    [SetUp]
-    public void SetUp ()
+    public virtual void BusinessObject_Property_IsAccessible ()
     {
-      SecurityConfiguration.Current.SecurityProvider = new StubSecurityProvider();
-      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      SecurityConfiguration.Current.SecurityProvider = null;
-    }
-
-    [Test]
-    public void BusinessObject_Property_IsAccessible ()
-    {
-      Console.WriteLine ("Expected average duration of SecurityTest for BusinessObject_Property_IsAccessible on reference system: ~6.5 탎 (release build), ~10.5 탎 (debug build)");
-
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
         var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
         var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
 
@@ -72,7 +48,31 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
             "BusinessObject_Property_IsAccessible (executed {0}x): Average duration: {1} 탎",
             TestRepititions,
             averageMilliSeconds.ToString ("N"));
-      }
+    }
+
+    public virtual void BusinessObject_GetProperty ()
+    {
+      var obj = (IBusinessObject) ObjectWithSecurity.NewObject();
+        ((ObjectWithSecurity) obj).TheProperty = "value";
+        var property = obj.BusinessObjectClass.GetPropertyDefinition ("TheProperty");
+
+        bool value = false;
+
+        Assert.That (property.IsAccessible (obj.BusinessObjectClass, obj));
+
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        for (int i = 0; i < TestRepititions; i++)
+          value ^= obj.GetProperty (property) == null;
+        stopwatch.Stop();
+
+        Console.WriteLine (value);
+
+        double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
+        Console.WriteLine (
+            "BusinessObject_Property_IsAccessible (executed {0}x): Average duration: {1} 탎",
+            TestRepititions,
+            averageMilliSeconds.ToString ("N"));
     }
   }
 }
