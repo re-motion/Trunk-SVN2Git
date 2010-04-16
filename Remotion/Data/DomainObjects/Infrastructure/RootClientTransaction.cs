@@ -119,12 +119,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (objectIDs.Count == 0)
         return new DataContainerCollection();
 
-      foreach (var id in objectIDs)
-      {
-        if (DataManager.IsDiscarded (id))
-          throw new ObjectDiscardedException (id);
-      }
-
       using (var persistenceManager = CreatePersistenceManager())
       {
         return persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
