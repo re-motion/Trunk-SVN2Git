@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
         double averageMilliSeconds = ((double) stopwatch.ElapsedMilliseconds / TestRepititions) * 1000;
         Console.WriteLine (
-            "BusinessObject_Property_IsAccessible (executed {0}x): Average duration: {1} µs",
+            "BusinessObject_GetProperty (executed {0}x): Average duration: {1} µs",
             TestRepititions,
             averageMilliSeconds.ToString ("N"));
     }
