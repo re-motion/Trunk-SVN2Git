@@ -64,6 +64,7 @@ namespace Remotion.Utilities
     private const string c_msgIsFalse = "Assertion failed: Expression evaluates to false.";
     private const string c_msgIsNull = "Assertion failed: Expression evaluates to a null reference.";
     private const string c_msgIsNotNull = "Assertion failed: Expression does not evaluate to a null reference.";
+    private static readonly object[] s_emptyArguments = new object[0];
 
     [Conditional ("DEBUG")]
     public static void DebugAssert (bool assertion, string message)
@@ -104,25 +105,23 @@ namespace Remotion.Utilities
 
     public static void IsTrue (bool assertion, string message)
     {
-      if (! assertion)
-        throw new AssertionException (message);
+      IsTrue (assertion, message, s_emptyArguments);
     }
 
     public static void IsTrue (bool assertion, string message, params object[] arguments)
     {
-      IsTrue (assertion, string.Format (message, arguments));
+      if (!assertion)
+        throw new AssertionException (string.Format (message, arguments));
     }
 
     public static void IsTrue (bool assertion)
     {
       IsTrue (assertion, c_msgIsFalse);
     }
-
     
     public static void IsFalse (bool expression, string message)
     {
-      if (expression)
-        throw new AssertionException (message);
+      IsFalse (expression, message, s_emptyArguments);
     }
 
     public static void IsFalse (bool expression)
@@ -130,20 +129,16 @@ namespace Remotion.Utilities
       IsFalse (expression, c_msgIsTrue);
     }
 
-    public static void IsFalse (bool expression, string message, params bool[] arguments)
+    public static void IsFalse (bool expression, string message, params object[] arguments)
     {
-      IsFalse (expression, string.Format (message, arguments));
+      if (expression)
+        throw new AssertionException (string.Format (message, arguments));
     }
 
 
     public static T IsNotNull<T> (T obj, string message)
     {
-// ReSharper disable CompareNonConstrainedGenericWithNull
-      if (obj == null)
-// ReSharper restore CompareNonConstrainedGenericWithNull
-        throw new AssertionException (message);
-
-      return obj;
+      return IsNotNull (obj, message, s_emptyArguments);
     }
 
     public static T IsNotNull<T> (T obj)
@@ -153,14 +148,18 @@ namespace Remotion.Utilities
 
     public static T IsNotNull<T> (T obj, string message, params object[] arguments)
     {
-      return IsNotNull (obj, string.Format (message, arguments));
+      // ReSharper disable CompareNonConstrainedGenericWithNull
+      if (obj == null)
+        // ReSharper restore CompareNonConstrainedGenericWithNull
+        throw new AssertionException (string.Format (message, arguments));
+
+      return obj;
     }
 
 
     public static void IsNull (object obj, string message)
     {
-      if (obj != null)
-        throw new AssertionException (message);
+      IsNull (obj, message, s_emptyArguments);
     }
 
     public static void IsNull (object obj)
@@ -170,7 +169,8 @@ namespace Remotion.Utilities
 
     public static void IsNull (object obj, string message, params object[] arguments)
     {
-      IsNull (obj, string.Format (message, arguments));
+      if (obj != null)
+        throw new AssertionException (string.Format (message, arguments));
     }
   }
 }

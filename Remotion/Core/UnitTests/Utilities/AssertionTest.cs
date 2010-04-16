@@ -39,6 +39,73 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void TestIsFalseHolds ()
+    {
+      Assertion.IsFalse (false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException))]
+    public void TestIsFalseFails ()
+    {
+      Assertion.IsFalse (true);
+    }
+
+    [Test]
+    public void IsNull_True ()
+    {
+      Assertion.IsNull (null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "Assertion failed: Expression does not evaluate to a null reference.")]
+    public void IsNull_False ()
+    {
+      Assertion.IsNull ("x");
+    }
+
+    [Test]
+    public void INull_ValueType_True ()
+    {
+      int? value = null;
+      Assertion.IsNull (value);
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "Assertion failed: Expression does not evaluate to a null reference.")]
+    public void IsNull_ValueType_False ()
+    {
+      int? value = 5;
+      Assertion.IsNull (value);
+    }
+
+    [Test]
+    public void IsNull_Message_True ()
+    {
+      Assertion.IsNull (null, "a");
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "a")]
+    public void IsNull_Message_False ()
+    {
+      Assertion.IsNull ("x", "a");
+    }
+
+    [Test]
+    public void IsNull_Message_Args_True ()
+    {     
+      Assertion.IsNull (null, "a{0}b", 5);
+    }
+
+    [Test]
+    [ExpectedException (typeof (AssertionException), ExpectedMessage = "a5b")]
+    public void IsNull_Message_Args_False ()
+    {
+      Assertion.IsNull ("x", "a{0}b", 5);
+    }
+
+    [Test]
     public void IsNotNull_True ()
     {
       var instance = "x";
