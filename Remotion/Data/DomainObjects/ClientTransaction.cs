@@ -195,14 +195,6 @@ public abstract class ClientTransaction : IDataSource
   /// is an instance of <see cref="SubClientTransaction"/>, it returns the parent's root transaction. </remarks>
   public abstract ClientTransaction RootTransaction { get; }
 
-  /// <summary>
-  /// Temporary, will be removed at a later point of time. TODO 2246
-  /// </summary>
-  protected IObjectLoader ObjectLoader
-  {
-    get { return _objectLoader; }
-  }
-
   /// <summary>Initializes a new instance of this transaction.</summary>
   public abstract ClientTransaction CreateEmptyTransactionOfSameType ();
 
@@ -429,7 +421,7 @@ public abstract class ClientTransaction : IDataSource
     get
     {
       if (_queryManager == null)
-        _queryManager = new QueryManager (this, ObjectLoader, TransactionEventSink);
+        _queryManager = new QueryManager (this, _objectLoader, TransactionEventSink);
 
       return _queryManager;
     }
