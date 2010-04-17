@@ -16,10 +16,15 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
@@ -138,6 +143,50 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
       Html.GetAssertedChildElement (tr, "td", 0);
+    }
+
+    [Test]
+    public void RendererCachesColumnRenderers()
+    {
+      List = MockRepository.GenerateMock<IBocList>();
+
+      List.Stub (list => list.FixedColumns).Return (new BocColumnDefinitionCollection (List));
+      var simpleColumnDefinition = new BocSimpleColumnDefinition();
+      List.FixedColumns.Add (simpleColumnDefinition);
+      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
+      List.Stub (mock => mock.IsIndexEnabled).Return (true);
+      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+      List.Stub (mock => mock.IsSelectionEnabled).Return (true);
+      List.Stub (list => list.SelectorControlCheckedState).Return (new List<int>());
+      List.Stub (list => list.GetResourceManager()).Return (MultiLingualResources.GetResourceManager (typeof (BocList.ResourceIdentifier)));
+
+      var mockRepository = new MockRepository();
+
+      var serviceLocatorMock = MockRepository.GenerateMock<IServiceLocator>();
+
+      var indexColumnRendererFactoryMock = MockRepository.GenerateMock<IBocIndexColumnRendererFactory>();
+      indexColumnRendererFactoryMock.Expect (mock => mock.CreateRenderer (HttpContext, List))
+          .Return (MockRepository.GenerateStub<IBocIndexColumnRenderer>());
+      serviceLocatorMock.Expect (mock => mock.GetInstance<IBocIndexColumnRendererFactory>()).Return (indexColumnRendererFactoryMock);
+
+      var seclectorColumnRendererFactoryMock = MockRepository.GenerateMock<IBocSelectorColumnRendererFactory>();
+      seclectorColumnRendererFactoryMock.Expect (mock => mock.CreateRenderer (HttpContext, List))
+          .Return (MockRepository.GenerateStub<IBocSelectorColumnRenderer>());
+      serviceLocatorMock.Expect (mock => mock.GetInstance<IBocSelectorColumnRendererFactory>()).Return (seclectorColumnRendererFactoryMock);
+
+      var simpleColumnRendererFactoryMock = MockRepository.GenerateMock<IBocColumnRendererFactory<BocSimpleColumnDefinition>>();
+      simpleColumnRendererFactoryMock.Expect (mock => mock.CreateRenderer (HttpContext, List, simpleColumnDefinition, serviceLocatorMock))
+          .Return (MockRepository.GenerateStub<IBocColumnRenderer>());
+      serviceLocatorMock.Expect (mock => mock.GetInstance<IBocColumnRendererFactory<BocSimpleColumnDefinition>>()).Return (
+          simpleColumnRendererFactoryMock);
+
+      mockRepository.ReplayAll();
+
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, List, CssClassContainer.Instance, serviceLocatorMock);
+      renderer.RenderTitlesRow (Html.Writer);
+      renderer.RenderDataRow (Html.Writer, BusinessObject, 0, 0, 0);
+
+      mockRepository.VerifyAll();
     }
   }
 }

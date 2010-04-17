@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Collections;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.Utilities;
@@ -40,6 +41,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IBocList _list;
     private readonly CssClassContainer _cssClasses;
     private readonly IServiceLocator _serviceLocator;
+    private readonly IBocIndexColumnRenderer _indexColumnRenderer;
+    private readonly IBocSelectorColumnRenderer _selectorColumnRenderer;
+    private readonly ICache<BocColumnDefinition, IBocColumnRenderer> _columnRendererCache = new Cache<BocColumnDefinition, IBocColumnRenderer>();
 
     public BocRowRenderer (HttpContextBase context, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
     {
@@ -52,6 +56,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _list = list;
       _cssClasses = cssClasses;
       _serviceLocator = serviceLocator;
+      _indexColumnRenderer = ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer (Context, List);
+      _selectorColumnRenderer = ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory>().CreateRenderer (Context, List);
     }
 
     public HttpContextBase Context
@@ -72,13 +78,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public IServiceLocator ServiceLocator
     {
       get { return _serviceLocator; }
-    }
-
-    /// <summary>Fetches a column renderer from the factory the first time it is called with a specific column argument,
-    /// returns the cached renderer on subsequent calls with the same column.</summary>
-    private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
-    {
-      return column.GetRenderer (ServiceLocator, Context, List);
     }
 
     public void RenderTitlesRow (HtmlTextWriter writer)
@@ -197,12 +196,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private IBocSelectorColumnRenderer GetSelectorColumnRenderer ()
     {
-      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory>().CreateRenderer (Context, List);
+      return _selectorColumnRenderer;
     }
 
     private IBocIndexColumnRenderer GetIndexColumnRenderer ()
     {
-      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer (Context, List);
+      return _indexColumnRenderer;
+    }
+
+    /// <summary>Fetches a column renderer from the factory the first time it is called with a specific column argument,
+    /// returns the cached renderer on subsequent calls with the same column.</summary>
+    private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
+    {
+      return _columnRendererCache.GetOrCreateValue (column, key => key.GetRenderer (ServiceLocator, Context, List));
     }
 
     private void RenderDataCells (HtmlTextWriter writer, int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
