@@ -1,14 +1,22 @@
 using System;
+using System.Collections.Specialized;
 using System.Linq;
+using Remotion.Configuration;
 using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
-  public class StubSecurityProvider : ISecurityProvider
+  public class StubSecurityProvider : ExtendedProviderBase,  ISecurityProvider, IRevisionBasedSecurityProvider
   {
     private readonly AccessType[] _accessTypes = Enum.GetValues(typeof (GeneralAccessTypes)).Cast<Enum>().Select (e => AccessType.Get ((Enum) e)).ToArray();
 
     public StubSecurityProvider ()
+        : this ("Stub", new NameValueCollection())
+    {
+    }
+
+    public StubSecurityProvider (string name, NameValueCollection config)
+        : base (name, config)
     {
     }
 
@@ -20,6 +28,11 @@ namespace Remotion.Data.DomainObjects.Web.Test
     public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
     {
       return _accessTypes;
+    }
+
+    public int GetRevision ()
+    {
+      return 0;
     }
   }
 }

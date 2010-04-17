@@ -32,6 +32,24 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance {
         protected global::System.Web.UI.HtmlControls.HtmlForm TheForm;
         
         /// <summary>
+        /// ScriptManager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager ScriptManager;
+        
+        /// <summary>
+        /// UpdatePanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel;
+        
+        /// <summary>
         /// CurrentObject control.
         /// </summary>
         /// <remarks>
@@ -102,5 +120,14 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.Web.UI.Controls.WebButton SynchPostBackButton;
+        
+        /// <summary>
+        /// AsynchPostBackButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton AsynchPostBackButton;
     }
 }

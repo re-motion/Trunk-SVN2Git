@@ -35,7 +35,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       bool value = true;
 
-      Assert.That (property.IsAccessible (obj.BusinessObjectClass, obj));
+      foreach (var propertyDefinition in obj.BusinessObjectClass.GetPropertyDefinitions())
+        Assert.That (propertyDefinition.IsAccessible (obj.BusinessObjectClass, obj));
 
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();

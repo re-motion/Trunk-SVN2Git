@@ -80,17 +80,17 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=2.1.13.813, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Autofac\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="AutofacContrib.CommonServiceLocator, Version=2.1.13.813, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Autofac\AutofacContrib.CommonServiceLocator.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.MicroKernel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\Castle.MicroKernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="CommonServiceLocator.WindsorAdapter, Version=1.0.0.1, Culture=neutral, PublicKeyToken=5f888aefae8667bf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,6 +103,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -115,6 +116,8 @@
     <Reference Include="System.Web">
       <Name>System.Web</Name>
     </Reference>
+    <Reference Include="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Extensions.Design, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -148,6 +151,10 @@
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Security\Web.Security.csproj">
+      <Project>{9B6F6D1A-A7EA-4EE8-B36E-E31CF7E518E3}</Project>
+      <Name>Web.Security</Name>
     </ProjectReference>
     <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>

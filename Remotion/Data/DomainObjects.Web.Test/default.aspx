@@ -33,7 +33,7 @@
       <a href="WxeHandler.ashx?WxeFunctionType=Remotion.Data.DomainObjects.Web.Test.WxeFunctions.WxeTestPageFunction,Remotion.Data.DomainObjects.Web.Test&amp;ClassWithAllDataTypesID=ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid" target="_blank">WxeFunctionTest</a><br>
       <a href="WxeHandler.ashx?WxeFunctionType=Remotion.Data.DomainObjects.Web.Test.WxeFunctions.UndefinedEnumTestFunction,Remotion.Data.DomainObjects.Web.Test">UndefinedEnumTest</a><br> 
       <a href="WxeHandler.ashx?WxeFunctionType=Remotion.Data.DomainObjects.Web.Test.WxeFunctions.WxeUserControlTestPageFunction,Remotion.Data.DomainObjects.Web.Test">WxeUserControlTest</a><br> 
-      <a href="WxeHandler.ashx?WxeFunctionType=Remotion.Data.DomainObjects.Web.Test.WxeFunctions.PerformanceFunction,Remotion.Data.DomainObjects.Web.Test&ItemCount=120">Performance Test</a><br> 
+      <a href="WxeHandler.ashx?WxeFunctionType=Remotion.Data.DomainObjects.Web.Test.WxeFunctions.PerformanceFunction,Remotion.Data.DomainObjects.Web.Test&ItemCount=1100">Performance Test</a><br> 
 
     </form>
   </body>

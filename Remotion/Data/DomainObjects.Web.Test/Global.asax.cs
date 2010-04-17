@@ -15,12 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using CommonServiceLocator.WindsorAdapter;
+using System.Diagnostics;
+using System.Web;
+using Autofac;
+using AutofacContrib.CommonServiceLocator;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Security;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -30,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
   /// <summary>
   /// Summary description for Global.
   /// </summary>
-  public class Global : System.Web.HttpApplication
+  public class Global : HttpApplication
   {
     /// <summary>
     /// Required designer variable.
@@ -45,23 +47,21 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected void Application_Start (Object sender, EventArgs e)
     {
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
+      Trace.WriteLine (mappingConfiguration.ClassDefinitions.Count);
 
-      IWindsorContainer container = new WindsorContainer();
-      container.Register (
-          AllTypes.Pick()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces()));
-      container.Register (
-          AllTypes.Pick()
-              .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces()));
-      container.Register (Component.For<IScriptUtility>().ImplementedBy<ScriptUtility>().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.NovaBlue));
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter ());
 
-      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
-      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
+      var builder = new ContainerBuilder();
+
+      builder.RegisterAssemblyTypes (typeof (RendererBase<>).Assembly, typeof (BocRendererBase<>).Assembly)
+          .Where (t => t.Namespace.EndsWith (".Factories")).AsImplementedInterfaces().SingleInstance();
+
+      builder.RegisterInstance (ResourceTheme.NovaBlue).SingleInstance();
+
+      builder.Register (c => new ScriptUtility()).As<IScriptUtility>().InstancePerDependency();
+
+      var autofacServiceLocator = new AutofacServiceLocator (builder.Build());
+      ServiceLocator.SetLocatorProvider (() => autofacServiceLocator);
     }
 
     protected void Session_Start (Object sender, EventArgs e)
