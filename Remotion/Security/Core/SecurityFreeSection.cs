@@ -19,8 +19,16 @@ using Remotion.Context;
 
 namespace Remotion.Security
 {
+  /// <summary>
+  /// Represents a scope within no security will be evaluated.
+  /// </summary>
   public sealed class SecurityFreeSection : IDisposable
   {
+    private class ActiveSections
+    {
+      public int Count;
+    }
+
     private static readonly string s_activeSectionCountKey = SafeContextKeys.SecuritySecurityFreeSection;
 
     public static bool IsActive
@@ -32,18 +40,24 @@ namespace Remotion.Security
     {
       get
       {
-        int? count = (int?) SafeContext.Instance.GetData (s_activeSectionCountKey);
-        if (!count.HasValue)
+        lock (typeof (ActiveSections))
         {
-          count = 0;
-          SafeContext.Instance.SetData (s_activeSectionCountKey, count);
-        }
+          var activeSections = (ActiveSections) SafeContext.Instance.GetData (s_activeSectionCountKey);
+          if (activeSections == null)
+          {
+            activeSections = new ActiveSections();
+            SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
+          }
 
-        return count.Value;
+          return activeSections.Count;
+        }
       }
       set
       {
-        SafeContext.Instance.SetData (s_activeSectionCountKey, value);
+        lock (typeof (ActiveSections))
+        {
+          SafeContext.Instance.SetData (s_activeSectionCountKey, new ActiveSections { Count = value });
+        }
       }
     }
 

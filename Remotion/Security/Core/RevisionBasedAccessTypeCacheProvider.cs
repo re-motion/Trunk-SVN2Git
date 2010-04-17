@@ -29,22 +29,17 @@ namespace Remotion.Security
   [Serializable]
   public class RevisionBasedAccessTypeCacheProvider : ExtendedProviderBase, IGlobalAccessTypeCacheProvider
   {
-    // constants
-
-    // types
-
-    // static members
+    private class Revision
+    {
+      public int Value;
+    }
 
     private static readonly string s_revisionKey = SafeContextKeys.SecurityRevisionBasedAccessTypeCacheProviderRevision;
-
-    // member fields
 
     private readonly object _syncRoot = new object();
 
     private CacheType _cache;
     private int _revision;
-
-    // construction and disposing
 
     public RevisionBasedAccessTypeCacheProvider ()
         : this ("Revision", new NameValueCollection())
@@ -64,8 +59,6 @@ namespace Remotion.Security
       _revision = info.GetInt32 ("_revision");
       _cache = (CacheType) info.GetValue ("_cache", typeof (CacheType));
     }
-
-    // methods and properties
 
     protected override void GetObjectData (SerializationInfo info, StreamingContext context)
     {
@@ -99,17 +92,20 @@ namespace Remotion.Security
 
     private int GetCurrentRevision ()
     {
-      int? revision = (int?) SafeContext.Instance.GetData (s_revisionKey);
-      if (!revision.HasValue)
+      lock (typeof (Revision))
       {
-        revision = GetRevisionFromSecurityProvider();
-        SafeContext.Instance.SetData (s_revisionKey, revision);
-      }
+        var revision = (Revision) SafeContext.Instance.GetData (s_revisionKey);
+        if (revision == null)
+        {
+          revision = new Revision { Value = GetRevisionFromSecurityProvider() };
+          SafeContext.Instance.SetData (s_revisionKey, revision);
+        }
 
-      return revision.Value;
+        return revision.Value;
+      }
     }
 
-    private int? GetRevisionFromSecurityProvider ()
+    private int GetRevisionFromSecurityProvider ()
     {
       var securityProvider = SecurityConfiguration.Current.SecurityProvider as IRevisionBasedSecurityProvider;
       if (securityProvider == null)
