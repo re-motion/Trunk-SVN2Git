@@ -183,7 +183,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private EnumWrapper? FindFirstMissingAbstractRole (
         IEnumerable<EnumWrapper> expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRoleDefinitions)
     {
-      var actualAbstractRoles = from r in actualAbstractRoleDefinitions select new EnumWrapper (r.Name);
+      var actualAbstractRoles = actualAbstractRoleDefinitions.Select (r => EnumWrapper.Get (r.Name));
       var result = from expected in expectedAbstractRoles
                    where !actualAbstractRoles.Contains (expected)
                    select (EnumWrapper?) expected;

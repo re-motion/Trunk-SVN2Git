@@ -181,7 +181,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Assert.IsNull (securityContext.OwnerTenant);
         Assert.That (securityContext.AbstractRoles, Is.Empty);
         Assert.AreEqual (1, securityContext.GetNumberOfStates ());
-        Assert.AreEqual (new EnumWrapper (Delegation.Enabled), securityContext.GetState ("Delegation"));
+        Assert.AreEqual (EnumWrapper.Get (Delegation.Enabled), securityContext.GetState ("Delegation"));
       }
     }
 

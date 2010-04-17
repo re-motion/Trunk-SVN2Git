@@ -29,25 +29,30 @@ namespace Remotion.Security
   [Serializable]
   public struct AccessType : IEquatable<AccessType>
   {
-    private static readonly ICache<Type, bool> s_hasAccessTypeAttributeCache =
-        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Type, bool> ();
+    private static readonly ICache<Enum, AccessType> s_accessTypeByEnumCache =
+        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Enum, AccessType>();
 
     public static AccessType Get (Enum accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
-      Type type = accessType.GetType();
-      if (!s_hasAccessTypeAttributeCache.GetOrCreateValue (type, key => Attribute.IsDefined (key, typeof (AccessTypeAttribute), false)))
-      {
-        throw new ArgumentException (
-            string.Format (
-                "Enumerated type '{0}' cannot be used as an access type. Valid access types must have the {1} applied.",
-                type.FullName,
-                typeof (AccessTypeAttribute).FullName),
-            "accessType");
-      }
+      return s_accessTypeByEnumCache.GetOrCreateValue (
+          accessType,
+          key =>
+          {
+            Type type = key.GetType();
+            if (!Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
+            {
+              throw new ArgumentException (
+                  string.Format (
+                      "Enumerated type '{0}' cannot be used as an access type. Valid access types must have the {1} applied.",
+                      type.FullName,
+                      typeof (AccessTypeAttribute).FullName),
+                  "accessType");
+            }
 
-      return Get (new EnumWrapper (accessType));
+            return Get (EnumWrapper.Get(accessType));
+          });
     }
 
     public static AccessType Get (EnumWrapper accessType)
@@ -75,6 +80,20 @@ namespace Remotion.Security
     public bool Equals (AccessType other)
     {
       return _value.Equals (other._value);
+    }
+
+    public override bool Equals (object obj)
+    {
+      if (obj == null)
+        return false;
+      if (obj.GetType() != typeof (AccessType))
+        return false;
+      return Equals ((AccessType) obj);
+    }
+
+    public override int GetHashCode ()
+    {
+      return _value.GetHashCode();
     }
   }
 }

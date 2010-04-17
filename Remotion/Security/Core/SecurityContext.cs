@@ -128,7 +128,7 @@ namespace Remotion.Security
           throw new ArgumentException (message, "abstractRoles");
         }
 
-        abstractRoleList.Add (new EnumWrapper (abstractRole));
+        abstractRoleList.Add (EnumWrapper.Get(abstractRole));
       }
       return abstractRoleList.ToArray();
     }
@@ -150,7 +150,7 @@ namespace Remotion.Security
           throw new ArgumentException (message, "states");
         }
 
-        securityStates.Add (valuePair.Key, new EnumWrapper (valuePair.Value));
+        securityStates.Add (valuePair.Key, EnumWrapper.Get(valuePair.Value));
       }
       return securityStates;
     }

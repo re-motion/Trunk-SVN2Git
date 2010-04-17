@@ -31,15 +31,58 @@ namespace Remotion.Security
   [Serializable]
   public struct EnumWrapper : IEquatable<EnumWrapper>
   {
-    private static readonly ICache<Enum, string> s_enumNameCache =
-        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Enum, string>();
+    private static readonly ICache<Enum, EnumWrapper> s_enumWrapperCache =
+        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Enum, EnumWrapper>();
 
-    private static readonly ICache<Type, bool> s_hasFlagsAttributeCache =
-        VersionDependentImplementationBridge<IInterlockedCacheFactoryImplementation>.Implementation.CreateCache<Type, bool>();
-
-    private static string GetEnumName (Enum enumValue)
+    /// <summary>
+    /// Gets an <see cref="EnumWrapper"/>, setting the wrapper's <see cref="Name"/> to a string of the format "valueName|typeName".
+    /// </summary>
+    /// <param name="valueName">The enum value name to be set.</param>
+    /// <param name="typeName">The type name to be integrated into the name.</param>
+    public static EnumWrapper Get (string valueName, string typeName)
     {
-      return s_enumNameCache.GetOrCreateValue (enumValue, key => BuildEnumName (key.ToString(), GetPartialAssemblyQualifiedName (key.GetType())));
+      ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName);
+      ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
+
+      return new EnumWrapper (BuildEnumName (valueName, typeName));
+    }
+
+    /// <summary>
+    /// Gets an <see cref="EnumWrapper"/>, setting the wrapper's name to the specified string.
+    /// </summary>
+    /// <param name="name">The name to be set.</param>
+    public static EnumWrapper Get (string name)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      return new EnumWrapper (name);
+    }
+
+    /// <summary>
+    /// Gets an <see cref="EnumWrapper"/>, setting the wrapper's name to a string of the format "enumValue|enumType".
+    /// </summary>
+    /// <param name="enumValue">The enum value.</param>
+    public static EnumWrapper Get (Enum enumValue)
+    {
+      ArgumentUtility.CheckNotNull ("enumValue", enumValue);
+
+      return s_enumWrapperCache.GetOrCreateValue (enumValue, CreateEnumWrapperFromEnumValue);
+    }
+
+    private static EnumWrapper CreateEnumWrapperFromEnumValue (Enum enumValue)
+    {
+      Type type = enumValue.GetType();
+      if (Attribute.IsDefined (type, typeof (FlagsAttribute), false))
+      {
+        throw new ArgumentException (
+            string.Format (
+                "Enumerated type '{0}' cannot be wrapped. Only enumerated types without the {1} can be wrapped.",
+                type.FullName,
+                typeof (FlagsAttribute).FullName),
+            "enumValue");
+      }
+
+      return Get (BuildEnumName (enumValue.ToString(), GetPartialAssemblyQualifiedName (enumValue.GetType())));
     }
 
     private static string BuildEnumName (string valueName, string typeName)
@@ -54,46 +97,9 @@ namespace Remotion.Security
 
     private readonly string _name;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EnumWrapper"/> class, setting the wrapper's name to a string of the format "enumValue|enumType".
-    /// </summary>
-    /// <param name="enumValue">The enum value.</param>
-    public EnumWrapper (Enum enumValue)
-        : this (GetEnumName (ArgumentUtility.CheckNotNull ("enumValue", enumValue)))
+    private EnumWrapper (string name)
     {
-      Type type = enumValue.GetType();
-      if (s_hasFlagsAttributeCache.GetOrCreateValue (type, key => Attribute.IsDefined (key, typeof (FlagsAttribute), false)))
-      {
-        throw new ArgumentException (
-            string.Format (
-                "Enumerated type '{0}' cannot be wrapped. Only enumerated types without the {1} can be wrapped.",
-                type.FullName,
-                typeof (FlagsAttribute).FullName),
-            "enumValue");
-      }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EnumWrapper"/> class, setting the wrapper's name to the specified string.
-    /// </summary>
-    /// <param name="name">The name to be set.</param>
-    public EnumWrapper (string name)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       _name = name;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EnumWrapper"/> class, setting the wrapper's <see cref="Name"/> to a string of the format 
-    /// "valueName|typeName".
-    /// </summary>
-    /// <param name="valueName">The enum value name to be set.</param>
-    /// <param name="typeName">The type name to be integrated into the name.</param>
-    public EnumWrapper (string valueName, string typeName)
-        : this (BuildEnumName (
-                    ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName),
-                    ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName)))
-    {
     }
 
     public string Name
@@ -109,6 +115,20 @@ namespace Remotion.Security
     public bool Equals (EnumWrapper other)
     {
       return _name.Equals (other._name);
+    }
+
+    public override bool Equals (object obj)
+    {
+      if (obj == null)
+        return false;
+      if (obj.GetType() != typeof (EnumWrapper))
+        return false;
+      return Equals ((EnumWrapper) obj);
+    }
+
+    public override int GetHashCode ()
+    {
+      return _name.GetHashCode();
     }
   }
 }

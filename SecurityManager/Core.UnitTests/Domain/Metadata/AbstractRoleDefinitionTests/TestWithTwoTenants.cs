@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
     [Test]
     public void Find_ValidOneAbstractRole ()
     {
-      var abstractRoles = new[] { new EnumWrapper (ProjectRoles.QualityManager) };
+      var abstractRoles = new[] { EnumWrapper.Get (ProjectRoles.QualityManager) };
       var result = AbstractRoleDefinition.Find (abstractRoles);
 
       Assert.AreEqual (1, result.Count);
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
     [Test]
     public void Find_ValidTwoAbstractRoles ()
     {
-      var abstractRoles = new[] { new EnumWrapper (ProjectRoles.QualityManager), new EnumWrapper (ProjectRoles.Developer) };
+      var abstractRoles = new[] { EnumWrapper.Get (ProjectRoles.QualityManager), EnumWrapper.Get (ProjectRoles.Developer) };
       var result = AbstractRoleDefinition.Find (abstractRoles);
 
       Assert.AreEqual (2, result.Count);

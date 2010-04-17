@@ -169,8 +169,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition orderStateProperty = CreateStateProperty ("State");
-        orderStateProperty.AddState (new EnumWrapper (OrderState.Received).Name, 0);
-        orderStateProperty.AddState (new EnumWrapper (OrderState.Delivered).Name, 1);
+        orderStateProperty.AddState (EnumWrapper.Get (OrderState.Received).Name, 0);
+        orderStateProperty.AddState (EnumWrapper.Get (OrderState.Delivered).Name, 1);
         classDefinition.AddStateProperty (orderStateProperty);
 
         return orderStateProperty;
@@ -182,8 +182,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition paymentStateProperty = CreateStateProperty ("Payment");
-        paymentStateProperty.AddState (new EnumWrapper(PaymentState.None).Name, 0);
-        paymentStateProperty.AddState (new EnumWrapper (PaymentState.Paid).Name, 1);
+        paymentStateProperty.AddState (EnumWrapper.Get(PaymentState.None).Name, 0);
+        paymentStateProperty.AddState (EnumWrapper.Get (PaymentState.Paid).Name, 1);
         classDefinition.AddStateProperty (paymentStateProperty);
 
         return paymentStateProperty;
@@ -195,8 +195,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition deliveryStateProperty = CreateStateProperty ("Delivery");
-        deliveryStateProperty.AddState (new EnumWrapper(Delivery.Dhl).Name, 0);
-        deliveryStateProperty.AddState (new EnumWrapper (Delivery.Post).Name, 1);
+        deliveryStateProperty.AddState (EnumWrapper.Get(Delivery.Dhl).Name, 0);
+        deliveryStateProperty.AddState (EnumWrapper.Get (Delivery.Post).Name, 1);
         classDefinition.AddStateProperty (deliveryStateProperty);
 
         return deliveryStateProperty;
@@ -220,10 +220,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         StatePropertyDefinition paymentState = CreatePaymentStateProperty (classDefinition);
 
         List<StateCombination> stateCombinations = new List<StateCombination>();
-        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
-        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
-        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
-        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
+        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name]));
+        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name]));
+        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name]));
+        stateCombinations.Add (CreateStateCombination (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name]));
 
         return stateCombinations;
       }
@@ -246,10 +246,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         StatePropertyDefinition paymentState = CreatePaymentStateProperty (classDefinition);
 
         List<AccessControlList> acls = new List<AccessControlList>();
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name]));
         acls.Add (CreateStatelessAcl (classDefinition));
 
         return acls;
@@ -265,14 +265,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         StatePropertyDefinition deliveryState = CreateDeliveryStateProperty (classDefinition);
 
         List<AccessControlList> acls = new List<AccessControlList>();
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name], deliveryState[EnumWrapper.Get(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name], deliveryState[EnumWrapper.Get(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name], deliveryState[EnumWrapper.Get(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name], deliveryState[EnumWrapper.Get(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name], deliveryState[EnumWrapper.Get (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Received).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name], deliveryState[EnumWrapper.Get (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get(PaymentState.None).Name], deliveryState[EnumWrapper.Get (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[EnumWrapper.Get (OrderState.Delivered).Name], paymentState[EnumWrapper.Get (PaymentState.Paid).Name], deliveryState[EnumWrapper.Get (Delivery.Post).Name]));
         acls.Add (CreateStatelessAcl (classDefinition));
 
         return acls;
@@ -315,10 +315,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         foreach (StatePropertyDefinition property in classDefinition.StateProperties)
         {
           if (property.Name == "State")
-            states.Add (property[new EnumWrapper (OrderState.Delivered).Name]);
+            states.Add (property[EnumWrapper.Get (OrderState.Delivered).Name]);
 
           if (property.Name == "Payment")
-            states.Add (property[new EnumWrapper(PaymentState.None).Name]);
+            states.Add (property[EnumWrapper.Get(PaymentState.None).Name]);
         }
 
         return states;

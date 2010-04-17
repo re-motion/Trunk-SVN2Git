@@ -161,8 +161,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
-      StateDefinition paidState = paymentProperty[new EnumWrapper (PaymentState.Paid).Name];
-      StateDefinition notPaidState = paymentProperty[new EnumWrapper (PaymentState.None).Name];
+      StateDefinition paidState = paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name];
+      StateDefinition notPaidState = paymentProperty[EnumWrapper.Get (PaymentState.None).Name];
       StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paidState);
       StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, notPaidState);
       StateCombination combination3 = _testHelper.CreateStateCombination (orderClass);

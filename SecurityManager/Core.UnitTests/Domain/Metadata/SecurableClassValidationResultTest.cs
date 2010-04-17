@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
         StateCombination statelessCombination = testHelper.CreateStateCombination (orderClass);
         StateCombination paidStateCombination = testHelper.CreateStateCombination (
-            orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+            orderClass, paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name]);
 
         SecurableClassValidationResult result = new SecurableClassValidationResult();
 
@@ -156,7 +156,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
         StateCombination statelessCombination = testHelper.CreateStateCombination (orderClass);
         StateCombination paidStateCombination = testHelper.CreateStateCombination (
-            orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+            orderClass, paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name]);
 
         SecurableClassValidationResult result = new SecurableClassValidationResult();
 

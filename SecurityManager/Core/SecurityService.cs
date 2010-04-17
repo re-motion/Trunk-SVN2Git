@@ -103,7 +103,7 @@ namespace Remotion.SecurityManager
 
     private AccessType ConvertToAccessType (AccessTypeDefinition accessTypeDefinition)
     {
-      return AccessType.Get (new EnumWrapper (accessTypeDefinition.Name));
+      return AccessType.Get (EnumWrapper.Get (accessTypeDefinition.Name));
     }
 
     bool INullObject.IsNull

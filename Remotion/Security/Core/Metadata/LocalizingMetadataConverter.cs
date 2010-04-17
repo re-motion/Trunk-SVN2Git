@@ -83,7 +83,7 @@ namespace Remotion.Security.Metadata
 
     private LocalizedName CreateLocalizedNameFromEnumValueInfo (EnumValueInfo enumValueInfo, string text)
     {
-      EnumWrapper enumWrapper = new EnumWrapper (enumValueInfo.Name, enumValueInfo.TypeName);
+      EnumWrapper enumWrapper = EnumWrapper.Get(enumValueInfo.Name, enumValueInfo.TypeName);
       return new LocalizedName (enumValueInfo.ID, enumWrapper.ToString (), enumValueInfo.Name);
     }
 

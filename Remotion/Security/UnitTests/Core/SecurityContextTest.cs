@@ -36,7 +36,7 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.That (
           context.AbstractRoles,
-          Is.EquivalentTo (new[] { new EnumWrapper (TestAbstractRoles.QualityEngineer), new EnumWrapper (TestAbstractRoles.Developer) }));
+          Is.EquivalentTo (new[] { EnumWrapper.Get(TestAbstractRoles.QualityEngineer), EnumWrapper.Get(TestAbstractRoles.Developer) }));
     }
 
     [Test]
@@ -66,8 +66,8 @@ namespace Remotion.Security.UnitTests.Core
 
       SecurityContext context = CreateTestSecurityContextWithStates (testStates);
 
-      Assert.AreEqual (new EnumWrapper (TestSecurityState.Public), context.GetState ("Confidentiality"));
-      Assert.AreEqual (new EnumWrapper (TestSecurityState.Secret), context.GetState ("State"));
+      Assert.AreEqual (EnumWrapper.Get(TestSecurityState.Public), context.GetState ("Confidentiality"));
+      Assert.AreEqual (EnumWrapper.Get(TestSecurityState.Secret), context.GetState ("State"));
     }
 
     [Test]
@@ -94,11 +94,11 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void CreateSecurityContextFromEnumWrappers ()
     {
-      var abstractRoles = new[] { new EnumWrapper (TestAbstractRoles.QualityEngineer), new EnumWrapper (SimpleEnum.Second), new EnumWrapper ("Role") };
+      var abstractRoles = new[] { EnumWrapper.Get(TestAbstractRoles.QualityEngineer), EnumWrapper.Get(SimpleEnum.Second), EnumWrapper.Get("Role") };
       var states = new Dictionary<string, EnumWrapper>();
-      states.Add ("property1", new EnumWrapper (TestSecurityState.Confidential));
-      states.Add ("property2", new EnumWrapper (SimpleEnum.First));
-      states.Add ("property3", new EnumWrapper ("State"));
+      states.Add ("property1", EnumWrapper.Get(TestSecurityState.Confidential));
+      states.Add ("property2", EnumWrapper.Get(SimpleEnum.First));
+      states.Add ("property3", EnumWrapper.Get("State"));
 
       SecurityContext context = SecurityContext.Create (typeof (ISecurableObject), "owner", "group", "tenant", states, abstractRoles);
 
