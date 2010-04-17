@@ -52,7 +52,7 @@ namespace Remotion.Security.Metadata
 
       public override int GetHashCode ()
       {
-        return Type.GetHashCode() ^ MemberName.GetHashCode();
+        return Type.GetHashCode() ^ MemberName[0];
       }
     }
 
