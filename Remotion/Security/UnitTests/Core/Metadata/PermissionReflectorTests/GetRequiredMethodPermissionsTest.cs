@@ -34,12 +34,6 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
       _permissionReflector = new PermissionReflector ();
     }
 
-    [TearDown]
-    public void TearDown ()
-    {
-      TestPermissionReflector.Cache.Clear ();
-    }
-
     [Test]
     public void Initialize ()
     {

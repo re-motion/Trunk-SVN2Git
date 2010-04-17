@@ -36,15 +36,29 @@ namespace Remotion.Security.Metadata
 
     // types
 
+    private class CacheKey : Tuple<Type, Type, string, BindingFlags>
+    {
+      public CacheKey (Type attributeType, Type type, string memberName, BindingFlags bindingFlags)
+        : base (attributeType, type, memberName, bindingFlags)
+      {
+        Assertion.DebugAssert (attributeType != null, "Parameter 'attributeType' is null.");
+        Assertion.DebugAssert (type != null, "Parameter 'type' is null.");
+        Assertion.DebugAssert (!string.IsNullOrEmpty (memberName), "Parameter 'memberName' is null or empty.");
+      }
+
+      public Type Type { get { return Item2; } }
+      public string MemberName { get { return Item3; } }
+      public BindingFlags BindingFlags { get { return Item4; } }
+
+      public override int GetHashCode ()
+      {
+        return Type.GetHashCode() ^ MemberName.GetHashCode();
+      }
+    }
+
     // static members
 
-    private static readonly ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> s_cache = 
-        new InterlockedCache<Tuple<Type, Type, string, BindingFlags>, Enum[]>();
-
-    protected static ICache<Tuple<Type, Type, string, BindingFlags>, Enum[]> Cache
-    {
-      get { return s_cache; }
-    }
+    private static readonly ICache<CacheKey, Enum[]> s_cache = new InterlockedCache<CacheKey, Enum[]> ();
 
     // member fields
 
@@ -116,8 +130,8 @@ namespace Remotion.Security.Metadata
     private Enum[] GetPermissionsFromCache<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
         where TAttribute: BaseDemandPermissionAttribute
     {
-      var cacheKey = new Tuple<Type, Type, string, BindingFlags> (typeof (TAttribute), type, memberName, bindingFlags);
-      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (key.Item2, key.Item3, key.Item4));
+      var cacheKey = new CacheKey (typeof (TAttribute), type, memberName, bindingFlags);
+      return s_cache.GetOrCreateValue (cacheKey, key => GetPermissions<TAttribute> (key.Type, key.MemberName, key.BindingFlags));
     }
 
     private Enum[] GetPermissions<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)

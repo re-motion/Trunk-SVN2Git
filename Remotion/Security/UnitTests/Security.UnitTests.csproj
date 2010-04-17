@@ -73,7 +73,6 @@
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyReadPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyWritePermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredStaticMethodPermissionsTest.cs" />
-    <Compile Include="Core\Metadata\PermissionReflectorTests\TestPermissionReflector.cs" />
     <Compile Include="Core\MockConstraints\FunctionalSecurityContextFactoryConstraint.cs" />
     <Compile Include="Core\NullGlobalAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\FunctionalSecurityStrategyTest.cs" />
