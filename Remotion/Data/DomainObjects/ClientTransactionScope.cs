@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Context;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -39,7 +40,7 @@ namespace Remotion.Data.DomainObjects
   public class ClientTransactionScope : IDisposable, ITransactionScope
   {
     private static readonly SafeContextSingleton<ClientTransactionScope> _scopeSingleton = 
-        new SafeContextSingleton<ClientTransactionScope> (typeof (ClientTransactionScope).FullName, delegate { return null; });
+        new SafeContextSingleton<ClientTransactionScope> (SafeContextKeys.DataDomainObjectsClientTransactionScope, () => null);
 
     /// <summary>
     /// Gets a value indicating if a <see cref="ClientTransaction"/> is currently set as <see cref="CurrentTransaction"/>. 

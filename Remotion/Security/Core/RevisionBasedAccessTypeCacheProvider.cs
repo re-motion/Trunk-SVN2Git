@@ -35,7 +35,7 @@ namespace Remotion.Security
 
     // static members
 
-    private static readonly string s_revisionKey = typeof (RevisionBasedAccessTypeCacheProvider).AssemblyQualifiedName + "_Revision";
+    private static readonly string s_revisionKey = SafeContextKeys.SecurityRevisionBasedAccessTypeCacheProviderRevision;
 
     // member fields
 

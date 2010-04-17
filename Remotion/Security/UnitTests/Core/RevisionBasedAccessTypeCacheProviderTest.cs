@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core
     public void TearDown ()
     {
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
-      SafeContext.Instance.SetData (typeof (RevisionBasedAccessTypeCacheProvider).AssemblyQualifiedName + "_Revision", null);
+      SafeContext.Instance.SetData (SafeContextKeys.SecurityRevisionBasedAccessTypeCacheProviderRevision, null);
     }
 
     [Test]

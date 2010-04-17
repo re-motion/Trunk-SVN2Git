@@ -40,9 +40,9 @@ namespace Remotion.Mixins.Utilities
   /// </remarks>
   public class MixedObjectInstantiationScope : IDisposable
   {
-    private static readonly SafeContextSingleton<MixedObjectInstantiationScope> s_instance = 
-        new SafeContextSingleton<MixedObjectInstantiationScope> (typeof (MixedObjectInstantiationScope).FullName,
-        delegate { return new MixedObjectInstantiationScope(); });
+    private static readonly SafeContextSingleton<MixedObjectInstantiationScope> s_instance =
+        new SafeContextSingleton<MixedObjectInstantiationScope> (
+            SafeContextKeys.MixinsObjectInstantiationScope, () => new MixedObjectInstantiationScope());
 
     public static MixedObjectInstantiationScope Current
     {

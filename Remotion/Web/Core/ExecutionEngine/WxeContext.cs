@@ -39,13 +39,13 @@ namespace Remotion.Web.ExecutionEngine
     /// </value>
     public static WxeContext Current
     {
-      get { return SafeContext.Instance.GetData ("WxeContext") as WxeContext; }
+      get { return SafeContext.Instance.GetData (SafeContextKeys.WebExecutionEngineWxeContextCurrent) as WxeContext; }
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void SetCurrent (WxeContext value)
     {
-      SafeContext.Instance.SetData ("WxeContext", value);
+      SafeContext.Instance.SetData (SafeContextKeys.WebExecutionEngineWxeContextCurrent, value);
     }
 
     /// <summary> 

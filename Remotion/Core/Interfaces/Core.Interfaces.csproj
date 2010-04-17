@@ -58,6 +58,7 @@
     <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
+    <Compile Include="Context\SafeContextKeys.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="Implementation\ArgumentUtility.cs" />

@@ -21,7 +21,7 @@ namespace Remotion.Security
 {
   public sealed class SecurityFreeSection : IDisposable
   {
-    private static readonly string s_activeSectionCountKey = typeof (SecurityFreeSection).AssemblyQualifiedName + "_ActiveSectionCount";
+    private static readonly string s_activeSectionCountKey = SafeContextKeys.SecuritySecurityFreeSection;
 
     public static bool IsActive
     {
