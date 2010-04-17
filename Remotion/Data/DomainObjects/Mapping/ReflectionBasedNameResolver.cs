@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Utilities;
 
@@ -26,6 +27,9 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public class ReflectionBasedNameResolver : IMappingNameResolver
   {
+    private static readonly InterlockedCache<Tuple<Type, string>, string> s_propertyNameCache = new InterlockedCache<Tuple<Type, string>, string>();
+    private static readonly InterlockedCache<Tuple<Type, string>, PropertyInfo> s_propertyCache = new InterlockedCache<Tuple<Type, string>, PropertyInfo>();
+
     /// <summary>
     /// Returns the mapping name for the given <paramref name="property"/>.
     /// </summary>
@@ -35,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("property", property);
       Type originalDeclaringType = Remotion.Utilities.ReflectionUtility.GetOriginalDeclaringType (property);
-      return GetPropertyName(originalDeclaringType, property.Name);
+      return GetPropertyName (originalDeclaringType, property.Name);
     }
 
     /// <summary>
@@ -47,10 +51,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("originalDeclaringType", originalDeclaringType);
       ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
-      if (originalDeclaringType.IsGenericType && !originalDeclaringType.IsGenericTypeDefinition)
-        originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition();
 
-      return originalDeclaringType.FullName + "." + shortPropertyName;
+      return s_propertyNameCache.GetOrCreateValue (
+          Tuple.Create (originalDeclaringType, shortPropertyName), 
+          key => GetPropertyNameInternal (key.Item1, key.Item2));
     }
 
     /// <summary>
@@ -65,6 +69,19 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       ArgumentUtility.CheckNotNull ("propertyName", propertyName);
 
+      return s_propertyCache.GetOrCreateValue (Tuple.Create (concreteType, propertyName), key => GetPropertyInternal(key.Item2, key.Item1));
+    }
+
+    private string GetPropertyNameInternal (Type originalDeclaringType, string shortPropertyName)
+    {
+      if (originalDeclaringType.IsGenericType && !originalDeclaringType.IsGenericTypeDefinition)
+        originalDeclaringType = originalDeclaringType.GetGenericTypeDefinition ();
+
+      return originalDeclaringType.FullName + "." + shortPropertyName;
+    }
+
+    private PropertyInfo GetPropertyInternal (string propertyName, Type concreteType)
+    {
       int shortPropertyNameStart = propertyName.LastIndexOf ('.');
       string shortPropertyName = propertyName.Substring (shortPropertyNameStart + 1);
 
