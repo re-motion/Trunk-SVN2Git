@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -356,7 +357,7 @@ namespace Remotion.Security
 
     private AccessType[] ConvertRequiredAccessTypeEnums (Enum[] requiredAccessTypeEnums)
     {
-      return Array.ConvertAll (requiredAccessTypeEnums, new Converter<Enum, AccessType> (AccessType.Get));
+      return Array.ConvertAll<Enum, AccessType> (requiredAccessTypeEnums, AccessType.Get);
     }
 
     private PermissionDeniedException CreatePermissionDeniedException (string message, params object[] args)
