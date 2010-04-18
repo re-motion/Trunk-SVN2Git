@@ -187,6 +187,11 @@ div.singleViewBottomControls
   bottom: 0.5em;
 }
 
+body.opera div.singleViewBottomControls
+{
+  border: solid 0 transparent;
+}
+
 div.singleViewBottomControls.empty
 {
   height: 1em;

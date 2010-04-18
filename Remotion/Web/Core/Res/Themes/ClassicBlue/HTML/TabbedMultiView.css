@@ -136,7 +136,7 @@ div.tabbedMultiViewBottomControls
   width: auto;
 }
 
-div.tabbedMultiViewBottomControlsOperaWorkaround
+body.opera div.tabbedMultiViewBottomControls
 {
   border: solid 0 transparent;
 }
