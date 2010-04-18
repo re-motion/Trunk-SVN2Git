@@ -31,7 +31,11 @@ namespace Remotion.Security
   {
     private class Revision
     {
-      public int Value;
+      public readonly int Value;
+      public Revision (int value)
+      {
+        Value = value;
+      }
     }
 
     private static readonly string s_revisionKey = SafeContextKeys.SecurityRevisionBasedAccessTypeCacheProviderRevision;
@@ -92,17 +96,14 @@ namespace Remotion.Security
 
     private int GetCurrentRevision ()
     {
-      lock (typeof (Revision))
+      var revision = (Revision) SafeContext.Instance.GetData (s_revisionKey);
+      if (revision == null)
       {
-        var revision = (Revision) SafeContext.Instance.GetData (s_revisionKey);
-        if (revision == null)
-        {
-          revision = new Revision { Value = GetRevisionFromSecurityProvider() };
-          SafeContext.Instance.SetData (s_revisionKey, revision);
-        }
-
-        return revision.Value;
+        revision = new Revision (GetRevisionFromSecurityProvider());
+        SafeContext.Instance.SetData (s_revisionKey, revision);
       }
+
+      return revision.Value;
     }
 
     private int GetRevisionFromSecurityProvider ()

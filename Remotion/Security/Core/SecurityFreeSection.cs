@@ -26,7 +26,12 @@ namespace Remotion.Security
   {
     private class ActiveSections
     {
-      public int Count;
+      public readonly int Count;
+
+      public ActiveSections (int count)
+      {
+        Count = count; 
+      }
     }
 
     private static readonly string s_activeSectionCountKey = SafeContextKeys.SecuritySecurityFreeSection;
@@ -40,24 +45,18 @@ namespace Remotion.Security
     {
       get
       {
-        lock (typeof (ActiveSections))
+        var activeSections = (ActiveSections) SafeContext.Instance.GetData (s_activeSectionCountKey);
+        if (activeSections == null)
         {
-          var activeSections = (ActiveSections) SafeContext.Instance.GetData (s_activeSectionCountKey);
-          if (activeSections == null)
-          {
-            activeSections = new ActiveSections();
-            SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
-          }
+          activeSections = new ActiveSections (0);
+          SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
+        }
 
-          return activeSections.Count;
-        }
+        return activeSections.Count;
       }
-      set
-      {
-        lock (typeof (ActiveSections))
-        {
-          SafeContext.Instance.SetData (s_activeSectionCountKey, new ActiveSections { Count = value });
-        }
+      set 
+      { 
+        SafeContext.Instance.SetData (s_activeSectionCountKey, new ActiveSections (value) ); 
       }
     }
 
@@ -70,7 +69,7 @@ namespace Remotion.Security
 
     void IDisposable.Dispose ()
     {
-      Dispose ();
+      Dispose();
     }
 
     private void Dispose ()
@@ -84,7 +83,7 @@ namespace Remotion.Security
 
     public void Leave ()
     {
-      Dispose ();
+      Dispose();
     }
   }
 }
