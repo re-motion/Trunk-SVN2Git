@@ -3,6 +3,44 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+  <script type="text/javascript">
+    var renderStartTime = new Date().getTime();
+    var pageRequestManagerRenderStartTime = 0;
+    var asyncBeginRequestTime = 0;
+    var asyncEndRequestTime = 0;
+    
+    function Page_OnEndSyncRequest()
+    {
+      var renderEndTime = new Date().getTime();
+      
+      var renderDuration = (renderEndTime - renderStartTime) / 1000;
+      $('#PostBackStatus').html(String.format('sync postback: {0:N2}s', renderDuration));
+
+      renderStartTime = 0;
+    }
+    
+    function Page_OnBeginAsyncLoading()
+    {
+      renderStartTime = new Date().getTime();
+    }
+
+    function Page_OnBeginAsyncRequest()
+    {
+      asyncBeginRequestTime = new Date().getTime();
+    }
+
+    function Page_OnEndAsyncRequest()
+    {
+      var renderEndTime = new Date().getTime();
+      var requestDuration = (renderStartTime - asyncBeginRequestTime) / 1000;
+      var renderDuration = (renderEndTime - renderStartTime) / 1000;
+      $('#PostBackStatus').html(String.format('async postback: request duration: {0:N2}s, render duration: {1:N2}s', requestDuration, renderDuration));
+
+      renderStartTime = 0;
+      pageRequestManagerRenderStartTime = 0;
+    }
+  </script> 
+
   <title>Performance Test</title>
   <remotion:HtmlHeadContents ID="HtmlHeadContents" runat="server" />
   <style type="text/css">
@@ -65,11 +103,26 @@
           <BottomControls>
             <remotion:WebButton ID="SynchPostBackButton" runat="server" Text="Synchronous PostBack" RequiresSynchronousPostBack="true" />
             <remotion:WebButton ID="AsynchPostBackButton" runat="server" Text="Asynchronous PostBack" RequiresSynchronousPostBack="false" />
+            <asp:Literal ID="PostbackStatusLiteral" runat="server">
+              <div>              
+                Page Status:
+                <span id="PostBackStatus"></span>
+              </div>
+            </asp:Literal>
           </BottomControls>
         </remotion:SingleView>
       </contenttemplate>
     </asp:UpdatePanel>
     </form>
   </div>
+  
+  <script type="text/javascript">
+    var prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_beginRequest(Page_OnBeginAsyncRequest);
+    prm.add_pageLoading(Page_OnBeginAsyncLoading);
+    prm.add_endRequest(Page_OnEndAsyncRequest);
+
+    $(window).load(Page_OnEndSyncRequest);
+  </script>
 </body>
 </html>
