@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2611: adapt MappingResolver to use properties of base classes above StorageGroup.")]
+    [Ignore("TODO 2636: adapt MappingResolver to use properties of base classes above StorageGroup.")]
     public void ConcreteObjects_PropertyAccessInBaseClass_ClassAboveInheritanceHierarchy ()
     {
       var storageClass = (from f in QueryFactory.CreateLinqQuery<StorageGroupClass> ()
@@ -170,7 +170,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
     }
 
-    //TODO 2517: tests with properties and relations defined in a mixin
+    [Test]
+    [Ignore ("TODO 2636: adapt MappingResolver to use properties of base classes above StorageGroup.")]
+    public void PropertyDeclaredByMixin_AppliedToSameObject ()
+    {
+      var storageClass = (from t in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+                          where ((IMixinAddingPeristentProperties) t).PersistentProperty == 10
+                          select t);
 
+      CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1); // TODO: Fix expected value
+    }
   }
 }
