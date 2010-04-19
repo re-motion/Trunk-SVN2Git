@@ -96,13 +96,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       get { return _typeProvider; }
     }
 
-    // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
+    [Obsolete ("This LINQ provider will soon be removed. (1.13.55)")]
     public ISqlGenerator LinqSqlGenerator
     {
       get { return _linqSqlGenerator; }
     }
 
-    // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
+    [Obsolete ("This LINQ provider will soon be removed. (1.13.55)")]
     public void ResetLinqSqlGenerator ()
     {
       _linqSqlGenerator = ObjectFactory.Create<SqlServerGenerator> (ParamList.Create (DatabaseInfo.Instance));

@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <summary>
   /// The implementation of <see cref="IDatabaseInfo"/>  for getting detailed information from re-store which is the underlying data source.
   /// </summary>
-  // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
+  [Obsolete ("This LINQ provider will soon be removed. (1.13.55)")]
   public class DatabaseInfo : IDatabaseInfo
   {
     public static readonly DatabaseInfo Instance = new DatabaseInfo();

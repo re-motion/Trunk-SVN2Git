@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
@@ -28,11 +29,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
-  // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
   /// <summary>
   /// The implementation of <see cref="IQueryable{T}"/> for querying <see cref="DomainObject"/> instances.
   /// </summary>
   /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
+  [Obsolete ("This LINQ provider will soon be removed. (1.13.55)")]
   public class LegacyDomainObjectQueryable<T> : QueryableBase<T> 
   {
     private static IQueryProvider CreateProvider (ISqlGenerator sqlGenerator)

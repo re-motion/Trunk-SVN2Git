@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Utilities;
@@ -23,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <summary>
   /// Augments the <see cref="Table"/> type with meta-information about the mapping.
   /// </summary>
-  // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
+  [Obsolete ("This LINQ provider will soon be removed. (1.13.55)")]
   public class MappedTable : Table
   {
     public MappedTable (string name, string alias, ClassDefinition classDefinition)

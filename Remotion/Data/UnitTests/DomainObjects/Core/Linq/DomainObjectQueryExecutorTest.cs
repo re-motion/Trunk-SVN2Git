@@ -324,22 +324,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    // TODO Review 2534: Seems to work alright?
-    [Ignore ("TODO 2404 problem - missing column")]
     public void ExecuteCollection_WithParameters ()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       QueryModel queryModel = ParseQuery (query.Expression);
 
       IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (queryModel);
-
-      // TODO Review 2534: Rewrite this as follows: Assert.That (orders.ToArray(), Is.EquivalentTo (expected));
-      var orderList = new ArrayList();
-      foreach (Order order in orders)
-        orderList.Add (order);
-
+      
       var expected = new[] { Order.GetObject (DomainObjectIDs.Order1), };
-      Assert.That (orderList, Is.EquivalentTo (expected));
+      Assert.That (orders.ToArray(), Is.EquivalentTo (expected));
     }
 
     [Test]

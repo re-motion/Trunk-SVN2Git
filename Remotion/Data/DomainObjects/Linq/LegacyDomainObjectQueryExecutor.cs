@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <summary>
   /// Provides an implementation of <see cref="IQueryExecutor"/> for <see cref="DomainObject"/> queries.
   /// </summary>
-  // TODO Review 2534: Mark as Obsolete: [Obsolete ("This LINQ provider will soon be removed. Use ... instead. (1.13.55)")]
+  [Obsolete ("This LINQ provider will soon be removed. (1.13.55)")]
   public class LegacyDomainObjectQueryExecutor : IQueryExecutor
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LegacyDomainObjectQueryExecutor));
