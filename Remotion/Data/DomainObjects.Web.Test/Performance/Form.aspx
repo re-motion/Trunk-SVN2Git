@@ -88,7 +88,7 @@
                   <remotion:SmartLabel ID="ItemsLabel" runat="server" ForControl="ItemList" Text="Items" />
                 </td>
                 <td>
-                  <remotion:BocList ID="ItemList" runat="server" DataSourceControl="CurrentObject" PageSize="100" Width="100%" Height="15em">
+                  <remotion:BocList ID="ItemList" runat="server" DataSourceControl="CurrentObject" PageSize="100" Selection="Multiple" Index="InitialOrder" Width="100%" Height="15em">
                     <FixedColumns>
                       <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Name" ColumnTitle="Name" />
                       <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="ClassWithAllDataTypesMandatory.StringProperty" ColumnTitle="String" />
