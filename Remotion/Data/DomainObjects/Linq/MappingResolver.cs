@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("generator", generator);
       
       var tableAlias = sqlTable.GetResolvedTableInfo().TableAlias;
-      var property = (PropertyInfo) memberInfo;
+      var property = (PropertyInfo) memberInfo; // TODO Review 2562: Cast using "as". If result is null, throw an UnmappedItemException: "Field '{0}.{1}' cannot be used in a query because it is not a mapped member.".
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.PropertyType, tableAlias, "ID");
