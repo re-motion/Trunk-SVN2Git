@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (desiredType.IsAssignableFrom (innerExpression.Type))
         return Expression.Constant (true);
-      else if(innerExpression.Type.IsAssignableFrom(desiredType))
+      else if (innerExpression.Type.IsAssignableFrom (desiredType))
       {
         if (!typeof (DomainObject).IsAssignableFrom (innerExpression.Type))
         {
@@ -177,13 +177,17 @@ namespace Remotion.Data.DomainObjects.Linq
         }
 
         var classDefinition = GetClassDefinition (desiredType);
-        if(classDefinition==null)
+        if(classDefinition == null)
         {
           string message = string.Format (
             "The type '{0}' does not identify a queryable table.", desiredType.Name);
           throw new UnmappedItemException (message);
         }
 
+        // TODO Review 2561: The following check is not required. Just return the following expression, which simulates that the user wrote (c.ID.ClassID == "Cook") instead of (c is Cook):
+        // var idExpression = Expression.MakeMemberAccess (innerExpression, typeof (DomainObject).GetProperty("ID"));
+        // var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty("ClassID"));
+        // return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
         var entityExpression = innerExpression as SqlEntityExpression;
         if (entityExpression == null)
           throw new UnmappedItemException(string.Format("The queried expression '{0}' has to be an entity.", innerExpression));

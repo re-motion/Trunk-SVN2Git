@@ -287,6 +287,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
     }
 
+    // TODO Review 2561: Test missing: expression does not have DomainObject type
+    // TODO Review 2561: Test missing: desiredType is not a queryable table (e.g., a class above the inheritance root)
+    // TODO Review 2561: Test missing: desiredType is not related with expression type
+
     [Test]
     public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType ()
     {
@@ -295,6 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Customer));
 
+      // TODO Review 2561: Test rest of the expression. Create an expectedExpression and use ExpressionTreeComparer to assert that the expression matches
       Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
     }
   }

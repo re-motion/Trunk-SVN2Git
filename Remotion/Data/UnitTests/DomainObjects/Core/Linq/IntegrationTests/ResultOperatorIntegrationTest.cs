@@ -228,6 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (groupings[0].ToArray(), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
     }
 
+    // TODO Review 2563: Rename tests as follows: Query_WithOfType_SelectingBaseType/DerivedType/SameType
     [Test]
     public void Query_OfType1 ()
     {
@@ -270,6 +271,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Customer5);
     }
 
+    // TODO Review 2563: Add integration test with unrelated type
+
+    // TODO Review 2563: Move to WhereIntegrationTest, add a few variants
     [Test]
     public void Query_Is ()
     {
