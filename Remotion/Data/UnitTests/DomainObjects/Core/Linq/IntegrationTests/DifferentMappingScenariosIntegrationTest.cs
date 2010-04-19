@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
+using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
 using @STI=Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using @CTI = Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -180,5 +181,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1); // TODO: Fix expected value
     }
+
+    [Test]
+    [Ignore("TODO: 2637")]
+    public void Mixin_PersistentProperty ()
+    {
+      var mixins = (from m in QueryFactory.CreateLinqQuery <TargetClassForPersistentMixin>()
+                    where ((IMixinAddingPeristentProperties) m).PersistentProperty == 6
+                    select m);
+
+      //TODO 2637: check result (new objects need to be added to the database (see MixedDomainTest.LoadStoreMixedDomainObject) 
+    }
+
   }
 }
