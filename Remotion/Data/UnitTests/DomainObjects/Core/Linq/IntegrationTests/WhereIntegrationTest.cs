@@ -349,34 +349,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (query, new TableInheritance.DomainObjectIDs ().ClassWithUnidirectionalRelation);
     }
 
-    // TODO Review 2608: This is no longer a query with a custom parser
-    // TODO Review 2608: Remove the ConditionalExpressionWhereConditionParser, remove the registration block
-    // TODO Review 2608: Then, change the test to resemble the other integration tests in this fixture; inline the GetQueryWithIif method; add an additional test that does not use a constant true/false but instead checks a property for some value
-    //[Test]
-    //public void QueryWithCustomParser ()
-    //{
-    //  foreach (StorageProviderDefinition definition in DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions)
-    //  {
-    //    Assert.That (
-    //        definition.LinqSqlGenerator.DetailParserRegistries.WhereConditionParser.GetParsers (typeof (ConditionalExpression)).Any (), 
-    //        Is.False, 
-    //        "Choose another expression type for the test; ConditionalExpression is already supported.");
-    //    ConditionalExpressionWhereConditionParser.Register (definition);
-    //  }
+    [Test]
+    public void QueryWithConditionInWherePart ()
+    {
+      var query1 = from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == (true ? 1 : o.OrderNumber)
+                   select o;
 
-    //  var query1 = GetQueryWithIif (true);
-    //  var query2 = GetQueryWithIif (false);
+      var query2 = from o1 in QueryFactory.CreateLinqQuery<Order> ()
+                   where o1.OrderNumber == (false ? 1 : o1.OrderNumber)
+                   select o1;
 
-    //  CheckQueryResult (query1, DomainObjectIDs.Order1);
-    //  CheckQueryResult (
-    //      query2, 
-    //      DomainObjectIDs.Order1, 
-    //      DomainObjectIDs.Order2, 
-    //      DomainObjectIDs.Order3, 
-    //      DomainObjectIDs.Order4, 
-    //      DomainObjectIDs.OrderWithoutOrderItem, 
-    //      DomainObjectIDs.InvalidOrder);
-    //}
+      var query3 = from o1 in QueryFactory.CreateLinqQuery<Order>()
+                   where o1.OrderNumber == (o1.OrderNumber == 1 ? 2 : 3)
+                   select o1;
+
+      CheckQueryResult (query1, DomainObjectIDs.Order1);
+      CheckQueryResult (
+          query2,
+          DomainObjectIDs.Order1,
+          DomainObjectIDs.Order2,
+          DomainObjectIDs.Order3,
+          DomainObjectIDs.Order4,
+          DomainObjectIDs.OrderWithoutOrderItem,
+          DomainObjectIDs.InvalidOrder);
+      CheckQueryResult (query3, DomainObjectIDs.Order2);
+    }
 
     
     [Test]
@@ -391,13 +389,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Customer3,
           DomainObjectIDs.Customer4,
           DomainObjectIDs.Customer5);
-    }
-
-    private IQueryable<Order> GetQueryWithIif (bool selectNumberOne)
-    {
-      return from o in QueryFactory.CreateLinqQuery<Order> ()
-             where o.OrderNumber == (selectNumberOne ? 1 : o.OrderNumber)
-             select o;
     }
   }
 }
