@@ -90,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (!typeof (DomainObject).IsAssignableFrom (tableReferenceExpression.Type))
         return new SqlValueTableReferenceExpression (tableReferenceExpression.SqlTable);
-      
+
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
@@ -106,9 +106,14 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
-      
+
       var tableAlias = sqlTable.GetResolvedTableInfo().TableAlias;
-      var property = (PropertyInfo) memberInfo; // TODO Review 2562: Cast using "as". If result is null, throw an UnmappedItemException: "Field '{0}.{1}' cannot be used in a query because it is not a mapped member.".
+      var property = memberInfo as PropertyInfo;
+      if (property == null)
+      {
+        throw new UnmappedItemException (
+            string.Format ("Field '{0}.{1}' cannot be used in a query because it is not a mapped member.", sqlTable.ItemType.Name, memberInfo.Name));
+      }
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return new SqlColumnExpression (property.PropertyType, tableAlias, "ID");
@@ -147,7 +152,8 @@ namespace Remotion.Data.DomainObjects.Linq
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
         return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID");
 
-      throw new UnmappedItemException (string.Format ("The member '{0}.{1}' does not identify a mapped property.",memberInfo.ReflectedType.Name, memberInfo.Name));
+      throw new UnmappedItemException (
+          string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));
     }
 
     public Expression ResolveConstantExpression (ConstantExpression constantExpression)
@@ -171,27 +177,27 @@ namespace Remotion.Data.DomainObjects.Linq
       {
         if (!typeof (DomainObject).IsAssignableFrom (innerExpression.Type))
         {
-          var message = string.Format("No database-level type check can be added for the expression '{0}'."+ 
-                                      "Only the types of DomainObjects can be checked in the database query.", innerExpression);
+          var message = string.Format (
+              "No database-level type check can be added for the expression '{0}'." +
+              "Only the types of DomainObjects can be checked in the database query.",
+              innerExpression);
           throw new UnmappedItemException (message);
         }
 
         var classDefinition = GetClassDefinition (desiredType);
-        if(classDefinition == null)
+        if (classDefinition == null)
         {
           string message = string.Format (
-            "The type '{0}' does not identify a queryable table.", desiredType.Name);
+              "The type '{0}' does not identify a queryable table.", desiredType.Name);
           throw new UnmappedItemException (message);
         }
 
-        var idExpression = Expression.MakeMemberAccess (innerExpression, typeof (DomainObject).GetProperty("ID"));
-        var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty("ClassID"));
+        var idExpression = Expression.MakeMemberAccess (innerExpression, typeof (DomainObject).GetProperty ("ID"));
+        var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
         return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
       }
       else
-      {
         return Expression.Constant (false);
-      }
     }
 
     private Tuple<RelationDefinition, ClassDefinition, string> GetRelationData (MemberInfo relationMember)

@@ -212,6 +212,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (UnmappedItemException),
+        ExpectedMessage = "The member 'Order.OriginalCustomer' does not have a queryable database mapping.")]
+    public void ResolvememberExpression_NotAMappedMember ()
+    {
+      var property = typeof (Order).GetProperty ("OriginalCustomer");
+
+      _resolver.ResolveMemberExpression (_orderTable, property, _generator);
+    }
+
+    [Test]
     public void ResolveMemberExpression_ReturnsSqlEntityRefMemberExpression ()
     {
       var property = typeof (Order).GetProperty ("Customer");
