@@ -77,15 +77,12 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="preparationStage">An implementation of <see cref="ISqlPreparationStage"/> to be used when generating SQL for the query.</param>
     /// <param name="resolutionStage">An implementation of <see cref="IMappingResolutionStage"/> to be used when generating SQL for the query.</param>
     /// <param name="generationStage">An implementation of <see cref="ISqlGenerationStage"/> to be used when generating SQL for the query.</param>
-    /// <param name="context">Instance of <see cref="SqlPreparationContext"/>.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    // TODO Review 2582: The context parameter is not used and should be removed.
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage, SqlPreparationContext context) where T : DomainObject
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
-      ArgumentUtility.CheckNotNull ("context", context);
       
       return new DomainObjectQueryable<T> (preparationStage, resolutionStage, generationStage);
     }

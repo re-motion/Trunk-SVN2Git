@@ -72,8 +72,13 @@ namespace Remotion.Data.DomainObjects.Linq
     /// The <see cref="QueryFactory"/> class wraps this constructor and provides some additional support, so it should usually be preferred to a
     /// direct constructor call.
     /// </para>
+    /// <param name="sqlPreparationStage">An implementation of <see cref="ISqlPreparationStage"/> which provides entry points for all transformations 
+    /// that occur during the SQL preparation phase.</param>
+    /// <param name="mappingResolutionStage">An implementation of <see cref="IMappingResolutionStage"/> which provides entry points for all 
+    /// transformations that occur during the mapping resolution phase</param>
+    /// <param name="sqlGenerationStage">An implementation of <see cref="ISqlGenerationStage"/> which provides entry points for all sql text 
+    /// generation that occur during the SQL generation process.</param>
     /// </remarks>
-    // TODO Review 2582: Parameter descriptions missing from doc comments
     public DomainObjectQueryable (
         ISqlPreparationStage sqlPreparationStage, 
         IMappingResolutionStage mappingResolutionStage, 

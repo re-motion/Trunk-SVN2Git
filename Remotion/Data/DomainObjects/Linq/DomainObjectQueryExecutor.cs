@@ -410,8 +410,6 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>the generated <see cref="SqlStatement"/></returns>
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
-      // TODO 2564: Use _preparationStage.PrepareSqlStatement (queryModel) instead; remove _context field
-      //var sqlStatement = SqlPreparationQueryModelVisitor.TransformQueryModel (queryModel, _context, _preparationStage, _);
       var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel);
       return _resolutionStage.ResolveSqlStatement (sqlStatement);
     }
