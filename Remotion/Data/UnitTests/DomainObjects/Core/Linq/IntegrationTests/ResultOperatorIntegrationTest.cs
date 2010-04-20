@@ -228,9 +228,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (groupings[0].ToArray(), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
     }
 
-    // TODO Review 2563: Rename tests as follows: Query_WithOfType_SelectingBaseType/DerivedType/SameType
     [Test]
-    public void Query_OfType1 ()
+    public void Query_WithOfType_SelectingBaseType ()
     {
       var query = QueryFactory.CreateLinqQuery<Customer>().OfType<Company>();
 
@@ -244,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void Query_OfType2 ()
+    public void Query_WithOfType_DerivedType ()
     {
       var query = QueryFactory.CreateLinqQuery<Customer> ().OfType<Customer> ();
 
@@ -258,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void Query_OfType3 ()
+    public void Query_WithOfType_SameType ()
     {
       var query = QueryFactory.CreateLinqQuery<Company> ().OfType<Customer> ();
 
@@ -271,21 +270,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Customer5);
     }
 
-    // TODO Review 2563: Add integration test with unrelated type
-
-    // TODO Review 2563: Move to WhereIntegrationTest, add a few variants
     [Test]
-    public void Query_Is ()
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void Query_WithOfType_UnrelatedType ()
     {
-      var query = QueryFactory.CreateLinqQuery<Company> ().Where(c => c is Customer);
+      var query = QueryFactory.CreateLinqQuery<Company> ().OfType<Order> ();
 
-      CheckQueryResult (
-          query,
-          DomainObjectIDs.Customer1,
-          DomainObjectIDs.Customer2,
-          DomainObjectIDs.Customer3,
-          DomainObjectIDs.Customer4,
-          DomainObjectIDs.Customer5);
+      CheckQueryResult (query);
     }
+    
   }
 }

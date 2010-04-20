@@ -380,6 +380,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.InvalidOrder);
     }
 
+    
+    [Test]
+    public void Query_Is ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Company> ().Where (c => c is Customer);
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.Customer1,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4,
+          DomainObjectIDs.Customer5);
+    }
+
     private IQueryable<Order> GetQueryWithIif (bool selectNumberOne)
     {
       return from o in QueryFactory.CreateLinqQuery<Order> ()
