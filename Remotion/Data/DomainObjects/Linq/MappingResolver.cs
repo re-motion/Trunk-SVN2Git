@@ -184,16 +184,9 @@ namespace Remotion.Data.DomainObjects.Linq
           throw new UnmappedItemException (message);
         }
 
-        // TODO Review 2561: The following check is not required. Just return the following expression, which simulates that the user wrote (c.ID.ClassID == "Cook") instead of (c is Cook):
-        // var idExpression = Expression.MakeMemberAccess (innerExpression, typeof (DomainObject).GetProperty("ID"));
-        // var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty("ClassID"));
-        // return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
-        var entityExpression = innerExpression as SqlEntityExpression;
-        if (entityExpression == null)
-          throw new UnmappedItemException(string.Format("The queried expression '{0}' has to be an entity.", innerExpression));
-
-        var sqlColumnExpression = new SqlColumnExpression (typeof (string), entityExpression.PrimaryKeyColumn.OwningTableAlias, "ClassID");
-        return Expression.Equal (sqlColumnExpression, new SqlLiteralExpression (classDefinition.ID));
+        var idExpression = Expression.MakeMemberAccess (innerExpression, typeof (DomainObject).GetProperty("ID"));
+        var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty("ClassID"));
+        return Expression.Equal (classIDExpression, new SqlLiteralExpression (classDefinition.ID));
       }
       else
       {

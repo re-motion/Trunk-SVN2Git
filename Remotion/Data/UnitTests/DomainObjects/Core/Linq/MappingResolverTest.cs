@@ -24,9 +24,11 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
+using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -287,9 +289,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.TypeOf (typeof (ConstantExpression)));
     }
 
-    // TODO Review 2561: Test missing: expression does not have DomainObject type
-    // TODO Review 2561: Test missing: desiredType is not a queryable table (e.g., a class above the inheritance root)
-    // TODO Review 2561: Test missing: desiredType is not related with expression type
+    [Test]
+    public void ResolveTypeCheck_NoDomainTypeWithSameDesiredType ()
+    {
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Student), "Table", "t"));
+
+      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name"));
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (true));
+    }
+
+    [Test]
+    [ExpectedException(typeof(UnmappedItemException))]
+    public void ResolveTypeCheck_NoDomainTypeWithDifferentDesiredType ()
+    {
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (object), "Table", "t"));
+
+      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name"));
+      _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
+    }
+
+    [Test]
+    public void ResolveTypeCheck_NoQueryableTable ()
+    {
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (AboveInheritanceRootClass), "Table", "t"));
+      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
+      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (StorageGroupClass));
+
+      var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
+      var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
+      var expectedTree = Expression.Equal (classIDExpression, new SqlLiteralExpression ("StorageGroupClass"));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedTree);
+    }
+
+    [Test]
+    public void ResolveTypeCheck_DesiredTypeNotRelatedWithExpressionType ()
+    {
+      var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
+      var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
+
+      var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
+
+      ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (false));
+    }
+    
 
     [Test]
     public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType ()
@@ -299,8 +346,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Customer));
 
-      // TODO Review 2561: Test rest of the expression. Create an expectedExpression and use ExpressionTreeComparer to assert that the expression matches
-      Assert.That (result, Is.TypeOf (typeof (BinaryExpression)));
+      var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty("ID"));
+      var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty("ClassID"));
+      var expectedExpression = Expression.Equal (classIDExpression, new SqlLiteralExpression ("Customer"));
+      
+      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
   }
 }
