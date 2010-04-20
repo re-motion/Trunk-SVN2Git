@@ -98,6 +98,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
 
+    public void QueryWithSingle ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () where o.OrderNumber == 1 select o).Single ();
+      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.Order1))));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
+    public void QueryWithSingle_ThrowsException ()
+    {
+     (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   select o).Single ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
+    public void QueryWithSingleOrDefault_ThrowsException ()
+    {
+      (from o in QueryFactory.CreateLinqQuery<Order> ()
+       select o).SingleOrDefault ();
+    }
+
+    [Test]
+    public void QueryWithSingleOrDefault_ReturnsNull ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () where o.OrderNumber == 99999 select o).SingleOrDefault();
+      Assert.That (query, Is.EqualTo (null));
+    }
+
+    [Test]
+    public void QueryWithSingleOrDefault_ReturnsSingleItem ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () where o.OrderNumber == 1 select o).SingleOrDefault ();
+      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.Order1))));
+    }
+
     [Test]
     public void QueryWithFirstOrDefault ()
     {
