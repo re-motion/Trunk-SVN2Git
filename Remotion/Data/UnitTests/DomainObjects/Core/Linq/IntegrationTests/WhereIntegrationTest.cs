@@ -280,9 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This query provider does not support the given query "
-      +"('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select new <>f__AnonymousTypef`2(o = [o], Customer = [o].Customer)'). "
-      +"re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
+    [ExpectedException (typeof (NotSupportedException))]
     public void Query_WithUnsupportedType_NewObject ()
     {
       var query =
