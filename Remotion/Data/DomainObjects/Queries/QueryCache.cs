@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <typeparam name="T">The <see cref="DomainObject"/> type to start the query with.</typeparam>
     /// <param name="id">The ID to associate with the LINQ queryable. This ID is used as the cache key of the parsed query.</param>
-    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="LegacyDomainObjectQueryable{T}"/>
+    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="DomainObjectQueryable{T}"/>
     /// to start the LINQ query with.</param>
     /// <returns>An <see cref="IQuery"/> implementation corresponding to the LINQ query returned by <paramref name="queryGenerator"/>.</returns>
     /// <remarks>
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <typeparam name="T">The <see cref="DomainObject"/> type to start the query with.</typeparam>
     /// <param name="transaction">The transaction whose <see cref="IQueryManager"/> is used to execute the query.</param>
     /// <param name="id">The ID to associate with the LINQ queryable. This ID is used as the cache key of the parsed query.</param>
-    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="LegacyDomainObjectQueryable{T}"/>
+    /// <param name="queryGenerator">A delegate returning the LINQ queryable. The argument of this delegate is a <see cref="DomainObjectQueryable{T}"/>
     /// to start the LINQ query with.</param>
     /// <returns>An <see cref="ObjectList{T}"/> holding the query results.</returns>
     /// <remarks>

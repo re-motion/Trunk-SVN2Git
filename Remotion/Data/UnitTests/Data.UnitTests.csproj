@@ -347,7 +347,6 @@
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SpecificDerivedDO.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectExpressionNodeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExpressionHelper.cs" />
-    <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ConditionalExpressionWhereConditionParser.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\EagerFetchingIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ImplicitJoinIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\LetIntegrationTest.cs" />
@@ -362,7 +361,6 @@
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\Student_Detail_Detail.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestDomain\TestQueryable.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestLegacyQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StubCommandBuilder.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetcherTest.cs" />
@@ -398,14 +396,10 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\Serialization\VirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\LegacyDomainObjectQueryableTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DummyQueryable.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\FulltextIntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\IntegrationTestBase.cs" />
-    <Compile Include="DomainObjects\Core\Linq\MethodExtendString.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
-    <Compile Include="DomainObjects\Core\Linq\LegacyDomainObjectQueryExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWithCustomITransaction.cs" />
     <Compile Include="DomainObjects\Core\Transport\DomainObjectTransporterTestHelper.cs" />

@@ -194,7 +194,6 @@
     <Compile Include="LinqPropertyRedirectionAttribute.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
-    <Compile Include="Linq\MappedTable.cs" />
     <Compile Include="Linq\MappingResolver.cs" />
     <Compile Include="Persistence\Rdbms\MultiIDLookupCommandBuilder.cs" />
     <Compile Include="Persistence\Rdbms\ICommandBuilder.cs" />
@@ -256,11 +255,8 @@
     <Compile Include="DomainImplementation\LifetimeService.cs" />
     <Compile Include="IGraphTraversalStrategy.cs" />
     <Compile Include="Linq\ContainsObjectExpressionNode.cs" />
-    <Compile Include="Linq\DatabaseInfo.cs" />
-    <Compile Include="Linq\LegacyDomainObjectQueryable.cs" />
     <Compile Include="Linq\EagerFetchingExtensionMethods.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />
-    <Compile Include="Linq\LegacyDomainObjectQueryExecutor.cs" />
     <Compile Include="Mapping\ClassDefinitionValidator.cs" />
     <Compile Include="Mapping\IMappingNameResolver.cs" />
     <Compile Include="Mapping\IPersistentMixinFinder.cs" />

@@ -18,11 +18,8 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
@@ -44,18 +41,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     /// <summary>
     /// Initializes a new instance of the <see cref="BindableDomainObject"/> class.
     /// </summary>
-    /// <remarks>
-    /// 	<para>
-    /// Any constructors implemented on concrete domain objects should delegate to this base constructor. As domain objects generally should
-    /// not be constructed via the
-    /// <c>new</c> operator, these constructors must remain protected, and the concrete domain objects should have a static "NewObject" method,
-    /// which delegates to <see cref="NewObject"/>, passing it the required constructor arguments.
-    /// </para>
-    /// 	<para>
-    /// It is safe to access virtual properties that are automatically implemented by the framework from constructors because this base constructor
-    /// prepares everything necessary for them to work.
-    /// </para>
-    /// </remarks>
     protected BindableDomainObject ()
     {
     }
