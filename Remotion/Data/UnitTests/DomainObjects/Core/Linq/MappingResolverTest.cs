@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -69,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTableReferenceExpression_SubStatementTableInfo_TableTypeNotInheritedFromDomainObject ()
     {
-      var sqlStatement = new SqlStatement (Expression.Constant ("test"), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement = new SqlStatement (new StreamedScalarValueInfo(typeof(string)), Expression.Constant ("test"), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
       var tableInfo = new ResolvedSubStatementTableInfo (typeof (Student), "Student",sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
@@ -85,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo");
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      var sqlStatement = new SqlStatement (selectProjection, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement = new SqlStatement (new StreamedScalarValueInfo(typeof(Student)), selectProjection, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
 
       var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo (typeof (string), "q", sqlStatement));
       var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);

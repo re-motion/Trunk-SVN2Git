@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
@@ -596,7 +597,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (int));
       var sqlTable = new SqlTable (unresolvedTableInfo);
-      var sqlStatement = new SqlStatement (
+      var sqlStatement = new SqlStatement (new StreamedScalarValueInfo (typeof (string)),
           new SqlColumnExpression (typeof (Order), "o", "ID"), new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (

@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
@@ -173,6 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
                       select o;
 
       var sqlStatementBuilder = new SqlStatementBuilder();
+      sqlStatementBuilder.DataInfo = new StreamedScalarValueInfo (typeof (string));
       sqlStatementBuilder.SelectProjection = Expression.Constant ("select");
       var sqlStatement = sqlStatementBuilder.GetSqlStatement();
 
@@ -241,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [OverrideTarget]
     public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
     {
-      var builder = new SqlStatementBuilder { SelectProjection = Expression.Constant ("Value added by preparation mixin") };
+      var builder = new SqlStatementBuilder { DataInfo = new StreamedScalarValueInfo (typeof (string)), SelectProjection = Expression.Constant ("Value added by preparation mixin") };
       return builder.GetSqlStatement();
     }
   }
@@ -254,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by preparation mixin"));
 
-      var builder = new SqlStatementBuilder { SelectProjection = Expression.Constant ("Value added by resolution mixin") };
+      var builder = new SqlStatementBuilder { DataInfo = new StreamedScalarValueInfo (typeof (string)), SelectProjection = Expression.Constant ("Value added by resolution mixin") };
       return builder.GetSqlStatement ();
     }
   }
