@@ -17,30 +17,22 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlGeneration.IntegrationTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
   [TestFixture]
-  public class ExplicitJoinsSqlBackendIntegrationTest : SqlBackendIntegrationTestBase
+  public class ExplicitJoinsIntegrationTest : IntegrationTestBase
   {
     [Test]
     public void ExplicitJoin ()
     {
-      CheckQuery (
-          from k in Kitchens join c in Cooks on k.Name equals c.FirstName select k.Name,
-          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] CROSS JOIN [CookTable] AS [t1] WHERE ([t0].[Name] = [t1].[FirstName])"
-          );
+      CheckQueryResult (
+          from c in QueryFactory.CreateLinqQuery<Order>()
+          join k in QueryFactory.CreateLinqQuery<Customer>() on c.Customer equals k
+          where c.OrderNumber == 5
+          select c , DomainObjectIDs.Order4);
     }
-
-    [Test]
-    public void ExplicitJoin_DependentExpressions ()
-    {
-      CheckQuery (
-          from k in Kitchens join c in Cooks on k.Cook.ID equals c.ID select k.Name,
-          "SELECT [t0].[Name] AS [value] FROM [KitchenTable] AS [t0] LEFT OUTER JOIN [CookTable] AS [t2] ON [t0].[ID] = [t2].[KitchenID] "
-          +"CROSS JOIN [CookTable] AS [t1] WHERE ([t2].[ID] = [t1].[ID])"
-          );
-    }
-    
   }
 }
