@@ -56,35 +56,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Configuration
       Assert.That (providerDefinition.TypeProvider, Is.InstanceOfType (typeof (TypeProvider)));
     }
 
-    //[Test]
-    //public void LinqSqlGenerator()
-    //{
-    //  var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
-    //  Assert.That (providerDefinition.LinqSqlGenerator, Is.InstanceOfType (typeof (SqlServerGenerator)));
-    //}
-
-    //[Test]
-    //public void LinqSqlGenerator_CanBeMixed ()
-    //{
-    //  using (MixinConfiguration.BuildNew ().ForClass<SqlServerGenerator> ().AddMixin<object> ().EnterScope ())
-    //  {
-    //    var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
-    //    Assert.That (providerDefinition.LinqSqlGenerator, Is.InstanceOfType (typeof (SqlServerGenerator)));
-    //    Assert.That (Mixin.Get<object> (providerDefinition.LinqSqlGenerator), Is.Not.Null);
-    //  }
-    //}
-
-    //[Test]
-    //public void ResetLinqSqlGenerator ()
-    //{
-    //  var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
-    //  ISqlGenerator generator = providerDefinition.LinqSqlGenerator;
-    //  providerDefinition.ResetLinqSqlGenerator ();
-
-    //  ISqlGenerator generator2 = providerDefinition.LinqSqlGenerator;
-
-    //  Assert.That (generator2, Is.Not.Null);
-    //  Assert.That (generator2, Is.Not.SameAs (generator));
-    //}
   }
 }
