@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private DomainObjectCollection _newCollection;
 
     private MockRepository _mockRepository;
-    private IDomainObjectCollectionTransformer _oldTransformerMock;
-    private IDomainObjectCollectionTransformer _newTransformerMock;
+    private IAssociatableDomainObjectCollection _oldTransformerMock;
+    private IAssociatableDomainObjectCollection _newTransformerMock;
 
     private CollectionEndPointReplaceWholeCollectionCommand _command;
 
@@ -51,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection = new OrderCollection();
 
       _mockRepository = new MockRepository ();
-      _oldTransformerMock = _mockRepository.StrictMock<IDomainObjectCollectionTransformer> ();
-      _newTransformerMock = _mockRepository.StrictMock<IDomainObjectCollectionTransformer> ();
+      _oldTransformerMock = _mockRepository.StrictMock<IAssociatableDomainObjectCollection> ();
+      _newTransformerMock = _mockRepository.StrictMock<IAssociatableDomainObjectCollection> ();
 
       _command = new CollectionEndPointReplaceWholeCollectionCommand (
           CollectionEndPoint, 
@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       using (_mockRepository.Ordered ())
       {
         // Transform old collection to stand-alone
-        _oldTransformerMock.Stub (mock => mock.Collection).Return (CollectionEndPoint.OppositeDomainObjects);
+        _oldTransformerMock.Stub (mock => mock.IsAssociatedWith (CollectionEndPoint)).Return (true);
         _oldTransformerMock.Expect (mock => mock.TransformToStandAlone ());
 
         // Transform new collection to associated
@@ -249,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (null), Is.False);
       Assert.That (collectionOfDifferentEndPoint.IsAssociatedWith (CollectionEndPoint), Is.False);
 
-      _oldTransformerMock.Stub (mock => mock.Collection).Return (collectionOfDifferentEndPoint);
+      _oldTransformerMock.Stub (mock => mock.IsAssociatedWith (CollectionEndPoint)).Return (false);
       // _oldTransformerMock.TransformToStandAlone is not called because collectionOfDifferentEndPoint belongs to a different end point
 
       _newTransformerMock
@@ -318,8 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private void TransformToAssociated (DomainObjectCollection collection)
     {
-      var transformerType = typeof (DomainObjectCollection).GetNestedType ("Transformer", BindingFlags.NonPublic);
-      var transformer = (IDomainObjectCollectionTransformer) Activator.CreateInstance (transformerType, collection);
+      var transformer = (IAssociatableDomainObjectCollection) collection;
       transformer.TransformToAssociated (CollectionEndPoint);
     }
   }

@@ -171,11 +171,9 @@
     <Compile Include="DomainImplementation\RepositoryAccessor.cs" />
     <Compile Include="DomainImplementation\UnloadTransactionMode.cs" />
     <Compile Include="DomainObjectCollection.EventRaiser.cs" />
-    <Compile Include="DomainObjectCollection.Transformer.cs" />
     <Compile Include="DataManagement\ICollectionEndPointChangeDetectionStrategy.cs" />
     <Compile Include="DomainObjectCollection.IList.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionDataExtensions.cs" />
-    <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionTransformer.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IndirectDomainObjectCollectionEventRaiser.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\DomainObjectCollectionFactory.cs" />
@@ -185,7 +183,7 @@
     <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionEventRaiser.cs" />
-    <Compile Include="DataManagement\IAssociatableDomainObjectCollection.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\IAssociatableDomainObjectCollection.cs" />
     <Compile Include="Infrastructure\InitializedEventDomainObjectTransactionContextDecorator.cs" />
     <Compile Include="Infrastructure\IClientTransactionListenerFactory.cs" />
     <Compile Include="Infrastructure\IDataSource.cs" />

@@ -65,6 +65,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return data;
     }
 
+    public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint)
+    {
+      // collection => checking checking decorator => end point data => actual data store
+
+      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+      Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
+
+      var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
+      Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
+
+      var endPointData = GetData (delegator);
+      Assert.That (endPointData, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_data")));
+    }
+
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, CollectionEndPoint expectedEndPoint, IDomainObjectCollectionData expectedDataStore)
     {
       // collection => checking checking decorator => end point data => actual data store
@@ -76,6 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
 
       var endPointData = GetData (delegator);
+      Assert.That (endPointData, Is.SameAs (PrivateInvoke.GetNonPublicField (expectedEndPoint, "_data")));
       Assert.That (endPointData.CollectionData, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }
 

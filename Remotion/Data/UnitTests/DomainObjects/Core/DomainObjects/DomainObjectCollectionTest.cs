@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -593,8 +594,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
       Assert.That (command.NewOppositeCollection, Is.SameAs (newCollection));
-      Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (newCollection));
-      Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.NewOppositeCollectionTransformer, Is.SameAs (newCollection));
+      Assert.That (command.OldOppositeCollectionTransformer, Is.SameAs (endPoint.OppositeDomainObjects));
     }
 
     [Test]
@@ -641,8 +642,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (command.ModifiedEndPoint, Is.SameAs (endPoint));
       Assert.That (command.NewOppositeCollection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.NewOppositeCollectionTransformer, Is.SameAs (endPoint.OppositeDomainObjects));
+      Assert.That (command.OldOppositeCollectionTransformer, Is.SameAs (endPoint.OppositeDomainObjects));
+    }
+
+    [Test]
+    public void TransformToAssociated ()
+    {
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var contents = _collection.Cast<DomainObject> ().ToArray ();
+        
+      ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPoint);
+
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (_collection, typeof (Order), endPoint);
+      Assert.That (_collection, Is.EqualTo (contents));
+    }
+
+    [Test]
+    public void TransformToStandAlone ()
+    {
+      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var collection = endPoint.OppositeDomainObjects;
+      var contents = collection.Cast<DomainObject>().ToArray();
+
+      ((IAssociatableDomainObjectCollection) collection).TransformToStandAlone ();
+
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Order));
+      Assert.That (collection, Is.EqualTo (contents));
     }
 
     [Test]

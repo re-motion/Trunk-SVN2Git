@@ -30,8 +30,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly ICollectionEndPoint _modifiedEndPoint;
     private readonly DomainObjectCollection _newOppositeCollection;
 
-    private readonly IDomainObjectCollectionTransformer _oldOppositeCollectionTransformer;
-    private readonly IDomainObjectCollectionTransformer _newOppositeCollectionTransformer;
+    private readonly IAssociatableDomainObjectCollection _oldOppositeCollectionTransformer;
+    private readonly IAssociatableDomainObjectCollection _newOppositeCollectionTransformer;
 
     private DomainObject[] _removedObjects;
     private DomainObject[] _addedObjects;
@@ -39,8 +39,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public CollectionEndPointReplaceWholeCollectionCommand (
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newOppositeCollection,
-        IDomainObjectCollectionTransformer oldOppositeCollectionTransformer,
-        IDomainObjectCollectionTransformer newOppositeCollectionTransformer)
+        IAssociatableDomainObjectCollection oldOppositeCollectionTransformer,
+        IAssociatableDomainObjectCollection newOppositeCollectionTransformer)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
@@ -67,12 +67,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _newOppositeCollection; }
     }
 
-    public IDomainObjectCollectionTransformer OldOppositeCollectionTransformer
+    public IAssociatableDomainObjectCollection OldOppositeCollectionTransformer
     {
       get { return _oldOppositeCollectionTransformer; }
     }
 
-    public IDomainObjectCollectionTransformer NewOppositeCollectionTransformer
+    public IAssociatableDomainObjectCollection NewOppositeCollectionTransformer
     {
       get { return _newOppositeCollectionTransformer; }
     }
@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       // only transform the old collection to stand-alone if it is still associated with this end point
       // rationale: during rollback, the old relation might have already been associated with another end-point, we must not overwrite this!
-      if (OldOppositeCollectionTransformer.Collection.IsAssociatedWith (ModifiedEndPoint))
+      if (OldOppositeCollectionTransformer.IsAssociatedWith (ModifiedEndPoint))
         OldOppositeCollectionTransformer.TransformToStandAlone();
 
       // we must always associate the new collection with the end point, however - even during rollback phase
