@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using Remotion.Context;
 using Remotion.ServiceLocation;
@@ -113,9 +114,31 @@ namespace Remotion.Web.UI
 
       foreach (var elements in _sortedHeadElements.Values)
       {
-        foreach (var element in elements)
+        foreach (var element in TransformHtmlHeadElements (elements))
           yield return element;
       }
+    }
+
+    private IEnumerable<HtmlHeadElement> TransformHtmlHeadElements (IEnumerable<HtmlHeadElement> elements)
+    {
+      var styleSheetImportRules = new List<StyleSheetElement>();
+      var styleSheetElements = new List<StyleSheetElement> ();
+
+      foreach (var element in elements)
+      {
+        if (element is StyleSheetImportRule)
+          styleSheetImportRules.Add ((StyleSheetImportRule) element);
+        else if (element is StyleSheetElement)
+          styleSheetElements.Add ((StyleSheetElement) element);
+        else
+          yield return element;
+      }
+
+      foreach (var rules in styleSheetImportRules.Select ((r, i) => new { Rule = r, Index = i }).GroupBy (s => s.Index / 31, s => s.Rule))
+        yield return new StyleSheetBlock (rules);
+
+      if (styleSheetElements.Count > 0)
+        yield return new StyleSheetBlock (styleSheetElements);
     }
 
     public void SetAppended ()
@@ -173,7 +196,7 @@ namespace Remotion.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNull ("url", url);
 
-      RegisterHeadElement (key, new StyleSheetLink (url), priority);
+      RegisterHeadElement (key, new StyleSheetImportRule (url), priority);
     }
 
     /// <summary> Registers a stylesheet file. </summary>

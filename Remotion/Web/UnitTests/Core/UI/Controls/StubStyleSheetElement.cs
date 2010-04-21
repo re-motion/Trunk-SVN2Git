@@ -15,37 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
+using System.Web.UI;
 using Remotion.Web.UI.Controls;
-using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
-  [TestFixture]
-  public class JavaScriptIncludeTest
+  public class StubStyleSheetElement : StyleSheetElement
   {
-    private HtmlHelper _htmlHelper;
+    private readonly string _value;
 
-    [SetUp]
-    public void SetUp ()
+    public StubStyleSheetElement (string value)
     {
-      _htmlHelper = new HtmlHelper();
+      _value = value;
     }
 
-    [Test]
-    public void Render ()
+    public override void Render (HtmlTextWriter writer)
     {
-      IResourceUrl resourceUrl = MockRepository.GenerateStub<IResourceUrl>();
-      resourceUrl.Stub (stub => stub.GetUrl()).Return ("myScriptUrl.js");
-
-      var javaScriptInclude = new JavaScriptInclude (resourceUrl);
-
-      javaScriptInclude.Render (_htmlHelper.Writer);
-
-      var document = _htmlHelper.GetResultDocument();
-      var element = _htmlHelper.GetAssertedChildElement (document, "script", 0);
-      _htmlHelper.AssertAttribute (element, "type", "text/javascript");
-      _htmlHelper.AssertAttribute (element, "src", "myScriptUrl.js");
+      writer.WriteLine (_value);
     }
   }
 }

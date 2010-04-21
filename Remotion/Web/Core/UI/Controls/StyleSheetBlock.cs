@@ -15,29 +15,45 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
   /// <summary>
-  /// Represents an <c>import url(...)</c> rule for css inlcudes.
+  /// Represents a <c>style</c> element. Use types derived from <see cref="StyleSheetElement"/> to provide the element's content.
+  /// <seealso cref="StyleSheetImportRule"/>
   /// </summary>
-  public class StyleSheetImportRule : StyleSheetElement
+  public class StyleSheetBlock : HtmlHeadElement
   {
-    private readonly IResourceUrl _resourceUrl;
+    private static readonly string s_tagName = HtmlTextWriterTag.Style.ToString ().ToLower ();
+    private static readonly string s_typeAttribute = HtmlTextWriterAttribute.Type.ToString ().ToLower ();
+   
+    private readonly StyleSheetElement[] _styleSheetElements;
 
-    public StyleSheetImportRule (IResourceUrl resourceUrl)
+    public StyleSheetBlock (IEnumerable<StyleSheetElement> styleSheetElements)
     {
-      ArgumentUtility.CheckNotNull ("resourceUrl", resourceUrl);
-      _resourceUrl = resourceUrl;
+      ArgumentUtility.CheckNotNull ("styleSheetElements", styleSheetElements);
+      _styleSheetElements = styleSheetElements.ToArray();
     }
 
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      writer.WriteLine (string.Format ("@import url(\"{0}\");", _resourceUrl.GetUrl()));
+      writer.WriteBeginTag (s_tagName);
+      writer.WriteAttribute (s_typeAttribute, "text/css");
+      writer.WriteLine ('>');
+      writer.Indent++;
+
+      foreach (var element in _styleSheetElements)
+        element.Render (writer);
+
+      writer.Indent--;
+      writer.WriteEndTag(s_tagName);
+      writer.WriteLine();
     }
   }
 }

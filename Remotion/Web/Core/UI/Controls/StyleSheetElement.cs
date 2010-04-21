@@ -15,29 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
   /// <summary>
-  /// Represents an <c>import url(...)</c> rule for css inlcudes.
+  /// Represents the common base type for elements that can be placed inside of the <see cref="StyleSheetBlock"/>.
   /// </summary>
-  public class StyleSheetImportRule : StyleSheetElement
+  public abstract class StyleSheetElement : HtmlHeadElement
   {
-    private readonly IResourceUrl _resourceUrl;
-
-    public StyleSheetImportRule (IResourceUrl resourceUrl)
-    {
-      ArgumentUtility.CheckNotNull ("resourceUrl", resourceUrl);
-      _resourceUrl = resourceUrl;
-    }
-
-    public override void Render (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-
-      writer.WriteLine (string.Format ("@import url(\"{0}\");", _resourceUrl.GetUrl()));
-    }
   }
 }
