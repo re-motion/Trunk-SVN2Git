@@ -190,6 +190,7 @@
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Factories\ListMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderer.cs" />
+    <Compile Include="UI\Controls\JavaScriptInclude.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\ISingleView.cs" />
     <Compile Include="UI\Controls\RendererBase.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\ISingleViewRendererFactory.cs" />
