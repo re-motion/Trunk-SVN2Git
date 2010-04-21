@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _expandedCommandFake = new ExpandedCommand (_nestedCommandMock);
 
       _endPointDataStub = MockRepository.GenerateStub<ICollectionEndPointData>();
-      _endPointDataStub.Stub (stub => stub.DataStore).Return (_dataStoreStub);
+      _endPointDataStub.Stub (stub => stub.CollectionData).Return (_dataStoreStub);
       _data = new EndPointDelegatingCollectionData (_collectionEndPointMock, _endPointDataStub);
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);

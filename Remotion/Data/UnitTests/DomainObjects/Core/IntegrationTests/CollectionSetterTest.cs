@@ -147,17 +147,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         var customer3 = Customer.GetObject (DomainObjectIDs.Customer3); // Order2
         var newCollection = new OrderCollection { Order.GetObject (DomainObjectIDs.Order4) };
 
-        var oldOrdersOfCustomer1 = customer1.Orders;
-        var oldOrdersOfCustomer3 = customer3.Orders;
+        var oldCollectionReferenceOfCustomer1 = customer1.Orders;
+        var oldCollectionContentOfCustomer1 = customer1.Orders.ToArray();
+        var oldCollectionReferenceOfCustomer3 = customer3.Orders;
+        var oldCollectionContentOfCustomer3 = customer3.Orders.ToArray();
 
         customer1.Orders = newCollection;
-        customer3.Orders = oldOrdersOfCustomer1;
-        Assert.That (oldOrdersOfCustomer3.IsAssociatedWith (null), Is.True);
+        customer3.Orders = oldCollectionReferenceOfCustomer1;
+        Assert.That (oldCollectionReferenceOfCustomer3.IsAssociatedWith (null), Is.True);
 
         ClientTransaction.Current.Rollback ();
 
-        Assert.That (customer1.Orders, Is.SameAs (oldOrdersOfCustomer1));
-        Assert.That (customer3.Orders, Is.SameAs (oldOrdersOfCustomer3));
+        Assert.That (customer1.Orders, Is.SameAs (oldCollectionReferenceOfCustomer1));
+        Assert.That (customer1.Orders, Is.EqualTo (oldCollectionContentOfCustomer1));
+        Assert.That (customer3.Orders, Is.SameAs (oldCollectionReferenceOfCustomer3));
+        Assert.That (customer3.Orders, Is.EqualTo (oldCollectionContentOfCustomer3));
 
         Assert.That (customer1.Orders.AssociatedEndPointID.ObjectID, Is.EqualTo (customer1.ID));
         Assert.That (customer3.Orders.AssociatedEndPointID.ObjectID, Is.EqualTo (customer3.ID));

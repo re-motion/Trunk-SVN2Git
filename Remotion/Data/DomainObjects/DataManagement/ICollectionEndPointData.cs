@@ -11,7 +11,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     bool IsDataAvailable { get; }
     
-    IDomainObjectCollectionData DataStore { get; }
+    IDomainObjectCollectionData CollectionData { get; }
     DomainObjectCollection OriginalOppositeDomainObjectsContents { get; }
 
     bool HasDataChanged (ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy);

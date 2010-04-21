@@ -657,7 +657,7 @@ namespace Remotion.Data.DomainObjects
           this,
           new Transformer (endPoint.OppositeDomainObjects),
           new Transformer (this),
-          endPoint.OppositeDomainObjects._dataStrategy.GetDataStore());
+          endPoint._data.CollectionData);
     }
 
     /// <summary>

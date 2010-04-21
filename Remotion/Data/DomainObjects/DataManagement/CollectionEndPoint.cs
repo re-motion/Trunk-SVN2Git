@@ -29,7 +29,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
-    private readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
+    // TODO 1924: Make private after moving CreateAssociationCommand to this class
+    internal readonly LazyLoadableCollectionEndPointData _data; // stores the data kept by _oppositeDomainObjects and the original data for rollback
 
     private DomainObjectCollection _oppositeDomainObjects; // points to _data by using EndPointDelegatingCollectionData as its data strategy
     private DomainObjectCollection _originalCollectionReference; // keeps the original reference of the _oppositeDomainObjects for rollback
@@ -106,11 +107,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
-    private IDomainObjectCollectionData DataStore
-    {
-      get { return _data.DataStore; }
-    }
-
     public void Unload ()
     {
       if (IsDataAvailable)
@@ -150,7 +146,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      DataStore.ReplaceContents (sourceCollectionEndPoint.DataStore);
+      _data.CollectionData.ReplaceContents (sourceCollectionEndPoint._data.CollectionData);
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();
@@ -221,7 +217,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, DataStore);
+      return new CollectionEndPointRemoveCommand (this, removedRelatedObject, _data.CollectionData);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
@@ -229,7 +225,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new AdHocCommand
           {
             BeginHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).BeginDelete (),
-            PerformHandler = () => { DataStore.Clear (); Touch (); },
+            PerformHandler = () => { _data.CollectionData.Clear (); Touch (); },
             EndHandler = () => ((IDomainObjectCollectionEventRaiser) _oppositeDomainObjects).EndDelete ()
           };
     }
@@ -237,7 +233,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, DataStore);
+      return new CollectionEndPointInsertCommand (this, index, insertedRelatedObject, _data.CollectionData);
     }
 
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
@@ -250,9 +246,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var replacedObject = OppositeDomainObjects[index];
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (this, replacedObject, DataStore);
+        return new CollectionEndPointReplaceSameCommand (this, replacedObject, _data.CollectionData);
       else
-        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, DataStore);
+        return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _data.CollectionData);
     }
 
     #region Serialization

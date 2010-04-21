@@ -615,7 +615,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
 
-      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -628,7 +628,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
 
-      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -641,7 +641,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.NewRelatedObject, Is.SameAs (_order1));
       Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (2));
 
-      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 
@@ -654,7 +654,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command.OldRelatedObject, Is.SameAs (_order1));
       Assert.That (command.NewRelatedObject, Is.SameAs (_orderWithoutOrderItem));
 
-      var dataStore = GetEndPointData (_customerEndPoint).DataStore;
+      var dataStore = GetEndPointData (_customerEndPoint).CollectionData;
       Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (dataStore));
     }
 

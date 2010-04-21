@@ -45,24 +45,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _endPointData = endPointData;
     }
 
-    private IDomainObjectCollectionData DataStore
-    {
-      get { return _endPointData.DataStore; }
-    }
-    
     public int Count
     {
-      get { return DataStore.Count; }
+      get { return _endPointData.CollectionData.Count; }
     }
 
     public Type RequiredItemType
     {
-      get { return DataStore.RequiredItemType; }
+      get { return _endPointData.CollectionData.RequiredItemType; }
     }
 
     public bool IsReadOnly
     {
-      get { return DataStore.IsReadOnly; }
+      get { return _endPointData.CollectionData.IsReadOnly; }
     }
 
     public ICollectionEndPoint AssociatedEndPoint
@@ -82,35 +77,35 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public IDomainObjectCollectionData GetDataStore ()
     {
-      return DataStore.GetDataStore();
+      return _endPointData.CollectionData.GetDataStore();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return DataStore.ContainsObjectID (objectID);
+      return _endPointData.CollectionData.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return DataStore.GetObject (index);
+      return _endPointData.CollectionData.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return DataStore.GetObject (objectID);
+      return _endPointData.CollectionData.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return DataStore.IndexOf (objectID);
+      return _endPointData.CollectionData.IndexOf (objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      return DataStore.GetEnumerator ();
+      return _endPointData.CollectionData.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

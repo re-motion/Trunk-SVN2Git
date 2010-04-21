@@ -145,6 +145,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       // now make end point refer to the new collection by reference, too
       ModifiedEndPoint.OppositeDomainObjects = NewOppositeCollection; // this also touches the end point
+      Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
     }
 
     public override void End ()

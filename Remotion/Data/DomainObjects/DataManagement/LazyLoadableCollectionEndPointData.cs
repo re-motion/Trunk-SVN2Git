@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _dataStore != null; }
     }
 
-    public IDomainObjectCollectionData DataStore
+    public IDomainObjectCollectionData CollectionData
     {
       get
       {
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (IsDataAvailable)
       {
-        _originalOppositeDomainObjectsContents.Commit (DataStore);
+        _originalOppositeDomainObjectsContents.Commit (CollectionData);
         _dataStore.InvalidateCache ();
       }
     }

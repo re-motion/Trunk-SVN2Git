@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (delegator.AssociatedEndPoint, Is.SameAs (expectedEndPoint));
 
       var endPointData = GetData (delegator);
-      Assert.That (endPointData.DataStore, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
+      Assert.That (endPointData.CollectionData, Is.SameAs (expectedDataStore), "new collection still uses its original data store");
     }
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)
