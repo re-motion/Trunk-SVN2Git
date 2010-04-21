@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Specialized;
 using Remotion.Configuration;
-using Remotion.Mixins;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
