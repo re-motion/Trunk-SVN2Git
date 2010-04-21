@@ -16,16 +16,12 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
-using System.Runtime.Remoting.Messaging;
+using System.Collections.Generic;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using Remotion.Context;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI
 {
@@ -47,6 +43,22 @@ namespace Remotion.Web.UI
   {
     private const string c_contextKey = "Remotion.Web.UI.HtmlHeadAppender.Current";
 
+    private class FixedResourceUrl : IResourceUrl
+    {
+      private readonly string _url;
+
+      public FixedResourceUrl (string url)
+      {
+        _url = url;
+      }
+
+
+      public string GetUrl ()
+      {
+        return _url;
+      }
+    }
+
     public enum Priority
     {
       Script = 0, // Absolute values to emphasize sorted nature of enum values
@@ -66,7 +78,7 @@ namespace Remotion.Web.UI
 
         if (current == null)
         {
-          current = new HtmlHeadAppender ();
+          current = new HtmlHeadAppender();
           SafeContext.Instance.SetData (c_contextKey, current);
         }
 
@@ -74,16 +86,15 @@ namespace Remotion.Web.UI
       }
     }
 
-    /// <summary> ListDictionary&lt;string key, Control headElement&gt; </summary>
-    private readonly ListDictionary _registeredHeadElements = new ListDictionary();
+    private readonly Dictionary<string, HtmlHeadElement> _registeredHeadElements = new Dictionary<string, HtmlHeadElement>();
 
-    /// <summary> SortedList&lt;Priority (int) priority, ArrayList headElements &gt; </summary>
-    private readonly SortedList _sortedHeadElements = new SortedList();
+    private readonly SortedList<Priority, List<HtmlHeadElement>> _sortedHeadElements = new SortedList<Priority, List<HtmlHeadElement>>();
 
-    /// <summary> <see langword="true"/> if <see cref="EnsureAppended"/> has already executed. </summary>
+    /// <summary> <see langword="true"/> if <see cref="SetAppended"/> has already executed. </summary>
     private bool _hasAppendExecuted;
 
     private WeakReference _handler = new WeakReference (null);
+    private TitleTag _title;
 
     /// <remarks>
     ///   Factory pattern. No public construction.
@@ -93,53 +104,27 @@ namespace Remotion.Web.UI
     {
     }
 
-    /// <summary>
-    ///   Appends the <c>HTML head elements</c> registered with the <see cref="Current"/>
-    ///   <see cref="HtmlHeadAppender"/> to the <paramref name="htmlHeadContents"/>' <b>Controls</b> collection.
-    /// </summary>
-    /// <remarks>
-    ///   Call this method during the rendering of the web form's <c>head element</c>.
-    /// </remarks>
-    /// <param name="htmlHeadContents">
-    ///   <see cref="HtmlHeadContents"/> to whose <b>Controls</b> collection the headers will be appended.
-    ///   Must not be <see langword="null"/>.
-    /// </param>
-    public void EnsureAppended (HtmlHeadContents htmlHeadContents)
+    public IEnumerable<HtmlHeadElement> GetHtmlHeadElements ()
     {
-      ArgumentUtility.CheckNotNull ("htmlHeadContents", htmlHeadContents);
-
       EnsureStateIsClearedAfterServerTransfer();
 
-      if (_hasAppendExecuted)
-        return;
+      if (_title != null)
+        yield return _title;
 
-      if (ControlHelper.IsDesignMode (htmlHeadContents))
-        return;
-      if (ControlHelper.IsDesignMode (htmlHeadContents))
-        htmlHeadContents.Controls.Clear();
-
-      for (int idxPriority = 0; idxPriority < _sortedHeadElements.Count; idxPriority++)
+      foreach (var elements in _sortedHeadElements.Values)
       {
-        ArrayList headElements = (ArrayList) _sortedHeadElements.GetByIndex (idxPriority);
-        for (int idxElements = 0; idxElements < headElements.Count; idxElements++)
-        {
-          Control headElement = (Control) headElements[idxElements];
-          if (! htmlHeadContents.Controls.Contains (headElement))
-            htmlHeadContents.Controls.Add (headElement);
-        }
+        foreach (var element in elements)
+          yield return element;
       }
-
-      if (ControlHelper.IsDesignMode (htmlHeadContents))
-      {
-        _sortedHeadElements.Clear();
-        _registeredHeadElements.Clear();
-      }
-      else
-        _hasAppendExecuted = true;
     }
 
-    /// <summary> Gets a flag indicating wheter <see cref="EnsureAppended"/> has been executed. </summary>
-    /// <value> <see langword="true"/> if  <see cref="EnsureAppended"/> has been executed. </value>
+    public void SetAppended ()
+    {
+      _hasAppendExecuted = true;
+    }
+
+    /// <summary> Gets a flag indicating wheter <see cref="SetAppended"/> has been executed. </summary>
+    /// <value> <see langword="true"/> if  <see cref="SetAppended"/> has been executed. </value>
     /// <remarks> Use this property to ensure that an <see cref="HtmlHeadContents"/> is present on the page. </remarks>
     public bool HasAppended
     {
@@ -152,7 +137,7 @@ namespace Remotion.Web.UI
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="SetTitle"/> must be completed before
-    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Remove the title tag from the aspx-source.
     ///   </para><para>
@@ -162,23 +147,15 @@ namespace Remotion.Web.UI
     /// <param name="title"> The stirng to be isnerted as the title. </param>
     public void SetTitle (string title)
     {
-      const string key = "title";
+      ArgumentUtility.CheckNotNull ("title", title);
 
-      if (IsRegistered (key))
-        ((HtmlGenericControl) _registeredHeadElements[key]).InnerText = title;
-      else
-      {
-        HtmlGenericControl headElement = new HtmlGenericControl ("title");
-        headElement.EnableViewState = false;
-        headElement.InnerText = title;
-        RegisterHeadElement ("title", headElement, Priority.Page);
-      }
+      _title = new TitleTag (title);
     }
 
     /// <summary> Registers a stylesheet file. </summary>
     /// <remarks>
     ///   All calls to <see cref="RegisterStylesheetLink(string, string, Priority)"/> must be completed before
-    ///   <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///   <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     /// </remarks>
     /// <param name="key"> 
     ///   The unique key identifying the stylesheet file in the headers collection. Must not be <see langword="null"/> or empty.
@@ -188,21 +165,21 @@ namespace Remotion.Web.UI
     ///   The priority level of the head element. Elements are rendered in the following order:
     ///   Library, UserControl, Page.
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
     public void RegisterStylesheetLink (string key, IResourceUrl url, Priority priority)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNull ("url", url);
 
-      RegisterStylesheetLink (key, url.GetUrl(), priority);
+      RegisterHeadElement (key, new StyleSheetLink (url), priority);
     }
 
     /// <summary> Registers a stylesheet file. </summary>
     /// <remarks>
     ///   All calls to <see cref="RegisterStylesheetLink(string, string, Priority)"/> must be completed before
-    ///   <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///   <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     /// </remarks>
     /// <param name="key"> 
     ///   The unique key identifying the stylesheet file in the headers collection. Must not be <see langword="null"/> or empty.
@@ -212,27 +189,22 @@ namespace Remotion.Web.UI
     ///   The priority level of the head element. Elements are rendered in the following order:
     ///   Library, UserControl, Page.
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
     public void RegisterStylesheetLink (string key, string href, Priority priority)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNullOrEmpty ("href", href);
 
-      HtmlGenericControl headElement = new HtmlGenericControl ("link");
-      headElement.EnableViewState = false;
-      headElement.Attributes.Add ("type", "text/css");
-      headElement.Attributes.Add ("rel", "stylesheet");
-      headElement.Attributes.Add ("href", href);
-      RegisterHeadElement (key, headElement, priority);
+      RegisterStylesheetLink (key, new FixedResourceUrl (href), priority);
     }
 
     /// <summary> Registers a stylesheet file. </summary>
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterStylesheetLink(string, string)"/> must be completed before
-    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.
     ///   </para>
@@ -243,11 +215,14 @@ namespace Remotion.Web.UI
     /// <param name="url"> 
     /// The url of the stylesheet file. Must not be <see langword="null"/>. 
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
     public void RegisterStylesheetLink (string key, IResourceUrl url)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNull ("url", url);
+
       RegisterStylesheetLink (key, url, Priority.Page);
     }
 
@@ -255,7 +230,7 @@ namespace Remotion.Web.UI
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterStylesheetLink(string, string)"/> must be completed before
-    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.
     ///   </para>
@@ -266,19 +241,19 @@ namespace Remotion.Web.UI
     /// <param name="href"> 
     ///   The url of the stylesheet file. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
     public void RegisterStylesheetLink (string key, string href)
     {
-      RegisterStylesheetLink (key, href, Priority.Page);
+      RegisterStylesheetLink (key, new FixedResourceUrl (href), Priority.Page);
     }
 
     /// <summary> Registers a javascript file. </summary>
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
-    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.
     ///   </para>
@@ -289,22 +264,22 @@ namespace Remotion.Web.UI
     /// <param name="url"> 
     ///   The url of the javascript file. Must not be <see langword="null"/>. 
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
     public void RegisterJavaScriptInclude (string key, IResourceUrl url)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNull ("url", url);
 
-      RegisterJavaScriptInclude (key, url.GetUrl());
+      RegisterHeadElement (key, new JavaScriptInclude (url), Priority.Script);
     }
 
     /// <summary> Registers a javascript file. </summary>
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
-    ///     <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///     <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     ///   </para><para>
     ///     Registeres the javascript file with a default priority of Page.
     ///   </para>
@@ -315,19 +290,15 @@ namespace Remotion.Web.UI
     /// <param name="src"> 
     ///   The url of the javascript file. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
     public void RegisterJavaScriptInclude (string key, string src)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNullOrEmpty ("src", src);
 
-      HtmlGenericControl headElement = new HtmlGenericControl ("script");
-      headElement.EnableViewState = false;
-      headElement.Attributes.Add ("type", "text/javascript");
-      headElement.Attributes.Add ("src", src);
-      RegisterHeadElement (key, headElement, Priority.Script);
+      RegisterJavaScriptInclude (key, new FixedResourceUrl (src));
     }
 
     public void RegisterUtilitiesJavaScriptInclude ()
@@ -348,25 +319,25 @@ namespace Remotion.Web.UI
       RegisterJavaScriptInclude (key, href);
     }
 
-    /// <summary> Registers a <see cref="Control"/> containing an HTML head element. </summary>
+    /// <summary> Registers a <see cref="HtmlHeadElement"/>. </summary>
     /// <remarks>
     ///   All calls to <see cref="RegisterHeadElement"/> must be completed before
-    ///   <see cref="EnsureAppended"/> is called. (Typically during the <c>Render</c> phase.)
+    ///   <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
     /// </remarks>
     /// <param name="key"> 
     ///   The unique key identifying the header element in the collection. Must not be <see langword="null"/> or empty.
     /// </param>
     /// <param name="headElement"> 
-    ///   The <see cref="Control"/> representing the head element. Must not be <see langword="null"/>. 
+    ///   The <see cref="HtmlHeadElement"/> representing the head element. Must not be <see langword="null"/>. 
     /// </param>
     /// <param name="priority"> 
     ///   The priority level of the head element. Elements are rendered in the following order:
     ///   Library, UserControl, Page.
     /// </param>
-    /// <exception cref="HttpException"> 
-    ///   Thrown if method is called after <see cref="EnsureAppended"/> has executed.
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if method is called after <see cref="SetAppended"/> has executed.
     /// </exception>
-    public void RegisterHeadElement (string key, Control headElement, Priority priority)
+    public void RegisterHeadElement (string key, HtmlHeadElement headElement, Priority priority)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNull ("headElement", headElement);
@@ -374,7 +345,8 @@ namespace Remotion.Web.UI
       EnsureStateIsClearedAfterServerTransfer();
 
       if (_hasAppendExecuted)
-        throw new HttpException ("RegisterHeadElement must not be called after EnsureAppended has executed.");
+        throw new InvalidOperationException ("RegisterHeadElement must not be called after EnsureAppended has executed.");
+
       if (! IsRegistered (key))
       {
         _registeredHeadElements.Add (key, headElement);
@@ -396,20 +368,22 @@ namespace Remotion.Web.UI
 
       EnsureStateIsClearedAfterServerTransfer();
 
-      return _registeredHeadElements.Contains (key);
+      return _registeredHeadElements.ContainsKey (key);
     }
 
     /// <summary> Gets the list of head elements for the specified <see cref="Priority"/>. </summary>
     /// <param name="priority"> The <see cref="Priority"/> level to get the head elements for. </param>
     /// <returns> An <see cref="ArrayList"/> of the head elements for the specified <see cref="Priority"/>. </returns>
-    private ArrayList GetHeadElements (Priority priority)
+    private List<HtmlHeadElement> GetHeadElements (Priority priority)
     {
-      ArrayList headElements = (ArrayList) _sortedHeadElements[priority];
-      if (headElements == null)
+      List<HtmlHeadElement> headElements;
+
+      if (!_sortedHeadElements.TryGetValue (priority, out headElements))
       {
-        headElements = new ArrayList();
+        headElements = new List<HtmlHeadElement>();
         _sortedHeadElements[priority] = headElements;
       }
+
       return headElements;
     }
 

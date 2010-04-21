@@ -40,4 +40,27 @@ namespace Remotion.Web.UI.Controls
       writer.WriteLine (string.Format ("import url(\"{0}\");", _resourceUrl.GetUrl()));
     }
   }
+
+  public class StyleSheetLink : HtmlHeadElement
+  {
+    private readonly IResourceUrl _resourceUrl;
+
+    public StyleSheetLink (IResourceUrl resourceUrl)
+    {
+      ArgumentUtility.CheckNotNull ("resourceUrl", resourceUrl);
+      _resourceUrl = resourceUrl;
+    }
+
+    public override void Render (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Type, "text/css");
+      writer.AddAttribute (HtmlTextWriterAttribute.Rel, "StyleSheet");
+      writer.AddAttribute (HtmlTextWriterAttribute.Href, _resourceUrl.GetUrl ());
+      writer.RenderBeginTag (HtmlTextWriterTag.Link);
+      writer.RenderEndTag();
+      writer.WriteLine ();
+    }
+  }
 }

@@ -1,3 +1,19 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -9,6 +25,10 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   public class JavaScriptInclude : HtmlHeadElement
   {
+    private static readonly string s_tagName = HtmlTextWriterTag.Script.ToString().ToLower();
+    private readonly string s_typeAttribute = HtmlTextWriterAttribute.Type.ToString ().ToLower ();
+    private readonly string s_srcAttribute = HtmlTextWriterAttribute.Src.ToString ().ToLower ();
+
     private readonly IResourceUrl _resourceUrl;
 
     public JavaScriptInclude (IResourceUrl resourceUrl)
@@ -22,10 +42,12 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Type, "text/javascript");
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, _resourceUrl.GetUrl());
-      writer.RenderBeginTag (HtmlTextWriterTag.Script);
-      writer.RenderEndTag ();
+      writer.WriteBeginTag (s_tagName);
+      writer.WriteAttribute (s_typeAttribute, "text/javascript");
+      writer.WriteAttribute (s_srcAttribute, _resourceUrl.GetUrl());
+      writer.Write ('>');
+      writer.WriteEndTag (s_tagName);
+      writer.WriteLine();
     }
   }
 }

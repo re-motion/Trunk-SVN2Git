@@ -16,82 +16,35 @@
 // 
 using System;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
-/// <summary>
-///   When added to the webform (inside the head element), the <see cref="HtmlHeadContents"/> 
-///   control renderes the controls registered with <see cref="HtmlHeadAppender"/>.
-/// </summary>
-[ToolboxData ("<{0}:HtmlHeadContents runat=\"server\" id=\"HtmlHeadContents\"></{0}:HtmlHeadContents>")]
-public class HtmlHeadContents : Control, IControl
-{
-  private static bool s_isDesignMode;
-
-  protected override void OnInit (EventArgs e)
+  /// <summary>
+  ///   When added to the webform (inside the head element), the <see cref="HtmlHeadContents"/> 
+  ///   control renderes the controls registered with <see cref="HtmlHeadAppender"/>.
+  /// </summary>
+  [ToolboxData ("<{0}:HtmlHeadContents runat=\"server\" id=\"HtmlHeadContents\"></{0}:HtmlHeadContents>")]
+  public class HtmlHeadContents : Control, IControl
   {
-    base.OnInit (e);
-    s_isDesignMode = ControlHelper.IsDesignMode ((IControl)this);
-  }
-
-  protected override void Render(HtmlTextWriter writer)
-  {
-    HtmlHeadAppender.Current.EnsureAppended (this);
-
-    //  Don't render tags for this control.
-    RenderChildren (writer);
-  }
-
-  protected override void RenderChildren(HtmlTextWriter writer)
-  {
-    bool isTextXml = false;
-
-    if (!ControlHelper.IsDesignMode ((IControl)this))
-      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Page.Context);
-
-    foreach (Control control in Controls)
+    protected override void Render (HtmlTextWriter writer)
     {
-      HtmlGenericControl genericControl = control as HtmlGenericControl;
-      if (genericControl != null)
-      {
-        //  <link ...> has no closing tags.
-        if (string.Compare (genericControl.TagName, "link", true) == 0)
-        {
-          writer.WriteBeginTag ("link");
-          foreach (string attributeKey in genericControl.Attributes.Keys)
-            writer.WriteAttribute (attributeKey, genericControl.Attributes[attributeKey]);
-          if (isTextXml)
-            writer.WriteLineNoTabs (" />");
-          else
-            writer.WriteLineNoTabs (">");
-        }
-        else
-        {
-          control.RenderControl(writer);
-          writer.WriteLine();
-        }
-      }
-      else
-      {
-        control.RenderControl(writer);
-        writer.WriteLine();
-      }
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      var htmlHeadAppender = HtmlHeadAppender.Current;
+
+      foreach (var element in htmlHeadAppender.GetHtmlHeadElements())
+        element.Render (writer);
+
+      if (!ControlHelper.IsDesignMode (this))
+        htmlHeadAppender.SetAppended();
+    }
+
+    public new IPage Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
   }
-
-  protected internal static bool IsDesignMode
-  {
-    get { return s_isDesignMode; }
-  }
-
-  public new IPage Page
-  {
-    get { return PageWrapper.CastOrCreate (base.Page); }
-  }
-}
-
 }

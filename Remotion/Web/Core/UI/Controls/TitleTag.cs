@@ -46,6 +46,7 @@ namespace Remotion.Web.UI.Controls
       writer.RenderBeginTag (HtmlTextWriterTag.Title);
       writer.WriteEncodedText (_title);
       writer.RenderEndTag();
+      writer.WriteLine ();
     }
   }
 }
