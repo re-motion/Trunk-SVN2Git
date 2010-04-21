@@ -37,7 +37,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      writer.WriteLine (string.Format ("import url(\"{0}\");", _resourceUrl.GetUrl()));
+      writer.WriteLine (string.Format ("@import url(\"{0}\");", _resourceUrl.GetUrl()));
     }
   }
 
