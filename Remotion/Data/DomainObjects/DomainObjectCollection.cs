@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  public partial class DomainObjectCollection : ICloneable, IList
+  public partial class DomainObjectCollection : ICloneable, IList, IAssociatableDomainObjectCollection
   {
     /// <summary>
     /// Creates an <see cref="IDomainObjectCollectionData"/> object for stand-alone collections. The returned object takes care of argument checks,
@@ -608,58 +608,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Creates an <see cref="IDataManagementCommand"/> instance that encapsulates all the modifications required to associate this
-    /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
-    /// but it is invoked when a collection-valued relation property is set to a new collection.
-    /// </summary>
-    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
-    /// must have the same type and <see cref="RequiredItemType"/> as this collection.</param>
-    /// <exception cref="NotSupportedException">This collection is read-only.</exception>
-    /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
-    /// <remarks>
-    /// <para>
-    /// When the command is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
-    /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
-    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
-    /// </para>
-    /// <para>
-    /// The returned <see cref="IDataManagementCommand"/> should be executed as a bidirectional modification 
-    /// (<see cref="IDataManagementCommand.ExpandToAllRelatedObjects"/>), otherwise inconsistent state might arise.
-    /// </para>
-    /// <para>
-    /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,
-    /// otherwise an inconsistent state might result.
-    /// </para>
-    /// <para>
-    /// This method is part of <see cref="DomainObjectCollection"/> rather than <see cref="CollectionEndPoint"/> because it is very tightly
-    /// coupled to <see cref="DomainObjectCollection"/>: associating a collection will modify its inner data storage strategy, and 
-    /// <see cref="CollectionEndPoint"/> has no possibility to do that.
-    /// </para>
-    /// </remarks>
-    public IDataManagementCommand CreateAssociationCommand (CollectionEndPoint endPoint)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-
-      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType && !IsReadOnly && !endPoint.OppositeDomainObjects.IsReadOnly)
-        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
-
-      if (GetType () != endPoint.OppositeDomainObjects.GetType ())
-      {
-        var message = string.Format (
-            "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
-            GetType (),
-            endPoint.OppositeDomainObjects.GetType ());
-        throw new InvalidOperationException (message);
-      }
-
-      return new CollectionEndPointReplaceWholeCollectionCommand (
-          endPoint,
-          this,
-          new Transformer (endPoint.OppositeDomainObjects),
-          new Transformer (this));
-    }
-
-    /// <summary>
     /// Returns an implementation of <see cref="IDomainObjectCollectionData"/> that represents the data held by this collection but will
     /// not raise any notifications. This means that no events wil be raised when the data is manipulated and no bidirectional notifications will be
     /// performed. The returned object also does not check whether this collection is read-only.
@@ -805,6 +753,58 @@ namespace Remotion.Data.DomainObjects
       Removed += source.Removed;
       Deleting += source.Deleting;
       Deleted += source.Deleted;
+    }
+
+    /// <summary>
+    /// Creates an <see cref="IDataManagementCommand"/> instance that encapsulates all the modifications required to associate this
+    /// <see cref="DomainObjectCollection"/> with the given <paramref name="endPoint"/>. This API is usually not employed by framework users,
+    /// but it is invoked when a collection-valued relation property is set to a new collection.
+    /// </summary>
+    /// <param name="endPoint">The end point to associate with. That end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection
+    /// must have the same type and <see cref="RequiredItemType"/> as this collection.</param>
+    /// <exception cref="NotSupportedException">This collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">This collection has another type or item type, or it is already associated with an end point.</exception>
+    /// <remarks>
+    /// <para>
+    /// When the command is executed, it replaces the given end point's <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection with 
+    /// this <see cref="DomainObjectCollection"/> instance, which is transformed into an associated collection. The previous 
+    /// <see cref="ICollectionEndPoint.OppositeDomainObjects"/> collection of the end point is transformed into a stand-alone collection.
+    /// </para>
+    /// <para>
+    /// The returned <see cref="IDataManagementCommand"/> should be executed as a bidirectional modification 
+    /// (<see cref="IDataManagementCommand.ExpandToAllRelatedObjects"/>), otherwise inconsistent state might arise.
+    /// </para>
+    /// <para>
+    /// This method does not check whether this collection is already associated with another end-point and should therefore be handled with care,
+    /// otherwise an inconsistent state might result.
+    /// </para>
+    /// <para>
+    /// This method is part of <see cref="DomainObjectCollection"/> rather than <see cref="CollectionEndPoint"/> because it is very tightly
+    /// coupled to <see cref="DomainObjectCollection"/>: associating a collection will modify its inner data storage strategy, and 
+    /// <see cref="CollectionEndPoint"/> has no possibility to do that.
+    /// </para>
+    /// </remarks>
+    IDataManagementCommand IAssociatableDomainObjectCollection.CreateAssociationCommand (CollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      if (RequiredItemType != endPoint.OppositeDomainObjects.RequiredItemType && !IsReadOnly && !endPoint.OppositeDomainObjects.IsReadOnly)
+        throw new InvalidOperationException ("This collection has a different item type than the end point's current opposite collection.");
+
+      if (GetType () != endPoint.OppositeDomainObjects.GetType ())
+      {
+        var message = string.Format (
+            "This collection ('{0}') is not of the same type as the end point's current opposite collection ('{1}').",
+            GetType (),
+            endPoint.OppositeDomainObjects.GetType ());
+        throw new InvalidOperationException (message);
+      }
+
+      return new CollectionEndPointReplaceWholeCollectionCommand (
+          endPoint,
+          this,
+          new Transformer (endPoint.OppositeDomainObjects),
+          new Transformer (this));
     }
   }
 }

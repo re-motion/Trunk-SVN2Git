@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       RelationEndPointValueChecker.CheckNotDeleted (this, this.GetDomainObject ());
 
-      var command = oppositeDomainObjects.CreateAssociationCommand (this);
+      var command = ((IAssociatableDomainObjectCollection) oppositeDomainObjects).CreateAssociationCommand (this);
       var bidirectionalModification = command.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
@@ -170,7 +170,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         if (_originalCollectionReference != _oppositeDomainObjects)
         {
-          var command = _originalCollectionReference.CreateAssociationCommand (this);
+          var command = ((IAssociatableDomainObjectCollection) _originalCollectionReference).CreateAssociationCommand (this);
           command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
         }
 
