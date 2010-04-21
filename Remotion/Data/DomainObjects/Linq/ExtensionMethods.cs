@@ -16,11 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Parsing.Structure;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -29,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Linq
     public static ObjectList<T> ToObjectList<T> (this IEnumerable<T> source) 
         where T : DomainObject
     {
-      ObjectList<T> result = new ObjectList<T>();
+      var result = new ObjectList<T>();
       foreach (T item in source)
         result.Add (item);
       return result;
