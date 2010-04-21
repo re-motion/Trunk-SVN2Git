@@ -93,53 +93,79 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithFirst ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
-                   select o).First();
-      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
-    }
-
-    public void QueryWithSingle ()
-    {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> () where o.OrderNumber == 1 select o).Single ();
-      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.Order1))));
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
+                         orderby o.ID
+                         select o).First();
+      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.InvalidOrder)));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
-    public void QueryWithSingle_ThrowsException ()
-    {
-     (from o in QueryFactory.CreateLinqQuery<Order> ()
-                   select o).Single ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
-    public void QueryWithSingleOrDefault_ThrowsException ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
+    public void QueryWithFirst_Throws_WhenNoItems ()
     {
       (from o in QueryFactory.CreateLinqQuery<Order> ()
-       select o).SingleOrDefault ();
-    }
-
-    [Test]
-    public void QueryWithSingleOrDefault_ReturnsNull ()
-    {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> () where o.OrderNumber == 99999 select o).SingleOrDefault();
-      Assert.That (query, Is.EqualTo (null));
-    }
-
-    [Test]
-    public void QueryWithSingleOrDefault_ReturnsSingleItem ()
-    {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> () where o.OrderNumber == 1 select o).SingleOrDefault ();
-      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.Order1))));
+       where false
+       select o).First ();
     }
 
     [Test]
     public void QueryWithFirstOrDefault ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
-                   select o).FirstOrDefault();
-      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                         orderby o.ID
+                         select o).FirstOrDefault ();
+      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.InvalidOrder)));
+    }
+
+    [Test]
+    public void QueryWithFirstOrDefault_ReturnsNull_WhenNoItems ()
+    {
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                         where false
+                         select o).FirstOrDefault ();
+      Assert.That (queryResult, Is.Null);
+    }
+
+    [Test]
+    public void QueryWithSingle ()
+    {
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> () 
+                         where o.OrderNumber == 1 select o).Single ();
+      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
+    public void QueryWithSingle_ThrowsException_WhenMoreThanOneElement ()
+    {
+     (from o in QueryFactory.CreateLinqQuery<Order> ()
+      select o).Single ();
+    }
+
+    [Test]
+    public void QueryWithSingleOrDefault_ReturnsSingleItem ()
+    {
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> () 
+                         where o.OrderNumber == 1 
+                         select o).SingleOrDefault ();
+      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+    }
+
+    [Test]
+    public void QueryWithSingleOrDefault_ReturnsNull_WhenNoItem ()
+    {
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> () 
+                         where o.OrderNumber == 99999 
+                         select o).SingleOrDefault ();
+      Assert.That (queryResult, Is.EqualTo (null));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
+    public void QueryWithSingleOrDefault_ThrowsException_WhenMoreThanOneElement ()
+    {
+      (from o in QueryFactory.CreateLinqQuery<Order> ()
+       select o).SingleOrDefault ();
     }
 
     [Test]
