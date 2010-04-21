@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveTableReferenceExpression_SubStatementTableInfo_TableTypeNotInheritedFromDomainObject ()
     {
       var sqlStatement = new SqlStatement (new StreamedScalarValueInfo(typeof(string)), Expression.Constant ("test"), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
-      var tableInfo = new ResolvedSubStatementTableInfo (typeof (Student), "Student",sqlStatement);
+      var tableInfo = new ResolvedSubStatementTableInfo ("Student",sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
       var sqlStatement = new SqlStatement (new StreamedScalarValueInfo(typeof(Student[])), selectProjection, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
 
-      var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo (typeof (string), "q", sqlStatement));
+      var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo ("q", sqlStatement));
       var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);
       var result = _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
