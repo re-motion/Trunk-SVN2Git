@@ -58,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           CollectionEndPoint, 
           _newCollection,
           _oldTransformerMock,
-          _newTransformerMock,
-          CollectionDataMock);
+          _newTransformerMock);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
@@ -89,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceWholeCollectionCommand (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock, CollectionDataMock);
+      new CollectionEndPointReplaceWholeCollectionCommand (endPoint, _newCollection, _oldTransformerMock, _newTransformerMock);
     }
 
     [Test]
@@ -216,11 +215,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         _oldTransformerMock.Stub (mock => mock.Collection).Return (CollectionEndPoint.OppositeDomainObjects);
         _oldTransformerMock.Expect (mock => mock.TransformToStandAlone ());
 
-        // Replace items of end point, _after_ old collection has been transformed to stand-alone
-        CollectionDataMock.Expect (mock => mock.Clear ());
-        CollectionDataMock.Expect (mock => mock.Count).Return (0);
-        CollectionDataMock.Expect (mock => mock.Insert (0, _newCollection[0]));
-
         // Transform new collection to associated
         _newTransformerMock
             .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))
@@ -257,11 +251,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _oldTransformerMock.Stub (mock => mock.Collection).Return (collectionOfDifferentEndPoint);
       // _oldTransformerMock.TransformToStandAlone is not called because collectionOfDifferentEndPoint belongs to a different end point
-
-      // Replace items of end point, _after_ old collection has been transformed to stand-alone
-      CollectionDataMock.Expect (mock => mock.Clear ());
-      CollectionDataMock.Expect (mock => mock.Count).Return (0);
-      CollectionDataMock.Expect (mock => mock.Insert (0, _newCollection[0]));
 
       _newTransformerMock
           .Expect (mock => mock.TransformToAssociated (CollectionEndPoint))

@@ -656,8 +656,7 @@ namespace Remotion.Data.DomainObjects
           endPoint,
           this,
           new Transformer (endPoint.OppositeDomainObjects),
-          new Transformer (this),
-          endPoint._data.CollectionData);
+          new Transformer (this));
     }
 
     /// <summary>
@@ -714,7 +713,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
       var nonNotifyingData = GetNonNotifyingData ();
-      nonNotifyingData.ReplaceContents (domainObjects.Cast<DomainObject> ());
+      nonNotifyingData.ReplaceContents (domainObjects);
     }
 
     /// <summary>

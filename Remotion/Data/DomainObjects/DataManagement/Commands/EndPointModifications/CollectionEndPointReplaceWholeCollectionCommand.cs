@@ -32,7 +32,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     private readonly IDomainObjectCollectionTransformer _oldOppositeCollectionTransformer;
     private readonly IDomainObjectCollectionTransformer _newOppositeCollectionTransformer;
-    private readonly IDomainObjectCollectionData _modifiedEndPointDataStore;
 
     private DomainObject[] _removedObjects;
     private DomainObject[] _addedObjects;
@@ -41,14 +40,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newOppositeCollection,
         IDomainObjectCollectionTransformer oldOppositeCollectionTransformer,
-        IDomainObjectCollectionTransformer newOppositeCollectionTransformer,
-        IDomainObjectCollectionData modifiedEndPointDataStore)
+        IDomainObjectCollectionTransformer newOppositeCollectionTransformer)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newOppositeCollection", newOppositeCollection);
       ArgumentUtility.CheckNotNull ("oldOppositeCollectionTransformer", oldOppositeCollectionTransformer);
       ArgumentUtility.CheckNotNull ("newOppositeCollectionTransformer", newOppositeCollectionTransformer);
-      ArgumentUtility.CheckNotNull ("modifiedEndPointDataStore", modifiedEndPointDataStore);
 
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
@@ -58,17 +55,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       _oldOppositeCollectionTransformer = oldOppositeCollectionTransformer;
       _newOppositeCollectionTransformer = newOppositeCollectionTransformer;
-      _modifiedEndPointDataStore = modifiedEndPointDataStore;
     }
 
     public new ICollectionEndPoint ModifiedEndPoint
     {
       get { return _modifiedEndPoint; }
-    }
-
-    public IDomainObjectCollectionData ModifiedEndPointDataStore
-    {
-      get { return _modifiedEndPointDataStore; }
     }
 
     public DomainObjectCollection NewOppositeCollection
@@ -136,9 +127,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // rationale: during rollback, the old relation might have already been associated with another end-point, we must not overwrite this!
       if (OldOppositeCollectionTransformer.Collection.IsAssociatedWith (ModifiedEndPoint))
         OldOppositeCollectionTransformer.TransformToStandAlone();
-
-      // copy over the data
-      ModifiedEndPointDataStore.ReplaceContents (NewOppositeCollection.Cast<DomainObject> ());
 
       // we must always associate the new collection with the end point, however - even during rollback phase
       NewOppositeCollectionTransformer.TransformToAssociated (ModifiedEndPoint);

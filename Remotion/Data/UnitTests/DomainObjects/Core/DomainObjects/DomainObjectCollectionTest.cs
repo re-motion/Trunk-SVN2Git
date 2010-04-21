@@ -598,7 +598,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (command.NewOppositeCollection, Is.SameAs (newCollection));
       Assert.That (command.NewOppositeCollectionTransformer.Collection, Is.SameAs (newCollection));
       Assert.That (command.OldOppositeCollectionTransformer.Collection, Is.SameAs (endPoint.OppositeDomainObjects));
-      Assert.That (command.ModifiedEndPointDataStore, Is.SameAs (endPointDataStore));
     }
 
     [Test]

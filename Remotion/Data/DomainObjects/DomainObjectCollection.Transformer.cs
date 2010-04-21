@@ -40,6 +40,7 @@ namespace Remotion.Data.DomainObjects
       public void TransformToAssociated (ICollectionEndPoint endPoint)
       {
         var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData ();
+        endPointDelegatingCollectionData.GetDataStore ().ReplaceContents (Collection._dataStrategy.GetDataStore()); // copy data
         Collection._dataStrategy = endPointDelegatingCollectionData;
       }
 
