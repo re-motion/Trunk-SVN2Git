@@ -94,27 +94,9 @@ public class DataManager : ISerializable, IDeserializationCallback
       return discardedDataContainer;
   }
 
-  public IEnumerable<DataContainer> GetChangedDataContainersForCommit ()
+  public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
   {
-    foreach (var tuple in GetChangedData ())
-    {
-      var domainObject = tuple.Item1;
-      var dataContainer = tuple.Item2;
-      var state = tuple.Item3;
-
-      Assertion.IsTrue (state != StateType.NotLoadedYet);
-      
-      if (state != StateType.Deleted)
-        _relationEndPointMap.CheckMandatoryRelations (domainObject);
-
-      if (dataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
-        yield return dataContainer;
-    }
-  }
-
-  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedData ()
-  {
-    return GetLoadedData (StateType.Changed, StateType.Deleted, StateType.New);
+    return DataContainerMap.Cast<DataContainer> ().Select (dc => Tuple.Create (dc.DomainObject, dc));
   }
 
   public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedData (params StateType[] states)
@@ -129,9 +111,27 @@ public class DataManager : ISerializable, IDeserializationCallback
     return matchingObjects;
   }
 
-  public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
+  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedData ()
   {
-    return DataContainerMap.Cast<DataContainer> ().Select (dc => Tuple.Create (dc.DomainObject, dc));
+    return GetLoadedData (StateType.Changed, StateType.Deleted, StateType.New);
+  }
+
+  public IEnumerable<DataContainer> GetChangedDataContainersForCommit ()
+  {
+    foreach (var tuple in GetChangedData ())
+    {
+      var domainObject = tuple.Item1;
+      var dataContainer = tuple.Item2;
+      var state = tuple.Item3;
+
+      Assertion.IsTrue (state != StateType.NotLoadedYet);
+
+      if (state != StateType.Deleted)
+        _relationEndPointMap.CheckMandatoryRelations (domainObject);
+
+      if (dataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
+        yield return dataContainer;
+    }
   }
 
   public IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ()
