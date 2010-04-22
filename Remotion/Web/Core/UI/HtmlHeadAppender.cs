@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -60,9 +61,9 @@ namespace Remotion.Web.UI
       get { return s_current.Current; }
     }
 
-    private readonly Dictionary<string, HtmlHeadElement> _registeredHeadElements = new Dictionary<string, HtmlHeadElement>();
+    private readonly Dictionary<string, object> _registeredKeys = new Dictionary<string, object>();
 
-    private readonly SortedList<Priority, List<HtmlHeadElement>> _sortedHeadElements = new SortedList<Priority, List<HtmlHeadElement>>();
+    private readonly MultiDictionary<Priority, HtmlHeadElement> _prioritizedHeadElements = new MultiDictionary<Priority, HtmlHeadElement>();
 
     /// <summary> <see langword="true"/> if <see cref="SetAppended"/> has already executed. </summary>
     private bool _hasAppendExecuted;
@@ -85,9 +86,9 @@ namespace Remotion.Web.UI
       if (_title != null)
         yield return _title;
 
-      foreach (var elements in _sortedHeadElements.Values)
+      foreach (var priority in _prioritizedHeadElements.Keys.OrderBy (priority => (int) priority))
       {
-        foreach (var element in TransformHtmlHeadElements (elements))
+        foreach (var element in TransformHtmlHeadElements (_prioritizedHeadElements[priority]))
           yield return element;
       }
     }
@@ -345,8 +346,8 @@ namespace Remotion.Web.UI
 
       if (! IsRegistered (key))
       {
-        _registeredHeadElements.Add (key, headElement);
-        GetHeadElements (priority).Add (headElement);
+        _registeredKeys.Add (key, null);
+        _prioritizedHeadElements.Add (priority, headElement);
       }
     }
 
@@ -364,23 +365,7 @@ namespace Remotion.Web.UI
 
       EnsureStateIsClearedAfterServerTransfer();
 
-      return _registeredHeadElements.ContainsKey (key);
-    }
-
-    /// <summary> Gets the list of head elements for the specified <see cref="Priority"/>. </summary>
-    /// <param name="priority"> The <see cref="Priority"/> level to get the head elements for. </param>
-    /// <returns> An <see cref="ArrayList"/> of the head elements for the specified <see cref="Priority"/>. </returns>
-    private List<HtmlHeadElement> GetHeadElements (Priority priority)
-    {
-      List<HtmlHeadElement> headElements;
-
-      if (!_sortedHeadElements.TryGetValue (priority, out headElements))
-      {
-        headElements = new List<HtmlHeadElement>();
-        _sortedHeadElements[priority] = headElements;
-      }
-
-      return headElements;
+      return _registeredKeys.ContainsKey (key);
     }
 
     private void EnsureStateIsClearedAfterServerTransfer ()
@@ -391,8 +376,8 @@ namespace Remotion.Web.UI
         var handler = context.Handler;
         if (!ReferenceEquals (handler, _handler.Target))
         {
-          _registeredHeadElements.Clear();
-          _sortedHeadElements.Clear();
+          _registeredKeys.Clear();
+          _prioritizedHeadElements.Clear();
           _hasAppendExecuted = false;
           _handler = new WeakReference (handler);
         }
