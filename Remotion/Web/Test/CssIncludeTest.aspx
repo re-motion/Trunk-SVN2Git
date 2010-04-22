@@ -10,7 +10,7 @@
       for (int i = 0; i < 64; i++)
       {
         Response.Write ("@import url('CssHandler.ashx?Class=Class"+(i+1)+"');");
-        if (i%30 == 0)
+        if (i%31 == 0)
         {
         Response.Write ("</style>\r\n<style type=\"text/css\">");
         }

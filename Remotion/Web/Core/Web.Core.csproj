@@ -114,6 +114,7 @@
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
     <Compile Include="Design\DesignTimeResourceUrl.cs" />
+    <Compile Include="StaticResourceUrl.cs" />
     <Compile Include="IResourceUrlFactory.cs" />
     <Compile Include="Factories\ResourceUrlFactory.cs">
       <SubType>Code</SubType>

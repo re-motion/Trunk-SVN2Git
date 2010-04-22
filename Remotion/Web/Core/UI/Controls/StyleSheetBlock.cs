@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -37,6 +38,11 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("styleSheetElements", styleSheetElements);
       _styleSheetElements = styleSheetElements.ToArray();
+    }
+
+    public ReadOnlyCollection<StyleSheetElement> StyleSheetElements
+    {
+      get { return new ReadOnlyCollection<StyleSheetElement> (_styleSheetElements); }
     }
 
     public override void Render (HtmlTextWriter writer)

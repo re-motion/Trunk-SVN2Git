@@ -33,6 +33,11 @@ namespace Remotion.Web.UI.Controls
       _resourceUrl = resourceUrl;
     }
 
+    public IResourceUrl ResourceUrl
+    {
+      get { return _resourceUrl; }
+    }
+
     public override void Render (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);

@@ -44,22 +44,6 @@ namespace Remotion.Web.UI
   {
     private const string c_contextKey = "Remotion.Web.UI.HtmlHeadAppender.Current";
 
-    private class FixedResourceUrl : IResourceUrl
-    {
-      private readonly string _url;
-
-      public FixedResourceUrl (string url)
-      {
-        _url = url;
-      }
-
-
-      public string GetUrl ()
-      {
-        return _url;
-      }
-    }
-
     public enum Priority
     {
       Script = 0, // Absolute values to emphasize sorted nature of enum values
@@ -220,7 +204,7 @@ namespace Remotion.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNullOrEmpty ("href", href);
 
-      RegisterStylesheetLink (key, new FixedResourceUrl (href), priority);
+      RegisterStylesheetLink (key, new StaticResourceUrl (href), priority);
     }
 
     /// <summary> Registers a stylesheet file. </summary>
@@ -269,7 +253,7 @@ namespace Remotion.Web.UI
     /// </exception>
     public void RegisterStylesheetLink (string key, string href)
     {
-      RegisterStylesheetLink (key, new FixedResourceUrl (href), Priority.Page);
+      RegisterStylesheetLink (key, new StaticResourceUrl (href), Priority.Page);
     }
 
     /// <summary> Registers a javascript file. </summary>
@@ -321,7 +305,7 @@ namespace Remotion.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("key", key);
       ArgumentUtility.CheckNotNullOrEmpty ("src", src);
 
-      RegisterJavaScriptInclude (key, new FixedResourceUrl (src));
+      RegisterJavaScriptInclude (key, new StaticResourceUrl (src));
     }
 
     public void RegisterUtilitiesJavaScriptInclude ()
