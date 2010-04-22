@@ -60,6 +60,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void NotifyClientTransactionOfBegin_SetsCurrentTransaction ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      listenerMock
+          .Expect (mock => mock.ObjectDeleting (_order1))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      listenerMock.Replay ();
+
+      _deleteOrder1Command.NotifyClientTransactionOfBegin();
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void NotifyClientTransactionOfBegin_TriggersEndPointModifications ()
     {
       var mockRepository = new MockRepository ();
@@ -96,6 +110,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void NotifyClientTransactionOfEnd_SetsCurrentTransaction ()
+    {
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      listenerMock
+          .Expect (mock => mock.ObjectDeleted (_order1))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      listenerMock.Replay ();
+
+      _deleteOrder1Command.NotifyClientTransactionOfEnd ();
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void NotifyClientTransactionOfEnd_TriggersEndPointModifications ()
     {
       var mockRepository = new MockRepository ();
@@ -123,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Begin_CallsOnDeleting ()
     {
-      var eventReceiver = new DomainObjectEventReceiver (_order1);
+      var eventReceiver = new DomainObjectEventReceiver (_order1, false, _transaction);
       Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
 
       _deleteOrder1Command.Begin ();
@@ -159,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End_CallsOnDeleted ()
     {
-      var eventReceiver = new DomainObjectEventReceiver (_order1);
+      var eventReceiver = new DomainObjectEventReceiver (_order1, false, _transaction);
       Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
 
       _deleteOrder1Command.End ();

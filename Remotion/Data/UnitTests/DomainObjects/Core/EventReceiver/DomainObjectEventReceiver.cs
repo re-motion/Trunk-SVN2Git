@@ -32,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     private readonly DomainObject _domainObject;
 
     private bool _cancel;
+    private readonly ClientTransaction _transactionToVerify;
     private bool _hasChangingEventBeenCalled = false;
     private bool _hasChangedEventBeenCalled = false;
     [NonSerialized]
@@ -68,9 +69,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     }
 
     public DomainObjectEventReceiver (DomainObject domainObject, bool cancel)
+      : this (domainObject, cancel, null)
+    {
+    }
+
+    public DomainObjectEventReceiver (DomainObject domainObject, bool cancel, ClientTransaction transactionToVerify)
     {
       _domainObject = domainObject;
       _cancel = cancel;
+      _transactionToVerify = transactionToVerify;
 
       _domainObject.PropertyChanging += DomainObject_PropertyChanging;
       _domainObject.PropertyChanged += DomainObject_PropertyChanged;
@@ -199,6 +206,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _changingOldValue = args.OldValue;
       _changingNewValue = args.NewValue;
 
+      VerifyTransaction ();
+
       if (_cancel)
         CancelOperation ();
     }
@@ -209,6 +218,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _changedPropertyValue = args.PropertyValue;
       _changedOldValue = args.OldValue;
       _changedNewValue = args.NewValue;
+
+      VerifyTransaction ();
     }
 
     protected virtual void DomainObject_RelationChanging (object sender, RelationChangingEventArgs args)
@@ -218,6 +229,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _oldRelatedObject = args.OldRelatedObject;
       _newRelatedObject = args.NewRelatedObject;
 
+      VerifyTransaction ();
+
       if (_cancel)
         CancelOperation ();
     }
@@ -226,6 +239,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       _hasRelationChangedEventBeenCalled = true;
       _changedRelationPropertyName = args.PropertyName;
+
+      VerifyTransaction ();
     }
 
     protected virtual void domainObject_Deleting (object sender, EventArgs args)
@@ -233,18 +248,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       if (_cancel)
         CancelOperation ();
 
+      VerifyTransaction ();
+
       _hasDeletingEventBeenCalled = true;
     }
 
     protected virtual void domainObject_Deleted (object sender, EventArgs e)
     {
       _hasDeletedEventBeenCalled = true;
+
+      VerifyTransaction ();
     }
 
     private void DomainObject_Committing (object sender, EventArgs e)
     {
       if (_hasCommittingEventBeenCalled)
         throw CreateApplicationException ("Committing event on DomainObject '{0}' has already been called.", _domainObject.ID);
+
+      VerifyTransaction ();
 
       if (_cancel)
         CancelOperation ();
@@ -258,12 +279,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
         throw CreateApplicationException ("Committed event on DomainObject '{0}' has already been called.", _domainObject.ID);
 
       _hasCommittedEventBeenCalled = true;
+
+      VerifyTransaction ();
     }
 
     private void DomainObject_RollingBack (object sender, EventArgs e)
     {
       if (_hasRollingBackEventBeenCalled)
         throw CreateApplicationException ("RollingBack event on DomainObject '{0}' has already been called.", _domainObject.ID);
+
+      VerifyTransaction ();
 
       if (_cancel)
         CancelOperation ();
@@ -277,6 +302,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
         throw CreateApplicationException ("RolledBack event on DomainObject '{0}' has already been called.", _domainObject.ID);
 
       _hasRolledBackEventBeenCalled = true;
+
+      VerifyTransaction ();
+    }
+
+    private void VerifyTransaction ()
+    {
+      if (_transactionToVerify != null && ClientTransaction.Current != _transactionToVerify)
+        throw CreateApplicationException ("The event did not set the right transaction.");
     }
 
     private ApplicationException CreateApplicationException (string message, params object[] args)

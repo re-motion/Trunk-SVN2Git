@@ -55,6 +55,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.Execute (action);
 
       Assert.That (currentInDelegate, Is.SameAs (_transaction));
+      Assert.That (ClientTransaction.Current, Is.Null);
+    }
+
+    [Test]
+    public void Execute_Action_ReusesScopeIfPossible ()
+    {
+      using (var scope = _transaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope));
+
+        ClientTransactionScope scopeInDelegate = null;
+        Action action = () => scopeInDelegate = ClientTransactionScope.ActiveScope;
+
+        _transaction.Execute (action);
+
+        Assert.That (scopeInDelegate, Is.SameAs (scope));
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope));
+      }
     }
 
     [Test]
@@ -81,6 +99,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.Execute (func);
 
       Assert.That (currentInDelegate, Is.SameAs (_transaction));
+      Assert.That (ClientTransaction.Current, Is.Null);
+    }
+
+    [Test]
+    public void Execute_Func_ReusesScopeIfPossible ()
+    {
+      using (var scope = _transaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope));
+
+        ClientTransactionScope scopeInDelegate = null;
+        Func<int> func = () =>
+        {
+          scopeInDelegate = ClientTransactionScope.ActiveScope;
+          return 4;
+        };
+
+        _transaction.Execute (func);
+
+        Assert.That (scopeInDelegate, Is.SameAs (scope));
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (scope));
+      }
     }
   }
 }

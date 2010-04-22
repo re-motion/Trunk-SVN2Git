@@ -61,14 +61,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void NotifyClientTransactionOfBegin ()
     {
-      _clientTransaction.TransactionEventSink.ObjectDeleting (_deletedObject);
-      _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
+      _clientTransaction.Execute (delegate
+      {
+        _clientTransaction.TransactionEventSink.ObjectDeleting (_deletedObject);
+        _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
+      });
     }
 
     public void Begin ()
     {
-      _deletedObject.OnDeleting (EventArgs.Empty);
-      _endPointDeleteCommands.Begin ();
+      _clientTransaction.Execute (delegate
+      {
+        _deletedObject.OnDeleting (EventArgs.Empty);
+        _endPointDeleteCommands.Begin ();
+      });
     }
 
     public void Perform ()
@@ -83,14 +89,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      _endPointDeleteCommands.End ();
-      _deletedObject.OnDeleted (EventArgs.Empty);
+      _clientTransaction.Execute (delegate
+      {
+        _endPointDeleteCommands.End ();
+        _deletedObject.OnDeleted (EventArgs.Empty);
+      });
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
-      _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
-      _clientTransaction.TransactionEventSink.ObjectDeleted (_deletedObject);
+      _clientTransaction.Execute (delegate
+      {
+        _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
+        _clientTransaction.TransactionEventSink.ObjectDeleted (_deletedObject);
+      });
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

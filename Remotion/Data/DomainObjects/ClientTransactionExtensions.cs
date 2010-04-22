@@ -37,9 +37,18 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("func", func);
 
-      using (clientTransaction.EnterNonDiscardingScope ())
+      IDisposable scope = null;
+      if (ClientTransaction.Current != clientTransaction)
+        scope = clientTransaction.EnterNonDiscardingScope();
+      
+      try
+        {
+          return func();
+        }
+      finally
       {
-        return func ();
+        if (scope != null)
+          scope.Dispose();
       }
     }
 
@@ -54,7 +63,14 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("action", action);
 
-      using (clientTransaction.EnterNonDiscardingScope ())
+      if (ClientTransaction.Current != clientTransaction)
+      {
+        using (clientTransaction.EnterNonDiscardingScope())
+        {
+          action();
+        }
+      }
+      else
       {
         action ();
       }

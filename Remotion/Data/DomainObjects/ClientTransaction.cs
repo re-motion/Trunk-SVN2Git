@@ -1140,12 +1140,9 @@ public abstract class ClientTransaction : IDataSource
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-    using (EnterNonDiscardingScope ())
-    {
-      var command = _dataManager.CreateDeleteCommand (domainObject);
-      var fullCommand = command.ExpandToAllRelatedObjects ();
-      fullCommand.NotifyAndPerform ();
-    }
+    var command = _dataManager.CreateDeleteCommand (domainObject);
+    var fullCommand = command.ExpandToAllRelatedObjects ();
+    fullCommand.NotifyAndPerform ();
   }
 
   /// <summary>
