@@ -107,7 +107,7 @@ public class DataManager : ISerializable, IDeserializationCallback
       if (state != StateType.Deleted)
         _relationEndPointMap.CheckMandatoryRelations (domainObject);
 
-      if (dataContainer.State != StateType.Unchanged)
+      if (dataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
         yield return dataContainer;
     }
   }
