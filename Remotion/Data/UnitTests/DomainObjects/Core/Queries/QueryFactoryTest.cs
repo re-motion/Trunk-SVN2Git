@@ -188,8 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Expect (
           mock => mock.GenerateTextForSqlStatement (
                       Arg<SqlCommandBuilder>.Is.Anything,
-                      Arg<SqlStatement>.Is.Anything,
-                      Arg<SqlExpressionContext>.Is.Anything))
+                      Arg<SqlStatement>.Is.Anything))
           .WhenCalled (mi => ((SqlCommandBuilder) mi.Arguments[0]).Append ("test"));
 
       preparationStageMock.Replay();
@@ -265,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   {
     [OverrideTarget]
     public virtual void GenerateTextForSqlStatement (
-        ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement, SqlExpressionContext selectedSqlContext)
+        ISqlCommandBuilder commandBuilder, SqlStatement sqlStatement)
     {
       Assert.That (sqlStatement.SelectProjection, Is.TypeOf (typeof (ConstantExpression)));
       Assert.That (((ConstantExpression) sqlStatement.SelectProjection).Value, Is.EqualTo ("Value added by resolution mixin"));

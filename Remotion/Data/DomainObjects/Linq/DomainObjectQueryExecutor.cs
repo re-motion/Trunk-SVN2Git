@@ -422,7 +422,7 @@ namespace Remotion.Data.DomainObjects.Linq
     protected virtual SqlCommandData CreateSqlCommand (SqlStatement sqlStatement)
     {
       var commandBuilder = new SqlCommandBuilder();
-      _generationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement, SqlExpressionContext.ValueRequired);
+      _generationStage.GenerateTextForSqlStatement (commandBuilder, sqlStatement);
       // TODO Review 2494: When the stage has been turned into a parameter, use a mock to test that ValueRequired is passed here (not SingleValueRequired)
       return commandBuilder.GetCommand();
     }
