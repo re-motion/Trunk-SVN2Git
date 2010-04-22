@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Remotion.Context;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -42,8 +41,6 @@ namespace Remotion.Web.UI
   /// </example>
   public sealed class HtmlHeadAppender
   {
-    private const string c_contextKey = "Remotion.Web.UI.HtmlHeadAppender.Current";
-
     public enum Priority
     {
       Script = 0, // Absolute values to emphasize sorted nature of enum values
@@ -52,23 +49,15 @@ namespace Remotion.Web.UI
       Page = 3
     }
 
+    private static readonly SafeContextSingleton<HtmlHeadAppender> s_current =
+        new SafeContextSingleton<HtmlHeadAppender> (typeof (HtmlHeadAppender).AssemblyQualifiedName + "_Current", () => new HtmlHeadAppender());
+
     /// <summary>
     ///   Gets the <see cref="HtmlHeadAppender"/> instance.
     /// </summary>
     public static HtmlHeadAppender Current
     {
-      get
-      {
-        var current = (HtmlHeadAppender) SafeContext.Instance.GetData (c_contextKey);
-
-        if (current == null)
-        {
-          current = new HtmlHeadAppender();
-          SafeContext.Instance.SetData (c_contextKey, current);
-        }
-
-        return current;
-      }
+      get { return s_current.Current; }
     }
 
     private readonly Dictionary<string, HtmlHeadElement> _registeredHeadElements = new Dictionary<string, HtmlHeadElement>();
@@ -106,7 +95,7 @@ namespace Remotion.Web.UI
     private IEnumerable<HtmlHeadElement> TransformHtmlHeadElements (IEnumerable<HtmlHeadElement> elements)
     {
       var styleSheetImportRules = new List<StyleSheetElement>();
-      var styleSheetElements = new List<StyleSheetElement> ();
+      var styleSheetElements = new List<StyleSheetElement>();
 
       foreach (var element in elements)
       {
@@ -352,7 +341,7 @@ namespace Remotion.Web.UI
       EnsureStateIsClearedAfterServerTransfer();
 
       if (_hasAppendExecuted)
-        throw new InvalidOperationException ("RegisterHeadElement must not be called after EnsureAppended has executed.");
+        throw new InvalidOperationException ("RegisterHeadElement must not be called after SetAppended has been called.");
 
       if (! IsRegistered (key))
       {
@@ -393,20 +382,6 @@ namespace Remotion.Web.UI
 
       return headElements;
     }
-
-    //  public void RegisterStylesheetLingForInternetExplorerOnly (string key, string href, Priority priority)
-    //  {
-    //    ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-    //    ArgumentUtility.CheckNotNullOrEmpty ("href", href);
-    //
-    //    LiteralControl headElement = new LiteralControl();
-    //    headElement.EnableViewState = false;
-    //    StringBuilder innerHtml = new StringBuilder();
-    //    innerHtml.AppendFormat (
-    //        "<!--[if IE]><style type=\"text/css\" rel=\"stylesheet\">@import url({0});</style><![endif]-->", href);
-    //    headElement.Text = innerHtml.ToString();
-    //    RegisterHeadElement (key, headElement, priority);
-    //  }
 
     private void EnsureStateIsClearedAfterServerTransfer ()
     {
