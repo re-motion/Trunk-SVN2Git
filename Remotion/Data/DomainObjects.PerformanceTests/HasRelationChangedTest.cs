@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   public class HasRelationChangedTest : DatabaseTest
   {
     public const int TestSetSize = 1000;
-    public const int TestRepititions = 10;
+    public const int TestRepititions = 100;
 
     [Test]
     public void AskChanged ()
@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
         Console.WriteLine (changed);
 
-        double averageMilliSeconds = stopwatch.ElapsedMilliseconds / TestRepititions;
+        double averageMilliSeconds = stopwatch.Elapsed.TotalMilliseconds / TestRepititions;
         Console.WriteLine (
             "HasRelationChangedTest (executed {0} x ClientTransaction.Current.HasChanged ({2} objects)): Average duration: {1} ms",
             TestRepititions,
