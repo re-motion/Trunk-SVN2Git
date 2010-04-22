@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.FunctionalProgramming;
@@ -93,43 +94,44 @@ public class DataManager : ISerializable, IDeserializationCallback
       return discardedDataContainer;
   }
 
-  public DataContainerCollection GetChangedDataContainersForCommit ()
+  public IEnumerable<DataContainer> GetChangedDataContainersForCommit ()
   {
-    var changedDataContainers = new DataContainerCollection ();
-    foreach (DomainObject domainObject in GetChangedDomainObjects ())
+    foreach (var tuple in GetChangedData ())
     {
-      Assertion.IsTrue (domainObject.TransactionContext[_clientTransaction].State != StateType.NotLoadedYet);
+      var domainObject = tuple.Item1;
+      var dataContainer = tuple.Item2;
+      var state = tuple.Item3;
+
+      Assertion.IsTrue (state != StateType.NotLoadedYet);
       
-      if (domainObject.TransactionContext[_clientTransaction].State != StateType.Deleted)
+      if (state != StateType.Deleted)
         _relationEndPointMap.CheckMandatoryRelations (domainObject);
 
-      DataContainer dataContainer = _clientTransaction.GetDataContainer(domainObject);
       if (dataContainer.State != StateType.Unchanged)
-        changedDataContainers.Add (dataContainer);
+        yield return dataContainer;
     }
-
-    return changedDataContainers;
   }
 
-  public IEnumerable<DomainObject> GetChangedDomainObjects ()
+  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedData ()
   {
-    return GetLoadedDomainObjects (StateType.Changed, StateType.Deleted, StateType.New);
+    return GetLoadedData (StateType.Changed, StateType.Deleted, StateType.New);
   }
 
-  public IEnumerable<DomainObject> GetLoadedDomainObjects (params StateType[] states)
+  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedData (params StateType[] states)
   {
     var stateSet = new StateValueSet (states);
 
-    var matchingObjects = from domainObject in GetLoadedDomainObjects()
+    var matchingObjects = from tuple in GetLoadedData ()
+                          let domainObject = tuple.Item1
                           let state = domainObject.TransactionContext[_clientTransaction].State
                           where stateSet.Matches (state)
-                          select domainObject;
+                          select Tuple.Create (domainObject, tuple.Item2, state);
     return matchingObjects;
   }
 
-  public IEnumerable<DomainObject> GetLoadedDomainObjects ()
+  public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
   {
-    return DataContainerMap.Cast<DataContainer> ().Select (dc => dc.DomainObject);
+    return DataContainerMap.Cast<DataContainer> ().Select (dc => Tuple.Create (dc.DomainObject, dc));
   }
 
   public IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ()

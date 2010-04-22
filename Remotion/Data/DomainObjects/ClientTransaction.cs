@@ -202,7 +202,7 @@ public abstract class ClientTransaction : IDataSource
   /// Persists changed data in the couse of a <see cref="Commit"/> operation.
   /// </summary>
   /// <param name="changedDataContainers">The data containers for any object that was changed in this transaction.</param>
-  protected abstract void PersistData (DataContainerCollection changedDataContainers);
+  protected abstract void PersistData (IEnumerable<DataContainer> changedDataContainers);
 
   /// <summary>
   /// Creates a new <see cref="ObjectID"/> for the given class definition.
@@ -828,10 +828,7 @@ public abstract class ClientTransaction : IDataSource
   /// <returns><see langword="true"/> if at least one <see cref="DomainObject"/> in this <b>ClientTransaction</b> has been changed; otherwise, <see langword="false"/>.</returns>
   public virtual bool HasChanged ()
   {
-    using (EnterNonDiscardingScope ())
-    {
-      return _dataManager.GetChangedDomainObjects().Any();
-    }
+    return _dataManager.GetChangedData().Any();
   }
 
   /// <summary>
@@ -844,9 +841,9 @@ public abstract class ClientTransaction : IDataSource
     using (EnterNonDiscardingScope ())
     {
       BeginCommit();
-      var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDomainObjects (StateType.Changed, StateType.New).ToArray();
+      var changedButNotDeletedDomainObjects = _dataManager.GetLoadedData (StateType.Changed, StateType.New).Select (tuple => tuple.Item1).ToArray();
 
-      DataContainerCollection changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
+      var changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
 
       _dataManager.Commit ();
@@ -862,11 +859,12 @@ public abstract class ClientTransaction : IDataSource
     using (EnterNonDiscardingScope ())
     {
       BeginRollback();
-      var changedButNotNewDomainObjects = _dataManager.GetLoadedDomainObjects (StateType.Changed, StateType.Deleted).ToArray();
+
+      var changedButNotNewItems = _dataManager.GetLoadedData (StateType.Changed, StateType.Deleted).Select (tuple => tuple.Item1).ToArray();
 
       _dataManager.Rollback ();
 
-      EndRollback (changedButNotNewDomainObjects);
+      EndRollback (changedButNotNewItems);
     }
   }
 
@@ -1423,7 +1421,7 @@ public abstract class ClientTransaction : IDataSource
     // If an object is changed back to its original state during the Committing phase, no Committed event will be raised,
     // because in this case the object won't be committed to the underlying backend (e.g. database).
 
-    var changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList();
+    var changedDomainObjects = _dataManager.GetChangedData ().Select (tuple => tuple.Item1).ToObjectList();
     var domainObjectComittingEventRaised = new DomainObjectCollection ();
     var clientTransactionCommittingEventRaised = new DomainObjectCollection ();
 
@@ -1444,7 +1442,7 @@ public abstract class ClientTransaction : IDataSource
           }
         }
 
-        changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
+        changedDomainObjects = _dataManager.GetChangedData ().Select (tuple => tuple.Item1).ToObjectList ();
         domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised).ToList();
       }
 
@@ -1457,7 +1455,7 @@ public abstract class ClientTransaction : IDataSource
           clientTransactionCommittingEventRaised.Add (domainObject);
       }
 
-      changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
+      changedDomainObjects = _dataManager.GetChangedData ().Select (tuple => tuple.Item1).ToObjectList ();
       clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
     } while (clientTransactionCommittingEventNotRaised.Any());
   }
@@ -1485,7 +1483,7 @@ public abstract class ClientTransaction : IDataSource
     // If an object is changed back to its original state during the RollingBack phase, no RolledBack event will be raised,
     // because the object actually has never been changed from a ClientTransaction's perspective.
 
-    var changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
+    var changedDomainObjects = _dataManager.GetChangedData ().Select (tuple => tuple.Item1).ToObjectList ();
     var domainObjectRollingBackEventRaised = new DomainObjectCollection ();
     var clientTransactionRollingBackEventRaised = new DomainObjectCollection ();
 
@@ -1506,7 +1504,7 @@ public abstract class ClientTransaction : IDataSource
           }
         }
 
-        changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
+        changedDomainObjects = _dataManager.GetChangedData ().Select (tuple => tuple.Item1).ToObjectList ();
         domainObjectRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectRollingBackEventRaised).ToList ();
       }
 
@@ -1519,7 +1517,7 @@ public abstract class ClientTransaction : IDataSource
           clientTransactionRollingBackEventRaised.Add (domainObject);
       }
 
-      changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList();
+      changedDomainObjects = _dataManager.GetChangedData ().Select (tuple => tuple.Item1).ToObjectList ();
       clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
     } while (clientTransactionRollingBackEventNotRaised.Any());
   }
@@ -1580,7 +1578,7 @@ public abstract class ClientTransaction : IDataSource
     return LoadRelatedDataContainers (relationEndPointID);
   }
 
-  void IDataSource.PersistData (DataContainerCollection changedDataContainers)
+  void IDataSource.PersistData (IEnumerable<DataContainer> changedDataContainers)
   {
     PersistData (changedDataContainers);
   }

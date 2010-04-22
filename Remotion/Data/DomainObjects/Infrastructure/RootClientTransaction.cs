@@ -77,15 +77,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           TypesafeActivator.CreateInstance (GetType(), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With();
     }
 
-    protected override void PersistData (DataContainerCollection changedDataContainers)
+    protected override void PersistData (IEnumerable<DataContainer> changedDataContainers)
     {
       ArgumentUtility.CheckNotNull ("changedDataContainers", changedDataContainers);
 
-      if (changedDataContainers.Count > 0)
+      var collection = new DataContainerCollection (changedDataContainers, false);
+      if (collection.Count > 0)
       {
         using (var persistenceManager = CreatePersistenceManager())
         {
-          persistenceManager.Save (changedDataContainers);
+          persistenceManager.Save (collection);
         }
       }
     }

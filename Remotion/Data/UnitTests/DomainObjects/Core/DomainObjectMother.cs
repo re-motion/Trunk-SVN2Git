@@ -89,9 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return notLoadedInstance;
     }
 
-    public static Order GetNewObject ()
+    public static DomainObject GetNewObject ()
     {
-      var newInstance = Order.NewObject ();
+      var newInstance = ClassWithAllDataTypes.NewObject ();
       Assert.That (newInstance.State, Is.EqualTo (StateType.New));
       return newInstance;
     }

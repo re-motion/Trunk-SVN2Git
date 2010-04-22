@@ -333,8 +333,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\RootCollectionEndPointChangeDetectionStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\ClientTransactionDiffersTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\ConcurrencyViolationTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransaction.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\UnloadTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\DomainObjectConstructorLookupInfoTest.cs" />

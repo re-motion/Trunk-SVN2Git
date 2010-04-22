@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Persists the changed data stored by the given <see cref="DataContainer"/> instances.
     /// </summary>
     /// <param name="changedDataContainers">The data containers whose data should be persisted.</param>
-    void PersistData (DataContainerCollection changedDataContainers);
+    void PersistData (IEnumerable<DataContainer> changedDataContainers);
 
     /// <summary>
     /// Creates a new <see cref="ObjectID"/> for the given class definition. The <see cref="ObjectID"/> must be created in a such a way that it can 

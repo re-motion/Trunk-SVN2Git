@@ -222,7 +222,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return thisDataContainer;
     }
 
-    protected override void PersistData (DataContainerCollection changedDataContainers)
+    protected override void PersistData (IEnumerable<DataContainer> changedDataContainers)
     {
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
@@ -231,7 +231,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    private void PersistDataContainers (DataContainerCollection changedDataContainers)
+    private void PersistDataContainers (IEnumerable<DataContainer> changedDataContainers)
     {
       foreach (DataContainer dataContainer in changedDataContainers)
       {

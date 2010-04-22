@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
@@ -47,18 +48,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetLoadedDomainObjects_Empty ()
     {
-      var loadedDomainObjects = _dataManager.GetLoadedDomainObjects ();
+      var loadedDomainObjects = _dataManager.GetLoadedData ();
       Assert.That (loadedDomainObjects.ToArray (), Is.Empty);
     }
 
     [Test]
     public void GetLoadedDomainObjects_NonEmpty ()
     {
-      Order order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
 
-      var loadedDomainObjects = _dataManager.GetLoadedDomainObjects ();
-      Assert.That (loadedDomainObjects.ToArray (), Is.EquivalentTo (new TestDomainBase[] { order1, orderItem1 }));
+      var loadedDomainObjects = _dataManager.GetLoadedData ();
+
+      var expected = new[] { 
+          new Tuple<DomainObject, DataContainer> (order1, order1.InternalDataContainer), 
+          new Tuple<DomainObject, DataContainer> (orderItem1, orderItem1.InternalDataContainer) };
+      Assert.That (loadedDomainObjects.ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]
@@ -69,24 +74,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newInstance = DomainObjectMother.GetNewObject();
       var deletedInstance = DomainObjectMother.GetDeletedObject(ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
 
-      var unchangedObjects = _dataManager.GetLoadedDomainObjects (StateType.Unchanged);
-      var changedOrNewObjects = _dataManager.GetLoadedDomainObjects (StateType.Changed, StateType.New);
-      var deletedOrUnchangedObjects = _dataManager.GetLoadedDomainObjects (StateType.Deleted, StateType.Unchanged);
+      var unchangedObjects = _dataManager.GetLoadedData (StateType.Unchanged);
+      var changedOrNewObjects = _dataManager.GetLoadedData (StateType.Changed, StateType.New);
+      var deletedOrUnchangedObjects = _dataManager.GetLoadedData (StateType.Deleted, StateType.Unchanged);
 
-      Assert.That (unchangedObjects.ToArray (), Is.EquivalentTo (new[] { unchangedInstance }));
-      Assert.That (changedOrNewObjects.ToArray (), Is.EquivalentTo (new[] { changedInstance, newInstance }));
-      Assert.That (deletedOrUnchangedObjects.ToArray (), Is.EquivalentTo (new[] { deletedInstance, unchangedInstance }));
+      Assert.That (unchangedObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (unchangedInstance) }));
+      Assert.That (changedOrNewObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (changedInstance), CreateDataTuple (newInstance) }));
+      Assert.That (deletedOrUnchangedObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (deletedInstance), CreateDataTuple (unchangedInstance) }));
     }
 
     [Test]
-    public void GetChangedDomainObjects_Empty ()
+    public void GetChangedData_Empty ()
     {
-      var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+      var changedDomainObjects = _dataManager.GetChangedData ();
       Assert.That (changedDomainObjects.ToArray(), Is.Empty);
     }
 
     [Test]
-    public void GetChangedDomainObjects ()
+    public void GetChangedData ()
     {
       var changedInstance = DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
       var newInstance = DomainObjectMother.GetNewObject ();
@@ -96,14 +101,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObjectMother.GetDiscardedObject (ClientTransactionMock);
       DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
 
-      var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.That (
-          changedDomainObjects.ToArray (), 
-          Is.EquivalentTo (new[] { changedInstance, newInstance, deletedInstance }));
+      var changedDomainObjects = _dataManager.GetChangedData ();
+      
+      var expected = new[] { 
+          CreateDataTuple (changedInstance), 
+          CreateDataTuple (newInstance),
+          CreateDataTuple (deletedInstance) };
+      Assert.That (changedDomainObjects.ToArray (), Is.EquivalentTo (expected));
     }
 
     [Test]
-    public void GetChangedDomainObjects_ReturnsObjectsChangedByRelation ()
+    public void GetChangedData_ReturnsObjectsChangedByRelation ()
     {
       var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
 
@@ -111,8 +119,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
       Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.That (changedDomainObjects.ToArray (), List.Contains (orderWithChangedRelation));
+      var changedDomainObjects = _dataManager.GetChangedData ();
+      
+      var expected = CreateDataTuple (orderWithChangedRelation);
+      Assert.That (changedDomainObjects.ToArray (), List.Contains (expected));
+    }
+
+    [Test]
+    public void GetChangedDataContainersForCommit_ReturnsObjectsToBeCommitted ()
+    {
+      var changedInstance = (TestDomainBase) DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
+      var newInstance = (TestDomainBase) DomainObjectMother.GetNewObject ();
+      var deletedInstance = (TestDomainBase) DomainObjectMother.GetDeletedObject (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
+
+      DomainObjectMother.GetUnchangedObject (ClientTransactionMock, DomainObjectIDs.Order1);
+      DomainObjectMother.GetDiscardedObject (ClientTransactionMock);
+      DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
+
+      var result = _dataManager.GetChangedDataContainersForCommit ();
+
+      var expected = new[] { changedInstance.InternalDataContainer, newInstance.InternalDataContainer, deletedInstance.InternalDataContainer };
+      Assert.That (result.ToArray (), Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void GetChangedDataContainersForCommit_DoesNotReturnRelationChangedObjects ()
+    {
+      var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
+
+      orderWithChangedRelation.OrderItems.Add (OrderItem.NewObject ());
+      Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
+      Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
+
+      var result = _dataManager.GetChangedDataContainersForCommit ();
+
+      Assert.That (result.ToArray (), List.Not.Contains (orderWithChangedRelation.InternalDataContainer));
+    }
+
+    [Test]
+    [ExpectedException (typeof (MandatoryRelationNotSetException))]
+    public void GetChangedDataContainersForCommit_ChecksMandatoryRelations ()
+    {
+      var invalidOrder = Order.GetObject (DomainObjectIDs.Order1);
+      invalidOrder.OrderTicket = null;
+
+      _dataManager.GetChangedDataContainersForCommit().ToArray();
+    }
+
+    [Test]
+    public void GetChangedDataContainersForCommit_WithDeletedObject ()
+    {
+      OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      orderItem1.Delete ();
+
+      _dataManager.GetChangedDataContainersForCommit ().ToArray ();
+
+      // expectation: no exception
     }
 
     [Test]
@@ -183,17 +245,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
-    }
-
-    [Test]
-    public void GetChangedDataContainersForCommitWithDeletedObject ()
-    {
-      OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      orderItem1.Delete ();
-
-      _dataManager.GetChangedDataContainersForCommit ();
-
-      // expectation: no exception
     }
 
     [Test]
@@ -522,6 +573,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (discardedObject.IsDiscarded, Is.True);
 
       _dataManager.CreateDeleteCommand (discardedObject);
+    }
+
+    private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
+    {
+      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
+      return Tuple.Create (domainObject, dataContainer, domainObject.State);
     }
   }
 }
