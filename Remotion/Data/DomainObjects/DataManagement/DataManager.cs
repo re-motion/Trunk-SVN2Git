@@ -111,9 +111,9 @@ public class DataManager : ISerializable, IDeserializationCallback
     return changedDataContainers;
   }
 
-  public DomainObjectCollection GetChangedDomainObjects ()
+  public IEnumerable<DomainObject> GetChangedDomainObjects ()
   {
-    return new DomainObjectCollection (GetLoadedDomainObjects (StateType.Changed, StateType.Deleted, StateType.New), null);
+    return GetLoadedDomainObjects (StateType.Changed, StateType.Deleted, StateType.New);
   }
 
   public IEnumerable<DomainObject> GetLoadedDomainObjects (params StateType[] states)

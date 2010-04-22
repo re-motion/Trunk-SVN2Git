@@ -64,72 +64,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetLoadedDomainObjects_WithStates ()
     {
-      var unchangedInstance = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.That (unchangedInstance.State, Is.EqualTo (StateType.Unchanged));
-      
-      var changedInstance = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      changedInstance.Product = "New product";
-      Assert.That (changedInstance.State, Is.EqualTo (StateType.Changed));
-      
-      var newInstance = Order.NewObject ();
-      Assert.That (newInstance.State, Is.EqualTo (StateType.New));
-
-      var deletedInstance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      deletedInstance.Delete ();
-      Assert.That (deletedInstance.State, Is.EqualTo (StateType.Deleted));
+      var unchangedInstance = DomainObjectMother.GetUnchangedObject(ClientTransactionMock, DomainObjectIDs.Order1);
+      var changedInstance = DomainObjectMother.GetChangedObject(ClientTransactionMock, DomainObjectIDs.OrderItem1);
+      var newInstance = DomainObjectMother.GetNewObject();
+      var deletedInstance = DomainObjectMother.GetDeletedObject(ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
 
       var unchangedObjects = _dataManager.GetLoadedDomainObjects (StateType.Unchanged);
       var changedOrNewObjects = _dataManager.GetLoadedDomainObjects (StateType.Changed, StateType.New);
       var deletedOrUnchangedObjects = _dataManager.GetLoadedDomainObjects (StateType.Deleted, StateType.Unchanged);
 
       Assert.That (unchangedObjects.ToArray (), Is.EquivalentTo (new[] { unchangedInstance }));
-      Assert.That (changedOrNewObjects.ToArray (), Is.EquivalentTo (new TestDomainBase[] { changedInstance, newInstance }));
-      Assert.That (deletedOrUnchangedObjects.ToArray (), Is.EquivalentTo (new TestDomainBase[] { deletedInstance, unchangedInstance }));
+      Assert.That (changedOrNewObjects.ToArray (), Is.EquivalentTo (new[] { changedInstance, newInstance }));
+      Assert.That (deletedOrUnchangedObjects.ToArray (), Is.EquivalentTo (new[] { deletedInstance, unchangedInstance }));
     }
 
     [Test]
-    public void GetEmptyChangedDomainObjects ()
+    public void GetChangedDomainObjects_Empty ()
     {
-      Assert.That (_dataManager.GetChangedDomainObjects ().Count, Is.EqualTo (0));
+      var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+      Assert.That (changedDomainObjects.ToArray(), Is.Empty);
     }
 
     [Test]
     public void GetChangedDomainObjects ()
     {
-      DataContainer container = CreateOrder1DataContainer ();
-      container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
+      var changedInstance = DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
+      var newInstance = DomainObjectMother.GetNewObject ();
+      var deletedInstance = DomainObjectMother.GetDeletedObject (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
 
-      DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.That (changedObjects.Count, Is.EqualTo (1));
-      Assert.That (changedObjects[0].ID, Is.EqualTo (container.ID));
+      DomainObjectMother.GetUnchangedObject (ClientTransactionMock, DomainObjectIDs.Order1);
+      DomainObjectMother.GetDiscardedObject (ClientTransactionMock);
+      DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
+
+      var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+      Assert.That (
+          changedDomainObjects.ToArray (), 
+          Is.EquivalentTo (new[] { changedInstance, newInstance, deletedInstance }));
     }
 
     [Test]
-    public void GetChangedDomainObjectsForMultipleObjects ()
+    public void GetChangedDomainObjects_ReturnsObjectsChangedByRelation ()
     {
-      CreateOrder1DataContainer ();
-      DataContainer container2 = CreateOrderTicket1DataContainer ();
+      var orderWithChangedRelation = Order.GetObject (DomainObjectIDs.Order1);
 
-      container2["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = @"C:\NewFile.jpg";
+      orderWithChangedRelation.OrderTicket = null;
+      Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
+      Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.That (changedObjects.Count, Is.EqualTo (1));
-      Assert.That (changedObjects[0].ID, Is.EqualTo (container2.ID));
-    }
-
-    [Test]
-    public void GetChangedDomainObjectsForRelationChange ()
-    {
-      DataContainer order1 = CreateOrder1DataContainer ();
-      CreateOrderTicket1DataContainer ();
-      DataContainer orderTicket2 = CreateOrderTicket2DataContainer ();
-      CreateOrderWithoutOrderItemDataContainer();
-
-      var order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      ((ObjectEndPoint) _dataManager.RelationEndPointMap[order1EndPointID]).SetOppositeObjectAndNotify (orderTicket2.DomainObject);
-
-      DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
-      Assert.That (changedObjects.Count, Is.EqualTo (4));
+      var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+      Assert.That (changedDomainObjects.ToArray (), List.Contains (orderWithChangedRelation));
     }
 
     [Test]
@@ -539,42 +522,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (discardedObject.IsDiscarded, Is.True);
 
       _dataManager.CreateDeleteCommand (discardedObject);
-    }
-
-    private DataContainer CreateOrder1DataContainer ()
-    {
-      var dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
-      RegisterContainerAndSetDomainObject (dataContainer);
-      return dataContainer;
-    }
-
-    private DataContainer CreateOrderTicket1DataContainer ()
-    {
-      var dataContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
-      RegisterContainerAndSetDomainObject (dataContainer);
-      return dataContainer;
-    }
-
-    private DataContainer CreateOrderTicket2DataContainer ()
-    {
-      var dataContainer = TestDataContainerFactory.CreateOrderTicket2DataContainer ();
-      RegisterContainerAndSetDomainObject(dataContainer);
-      return dataContainer;
-    }
-
-    private void CreateOrderWithoutOrderItemDataContainer ()
-    {
-      var dataContainer = TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
-      RegisterContainerAndSetDomainObject (dataContainer);
-    }
-
-    private void RegisterContainerAndSetDomainObject (DataContainer dataContainer)
-    {
-      var creator = dataContainer.ClassDefinition.GetDomainObjectCreator ();
-      var instance = creator.CreateObjectReference (dataContainer.ID, _dataManager.ClientTransaction);
-
-      dataContainer.SetDomainObject (instance);
-      dataContainer.RegisterWithTransaction (_dataManager.ClientTransaction);
     }
   }
 }

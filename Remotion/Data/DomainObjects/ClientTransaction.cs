@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -30,6 +29,7 @@ using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
+using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -830,8 +830,7 @@ public abstract class ClientTransaction : IDataSource
   {
     using (EnterNonDiscardingScope ())
     {
-      DomainObjectCollection changedDomainObjects = _dataManager.GetChangedDomainObjects();
-      return changedDomainObjects.Count > 0;
+      return _dataManager.GetChangedDomainObjects().Any();
     }
   }
 
@@ -1424,7 +1423,7 @@ public abstract class ClientTransaction : IDataSource
     // If an object is changed back to its original state during the Committing phase, no Committed event will be raised,
     // because in this case the object won't be committed to the underlying backend (e.g. database).
 
-    var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+    var changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList();
     var domainObjectComittingEventRaised = new DomainObjectCollection ();
     var clientTransactionCommittingEventRaised = new DomainObjectCollection ();
 
@@ -1445,7 +1444,7 @@ public abstract class ClientTransaction : IDataSource
           }
         }
 
-        changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+        changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
         domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised).ToList();
       }
 
@@ -1458,7 +1457,7 @@ public abstract class ClientTransaction : IDataSource
           clientTransactionCommittingEventRaised.Add (domainObject);
       }
 
-      changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+      changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
       clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
     } while (clientTransactionCommittingEventNotRaised.Any());
   }
@@ -1486,7 +1485,7 @@ public abstract class ClientTransaction : IDataSource
     // If an object is changed back to its original state during the RollingBack phase, no RolledBack event will be raised,
     // because the object actually has never been changed from a ClientTransaction's perspective.
 
-    var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+    var changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
     var domainObjectRollingBackEventRaised = new DomainObjectCollection ();
     var clientTransactionRollingBackEventRaised = new DomainObjectCollection ();
 
@@ -1507,7 +1506,7 @@ public abstract class ClientTransaction : IDataSource
           }
         }
 
-        changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+        changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList ();
         domainObjectRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectRollingBackEventRaised).ToList ();
       }
 
@@ -1520,7 +1519,7 @@ public abstract class ClientTransaction : IDataSource
           clientTransactionRollingBackEventRaised.Add (domainObject);
       }
 
-      changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+      changedDomainObjects = _dataManager.GetChangedDomainObjects ().ToObjectList();
       clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList ();
     } while (clientTransactionRollingBackEventNotRaised.Any());
   }
