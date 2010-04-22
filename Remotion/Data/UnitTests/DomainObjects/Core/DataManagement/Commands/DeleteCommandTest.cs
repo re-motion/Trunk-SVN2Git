@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -32,24 +32,27 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
   [TestFixture]
-  public class DeleteCommandTest : ClientTransactionBaseTest
+  public class DeleteCommandTest : StandardMappingTest
   {
+    private ClientTransactionMock _transaction;
     private Order _order1;
     private DeleteCommand _deleteOrder1Command;
+    private ObjectList<OrderItem> _orderItemsCollection;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _deleteOrder1Command = new DeleteCommand (ClientTransactionMock, _order1);
+      _transaction = new ClientTransactionMock();
+      _order1 = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
+      _deleteOrder1Command = new DeleteCommand (_transaction, _order1);
+      _orderItemsCollection = _transaction.Execute (() => _order1.OrderItems);
     }
 
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
       _deleteOrder1Command.NotifyClientTransactionOfBegin ();
 
@@ -61,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       var mockRepository = new MockRepository ();
 
-      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
       
       var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
@@ -74,7 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
       }
 
-      ClientTransactionMock.AddListener (listenerMock);
       mockRepository.ReplayAll ();
 
       _deleteOrder1Command.NotifyClientTransactionOfBegin ();
@@ -86,8 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 
@@ -99,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       var mockRepository = new MockRepository ();
 
-      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
       var compositeCommand = (CompositeCommand) PrivateInvoke.GetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands");
       var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
@@ -111,7 +112,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         listenerMock.Expect (mock => mock.ObjectDeleted (_order1));
       }
 
-      ClientTransactionMock.AddListener (listenerMock);
       mockRepository.ReplayAll ();
 
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Begin_TriggersEndPointDeleting ()
     {
-      var eventReceiver = new DomainObjectCollectionEventReceiver (_order1.OrderItems);
+      var eventReceiver = new DomainObjectCollectionEventReceiver (_orderItemsCollection);
       Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
 
       _deleteOrder1Command.Begin ();
@@ -147,12 +147,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Begin_Sequence ()
     {
-      var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _order1.OrderItems });
+      var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _orderItemsCollection });
       _deleteOrder1Command.Begin ();
 
       eventReceiver.Check (new ChangeState[] { 
           new ObjectDeletionState (_order1, "1. _order1.OnDeleting"),
-          new CollectionDeletionState (_order1.OrderItems, "2. _order1.OrderItems.OnDeleting")
+          new CollectionDeletionState (_orderItemsCollection, "2. _order1.OrderItems.OnDeleting")
       });
     }
 
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End_TriggersEndPointDeleted ()
     {
-      var eventReceiver = new DomainObjectCollectionEventReceiver (_order1.OrderItems);
+      var eventReceiver = new DomainObjectCollectionEventReceiver (_orderItemsCollection);
       Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
 
       _deleteOrder1Command.End ();
@@ -183,11 +183,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End_Sequence ()
     {
-      var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _order1.OrderItems });
+      var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _orderItemsCollection });
       _deleteOrder1Command.End ();
 
       eventReceiver.Check (new ChangeState[] { 
-          new CollectionDeletionState (_order1.OrderItems, "1. _order1.OrderItems.OnDeleted"),
+          new CollectionDeletionState (_orderItemsCollection, "1. _order1.OrderItems.OnDeleted"),
           new ObjectDeletionState (_order1, "2. _order1.OnDeleted")
       });
     }
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       _deleteOrder1Command.Perform ();
 
-      Assert.That (_order1.OrderItems, Is.Empty);
+      _transaction.Execute (() => Assert.That (_order1.OrderItems, Is.Empty));
     }
 
     [Test]
@@ -205,19 +205,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       _deleteOrder1Command.Perform ();
 
-      Assert.That (_order1.State, Is.EqualTo (StateType.Deleted));
+      _transaction.Execute (() => Assert.That (_order1.State, Is.EqualTo (StateType.Deleted)));
     }
 
     [Test]
     public void Perform_DiscardsNewDataContainer ()
     {
-      var newOrder = Order.NewObject ();
-      var deleteNewOrderCommand = new DeleteCommand (ClientTransactionMock, newOrder);
+      var newOrder = _transaction.Execute (() => Order.NewObject ());
+      var deleteNewOrderCommand = new DeleteCommand (_transaction, newOrder);
 
       deleteNewOrderCommand.Perform ();
 
-      Assert.That (newOrder.State, Is.EqualTo (StateType.Discarded));
-      Assert.That (ClientTransactionMock.DataManager.IsDiscarded (newOrder.ID), Is.True);
+      Assert.That (_transaction.DataManager.IsDiscarded (newOrder.ID), Is.True);
     }
 
     [Test]
@@ -255,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (orderItem2Command.NewRelatedObject, Is.Null);
     }
 
-    private RelationEndPointModificationCommand GetEndPointModificationCommand (ReadOnlyCollection<IDataManagementCommand> commands, ObjectID objectID)
+    private RelationEndPointModificationCommand GetEndPointModificationCommand (IEnumerable<IDataManagementCommand> commands, ObjectID objectID)
     {
       return commands.OfType<RelationEndPointModificationCommand>().SingleOrDefault (cmd => cmd.DomainObject.ID == objectID);
     }
