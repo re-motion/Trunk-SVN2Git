@@ -113,29 +113,28 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public DomainObjectCollection GetChangedDomainObjects ()
   {
-    return GetDomainObjects (StateType.Changed, StateType.Deleted, StateType.New);
+    return new DomainObjectCollection (GetLoadedDomainObjects (StateType.Changed, StateType.Deleted, StateType.New), null);
   }
 
-  // TODO: This only returns domain objects for which a DataContainer exists, not unloaded or discarded objects. This should be reflected in the name.
-  public DomainObjectCollection GetDomainObjects (params StateType[] states)
+  public IEnumerable<DomainObject> GetLoadedDomainObjects (params StateType[] states)
   {
     var stateSet = new StateValueSet (states);
 
-    var matchingObjects = from dataContainer in DataContainerMap.Cast<DataContainer>()
-                          let domainObject = dataContainer.DomainObject
+    var matchingObjects = from domainObject in GetLoadedDomainObjects()
                           let state = domainObject.TransactionContext[_clientTransaction].State
                           where stateSet.Matches (state)
                           select domainObject;
-    return new DomainObjectCollection (matchingObjects, null);
+    return matchingObjects;
+  }
+
+  public IEnumerable<DomainObject> GetLoadedDomainObjects ()
+  {
+    return DataContainerMap.Cast<DataContainer> ().Select (dc => dc.DomainObject);
   }
 
   public IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ()
   {
-    foreach (RelationEndPoint endPoint in _relationEndPointMap)
-    {
-      if (endPoint.HasChanged)
-        yield return endPoint;
-    }
+    return _relationEndPointMap.Cast<RelationEndPoint>().Where (endPoint => endPoint.HasChanged);
   }
 
   public void RegisterDataContainer (DataContainer dataContainer)

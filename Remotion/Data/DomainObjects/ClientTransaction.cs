@@ -845,7 +845,7 @@ public abstract class ClientTransaction : IDataSource
     using (EnterNonDiscardingScope ())
     {
       BeginCommit();
-      DomainObjectCollection changedButNotDeletedDomainObjects = _dataManager.GetDomainObjects (StateType.Changed, StateType.New);
+      var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDomainObjects (StateType.Changed, StateType.New).ToArray();
 
       DataContainerCollection changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
@@ -863,7 +863,7 @@ public abstract class ClientTransaction : IDataSource
     using (EnterNonDiscardingScope ())
     {
       BeginRollback();
-      DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (StateType.Changed, StateType.Deleted);
+      var changedButNotNewDomainObjects = _dataManager.GetLoadedDomainObjects (StateType.Changed, StateType.Deleted).ToArray();
 
       _dataManager.Rollback ();
 
@@ -1463,12 +1463,12 @@ public abstract class ClientTransaction : IDataSource
     } while (clientTransactionCommittingEventNotRaised.Any());
   }
 
-  private void EndCommit (DomainObjectCollection changedDomainObjects)
+  private void EndCommit (DomainObject[] changedDomainObjects)
   {
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnCommitted (EventArgs.Empty);
 
-    OnCommitted (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (changedDomainObjects.AsList<DomainObject>())));
+    OnCommitted (new ClientTransactionEventArgs (Array.AsReadOnly (changedDomainObjects)));
   }
 
   private void BeginRollback ()
@@ -1525,12 +1525,12 @@ public abstract class ClientTransaction : IDataSource
     } while (clientTransactionRollingBackEventNotRaised.Any());
   }
 
-  private void EndRollback (DomainObjectCollection changedDomainObjects)
+  private void EndRollback (DomainObject[] changedDomainObjects)
   {
     foreach (DomainObject changedDomainObject in changedDomainObjects)
       changedDomainObject.OnRolledBack (EventArgs.Empty);
 
-    OnRolledBack (new ClientTransactionEventArgs (new ReadOnlyCollection<DomainObject> (changedDomainObjects.AsList<DomainObject> ())));
+    OnRolledBack (new ClientTransactionEventArgs (Array.AsReadOnly (changedDomainObjects)));
   }
 
   private DataContainer GetDataContainerWithoutLoading (ObjectID id)
