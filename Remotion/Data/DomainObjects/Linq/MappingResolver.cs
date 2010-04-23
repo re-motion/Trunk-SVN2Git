@@ -130,12 +130,14 @@ namespace Remotion.Data.DomainObjects.Linq
             "The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
-      
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
-      var propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
 
-      if (propertyDefinition == null)
-        propertyDefinition = GetMixinPropertyDefinition (classDefinition, sqlTable.ItemType, property);
+      var propertyDefinition = classDefinition.ResolveProperty (property);
+      
+      //string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
+      //var propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
+
+      //if (propertyDefinition == null)
+      // propertyDefinition = GetMixinPropertyDefinition (classDefinition, sqlTable.ItemType, property);
       
       if (propertyDefinition == null)
       {
@@ -234,23 +236,23 @@ namespace Remotion.Data.DomainObjects.Linq
       return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
     }
 
-    private PropertyDefinition GetMixinPropertyDefinition (ClassDefinition classDefinition, Type type, PropertyInfo property)
-    {
-      if (classDefinition != null)
-      {
-        foreach (var mixin in ((ReflectionBasedClassDefinition) classDefinition).PersistentMixins)
-        {
-          if (property.DeclaringType.IsAssignableFrom (mixin))
-          {
-            string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name);
-            return classDefinition.GetPropertyDefinition (propertyIdentifier);
-          }
-        }
+    //private PropertyDefinition GetMixinPropertyDefinition (ClassDefinition classDefinition, Type type, PropertyInfo property)
+    //{
+    //  if (classDefinition != null)
+    //  {
+    //    foreach (var mixin in ((ReflectionBasedClassDefinition) classDefinition).PersistentMixins)
+    //    {
+    //      if (property.DeclaringType.IsAssignableFrom (mixin))
+    //      {
+    //        string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name);
+    //        return classDefinition.GetPropertyDefinition (propertyIdentifier);
+    //      }
+    //    }
 
-        return GetMixinPropertyDefinition (GetClassDefinition (type.BaseType), type.BaseType, property);
-      }
+    //    return GetMixinPropertyDefinition (GetClassDefinition (type.BaseType), type.BaseType, property);
+    //  }
 
-      return null;
-    }
+    //  return null;
+    //}
   }
 }

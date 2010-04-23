@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
@@ -151,6 +152,36 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override IDomainObjectCreator GetDomainObjectCreator ()
     {
       return InterceptedDomainObjectCreator.Instance;
+    }
+
+    public override PropertyDefinition ResolveProperty (PropertyInfo property)
+    {
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
+      var propertyDefinition = GetPropertyDefinition (propertyIdentifier);
+      if (propertyDefinition != null)
+        return propertyDefinition;
+
+      return GetMixinPropertyDefinition(this, ClassType, property);
+    }
+
+    private PropertyDefinition GetMixinPropertyDefinition (ClassDefinition classDefinition, Type type, PropertyInfo property)
+    {
+      if (classDefinition != null)
+      {
+        foreach (var mixin in ((ReflectionBasedClassDefinition) classDefinition).PersistentMixins)
+        {
+          if (property.DeclaringType.IsAssignableFrom (mixin))
+          {
+            string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name);
+            return classDefinition.GetPropertyDefinition (propertyIdentifier);
+          }
+        }
+
+        return GetMixinPropertyDefinition (MappingConfiguration.Current.ClassDefinitions[type.BaseType], type.BaseType, property);
+      }
+
+      return null;
     }
 
     private void AddDerivedClass (ClassDefinition derivedClass)
