@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -26,8 +27,9 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class RelationEndPointTouchCommandTest : ClientTransactionBaseTest
+  public class RelationEndPointTouchCommandTest : StandardMappingTest
   {
+    private ClientTransactionMock _transaction;
     private RelationEndPoint _endPoint;
     private RelationEndPointTouchCommand _command;
 
@@ -35,8 +37,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
+      _transaction = new ClientTransactionMock ();
+
       var id = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
-      _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
+      _endPoint = _transaction.Execute (() => RelationEndPointObjectMother.CreateObjectEndPoint (id, null));
 
       _command = new RelationEndPointTouchCommand (_endPoint);
     }
@@ -50,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin_DoesNothing ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       _command.NotifyClientTransactionOfBegin ();
     }
@@ -58,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd_DoesNothing ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       _command.NotifyClientTransactionOfEnd ();
     }
