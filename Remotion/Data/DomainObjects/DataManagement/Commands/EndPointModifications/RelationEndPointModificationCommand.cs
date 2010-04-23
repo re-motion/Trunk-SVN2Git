@@ -78,40 +78,58 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     /// <see cref="RelationEndPointModificationCommand"/>.</returns>
     public abstract ExpandedCommand ExpandToAllRelatedObjects ();
 
-    public virtual void Begin ()
+    public void Begin ()
     {
-      DomainObject domainObject = _modifiedEndPoint.GetDomainObject();
+      _modifiedEndPoint.ClientTransaction.Execute (ScopedBegin);
+    }
+
+    public void End ()
+    {
+      _modifiedEndPoint.ClientTransaction.Execute (ScopedEnd);
+    }
+
+    public void NotifyClientTransactionOfBegin ()
+    {
+      _modifiedEndPoint.ClientTransaction.Execute (ScopedNotifyClientTransactionOfBegin);
+    }
+
+    public void NotifyClientTransactionOfEnd ()
+    {
+      _modifiedEndPoint.ClientTransaction.Execute (ScopedNotifyClientTransactionOfEnd);
+    }
+
+    protected virtual void ScopedBegin ()
+    {
+      DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
       domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition.PropertyName, _oldRelatedObject, _newRelatedObject));
     }
 
-    public virtual void End ()
+    protected virtual void ScopedEnd ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
       domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition.PropertyName));
     }
 
-    public virtual void NotifyClientTransactionOfBegin ()
+    protected virtual void ScopedNotifyClientTransactionOfBegin ()
     {
       RaiseClientTransactionBeginNotification (_oldRelatedObject, _newRelatedObject);
     }
 
-    public virtual void NotifyClientTransactionOfEnd ()
+    protected virtual void ScopedNotifyClientTransactionOfEnd ()
     {
       RaiseClientTransactionEndNotification (_oldRelatedObject, _newRelatedObject);
     }
 
     protected void RaiseClientTransactionBeginNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      _modifiedEndPoint.ClientTransaction.TransactionEventSink.RelationChanging (
-          _domainObject, 
-          _modifiedEndPoint.Definition.PropertyName, 
-          oldRelatedObject, 
-          newRelatedObject);
+      var eventSink = _modifiedEndPoint.ClientTransaction.TransactionEventSink;
+      eventSink.RelationChanging (_domainObject, _modifiedEndPoint.Definition.PropertyName, oldRelatedObject, newRelatedObject);
     }
 
     protected void RaiseClientTransactionEndNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      _modifiedEndPoint.ClientTransaction.TransactionEventSink.RelationChanged (_domainObject, _modifiedEndPoint.Definition.PropertyName);
+      var eventSink = _modifiedEndPoint.ClientTransaction.TransactionEventSink;
+      eventSink.RelationChanged (_domainObject, _modifiedEndPoint.Definition.PropertyName);
     }
   }
 }

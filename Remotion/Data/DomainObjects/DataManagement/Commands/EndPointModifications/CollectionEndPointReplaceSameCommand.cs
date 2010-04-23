@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedCollectionData; }
     }
 
-    public override void Begin ()
+    protected override void ScopedBegin ()
     {
       // do not issue any change notifications, a self-replacement is not a change
     }
@@ -65,17 +65,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch();
     }
 
-    public override void End ()
+    protected override void ScopedEnd ()
     {
       // do not issue any change notifications, a self-replacement is not a change
     }
 
-    public override void NotifyClientTransactionOfBegin ()
+    protected override void ScopedNotifyClientTransactionOfBegin ()
     {
       // do not issue any change notifications, a same-set is not a change
     }
 
-    public override void NotifyClientTransactionOfEnd ()
+    protected override void ScopedNotifyClientTransactionOfEnd ()
     {
       // do not issue any change notifications, a same-set is not a change
     }

@@ -56,10 +56,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedCollectionData; }
     }
 
-    public override void Begin ()
+    protected override void ScopedBegin ()
     {
       ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginRemove (_index, OldRelatedObject);
-      base.Begin ();
+      base.ScopedBegin ();
     }
 
     public override void Perform ()
@@ -68,9 +68,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch ();
     }
 
-    public override void End ()
+    protected override void ScopedEnd ()
     {
-      base.End ();
+      base.ScopedEnd ();
       ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndRemove (_index, OldRelatedObject);
     }
 

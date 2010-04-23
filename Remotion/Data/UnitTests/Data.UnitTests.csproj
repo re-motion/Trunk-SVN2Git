@@ -243,6 +243,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeCachingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\RelationEndPointModificationCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\ExpandedCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataManagementCommandExtensionsTest.cs" />

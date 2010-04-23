@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       }
     }
 
-    public override void NotifyClientTransactionOfBegin ()
+    protected override void ScopedNotifyClientTransactionOfBegin ()
     {
       foreach (var removedObject in RemovedObjects)
         RaiseClientTransactionBeginNotification (removedObject, null);
@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         RaiseClientTransactionBeginNotification (null, addedObject);
     }
 
-    public override void Begin ()
+    protected override void ScopedBegin ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
 
@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
     }
 
-    public override void End ()
+    protected override void ScopedEnd ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
 
@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 #pragma warning restore 168
     }
 
-    public override void NotifyClientTransactionOfEnd ()
+    protected override void ScopedNotifyClientTransactionOfEnd ()
     {
       foreach (var removedObject in RemovedObjects.Reverse ())
         RaiseClientTransactionEndNotification (removedObject, null);
