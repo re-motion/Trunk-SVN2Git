@@ -482,7 +482,6 @@
     <Compile Include="Mixins\Utilities\MixinTypeCloser.cs" />
     <Compile Include="Mixins\Utilities\MultiSet.cs" />
     <Compile Include="Mixins\Utilities\ReflectionUtility.cs" />
-    <Compile Include="Mixins\Utilities\Serialization\ReflectionObjectSerializer.cs" />
     <Compile Include="Mixins\Utilities\Singleton\DefaultInstanceCreator.cs" />
     <Compile Include="Mixins\Utilities\Singleton\IInstanceCreator.cs" />
     <Compile Include="Mixins\Utilities\Singleton\ThreadSafeSingleton.cs" />
@@ -732,6 +731,9 @@
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mixins\Utilities\Serialization\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

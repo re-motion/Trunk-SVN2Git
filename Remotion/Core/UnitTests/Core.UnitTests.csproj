@@ -824,8 +824,6 @@
     <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfoTest.cs" />
     <Compile Include="Mixins\Utilities\MixinTypeCloserTest.cs" />
     <Compile Include="Mixins\Utilities\ReflectionUtilityTest.cs" />
-    <Compile Include="Mixins\Utilities\Serialization\GenericType.cs" />
-    <Compile Include="Mixins\Utilities\Serialization\ReflectionObjectSerializerTest.cs" />
     <Compile Include="Mixins\Validation\DelegateRuleDescriptionTest.cs" />
     <Compile Include="Mixins\Validation\GeneralValidationTest.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultAttributeIntroductionRulesTest.cs" />
