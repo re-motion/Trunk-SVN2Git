@@ -33,14 +33,23 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
-  public class DomainObjectTest : ClientTransactionBaseTest
+  public class DomainObjectTest : StandardMappingTest
   {
+    private ClientTransactionMock _transaction;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _transaction = new ClientTransactionMock ();
+    }
+
     [Test]
     public void Ctor_RaisesNewObjectCreating ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
 
-      var instance = Order.NewObject ();
+      var instance = _transaction.Execute (() => Order.NewObject ());
 
       listenerMock.AssertWasCalled (mock => mock.NewObjectCreating (typeof (Order), instance));
     }
@@ -48,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Ctor_CreatesObjectID ()
     {
-      var instance = Order.NewObject ();
+      var instance = _transaction.Execute (() => Order.NewObject ());
 
       Assert.That (instance.ID, Is.Not.Null);
       Assert.That (instance.ID.ClassDefinition, Is.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
@@ -72,34 +81,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Ctor_CreatesAndRegistersDataContainer ()
     {
-      var instance = Order.NewObject ();
+      var instance = _transaction.Execute (() => Order.NewObject ());
 
-      var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[instance.ID];
+      var dataContainer = _transaction.DataManager.DataContainerMap[instance.ID];
       Assert.That (dataContainer, Is.Not.Null);
       Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
-      Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (_transaction));
     }
 
     [Test]
     public void Ctor_EnlistsObjectInTransaction ()
     {
-      var instance = Order.NewObject ();
+      var instance = _transaction.Execute (() => Order.NewObject ());
 
-      Assert.That (ClientTransactionMock.IsEnlisted (instance), Is.True);
+      Assert.That (_transaction.IsEnlisted (instance), Is.True);
     }
 
     [Test]
     public void Ctor_WithVirtualPropertyCall_Allowed ()
     {
-      var orderItem = OrderItem.NewObject ("Test Toast");
-      Assert.That (orderItem.Product, Is.EqualTo ("Test Toast"));
+      var orderItem = _transaction.Execute (() => OrderItem.NewObject ("Test Toast"));
+      Assert.That (_transaction.Execute (() => orderItem.Product), Is.EqualTo ("Test Toast"));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
     public void Initialize_ThrowsForNewObject ()
     {
-      var orderItem = OrderItem.NewObject ("Test Toast");
+      var orderItem = _transaction.Execute (() => OrderItem.NewObject ("Test Toast"));
       orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
 
@@ -107,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
     public void Initialize_ThrowsForLoadedObject ()
     {
-      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem = _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
       orderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
 
@@ -115,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
     public void Initialize_ThrowsForDeserializedObject ()
     {
-      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderItem = _transaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
       var deserializedOrderItem = Serializer.SerializeAndDeserialize (orderItem);
       deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, null);
     }
@@ -133,28 +142,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void HasBindingTransaction_BoundObject ()
     {
-      using (ClientTransaction.CreateBindingTransaction ().EnterDiscardingScope ())
-      {
-        var obj = Order.NewObject ();
-        Assert.That (obj.HasBindingTransaction, Is.True);
-      }
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      
+      var obj = bindingTransaction.Execute (() => Order.NewObject ());
+      Assert.That (obj.HasBindingTransaction, Is.True);
     }
 
     [Test]
     public void HasBindingTransaction_UnboundObject ()
     {
-      var obj = Order.NewObject ();
+      var obj = _transaction.Execute (() => Order.NewObject ());
       Assert.That (obj.HasBindingTransaction, Is.False);
     }
 
     [Test]
     public void GetBindingTransaction_BoundObject ()
     {
-      using (ClientTransaction.CreateBindingTransaction ().EnterDiscardingScope ())
-      {
-        var obj = Order.NewObject ();
-        Assert.That (obj.GetBindingTransaction(), Is.SameAs (ClientTransaction.Current));
-      }
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var obj = bindingTransaction.Execute (() => Order.NewObject ());
+      Assert.That (obj.GetBindingTransaction(), Is.SameAs (bindingTransaction));
     }
 
     [Test]
@@ -162,14 +168,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         + "uses the current transaction when it is accessed. Use HasBindingTransaction to check whether an object has been bound or not.")]
     public void GetBindingTransaction_UnboundObject ()
     {
-      var obj = Order.NewObject ();
+      var obj = _transaction.Execute (() => Order.NewObject ());
       Dev.Null = obj.GetBindingTransaction();
     }
 
     [Test]
     public void FinishReferenceInitialization_IDAndBindingTransaction ()
     {
-      var domainObject = Order.NewObject(); // indirect call of FinishReferenceInitialization
+      var domainObject = _transaction.Execute (() => Order.NewObject()); // indirect call of FinishReferenceInitialization
       Assert.That (domainObject.OnReferenceInitializedCalled, Is.True);
 
       Assert.That (domainObject.OnReferenceInitializedID, Is.EqualTo (domainObject.ID));
@@ -185,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         "While the OnReferenceInitialized event is executing, this member cannot be used.")]
     public void FinishReferenceInitialization_CallsReferenceInitialized_PropertyAccessForbidden ()
     {
-      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.OrderNumber);
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.OrderNumber));
     }
 
     [Test]
@@ -193,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         "While the OnReferenceInitialized event is executing, this member cannot be used.")]
     public void FinishReferenceInitialization_CallsReferenceInitialized_PropertiesForbidden ()
     {
-      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.Properties);
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.Properties));
     }
 
     [Test]
@@ -201,13 +207,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         "While the OnReferenceInitialized event is executing, this member cannot be used.")]
     public void FinishReferenceInitialization_CallsReferenceInitialized_CurrentPropertyForbidden ()
     {
-      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.CurrentProperty);
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.CurrentProperty));
     }
 
     [Test]
     public void FinishReferenceInitialization_CallsReferenceInitialized_TransactionContextIsRestricted ()
     {
-      var result = DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.DefaultTransactionContext);
+      var result = _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o.DefaultTransactionContext));
       Assert.That (result, Is.TypeOf (typeof (InitializedEventDomainObjectTransactionContextDecorator)));
     }
 
@@ -216,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         "While the OnReferenceInitialized event is executing, this member cannot be used.")]
     public void FinishReferenceInitialization_CallsReferenceInitialized_DeleteForbidden ()
     {
-      DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => { o.Delete (); return o; });
+      _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => { o.Delete (); return o; }));
     }
 
     [Test]
@@ -224,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (HookedDomainObjectMixin)).EnterScope ())
       {
-        var order = Order.NewObject(); // indirect call of FinishReferenceInitialization
+        var order = _transaction.Execute (() => Order.NewObject()); // indirect call of FinishReferenceInitialization
         var mixinInstance = Mixin.Get<HookedDomainObjectMixin> (order);
 
         Assert.That (mixinInstance.OnDomainObjectReferenceInitializedCalled, Is.True);
@@ -243,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
         using (new MixedObjectInstantiationScope (mixinInstance))
         {
-          Order.NewObject(); // indirect call of FinishReferenceInitialization
+          _transaction.Execute (() => Order.NewObject()); // indirect call of FinishReferenceInitialization
         }
       }
     }
@@ -251,26 +257,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void FinishReferenceInitialization_ResetsFlagAfterNotification ()
     {
-      var order = DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o);
-      Dev.Null = order.OrderNumber; // succeeds
+      var order = _transaction.Execute (() => DomainObjectTestHelper.ExecuteInReferenceInitialized_NewObject (o => o));
+      Dev.Null = _transaction.Execute (() => order.OrderNumber); // succeeds
     }
 
     [Test]
     public void DefaultTransactionContext_Current ()
     {
-      var order = Order.NewObject ();
-      Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (ClientTransaction.Current));
+      var order = _transaction.Execute (() => Order.NewObject ());
+      Assert.That (_transaction.Execute (() => order.DefaultTransactionContext.ClientTransaction), Is.SameAs (_transaction));
     }
 
     [Test]
     public void DefaultTransactionContext_Bound ()
     {
-      Order order;
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      using (bindingTransaction.EnterNonDiscardingScope ())
-      {
-        order = Order.NewObject ();
-      }
+      var order = bindingTransaction.Execute (() => Order.NewObject ());
       Assert.That (order.DefaultTransactionContext.ClientTransaction, Is.SameAs (bindingTransaction));
     }
 
@@ -279,11 +281,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
     public void DefaultTransactionContext_Null ()
     {
-      var order = Order.NewObject ();
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        Dev.Null = order.DefaultTransactionContext;
-      }
+      var order = _transaction.Execute (() => Order.NewObject ());
+      Dev.Null = order.DefaultTransactionContext;
     }
 
     [Test]
@@ -293,8 +292,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Delete_ChecksTransaction ()
     {
       var order = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
-      Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
-      order.Delete ();
+      Assert.That (_transaction.IsEnlisted (order), Is.False);
+      _transaction.Execute (order.Delete);
     }
 
     [Test]
@@ -303,18 +302,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)", MatchType = MessageMatch.Regex)]
     public void PropertyAccess_ThrowsWhenNotEnlisted ()
     {
-      Order order = Order.NewObject ();
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        Assert.That (ClientTransaction.Current.IsEnlisted (order), Is.False);
-        Dev.Null = order.OrderNumber;
-      }
+      Order order = _transaction.Execute (() => Order.NewObject ());
+      var otherTransaction = ClientTransaction.CreateRootTransaction ();
+      Assert.That (otherTransaction.IsEnlisted (order), Is.False);
+      Dev.Null = otherTransaction.Execute (() => order.OrderNumber);
     }
 
     [Test]
     public void OnLoaded_CanAccessPropertyValues ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       order.ProtectedLoaded += ((sender, e) => Assert.That (((Order) sender).OrderNumber, Is.EqualTo (1)));
 
@@ -326,13 +323,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void EnsureDataAvailable ()
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      ClientTransactionMock.EnlistDomainObject (order);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[order.ID], Is.Null);
+      _transaction.EnlistDomainObject (order);
+      Assert.That (_transaction.DataManager.DataContainerMap[order.ID], Is.Null);
       
-      order.EnsureDataAvailable ();
+      _transaction.Execute (order.EnsureDataAvailable);
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[order.ID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[order.ID].DomainObject, Is.SameAs (order));
+      Assert.That (_transaction.DataManager.DataContainerMap[order.ID], Is.Not.Null);
+      Assert.That (_transaction.DataManager.DataContainerMap[order.ID].DomainObject, Is.SameAs (order));
     }
 
     [Test]
@@ -341,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       try
       {
-        Order order = Order.NewObject ();
+        Order order = _transaction.Execute (() => Order.NewObject ());
         typeof (DomainObject).GetMethod ("GetType", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Invoke (
             order, new object[0]);
       }
@@ -354,124 +351,111 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetPublicDomainObjectType ()
     {
-      Customer customer = Customer.NewObject ();
+      Customer customer = _transaction.Execute (() => Customer.NewObject ());
       Assert.That (customer.GetPublicDomainObjectType(), Is.SameAs (typeof (Customer)));
     }
 
     [Test]
     public new void ToString ()
     {
-      Order order = Order.NewObject ();
+      Order order = _transaction.Execute (() => Order.NewObject ());
       Assert.That (order.ToString (), Is.EqualTo (order.ID.ToString ()));
     }
 
     [Test]
     public void State ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Customer customer = _transaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1));
 
-      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
-      customer.Name = "New name";
-      Assert.That (customer.State, Is.EqualTo (StateType.Changed));
+      _transaction.Execute (() => Assert.That (customer.State, Is.EqualTo (StateType.Unchanged)));
+      _transaction.Execute (() => customer.Name = "New name");
+      _transaction.Execute (() => Assert.That (customer.State, Is.EqualTo (StateType.Changed)));
     }
 
     [Test]
     public void MarkAsChanged ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Unchanged)));
 
-      order.MarkAsChanged ();
-      Assert.That (order.State, Is.EqualTo (StateType.Changed));
+      _transaction.Execute (order.MarkAsChanged);
+      
+      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Changed)));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
     public void MarkAsChangedThrowsWhenNew ()
     {
-      Order order = Order.NewObject ();
-      order.MarkAsChanged ();
+      Order order = _transaction.Execute (() => Order.NewObject ());
+      _transaction.Execute (order.MarkAsChanged);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
     public void MarkAsChangedThrowsWhenDeleted ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      order.Delete ();
-      order.MarkAsChanged ();
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (order.Delete);
+      _transaction.Execute (order.MarkAsChanged);
     }
 
     [Test]
     public void NewObject_CallsCtor ()
     {
-      var order = Order.NewObject ();
+      var order = _transaction.Execute (() => Order.NewObject ());
       Assert.That (order.CtorCalled, Is.True);
     }
 
     [Test]
     public void NewObject_ProtectedConstructor ()
     {
-      Dev.Null = Company.NewObject ();
+      Dev.Null = _transaction.Execute (() => Company.NewObject ());
     }
 
     [Test]
     public void NewObject_PublicConstructor ()
     {
-      Dev.Null = Customer.NewObject ();
+      Dev.Null = _transaction.Execute (() => Customer.NewObject ());
     }
 
     [Test]
     public void NewObject_SetsNeedsLoadModeDataContainerOnly_True ()
     {
-      var order = Order.NewObject ();
+      var order = _transaction.Execute (() => Order.NewObject ());
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
     [Test]
     public void GetObject_SetsNeedsLoadModeDataContainerOnly_True_ ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
     [Test]
-    public void GetObject_WithTransaction ()
+    [Ignore ("TODO: Fix bug")]
+    public void GetObject_WithoutTransaction ()
     {
-      Order order;
-      var clientTransactionMock = new ClientTransactionMock ();
-      using (clientTransactionMock.EnterDiscardingScope ())
-      {
-        order = Order.GetObject (DomainObjectIDs.Order1);
-      }
-      Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
-      Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
+      Order.GetObject (DomainObjectIDs.Order1);
     }
 
     [Test]
-    public void GetObject_Deleted_WithTransaction ()
+    public void GetObject_Deleted ()
     {
-      Order order;
-      var clientTransactionMock = new ClientTransactionMock ();
-      using (clientTransactionMock.EnterDiscardingScope ())
-      {
-        order = Order.GetObject (DomainObjectIDs.Order1);
+      var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
-        order.Delete ();
+      _transaction.Execute (order.Delete);
 
-        order = Order.GetObject (DomainObjectIDs.Order1, true);
-
-        Assert.That (order.State, Is.EqualTo (StateType.Deleted));
-      }
-      Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
-      Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
+      _transaction.Execute (() => Assert.That (Order.GetObject (DomainObjectIDs.Order1, true), Is.SameAs (order)));
+      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Deleted)));
     }
 
     [Test]
     public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
     }
 
@@ -479,7 +463,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
       PrivateInvoke.InvokeNonPublicMethod (order, typeof (DomainObject), "OnLoaded");
@@ -490,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_True ()
     {
-      var order = Order.NewObject ();
+      var order = _transaction.Execute (() => Order.NewObject ());
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
 
       var deserializedOrder = Serializer.SerializeAndDeserialize (order);
@@ -501,7 +485,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, ClientTransactionMock);
+      var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
@@ -512,7 +496,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_True ()
     {
-      var classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
+      var classWithAllDataTypes = _transaction.Execute (() => ClassWithAllDataTypes.NewObject ());
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.True);
 
       var deserializedClassWithAllDataTypes = Serializer.SerializeAndDeserialize (classWithAllDataTypes);
@@ -523,7 +507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
       var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
-      var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, ClientTransactionMock);
+      var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, _transaction);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
 
@@ -534,25 +518,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Properties ()
     {
-      var order = Order.NewObject ();
-      var propertyIndexer = order.Properties;
+      var order = _transaction.Execute (() => Order.NewObject ());
+      var propertyIndexer = _transaction.Execute (() => order.Properties);
       Assert.That (propertyIndexer, Is.Not.Null);
       Assert.That (propertyIndexer.DomainObject, Is.SameAs (order));
 
-      var propertyIndexer2 = order.Properties;
+      var propertyIndexer2 = _transaction.Execute (() => order.Properties);
       Assert.That (propertyIndexer, Is.SameAs (propertyIndexer2));
     }
 
     [Test]
     public void Properties_Serialization ()
     {
-      var order = Order.NewObject ();
-      var propertyIndexer = order.Properties;
+      var order = _transaction.Execute (() => Order.NewObject ());
+      var propertyIndexer = _transaction.Execute (() => order.Properties);
       Assert.That (propertyIndexer, Is.Not.Null);
       Assert.That (propertyIndexer.DomainObject, Is.SameAs (order));
 
       var deserializedOrder = Serializer.SerializeAndDeserialize (order);
-      var newPropertyIndexer = deserializedOrder.Properties;
+      var newPropertyIndexer = _transaction.Execute (() => deserializedOrder.Properties);
       Assert.That (newPropertyIndexer, Is.Not.Null);
       Assert.That (newPropertyIndexer.DomainObject, Is.SameAs (deserializedOrder));
     }
@@ -560,11 +544,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void TransactionContext ()
     {
-      var order = Order.NewObject ();
+      var order = _transaction.Execute (() => Order.NewObject ());
       var transactionContextIndexer = order.TransactionContext;
 
       Assert.That (transactionContextIndexer, Is.InstanceOfType (typeof (DomainObjectTransactionContextIndexer)));
-      Assert.That (((DomainObjectTransactionContext) transactionContextIndexer[ClientTransaction.Current]).DomainObject, Is.SameAs (order));
+      Assert.That (((DomainObjectTransactionContext) transactionContextIndexer[_transaction]).DomainObject, Is.SameAs (order));
     }
   }
 }
