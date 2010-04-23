@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-      return (T) LifetimeService.NewObject (ClientTransaction.Current, typeof (T), constructorParameters);
+      return (T) LifetimeService.NewObject (ClientTransactionScope.CurrentTransaction, typeof (T), constructorParameters);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ namespace Remotion.Data.DomainObjects
     protected static T GetObject<T> (ObjectID id, bool includeDeleted) where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      return (T) LifetimeService.GetObject (ClientTransaction.Current, id, includeDeleted);
+      return (T) LifetimeService.GetObject (ClientTransactionScope.CurrentTransaction, id, includeDeleted);
     }
 
     #endregion
@@ -261,6 +261,8 @@ namespace Remotion.Data.DomainObjects
       _needsLoadModeDataContainerOnly = true;
     }
 
+#pragma warning disable 168
+// ReSharper disable UnusedParameter.Local
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObject"/> class in the process of deserialization.
     /// </summary>
@@ -268,8 +270,6 @@ namespace Remotion.Data.DomainObjects
     /// <param name="context">The <see cref="StreamingContext"/> coming from the .NET serialization infrastructure.</param>
     /// <remarks>Be sure to call this base constructor from the deserialization constructor of any concrete <see cref="DomainObject"/> type
     /// implementing the <see cref="ISerializable"/> interface.</remarks>
-#pragma warning disable 168
-// ReSharper disable UnusedParameter.Local
     protected DomainObject (SerializationInfo info, StreamingContext context)
 // ReSharper restore UnusedParameter.Local
 #pragma warning restore 168

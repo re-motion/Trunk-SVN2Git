@@ -401,6 +401,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
+    public void NetObject_WithoutTransaction ()
+    {
+      Order.NewObject ();
+    }
+
+    [Test]
     public void NewObject_CallsCtor ()
     {
       var order = _transaction.Execute (() => Order.NewObject ());
@@ -434,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [Ignore ("TODO: Fix bug")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void GetObject_WithoutTransaction ()
     {
       Order.GetObject (DomainObjectIDs.Order1);
