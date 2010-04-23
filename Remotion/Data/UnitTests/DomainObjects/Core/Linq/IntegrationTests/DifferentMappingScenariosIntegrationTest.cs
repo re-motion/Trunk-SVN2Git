@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
-using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
 using Remotion.Mixins;
 using @STI=Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -37,7 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [SetUp]
     public override void SetUp ()
     {
-      _concreteObjectIDs = new Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.DomainObjectIDs ();
+// ReSharper disable RedundantNameQualifier
+      _concreteObjectIDs = new TableInheritance.DomainObjectIDs ();
+// ReSharper restore RedundantNameQualifier
       base.SetUp();
     }
 
@@ -55,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     public void ConcreteObjects_PropertyAccessInSameClass_SingleTableInheritance ()
     {
       var customer = (from c in QueryFactory.CreateLinqQuery<STI.Customer> ()
-                      where c.Type == Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.CustomerType.Standard
+                      where c.Type == UnitTests.DomainObjects.TestDomain.Customer.CustomerType.Standard
                       select c);
 
       CheckQueryResult (customer, DomainObjectIDs.Customer1);
@@ -163,7 +164,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 2636: adapt MappingResolver to use properties of base classes above StorageGroup.")]
     public void ConcreteObjects_PropertyAccessInBaseClass_ClassAboveInheritanceHierarchy ()
     {
       var storageClass = (from f in QueryFactory.CreateLinqQuery<StorageGroupClass> ()
@@ -173,13 +173,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
     }
 
+    // TODO Review COMMONS-2637: Refactor to avoid changing the database in the test
+
     [Test]
     public void PropertyDeclaredByMixin_AppliedToSameObject ()
     {
       SetDatabaseModifyable ();
 
       TargetClassForPersistentMixin mixedInstance;
-      Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties mixin;
+      MixinAddingPersistentProperties mixin;
       RelationTargetForPersistentMixin relationTarget1;
       RelationTargetForPersistentMixin relationTarget2;
       RelationTargetForPersistentMixin relationTarget3;
@@ -189,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         mixedInstance = TargetClassForPersistentMixin.NewObject ();
-        mixin = Mixin.Get<Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties> (mixedInstance);
+        mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
         relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
         relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
         relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
@@ -221,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       SetDatabaseModifyable ();
 
       TargetClassForPersistentMixin mixedInstance;
-      Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties mixin;
+      MixinAddingPersistentProperties mixin;
       RelationTargetForPersistentMixin relationTarget1;
       RelationTargetForPersistentMixin relationTarget2;
       RelationTargetForPersistentMixin relationTarget3;
@@ -231,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         mixedInstance = DerivedTargetClassForPersistentMixin.NewObject ();
-        mixin = Mixin.Get<Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties> (mixedInstance);
+        mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
         relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
         relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
         relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
@@ -263,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       SetDatabaseModifyable ();
 
       TargetClassForPersistentMixin mixedInstance;
-      Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties mixin;
+      MixinAddingPersistentProperties mixin;
       RelationTargetForPersistentMixin relationTarget1;
       RelationTargetForPersistentMixin relationTarget2;
       RelationTargetForPersistentMixin relationTarget3;
@@ -273,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         mixedInstance = DerivedDerivedTargetClassForPersistentMixin.NewObject ();
-        mixin = Mixin.Get<Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties> (mixedInstance);
+        mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
         relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
         relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
         relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
@@ -296,6 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                     where ((IMixinAddingPeristentProperties) m).PersistentProperty == 299
                     select m);
 
+     // TODO Review COMMONS-2637: Shouldn't this query have a result?
       CheckQueryResult (mixins);
     }
 

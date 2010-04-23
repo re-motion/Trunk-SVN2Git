@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveMemberExpression_CardibalityOne_MemberIsTheNonForeignKeySide ()
+    public void ResolveMemberExpression_CardinalityOne_MemberIsTheNonForeignKeySide ()
     {
       var property = typeof (Employee).GetProperty ("Computer");
       
@@ -246,6 +246,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (sqlEntityRefMemberExpression.SqlTable, Is.SameAs (_customerTable));
     }
 
+    // TODO Review COMMONS-2637: Add a test showing that it's important to use sqlTable.ItemType instead of property.DeclaringType (e.g., a property that is declared above the inheritance root)
+
+    // TODO Review COMMONS-2637: This test should simulat a table that has no associated ClassDefinition, e.g., a table with an item type of DomainObject or int
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
         ExpectedMessage = "The member 'Student.First' does not have a queryable database mapping.")]
