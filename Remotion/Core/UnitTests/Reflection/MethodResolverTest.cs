@@ -18,10 +18,9 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins.Utilities;
-using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization;
+using Remotion.Reflection;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.UnitTests.Reflection
 {
   [TestFixture]
   public class MethodResolverTest
@@ -61,9 +60,10 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void ResolveMethod_BaseMethodWithSameName ()
     {
-      var method = MethodResolver.ResolveMethod (typeof (AbstractMixinWithSerializationCallbacks), "ToString", "System.String ToString()");
+      var method = MethodResolver.ResolveMethod (typeof (DateTime), "ToString", "System.String ToString()");
 
-      Assert.That (method, Is.EqualTo (typeof (AbstractMixinWithSerializationCallbacks).GetMethod ("ToString", BindingFlags.NonPublic | BindingFlags.Instance)));
+      Assert.That (method, Is.EqualTo (typeof (DateTime).GetMethod ("ToString", Type.EmptyTypes)));
+      Assert.That (method, Is.Not.EqualTo (typeof (object).GetMethod ("ToString")));
     }
 
     [Test]

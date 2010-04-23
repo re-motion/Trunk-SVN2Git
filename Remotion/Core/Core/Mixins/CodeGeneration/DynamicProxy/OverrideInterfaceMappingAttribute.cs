@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy

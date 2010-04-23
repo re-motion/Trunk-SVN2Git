@@ -21,6 +21,7 @@ using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy

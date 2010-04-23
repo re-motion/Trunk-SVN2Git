@@ -283,7 +283,7 @@
     <Compile Include="ServiceLocation\NullServiceLocatorTest.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocatorTest.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
-    <Compile Include="Utilities\MethodResolverTest.cs" />
+    <Compile Include="Reflection\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />

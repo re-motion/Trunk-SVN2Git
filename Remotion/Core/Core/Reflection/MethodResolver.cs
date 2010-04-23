@@ -19,7 +19,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.Utilities
+namespace Remotion.Reflection
 {
   /// <summary>
   /// Resolves a method from the given parameters.
