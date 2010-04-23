@@ -145,6 +145,17 @@ function DropDownMenu_OpenPopUp (id, menuID, context, getSelectionCount, evt)
     }
     else
     {
+      if (styleSheet.imports.length > 0)
+      {
+        var styleSheetForImports = popUpDocument.createStyleSheet();
+        for (var idxImports = 0; idxImports < styleSheet.imports.length; idxImports++)
+        {
+          var importRule = styleSheet.imports[idxImports];
+
+          styleSheetForImports.addImport(importRule.href, idxImports);
+        }
+      } 
+    
       for (var idxRules = 0; idxRules < styleSheet.rules.length; idxRules++)
       {
         var rule = styleSheet.rules[idxRules];
