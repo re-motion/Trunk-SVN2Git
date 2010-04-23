@@ -19,7 +19,6 @@ using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 
 namespace Remotion.Data.DomainObjects.Web.Test.Performance
@@ -35,14 +34,10 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance
 
     protected override void OnPreRender (EventArgs e)
     {
-      string key = GetType ().FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
-        string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
+      var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
 
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
-      }
+      HtmlHeadAppender.Current.RegisterStylesheetLink (
+          GetType() + "_Style", resourceUrlFactory.CreateThemedResourceUrl (typeof (ResourceTheme), ResourceType.Html, "Style.css"));
 
       base.OnPreRender (e);
     }
