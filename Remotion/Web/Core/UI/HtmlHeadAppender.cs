@@ -149,7 +149,10 @@ namespace Remotion.Web.UI
       _title = new TitleTag (title);
     }
 
-    /// <summary> Registers a stylesheet file. </summary>
+    /// <summary> 
+    /// Registers a style sheet file. 
+    /// <seealso cref="IResourceUrlFactory"/>
+    /// </summary>
     /// <remarks>
     ///   All calls to <see cref="RegisterStylesheetLink(string, string, Priority)"/> must be completed before
     ///   <see cref="SetAppended"/> is called. (Typically during the <c>Render</c> phase.)
@@ -197,7 +200,10 @@ namespace Remotion.Web.UI
       RegisterStylesheetLink (key, new StaticResourceUrl (href), priority);
     }
 
-    /// <summary> Registers a stylesheet file. </summary>
+    /// <summary> 
+    /// Registers a style sheet file. 
+    /// <seealso cref="IResourceUrlFactory"/>
+    /// </summary>
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterStylesheetLink(string, string)"/> must be completed before
@@ -246,7 +252,10 @@ namespace Remotion.Web.UI
       RegisterStylesheetLink (key, new StaticResourceUrl (href), Priority.Page);
     }
 
-    /// <summary> Registers a javascript file. </summary>
+    /// <summary> 
+    /// Registers a javascript file. 
+    /// <seealso cref="IResourceUrlFactory"/>
+    /// </summary>
     /// <remarks>
     ///   <para>
     ///     All calls to <see cref="RegisterJavaScriptInclude"/> must be completed before
