@@ -755,15 +755,11 @@
     <Content Include="Res\HTML\ExecutionEngine.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\ListMenu.css" />
     <Content Include="Res\HTML\ListMenu.js" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\FontSize080.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\FontSize100.css" />
     <Content Include="Res\Themes\ClassicBlue\HTML\FormGrid.css" />
     <Content Include="Res\HTML\jquery.js" />
     <Content Include="Res\Themes\NovaBlue\HTML\DatePicker.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\DropDownMenu.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\ExecutionEngine.css" />
-    <Content Include="Res\Themes\NovaBlue\HTML\FontSize080.css" />
-    <Content Include="Res\Themes\NovaBlue\HTML\FontSize100.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\FormGrid.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\ListMenu.css" />
     <Content Include="Res\Themes\NovaBlue\HTML\SingleView.css" />
