@@ -261,6 +261,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void NotifyClientTransactionOfBegin_SetsCurrentTransaction ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
+      var command = CreateCommand (order1.ID, order2.ID, DomainObjectIDs.Order3);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      _transaction.AddListener (listenerMock);
+
+      listenerMock
+          .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      listenerMock.Replay ();
+
+      command.NotifyClientTransactionOfBegin ();
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void NotifyClientTransactionOfBegin_NoEventsIfNoAffectedObjects ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
@@ -282,6 +302,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       command.NotifyClientTransactionOfEnd();
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
+    }
+
+    [Test]
+    public void NotifyClientTransactionOfEnd_SetsCurrentTransaction ()
+    {
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
+      var command = CreateCommand (order1.ID, order2.ID, DomainObjectIDs.Order3);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      _transaction.AddListener (listenerMock);
+      
+      listenerMock
+          .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      listenerMock.Replay ();
+
+      command.NotifyClientTransactionOfEnd ();
+
+      listenerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -322,10 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID);
 
-      using (ClientTransactionScope.EnterNullScope ())
-      {
-        command.Begin();
-      }
+      command.Begin();
 
       Assert.That (loadedObject.OnUnloadingTx, Is.SameAs (_transaction));
     }

@@ -78,16 +78,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public void NotifyClientTransactionOfBegin ()
     {
       if (_affectedDomainObjects.Count > 0)
-        _clientTransaction.TransactionEventSink.ObjectsUnloading (_affectedDomainObjects);
+        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_affectedDomainObjects));
     }
 
     public void Begin ()
     {
-      using (_clientTransaction.EnterNonDiscardingScope ())
+      _clientTransaction.Execute (delegate
       {
         for (int i = 0; i < _affectedDomainObjects.Count; i++)
-          _affectedDomainObjects[i].OnUnloading();
-      }
+          _affectedDomainObjects[i].OnUnloading ();
+      });
     }
 
     public void Perform ()
@@ -98,17 +98,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      using (_clientTransaction.EnterNonDiscardingScope ())
+      _clientTransaction.Execute (delegate
       {
         for (int i = _affectedDomainObjects.Count - 1; i >= 0; i--)
-          _affectedDomainObjects[i].OnUnloaded();
-      }
+          _affectedDomainObjects[i].OnUnloaded ();
+      });
     }
 
     public void NotifyClientTransactionOfEnd ()
     {
       if (_affectedDomainObjects.Count > 0)
-        _clientTransaction.TransactionEventSink.ObjectsUnloaded (_affectedDomainObjects);
+        _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_affectedDomainObjects));
     }
 
     ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()
