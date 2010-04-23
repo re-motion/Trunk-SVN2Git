@@ -30,8 +30,9 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
   [TestFixture]
-  public class UnloadCommandTest : ClientTransactionBaseTest
+  public class UnloadCommandTest : StandardMappingTest
   {
+    private ClientTransactionMock _transaction;
     private DataManager _dataManager;
     private DataContainerMap _dataContainerMap;
     private RelationEndPointMap _relationEndPointMap;
@@ -40,7 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       base.SetUp();
 
-      _dataManager = ClientTransactionMock.DataManager;
+      _transaction = new ClientTransactionMock ();
+      _dataManager = _transaction.DataManager;
       _dataContainerMap = _dataManager.DataContainerMap;
       _relationEndPointMap = _dataManager.RelationEndPointMap;
     }
@@ -65,9 +67,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void Initialization_ThrowsOnChangedAssociatedEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      endPoint.OppositeDomainObjects.Add (OrderItem.NewObject());
+      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
 
       CreateCommand (DomainObjectIDs.Order1);
     }
@@ -80,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void Initialization_ThrowsOnChangedOppositeEndPoint ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (CollectionEndPoint) _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
 
-      endPoint.OppositeDomainObjects.Add (OrderItem.NewObject());
+      _transaction.Execute (() => endPoint.OppositeDomainObjects.Add (OrderItem.NewObject()));
 
       CreateCommand (DomainObjectIDs.OrderItem1); // OrderItem1.Order has not changed, but OrderItem1.Order.OrderItems has...
     }
@@ -155,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       EnsureEndPointAvailable (loadedVirtualEndPointWithNullValue);
       Assert.That (
-          ((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[loadedVirtualEndPointWithNullValue]).OppositeObjectID, Is.Null);
+          ((ObjectEndPoint) _dataManager.RelationEndPointMap[loadedVirtualEndPointWithNullValue]).OppositeObjectID, Is.Null);
 
       CheckAffectedEndPointIDsContains (DomainObjectIDs.Employee1, loadedVirtualEndPointWithNullValue);
     }
@@ -197,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void AffectedEndPointIDs_VirtualObjectEndPoint_NullAndNotLoaded_NotContained ()
     {
       var virtualObjectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Employee1, "Computer");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[virtualObjectEndPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[virtualObjectEndPointID], Is.Null);
 
       CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Employee1, virtualObjectEndPointID);
     }
@@ -231,14 +233,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       CheckAffectedEndPointIDsNotContains (DomainObjectIDs.Computer4, oppositeVirtualObjectEndPointID);
 
-      Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID]).OppositeObjectID, Is.Null);
+      Assert.That (((ObjectEndPoint) _dataManager.RelationEndPointMap[realEndPointID]).OppositeObjectID, Is.Null);
     }
 
     [Test]
     public void AffectedEndPointIDs_OppositeVirtualCollectionEndPoint_NotLoaded_NotContained ()
     {
       var oppositeCollectionEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[oppositeCollectionEndPointID], Is.Null);
+      Assert.That (_dataManager.RelationEndPointMap[oppositeCollectionEndPointID], Is.Null);
 
       CheckAffectedEndPointIDsNotContains (DomainObjectIDs.OrderItem1, oppositeCollectionEndPointID);
     }
@@ -246,12 +248,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
       var command = CreateCommand (order1.ID, order2.ID, DomainObjectIDs.Order3);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      ClientTransactionMock.AddListener (listenerMock);
+      _transaction.AddListener (listenerMock);
 
       command.NotifyClientTransactionOfBegin();
 
@@ -261,7 +263,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfBegin_NoEventsIfNoAffectedObjects ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       command.NotifyClientTransactionOfBegin();
@@ -270,12 +272,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
       var command = CreateCommand (order1.ID, order2.ID, DomainObjectIDs.Order3);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      ClientTransactionMock.AddListener (listenerMock);
+      _transaction.AddListener (listenerMock);
 
       command.NotifyClientTransactionOfEnd();
 
@@ -285,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfEnd_NoEventsIfNoAffectedObjects ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       var command = CreateCommand (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       command.NotifyClientTransactionOfEnd();
@@ -294,13 +296,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Begin ()
     {
-      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       
       var unloadedObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      ClientTransactionMock.EnlistDomainObject (unloadedObject);
-      Assert.That (unloadedObject.State, Is.EqualTo (StateType.NotLoadedYet));
+      _transaction.EnlistDomainObject (unloadedObject);
+      Assert.That (unloadedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
       command.Begin ();
 
@@ -315,9 +317,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void Begin_Transaction ()
     {
-      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID);
 
       using (ClientTransactionScope.EnterNullScope ())
@@ -325,16 +327,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         command.Begin();
       }
 
-      Assert.That (loadedObject.OnUnloadingTx, Is.SameAs (ClientTransactionMock));
+      Assert.That (loadedObject.OnUnloadingTx, Is.SameAs (_transaction));
     }
 
     [Test]
     public void Begin_Sequence ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (order1.ID, order2.ID);
       command.Begin ();
 
@@ -347,13 +349,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End ()
     {
-      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
       var unloadedObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      ClientTransactionMock.EnlistDomainObject (unloadedObject);
-      Assert.That (unloadedObject.State, Is.EqualTo (StateType.NotLoadedYet));
+      _transaction.EnlistDomainObject (unloadedObject);
+      Assert.That (unloadedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID, unloadedObject.ID);
       command.End ();
 
@@ -368,25 +370,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End_Transaction ()
     {
-      var loadedObject = Order.GetObject (DomainObjectIDs.Order1);
+      var loadedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (loadedObject.ID);
       using (ClientTransactionScope.EnterNullScope ())
       {
         command.End();
       }
 
-      Assert.That (loadedObject.OnUnloadedTx, Is.SameAs (ClientTransactionMock));
+      Assert.That (loadedObject.OnUnloadedTx, Is.SameAs (_transaction));
     }
 
     [Test]
     public void End_Sequence ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var order1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
       var command = CreateCommand (order1.ID, order2.ID);
       command.End ();
 
@@ -531,7 +533,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
     private void CheckAffectedEndPointIDsContains (ObjectID unloadedObject, RelationEndPointID expectedEndPointID)
     {
-      var domainObject = LifetimeService.GetObject (ClientTransactionMock, unloadedObject, false);
+      var domainObject = LifetimeService.GetObject (_transaction, unloadedObject, false);
       var command = CreateCommand (domainObject.ID);
       var endPointIDs = command.AffectedEndPointIDs;
 
@@ -540,7 +542,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
     private void CheckAffectedEndPointIDsNotContains (ObjectID unloadedObject, RelationEndPointID unexpectedEndPointID)
     {
-      var domainObject = LifetimeService.GetObject (ClientTransactionMock, unloadedObject, false);
+      var domainObject = LifetimeService.GetObject (_transaction, unloadedObject, false);
       var command = CreateCommand (domainObject.ID);
       var endPointIDs = command.AffectedEndPointIDs;
 
@@ -549,17 +551,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
     private void EnsureDataAvailable (ObjectID objectID)
     {
-      ClientTransactionMock.EnsureDataAvailable (objectID);
+      _transaction.EnsureDataAvailable (objectID);
     }
 
     private void EnsureEndPointAvailable (RelationEndPointID endPointID)
     {
-      ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
+      _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
     }
 
     private UnloadCommand CreateCommand (params ObjectID[] objectIDs)
     {
-      return new UnloadCommand (objectIDs, ClientTransactionMock, _dataContainerMap, _relationEndPointMap);
+      return new UnloadCommand (objectIDs, _transaction, _dataContainerMap, _relationEndPointMap);
     }
   }
 }
