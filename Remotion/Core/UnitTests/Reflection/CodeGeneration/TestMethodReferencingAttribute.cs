@@ -15,19 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.Mixins.Utilities;
-using Remotion.Utilities;
+using Remotion.Reflection.CodeGeneration;
 
-namespace Remotion.Reflection.CodeGeneration
+namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
-  /// <summary>
-  /// Marks a generated method as a public wrapper for another method.
-  /// </summary>
-  [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-  public class GeneratedMethodWrapperAttribute : MethodReferencingAttribute
+  public class TestMethodReferencingAttribute : MethodReferencingAttribute
   {
-    public GeneratedMethodWrapperAttribute (Type declaringType, string methodName, string methodSignature)
+    public TestMethodReferencingAttribute (Type declaringType, string methodName, string methodSignature)
         : base (declaringType, methodName, methodSignature)
     {
     }

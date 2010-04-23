@@ -248,6 +248,7 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\EventSignatureStringBuilderTest.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilderIntegrationTest.cs" />
@@ -427,7 +428,7 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\FilteringAssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
-    <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttributeTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodReferencingAttributeTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithReplicatableConstructors.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleAttribute.cs" />
     <Compile Include="Reflection\CodeGeneration\SetUpFixture.cs" />

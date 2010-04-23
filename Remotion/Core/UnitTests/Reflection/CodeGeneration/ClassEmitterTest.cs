@@ -751,7 +751,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.That (attribute.MethodName, Is.EqualTo ("GetSecret"));
       Assert.That (attribute.MethodSignature, Is.EqualTo (methodToBeWrapped.ToString()));
 
-      Assert.That (attribute.ResolveWrappedMethod (), Is.EqualTo (methodToBeWrapped));
+      Assert.That (attribute.ResolveReferencedMethod (), Is.EqualTo (methodToBeWrapped));
     }
 
     [Test]

@@ -78,7 +78,7 @@ namespace Remotion.Mixins.CodeGeneration
           from interfaceMethod in interfaceType.GetMethods()
           let attribute = (OverrideInterfaceMappingAttribute) interfaceMethod.GetCustomAttributes (typeof (OverrideInterfaceMappingAttribute), false)
               .Single()
-          let resolvedMethod = attribute.ResolveMethod()
+          let resolvedMethod = attribute.ResolveReferencedMethod ()
           select new { resolvedMethod, interfaceMethod };
 
       return mixinMethodsWithInterfaceMethods.ToDictionary (pair => pair.resolvedMethod, pair => pair.interfaceMethod);
@@ -88,7 +88,7 @@ namespace Remotion.Mixins.CodeGeneration
     {
       var attribute = GetWrapperAttribute (potentialWrapper);
       if (attribute != null)
-        return attribute.ResolveWrappedMethod ();
+        return attribute.ResolveReferencedMethod ();
       else
         return null;
     }

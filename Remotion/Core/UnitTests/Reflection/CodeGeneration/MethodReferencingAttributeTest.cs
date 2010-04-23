@@ -19,66 +19,65 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using System.Reflection;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
   [TestFixture]
-  public class GeneratedMethodWrapperAttributeTest
+  public class MethodReferencingAttributeTest
   {
     [Test]
-    public void ResolveWrappedMethod()
+    public void ResolveReferencedMethod()
     {
       var wrappedMethod = typeof (DateTime).GetMethod ("get_Now");
-      var attribute = new GeneratedMethodWrapperAttribute (typeof (DateTime), "get_Now", wrappedMethod.ToString());
+      var attribute = new TestMethodReferencingAttribute (typeof (DateTime), "get_Now", wrappedMethod.ToString());
       
-      var resolvedMethod = attribute.ResolveWrappedMethod ();
+      var resolvedMethod = attribute.ResolveReferencedMethod ();
       
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
 
     [Test]
-    public void ResolveWrappedMethod_GenType_RefType ()
+    public void ResolveReferencedMethod_GenType_RefType ()
     {
       MethodInfo wrappedMethod = typeof (List<string>).GetMethod ("Add");
-      var attribute = new GeneratedMethodWrapperAttribute (typeof (List<string>), "Add", wrappedMethod.ToString());
+      var attribute = new TestMethodReferencingAttribute (typeof (List<string>), "Add", wrappedMethod.ToString());
       
-      var resolvedMethod = attribute.ResolveWrappedMethod ();
+      var resolvedMethod = attribute.ResolveReferencedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
 
     [Test]
-    public void ResolveWrappedMethod_GenType_ValueType ()
+    public void ResolveReferencedMethod_GenType_ValueType ()
     {
       MethodInfo wrappedMethod = typeof (List<int>).GetMethod ("Add");
-      var attribute = new GeneratedMethodWrapperAttribute (typeof (List<int>), "Add", wrappedMethod.ToString());
+      var attribute = new TestMethodReferencingAttribute (typeof (List<int>), "Add", wrappedMethod.ToString());
       
-      var resolvedMethod = attribute.ResolveWrappedMethod ();
+      var resolvedMethod = attribute.ResolveReferencedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
 
     [Test]
-    public void ResolveWrappedMethod_GenMethod ()
+    public void ResolveReferencedMethod_GenMethod ()
     {
       MethodInfo wrappedMethod = typeof (ClassWithConstrainedGenericMethod).GetMethod ("GenericMethod");
-      var attribute = new GeneratedMethodWrapperAttribute (typeof (ClassWithConstrainedGenericMethod), "GenericMethod", wrappedMethod.ToString());
+      var attribute = new TestMethodReferencingAttribute (typeof (ClassWithConstrainedGenericMethod), "GenericMethod", wrappedMethod.ToString());
       
-      var resolvedMethod = attribute.ResolveWrappedMethod ();
+      var resolvedMethod = attribute.ResolveReferencedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
 
     [Test]
-    public void ResolveWrappedMethod_GenMethod_GenType ()
+    public void ResolveReferencedMethod_GenMethod_GenType ()
     {
       var genericType = typeof (GenericClassWithGenericMethod<IConvertible, List<string>, DateTime, object, IConvertible,  List<List<IConvertible[]>>>);
       MethodInfo wrappedMethod = genericType.GetMethod ("GenericMethod");
-      var attribute = new GeneratedMethodWrapperAttribute (genericType, "GenericMethod", wrappedMethod.ToString());
+      var attribute = new TestMethodReferencingAttribute (genericType, "GenericMethod", wrappedMethod.ToString());
       
-      var resolvedMethod = attribute.ResolveWrappedMethod ();
+      var resolvedMethod = attribute.ResolveReferencedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }

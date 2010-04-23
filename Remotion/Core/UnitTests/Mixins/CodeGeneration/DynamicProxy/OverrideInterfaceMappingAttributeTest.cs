@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       var attribute = new OverrideInterfaceMappingAttribute (typeof (MixinWithAbstractMembers), "AbstractMethod", "Void AbstractMethod()");
       var expected = typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.NonPublic | BindingFlags.Instance);
 
-      Assert.That (attribute.ResolveMethod (), Is.EqualTo (expected));
+      Assert.That (attribute.ResolveReferencedMethod (), Is.EqualTo (expected));
     }
   }
 }
