@@ -16,13 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using System.Reflection;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.Collections;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
@@ -33,27 +30,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ResolveWrappedMethod()
     {
-      MethodInfo wrappedMethod = typeof (DateTime).GetMethod ("get_Now");
-      var attribute = new GeneratedMethodWrapperAttribute (wrappedMethod.MetadataToken, new Type[0]);
-      Type typeHoldingWrapperMethod = typeof (DateTime);
-      var resolvedMethod = attribute.ResolveWrappedMethod (typeHoldingWrapperMethod.Module);
-
-      Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
-    }
-
-    [Test]
-    public void ResolveWrappedMethod_FromOtherModule ()
-    {
-      var moduleForWrappers = new ModuleManager ();
-      TypeBuilder wrapperClassBuilder = moduleForWrappers.Scope.ObtainDynamicModuleWithStrongName ().DefineType ("WrapperClass");
-
-      wrapperClassBuilder.DefineMethod ("Wrapper", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);
-      Type wrapperType = wrapperClassBuilder.CreateType ();
-
-      MethodInfo wrappedMethod = typeof (DateTime).GetMethod ("get_Now");
-      var attribute = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod).Token, new Type[0]);
-      var resolvedMethod = attribute.ResolveWrappedMethod (wrapperType.Module);
-
+      var wrappedMethod = typeof (DateTime).GetMethod ("get_Now");
+      var attribute = new GeneratedMethodWrapperAttribute (typeof (DateTime), "get_Now", wrappedMethod.ToString());
+      
+      var resolvedMethod = attribute.ResolveWrappedMethod ();
+      
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
 
@@ -61,20 +42,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void ResolveWrappedMethod_GenType_RefType ()
     {
       MethodInfo wrappedMethod = typeof (List<string>).GetMethod ("Add");
-      var attribute = new GeneratedMethodWrapperAttribute (wrappedMethod.MetadataToken, new[] { typeof (string) });
-      var resolvedMethod = attribute.ResolveWrappedMethod (typeof (List<string>).Module);
-
-      Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
-    }
-
-    [Test]
-    public void ResolveWrappedMethod_GenType_RefType_Object ()
-    {
-      var module = new ModuleManager ().Scope.ObtainDynamicModuleWithStrongName ();
-      MethodInfo wrappedMethod = typeof (List<object>).GetMethod ("Add");
-      int token = module.GetMethodToken (wrappedMethod).Token;
-      var attribute = new GeneratedMethodWrapperAttribute (token, new[] { typeof (object) });
-      var resolvedMethod = attribute.ResolveWrappedMethod (module);
+      var attribute = new GeneratedMethodWrapperAttribute (typeof (List<string>), "Add", wrappedMethod.ToString());
+      
+      var resolvedMethod = attribute.ResolveWrappedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
@@ -83,8 +53,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void ResolveWrappedMethod_GenType_ValueType ()
     {
       MethodInfo wrappedMethod = typeof (List<int>).GetMethod ("Add");
-      var attribute = new GeneratedMethodWrapperAttribute (wrappedMethod.MetadataToken, new[] { typeof (int) });
-      var resolvedMethod = attribute.ResolveWrappedMethod (typeof (List<int>).Module);
+      var attribute = new GeneratedMethodWrapperAttribute (typeof (List<int>), "Add", wrappedMethod.ToString());
+      
+      var resolvedMethod = attribute.ResolveWrappedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
@@ -93,9 +64,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void ResolveWrappedMethod_GenMethod ()
     {
       MethodInfo wrappedMethod = typeof (ClassWithConstrainedGenericMethod).GetMethod ("GenericMethod");
-      var attribute = new GeneratedMethodWrapperAttribute (wrappedMethod.MetadataToken, new Type[0]);
-      Type typeHoldingWrapperMethod = typeof (ClassWithConstrainedGenericMethod);
-      var resolvedMethod = attribute.ResolveWrappedMethod (typeHoldingWrapperMethod.Module);
+      var attribute = new GeneratedMethodWrapperAttribute (typeof (ClassWithConstrainedGenericMethod), "GenericMethod", wrappedMethod.ToString());
+      
+      var resolvedMethod = attribute.ResolveWrappedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }
@@ -105,8 +76,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       var genericType = typeof (GenericClassWithGenericMethod<IConvertible, List<string>, DateTime, object, IConvertible,  List<List<IConvertible[]>>>);
       MethodInfo wrappedMethod = genericType.GetMethod ("GenericMethod");
-      var attribute = new GeneratedMethodWrapperAttribute (wrappedMethod.MetadataToken, genericType.GetGenericArguments());
-      var resolvedMethod = attribute.ResolveWrappedMethod (genericType.Module);
+      var attribute = new GeneratedMethodWrapperAttribute (genericType, "GenericMethod", wrappedMethod.ToString());
+      
+      var resolvedMethod = attribute.ResolveWrappedMethod ();
 
       Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
     }

@@ -86,9 +86,9 @@ namespace Remotion.Mixins.CodeGeneration
 
     private MethodInfo GetWrappedMethod (MethodInfo potentialWrapper)
     {
-      var attribute = GetWrapperAttribute(potentialWrapper);
+      var attribute = GetWrapperAttribute (potentialWrapper);
       if (attribute != null)
-        return attribute.ResolveWrappedMethod (potentialWrapper.Module);
+        return attribute.ResolveWrappedMethod ();
       else
         return null;
     }

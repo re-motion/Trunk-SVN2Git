@@ -28,7 +28,6 @@ using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using System.Linq;
-using Remotion.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -257,8 +256,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var wrappedMethod2 = typeof (DateTime).GetMethod ("get_Day");
 
       // fake attributes simulating the relationship between wrapper methods and wrapped methods
-      var attribute1 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod1).Token, new Type[0]);
-      var attribute2 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod2).Token, new Type[0]);
+      var attribute1 = new GeneratedMethodWrapperAttribute (wrappedMethod1.DeclaringType, wrappedMethod1.Name, wrappedMethod1.ToString());
+      var attribute2 = new GeneratedMethodWrapperAttribute (wrappedMethod2.DeclaringType, wrappedMethod2.Name, wrappedMethod2.ToString ());
 
       // prepare importerMock.GetWrapperAttribute to return attribute1 and attribute2 for wrapperMethod1 and wrapperMethod2
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
@@ -315,7 +314,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var attribute = (GeneratedMethodWrapperAttribute) PrivateInvoke.InvokeNonPublicMethod (importer, "GetWrapperAttribute", method);
 
       Assert.That (attribute, Is.Not.Null);
-      Assert.That (attribute.WrappedMethodRefToken, Is.EqualTo (0xfeefee));
+      Assert.That (attribute.DeclaringType, Is.EqualTo (typeof (DateTime)));
+      Assert.That (attribute.MethodName, Is.EqualTo ("get_Now"));
+      Assert.That (attribute.MethodSignature, Is.EqualTo ("System.DateTime get_Now()"));
     }
 
     [Test]
@@ -348,7 +349,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     }
 
 
-    [GeneratedMethodWrapper (0xfeefee, new Type[0])]
+    [GeneratedMethodWrapper (typeof (DateTime), "get_Now", "System.DateTime get_Now()")]
     public void FakeWrapperMethod ()
     {
     }

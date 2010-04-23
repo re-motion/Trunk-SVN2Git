@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration
@@ -26,45 +27,39 @@ namespace Remotion.Reflection.CodeGeneration
   [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
   public class GeneratedMethodWrapperAttribute : Attribute
   {
-    private readonly int _wrappedMethodRefToken;
-    private readonly Type[] _genericTypeArguments;
+    private readonly Type _declaringType;
+    private readonly string _methodName;
+    private readonly string _methodSignature;
 
-    public GeneratedMethodWrapperAttribute (int wrappedMethodRefToken)
-      : this (wrappedMethodRefToken, Type.EmptyTypes)
+    public GeneratedMethodWrapperAttribute (Type declaringType, string methodName, string methodSignature)
     {
-    }
-    
-    public GeneratedMethodWrapperAttribute (int wrappedMethodRefToken, Type[] genericTypeArguments)
-    {
-      ArgumentUtility.CheckNotNull ("genericTypeArguments", genericTypeArguments);
-      _wrappedMethodRefToken = wrappedMethodRefToken;
-      _genericTypeArguments = genericTypeArguments;
-    }
+      ArgumentUtility.CheckNotNull ("declaringType", declaringType);
+      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
+      ArgumentUtility.CheckNotNullOrEmpty ("methodSignature", methodSignature);
 
-    public int WrappedMethodRefToken
-    {
-      get { return _wrappedMethodRefToken; }
+      _declaringType = declaringType;
+      _methodName = methodName;
+      _methodSignature = methodSignature;
     }
 
-    public Type[] GenericTypeArguments
+    public Type DeclaringType
     {
-      get { return _genericTypeArguments; }
+      get { return _declaringType; }
     }
 
-    public MethodInfo ResolveWrappedMethod (Module module)
+    public string MethodName
     {
-      var method = module.ResolveMethod (WrappedMethodRefToken);
-      
-      // If we have a generic type, ResolveMethod sometimes returns the method on the generic type definition, not the closed generic type.
-      // To retrieve the method on the closed generic type, we use GetMethodFromHandle.
-      // (We could also iterate over the methods to search the one with the right token, but going via RuntimeMethodHandle seems more elegant.)
-      if (_genericTypeArguments.Length > 0 && method.DeclaringType.IsGenericTypeDefinition)
-      {
-        var surroundingType = method.DeclaringType.MakeGenericType (_genericTypeArguments).TypeHandle;
-        return (MethodInfo) MethodBase.GetMethodFromHandle (method.MethodHandle, surroundingType);
-      }
-      else
-        return (MethodInfo) method;
+      get { return _methodName; }
+    }
+
+    public string MethodSignature
+    {
+      get { return _methodSignature; }
+    }
+
+    public MethodInfo ResolveWrappedMethod ()
+    {
+      return MethodResolver.ResolveMethod (DeclaringType, MethodName, MethodSignature);
     }
   }
 }

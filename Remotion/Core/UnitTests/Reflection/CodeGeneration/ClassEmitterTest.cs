@@ -529,8 +529,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
       var instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
 
-      instance.Event += delegate { };
-      instance.Event -= delegate { };
+      EventHandler eventHandler = delegate { };
+      instance.Event += eventHandler;
+      instance.Event -= eventHandler;
     }
 
     [Test]
@@ -580,8 +581,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
 
       var instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
-      instance.Event += delegate { };
-      instance.Event -= delegate { };
+      EventHandler eventHandler = delegate { };
+      instance.Event += eventHandler;
+      instance.Event -= eventHandler;
     }
 
     [Test]
@@ -604,8 +606,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type builtType = classEmitter.BuildType ();
 
       var instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
-      instance.Event += delegate { };
-      instance.Event -= delegate { };
+      EventHandler eventHandler = delegate { };
+      instance.Event += eventHandler;
+      instance.Event -= eventHandler;
     }
 
     [Test]
@@ -734,33 +737,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    public void GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_Empty ()
-    {
-      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_Empty", typeof (ClassWithProtectedMethod));
-      classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
-
-      object instance = Activator.CreateInstance (classEmitter.BuildType ());
-      MethodInfo publicWrapper = instance.GetType ().GetMethod ("__wrap__GetSecret");
-
-      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
-      Assert.That (attribute.GenericTypeArguments, Is.Empty);
-    }
-
-    [Test]
-    public void GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_NotEmpty ()
-    {
-      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_NotEmpty", typeof (GenericClassWithAllKindsOfMembers<string>));
-      classEmitter.GetPublicMethodWrapper (typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method", _declaredInstanceBindingFlags));
-
-      object instance = Activator.CreateInstance (classEmitter.BuildType ());
-      MethodInfo publicWrapper = instance.GetType ().GetMethod ("__wrap__Method");
-
-      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
-      Assert.That (attribute.GenericTypeArguments, Is.EqualTo (new[] {typeof (string)}));
-    }
-
-    [Test]
-    public void GetPublicMethodWrapper_Attribute_HasRightToken ()
+    public void GetPublicMethodWrapper_Attribute_Properties ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightToken", typeof (ClassWithProtectedMethod));
       var methodToBeWrapped = typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags);
@@ -769,12 +746,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Type type = classEmitter.BuildType ();
       MethodInfo publicWrapper = type.GetMethod ("__wrap__GetSecret");
 
-      int expectedToken = Scope.WeakNamedModule.GetMethodToken (methodToBeWrapped).Token;
-
       var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
-      Assert.That (attribute.WrappedMethodRefToken, Is.EqualTo (expectedToken));
+      Assert.That (attribute.DeclaringType, Is.EqualTo (typeof (ClassWithProtectedMethod)));
+      Assert.That (attribute.MethodName, Is.EqualTo ("GetSecret"));
+      Assert.That (attribute.MethodSignature, Is.EqualTo (methodToBeWrapped.ToString()));
 
-      Assert.That (attribute.ResolveWrappedMethod (type.Module), Is.EqualTo (methodToBeWrapped));
+      Assert.That (attribute.ResolveWrappedMethod (), Is.EqualTo (methodToBeWrapped));
     }
 
     [Test]
