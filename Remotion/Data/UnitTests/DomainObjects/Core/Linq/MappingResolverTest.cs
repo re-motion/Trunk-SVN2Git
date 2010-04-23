@@ -248,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "The type 'Student' declaring member 'First' does not identify a queryable table.")]
+        ExpectedMessage = "The member 'Student.First' does not have a queryable database mapping.")]
     public void ResolveMemberExpression_InvalidDeclaringType_ThrowsUnmappedItemException ()
     {
       var property = typeof (Student).GetProperty ("First");

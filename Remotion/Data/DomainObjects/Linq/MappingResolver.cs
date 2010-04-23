@@ -123,17 +123,20 @@ namespace Remotion.Data.DomainObjects.Linq
       if (relationData != null)
         return new SqlEntityRefMemberExpression (sqlTable, property);
 
-      var classDefinition = GetClassDefinition (property.DeclaringType);
+      var classDefinition = GetClassDefinition (sqlTable.ItemType);
       if (classDefinition == null)
       {
         string message = string.Format (
             "The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
         throw new UnmappedItemException (message);
       }
-
+      
       string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
       var propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
 
+      if (propertyDefinition == null)
+        propertyDefinition = GetMixinPropertyDefinition (classDefinition, sqlTable.ItemType, property);
+      
       if (propertyDefinition == null)
       {
         string message = string.Format (
@@ -229,6 +232,25 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
       return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
+    }
+
+    private PropertyDefinition GetMixinPropertyDefinition (ClassDefinition classDefinition, Type type, PropertyInfo property)
+    {
+      if (classDefinition != null)
+      {
+        foreach (var mixin in ((ReflectionBasedClassDefinition) classDefinition).PersistentMixins)
+        {
+          if (property.DeclaringType.IsAssignableFrom (mixin))
+          {
+            string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name);
+            return classDefinition.GetPropertyDefinition (propertyIdentifier);
+          }
+        }
+
+        return GetMixinPropertyDefinition (GetClassDefinition (type.BaseType), type.BaseType, property);
+      }
+
+      return null;
     }
   }
 }

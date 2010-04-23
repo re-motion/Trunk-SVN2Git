@@ -278,6 +278,8 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedDerivedTargetClassForPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataContainerLoaderHelperTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\MultiIDLookupCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\WhereClauseBuilderTest.cs" />

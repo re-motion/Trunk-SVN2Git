@@ -17,11 +17,13 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.InheritanceRootSample;
+using Remotion.Mixins;
 using @STI=Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using @CTI = Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 
@@ -172,25 +174,129 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 2636: adapt MappingResolver to use properties of base classes above StorageGroup.")]
     public void PropertyDeclaredByMixin_AppliedToSameObject ()
     {
-      var storageClass = (from t in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
-                          where ((IMixinAddingPeristentProperties) t).PersistentProperty == 10
+      SetDatabaseModifyable ();
+
+      TargetClassForPersistentMixin mixedInstance;
+      Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties mixin;
+      RelationTargetForPersistentMixin relationTarget1;
+      RelationTargetForPersistentMixin relationTarget2;
+      RelationTargetForPersistentMixin relationTarget3;
+      RelationTargetForPersistentMixin relationTarget4;
+      RelationTargetForPersistentMixin relationTarget5;
+
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
+      {
+        mixedInstance = TargetClassForPersistentMixin.NewObject ();
+        mixin = Mixin.Get<Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties> (mixedInstance);
+        relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
+      }
+
+      mixin.PersistentProperty = 99;
+      mixin.NonPersistentProperty = 100;
+      mixin.ExtraPersistentProperty = 1000;
+      mixin.RelationProperty = relationTarget1;
+      mixin.VirtualRelationProperty = relationTarget2;
+      mixin.CollectionProperty1Side.Add (relationTarget3);
+      mixin.CollectionPropertyNSide = relationTarget4;
+      mixin.UnidirectionalRelationProperty = relationTarget5;
+
+      mixedInstance.GetBindingTransaction ().Commit ();
+
+      var mixins = (from t in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+                          where ((IMixinAddingPeristentProperties) t).PersistentProperty == 99
                           select t);
 
-      CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1); // TODO: Fix expected value
+      CheckQueryResult (mixins, mixedInstance.ID);
     }
 
     [Test]
-    [Ignore("TODO: 2637")]
-    public void Mixin_PersistentProperty ()
+    public void PropertyDeclaredByMixin_AppliedToBaseObject ()
     {
-      var mixins = (from m in QueryFactory.CreateLinqQuery <TargetClassForPersistentMixin>()
-                    where ((IMixinAddingPeristentProperties) m).PersistentProperty == 6
+      SetDatabaseModifyable ();
+
+      TargetClassForPersistentMixin mixedInstance;
+      Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties mixin;
+      RelationTargetForPersistentMixin relationTarget1;
+      RelationTargetForPersistentMixin relationTarget2;
+      RelationTargetForPersistentMixin relationTarget3;
+      RelationTargetForPersistentMixin relationTarget4;
+      RelationTargetForPersistentMixin relationTarget5;
+
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
+      {
+        mixedInstance = DerivedTargetClassForPersistentMixin.NewObject ();
+        mixin = Mixin.Get<Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties> (mixedInstance);
+        relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
+      }
+
+      mixin.PersistentProperty = 199;
+      mixin.NonPersistentProperty = 100;
+      mixin.ExtraPersistentProperty = 1000;
+      mixin.RelationProperty = relationTarget1;
+      mixin.VirtualRelationProperty = relationTarget2;
+      mixin.CollectionProperty1Side.Add (relationTarget3);
+      mixin.CollectionPropertyNSide = relationTarget4;
+      mixin.UnidirectionalRelationProperty = relationTarget5;
+
+      mixedInstance.GetBindingTransaction ().Commit ();
+
+      var mixins = (from m in QueryFactory.CreateLinqQuery <DerivedTargetClassForPersistentMixin>()
+                    where ((IMixinAddingPeristentProperties) m).PersistentProperty == 199
                     select m);
 
-      //TODO 2637: check result (new objects need to be added to the database (see MixedDomainTest.LoadStoreMixedDomainObject) 
+      CheckQueryResult (mixins); 
+    }
+
+    [Test]
+    public void PropertyDeclaredByMixin_AppliedToBaseBaseObject ()
+    {
+      SetDatabaseModifyable ();
+
+      TargetClassForPersistentMixin mixedInstance;
+      Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties mixin;
+      RelationTargetForPersistentMixin relationTarget1;
+      RelationTargetForPersistentMixin relationTarget2;
+      RelationTargetForPersistentMixin relationTarget3;
+      RelationTargetForPersistentMixin relationTarget4;
+      RelationTargetForPersistentMixin relationTarget5;
+
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
+      {
+        mixedInstance = DerivedDerivedTargetClassForPersistentMixin.NewObject ();
+        mixin = Mixin.Get<Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties> (mixedInstance);
+        relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
+      }
+
+      mixin.PersistentProperty = 299;
+      mixin.NonPersistentProperty = 100;
+      mixin.ExtraPersistentProperty = 1000;
+      mixin.RelationProperty = relationTarget1;
+      mixin.VirtualRelationProperty = relationTarget2;
+      mixin.CollectionProperty1Side.Add (relationTarget3);
+      mixin.CollectionPropertyNSide = relationTarget4;
+      mixin.UnidirectionalRelationProperty = relationTarget5;
+
+      mixedInstance.GetBindingTransaction ().Commit ();
+
+      var mixins = (from m in QueryFactory.CreateLinqQuery<DerivedDerivedTargetClassForPersistentMixin> ()
+                    where ((IMixinAddingPeristentProperties) m).PersistentProperty == 299
+                    select m);
+
+      CheckQueryResult (mixins);
     }
 
   }

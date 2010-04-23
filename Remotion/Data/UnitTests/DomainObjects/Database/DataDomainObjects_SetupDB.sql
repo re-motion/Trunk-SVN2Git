@@ -114,6 +114,14 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TargetClas
   DROP VIEW [dbo].[TargetClassForPersistentMixinView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'DerivedTargetClassForPersistentMixinView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[DerivedTargetClassForPersistentMixinView]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'DerivedDerivedTargetClassForPersistentMixinView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[DerivedDerivedTargetClassForPersistentMixinView]
+GO
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StorageGroupClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StorageGroupClassView]
 GO
@@ -932,10 +940,13 @@ CREATE TABLE [MixedDomains_RelationTarget] (
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-  
+
+  -- RelationTargetForPersistentMixin columns
   [RelationProperty2ID] uniqueidentifier NULL,
+  [RelationProperty2IDClassID] varchar (100) NULL,
   [RelationProperty3ID] uniqueidentifier NULL,
-  
+  [RelationProperty3IDClassID] varchar (100) NULL,
+
   CONSTRAINT [PK_MixedDomains_RelationTarget] PRIMARY KEY CLUSTERED ([ID])
 ) 
 GO
@@ -1339,14 +1350,27 @@ CREATE VIEW [dbo].[SampleBindableDomainObjectView] ([ID], [ClassID], [Timestamp]
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[TargetClassForPersistentMixinView] (
-  [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [RelationPropertyID], [PrivateBaseRelationPropertyID],
-  [CollectionPropertyNSideID], [UnidirectionalRelationPropertyID])
+CREATE VIEW [dbo].[TargetClassForPersistentMixinView] ([ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [UnidirectionalRelationPropertyID], [RelationPropertyID], [CollectionPropertyNSideID], [PrivateBaseRelationPropertyID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [RelationPropertyID], [PrivateBaseRelationPropertyID],
-    [CollectionPropertyNSideID], [UnidirectionalRelationPropertyID]
+  SELECT [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [UnidirectionalRelationPropertyID], [RelationPropertyID], [CollectionPropertyNSideID], [PrivateBaseRelationPropertyID]
     FROM [dbo].[MixedDomains_Target]
-    WHERE [ClassID] IN ('TargetClassForPersistentMixin')
+    WHERE [ClassID] IN ('TargetClassForPersistentMixin', 'DerivedTargetClassForPersistentMixin', 'DerivedDerivedTargetClassForPersistentMixin')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[DerivedTargetClassForPersistentMixinView] ([ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [UnidirectionalRelationPropertyID], [RelationPropertyID], [CollectionPropertyNSideID], [PrivateBaseRelationPropertyID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [UnidirectionalRelationPropertyID], [RelationPropertyID], [CollectionPropertyNSideID], [PrivateBaseRelationPropertyID]
+    FROM [dbo].[MixedDomains_Target]
+    WHERE [ClassID] IN ('DerivedTargetClassForPersistentMixin', 'DerivedDerivedTargetClassForPersistentMixin')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[DerivedDerivedTargetClassForPersistentMixinView] ([ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [UnidirectionalRelationPropertyID], [RelationPropertyID], [CollectionPropertyNSideID], [PrivateBaseRelationPropertyID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PersistentProperty], [ExtraPersistentProperty], [UnidirectionalRelationPropertyID], [RelationPropertyID], [CollectionPropertyNSideID], [PrivateBaseRelationPropertyID]
+    FROM [dbo].[MixedDomains_Target]
+    WHERE [ClassID] IN ('DerivedDerivedTargetClassForPersistentMixin')
   WITH CHECK OPTION
 GO
 
