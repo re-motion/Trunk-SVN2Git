@@ -347,7 +347,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       CodeConstructor defaultCtor = new CodeConstructor();
       functionClass.Members.Add (defaultCtor);
       defaultCtor.Attributes = MemberAttributes.Public;
-      if (_functionDeclaration.FunctionBaseType == typeof (WxeFunction).Name)
+      if (IsWxeFunctionType (_functionDeclaration.FunctionBaseType))
         defaultCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
       defaultCtor.BaseConstructorArgs.Add (new CodeArrayCreateExpression (new CodeTypeReference (typeof (object[])), 0));
     }
@@ -379,7 +379,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     {
       CodeConstructor typedCtor = new CodeConstructor();
       typedCtor.Attributes = MemberAttributes.Public;
-      if (_functionDeclaration.FunctionBaseType == typeof (WxeFunction).Name)
+      if (IsWxeFunctionType(_functionDeclaration.FunctionBaseType))
         typedCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
       List<CodeExpression> parameters = new List<CodeExpression>();
       foreach (ParameterDeclaration parameterDeclaration in _functionDeclaration.Parameters)
@@ -395,6 +395,11 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       typedCtor.BaseConstructorArgs.Add (new CodeArrayCreateExpression (new CodeTypeReference (typeof (object[])), parameters.ToArray()));
       if (typedCtor.Parameters.Count > 0)
         functionClass.Members.Add (typedCtor);
+    }
+
+    private bool IsWxeFunctionType (string functionBaseType)
+    {
+      return functionBaseType == typeof (WxeFunction).Name || functionBaseType == typeof (WxeFunction).FullName;
     }
   }
 }
