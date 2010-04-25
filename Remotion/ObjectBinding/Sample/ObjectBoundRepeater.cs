@@ -14,10 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Requires:
-// System.dll, System.Design.dll, System.Drawing.dll, System.Web.dll
-// Remotion.dll, Remotion.ObjectBinding.dll, Remotion.ObjectBinding.Web.dll, Remotion.Web.dll
-
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -25,14 +21,10 @@ using System.Drawing.Design;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-using Remotion.Collections;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -40,14 +32,16 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Sample
 {
-  public class ObjectBoundRepeater: Repeater, IBusinessObjectBoundEditableWebControl
+  public class ObjectBoundRepeater : Repeater, IBusinessObjectBoundEditableWebControl
   {
-    protected class ObjectBoundRepeaterInternal: BusinessObjectBoundEditableWebControl
+    protected class ObjectBoundRepeaterInternal : BusinessObjectBoundEditableWebControl
     {
-      private static readonly Type[] s_supportedPropertyInterfaces = new Type[] { 
-          typeof (IBusinessObjectReferenceProperty) };
+      private static readonly Type[] s_supportedPropertyInterfaces = new Type[]
+                                                                     {
+                                                                         typeof (IBusinessObjectReferenceProperty)
+                                                                     };
 
-    
+
       private IList _value;
       private ObjectBoundRepeater _parent;
 
@@ -73,7 +67,7 @@ namespace Remotion.ObjectBinding.Sample
       {
         if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
           DataSource.BusinessObject.SetProperty (Property, Value);
-      
+
         _parent.SaveValueInternal (interim);
       }
 
@@ -83,7 +77,7 @@ namespace Remotion.ObjectBinding.Sample
         set { _parent.IsDirtyInternal = value; }
       }
 
-      public override string[] GetTrackedClientIDs()
+      public override string[] GetTrackedClientIDs ()
       {
         return _parent.GetTrackedClientIDsInternal();
       }
@@ -93,13 +87,10 @@ namespace Remotion.ObjectBinding.Sample
       [Browsable (false)]
       public new IList Value
       {
-        get 
+        get { return _value; }
+        set
         {
-          return _value; 
-        }
-        set 
-        {
-          _value = value; 
+          _value = value;
           ((Repeater) _parent).DataSource = value;
         }
       }
@@ -138,7 +129,7 @@ namespace Remotion.ObjectBinding.Sample
         get { return _parent.NamingContainer; }
       }
 
-      public override bool Validate()
+      public override bool Validate ()
       {
         bool isValid = base.Validate();
         if (! isValid)
@@ -146,17 +137,16 @@ namespace Remotion.ObjectBinding.Sample
         return _parent.ValidateInternal();
       }
 
-      protected override void LoadViewState(object savedState)
+      protected override void LoadViewState (object savedState)
       {
         if (savedState != null)
           base.LoadViewState (savedState);
       }
-
     }
 
     #region BusinessObjectBoundEditableWebControl implementation
 
-    [Browsable(false)]
+    [Browsable (false)]
     public BusinessObjectBinding Binding
     {
       get { return _repeaterInternal.Binding; }
@@ -212,7 +202,7 @@ namespace Remotion.ObjectBinding.Sample
     {
       _repeaterInternal.LoadValue (interim);
     }
-  
+
     public void SaveValue (bool interim)
     {
       _repeaterInternal.SaveValue (interim);
@@ -231,7 +221,7 @@ namespace Remotion.ObjectBinding.Sample
       set { _repeaterInternal.IsDirty = value; }
     }
 
-    public string[] GetTrackedClientIDs()
+    public string[] GetTrackedClientIDs ()
     {
       return _repeaterInternal.GetTrackedClientIDs();
     }
@@ -241,7 +231,7 @@ namespace Remotion.ObjectBinding.Sample
       _repeaterInternal.PrepareValidation();
     }
 
-    public bool Validate()
+    public bool Validate ()
     {
       return _repeaterInternal.Validate();
     }
@@ -252,7 +242,7 @@ namespace Remotion.ObjectBinding.Sample
       get
       {
         EnsureChildControls();
-        return _repeaterInternal.HasValidBinding; 
+        return _repeaterInternal.HasValidBinding;
       }
     }
 
@@ -263,25 +253,25 @@ namespace Remotion.ObjectBinding.Sample
     }
 
 
-    [Browsable(false)]
-    public string DisplayName 
+    [Browsable (false)]
+    public string DisplayName
     {
       get { return _repeaterInternal.DisplayName; }
     }
 
-    [Browsable(false)]
+    [Browsable (false)]
     public virtual HelpInfo HelpInfo
     {
       get { return null; }
     }
 
-    [Browsable(false)]
+    [Browsable (false)]
     public virtual Control TargetControl
     {
       get { return this; }
     }
 
-    [Browsable(false)]
+    [Browsable (false)]
     public virtual bool UseLabel
     {
       get { return false; }
@@ -289,7 +279,7 @@ namespace Remotion.ObjectBinding.Sample
 
 
     /// <summary> Gets or sets a flag that specifies whether the value of the control is required. </summary>
-    [Description("Explicitly specifies whether the control is required.")]
+    [Description ("Explicitly specifies whether the control is required.")]
     [Category ("Data")]
     [DefaultValue (typeof (bool?), "")]
     public bool? Required
@@ -299,7 +289,7 @@ namespace Remotion.ObjectBinding.Sample
     }
 
     /// <summary> Gets or sets a flag that specifies whether the control should be displayed in read-only mode. </summary>
-    [Description("Explicitly specifies whether the control should be displayed in read-only mode.")]
+    [Description ("Explicitly specifies whether the control should be displayed in read-only mode.")]
     [Category ("Data")]
     [DefaultValue (typeof (bool?), "")]
     public bool? ReadOnly
@@ -308,20 +298,20 @@ namespace Remotion.ObjectBinding.Sample
       set { _repeaterInternal.ReadOnly = value; }
     }
 
-    [Browsable(false)]
+    [Browsable (false)]
     public bool IsReadOnly
     {
       get { return _repeaterInternal.IsReadOnly; }
     }
 
-    [Browsable(false)]
-    public bool IsRequired 
+    [Browsable (false)]
+    public bool IsRequired
     {
       get { return _repeaterInternal.IsRequired; }
     }
- 
 
-    public virtual BaseValidator[] CreateValidators()
+
+    public virtual BaseValidator[] CreateValidators ()
     {
       return _repeaterInternal.CreateValidators();
     }
@@ -333,7 +323,7 @@ namespace Remotion.ObjectBinding.Sample
 
     Type[] IBusinessObjectBoundWebControl.SupportedPropertyInterfaces
     {
-      get { return ((IBusinessObjectBoundWebControl)_repeaterInternal).SupportedPropertyInterfaces; }
+      get { return ((IBusinessObjectBoundWebControl) _repeaterInternal).SupportedPropertyInterfaces; }
     }
 
     bool IBusinessObjectBoundWebControl.SupportsPropertyMultiplicity (bool isList)
@@ -345,25 +335,25 @@ namespace Remotion.ObjectBinding.Sample
     {
       return _repeaterInternal.SupportsProperty (property);
     }
-  
-    void IControlWithDesignTimeSupport.PreRenderForDesignMode()
+
+    void IControlWithDesignTimeSupport.PreRenderForDesignMode ()
     {
       ((IControlWithDesignTimeSupport) _repeaterInternal).PreRenderForDesignMode();
     }
 
     #endregion
-  
+
     private ObjectBoundRepeaterInternal _repeaterInternal;
     private ArrayList _dataSources = new ArrayList();
     private ArrayList _dataEditControls = new ArrayList();
     private Boolean _isDirty = true;
 
-    public ObjectBoundRepeater()
+    public ObjectBoundRepeater ()
     {
       _repeaterInternal = CreateRepeaterInternal();
     }
 
-    protected virtual ObjectBoundRepeaterInternal CreateRepeaterInternal()
+    protected virtual ObjectBoundRepeaterInternal CreateRepeaterInternal ()
     {
       return new ObjectBoundRepeaterInternal (this);
     }
@@ -374,7 +364,7 @@ namespace Remotion.ObjectBinding.Sample
     }
 
 
-    protected override void CreateChildControls()
+    protected override void CreateChildControls ()
     {
       base.CreateChildControls();
 
@@ -408,7 +398,7 @@ namespace Remotion.ObjectBinding.Sample
         return;
 
       IBusinessObject obj = (IBusinessObject) e.Item.DataItem;
-    
+
       foreach (Control control in e.Item.Controls)
       {
         if (control is BusinessObjectDataSourceControl)
@@ -422,14 +412,14 @@ namespace Remotion.ObjectBinding.Sample
         {
           DataEditUserControl dataEditControl = (DataEditUserControl) control;
           _dataEditControls.Add (dataEditControl);
-    
-          dataEditControl.BusinessObject = obj;        
+
+          dataEditControl.BusinessObject = obj;
           if (IsReadOnly)
             dataEditControl.Mode = IsReadOnly ? DataSourceMode.Read : DataSourceMode.Edit;
         }
       }
     }
-  
+
     protected virtual void LoadValueInternal (bool interim)
     {
       Controls.Clear();
@@ -445,7 +435,7 @@ namespace Remotion.ObjectBinding.Sample
       foreach (IDataEditControl control in _dataEditControls)
         control.LoadValues (interim);
     }
-  
+
     protected virtual void SaveValueInternal (bool interim)
     {
       foreach (BusinessObjectDataSourceControl dataSource in _dataSources)
@@ -480,13 +470,13 @@ namespace Remotion.ObjectBinding.Sample
       set { _isDirty = value; }
     }
 
-    protected virtual string[] GetTrackedClientIDsInternal()
+    protected virtual string[] GetTrackedClientIDsInternal ()
     {
       return new string[0];
     }
 
 
-    protected virtual bool ValidateInternal()
+    protected virtual bool ValidateInternal ()
     {
       foreach (IBusinessObjectDataSourceControl dataSource in _dataSources)
       {
@@ -511,14 +501,14 @@ namespace Remotion.ObjectBinding.Sample
       get { return ControlHelper.IsDesignMode (this); }
     }
 
-    protected override void LoadViewState(object savedState)
+    protected override void LoadViewState (object savedState)
     {
       object[] values = (object[]) savedState;
       base.LoadViewState (values[0]);
-      _isDirty = (bool)  values[1];
+      _isDirty = (bool) values[1];
     }
 
-    protected override object SaveViewState()
+    protected override object SaveViewState ()
     {
       object[] values = new object[2];
       values[0] = base.SaveViewState();
@@ -526,7 +516,7 @@ namespace Remotion.ObjectBinding.Sample
       return values;
     }
 
-    protected override void Render(HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       if (IsDesignMode)
         return;
