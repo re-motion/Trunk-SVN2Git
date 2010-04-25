@@ -451,7 +451,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return values;
     }
 
-    /// <summary> Loads the settings of the <paramref name="nodes"/> from <paramref name="viewState"/>. </summary>
+    /// <summary> Loads the settings of the <paramref name="nodes"/> from <paramref name="nodesState"/>. </summary>
     private void LoadNodesControlStateRecursive (Pair[] nodesState, WebTreeNodeCollection nodes)
     {
       for (int i = 0; i < nodesState.Length; i++)

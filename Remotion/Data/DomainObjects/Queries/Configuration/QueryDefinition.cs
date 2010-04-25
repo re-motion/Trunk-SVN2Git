@@ -164,7 +164,7 @@ public class QueryDefinition : ISerializable, IObjectReference
   }
 
   /// <summary>
-  /// Gets the <paramref name="statement"/> of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <see cref="StorageProviderID"/> must understand the syntax of the <b>Statement</b>.
+  /// Gets the statement-text of the <b>QueryDefinition</b>. The <see cref="Remotion.Data.DomainObjects.Persistence.StorageProvider"/> specified through <see cref="StorageProviderID"/> must understand the syntax of the <b>Statement</b>.
   /// </summary>
   public string Statement
   {
