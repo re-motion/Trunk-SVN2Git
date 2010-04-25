@@ -20,7 +20,6 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
-using Remotion.Security;
 using Remotion.Utilities;
 using System.Web;
 
@@ -30,8 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <remarks> Note that values in these columnDefinitions can usually not be modified directly. </remarks>
   public class BocCompoundColumnDefinition : BocValueColumnDefinition
   {
-    private const string c_notAccessible = "×";
-
     /// <summary>
     ///   A format string describing how the values accessed through the 
     ///   <see cref="BusinessObjectPropertyPath"/> objects are merged by <see cref="GetStringValue"/>.
@@ -65,15 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           formatters[i] = new BusinessObjectPropertyPath.Formatter (obj, _propertyPathBindings[i].GetPropertyPath());
       }
 
-      try
-      {
-        return string.Format (_formatString, formatters);
-      }
-          //TODO: Move to BusinessObjectPropertyPath.GetString
-      catch (PermissionDeniedException)
-      {
-        return c_notAccessible;
-      }
+      return string.Format (_formatString, formatters);
     }
 
     /// <summary> Passes the new OwnerControl to the <see cref="PropertyPathBindingCollection"/>. </summary>

@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
@@ -38,8 +39,8 @@ namespace Remotion.ObjectBinding
     /// <summary> Property path formatters can be passed to <see cref="String.Format"/> for full <see cref="IFormattable"/> support. </summary>
     public class Formatter : IFormattable
     {
-      private IBusinessObject _object;
-      private IBusinessObjectPropertyPath _path;
+      private readonly IBusinessObject _object;
+      private readonly IBusinessObjectPropertyPath _path;
 
       public Formatter (IBusinessObject obj, IBusinessObjectPropertyPath path)
       {
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding
       }
     }
 
-    private IBusinessObjectProperty[] _properties;
+    private readonly IBusinessObjectProperty[] _properties;
 
     /// <summary> Parses the string representation of a property path into a list of properties. </summary>
     /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> containing the first property in the path. Must no be <see langword="null"/>. </param>
@@ -85,7 +86,7 @@ namespace Remotion.ObjectBinding
               string.Format ("BusinessObjectClass '{0}' does not contain a property named '{1}'.", objectClass.Identifier, propertyIdentifiers[i]),
               "propertyPathIdentifier");
         }
-        IBusinessObjectReferenceProperty referenceProperty = properties[i] as IBusinessObjectReferenceProperty;
+        var referenceProperty = properties[i] as IBusinessObjectReferenceProperty;
         if (referenceProperty == null)
         {
           throw new ArgumentException (
@@ -161,14 +162,24 @@ namespace Remotion.ObjectBinding
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
 
-      if (!IsAccessible (obj, throwExceptionIfNotReachable, getFirstListEntry))
+      IBusinessObject obj2;
+      if (!TryGetValueWithoutLast (obj, throwExceptionIfNotReachable, getFirstListEntry, out obj2))
         return null;
 
-      IBusinessObject obj2 = GetValueWithoutLast (obj, throwExceptionIfNotReachable, getFirstListEntry);
       if (obj2 == null)
         return null;
 
-      return obj2.GetProperty (LastProperty);
+      if (!LastProperty.IsAccessible (obj2.BusinessObjectClass, obj2))
+        return null;
+
+      try
+      {
+        return obj2.GetProperty (LastProperty);
+      }
+      catch (PermissionDeniedException)
+      {
+        return null;
+      }
     }
 
     /// <summary> Gets the string representation of the value of this property path for the specified object. </summary>
@@ -177,29 +188,52 @@ namespace Remotion.ObjectBinding
     public virtual string GetString (IBusinessObject obj, string format)
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
-      
-      if (!IsAccessible (obj, false, true))
+           
+      IBusinessObject obj2;
+      if (!TryGetValueWithoutLast (obj, false, true, out obj2))
         return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
 
-      IBusinessObject obj2 = GetValueWithoutLast (obj, false, true);
       if (obj2 == null)
         return string.Empty;
 
-      return obj2.GetPropertyString (LastProperty, format);
+      if (!LastProperty.IsAccessible (obj2.BusinessObjectClass, obj2))
+        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
+
+      try
+      {
+        return obj2.GetPropertyString (LastProperty, format);
+      }
+      catch (PermissionDeniedException)
+      {
+        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
+      }
     }
 
-    private bool IsAccessible (IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry)
+    private bool TryGetValueWithoutLast (IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry, out IBusinessObject value)
     {
+      value = Assertion.IsNotNull (obj);
+
       for (int i = 0; i < (_properties.Length - 1); ++i)
       {
-        IBusinessObjectReferenceProperty property = (IBusinessObjectReferenceProperty) _properties[i];
+        var property = (IBusinessObjectReferenceProperty) _properties[i];
 
-        if (!property.IsAccessible (obj.BusinessObjectClass, obj))
+        if (!property.IsAccessible (value.BusinessObjectClass, value))
+        {
+          value = null;
           return false;
+        }
 
-        obj = GetProperty (obj, property, getFirstListEntry, i);
+        try
+        {
+          value = GetProperty (value, property, getFirstListEntry, i);
+        }
+        catch (PermissionDeniedException)
+        {
+          value = null;
+          return false;
+        }
 
-        if (obj == null)
+        if (value == null)
         {
           if (throwExceptionIfNotReachable)
             throw new InvalidOperationException (string.Format ("A null value was detected in element {0} of property path {1}. Cannot evaluate rest of path.", i, this));
@@ -207,29 +241,10 @@ namespace Remotion.ObjectBinding
           return true;
         }
       }
-      return LastProperty.IsAccessible (obj.BusinessObjectClass, obj);
+      return true;
     }
 
-    /// <summary> Gets value of this property path minus the penultimate property for the specified object. </summary>
-    private IBusinessObject GetValueWithoutLast (IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry)
-    {
-      for (int i = 0; i < (_properties.Length - 1); ++i)
-      {
-        IBusinessObjectReferenceProperty property = (IBusinessObjectReferenceProperty) _properties[i];
-        obj = GetProperty (obj, property, getFirstListEntry, i);
-
-        if (obj == null)
-        {
-          if (throwExceptionIfNotReachable)
-            throw new InvalidOperationException (string.Format ("A null value was detected in element {0} of property path {1}. Cannot evaluate rest of path.", i, this));
-
-          return null;
-        }
-      }
-      return obj;
-    }
-
-    private IBusinessObject GetProperty (IBusinessObject obj, IBusinessObjectProperty property, bool getFirstListEntry, int propertyIndex)
+    private IBusinessObject GetProperty (IBusinessObject obj, IBusinessObjectReferenceProperty property, bool getFirstListEntry, int propertyIndex)
     {
       if (property.IsList)
       {
@@ -238,15 +253,14 @@ namespace Remotion.ObjectBinding
 
         IList list = (IList) obj.GetProperty (property);
         if (list.Count > 0)
-          obj = (IBusinessObject) list[0];
+          return (IBusinessObject) list[0];
         else
-          obj = null;
+          return null;
       }
       else
       {
-        obj = (IBusinessObject) obj.GetProperty (property);
+        return (IBusinessObject) obj.GetProperty (property);
       }
-      return obj;
     }
 
     /// <summary> Sets the value of this property path for the specified object. </summary>

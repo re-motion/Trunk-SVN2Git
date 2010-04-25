@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.ObjectBinding;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
 {
@@ -41,7 +40,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
         ExpectOnceOnReferencePropertyIsAccessible (true);
         ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentity);
         ExpectOnceOnPropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentity);
         ExpectOnceOnBusinessObjectWithIdentityGetProperty (100);
       }
       _testHelper.ReplayAll ();
@@ -59,7 +57,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
       using (_testHelper.Ordered ())
       {
         ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (businessObject);
         ExpectOnceOnBusinessObjectGetProperty (businessObject);
       }
       _testHelper.ReplayAll ();
@@ -107,7 +104,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
         ExpectOnceOnReferencePropertyIsAccessible (true);
         ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentity);
         ExpectOnceOnPropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentity);
         ExpectOnceOnBusinessObjectWithIdentityGetPropertyString ("value");
       }
       _testHelper.ReplayAll ();
@@ -125,7 +121,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
       using (_testHelper.Ordered ())
       {
         ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (businessObject);
         ExpectOnceOnBusinessObjectGetProperty (businessObject);
       }
       _testHelper.ReplayAll ();

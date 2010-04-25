@@ -27,7 +27,6 @@ using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Reflection;
-using Remotion.Security;
 using Remotion.Utilities;
 using System.Web;
 using Remotion.Web.Utilities;
@@ -41,8 +40,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </remarks>
   public class BocSimpleColumnDefinition : BocValueColumnDefinition, IBusinessObjectClassSource
   {
-    private const string c_notAccessible = "×";
-
     private string _formatString = string.Empty;
     private readonly PropertyPathBinding _propertyPathBinding;
     private string _editModeControlType = string.Empty;
@@ -90,15 +87,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
 
-      try
-      {
-        return propertyPath.GetString (obj, StringUtility.EmptyToNull (formatString));
-      }
-      //TODO: Move to BusinessObjectPropertyPath.GetString
-      catch (PermissionDeniedException)
-      {
-        return c_notAccessible;
-      }
+      return propertyPath.GetString (obj, StringUtility.EmptyToNull (formatString));
     }
 
     /// <summary>
