@@ -131,40 +131,17 @@ Additional permissions are listed in the file re-motion_exceptions.txt.
       <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
       <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
-      <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
-      <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
-      <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
       <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
-      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
-      <UserRule Inspect="True" Prefix="" Suffix="" Style="AaBb" StaticnessKind="Static, Instance" AccessRight="Protected, ProtectedInternal, Internal, Public" Description="Non-private fields">
-        <ElementKinds>
-          <Kind Name="FIELD" />
-          <Kind Name="READONLY_FIELD" />
-          <Kind Name="CONSTANT_FIELD" />
-        </ElementKinds>
-      </UserRule>
-      <UserRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" StaticnessKind="Instance" AccessRight="Private" Description="Private instance fields">
-        <ElementKinds>
-          <Kind Name="FIELD" />
-          <Kind Name="READONLY_FIELD" />
-        </ElementKinds>
-      </UserRule>
-      <UserRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" StaticnessKind="Static" AccessRight="Private" Description="Private static readonly fields">
-        <ElementKinds>
-          <Kind Name="FIELD" />
-          <Kind Name="READONLY_FIELD" />
-        </ElementKinds>
-      </UserRule>
-      <UserRule Inspect="True" Prefix="c_" Suffix="" Style="aaBb" StaticnessKind="Static" AccessRight="Private" Description="Private constant fields">
-        <ElementKinds>
-          <Kind Name="CONSTANT_FIELD" />
-        </ElementKinds>
-      </UserRule>
+      <PredefinedRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+      <PredefinedRule Inspect="True" Prefix="c_" Suffix="" Style="aaBb" ElementKind="PrivateConstants" />
+      <PredefinedRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" ElementKind="PrivateStaticReadonly" />
       <Abbreviation Text="ID" />
+      <Abbreviation Text="UI" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>
