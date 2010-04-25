@@ -289,7 +289,7 @@ public class UrlMappingCollection: CollectionBase
   /// <summary> Finds the mapping for the specified <paramref name="type"/>. </summary>
   /// <param name="type"> The name of the <see cref="Type"/> to look-up. </param>
   /// <returns> 
-  ///   A <see cref="string"/> or <see langword="null"/> if the <paramref name="typ"/> is not mapped to a path.
+  ///   A <see cref="string"/> or <see langword="null"/> if the <paramref name="type"/> is not mapped to a path.
   /// </returns>
   public string FindResource (Type type)
   {

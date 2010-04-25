@@ -47,7 +47,7 @@
       The list of name value pairs for the query string.
     </param>
     <param name="encoding"> 
-      The <see cref="Encoding"/> used to encode the <paramref name="value"/>. Must not be <see langword="null"/>.
+      The <see cref="Encoding"/> used to encode the values in the <paramref name="queryStringCollection"/>. Must not be <see langword="null"/>.
       Defaults to the <see cref="HttpResponse.ContentEncoding">HttpResponse.ContentEncoding</see> of the
       <see cref="HttpContext.Current">Current</see> HttpContext.
     </param>
@@ -60,7 +60,7 @@
       The list of name value pairs for the query string.
     </param>
     <param name="encoding"> 
-      The <see cref="Encoding"/> used to encode the <paramref name="value"/>. Must not be <see langword="null"/>.
+      The <see cref="Encoding"/> used to encode the values in the <paramref name="queryStringCollection"/>. Must not be <see langword="null"/>.
       Defaults to the <see cref="HttpResponse.ContentEncoding">HttpResponse.ContentEncoding</see> of the
       <see cref="HttpContext.Current">Current</see> HttpContext.
     </param>
@@ -92,7 +92,7 @@
       The name of the url parameter whose value is to be returned. Must not be <see langword="null"/> or empty. 
     </param>
     <param name="encoding"> 
-      The <see cref="Encoding"/> used to deencode the <paramref name="value"/>. Must not be <see langword="null"/>.
+      The <see cref="Encoding"/> used to deencode the <paramref name="url"/>. Must not be <see langword="null"/>.
       Defaults to the <see cref="HttpRequest.ContentEncoding">HttpRequest.ContentEncoding</see> of the
       <see cref="HttpContext.Current">Current</see> HttpContext.
     </param>

@@ -70,7 +70,7 @@ public class WxeParameterConverter
   ///   A <see cref="string"/> or <see langword="null"/> if the conversion is not possible but the parameter is not
   ///   required.
   /// </returns>
-  /// <exception cref="WxeException"> Thrown if the <paramref name="value"/> could not be converted. </exception>
+  /// <exception cref="WxeException"> Thrown if the value referenced by the <paramref name="varRef"/> could not be converted. </exception>
   protected string ConvertVarRefToString (WxeVariableReference varRef, NameObjectCollection callerVariables)
   {
     ArgumentUtility.CheckNotNull ("varRef", varRef);

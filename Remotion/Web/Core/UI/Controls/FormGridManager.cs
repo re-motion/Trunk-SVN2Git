@@ -232,7 +232,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     }
 
     /// <summary>
-    ///   Searches for a <see cref="FormGridRow"/> containing the specified <paramref name="ID"/>.
+    ///   Searches for a <see cref="FormGridRow"/> containing the specified <paramref name="id"/>.
     /// </summary>
     /// <include file='doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/FormGrid/FormGridRow/*' />
     public FormGridRow GetRowForID (string id)
@@ -2350,7 +2350,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   }
 
   /// <summary>
-  ///   Creates the labels from the controls inside <paramref name="controlsCell"/>
+  ///   Creates the labels from the controls inside <paramref name="dataRow"/>'s <see cref="FormGridRow.ControlsCell"/>
   ///   if they do not already exist.
   /// </summary>
   /// <include file='doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateLabels/*' />

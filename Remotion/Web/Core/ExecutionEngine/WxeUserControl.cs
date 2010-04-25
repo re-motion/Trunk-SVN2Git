@@ -44,8 +44,14 @@ namespace Remotion.Web.ExecutionEngine
       _lazyContainer = new LazyInitializationContainer();
     }
 
+#pragma warning disable 0809
+    /// <summary>
+    /// In order for the control-replacing to work, the initialization logic of the <see cref="UserControl"/> 
+    /// has to be placed into the <see cref="OnInitComplete"/> method.
+    /// </summary>
     [Obsolete ("Override OnInitComplete instead.", true)]
     protected override sealed void OnInit (EventArgs e)
+#pragma warning restore 0809
     {
       if (!_isWxeInfoInitialized)
       {

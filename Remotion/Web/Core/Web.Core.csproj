@@ -764,7 +764,9 @@
     <Content Include="Doc\include\UI\Controls\WebTreeView.xml" />
     <Content Include="Doc\include\UI\ISmartPage.xml" />
     <Content Include="Doc\include\UI\SmartPage.xml" />
-    <Content Include="Doc\include\Utilities\UrlUtility.xml" />
+    <Content Include="Doc\include\Utilities\UrlUtility.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Doc\WhatsNew_Remotion.Web.txt" />
     <Content Include="Res\HTML\jquery.bgiframe.min.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\DatePicker.css" />

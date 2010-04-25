@@ -56,13 +56,6 @@ public interface ISmartNavigablePage: IPage
   /// </remarks>
   void SetFocus (IFocusableControl control);
 
-  /// <summary> Sets the focus to the passed control ID. </summary>
-  /// <param name="id">
-  ///   The client side ID of the control to assign the focus to.  Must no be <see langword="null"/> or empty. 
-  /// </param>
-  /// <remarks> Must be called before PreRendering of the page it self (the last control in the PreRender Phase). </remarks>
-  void SetFocus (string id);
-
   /// <summary> Registers a <see cref="INavigationControl"/> with the <see cref="ISmartNavigablePage"/>. </summary>
   /// <param name="control"> The <see cref="INavigationControl"/> to register. </param>
   /// <remarks> 

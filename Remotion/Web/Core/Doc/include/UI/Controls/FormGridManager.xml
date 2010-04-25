@@ -389,7 +389,7 @@ Example for a row with labels and the controls in adjecent row.
       The <see cref="FormGridRow"/> used as data row.
     </param>
     <param name="isTopDataRow">
-      <see langword="true" /> if the <paramref name="mainRow" /> is the first row after the 
+      <see langword="true" /> if the <paramref name="dataRow" /> is the first row after the 
       title row.
     </param>
   </FormatDataRow>
@@ -436,7 +436,7 @@ Example for a row with labels and the controls in adjecent row.
       The <see cref="FormGridRow"/> containing the cells to get CSS classes assigned.
     </param>
     <param name="isTopDataRow">
-      <see langword="true" /> if the <paramref name="mainRow" /> is the first row after the 
+      <see langword="true" /> if the <paramref name="dataRow" /> is the first row after the 
       title row.
     </param>
   </AssignCssClassesToCells>

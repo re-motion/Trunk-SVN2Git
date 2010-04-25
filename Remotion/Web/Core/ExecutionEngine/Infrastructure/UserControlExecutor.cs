@@ -92,8 +92,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         {
           throw new InvalidOperationException (
               "The WxeUserControl does not support controls that do not use __EventTarget for signaling a postback event.");
-          _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
-          _postBackCollection.Remove (sender.UniqueID);
+          //TODO: Check if controls that do not use __EventTarget can be supported
+          // _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
+          // _postBackCollection.Remove (sender.UniqueID);
         }
 
         string uniqueIDPrefix = _userControlID + userControl.Page.IdSeparator;
