@@ -14,8 +14,8 @@
  % You should have received a copy of the GNU Lesser General Public License
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
-<%@ Page language="c#" Codebehind="Frameset.aspx.cs" AutoEventWireup="false" Inherits="Frameset" %>
-<%@ Import namespace="OBWTest"%>
+<%@ Page language="c#" Codebehind="Frameset.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.Frameset" %>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" > 
 
 <html>

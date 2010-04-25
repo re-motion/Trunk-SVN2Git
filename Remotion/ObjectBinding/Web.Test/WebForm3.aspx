@@ -34,13 +34,13 @@
         runat="server" ForControl="FirstNameField"></remotion:SmartLabel>
       <asp:Button id="SaveButton" style="Z-INDEX: 103; LEFT: 48px; POSITION: absolute; TOP: 144px"
         runat="server" Text="Save" Width="144px"></asp:Button>
-      <cc1:BocTextValue id="HeightField" style="Z-INDEX: 104; LEFT: 248px; POSITION: absolute; TOP: 80px"
+      <remotion:BocTextValue id="HeightField" style="Z-INDEX: 104; LEFT: 248px; POSITION: absolute; TOP: 80px"
         runat="server" PropertyIdentifier="Height" DataSource="<%# reflectionBusinessObjectDataSource1 %>">
-      </cc1:BocTextValue>
+      </remotion:BocTextValue>
       <remotion:SmartLabel id="BocPropertyLabel2" style="Z-INDEX: 105; LEFT: 48px; POSITION: absolute; TOP: 88px"
         runat="server" ForControl="HeightField"></remotion:SmartLabel>
-      <cc1:BocTextValueValidator id="BocTextValueValidator1" style="Z-INDEX: 106; LEFT: 432px; POSITION: absolute; TOP: 80px"
-        runat="server" ControlToValidate="HeightField"></cc1:BocTextValueValidator>
+      <remotion:BocTextValueValidator id="BocTextValueValidator1" style="Z-INDEX: 106; LEFT: 432px; POSITION: absolute; TOP: 80px"
+        runat="server" ControlToValidate="HeightField"></remotion:BocTextValueValidator>
       <asp:RadioButtonList id="RadioButtonList1" style="Z-INDEX: 107; LEFT: 288px; POSITION: absolute; TOP: 264px"
         runat="server">
         <asp:ListItem Value="asd">asd</asp:ListItem>

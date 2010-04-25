@@ -569,7 +569,6 @@
     </None>
     <Content Include="StandardMode.Master" />
     <Content Include="QuirksMode.Master" />
-    <None Include="WxeLauncher.ashx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Globalization\IndividualControlTests.BocAutoCompleteReferenceValueUserControl.resx">

@@ -32,8 +32,8 @@
       </remotion:BocTextValue>
       <remotion:SmartLabel id="BocPropertyLabel3" style="Z-INDEX: 107; LEFT: 64px; POSITION: absolute; TOP: 192px"
         runat="server" ForControl="DateOfBirthField"></remotion:SmartLabel>
-      <cc1:BocTextValueValidator id="BocTextValueValidator1" style="Z-INDEX: 108; LEFT: 584px; POSITION: absolute; TOP: 200px"
-        runat="server" ControlToValidate="DateOfBirthField"></cc1:BocTextValueValidator>
+      <remotion:BocTextValueValidator id="BocTextValueValidator1" style="Z-INDEX: 108; LEFT: 584px; POSITION: absolute; TOP: 200px"
+        runat="server" ControlToValidate="DateOfBirthField"></remotion:BocTextValueValidator>
       <asp:button id="SaveButton" style="Z-INDEX: 103; LEFT: 48px; POSITION: absolute; TOP: 400px"
         runat="server" Width="80px" Text="Save"></asp:button>
     </form>
