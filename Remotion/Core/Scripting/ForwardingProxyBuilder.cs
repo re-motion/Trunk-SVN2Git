@@ -262,7 +262,7 @@ namespace Remotion.Scripting
 
 
 
-    private static HashSet<MethodInfo> s_objectMethods;
+    //private static HashSet<MethodInfo> s_objectMethods;
 
     //protected HashSet<MethodInfo> ObjectMethods
     //{
