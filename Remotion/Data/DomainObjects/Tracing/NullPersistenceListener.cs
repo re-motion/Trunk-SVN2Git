@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
     }
 
-    public void TransactionRolledback (Guid connectionID)
+    public void TransactionRolledBack (Guid connectionID)
     {
     }
 

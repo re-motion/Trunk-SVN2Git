@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     /// Invoking this method signals that a database transaction was rolled-back.
     /// </summary>
     /// <param name="connectionID">An ID unique to all operations traced for this database connection.</param>
-    void TransactionRolledback (Guid connectionID);
+    void TransactionRolledBack (Guid connectionID);
 
     /// <summary>
     /// Invoking this method signals that a database transaction was disposed.

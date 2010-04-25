@@ -226,7 +226,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       _appender.TransactionDisposed (_clientTransactionID);
     }
 
-    public void TransactionRolledback (Guid connectionID)
+    public void TransactionRolledBack (Guid connectionID)
     {
       _appender.TransactionRolledBack (_clientTransactionID);
     }

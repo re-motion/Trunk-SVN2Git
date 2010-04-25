@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       _transaction.Rollback();
       if (!_isTransactionDisposed)
-        PersistenceListener.TransactionRolledback (_connectionID);
+        PersistenceListener.TransactionRolledBack (_connectionID);
     }
 
     IDbConnection IDbTransaction.Connection

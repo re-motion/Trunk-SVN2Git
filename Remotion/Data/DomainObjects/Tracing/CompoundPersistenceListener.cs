@@ -59,10 +59,10 @@ namespace Remotion.Data.DomainObjects.Tracing
         listener.TransactionCommitted (connectionID);
     }
 
-    public void TransactionRolledback (Guid connectionID)
+    public void TransactionRolledBack (Guid connectionID)
     {
       foreach (var listener in _listeners)
-        listener.TransactionRolledback (connectionID);
+        listener.TransactionRolledBack (connectionID);
     }
 
     public void TransactionDisposed (Guid connectionID)
