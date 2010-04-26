@@ -23,10 +23,11 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlBackend.SqlGeneration;
 using Remotion.Mixins;
+using CommandParameter=Remotion.Data.Linq.SqlBackend.SqlGeneration.CommandParameter;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
-  public class TestQueryExecutorMixin : Mixin<object, TestQueryExecutorMixin.IBaseCallRequirements>
+  public class LegacyTestQueryExecutorMixin : Mixin<object, LegacyTestQueryExecutorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements
     {
@@ -41,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           ClassDefinition classDefinitionOfResult,
           string sortExpression);
 
-      SqlCommandData CreateSqlCommand (QueryModel queryModel);
+      SqlCommandData CreateStatement (QueryModel queryModel);
     }
 
     public bool CreateQueryCalled;
@@ -77,10 +78,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public SqlCommandData CreateSqlCommand (QueryModel queryModel)
+    public SqlCommandData CreateStatement (QueryModel queryModel)
     {
       GetStatementCalled = true;
-      return Base.CreateSqlCommand (queryModel);
+      return Base.CreateStatement (queryModel);
     }
   }
 }

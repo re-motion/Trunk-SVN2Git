@@ -296,6 +296,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ExplicitJoinsIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\LegacyTestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedDerivedTargetClassForPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassForPersistentMixin.cs" />
