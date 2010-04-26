@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (classDefinition == null)
       {
         string message = string.Format (
-            "The type '{0}' declaring member '{1}' does not identify a queryable table.", property.DeclaringType.Name, property.Name);
+            "The type '{0}' does not identify a queryable table.", sqlTable.ItemType);
         throw new UnmappedItemException (message);
       }
 

@@ -246,17 +246,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (sqlEntityRefMemberExpression.SqlTable, Is.SameAs (_customerTable));
     }
 
-    // TODO Review COMMONS-2637: Add a test showing that it's important to use sqlTable.ItemType instead of property.DeclaringType (e.g., a property that is declared above the inheritance root)
-
-    // TODO Review COMMONS-2637: This test should simulat a table that has no associated ClassDefinition, e.g., a table with an item type of DomainObject or int
     [Test]
-    [ExpectedException (typeof (UnmappedItemException),
-        ExpectedMessage = "The member 'Student.First' does not have a queryable database mapping.")]
+    public void ResolveMemberExpression_PropertyAboveInheritanceRoot ()
+    {
+      var property = typeof (StorageGroupClass).GetProperty ("AboveInheritanceIdentifier");
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (StorageGroupClass), "StorageGroupClass", "s"));
+
+      var result = _resolver.ResolveMemberExpression (sqlTable, property, _generator);
+
+      Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
+      Assert.That (((SqlColumnExpression) result).OwningTableAlias, Is.EqualTo ("s"));
+      Assert.That (((SqlColumnExpression) result).ColumnName, Is.EqualTo ("AboveInheritanceIdentifier"));
+      Assert.That (result.Type, Is.EqualTo(typeof(string)));
+    }
+
+
+    [Test]
+    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The type 'Remotion.Data.DomainObjects.DomainObject' does not identify a queryable table.")]
     public void ResolveMemberExpression_InvalidDeclaringType_ThrowsUnmappedItemException ()
     {
       var property = typeof (Student).GetProperty ("First");
-      
-      _resolver.ResolveMemberExpression (_orderTable, property, _generator);
+
+      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (DomainObject), "DomainObject", "d"));
+
+      _resolver.ResolveMemberExpression (sqlTable, property, _generator);
     }
 
     [Test]
