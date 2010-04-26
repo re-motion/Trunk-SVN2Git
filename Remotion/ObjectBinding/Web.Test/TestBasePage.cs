@@ -36,7 +36,12 @@ namespace OBWTest
   {
     public TestBasePage ()
     {
+    }
+
+    protected override void OnPreInit (EventArgs e)
+    {
       MasterPageFile = (Global.PreferQuirksModeRendering) ? "~/QuirksMode.Master" : "~/StandardMode.Master";
+      base.OnPreInit (e);
     }
 
     protected new TFunction CurrentFunction

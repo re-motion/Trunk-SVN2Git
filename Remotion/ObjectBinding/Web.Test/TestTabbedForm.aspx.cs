@@ -45,7 +45,12 @@ public class TestTabbedForm : TestWxeBasePage
 
   public TestTabbedForm ()
   {
+  }
+
+  protected override void OnPreInit (EventArgs e)
+  {
     MasterPageFile = Global.PreferQuirksModeRendering ? "~/QuirksMode.Master" : "~/StandardMode.Master";
+    base.OnPreInit (e);
   }
 
   protected TestTabbedFormWxeFunction Function

@@ -38,7 +38,12 @@ namespace OBWTest
 
     public SingleTestTreeView ()
     {
+    }
+
+    protected override void OnPreInit (EventArgs e)
+    {
       MasterPageFile = Global.PreferQuirksModeRendering ? "~/QuirksMode.Master" : "~/StandardMode.Master";
+      base.OnPreInit (e);
     }
 
     private void Page_Load (object sender, EventArgs e)
