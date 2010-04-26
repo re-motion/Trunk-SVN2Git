@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding
       ArgumentUtility.CheckNotNull ("objectClass", objectClass);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyPathIdentifier", propertyPathIdentifier);
 
-      char separator = objectClass.BusinessObjectProvider.GetPropertyPathSeparator ();
+      char separator = objectClass.BusinessObjectProvider.GetPropertyPathSeparator();
 
       string[] propertyIdentifiers = propertyPathIdentifier.Split (separator);
       IBusinessObjectProperty[] properties = new IBusinessObjectProperty[propertyIdentifiers.Length];
@@ -188,16 +188,16 @@ namespace Remotion.ObjectBinding
     public virtual string GetString (IBusinessObject obj, string format)
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
-           
+
       IBusinessObject obj2;
       if (!TryGetValueWithoutLast (obj, false, true, out obj2))
-        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
+        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
 
       if (obj2 == null)
         return string.Empty;
 
       if (!LastProperty.IsAccessible (obj2.BusinessObjectClass, obj2))
-        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
+        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
 
       try
       {
@@ -205,7 +205,7 @@ namespace Remotion.ObjectBinding
       }
       catch (PermissionDeniedException)
       {
-        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
+        return obj.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
       }
     }
 
@@ -236,7 +236,10 @@ namespace Remotion.ObjectBinding
         if (value == null)
         {
           if (throwExceptionIfNotReachable)
-            throw new InvalidOperationException (string.Format ("A null value was detected in element {0} of property path {1}. Cannot evaluate rest of path.", i, this));
+          {
+            throw new InvalidOperationException (
+                string.Format ("A null value was detected in element {0} of property path {1}. Cannot evaluate rest of path.", i, this));
+          }
 
           return true;
         }
@@ -249,7 +252,8 @@ namespace Remotion.ObjectBinding
       if (property.IsList)
       {
         if (!getFirstListEntry)
-          throw new InvalidOperationException (string.Format ("Element {0} of property path {1} is not a single-value property.", propertyIndex, this));
+          throw new InvalidOperationException (
+              string.Format ("Element {0} of property path {1} is not a single-value property.", propertyIndex, this));
 
         IList list = (IList) obj.GetProperty (property);
         if (list.Count > 0)
@@ -258,9 +262,7 @@ namespace Remotion.ObjectBinding
           return null;
       }
       else
-      {
         return (IBusinessObject) obj.GetProperty (property);
-      }
     }
 
     /// <summary> Sets the value of this property path for the specified object. </summary>
@@ -273,7 +275,7 @@ namespace Remotion.ObjectBinding
     public virtual void SetValue (IBusinessObject obj, object value)
     {
       // TODO: implement
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     /// <summary> Gets the string representation of this property path. </summary>
@@ -286,12 +288,12 @@ namespace Remotion.ObjectBinding
         for (int i = 0; i < _properties.Length; i++)
         {
           if (i == 0)
-            separator = _properties[i].BusinessObjectProvider.GetPropertyPathSeparator ();
+            separator = _properties[i].BusinessObjectProvider.GetPropertyPathSeparator();
           else
             sb.Append (separator);
           sb.Append (_properties[i].Identifier);
         }
-        return sb.ToString ();
+        return sb.ToString();
       }
     }
 
@@ -300,7 +302,5 @@ namespace Remotion.ObjectBinding
     {
       return Identifier;
     }
-
   }
-
 }
