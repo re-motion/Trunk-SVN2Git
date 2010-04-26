@@ -37,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    [Ignore("Mixins TestMappingConfigurations should be ignored!?")]
     public void GetClassDefinitions ()
     {
       MappingReflector mappingReflector = new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (GetType().Assembly));

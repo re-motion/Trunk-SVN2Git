@@ -143,7 +143,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       classDefinitions.Add (CreateComputerDefinition (null));
       classDefinitions.Add (CreateClassWithRelatedClassIDColumnAndNoInheritanceDefinition (null));
 
-      classDefinitions.Add (CreateTargetClassForPersistentMixinDefinition (null));
+      var targetClassForPersistentMixinDefinition = CreateTargetClassForPersistentMixinDefinition (null);
+      classDefinitions.Add (targetClassForPersistentMixinDefinition);
+      var derivedTargetClassForPersistentMixinDefinition = CreateDerivedTargetClassForPersistentMixinDefinition (targetClassForPersistentMixinDefinition);
+      classDefinitions.Add (derivedTargetClassForPersistentMixinDefinition);
+      var derivedDerivedTargetClassForPersistentMixinDefinition = CreateDerivedDerivedTargetClassForPersistentMixinDefinition (derivedTargetClassForPersistentMixinDefinition);
+      classDefinitions.Add (derivedDerivedTargetClassForPersistentMixinDefinition);
 
       return classDefinitions;
     }
@@ -879,7 +884,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     {
       ReflectionBasedClassDefinition targetClassForPersistentMixin = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
           "TargetClassForPersistentMixin",
-          "TargetClassForPersistentMixin",
+          "MixedDomains_Target",
           DatabaseTest.c_testDomainProviderID,
           typeof (TargetClassForPersistentMixin),
           false,
@@ -892,8 +897,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
               "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.PersistentProperty",
               "PersistentProperty",
               typeof (int)));
+      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              targetClassForPersistentMixin,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.ExtraPersistentProperty",
+              "ExtraPersistentProperty",
+              typeof (int)));
+      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              targetClassForPersistentMixin,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.UnidirectionalRelationProperty",
+              "UnidirectionalRelationPropertyID",
+              typeof (ObjectID)));
+      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              targetClassForPersistentMixin,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.RelationProperty",
+              "RelationPropertyID",
+              typeof (ObjectID)));
+      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              targetClassForPersistentMixin,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.MixinAddingPersistentProperties.CollectionPropertyNSide",
+              "CollectionPropertyNSideID",
+              typeof (ObjectID)));
+      targetClassForPersistentMixin.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+              targetClassForPersistentMixin,
+              "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.BaseForMixinAddingPersistentProperties.PrivateBaseRelationProperty",
+              "PrivateBaseRelationPropertyID",
+              typeof (ObjectID)));
 
       return targetClassForPersistentMixin;
+    }
+
+    private ReflectionBasedClassDefinition CreateDerivedTargetClassForPersistentMixinDefinition (ReflectionBasedClassDefinition baseClass)
+    {
+      ReflectionBasedClassDefinition derivedTargetClassForPersistentMixin = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DerivedTargetClassForPersistentMixin",
+          null,
+          DatabaseTest.c_testDomainProviderID,
+          typeof (DerivedTargetClassForPersistentMixin),
+          false,
+          baseClass);
+
+      return derivedTargetClassForPersistentMixin;
+    }
+
+    private ReflectionBasedClassDefinition CreateDerivedDerivedTargetClassForPersistentMixinDefinition (ReflectionBasedClassDefinition baseClass)
+    {
+      ReflectionBasedClassDefinition derivedDerivedTargetClassForPersistentMixin = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (
+          "DerivedDerivedTargetClassForPersistentMixin",
+          null,
+          DatabaseTest.c_testDomainProviderID,
+          typeof (DerivedDerivedTargetClassForPersistentMixin),
+          false,
+          baseClass);
+
+      return derivedDerivedTargetClassForPersistentMixin;
     }
 
     private ReflectionBasedClassDefinition CreateComputerDefinition (ReflectionBasedClassDefinition baseClass)

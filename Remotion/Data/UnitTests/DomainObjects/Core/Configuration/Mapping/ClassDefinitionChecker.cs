@@ -18,7 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Utilities;
+using ArgumentUtility = Remotion.Utilities.ArgumentUtility;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -160,8 +162,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.AreEqual (
           expectedDefinitions.Count,
           actualDefinitions.Count,
-          "Number of property definitions in class definition '{0}' does not match.",
-          expectedClassDefinition.ID);
+          "Number of property definitions in class definition '{0}' does not match. Expected: {1}",
+          expectedClassDefinition.ID,
+          SeparatedStringBuilder.Build (", ", actualDefinitions.Cast<PropertyDefinition>().Select (pd => pd.PropertyName)));
 
       foreach (PropertyDefinition expectedDefinition in expectedDefinitions)
       {
