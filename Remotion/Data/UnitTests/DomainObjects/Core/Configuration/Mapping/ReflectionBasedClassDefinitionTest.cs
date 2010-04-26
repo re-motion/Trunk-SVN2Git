@@ -36,12 +36,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     private ReflectionBasedClassDefinition _orderClass;
     private ReflectionBasedClassDefinition _distributorClass;
+    private ReflectionBasedClassDefinition _targetClassForPersistentMixinClass;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _orderClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Order)];
+      _targetClassForPersistentMixinClass =
+          (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (TargetClassForPersistentMixin)];
       _distributorClass = (ReflectionBasedClassDefinition) TestMappingConfiguration.Current.ClassDefinitions[typeof (Distributor)];
     }
 
@@ -1194,24 +1197,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       var result = _orderClass.ResolveProperty (property);
 
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedPropertyDefinition)));
-      Assert.That (result.StorageSpecificName, Is.EqualTo ("OrderNo"));
-      Assert.That (result.PropertyType, Is.EqualTo (typeof (int)));
+      Assert.That (result, Is.Null);
     }
 
-    //TODO 2637: MixinProperty tests
-    //[Test]
-    //public void ResolveProperty_MixinProperty ()
-    //{
-    //  var property = typeof (TargetClassForPersistentMixin).GetProperty ("PersistentProperty");
+    [Test]
+    public void ResolveProperty_MixinProperty ()
+    {
+      var property = typeof (IMixinAddingPeristentProperties).GetProperty ("PersistentProperty");
 
-    //  var result = _targetClassForPersistentMixinClass.ResolveProperty (property);
+      var result = _targetClassForPersistentMixinClass.ResolveProperty (property);
 
-    //  Assert.That (result, Is.Not.Null);
-    //  Assert.That (result, Is.TypeOf (typeof (ReflectionBasedPropertyDefinition)));
-    //  Assert.That (result.StorageSpecificName, Is.EqualTo ("PersistentProperty"));
-    //  Assert.That (result.PropertyType, Is.EqualTo (typeof (int)));
-    //}
+      Assert.That (result, Is.Not.Null);
+      Assert.That (result, Is.TypeOf (typeof (ReflectionBasedPropertyDefinition)));
+      Assert.That (result.StorageSpecificName, Is.EqualTo ("PersistentProperty"));
+      Assert.That (result.PropertyType, Is.EqualTo (typeof (int)));
+    }
   }
 }

@@ -156,20 +156,19 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public override PropertyDefinition ResolveProperty (PropertyInfo property)
     {
-      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
-      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
       var propertyDefinition = GetPropertyDefinition (propertyIdentifier);
       if (propertyDefinition != null)
         return propertyDefinition;
 
-      return GetMixinPropertyDefinition(this, ClassType, property);
+      return GetMixinPropertyDefinition (this, property);
     }
 
-    private PropertyDefinition GetMixinPropertyDefinition (ClassDefinition classDefinition, Type type, PropertyInfo property)
+    private PropertyDefinition GetMixinPropertyDefinition (ReflectionBasedClassDefinition classDefinition, PropertyInfo property)
     {
       if (classDefinition != null)
       {
-        foreach (var mixin in ((ReflectionBasedClassDefinition) classDefinition).PersistentMixins)
+        foreach (var mixin in classDefinition.PersistentMixins)
         {
           if (property.DeclaringType.IsAssignableFrom (mixin))
           {
@@ -178,7 +177,8 @@ namespace Remotion.Data.DomainObjects.Mapping
           }
         }
 
-        return GetMixinPropertyDefinition (MappingConfiguration.Current.ClassDefinitions[type.BaseType], type.BaseType, property);
+        if (MappingConfiguration.Current.ClassDefinitions.Contains (classDefinition.ClassType.BaseType))
+          return MappingConfiguration.Current.ClassDefinitions[classDefinition.ClassType.BaseType].ResolveProperty (property);
       }
 
       return null;

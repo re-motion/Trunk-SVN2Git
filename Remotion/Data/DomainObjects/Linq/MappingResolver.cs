@@ -130,14 +130,8 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      var propertyDefinition = classDefinition.ResolveProperty (property);
-      
-      //string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (potentiallyRedirectedProperty);
-      //var propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
-
-      //if (propertyDefinition == null)
-      // propertyDefinition = GetMixinPropertyDefinition (classDefinition, sqlTable.ItemType, property);
-      
+      var potentiallyRedirectedProperty = LinqPropertyRedirectionAttribute.GetTargetProperty (property);
+      var propertyDefinition = classDefinition.ResolveProperty (potentiallyRedirectedProperty);
       if (propertyDefinition == null)
       {
         string message = string.Format (
@@ -235,23 +229,5 @@ namespace Remotion.Data.DomainObjects.Linq
       return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
     }
 
-    //private PropertyDefinition GetMixinPropertyDefinition (ClassDefinition classDefinition, Type type, PropertyInfo property)
-    //{
-    //  if (classDefinition != null)
-    //  {
-    //    foreach (var mixin in ((ReflectionBasedClassDefinition) classDefinition).PersistentMixins)
-    //    {
-    //      if (property.DeclaringType.IsAssignableFrom (mixin))
-    //      {
-    //        string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (mixin, property.Name);
-    //        return classDefinition.GetPropertyDefinition (propertyIdentifier);
-    //      }
-    //    }
-
-    //    return GetMixinPropertyDefinition (GetClassDefinition (type.BaseType), type.BaseType, property);
-    //  }
-
-    //  return null;
-    //}
   }
 }
