@@ -146,6 +146,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
       Assert.AreEqual (BusinessObjectPropertyPathTestHelper.NotAccessible, actual);
     }
 
+    [Test]
+    public void GeBusinessObject ()
+    {
+      using (_testHelper.Ordered ())
+      {
+        ExpectOnceOnReferencePropertyIsAccessible (true);
+        ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentity);
+      }
+      _testHelper.ReplayAll ();
+
+      IBusinessObject actual = _path.GetBusinessObject (_testHelper.BusinessObject, true, true);
+
+      _testHelper.VerifyAll ();
+      Assert.AreSame (_testHelper.BusinessObjectWithIdentity, actual);
+    }
+
     private void ExpectOnceOnReferencePropertyIsAccessible (bool returnValue)
     {
       _testHelper.ExpectOnceOnIsAccessible (_testHelper.ReferenceProperty, _testHelper.BusinessObjectClass, _testHelper.BusinessObject, returnValue);

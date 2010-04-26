@@ -47,6 +47,21 @@ namespace Remotion.ObjectBinding
     /// <param name="format"> The format string passed to <see cref="IBusinessObject.GetPropertyString">IBusinessObject.GetPropertyString</see>. </param>
     string GetString (IBusinessObject obj, string format);
 
+    /// <summary> Gets the <see cref="IBusinessObject"/> that is used to retrieve the value of the property path. </summary>
+    /// <param name="obj"> The object that has the first property in the path. Must not be <see langword="null"/>. </param>
+    /// <param name="throwExceptionIfNotReachable"> 
+    ///   If <see langword="true"/>, an <see cref="InvalidOperationException"/> is thrown if the <see cref="IBusinessObject"/> cannot be reached 
+    ///   because one of the properties in the path is <see langword="null"/>. If <see langword="false"/>, <see langword="null"/> is returned instead. 
+    /// </param>
+    /// <param name="getFirstListEntry">
+    ///   If <see langword="true"/>, the first value of each list property is processed.
+    ///   If <see langword="false"/>, evaluation of list properties causes an <see cref="InvalidOperationException"/>.
+    /// </param>
+    /// <exception cref="InvalidOperationException"> 
+    ///   Thrown if any but the last property in the path is <see langword="null"/>, or is not a single-value reference property. 
+    /// </exception>
+    IBusinessObject GetBusinessObject (IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry);
+
     /// <summary> Sets the value of this property path for the specified object. </summary>
     /// <param name="obj">
     ///   The object that has the first property in the path. Must not be <see langword="null"/>. 
