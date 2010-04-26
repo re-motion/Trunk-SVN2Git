@@ -173,133 +173,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (storageClass, DomainObjectIDs.StorageGroupClass1);
     }
 
-    // TODO Review COMMONS-2637: Refactor to avoid changing the database in the test
-
     [Test]
     public void PropertyDeclaredByMixin_AppliedToSameObject ()
     {
-      SetDatabaseModifyable ();
-
-      TargetClassForPersistentMixin mixedInstance;
-      MixinAddingPersistentProperties mixin;
-      RelationTargetForPersistentMixin relationTarget1;
-      RelationTargetForPersistentMixin relationTarget2;
-      RelationTargetForPersistentMixin relationTarget3;
-      RelationTargetForPersistentMixin relationTarget4;
-      RelationTargetForPersistentMixin relationTarget5;
-
-      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
-      {
-        mixedInstance = TargetClassForPersistentMixin.NewObject ();
-        mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
-        relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
-      }
-
-      mixin.PersistentProperty = 99;
-      mixin.NonPersistentProperty = 100;
-      mixin.ExtraPersistentProperty = 1000;
-      mixin.RelationProperty = relationTarget1;
-      mixin.VirtualRelationProperty = relationTarget2;
-      mixin.CollectionProperty1Side.Add (relationTarget3);
-      mixin.CollectionPropertyNSide = relationTarget4;
-      mixin.UnidirectionalRelationProperty = relationTarget5;
-
-      mixedInstance.GetBindingTransaction ().Commit ();
-
       var mixins = (from t in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
                           where ((IMixinAddingPeristentProperties) t).PersistentProperty == 99
                           select t);
 
-      CheckQueryResult (mixins, mixedInstance.ID);
+      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins1);
     }
 
     [Test]
     public void PropertyDeclaredByMixin_AppliedToBaseObject ()
     {
-      SetDatabaseModifyable ();
-
-      TargetClassForPersistentMixin mixedInstance;
-      MixinAddingPersistentProperties mixin;
-      RelationTargetForPersistentMixin relationTarget1;
-      RelationTargetForPersistentMixin relationTarget2;
-      RelationTargetForPersistentMixin relationTarget3;
-      RelationTargetForPersistentMixin relationTarget4;
-      RelationTargetForPersistentMixin relationTarget5;
-
-      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
-      {
-        mixedInstance = DerivedTargetClassForPersistentMixin.NewObject ();
-        mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
-        relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
-      }
-
-      mixin.PersistentProperty = 199;
-      mixin.NonPersistentProperty = 100;
-      mixin.ExtraPersistentProperty = 1000;
-      mixin.RelationProperty = relationTarget1;
-      mixin.VirtualRelationProperty = relationTarget2;
-      mixin.CollectionProperty1Side.Add (relationTarget3);
-      mixin.CollectionPropertyNSide = relationTarget4;
-      mixin.UnidirectionalRelationProperty = relationTarget5;
-
-      mixedInstance.GetBindingTransaction ().Commit ();
-
-      var mixins = (from m in QueryFactory.CreateLinqQuery <DerivedTargetClassForPersistentMixin>()
+      var mixins = (from m in QueryFactory.CreateLinqQuery<DerivedTargetClassForPersistentMixin> ()
                     where ((IMixinAddingPeristentProperties) m).PersistentProperty == 199
                     select m);
 
-      CheckQueryResult (mixins); 
+      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins2);
     }
 
     [Test]
     public void PropertyDeclaredByMixin_AppliedToBaseBaseObject ()
     {
-      SetDatabaseModifyable ();
-
-      TargetClassForPersistentMixin mixedInstance;
-      MixinAddingPersistentProperties mixin;
-      RelationTargetForPersistentMixin relationTarget1;
-      RelationTargetForPersistentMixin relationTarget2;
-      RelationTargetForPersistentMixin relationTarget3;
-      RelationTargetForPersistentMixin relationTarget4;
-      RelationTargetForPersistentMixin relationTarget5;
-
-      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
-      {
-        mixedInstance = DerivedDerivedTargetClassForPersistentMixin.NewObject ();
-        mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
-        relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget3 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
-        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
-      }
-
-      mixin.PersistentProperty = 299;
-      mixin.NonPersistentProperty = 100;
-      mixin.ExtraPersistentProperty = 1000;
-      mixin.RelationProperty = relationTarget1;
-      mixin.VirtualRelationProperty = relationTarget2;
-      mixin.CollectionProperty1Side.Add (relationTarget3);
-      mixin.CollectionPropertyNSide = relationTarget4;
-      mixin.UnidirectionalRelationProperty = relationTarget5;
-
-      mixedInstance.GetBindingTransaction ().Commit ();
-
       var mixins = (from m in QueryFactory.CreateLinqQuery<DerivedDerivedTargetClassForPersistentMixin> ()
                     where ((IMixinAddingPeristentProperties) m).PersistentProperty == 299
                     select m);
 
-     // TODO Review COMMONS-2637: Shouldn't this query have a result?
-      CheckQueryResult (mixins);
+      CheckQueryResult (mixins, DomainObjectIDs.TargetClassForPersistentMixins3);
     }
 
   }

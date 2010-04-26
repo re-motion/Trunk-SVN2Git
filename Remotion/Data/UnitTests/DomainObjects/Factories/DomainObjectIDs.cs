@@ -408,5 +408,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     public readonly ObjectID StorageGroupClass2 = new ObjectID ("StorageGroupClass", new Guid ("{F394AE2E-CB4E-4e38-8E08-9C847EE1F376}"));
     
     #endregion
+
+    #region "TargetClassForPersistentMixins"
+
+    public readonly ObjectID TargetClassForPersistentMixins1 = new ObjectID ("TargetClassForPersistentMixin", new Guid ("{784EBDDD-EE94-456D-A5F4-F6CB1B41B6CA}"));
+
+    public readonly ObjectID TargetClassForPersistentMixins2 = new ObjectID ("DerivedTargetClassForPersistentMixin", new Guid ("{4ED563B8-B337-4C8E-9A77-5FA907919377}"));
+
+    public readonly ObjectID TargetClassForPersistentMixins3 = new ObjectID ("DerivedDerivedTargetClassForPersistentMixin", new Guid ("{B551C440-8C80-4930-A2A1-7FBB4F6B69D8}"));
+    
+    #endregion
   }
 }

@@ -3,6 +3,7 @@ use TestDomain
 delete from [MixedDomains_TargetWithTwoUnidirectionalMixins]
 delete from [MixedDomains_TargetWithUnidirectionalMixin1]
 delete from [MixedDomains_TargetWithUnidirectionalMixin2]
+delete from [MixedDomains_Target] where PersistentProperty IN (99, 199, 299)
 
 delete from [FileSystemItem]
 delete from [Location]
@@ -455,3 +456,11 @@ insert into [StorageGroupClass] (ID, ClassID, AboveInheritanceIdentifier, Storag
     
 insert into [StorageGroupClass] (ID, ClassID, AboveInheritanceIdentifier, StorageGroupClassIdentifier)
     values ('{F394AE2E-CB4E-4e38-8E08-9C847EE1F376}', 'StorageGroupClass', 'AboveInheritanceName2', 'StorageGroupName2')
+
+--MixedDomains_Target
+insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersistentProperty)
+	values ('{784EBDDD-EE94-456D-A5F4-F6CB1B41B6CA}', 'TargetClassForPersistentMixin', 99, 100)
+insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersistentProperty)
+	values ('{4ED563B8-B337-4C8E-9A77-5FA907919377}', 'DerivedTargetClassForPersistentMixin', 199, 100)
+insert into [MixedDomains_Target] (ID, ClassID, PersistentProperty, ExtraPersistentProperty)
+	values ('{B551C440-8C80-4930-A2A1-7FBB4F6B69D8}', 'DerivedDerivedTargetClassForPersistentMixin', 299, 100)
