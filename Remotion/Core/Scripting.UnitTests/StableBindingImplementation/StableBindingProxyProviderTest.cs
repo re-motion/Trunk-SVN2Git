@@ -75,7 +75,6 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
         new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
 
       var proxied = new ProxiedChildChildChild ("abrakadava");
-      const string attributeName = "PrependName";
 
       var proxy = provider.BuildProxy (proxied);
       // Necessary since a newly built proxy has an empty proxied field
@@ -183,26 +182,6 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       Assert.That (result1, Is.EqualTo ("xyzzzzzzzzz Schlaf"));
 
     }
-
-
-    [Test]
-    [Explicit]
-    public void GetAttributeProxyChainCallPerformance ()
-    {
-      // ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
-
-      var proxied0 = new ProxiedChildChildChild ("ABC");
-
-      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
-      var currentStableBindingProxyProvider = ScriptContext.Current.StableBindingProxyProvider;
-
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
-      ScriptingHelper.ExecuteAndTime ("Direct", nrLoopsArray, () => currentStableBindingProxyProvider.GetAttributeProxy (proxied0, "PrependName"));
-      ScriptingHelper.ExecuteAndTime ("Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, "PrependName"));
-
-      ScriptContext.ReleaseScriptContext (_scriptContext);
-    }
-
 
   }
 

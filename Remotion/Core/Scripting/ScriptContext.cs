@@ -31,9 +31,7 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
-    private const string c_scriptContextCurrentSafeContextTag = "Remotion.Scripting.ScriptContext.Current";
-    
-    private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
+    private static readonly Dictionary<string, ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
 
     /// <summary>
@@ -41,43 +39,8 @@ namespace Remotion.Scripting
     /// </summary>
     public static ScriptContext Current
     {
-      get { return CurrentScriptContext; }
-    }
-
-    /// <summary>
-    /// Returns the DLR proxy object for the proxied objects member with the passed name.
-    /// </summary>
-    public static object GetAttributeProxy (object proxied, string attributeName)
-    {
-      return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
-    }
-
-   
-    /// <summary>
-    /// Switches to the passed <see cref="ScriptContext"/>. All re-motion script classes (e.g. <see cref="ExpressionScript{TResult}"/>, 
-    /// <see cref="ScriptFunction{TFixedArg1,TResult}"/>, etc) do this automatically before executing their DLR script.
-    /// </summary>
-    public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)
-    {
-      // Note: Currently switching to the same ScriptContext twice is not supported. 
-      // (Would need to use a stack of ScriptContext|s to support interleaving of ScriptContext|s).
-      ArgumentUtility.CheckNotNull ("newScriptContex", newScriptContex);
-      Assertion.IsNull (CurrentScriptContext, CurrentScriptContext == null ? "" : String.Format ("ReleaseScriptContext: There is already an active script context ('{0}') on this thread.", CurrentScriptContext.Name));
-      CurrentScriptContext = newScriptContex;
-    }
-
-    /// <summary>
-    /// Releases the the passed <see cref="ScriptContext"/>. All re-motion script classes (e.g. <see cref="ExpressionScript{TResult}"/>, 
-    /// <see cref="ScriptFunction{TFixedArg1,TResult}"/>, etc) do this automatically after having executed their DLR script.
-    /// </summary>
-    public static void ReleaseScriptContext (ScriptContext scriptContexToRelease)
-    {
-      ArgumentUtility.CheckNotNull ("scriptContexToRelease", scriptContexToRelease);
-      if (!Object.ReferenceEquals (scriptContexToRelease, CurrentScriptContext))
-      {
-        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context was '{1}'.", scriptContexToRelease.Name, CurrentScriptContext));
-      }
-      CurrentScriptContext = null;
+      get { return (ScriptContext) SafeContext.Instance.GetData (SafeContextKeys.ScriptingScriptContext); }
+      private set { SafeContext.Instance.SetData (SafeContextKeys.ScriptingScriptContext, value); }
     }
 
     /// <summary>
@@ -86,86 +49,71 @@ namespace Remotion.Scripting
     /// <param name="name">The tag name of the <see cref="ScriptContext"/>. Must be unique. Suggested naming scheme: 
     /// company domain name + namespace of module (e.g. "rubicon.eu.Remotion.Data.DomainObjects.Scripting", "microsoft.com.Word.Scripting").
     /// </param>
-    /// <param name="typeFilter">The <see cref="ITypeFilter"/> which decides which <see cref="Type"/>|s are known in the <see cref="ScriptContext"/>.</param>
+    /// <param name="typeFilter">
+    /// The <see cref="ITypeFilter"/> which decides which <see cref="Type"/>|s are known in the <see cref="ScriptContext"/>.
+    /// </param>
     public static ScriptContext Create (string name, ITypeFilter typeFilter)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);
+
       lock (s_scriptContextLock)
       {
-        return CreateScriptContextUnsafe(name, typeFilter);
+        var scriptContext = new ScriptContext (name, typeFilter);
+        try
+        {
+          s_scriptContexts.Add (name, scriptContext);
+        }
+        catch (ArgumentException)
+        {
+          var message = string.Format ("ScriptContext '{0}' already exists.", name);
+          throw new ArgumentException (message);
+        }
+
+        return scriptContext;
       }
     }
 
     /// <summary>
     /// Retrieves the <see cref="ScriptContext"/> corresponding the passed <paramref name="name"/>. 
     /// </summary>
-    /// <returns>The <see cref="ScriptContext"/> or null if none with the passed name has been defined using <see cref="Create"/>.</returns>
+    /// <returns>The <see cref="ScriptContext"/>, or <see langword="null" /> if no context with the given name has been defined using 
+    /// <see cref="Create"/>.</returns>
     public static ScriptContext GetScriptContext (string name)
     {
-      // Note: Null-or-empty for name OK
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
       lock (s_scriptContextLock)
       {
         ScriptContext scriptContext;
-        ScriptContexts.TryGetValue (name, out scriptContext);
+        s_scriptContexts.TryGetValue (name, out scriptContext);
         return scriptContext;
       }
     }
 
-
-    private static ScriptContext CurrentScriptContext
-    {
-      get
-      {
-        return (ScriptContext) SafeContext.Instance.GetData (c_scriptContextCurrentSafeContextTag);
-      }
-
-      set
-      {
-        SafeContext.Instance.SetData (c_scriptContextCurrentSafeContextTag, value);
-      }
-    }
-
-    private static Dictionary<string, ScriptContext> ScriptContexts
-    {
-      get { return s_scriptContexts; }
-    }
-
-    private static ScriptContext CreateScriptContextUnsafe (string name, ITypeFilter typeFilter)
-    {
-      if (GetScriptContext (name) != null)
-      {
-        throw new ArgumentException (String.Format ("ScriptContext named \"{0}\" already exists.", name));
-      }
-      var scriptContext = new ScriptContext (name, typeFilter);
-      ScriptContexts[name] = scriptContext;
-      return scriptContext;
-    }
-
-    // Test-only method
-    private static void ClearScriptContexts ()
+    /// <summary>
+    /// Clears the registry of script contexts created so far via <see cref="Create"/>.
+    /// </summary>
+    public static void ClearScriptContexts ()
     {
       lock (s_scriptContextLock)
       {
-        CurrentScriptContext = null;
-        ScriptContexts.Clear ();
+        s_scriptContexts.Clear ();
       }
     }
 
-    // Test-only method
-    private static void ReleaseAllScriptContexts ()
-    {
-      CurrentScriptContext = null;
-    }
-
- 
     private readonly string _name;
     private readonly StableBindingProxyProvider _proxyProvider;
 
     private ScriptContext (string name, ITypeFilter typeFilter)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);
+
       _name = name;
-      _proxyProvider = new StableBindingProxyProvider (typeFilter, ReflectionHelper.CreateModuleScope ("Scripting.ScriptContext." + name,false));
+      
+      var moduleScope = ReflectionHelper.CreateModuleScope ("Scripting.ScriptContext." + name, false);
+      _proxyProvider = new StableBindingProxyProvider (typeFilter, moduleScope);
     }
 
     /// <summary>
@@ -194,6 +142,45 @@ namespace Remotion.Scripting
       get { return _proxyProvider; }
     }
 
- 
+    /// <summary>
+    /// Executes the specified delegate in the scope of this <see cref="ScriptContext"/>. During delegate execution, this <see cref="ScriptContext"/>
+    /// will become the <see cref="Current"/> context. After execution, the <see cref="Current"/> is cleaned up.
+    /// </summary>
+    /// <typeparam name="TResult">The result type of the <paramref name="func"/> delegate to be executed.</typeparam>
+    /// <param name="func">The delegate to be executed.</param>
+    /// <returns>The result of the delegate.</returns>
+    public TResult Execute<TResult> (Func<TResult> func)
+    {
+      ArgumentUtility.CheckNotNull ("func", func);
+
+      Assertion.IsNull (Current);
+      Current = this;
+      try
+      {
+        return func ();
+      }
+      finally
+      {
+        Assertion.IsTrue (Current == this);
+        Current = null;
+      }
+    }
+
+    /// <summary>
+    /// Given a DLR object, returns a proxy object that should be used to look up a member (= attribute) of that DLR object. 
+    /// The proxy object implements stable binding, and objects requiring stable binding support should call this method from their implementation of
+    /// <c>GetCustomMember</c>. (See also <see cref="StableBindingMixin"/>, which automatically calls <see cref="GetAttributeProxy"/>.)
+    /// </summary>
+    /// <param name="proxied">The object whose attribute should be looked up.</param>
+    /// <param name="attributeName">The name of the attribute to be looked up.</param>
+    /// <returns>A proxy object that can be returned to the DLR for look-up of <paramref name="attributeName"/> on the <paramref name="proxied"/>
+    /// object.</returns>
+    public object GetAttributeProxy (object proxied, string attributeName)
+    {
+      ArgumentUtility.CheckNotNull ("proxied", proxied);
+      ArgumentUtility.CheckNotNullOrEmpty ("attributeName", attributeName);
+
+      return StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
+    }
   }
 }

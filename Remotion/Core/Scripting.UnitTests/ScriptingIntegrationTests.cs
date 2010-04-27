@@ -38,7 +38,6 @@ namespace Remotion.Scripting.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      ScriptContextTestHelper.ReleaseAllScriptContexts ();
       _scriptEnvironment = ScriptEnvironment.Create ();
     }
 

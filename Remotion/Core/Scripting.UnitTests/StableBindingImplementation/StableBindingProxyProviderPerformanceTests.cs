@@ -129,7 +129,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
@@ -160,17 +160,17 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-      var nrLoopsArray = new[] { 1, 1, 100 };
+      var nrLoopsArray = new[] { 1, 1, 100000 };
       var timing = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascade))[2];
-      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding))[2];
       var timingStableBindingFromMixin = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBindingFromMixin))[2];
+      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding))[2];
 
       To.ConsoleLine.e (() => timing).e (() => timingStableBinding).e (() => timingStableBindingFromMixin);
     }
@@ -256,13 +256,13 @@ def PropertyPathAccess(cascade) :
       [SpecialName]
       public object GetCustomMember (string name)
       {
-        return ScriptContext.GetAttributeProxy (this, name);
+        return ScriptContext.Current.GetAttributeProxy (this, name);
       }
     }
 
 
     [Uses (typeof (StableBindingMixin))]
-    public class CascadeStableBindingFromMixin : CascadeAmbigous
+    public class CascadeStableBindingFromMixin : Cascade
     {
       public CascadeStableBindingFromMixin (int nrChildren)
       {
@@ -270,7 +270,7 @@ def PropertyPathAccess(cascade) :
         _name = "C" + nrChildren;
         if (nrChildren > 0)
         {
-          Child = new CascadeStableBindingFromMixin (nrChildren);
+          Child = ObjectFactory.Create<CascadeStableBindingFromMixin> (ParamList.Create (nrChildren));
         }
       }
     }

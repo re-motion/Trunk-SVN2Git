@@ -37,7 +37,7 @@ namespace Remotion.Scripting.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      ScriptContextTestHelper.ClearScriptContexts ();
+      ScriptContext.ClearScriptContexts();
     }
 
 
@@ -61,12 +61,9 @@ namespace Remotion.Scripting.UnitTests
     public void AssertGetCustomMemberFromScript(MixinTest mixinTestChild, string scriptContextName)
     {
       ScriptContext scriptContext = ScriptContext.Create (scriptContextName, new TypeLevelTypeFilter (typeof (IAmbigous1)));
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
 
-      var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild);
+      var result = scriptContext.Execute (() => ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild));
       Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
-
-      ScriptContext.ReleaseScriptContext (scriptContext);
     }
 
 
@@ -123,7 +120,7 @@ namespace Remotion.Scripting.UnitTests
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.GetAttributeProxy (this, name);
+      return ScriptContext.Current.GetAttributeProxy (this, name);
     }
   }
 

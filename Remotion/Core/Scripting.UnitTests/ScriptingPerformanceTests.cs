@@ -261,9 +261,7 @@ def PropertyPathAccess(cascade) :
       var cascadeStableBinding = new CascadeStableBinding (numberChildren);
       var cascadeGetCustomMember = new CascadeGetCustomMemberReturnsString (numberChildren);
 
-      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
-      var attributeNameProxy = ScriptContext.GetAttributeProxy (cascade, "Name");
-      ScriptContext.ReleaseScriptContext (_scriptContext);
+      var attributeNameProxy = _scriptContext.GetAttributeProxy (cascade, "Name");
       var cascadeGetCustomMemberReturnsFixedAttributeProxy = new CascadeGetCustomMemberReturnsFixedAttributeProxy (numberChildren, attributeNameProxy);
 
 
@@ -302,9 +300,7 @@ def PropertyPathAccess(cascade) :
       const int numberChildren = 10;
       var cascade = new Cascade (numberChildren);
 
-      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
-      var attributeNameProxy = ScriptContext.GetAttributeProxy (cascade, "GetName");
-      ScriptContext.ReleaseScriptContext (_scriptContext);
+      var attributeNameProxy = _scriptContext.GetAttributeProxy (cascade, "GetName");
       var cascadeGetCustomMemberReturnsFixedAttributeProxy = new CascadeGetCustomMemberReturnsFixedAttributeProxy (numberChildren, attributeNameProxy);
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
@@ -379,16 +375,18 @@ def PropertyPathAccess(cascade) :
 
       var proxied0 = new Cascade (10);
 
-      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
-      var currentStableBindingProxyProvider = ScriptContext.Current.StableBindingProxyProvider;
+      _scriptContext.Execute (delegate
+      {
+        var currentStableBindingProxyProvider = ScriptContext.Current.StableBindingProxyProvider;
 
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
-      const string attributeName = "GetName";
-      ScriptingHelper.ExecuteAndTime ("Direct", nrLoopsArray, () => currentStableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
-      ScriptingHelper.ExecuteAndTime (
-          "Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
+        var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
+        const string attributeName = "GetName";
+        ScriptingHelper.ExecuteAndTime ("Direct", nrLoopsArray, () => currentStableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
+        ScriptingHelper.ExecuteAndTime (
+            "Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
 
-      ScriptContext.ReleaseScriptContext (_scriptContext);
+        return 0;
+      });
     }
 
 

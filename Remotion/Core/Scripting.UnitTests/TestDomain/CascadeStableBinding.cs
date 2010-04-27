@@ -31,7 +31,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.GetAttributeProxy (this, name);
+      return ScriptContext.Current.GetAttributeProxy (this, name);
     }
   }
 }

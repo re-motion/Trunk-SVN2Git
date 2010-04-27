@@ -22,10 +22,9 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     public void AddAttributeProxy (string name, object proxied, ScriptContext scriptContext)
     {
       var type = this.GetType ();
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-      var attributeNameProxy = ScriptContext.GetAttributeProxy (proxied, name);
+      
+      var attributeNameProxy = scriptContext.GetAttributeProxy (proxied, name);
       _attributeProxyMap[new Tuple<Type, string> (type,name)] = attributeNameProxy;
-      ScriptContext.ReleaseScriptContext (scriptContext);
     }
 
     [SpecialName]

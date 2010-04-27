@@ -26,7 +26,7 @@ namespace Remotion.Scripting.StableBindingImplementation
   /// </summary>
   public class TypeLevelTypeFilter : ITypeFilter
   {
-    private readonly Dictionary<Type, bool> _validTypes = new Dictionary<Type, bool> ();
+    private readonly HashSet<Type> _validTypes;
 
     public TypeLevelTypeFilter (params Type[] validTypes)
       : this ((IEnumerable<Type>) validTypes)
@@ -36,16 +36,13 @@ namespace Remotion.Scripting.StableBindingImplementation
     public TypeLevelTypeFilter (IEnumerable<Type> validTypes)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("validTypes", validTypes);
-      foreach (var type in validTypes)
-      {
-        _validTypes.Add (type, true);
-      }
+      _validTypes = new HashSet<Type> (validTypes);
     }
 
     public bool IsTypeValid (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return _validTypes.ContainsKey (type);
+      return _validTypes.Contains (type);
     }
   }
 }

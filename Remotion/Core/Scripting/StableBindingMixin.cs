@@ -30,7 +30,7 @@ namespace Remotion.Scripting
     [MemberVisibility (MemberVisibility.Public)]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.GetAttributeProxy (This, name);
+      return ScriptContext.Current.GetAttributeProxy (This, name);
     }    
   }
 

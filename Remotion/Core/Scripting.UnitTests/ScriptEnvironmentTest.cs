@@ -28,7 +28,7 @@ namespace Remotion.Scripting.UnitTests
     [TearDown]
     public void TearDown ()
     {
-      ScriptContextTestHelper.ClearScriptContexts ();
+      ScriptContext.ClearScriptContexts();
     }
 
     [Test]

@@ -29,7 +29,7 @@ namespace Remotion.Scripting.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      ScriptContextTestHelper.ClearScriptContexts ();
+      ScriptContext.ClearScriptContexts();
     }
 
     [Test]

@@ -26,7 +26,7 @@ namespace Remotion.Scripting
   /// expression is evaluated and the result returned. 
   /// </summary>
   /// <remarks>
-  /// Under IronPython <see cref="ExpressionScript{TResult}"/>|s are more safe than 
+  /// Under IronPython, <see cref="ExpressionScript{TResult}"/>|s are safer than 
   /// full blown <see cref="ScriptFunction{TResult}"/>|s, since they cannot contain import statements, i.e. they can only access the objects
   /// which can be reached from within their <see cref="ScriptScope"/>.
   /// </remarks>
@@ -38,25 +38,40 @@ namespace Remotion.Scripting
 
     private CompiledCode _compiledScript;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExpressionScript{TResult}"/> class.
+    /// </summary>
+    /// <param name="scriptContext">
+    ///   The <see cref="ScriptContext"/> to use when executing the script. The script context is used to isolate re-motion modules from each other.
+    /// </param>
+    /// <param name="scriptLanguageType">The script language to use for the script.</param>
+    /// <param name="scriptText">
+    ///   The source code of the script. This must be an expression in the language defined by <paramref name="scriptLanguageType"/>.
+    /// </param>
+    /// <param name="scriptEnvironment">
+    ///   The <see cref="ScriptEnvironment"/> defining the variables and imported symbols the script has access to.
+    /// </param>
     public ExpressionScript (
         ScriptContext scriptContext,
         ScriptLanguageType scriptLanguageType,
         string scriptText,
         ScriptEnvironment scriptEnvironment)
-        : base (scriptContext, scriptLanguageType, scriptText)
+      : base (
+          ArgumentUtility.CheckNotNull ("scriptContext", scriptContext), 
+          scriptLanguageType, 
+          ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText))
     {
-      ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
-      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
+
+      _scriptEnvironment = scriptEnvironment;
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       _scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Expression);
-      _compiledScript = _scriptSource.Compile ();
-      _scriptEnvironment = scriptEnvironment;
     }
 
     /// <summary>
-    /// Executes the script expression in compiled form.  
+    /// Executes the script expression in compiled form. If the script hasn't been compiled yet, it is compiled before execution. The compilation
+    /// results are reused when this <see cref="ExpressionScript{TResult}"/> is executed again.
     /// </summary>
     /// <returns>The result of running the script.</returns>   
     public TResult Execute ()
@@ -66,38 +81,18 @@ namespace Remotion.Scripting
          _compiledScript = _scriptSource.Compile ();
       }
 
-      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
-      TResult result;
-      try
-      {
-        result = _compiledScript.Execute<TResult> (_scriptEnvironment.ScriptScope);
-      }
-      finally
-      {
-        ScriptContext.ReleaseScriptContext (ScriptContext);
-      }
-      return result;
+      return ScriptContext.Execute (() => _compiledScript.Execute<TResult> (_scriptEnvironment.ScriptScope));
     }
 
     /// <summary>
     /// Executes the script expression without compiling it. Use to avoid the compilation overhead of running a script.
     /// </summary>
-    /// <remarks>Note that an uncompiled script executes orders of magnitude slower than a compiled one. So make sure the
+    /// <remarks>An uncompiled script executes orders of magnitude slower than a compiled one. So make sure the
     /// compiliation overhead saved is not offset by the increased runtime cost.</remarks>
     /// <returns>The result of running the script.</returns>
     public TResult ExecuteUncompiled ()
     {
-      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
-      TResult result;
-      try
-      {
-        result = _scriptSource.Execute<TResult> (_scriptEnvironment.ScriptScope);
-      }
-      finally
-      {
-        ScriptContext.ReleaseScriptContext (ScriptContext);
-      }
-      return result;
+      return ScriptContext.Execute (() => _scriptSource.Execute<TResult> (_scriptEnvironment.ScriptScope));
     }
   }
 }

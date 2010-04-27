@@ -15,229 +15,144 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Scripting.StableBindingImplementation;
 using Rhino.Mocks;
 
-
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
   public class ScriptContextTest
   {
+    private ITypeFilter _typeFilterStub;
+
     [SetUp]
     public void SetUp ()
     {
-      ScriptContextTestHelper.ClearScriptContexts ();
+      _typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
     }
 
-
-    [Test]
-    public void Name_And_TypeFilter_Properties ()
+    [TearDown]
+    public void TearDown ()
     {
-      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter>();
-      var scriptContext = ScriptContextTestHelper.CreateTestScriptContext ("Context0", typeFilterStub);
-      Assert.That (scriptContext.Name, Is.EqualTo ("Context0"));
-      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeFilterStub));
+      ScriptContext.ClearScriptContexts ();
     }
 
     [Test]
-    public void CreateScriptContext ()
+    public void Create ()
     {
-      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter>();
+      var typeFilterStub = _typeFilterStub;
+      
       var scriptContext = ScriptContext.Create ("ContextXyz1", typeFilterStub);
+      
       Assert.That (scriptContext.Name, Is.EqualTo ("ContextXyz1"));
+      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeFilterStub));
+
       Assert.That (scriptContext.StableBindingProxyProvider.TypeFilter, Is.SameAs (typeFilterStub));
+      
       var moduleScope = scriptContext.StableBindingProxyProvider.ModuleScope;
       Assert.That (moduleScope, Is.Not.Null);
-      StringAssert.Contains ("Scripting.ScriptContext.ContextXyz1", moduleScope.StrongNamedModuleName);
+      Assert.That (moduleScope.StrongNamedModuleName, NUnit.Framework.SyntaxHelpers.Text.Contains ("Scripting.ScriptContext.ContextXyz1"));
     }
 
     [Test]
-    public void GetScriptContext ()
+    public void Create_RegistersContext ()
     {
-      const string name = "Context2";
-      ScriptContext scriptContext = CreateScriptContext(name);
-      Assert.That (ScriptContext.GetScriptContext (name),Is.SameAs(scriptContext));
+      ScriptContext scriptContext = ScriptContext.Create ("Context", _typeFilterStub);
+
+      Assert.That (ScriptContext.GetScriptContext ("Context"), Is.SameAs (scriptContext));
     }
 
-    private ScriptContext CreateScriptContext (string name)
+    [Test]
+    [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext 'DuplicateContext' already exists.")]
+    public void Create_CreatingSameNamedContextFails ()
     {
-      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
-      return ScriptContext.Create (name, typeFilterStub);
+      var scriptContext = ScriptContext.Create ("DuplicateContext", _typeFilterStub);
+      Assert.That (scriptContext, Is.Not.Null);
+     
+      ScriptContext.Create ("DuplicateContext", _typeFilterStub);
     }
 
     [Test]
     public void GetScriptContext_NonExistingContext ()
     {
-      const string name = "NonExistingContext";
-      Assert.That (ScriptContext.GetScriptContext (name), Is.Null);
-    }
-
-
-    [Test]
-    [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext named \"DuplicateContext\" already exists.")]
-    public void CreateScriptContext_CreatingSameNamedContextFails ()
-    {
-      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
-      const string name = "DuplicateContext";
-      var scriptContext = ScriptContext.Create (name, typeFilterStub);
-      Assert.That (scriptContext, Is.Not.Null);
-      ScriptContext.Create (name, typeFilterStub);
-    }
-
-    public delegate void CreateScriptContextsDelegate ();
-
-    [Test]
-    [Explicit] // Note: Race condition does only occur when test is executed standalone.
-    [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "ScriptContext inconsistent")]
-    public void CreateScriptContextUnsafe_NotThreadSafe ()
-    {
-      CreateScriptContextsDelegate thread0 = new ScriptContextCreator (false).CreateScriptContexts;
-      CreateScriptContextsDelegate thread1 = new ScriptContextCreator (false).CreateScriptContexts;
-      IAsyncResult iftAr0 = thread0.BeginInvoke (null, null);
-      IAsyncResult iftAr1 = thread1.BeginInvoke (null, null);
-      thread0.EndInvoke (iftAr0);
-      thread1.EndInvoke (iftAr1);
+      Assert.That (ScriptContext.GetScriptContext ("NonExistingContext"), Is.Null);
     }
 
     [Test]
-    public void CreateScriptContext_ThreadSafe ()
+    public void Execute_RunsDelegate ()
     {
-      CreateScriptContextsDelegate thread0 = new ScriptContextCreator(true).CreateScriptContexts;
-      CreateScriptContextsDelegate thread1 = new ScriptContextCreator (true).CreateScriptContexts;
-      IAsyncResult iftAr0 = thread0.BeginInvoke (null, null);
-      IAsyncResult iftAr1 = thread1.BeginInvoke (null, null);
-      thread0.EndInvoke (iftAr0);
-      thread1.EndInvoke (iftAr1);
+      var scriptContext = CreateScriptContext ();
+
+      var result = scriptContext.Execute (() => 17 + 4);
+
+      Assert.That (result, Is.EqualTo (21));
     }
 
-
     [Test]
-    public void ScriptContext_Current_ThreadStatic ()
+    public void Execute_SetsScriptContext ()
     {
-      ScriptContext scriptContext = CreateScriptContext ("ScriptContext_Current_ThreadStatic");
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+      var scriptContext = CreateScriptContext ();
 
-      var threadRunner = new ThreadRunner (delegate {
-        var scriptContext2 = CreateScriptContext ("ScriptContext_Current_ThreadStatic_DifferentThread");
-        ScriptContext.SwitchAndHoldScriptContext (scriptContext2);
-        Assert.That (ScriptContext.Current, Is.SameAs (scriptContext2));
-        // Note that we do not call ReleaseScriptContext(scriptContext2) here, so the  ScriptContext stays active on this thread
-      });
-      threadRunner.Run ();
-      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+      Assert.That (ScriptContext.Current, Is.Null);
+      var scriptContextInExecute = scriptContext.Execute (() => ScriptContext.Current);
+
+      Assert.That (scriptContextInExecute, Is.SameAs (scriptContext));
     }
 
-
     [Test]
-    public void SwitchAndHoldScriptContext ()
+    public void Execute_ResetsScriptContext ()
     {
-      ScriptContext scriptContext = CreateScriptContext ("SwitchAndHoldScriptContext");
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
-      ScriptContext.ReleaseScriptContext (scriptContext);
+      var scriptContext = CreateScriptContext ();
+
+      Assert.That (ScriptContext.Current, Is.Null);
+      scriptContext.Execute (() => ScriptContext.Current);
+
       Assert.That (ScriptContext.Current, Is.Null);
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "ReleaseScriptContext: There is already an active script context ('SwitchAndHoldScriptContext_Fails_DueToSameAlreadyActiveScriptContext') on this thread.")]
-    public void SwitchAndHoldScriptContext_Fails_DueToSameAlreadyActiveScriptContext ()
+    public void Execute_ResetsScriptContext_InCaseOfError ()
     {
-      ScriptContext scriptContext = CreateScriptContext ("SwitchAndHoldScriptContext_Fails_DueToSameAlreadyActiveScriptContext");
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-    }
+      var scriptContext = CreateScriptContext ();
 
-    [Test]
-    [ExpectedException (ExceptionType = typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "ReleaseScriptContext: There is already an active script context ('SwitchAndHoldScriptContext') on this thread.")]
-    public void SwitchAndHoldScriptContext_Fails_DueToDifferentAlreadyActiveScriptContext ()
-    {
-      ScriptContext scriptContext0 = CreateScriptContext ("SwitchAndHoldScriptContext");
-      ScriptContext scriptContext1 = CreateScriptContext ("SwitchAndHoldScriptContext_Fails_DueToAlreadyActiveScriptContext");
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext0);
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext1);
-    }
+      Assert.That (ScriptContext.Current, Is.Null);
+      try
+      {
+        scriptContext.Execute<int> (() => { throw new ApplicationException ("Test"); });
+        Assert.Fail ("Expected ApplicationException");
+      }
+      catch (ApplicationException)
+      {
+        // ok
+      }
 
-    [Test]
-    public void ReleaseScriptContext ()
-    {
-      ScriptContext scriptContext = CreateScriptContext ("ReleaseScriptContext");
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
-      ScriptContext.ReleaseScriptContext (scriptContext);
       Assert.That (ScriptContext.Current, Is.Null);
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "Tried to release script context 'ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext' while active script context was 'Remotion.Scripting.ScriptContext'.")]
-    public void ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext ()
+    public void Execute_ScriptContext_ThreadStatic ()
     {
-      ScriptContext scriptContext0 = CreateScriptContext ("SwitchAndHoldScriptContext");
-      ScriptContext scriptContext1 = CreateScriptContext ("ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext");
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext0);
-      ScriptContext.ReleaseScriptContext (scriptContext1);
-    }
-    
-    private class ScriptContextCreator
-    {
-      private readonly bool _useSafe;
-      private static readonly ITypeFilter s_typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
+      var scriptContext = CreateScriptContext ();
 
-      public ScriptContextCreator (bool useSafe)
-      {
-        _useSafe = useSafe;
-      }
-
-      public void CreateScriptContexts ()
-      {
-        const string namePrefix = "CreateScriptContexts";
-        //var scriptContexts = new System.Collections.Generic.List<ScriptContext>();
-        var scriptContexts = new Dictionary<string,ScriptContext>();
-        for (int i = 0; i < 1000; ++i)
-        {
-          try
+      Assert.That (ScriptContext.Current, Is.Null);
+      var scriptContextInExecute = scriptContext.Execute (
+          delegate
           {
-            string name = namePrefix + i;
-            ScriptContext scriptContext;
-            if(_useSafe)
-            {
-              scriptContext = ScriptContext.Create (name, s_typeFilterStub);
-            }
-            else
-            {
-              scriptContext = (ScriptContext) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "CreateScriptContextUnsafe", name, s_typeFilterStub);
-            }
-            scriptContexts[name] = scriptContext;
-            CheckGetScriptContextConsistency (name, scriptContext);
-          }
-          catch (ArgumentException)
-          {
-            // Exception intentionally ignored; threads are expected to try to create same ScriptContext|s.
-          }
-        }
+            Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+            ThreadRunner.Run (() => Assert.That (ScriptContext.Current, Is.Null));
+            Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+            return ScriptContext.Current;
+          });
 
-        foreach (var pair in scriptContexts)
-        {
-          CheckGetScriptContextConsistency (pair.Key, pair.Value);
-        }
-      }
-
-      private void CheckGetScriptContextConsistency (string name, ScriptContext scriptContext)
-      {
-        if (!Object.ReferenceEquals (ScriptContext.GetScriptContext (name), scriptContext))
-        {
-          throw new InvalidOperationException ("ScriptContext inconsistent");
-        }
-      }
+      Assert.That (scriptContextInExecute, Is.SameAs (scriptContext));
     }
 
-
- 
-
+    private ScriptContext CreateScriptContext ()
+    {
+      return ScriptContext.Create ("Context", _typeFilterStub);
+    }
   }
 }

@@ -38,15 +38,5 @@ namespace Remotion.Scripting.UnitTests
     {
       return CreateTestScriptContext ("DummyScriptContext");
     }
-
-    public static void ClearScriptContexts ()
-    {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
-    }
-
-    public static void ReleaseAllScriptContexts ()
-    {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ReleaseAllScriptContexts");
-    }
   }
 }
