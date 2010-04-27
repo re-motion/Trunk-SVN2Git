@@ -84,6 +84,16 @@ div.singleView div.content
   height: 100%;
 }
 
+body.msie7 div.singleViewView div.content
+{
+  margin-left: -2px;
+}
+
+body.msie7 div.singleViewView div.content > div
+{
+  padding-left: 2px;
+}
+
 div.singleViewView
 {
   padding: 1px;
