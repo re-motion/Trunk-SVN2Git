@@ -138,9 +138,7 @@
   display: none;
 }
 
-body.mozilla  *.tabStripTabsPane ul,
-body.webkit   *.tabStripTabsPane ul,
-body.opera    *.tabStripTabsPane ul
+*.tabStripTabsPane ul
 {
   width: auto; 
 }

@@ -304,20 +304,6 @@ div.tabbedMultiViewTabStrip a span.anchorBody
   padding-right: 0.5em;
 }
 
-body.mozilla  div.tabbedMultiViewTabStrip span.tabStripTab,
-body.webkit   div.tabbedMultiViewTabStrip span.tabStripTab,
-body.opera    div.tabbedMultiViewTabStrip span.tabStripTab,
-body.mozilla  div.tabbedMultiViewTabStrip span.tabStripTabSelected,
-body.webkit   div.tabbedMultiViewTabStrip span.tabStripTabSelected,
-body.opera    div.tabbedMultiViewTabStrip span.tabStripTabSelected
-{
-  margin: 0; /* Separator already has width. */
-}
-
-div.tabbedMultiViewTabStrip span.tabStripTabWrapper
-{
-}
-
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   margin-bottom: 1px; /* The width of the top-border of the tabs. */

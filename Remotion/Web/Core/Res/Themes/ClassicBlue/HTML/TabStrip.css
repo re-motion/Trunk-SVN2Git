@@ -13,9 +13,8 @@
 
 *.tabStripTabsPane ul
 {
-  margin: 0px;
+  margin: 0 0 -1px 0;
   padding: 0px;  
-
   list-style: none;
   width: 100%; 
 }
@@ -32,7 +31,6 @@
   color: Blue;
   text-decoration: none;
   cursor: default;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab a:hover
@@ -49,7 +47,6 @@
   color: Blue;
   text-decoration: none;
   cursor: default;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab.disabled a,
@@ -87,21 +84,21 @@
 
 *.tabStripTabSeparator
 {
+  float: left;
   width: 0.3em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
   margin: 0px;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab,
 *.tabStripTabSelected
 {
   position: relative;
-  display: inline-block; /* IE-only value */
+  display: inline-block; 
 }
 
 *.tabStripTabSeparator
 {
-  display: inline-block; /* IE-only value */
+  display: inline-block;
 }
 
 *.tabStripTabSeparator span,
@@ -141,30 +138,9 @@
   display: none;
 }
 
-body.mozilla  *.tabStripTabsPane ul,
-body.webkit   *.tabStripTabsPane ul,
-body.opera    *.tabStripTabsPane ul
+*.tabStripTabsPane ul
 {
   width: auto; 
-}
-
-body.mozilla  *.tabStripTab,
-body.webkit   *.tabStripTab,
-body.opera    *.tabStripTab,
-body.mozilla  *.tabStripTabSelected,
-body.webkit   *.tabStripTabSelected,
-body.opera    *.tabStripTabSelected
-{
-  display: block; /* Correction for Non-IE browsers. */
-  margin-left: 0.3em; /* Provides room for the separator. */
-}
-
-body.mozilla  *.tabStripTabSeparator,
-body.webkit   *.tabStripTabSeparator,
-body.opera    *.tabStripTabSeparator
-{
-  display: block; /* Correction for Non-IE browsers. */
-  float: left;
 }
 
 body.mozilla  *.tabStripTabSeparator span,
@@ -173,4 +149,10 @@ body.opera    *.tabStripTabSeparator span
 {
   padding-top: 1px; /* The padding used for the content span. */
   padding-bottom: 1px; /* The padding used for the content span. */
+}
+
+
+body.msie7 span.tabStripTabSeparator
+{
+  padding-bottom: 1px;
 }
