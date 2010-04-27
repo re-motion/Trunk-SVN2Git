@@ -44,11 +44,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void SetUp ()
     {
       _context = new SqlPreparationContext ();
-      var registry = MethodCallTransformerRegistry.CreateDefault ();
+      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator ();
       var resolver = new MappingResolver ();
 
-      _preparationStage = new DefaultSqlPreparationStage (registry, _context, generator);
+      _preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, _context, generator);
       _mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _sqlGenerationStage = new DefaultSqlGenerationStage();
 
@@ -108,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var generator = new UniqueIdentifierGenerator();
       var context = new SqlPreparationContext();
       var sqlPreparationStage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), context, generator);
+          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), context, generator);
       var mappinResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       
