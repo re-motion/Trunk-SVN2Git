@@ -52,7 +52,7 @@ def PropertyPathAccess(cascade) :
       var cascade = new Cascade (10);
 
       var privateScriptEnvironment = ScriptEnvironment.Create();
-      privateScriptEnvironment.ImportHelperFunctions();
+      privateScriptEnvironment.ImportIifHelperFunctions();
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
@@ -187,7 +187,7 @@ def PropertyPathAccess(cascade) :
           );
 
 
-      privateScriptEnvironment.ImportHelperFunctions();
+      privateScriptEnvironment.ImportIifHelperFunctions();
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
       var expression = new ExpressionScript<Object> (
           _scriptContext,

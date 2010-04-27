@@ -19,6 +19,7 @@ using System.Collections;
 using System.Text;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -38,8 +39,7 @@ namespace Remotion.Scripting
     {
       return new ScriptEnvironment (ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).CreateScope ());
     }
-
- 
+    
     /// <summary>
     /// Wraps the passed <see cref="ScriptScope"/> in a <see cref="ScriptEnvironment"/>. 
     /// </summary>
@@ -49,16 +49,15 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptScope", scriptScope);
       _scriptScope = scriptScope;
     }
-
-
+    
     public ScriptScope ScriptScope
     {
       get { return _scriptScope; }
     }
 
-
     /// <summary>
-    /// Makes the <see cref="ScriptEnvironment"/> CLR aware. 
+    /// Imports the special CLR module into the <see cref="ScriptEnvironment"/>. This enables .NET interop functionalities, and it is necessary to
+    /// import additional assemblies.
     /// </summary>
     public void ImportClr ()
     {
@@ -71,9 +70,9 @@ namespace Remotion.Scripting
 
     /// <summary>
     /// Introduces IIf(condition,trueValue,falseValue) and LazyIIf(condition,lambda:trueValue,lambda:falseValue)
-    /// functions into the <see cref="ScriptEnvironment"/>.
+    /// functions into the <see cref="ScriptEnvironment"/>. This enables script code to use these functions to return values based on a condition.
     /// </summary>
-    public void ImportHelperFunctions ()
+    public void ImportIifHelperFunctions ()
     {
       _scriptScope.SetVariable ("IIf", new Func<bool, object, object, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
       _scriptScope.SetVariable ("LazyIIf", new Func<bool, Func<object>, Func<object>, object> ((cond, trueVal, falseVal) => cond ? trueVal () : falseVal ()));
@@ -95,7 +94,7 @@ namespace Remotion.Scripting
 import clr
 clr.AddReferenceByPartialName('" + assembly + "')" +
 @"
-from " + nameSpace + " import " + Stringify (symbols, "", ",", "");
+from " + nameSpace + " import " + SeparatedStringBuilder.Build (",", (IEnumerable) symbols);
 
       const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
@@ -112,70 +111,15 @@ from " + nameSpace + " import " + Stringify (symbols, "", ",", "");
     }
 
     /// <summary>
-    /// Gets the value of the variable with the passed <paramref name="name"/> as a <see cref="Variable{T}"/> struct.
+    /// Gets the value of the variable with the passed <paramref name="name"/> as a <see cref="ScriptVariable{T}"/> struct.
     /// If the variable does not exist within the <see cref="ScriptEnvironment"/>, the 
-    /// <see cref="Variable{T}"/>.<see cref="Variable{T}.IsValid"/>-property is <see langword="false" />.
+    /// <see cref="ScriptVariable{T}"/>.<see cref="ScriptVariable{T}.IsValid"/>-property is <see langword="false" />.
     /// </summary> 
-    public Variable<T> GetVariable<T> (string name)
+    public ScriptVariable<T> GetVariable<T> (string name)
     {
       T value;
-      bool isValid = _scriptScope.TryGetVariable<T> (name, out value);
-      return new Variable<T>(value,isValid);
-    }
-
-    /// <summary>
-    /// Contains the value of a variable retrieved from a <see cref="ScriptEnvironment"/>, together with the information 
-    /// whether the value is valid (i.e. the variable existed).
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public struct Variable<T>
-    {
-      private readonly T _value;
-      private readonly bool _isValid;
-
-      public Variable (T value, bool isValid)
-      {
-        _value = value;
-        _isValid = isValid;
-      }
-
-      /// <summary>
-      /// Value of the variable. Defined only if <see cref="IsValid"/> is <see langword="true"/>.
-      /// </summary>
-      public T Value
-      {
-        get { return _value; }
-      }
-
-      /// <summary>
-      /// <see langword="true"/> if the variable existed, <see langword="false"/> otherwise.
-      /// </summary>
-      public bool IsValid
-      {
-        get { return _isValid; }
-      }
-    }
-
-
-    private string Stringify (IEnumerable elements, string sequencePrefix, string separator, string sequencePostfix)
-    {
-      var sb = new StringBuilder();
-      sb.Append (sequencePrefix);
-      bool firstElement = true;
-      foreach (var element in elements)
-      {
-        if (firstElement)
-        {
-          firstElement = false;
-        }
-        else
-        {
-          sb.Append (separator);
-        }
-        sb.Append (element);
-      }
-      sb.Append (sequencePostfix);
-      return sb.ToString();
+      bool isValid = _scriptScope.TryGetVariable (name, out value);
+      return new ScriptVariable<T> (value, isValid);
     }
   }
 }

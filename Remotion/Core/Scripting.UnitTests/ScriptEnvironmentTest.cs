@@ -102,11 +102,11 @@ namespace Remotion.Scripting.UnitTests
     public void ImportHelperFunctions_IIf ()
     {
       var scriptEnvironment = ScriptEnvironment.Create ();
-      scriptEnvironment.ImportHelperFunctions();
+      scriptEnvironment.ImportIifHelperFunctions();
       scriptEnvironment.SetVariable ("x", 100000);
       const string scriptText = "IIf(x > 1000,'big','small')";
       var expressionScript =
-          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportHelperFunctions"), ScriptLanguageType.Python, 
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportIifHelperFunctions"), ScriptLanguageType.Python, 
             scriptText, scriptEnvironment);
       Assert.That (expressionScript.Execute (), Is.EqualTo ("big"));
     }
@@ -116,11 +116,11 @@ namespace Remotion.Scripting.UnitTests
     public void ImportHelperFunctions_IIfIsNotLazy ()
     {
       var scriptEnvironment = ScriptEnvironment.Create ();
-      scriptEnvironment.ImportHelperFunctions ();
+      scriptEnvironment.ImportIifHelperFunctions ();
       scriptEnvironment.SetVariable ("x", 100000);
       const string scriptText = "IIf(x > 1000,'big',NonExistingSymbol)";
       var expressionScript =
-          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportHelperFunctions"), ScriptLanguageType.Python,
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportIifHelperFunctions"), ScriptLanguageType.Python,
             scriptText, scriptEnvironment);
       Assert.That (expressionScript.Execute (), Is.EqualTo ("big"));
     }
@@ -130,11 +130,11 @@ namespace Remotion.Scripting.UnitTests
     public void ImportHelperFunctions_LazyIIf ()
     {
       var scriptEnvironment = ScriptEnvironment.Create ();
-      scriptEnvironment.ImportHelperFunctions ();
+      scriptEnvironment.ImportIifHelperFunctions ();
       scriptEnvironment.SetVariable ("x", 100000);
       const string scriptText = "LazyIIf(x > 1000,lambda:'big',lambda:NonExistingSymbol)";
       var expressionScript =
-          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportHelperFunctions"), ScriptLanguageType.Python,
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportIifHelperFunctions"), ScriptLanguageType.Python,
             scriptText, scriptEnvironment);
       Assert.That (expressionScript.Execute (), Is.EqualTo ("big"));
     }

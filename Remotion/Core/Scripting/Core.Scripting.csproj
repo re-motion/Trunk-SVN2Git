@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionScript.cs" />
+    <Compile Include="ScriptVariable.cs" />
     <Compile Include="StableBindingImplementation\ForwardingProxyBuilder.cs" />
     <Compile Include="StableBindingImplementation\IProxy.cs" />
     <Compile Include="StableBindingImplementation\MethodMetadataToken.cs" />

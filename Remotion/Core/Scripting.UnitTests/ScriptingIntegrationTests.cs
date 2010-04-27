@@ -33,21 +33,19 @@ namespace Remotion.Scripting.UnitTests
     private readonly ScriptContext _scriptContext = ScriptContext.Create ("rubicon.eu.YourModuleName.ScriptingIntegrationTests",
       new TypeLevelTypeFilter(new[] {typeof(ProxiedChild), typeof(IAmbigous2), typeof(Document)}));
 
-    // Create a ScriptEnvironment for shared use between all the scripts in your re-motion module (to insulate scripts
-    // from each other, simply create a separate ScriptEnvironment for each of them).
-    private readonly ScriptEnvironment _sharedScriptEnvironment = ScriptEnvironment.Create ();
-
+    private ScriptEnvironment _scriptEnvironment;
 
     [SetUp]
     public void SetUp ()
     {
       ScriptContextTestHelper.ReleaseAllScriptContexts ();
+      _scriptEnvironment = ScriptEnvironment.Create ();
     }
 
-    // Shows how to create and use an ExpressionScript. ExpressionScript|s can only contain a single line and automatically return 
+    // Shows how to create and use an ExpressionScript. ExpressionScript|s can only contain a single expression and automatically return 
     // the result of evaluating them (without the need for a return statement).
     [Test]
-    public void CreateAndUseExpressionScript ()
+    public void ExpressionScript_CreateAndUse ()
     {
       const string expressionScriptSourceCode = "doc.Name.Contains('Rec') or doc.Number == 123456";
 
@@ -69,26 +67,30 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
       doc.Number = 123456;
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
-      doc.Number = 21;
+      doc.Name = "Report";
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
+      doc.Number = 21;
+      Assert.That (checkDocumentExpressionScript.Execute (), Is.False);
     }
 
     [Test]
     public void ExpressionScript_HelperFunctions ()
     {
       const string expressionScriptSourceCode = 
-        "IIf( doc.Name.Contains('Rec'), doc.Number, LazyIIf(doc.Number == 0, lambda:-1, lambda:1.0/doc.Number) )";
+        "IIf (doc.Name.Contains('Rec'), doc.Number, LazyIIf (doc.Number == 0, lambda:-1, lambda:1.0/doc.Number))";
+        // TODO: Equivalent to "doc.Number if doc.Name.Contains('Rec') else -1 if doc.Number == 0 else 1.0/doc.Number"?;
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
       privateScriptEnvironment.ImportClr ();
       // Import script helper functions (IIf and LazyIIf)
-      privateScriptEnvironment.ImportHelperFunctions();
+      privateScriptEnvironment.ImportIifHelperFunctions();
 
       var checkDocumentExpressionScript =
         new ExpressionScript<float> (_scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment);
 
       var doc = new Document ("Receipt", 4);
       privateScriptEnvironment.SetVariable ("doc", doc);
+
       Assert.That (checkDocumentExpressionScript.Execute (), Is.EqualTo (4.0));
       doc.Name = "Document";
       Assert.That (checkDocumentExpressionScript.Execute (), Is.EqualTo (0.25));
@@ -97,7 +99,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void CreateAndUseScript ()
+    public void ScriptFunction_CreateAndUse ()
     {
       const string scriptFunctionSourceCode = @"
 import clr
@@ -108,17 +110,20 @@ def CreateDocument() :
 ";
 
       // Create a script function called "CreateDocument" which returns a Document object.
-      var createDocumentScript = new ScriptFunction<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode,
-        _sharedScriptEnvironment, "CreateDocument");
+      var createDocumentScript = new ScriptFunction<Document> (
+          _scriptContext, 
+          ScriptLanguageType.Python, 
+          scriptFunctionSourceCode,
+        _scriptEnvironment, 
+        "CreateDocument");
       
       Document resultDocument = createDocumentScript.Execute ();
 
       Assert.That (resultDocument.Name, Is.EqualTo ("Here is your document, sir."));
     }
-
-
+    
     [Test]
-    public void CreateAndUseScriptWithPrivateScriptEnvironment ()
+    public void ScriptFunction_CreateAndUseScript_WithPrivateScriptEnvironment ()
     {
       const string scriptFunctionSourceCode = @"
 import clr
@@ -127,10 +132,14 @@ def CheckDocument(doc) :
 ";
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
+      
       // Create a script function called CheckDocument which takes a Document and returns a bool.
       var checkDocumentScript = new ScriptFunction<Document,bool> (
-        ScriptContext.GetScriptContext ("rubicon.eu.YourModuleName.ScriptingIntegrationTests"), ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "CheckDocument");
+        ScriptContext.GetScriptContext ("rubicon.eu.YourModuleName.ScriptingIntegrationTests"), 
+        ScriptLanguageType.Python,
+        scriptFunctionSourceCode, 
+        privateScriptEnvironment, 
+        "CheckDocument");
 
       Assert.That (checkDocumentScript.Execute (new Document ("Receipt", 123456)), Is.True);
       Assert.That (checkDocumentScript.Execute (new Document ("XXX", 123456)), Is.True);
@@ -138,15 +147,15 @@ def CheckDocument(doc) :
       Assert.That (checkDocumentScript.Execute (new Document ("XXX", 0)), Is.False);
     }
 
-
     [Test]
-    public void CreateAndUseScriptsInSameScriptEnvironment ()
+    public void ScriptFunction_CreateAndUseScripts_InSameScriptEnvironment ()
     {
       // Import CLR (for CLR string functionality)
-      _sharedScriptEnvironment.ImportClr ();
+      _scriptEnvironment.ImportClr ();
+      
       // Import the Document class into the shared script environment (otherwise we would not be able to call the Document ctors within
       // the script).
-      _sharedScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
+      _scriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
 
       const string scriptFunctionSourceCode0 = @"
 def CreateScriptDocSuccessor() :
@@ -161,20 +170,28 @@ def ModifyDocument(newNamePostfix, addToNumber) :
 ";
 
       // Create a script function which creates a new Document.
-      var createScriptDocSuccessorScript = new ScriptFunction<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode0,
-        _sharedScriptEnvironment, "CreateScriptDocSuccessor");
+      var createScriptDocSuccessorScript = new ScriptFunction<Document> (
+          _scriptContext, 
+          ScriptLanguageType.Python, 
+          scriptFunctionSourceCode0,
+          _scriptEnvironment, 
+          "CreateScriptDocSuccessor");
 
       // Create a script function which modifies the passed Document.
-      var modifyDocumentScript = new ScriptFunction<string, int, Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode1,
-        _sharedScriptEnvironment, "ModifyDocument");
+      var modifyDocumentScript = new ScriptFunction<string, int, Document> (
+          _scriptContext, 
+          ScriptLanguageType.Python, 
+          scriptFunctionSourceCode1,
+          _scriptEnvironment, 
+          "ModifyDocument");
 
 
-      Document doc = new Document ("invoice", 1);
+      var doc = new Document ("invoice", 1);
 
       Assert.That (doc.Name, Is.EqualTo ("invoice"));
       Assert.That (doc.Number, Is.EqualTo (1));
 
-      _sharedScriptEnvironment.SetVariable ("scriptDoc", doc);
+      _scriptEnvironment.SetVariable ("scriptDoc", doc);
 
       Document successorDoc = createScriptDocSuccessorScript.Execute ();
       Document scriptDoc = modifyDocumentScript.Execute (" - processed", 1000);
