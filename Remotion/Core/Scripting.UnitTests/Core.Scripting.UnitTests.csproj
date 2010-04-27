@@ -88,34 +88,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MethodInfoEqualityComparer.cs" />
-    <Compile Include="MethodInfoFromRelatedTypesEqualityComparer.cs" />
-    <Compile Include="MethodInfoFromRelatedTypesEqualityComparerTest.cs" />
-    <Compile Include="MethodMetadataTokenTest.cs" />
-    <Compile Include="ReflectionHelperTest.cs" />
+    <Compile Include="TestDomain\Cascade.cs" />
+    <Compile Include="TestDomain\CascadeGetCustomMemberReturnsAttributeProxyFromMap.cs" />
+    <Compile Include="TestDomain\CascadeGetCustomMemberReturnsFixedAttributeProxy.cs" />
+    <Compile Include="TestDomain\CascadeGetCustomMemberReturnsString.cs" />
+    <Compile Include="TestDomain\CascadeLocalStableBinding.cs" />
+    <Compile Include="TestDomain\CascadeStableBinding.cs" />
+    <Compile Include="StableBindingImplementation\MethodInfoEqualityComparer.cs" />
+    <Compile Include="StableBindingImplementation\MethodInfoFromRelatedTypesEqualityComparer.cs" />
+    <Compile Include="StableBindingImplementation\MethodInfoFromRelatedTypesEqualityComparerTest.cs" />
+    <Compile Include="StableBindingImplementation\MethodMetadataTokenTest.cs" />
+    <Compile Include="StableBindingImplementation\ReflectionHelperTest.cs" />
     <Compile Include="ScriptEnvironmentTest.cs" />
     <Compile Include="ScriptingIntegrationTests.cs" />
     <Compile Include="ScriptingPerformanceTests.cs" />
     <Compile Include="StableBindingMixinTest.cs" />
-    <Compile Include="StableBindingProxyBuilder_PropertyTests.cs" />
-    <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
-    <Compile Include="StableBindingProxyProviderPerformanceTests.cs" />
-    <Compile Include="StableBindingProxyProviderTest.cs" />
-    <Compile Include="StableBindingProxyProviderTestHelper.cs" />
-    <Compile Include="StableMetadataTokenTest.cs" />
-    <Compile Include="StableMetadataTokenToMethodInfoMapTest.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyBuilder_PropertyTests.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyBuilder_ReflectionTests.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyProviderPerformanceTests.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyProviderTest.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyProviderTestHelper.cs" />
+    <Compile Include="StableBindingImplementation\StableMetadataTokenTest.cs" />
+    <Compile Include="StableBindingImplementation\StableMetadataTokenToMethodInfoMapTest.cs" />
     <Compile Include="TestDomain\Document.cs" />
     <Compile Include="ExpressionScriptTest.cs" />
-    <Compile Include="ForwardingProxyBuilderTest.cs" />
-    <Compile Include="MethodInfoEqualityComparerTest.cs" />
+    <Compile Include="StableBindingImplementation\ForwardingProxyBuilderTest.cs" />
+    <Compile Include="StableBindingImplementation\MethodInfoEqualityComparerTest.cs" />
     <Compile Include="ScriptContextTest.cs" />
     <Compile Include="ScriptContextTestHelper.cs" />
     <Compile Include="ScriptingHelper.cs" />
     <Compile Include="ScriptingHostTestHelper.cs" />
     <Compile Include="ScriptTest.cs" />
     <Compile Include="SpikeTests.cs" />
-    <Compile Include="StableBindingProxyBuilderTest.cs" />
-    <Compile Include="StableBindingProxyBuilderTestHelper.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyBuilderTest.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyBuilderTestHelper.cs" />
     <Compile Include="TestDomain\FunctionalExtensions.cs" />
     <Compile Include="TestDomain\IAmbigous1.cs" />
     <Compile Include="TestDomain\IAmbigous2.cs" />
@@ -132,14 +138,14 @@
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Proxied.cs" />
     <Compile Include="ScriptingHostTest.cs" />
-    <Compile Include="AssemblyLevelTypeFilterTest.cs" />
+    <Compile Include="StableBindingImplementation\AssemblyLevelTypeFilterTest.cs" />
     <Compile Include="TestDomain\ProxiedChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChildChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChildGeneric.cs" />
     <Compile Include="TestDomain\ProxiedChildGeneric.cs" />
     <Compile Include="TypeExtensions.cs" />
-    <Compile Include="TypeLevelTypeFilterTest.cs" />
+    <Compile Include="StableBindingImplementation\TypeLevelTypeFilterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
@@ -160,7 +166,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bag.txt" />
     <Content Include="doc\KeepInMind.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -14,30 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
-
-namespace Remotion.Scripting
+namespace Remotion.Scripting.StableBindingImplementation
 {
   /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
+  /// Reflection performance enhancement interface that allows setting of the proxied type instance in a proxy object.
   /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  public interface IProxy
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
-    {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
-
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+    void SetProxied (object proxied);  
   }
 }

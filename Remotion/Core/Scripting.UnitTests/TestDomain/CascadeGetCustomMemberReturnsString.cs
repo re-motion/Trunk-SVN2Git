@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,30 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
-  /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  public class CascadeGetCustomMemberReturnsString : Cascade
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
+    public CascadeGetCustomMemberReturnsString (int nrChildren)
+    {
+      --nrChildren;
+      Name = "C" + nrChildren;
+      if (nrChildren > 0)
+        Child = new CascadeGetCustomMemberReturnsString (nrChildren);
+    }
+
+    [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
-
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+      if (name == "Name")
+        return GetName();
+      else
+        throw new NotSupportedException (String.Format ("Attribute {0} not supported by CascadeGetCustomMemberReturnsString", name));
+    }
   }
 }

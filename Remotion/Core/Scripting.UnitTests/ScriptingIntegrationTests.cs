@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests

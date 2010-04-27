@@ -14,30 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
-  /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
-  /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  [TestFixture]
+  public class ReflectionHelperTest
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
+    [Test]
+    public void CreateModuleScope ()
     {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
-
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+      var moduleScope = ReflectionHelper.CreateModuleScope ("ReflectionHelperTest.CreateModuleScope",false);
+      Assert.That (moduleScope.StrongNamedModuleName, Is.EqualTo ("Remotion.CodeGeneration.Generated.ReflectionHelperTest.CreateModuleScope.Signed.dll"));
+      Assert.That (moduleScope.WeakNamedModuleName, Is.EqualTo ("Remotion.CodeGeneration.Generated.ReflectionHelperTest.CreateModuleScope.Unsigned.dll"));
+    }
   }
 }

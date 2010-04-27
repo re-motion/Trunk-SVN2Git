@@ -17,36 +17,30 @@
 using System;
 using Remotion.Development.UnitTesting;
 using Remotion.Scripting.StableBindingImplementation;
-using Rhino.Mocks;
 
-namespace Remotion.Scripting.UnitTests
+namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
-  public class ScriptContextTestHelper
+  public static class StableBindingProxyProviderTestHelper
   {
-    public static ScriptContext CreateTestScriptContext (string name, ITypeFilter typeFilter)
+    public static Type BuildProxyType (this StableBindingProxyProvider proxyProvider, Type proxiedType)
     {
-      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeFilter);
+      return (Type) PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "BuildProxyType", proxiedType);
     }
 
-    public static ScriptContext CreateTestScriptContext (string name)
+    public static Type GetProxyType (this StableBindingProxyProvider proxyProvider, Type proxiedType)
     {
-      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
-      return CreateTestScriptContext (name, typeFilterStub);
+      return (Type) PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "GetProxyType", proxiedType);
     }
 
-    public static ScriptContext CreateTestScriptContext ()
+    public static object BuildProxy (this StableBindingProxyProvider proxyProvider, object proxied)
     {
-      return CreateTestScriptContext ("DummyScriptContext");
+      return PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "BuildProxy", proxied);
     }
 
-    public static void ClearScriptContexts ()
+    public static object GetProxy (this StableBindingProxyProvider proxyProvider, object proxied)
     {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
+      return PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "GetProxy", proxied);
     }
 
-    public static void ReleaseAllScriptContexts ()
-    {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ReleaseAllScriptContexts");
-    }
   }
 }

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Context;
+using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting

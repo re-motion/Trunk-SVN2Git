@@ -14,30 +14,34 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
+using System.Linq;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
+using Remotion.Scripting.UnitTests.TestDomain;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
-  /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
-  /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  [TestFixture]
+  public class MetadataTokenTest
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
+    [Test]
+    public void Ctor ()
     {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
+      var method0 = typeof (Proxied).GetPublicInstanceMethods ("OverrideMe", typeof (string)).Last ();
+      var metadateToken0 = new MethodMetadataToken (method0);
+      Assert.That (metadateToken0.Token, Is.EqualTo (method0.MetadataToken));
+      Assert.That (metadateToken0.MethodInfo, Is.EqualTo (method0));
+    }
 
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+
+    [Test]
+    public void Equals_Null ()
+    {
+      var method0 = typeof (Proxied).GetPublicInstanceMethods ("OverrideMe", typeof (string)).Last ();
+      var stableMetadateToken0 = new MethodMetadataToken (method0);
+
+      Assert.That (stableMetadateToken0.Equals (null), Is.False);
+    }
   }
 }

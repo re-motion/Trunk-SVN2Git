@@ -19,7 +19,6 @@ using System.Collections;
 using System.Text;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting

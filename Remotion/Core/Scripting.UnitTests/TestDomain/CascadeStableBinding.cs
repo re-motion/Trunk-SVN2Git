@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,29 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
-  /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  public class CascadeStableBinding : Cascade
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
+    public CascadeStableBinding (int nrChildren)
+    {
+      --nrChildren;
+      Name = "C" + nrChildren;
+      if (nrChildren > 0)
+        Child = new CascadeStableBinding (nrChildren);
+    }
+
+    [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
-
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+      return ScriptContext.GetAttributeProxy (this, name);
+    }
   }
 }

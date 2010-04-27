@@ -14,30 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
+using Castle.DynamicProxy;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.StableBindingImplementation
 {
   /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
+  /// Helps with typical reflection tasks such as creating a ModuleScope.
   /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  public static class ReflectionHelper
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
+    public static ModuleScope CreateModuleScope (string namePostfix, bool savePhysicalAssembly)
     {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
-
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+      string name = "Remotion.CodeGeneration.Generated." + namePostfix;
+      string nameSigned = name + ".Signed";
+      string nameUnsigned = name + ".Unsigned";
+      const string ext = ".dll";
+      return new ModuleScope (savePhysicalAssembly, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+    }
   }
 }

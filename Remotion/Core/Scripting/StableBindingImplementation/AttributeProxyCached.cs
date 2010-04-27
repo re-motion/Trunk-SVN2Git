@@ -14,30 +14,35 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
+using System.Reflection;
+using Remotion.Utilities;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.StableBindingImplementation
 {
   /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
+  /// Used by <see cref="StableBindingProxyProvider"/> to cache the results of the DLR returned attibute proxy.
   /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  public class AttributeProxyCached
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
-    {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
+    private readonly FieldInfo _proxiedField;
 
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+    public object Proxy { get; private set; }
+    public object AttributeProxy { get; private set; }
+
+    public AttributeProxyCached (object proxy, object attributeProxy)
+    {
+      ArgumentUtility.CheckNotNull ("proxy", proxy);
+
+      _proxiedField = StableBindingProxyProvider.GetProxiedField (proxy);
+
+      Proxy = proxy;
+      AttributeProxy = attributeProxy;
+    }
+
+    public void SetProxiedFieldValue (object value)
+    {
+      _proxiedField.SetValue (Proxy, value);
+    }
+
   }
 }

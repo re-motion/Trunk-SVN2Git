@@ -14,30 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
+using System;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.StableBindingImplementation
 {
   /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
+  /// Supplies functionality to categorize passed <see cref="Type"/>|s into "valid" and "invalid" types 
+  /// through its <see cref="IsTypeValid"/> member.
   /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  public interface ITypeFilter
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
-    {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
-
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+    /// <summary>
+    /// Decides whether passed <see cref="Type"/> passes the filter test.
+    /// </summary>
+    /// <returns><see langword="true" /> if <see cref="Type"/> is valid, <see langword="false" /> otherwise.</returns>
+    bool IsTypeValid (Type type);  
   }
 }

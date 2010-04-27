@@ -21,6 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.Scripting;
+using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests;
 using Remotion.Scripting.UnitTests.TestDomain;
 using Remotion.Mixins;

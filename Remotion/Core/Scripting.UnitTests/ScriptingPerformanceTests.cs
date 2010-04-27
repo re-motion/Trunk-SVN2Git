@@ -15,15 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Diagnostics.ToText;
-using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -31,15 +27,17 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptingPerformanceTests
   {
-    private readonly ScriptContext _scriptContext = ScriptContext.Create ("ScriptingPerformanceTests",
-      new TypeLevelTypeFilter (new[] { typeof (Cascade), typeof(CascadeStableBinding) }));
+    private readonly ScriptContext _scriptContext = ScriptContext.Create (
+        "ScriptingPerformanceTests",
+        new TypeLevelTypeFilter (new[] { typeof (Cascade), typeof (CascadeStableBinding) }));
 
 
     [Test]
     [Explicit]
     public void LongPropertyPathAccess_DlrVsClr ()
     {
-      const string scriptFunctionSourceCode = @"
+      const string scriptFunctionSourceCode =
+          @"
 import clr
 def PropertyPathAccess(cascade) :
   if cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == 'C0' :
@@ -48,37 +46,41 @@ def PropertyPathAccess(cascade) :
 ";
 
       const string expressionScriptSourceCode =
-"IIf( GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == 'C0',GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Name,'FAILED')";
+          "IIf( GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == 'C0',GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Name,'FAILED')";
 
 
       var cascade = new Cascade (10);
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      var privateScriptEnvironment = ScriptEnvironment.Create();
       privateScriptEnvironment.ImportHelperFunctions();
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "PropertyPathAccess"
+          );
 
       var propertyPathAccessExpressionScript = new ExpressionScript<string> (
-        _scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment
-      );
+          _scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment
+          );
 
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-      ExecuteAndLogTimings ("C# method", nrLoopsArray, delegate
-      {
-        if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
-        {
-          return cascade.Child.Child.Child.Child.Child.Child.Child.Name;
-        }
-        return "FAILED";
-      }
-      );
+      ExecuteAndLogTimings (
+          "C# method",
+          nrLoopsArray,
+          delegate
+          {
+            if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
+              return cascade.Child.Child.Child.Child.Child.Child.Child.Name;
+            return "FAILED";
+          }
+          );
       ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
       ExecuteAndLogTimings ("expression script", nrLoopsArray, propertyPathAccessExpressionScript.Execute);
     }
@@ -93,20 +95,25 @@ def Empty() :
   return None
 ";
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      var privateScriptEnvironment = ScriptEnvironment.Create();
 
       var emptyScript = new ScriptFunction<Object> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "Empty"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "Empty"
+          );
 
       var emptyExpression = new ExpressionScript<Object> (
-        _scriptContext, ScriptLanguageType.Python,
-        "None", privateScriptEnvironment
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          "None",
+          privateScriptEnvironment
+          );
 
       //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
       ExecuteAndLogTimings ("empty script function", nrLoopsArray, emptyScript.Execute);
       ExecuteAndLogTimings ("empty expression script", nrLoopsArray, emptyExpression.Execute);
       ExecuteAndLogTimings ("empty expression script (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
@@ -118,7 +125,7 @@ def Empty() :
       ExecuteAndLogTimings (testName, new[] { nrLoops }, func);
     }
 
-    public void ExecuteAndLogTimings ( string testName, int[] nrLoopsArray, Func<Object> func)
+    public void ExecuteAndLogTimings (string testName, int[] nrLoopsArray, Func<Object> func)
     {
       object result = null;
 
@@ -127,28 +134,23 @@ def Empty() :
       foreach (var nrLoops in nrLoopsArray)
       {
         System.GC.Collect (2);
-        System.GC.WaitForPendingFinalizers ();
+        System.GC.WaitForPendingFinalizers();
 
-        Stopwatch stopwatch = new Stopwatch ();
-        stopwatch.Start ();
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
 
         for (int i = 0; i < nrLoops; i++)
-        {
-          result = func ();
-        }
+          result = func();
 
-        stopwatch.Stop ();
+        stopwatch.Stop();
         timings.Add (stopwatch.ElapsedMilliseconds);
       }
 
-      To.ConsoleLine.s ("Timings ").e (testName).s(",").e (() => nrLoopsArray).s (": ").nl ().sb ();
+      To.ConsoleLine.s ("Timings ").e (testName).s (",").e (() => nrLoopsArray).s (": ").nl().sb();
       foreach (var timing in timings)
-      {
         To.Console.e (timing);
-      }
       To.Console.se();
     }
-
 
 
     [Test]
@@ -166,36 +168,43 @@ def PropertyPathAccess(cascade) :
       var cascadeStableBinding = new CascadeStableBinding (numberChildren);
       //var cascadeStableBinding = ObjectFactory.Create<CascadeStableBinding> (ParamList.Create (numberChildren));
       var cascadeLocalStableBinding = new CascadeLocalStableBinding (numberChildren);
-      
+
       var cascadeGetCustomMemberReturnsAttributeProxyFromMap = new CascadeGetCustomMemberReturnsAttributeProxyFromMap (numberChildren);
       cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetChild", cascade, _scriptContext);
       cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetName", cascade, _scriptContext);
 
- 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      var privateScriptEnvironment = ScriptEnvironment.Create();
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "PropertyPathAccess"
+          );
 
 
-      privateScriptEnvironment.ImportHelperFunctions ();
+      privateScriptEnvironment.ImportHelperFunctions();
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
       var expression = new ExpressionScript<Object> (
-        _scriptContext, ScriptLanguageType.Python,
-        "GLOBAL_cascade.GetChild().GetChild().GetName()", privateScriptEnvironment
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          "GLOBAL_cascade.GetChild().GetChild().GetName()",
+          privateScriptEnvironment
+          );
 
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
       ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
       ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-      ExecuteAndLogTimings ("script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
-      ExecuteAndLogTimings ("script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
+      ExecuteAndLogTimings (
+          "script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
+      ExecuteAndLogTimings (
+          "script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
     }
 
 
@@ -203,7 +212,8 @@ def PropertyPathAccess(cascade) :
     [Explicit]
     public void LongPropertyPathAccess_StableBinding ()
     {
-      const string scriptFunctionSourceCode = @"
+      const string scriptFunctionSourceCode =
+          @"
 import clr
 def PropertyPathAccess(cascade) :
   if cascade.GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetName() == 'C0' :
@@ -216,21 +226,23 @@ def PropertyPathAccess(cascade) :
       var cascadeStableBinding = new CascadeStableBinding (numberChildren);
       //var cascadeStableBinding = ObjectFactory.Create<CascadeStableBinding> (ParamList.Create (numberChildren));
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      var privateScriptEnvironment = ScriptEnvironment.Create();
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "PropertyPathAccess"
+          );
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
       ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
       ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
     }
-
 
 
     [Test]
@@ -246,36 +258,35 @@ def PropertyPathAccess(cascade) :
       const int numberChildren = 10;
       var cascade = new Cascade (numberChildren);
       //var cascadeStableBinding = ObjectFactory.Create<CascadeStableBinding> (ParamList.Create (numberChildren));
-      var cascadeStableBinding = new CascadeStableBinding(numberChildren);
+      var cascadeStableBinding = new CascadeStableBinding (numberChildren);
       var cascadeGetCustomMember = new CascadeGetCustomMemberReturnsString (numberChildren);
 
       ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
       var attributeNameProxy = ScriptContext.GetAttributeProxy (cascade, "Name");
       ScriptContext.ReleaseScriptContext (_scriptContext);
       var cascadeGetCustomMemberReturnsFixedAttributeProxy = new CascadeGetCustomMemberReturnsFixedAttributeProxy (numberChildren, attributeNameProxy);
-     
 
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      var privateScriptEnvironment = ScriptEnvironment.Create();
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "PropertyPathAccess"
+          );
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
       ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
       ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
       ExecuteAndLogTimings ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMember));
-      ExecuteAndLogTimings ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      ExecuteAndLogTimings (
+          "script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
     }
-
-
-
-
 
 
     [Test]
@@ -296,26 +307,33 @@ def PropertyPathAccess(cascade) :
       ScriptContext.ReleaseScriptContext (_scriptContext);
       var cascadeGetCustomMemberReturnsFixedAttributeProxy = new CascadeGetCustomMemberReturnsFixedAttributeProxy (numberChildren, attributeNameProxy);
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      var privateScriptEnvironment = ScriptEnvironment.Create();
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "PropertyPathAccess"
+          );
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
       ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings ("script function (FixedAttributeProxy)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      ExecuteAndLogTimings (
+          "script function (FixedAttributeProxy)",
+          nrLoopsArray,
+          () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
     }
 
     [Test]
     [Explicit]
     public void SimplePropertyAccess_GetCustomMember_AttributeProxyFromMap ()
     {
-      const string scriptFunctionSourceCode = @"
+      const string scriptFunctionSourceCode =
+          @"
 import clr
 def PropertyPathAccess(cascade) :
   if cascade.GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetChild().GetName() == 'C0' :
@@ -330,24 +348,27 @@ def PropertyPathAccess(cascade) :
       cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetName", cascade, _scriptContext);
       cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetChild", cascade, _scriptContext);
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      var privateScriptEnvironment = ScriptEnvironment.Create();
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
-      );
+          _scriptContext,
+          ScriptLanguageType.Python,
+          scriptFunctionSourceCode,
+          privateScriptEnvironment,
+          "PropertyPathAccess"
+          );
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
       var nrLoopsArray = new[] { 10 };
       ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndLogTimings ("script function (AttributeProxyFromMap)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
+      ExecuteAndLogTimings (
+          "script function (AttributeProxyFromMap)",
+          nrLoopsArray,
+          () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
     }
-
-
-
 
 
     [Test]
@@ -364,7 +385,8 @@ def PropertyPathAccess(cascade) :
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
       const string attributeName = "GetName";
       ScriptingHelper.ExecuteAndTime ("Direct", nrLoopsArray, () => currentStableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
-      ScriptingHelper.ExecuteAndTime ("Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
+      ScriptingHelper.ExecuteAndTime (
+          "Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
 
       ScriptContext.ReleaseScriptContext (_scriptContext);
     }
@@ -376,193 +398,18 @@ def PropertyPathAccess(cascade) :
       object result = "xyz";
 
       System.GC.Collect (2);
-      System.GC.WaitForPendingFinalizers ();
+      System.GC.WaitForPendingFinalizers();
 
-      Stopwatch stopwatch = new Stopwatch ();
-      stopwatch.Start ();
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start();
 
       for (int i = 0; i < 1000000; i++)
-      {
         result = func (cascade);
-      }
 
-      stopwatch.Stop ();
+      stopwatch.Stop();
       double milliSeconds = stopwatch.ElapsedMilliseconds;
       Assert.That (result, Is.EqualTo ("C2"));
       To.ConsoleLine.e (() => result).e (() => milliSeconds);
     }
-
-
   }
-
-  public class Cascade
-  {
-    private Cascade _child;
-    private string _name;
-
-    public Cascade ()
-    {
-      
-    }
-
-    public Cascade (int nrChildren)
-    {
-      --nrChildren;
-      Name = "C" + nrChildren;
-      if (nrChildren > 0)
-      {
-        Child = new Cascade (nrChildren);
-      }
-    }
-
-    public Cascade Child
-    {
-      get { return _child; }
-      protected set { _child = value; }
-    }
-
-    public string Name
-    {
-      get { return _name; }
-      protected set { _name = value; }
-    }
-
-    public Cascade GetChild ()
-    {
-      return Child;
-    }
-
-    public string GetName ()
-    {
-      return Name;
-    }
-  }
-
-  public class CascadeStableBinding : Cascade
-  {
-    public CascadeStableBinding (int nrChildren) 
-    {
-      --nrChildren;
-      Name = "C" + nrChildren;
-      if (nrChildren > 0)
-      {
-        Child = new CascadeStableBinding (nrChildren);
-      }
-    }
-
-    [SpecialName]
-    public object GetCustomMember (string name)
-    {
-      return ScriptContext.GetAttributeProxy (this, name);
-    }
-  }
-
-
-  public class CascadeLocalStableBinding : Cascade
-  {
-    private StableBindingProxyProvider _proxyProvider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (CascadeLocalStableBinding) }), ScriptingHelper.CreateModuleScope ("CascadeLocalStableBinding"));
-
-    public CascadeLocalStableBinding (int nrChildren)
-    {
-      --nrChildren;
-      Name = "C" + nrChildren;
-      if (nrChildren > 0)
-      {
-        Child = new CascadeLocalStableBinding (nrChildren);
-      }
-    }
-
-    [SpecialName]
-    public object GetCustomMember (string name)
-    {
-      return _proxyProvider.GetAttributeProxy (this, name);
-    }
-  }
-
- 
-
-  public class CascadeGetCustomMemberReturnsString : Cascade
-  {
-    public CascadeGetCustomMemberReturnsString (int nrChildren)
-    {
-      --nrChildren;
-      Name = "C" + nrChildren;
-      if (nrChildren > 0)
-      {
-        Child = new CascadeGetCustomMemberReturnsString (nrChildren);
-      }
-    }
-
-    [SpecialName]
-    public object GetCustomMember (string name)
-    {
-      if (name == "Name")
-      {
-        return GetName ();
-      }
-      else
-      {
-        throw new NotSupportedException (String.Format ("Attribute {0} not supported by CascadeGetCustomMemberReturnsString", name));
-      }
-    }
-  }
-
-
-  public class CascadeGetCustomMemberReturnsFixedAttributeProxy : Cascade
-  {
-    private readonly object _attributeProxy;
-
-    public CascadeGetCustomMemberReturnsFixedAttributeProxy (int nrChildren, object attributeProxy)
-    {
-      _attributeProxy = attributeProxy;
-      --nrChildren;
-      Name = "C" + nrChildren;
-      if (nrChildren > 0)
-      {
-        Child = new CascadeGetCustomMemberReturnsFixedAttributeProxy (nrChildren, attributeProxy);
-      }
-    }
-
-    [SpecialName]
-    public object GetCustomMember (string name)
-    {
-      return _attributeProxy;
-    }
-  }
-
-
-
-  public class CascadeGetCustomMemberReturnsAttributeProxyFromMap : Cascade
-  {
-    protected readonly Dictionary<Tuple<Type, string>, object> _attributeProxyMap = new Dictionary<Tuple<Type, string>, object> ();
-
-    public CascadeGetCustomMemberReturnsAttributeProxyFromMap (int nrChildren)
-    {
-      --nrChildren;
-      Name = "C" + nrChildren;
-      if (nrChildren > 0)
-      {
-        Child = new CascadeGetCustomMemberReturnsAttributeProxyFromMap (nrChildren);
-      }
-    }
-
-    public void AddAttributeProxy (string name, object proxied, ScriptContext scriptContext)
-    {
-      var type = this.GetType ();
-      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-      var attributeNameProxy = ScriptContext.GetAttributeProxy (proxied, name);
-      _attributeProxyMap[new Tuple<Type, string> (type,name)] = attributeNameProxy;
-      ScriptContext.ReleaseScriptContext (scriptContext);
-    }
-
-    [SpecialName]
-    public object GetCustomMember (string name)
-    {
-      var type = this.GetType();
-      return _attributeProxyMap[new Tuple<Type, string> (type, name)];
-    }
-  }
-
-
 }

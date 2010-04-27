@@ -14,30 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
-using Remotion.Scripting.StableBindingImplementation;
+using System.Reflection;
+using Remotion.Collections;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
-  /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
-  /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
-  {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
-    {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
+  public class MethodInfoFromRelatedTypesEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
+    private static readonly MethodInfoFromRelatedTypesEqualityComparer s_equalityComparer = new MethodInfoFromRelatedTypesEqualityComparer();
 
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+    public MethodInfoFromRelatedTypesEqualityComparer ()
+        : base (
+            x => new object[] { x.GetBaseDefinition().MetadataToken })
+    {
+    }
+
+    public static MethodInfoFromRelatedTypesEqualityComparer Get
+    {
+      get { return s_equalityComparer; }
+    }
+
+ 
   }
 }

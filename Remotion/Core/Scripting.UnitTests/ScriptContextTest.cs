@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Scripting.StableBindingImplementation;
 using Rhino.Mocks;
 
 

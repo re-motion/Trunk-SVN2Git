@@ -14,30 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Runtime.CompilerServices;
-using Remotion.Mixins;
+using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 {
-  /// <summary>
-  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
-  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
-  /// </summary>
-  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
+  [TestFixture]
+  public class AssemblyLevelTypeFilterTest
   {
-    // GetCustomMember needs to be public.
-    [MemberVisibility (MemberVisibility.Public)]
-    public object GetCustomMember (string name)
+    [Test]
+    public void IsTypeValid ()
     {
-      return ScriptContext.GetAttributeProxy (This, name);
-    }    
-  }
+      var typeFilter = new AssemblyLevelTypeFilter (new[] { typeof(Object).Assembly, this.GetType().Assembly });
+      
+      Assert.That (typeFilter.IsTypeValid (typeof (string)), Is.True);
+      Assert.That (typeFilter.IsTypeValid (typeof (AssemblyLevelTypeFilterTest)), Is.True);
 
-  public interface IStableBindingMixin
-  {
-    // SpecialName attribute is copied from interface, not from class method.
-    [SpecialName]
-    object GetCustomMember (string name);
+      Assert.That (typeFilter.IsTypeValid (typeof (AssemblyLevelTypeFilter)), Is.False);
+    }
   }
 }

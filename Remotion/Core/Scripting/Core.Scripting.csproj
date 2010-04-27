@@ -87,10 +87,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionScript.cs" />
-    <Compile Include="ForwardingProxyBuilder.cs" />
-    <Compile Include="IProxy.cs" />
-    <Compile Include="MethodMetadataToken.cs" />
-    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="StableBindingImplementation\ForwardingProxyBuilder.cs" />
+    <Compile Include="StableBindingImplementation\IProxy.cs" />
+    <Compile Include="StableBindingImplementation\MethodMetadataToken.cs" />
+    <Compile Include="StableBindingImplementation\ReflectionHelper.cs" />
     <Compile Include="ScriptFunction.generated.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -99,21 +99,21 @@
     </Compile>
     <Compile Include="ScriptEnvironment.cs" />
     <Compile Include="ScriptLanguageType.cs" />
-    <Compile Include="ITypeFilter.cs" />
+    <Compile Include="StableBindingImplementation\ITypeFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="ScriptBase.cs" />
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
-    <Compile Include="AssemblyLevelTypeFilter.cs" />
+    <Compile Include="StableBindingImplementation\AssemblyLevelTypeFilter.cs" />
     <Compile Include="StableBindingMixin.cs" />
-    <Compile Include="StableBindingProxyBuilder.cs" />
-    <Compile Include="StableBindingProxyProvider.cs" />
-    <Compile Include="AttributeProxyCached.cs" />
-    <Compile Include="StableMetadataToken.cs" />
-    <Compile Include="StableMethodMetadataToken.cs" />
-    <Compile Include="StableMetadataTokenToMethodInfoMap.cs" />
-    <Compile Include="TypeLevelTypeFilter.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyBuilder.cs" />
+    <Compile Include="StableBindingImplementation\StableBindingProxyProvider.cs" />
+    <Compile Include="StableBindingImplementation\AttributeProxyCached.cs" />
+    <Compile Include="StableBindingImplementation\StableMetadataToken.cs" />
+    <Compile Include="StableBindingImplementation\StableMethodMetadataToken.cs" />
+    <Compile Include="StableBindingImplementation\StableMetadataTokenToMethodInfoMap.cs" />
+    <Compile Include="StableBindingImplementation\TypeLevelTypeFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.Core.csproj">
@@ -151,6 +151,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

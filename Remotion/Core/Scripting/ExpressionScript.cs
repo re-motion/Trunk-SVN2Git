@@ -34,8 +34,9 @@ namespace Remotion.Scripting
   public class ExpressionScript<TResult> : ScriptBase
   {
     private readonly ScriptSource _scriptSource;
-    private CompiledCode _compiledScript;
     private readonly ScriptEnvironment _scriptEnvironment;
+
+    private CompiledCode _compiledScript;
 
     public ExpressionScript (
         ScriptContext scriptContext,
