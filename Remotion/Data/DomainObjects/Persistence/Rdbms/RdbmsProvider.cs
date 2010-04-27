@@ -416,9 +416,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    protected internal virtual TracingDbCommand CreateDbCommand ()
+    public virtual TracingDbCommand CreateDbCommand ()
     {
       CheckDisposed();
+
+      if (!IsConnected)
+        throw new InvalidOperationException ("Connect must be called before a command can be created.");
 
       TracingDbCommand command = _connection.CreateCommand();
 

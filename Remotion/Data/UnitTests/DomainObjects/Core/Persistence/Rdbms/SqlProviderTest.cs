@@ -18,7 +18,6 @@ using System;
 using System.Data.SqlClient;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 
@@ -75,14 +74,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     public void ConnectionReturnsSqlConnection ()
     {
       // Note: If Provider.Connection returns a SqlConnection instead of IDbConnection, the line below does not create a compiler error.
+#pragma warning disable 168
       SqlConnection sqlConnection = Provider.Connection;
+#pragma warning restore 168
     }
 
     [Test]
     public void TransactionReturnsSqlTransaction ()
     {
       // Note: If Provider.Transaction returns a SqlTransaction instead of IDbTransaction, the line below does not create a compiler error.
+#pragma warning disable 168
       SqlTransaction sqlTransaction = Provider.Transaction;
+#pragma warning restore 168
     }
 
     [Test]
@@ -96,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void GetTypeConversionServices()
     {
-      Assert.AreSame (ProviderDefinition.TypeConversionProvider, ((StorageProvider) Provider).TypeConversionProvider);
+      Assert.AreSame (ProviderDefinition.TypeConversionProvider, Provider.TypeConversionProvider);
     }
 
     [Test]
