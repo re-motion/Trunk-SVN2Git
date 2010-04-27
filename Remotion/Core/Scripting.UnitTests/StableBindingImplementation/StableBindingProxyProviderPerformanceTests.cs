@@ -34,6 +34,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 
 
     [Test]
+    [Explicit]
     public void SimplePropertyAccess_GetCustomMember ()
     {
       const string scriptFunctionSourceCode = @"
@@ -92,7 +93,7 @@ def PropertyPathAccess(cascade) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
-      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Cascade");
       privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
       ExpressionScript<string> expressionScript = new ExpressionScript<string> (
