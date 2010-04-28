@@ -59,6 +59,7 @@ namespace Remotion.Data.DomainObjects.Queries
         where T: DomainObject
     {
       var context = new SqlPreparationContext();
+      // TODO Review 2620: Because the registries use reflection-based type scanning, they should be cached: refactor into private static readonly fields
       var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault();
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator();
