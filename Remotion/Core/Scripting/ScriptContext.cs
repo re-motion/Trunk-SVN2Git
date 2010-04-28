@@ -27,7 +27,9 @@ namespace Remotion.Scripting
   /// Static members give access to the currently active script context.
   /// </summary>
   /// <remarks>
-  /// <seealso cref="ScriptBase"/>
+  /// <seealso cref="ScriptEnvironment"/>
+  /// <seealso cref="ExpressionScript{TResult}"/>
+  /// <seealso cref="ScriptFunction{TResult}"/>
   /// </remarks>
   public class ScriptContext
   {
@@ -35,7 +37,8 @@ namespace Remotion.Scripting
     private static readonly Object s_scriptContextLock = new object();
 
     /// <summary>
-    /// The currently active <see cref="ScriptContext"/>. Thread safe through <see cref="SafeContext"/>.
+    /// The currently active <see cref="ScriptContext"/>. Thread safe through <see cref="SafeContext"/>. When a script is executed, it cally
+    /// <see cref="Execute{TResult}"/>, which temporarily sets <see cref="Current"/> to the context associated with the script.
     /// </summary>
     public static ScriptContext Current
     {

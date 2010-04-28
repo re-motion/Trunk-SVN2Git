@@ -35,7 +35,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Ctor ()
     {
-      ScriptContext scriptContext = ScriptContextTestHelper.CreateTestScriptContext ();
+      ScriptContext scriptContext = ScriptContextObjectMother.CreateTestScriptContext ();
       const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
 
       const string scriptText = "'ExpressionScriptCtorTest'";
@@ -60,7 +60,7 @@ namespace Remotion.Scripting.UnitTests
       var document = new Document ("Test Doc");
       scriptEnvironment.SetVariable ("rmDoc", document);
 
-      var script = new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext (),
+      var script = new ExpressionScript<string> (ScriptContextObjectMother.CreateTestScriptContext (),
         ScriptLanguageType.Python, scriptText, scriptEnvironment);
       Assert.That (script.Execute (), Is.EqualTo ("Document Name: Test Doc"));
     }
@@ -79,7 +79,7 @@ namespace Remotion.Scripting.UnitTests
       var document = new Document ("Test Doc");
       scriptEnvironment.SetVariable ("rmDoc", document);
 
-      var script = new ExpressionScript<Document> (ScriptContextTestHelper.CreateTestScriptContext (),
+      var script = new ExpressionScript<Document> (ScriptContextObjectMother.CreateTestScriptContext (),
         ScriptLanguageType.Python, scriptText, scriptEnvironment);
       var result = script.Execute ();
       Assert.That (result.Name, Is.EqualTo ("New Test Doc"));
@@ -95,7 +95,7 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText = 
 "ScriptContext.Current";
 
-      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
+      ScriptContext scriptContextForScript = ScriptContextObjectMother.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
       var scriptEnvironment = ScriptEnvironment.Create ();
       scriptEnvironment.Import ("Remotion.Scripting", "Remotion.Scripting", "ScriptContext");
       var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptLanguageType.Python,
@@ -113,7 +113,7 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText = 
 "RaiseCommandNotSupportedInIronPythonExpressioSoUsingUnkownSymbol";
 
-      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
+      ScriptContext scriptContextForScript = ScriptContextObjectMother.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
       var scriptEnvironment = ScriptEnvironment.Create ();
       var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptLanguageType.Python,
         scriptText, scriptEnvironment);

@@ -24,6 +24,7 @@ namespace Remotion.Context
     public const string SecuritySecurityFreeSection = "Rm.SFS";
     public const string SecurityRevisionBasedAccessTypeCacheProviderRevision = "Rm.SRBATCP";
     public const string WebExecutionEngineWxeContextCurrent = "Rm.WxeCtx";
-    public const string ScriptingScriptContext = "Rm.SC";
+    public const string ScriptingScriptContext = "Rm.SSC";
+    public const string ScriptingScriptingHost = "Rm.SSH";
   }
 }

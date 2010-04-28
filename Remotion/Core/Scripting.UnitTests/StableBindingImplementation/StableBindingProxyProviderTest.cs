@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.StableBindingImplementation;
@@ -36,7 +37,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     {
       var typeFilter = new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) });
       var provider = new StableBindingProxyProvider (
-        typeFilter, ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+        typeFilter, CreateModuleScope ("GetTypeMemberProxy"));
 
       Assert.That (provider.TypeFilter, Is.SameAs (typeFilter));
 
@@ -47,7 +48,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 
       var proxyMethod = proxyType.GetAllInstanceMethods(attributeName,typeof(string)).Single();
 
-      Assert.That (proxyMethod, Is.Not.Null);
+      Assert.That (proxyMethod, SyntaxHelper.Not.Null);
     }
 
 
@@ -55,7 +56,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void GetTypeMemberProxy ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), CreateModuleScope ("GetTypeMemberProxy"));
 
       var proxied = new ProxiedChildChildChild ("abrakadava");
       const string attributeName = "PrependName";
@@ -72,7 +73,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void BuildProxy ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), CreateModuleScope ("BuildProxy"));
 
       var proxied = new ProxiedChildChildChild ("abrakadava");
 
@@ -81,7 +82,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       // TODO: Introduce BuildProxyFromType(proxiedType)
       ScriptingHelper.SetProxiedFieldValue (proxy, proxied); 
    
-      Assert.That (proxy, Is.Not.Null);
+      Assert.That (proxy, SyntaxHelper.Not.Null);
 
       var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.PrependName('simsalbum',2)", proxy);
       Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
@@ -91,12 +92,12 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void GetProxyType_IsCached ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), CreateModuleScope ("BuildProxy"));
 
       var proxied = new GetProxyTypeIsCachedTest ("abrakadava");
 
       var proxyType =  provider.GetProxyType (proxied.GetType());
-      Assert.That (proxyType, Is.Not.Null);
+      Assert.That (proxyType, SyntaxHelper.Not.Null);
       Assert.That (provider.GetProxyType (proxied.GetType ()), Is.SameAs (proxyType));
     }
 
@@ -104,13 +105,13 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void GetProxy_IsCached ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), CreateModuleScope ("BuildProxy"));
 
       var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
       var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
 
       var proxy0 = provider.GetProxy (proxied0);
-      Assert.That (proxy0, Is.Not.Null);
+      Assert.That (proxy0, SyntaxHelper.Not.Null);
       var proxy1 = provider.GetProxy (proxied1);
       Assert.That (proxy0, Is.SameAs (proxy1));
     }
@@ -119,13 +120,13 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void GetProxy_IsCachedAndProxiedIsSet ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("GetProxy_IsCachedAndProxiedSet"));
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), CreateModuleScope ("GetProxy_IsCachedAndProxiedSet"));
 
       var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
       var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
 
       var proxy0 = provider.GetProxy (proxied0);
-      Assert.That (proxy0, Is.Not.Null);
+      Assert.That (proxy0, SyntaxHelper.Not.Null);
 
       var proxiedFieldValue0 = ScriptingHelper.GetProxiedFieldValue (proxy0);
       Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));
@@ -138,7 +139,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void GetAttributeProxy ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), CreateModuleScope ("GetTypeMemberProxy"));
 
       var proxied0 = new ProxiedChildChildChild ("ABCccccccccccccccccc");
       var proxied1 = new ProxiedChildChildChild ("xyzzzzzzzzz");
@@ -161,7 +162,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
     public void GetAttributeProxy_IsCached ()
     {
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), CreateModuleScope ("GetTypeMemberProxy"));
 
       var proxied0 = new ProxiedChildChildChild ("ABCccccccccccccccccc");
       var proxied1 = new ProxiedChildChildChild ("xyzzzzzzzzz");
@@ -183,6 +184,14 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 
     }
 
+    public static ModuleScope CreateModuleScope (string namePostfix)
+    {
+      string name = "Remotion.Scripting.CodeGeneration.Generated.Test." + namePostfix;
+      string nameSigned = name + ".Signed";
+      string nameUnsigned = name + ".Unsigned";
+      const string ext = ".dll";
+      return new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+    }
   }
 
 

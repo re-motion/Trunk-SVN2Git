@@ -15,14 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Runtime.CompilerServices;
+using Castle.DynamicProxy;
 using Remotion.Scripting.StableBindingImplementation;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
   public class CascadeLocalStableBinding : Cascade
   {
-    private StableBindingProxyProvider _proxyProvider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (CascadeLocalStableBinding) }), ScriptingHelper.CreateModuleScope ("CascadeLocalStableBinding"));
+    private static ModuleScope CreateModuleScope ()
+    {
+      string name = "Remotion.Scripting.CodeGeneration.Generated.Test.CascadeLocalStableBinding";
+      string nameSigned = name + ".Signed";
+      string nameUnsigned = name + ".Unsigned";
+      const string ext = ".dll";
+      return new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+    }
+
+    private readonly StableBindingProxyProvider _proxyProvider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (CascadeLocalStableBinding) }),
+        CreateModuleScope());
 
     public CascadeLocalStableBinding (int nrChildren)
     {

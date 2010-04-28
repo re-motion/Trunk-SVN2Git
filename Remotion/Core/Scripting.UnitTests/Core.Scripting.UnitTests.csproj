@@ -115,11 +115,10 @@
     <Compile Include="StableBindingImplementation\ForwardingProxyBuilderTest.cs" />
     <Compile Include="StableBindingImplementation\MethodInfoEqualityComparerTest.cs" />
     <Compile Include="ScriptContextTest.cs" />
-    <Compile Include="ScriptContextTestHelper.cs" />
+    <Compile Include="ScriptContextObjectMother.cs" />
     <Compile Include="ScriptingHelper.cs" />
     <Compile Include="ScriptingHostTestHelper.cs" />
     <Compile Include="ScriptTest.cs" />
-    <Compile Include="SpikeTests.cs" />
     <Compile Include="StableBindingImplementation\StableBindingProxyBuilderTest.cs" />
     <Compile Include="StableBindingImplementation\StableBindingProxyBuilderTestHelper.cs" />
     <Compile Include="TestDomain\FunctionalExtensions.cs" />

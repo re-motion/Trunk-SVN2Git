@@ -21,7 +21,7 @@ using Rhino.Mocks;
 
 namespace Remotion.Scripting.UnitTests
 {
-  public class ScriptContextTestHelper
+  public class ScriptContextObjectMother
   {
     public static ScriptContext CreateTestScriptContext (string name, ITypeFilter typeFilter)
     {

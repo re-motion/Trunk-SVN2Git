@@ -15,70 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Microsoft.Scripting;
-using Microsoft.Scripting.Hosting;
 using Remotion.Diagnostics.ToText;
-using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
 {
   public class ScriptingHelper
   {
-    public static ScriptScope CreateScriptScope (ScriptLanguageType scriptLanguageType)
-    {
-      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-      return engine.CreateScope ();
-    }
-
-    public static void ToConsoleLine (MethodInfo mi)
-    {
-      var pis = mi.GetParameters ();
-
-      To.ConsoleLine.sb().e (mi.Name).e (mi.MetadataToken).e (mi.GetBaseDefinition().MetadataToken).
-      e(mi.MemberType.GetTypeCode()).e(mi.MethodHandle.Value).
-        e (mi.ReturnType).e (mi.Attributes).e (pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes));
-      if (mi.IsGenericMethod)
-      {
-        To.Console.e (pis.Select (pi => pi.Position)).
-            e (pis.Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1));
-      }
-      To.Console.e (pis.Select (pi => pi.MetadataToken)).e (pis.Select (pi => pi.ToString ())).se ().
-          e (mi.DeclaringType);
-    }
-
-
-    public static void ToConsoleLine (string methodName, params Type[] types)
-    {
-      To.ConsoleLine.nl (2).s ("Method: ").e (methodName);
-      foreach (var type in types)
-      {
-        To.ConsoleLine.nl ().e (type.Name).s(": ");
-        ScriptingHelper.GetAnyInstanceMethodArray (type, methodName).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-      }
-    }
-
-
-    public static ModuleScope CreateModuleScope (string namePostfix)
-    {
-      string name = "Remotion.Scripting.CodeGeneration.Generated.Test." + namePostfix;
-      string nameSigned = name + ".Signed";
-      string nameUnsigned = name + ".Unsigned";
-      const string ext = ".dll";
-      return new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
-    }
-
-
-    public static MethodInfo GetAnyInstanceMethod (Type type, string name)
+    public static MethodInfo GetInstanceMethod (Type type, string name)
     {
       return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
     }
 
-    public static MethodInfo GetAnyInstanceMethod (Type type, string name, Type[] argumentTypes)
+    public static MethodInfo GetInstanceMethod (Type type, string name, Type[] argumentTypes)
     {
       return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
     }

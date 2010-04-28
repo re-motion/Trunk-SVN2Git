@@ -28,7 +28,6 @@ namespace Remotion.Scripting
   {
     private readonly ScriptContext _scriptContext;
     private readonly ScriptLanguageType _scriptLanguageType;
-
     private readonly string _scriptText;
 
     protected ScriptBase (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText)

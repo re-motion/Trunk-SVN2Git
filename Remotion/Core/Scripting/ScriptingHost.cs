@@ -51,7 +51,7 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptingHost
   {
-    private const string c_scriptingHostCurrentSafeContextTag = "Remotion.Scripting.ScriptingHost.Current";
+    private const string c_scriptingHostCurrentSafeContextTag = SafeContextKeys.ScriptingScriptingHost;
 
     private ScriptRuntime _scriptRuntime;
     private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> _scriptEngines;

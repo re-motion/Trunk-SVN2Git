@@ -187,9 +187,9 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "PrependName"), Is.True);
       //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "PrependName"), Is.False);
       AssertIsMethodKnownInBaseType (baseType, 
-        ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChild), "PrependName",new[] {typeof(String)}), Is.True);
+        ScriptingHelper.GetInstanceMethod (typeof (ProxiedChild), "PrependName",new[] {typeof(String)}), Is.True);
       AssertIsMethodKnownInBaseType (baseType, 
-        ScriptingHelper.GetAnyInstanceMethod (proxiedType, "PrependName", new[] { typeof (String) }), Is.False);
+        ScriptingHelper.GetInstanceMethod (proxiedType, "PrependName", new[] { typeof (String) }), Is.False);
     }
 
     private void AssertIsMethodKnownInBaseType (Type baseType, MethodInfo method, Constraint constraint)
@@ -210,8 +210,8 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var typeFilter = new TypeLevelTypeFilter (new[] { baseType });
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
 
-      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (baseType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
-      var method = ScriptingHelper.GetAnyInstanceMethod (proxiedType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
+      var methodFromBaseType = ScriptingHelper.GetInstanceMethod (baseType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
+      var method = ScriptingHelper.GetInstanceMethod (proxiedType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
 
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
 
@@ -222,8 +222,9 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
 
       Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (method, method), Is.True);
       Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (method, methodFromBaseType), Is.True);
-      Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (
-        ScriptingHelper.GetAnyInstanceMethod (proxiedType, "Sum"), methodFromBaseType), Is.False);
+      
+      var sumMethod = proxiedType.GetMethod ("Sum", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (sumMethod, methodFromBaseType), Is.False);
     }
 
 

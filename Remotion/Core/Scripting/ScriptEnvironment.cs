@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.Text;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Remotion.Text;
@@ -26,7 +25,7 @@ namespace Remotion.Scripting
 {
   /// <summary>
   /// Wrapper around a DLR <see cref="Microsoft.Scripting.Hosting.ScriptScope"/>. 
-  /// A <see cref="ScriptEnvironment"/> contains the symbols (DLR: objects) a script which runs in this environment can see.
+  /// A <see cref="ScriptEnvironment"/> contains the symbols (DLR: objects) visible to a script running in this environment.
   /// </summary>
   public class ScriptEnvironment
   {
@@ -49,7 +48,11 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptScope", scriptScope);
       _scriptScope = scriptScope;
     }
-    
+
+    /// <summary>
+    /// Gets the <see cref="ScriptScope"/> wrapped by this <see cref="ScriptEnvironment"/>.
+    /// </summary>
+    /// <value>The <see cref="ScriptScope"/>.</value>
     public ScriptScope ScriptScope
     {
       get { return _scriptScope; }
