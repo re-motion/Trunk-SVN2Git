@@ -81,14 +81,14 @@ namespace Remotion.Data.DomainObjects.Linq
           keyType,
           joinInfo.OriginatingTable.GetResolvedTableInfo().TableAlias,
           GetJoinColumnName (leftEndPoint),
-          IsPrimaryKey(leftEndPoint));
+          leftEndPoint.IsVirtual);
       var rightKey = new SqlColumnExpression (
           keyType,
           alias,
           GetJoinColumnName (rightEndPoint),
-          IsPrimaryKey(rightEndPoint));
+          rightEndPoint.IsVirtual);
 
-      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
+      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey, joinInfo.MemberInfo);
     }
 
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
@@ -235,13 +235,6 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
       return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
-    }
-
-    private bool IsPrimaryKey (IRelationEndPointDefinition endPoint)
-    {
-      if (endPoint.IsVirtual)
-        return true;
-      return endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).IsObjectID;
     }
 
   }
