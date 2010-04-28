@@ -77,8 +77,16 @@ namespace Remotion.Data.DomainObjects.Linq
           rightEndPoint.ClassDefinition.GetViewName(),
           alias);
 
-      var leftKey = new SqlColumnExpression (keyType, joinInfo.OriginatingTable.GetResolvedTableInfo().TableAlias, GetJoinColumnName (leftEndPoint));
-      var rightKey = new SqlColumnExpression (keyType, alias, GetJoinColumnName (rightEndPoint));
+      var leftKey = new SqlColumnExpression (
+          keyType,
+          joinInfo.OriginatingTable.GetResolvedTableInfo().TableAlias,
+          GetJoinColumnName (leftEndPoint),
+          IsPrimaryKey(leftEndPoint));
+      var rightKey = new SqlColumnExpression (
+          keyType,
+          alias,
+          GetJoinColumnName (rightEndPoint),
+          IsPrimaryKey(rightEndPoint));
 
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
@@ -94,9 +102,9 @@ namespace Remotion.Data.DomainObjects.Linq
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
-      var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name);
+      var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
 
-      var starColumn = new SqlColumnExpression (tableReferenceExpression.Type, tableAlias, "*");
+      var starColumn = new SqlColumnExpression (tableReferenceExpression.Type, tableAlias, "*", false);
 
       return new SqlEntityExpression (tableReferenceExpression.SqlTable, primaryKeyColumn, starColumn);
     }
@@ -116,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID");
+        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID", true);
 
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
       if (relationData != null)
@@ -139,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName);
+      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, propertyDefinition.IsObjectID);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
@@ -148,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
-        return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID");
+        return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
 
       throw new UnmappedItemException (
           string.Format ("The member '{0}.{1}' does not identify a mapped property.", memberInfo.ReflectedType.Name, memberInfo.Name));
@@ -227,6 +235,13 @@ namespace Remotion.Data.DomainObjects.Linq
     private string GetJoinColumnName (IRelationEndPointDefinition endPoint)
     {
       return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
+    }
+
+    private bool IsPrimaryKey (IRelationEndPointDefinition endPoint)
+    {
+      if (endPoint.IsVirtual)
+        return true;
+      return endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).IsObjectID;
     }
 
   }

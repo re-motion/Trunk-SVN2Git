@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
 
-      var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID");
-      var starColumn = new SqlColumnExpression (typeof (Order), "o", "*");
+      var primaryKeyColumn = new SqlColumnExpression (typeof (ObjectID), "o", "ID", true);
+      var starColumn = new SqlColumnExpression (typeof (Order), "o", "*", false);
 
       var expectedExpression = new SqlEntityExpression (_orderTable, primaryKeyColumn, starColumn);
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTableReferenceExpression_NoTable_InSubStatement ()
     {
-      var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo");
+      var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo", false);
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
       var sqlStatement = new SqlStatement (new StreamedSequenceInfo(typeof(Student[]), Expression.Constant(new Student())), selectProjection, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
 
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_OnColumn_UnMappedProperty ()
     {
       var property = typeof (Order).GetProperty ("NotInMapping");
-      var columnExpression = new SqlColumnExpression(typeof(string), "o", "Name");
+      var columnExpression = new SqlColumnExpression(typeof(string), "o", "Name", false);
 
       _resolver.ResolveMemberExpression (columnExpression, property);
     }
@@ -296,7 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_OnColumn_WithPropertyClassID ()
     {
       var property = typeof (ObjectID).GetProperty ("ClassID");
-      var columnExpression = new SqlColumnExpression (typeof (string), "o", "Name");
+      var columnExpression = new SqlColumnExpression (typeof (string), "o", "Name", false);
 
       var result = _resolver.ResolveMemberExpression (columnExpression, property);
 
@@ -321,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Student), "Table", "t"));
 
-      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name"));
+      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name", false));
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (true));
@@ -333,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (object), "Table", "t"));
 
-      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name"));
+      var sqlEntityExpression = new SqlEntityExpression (sqlTable, new SqlColumnExpression (typeof (string), "t", "Name", false));
       _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
     }
 
