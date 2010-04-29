@@ -103,34 +103,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
     public void QueryWithFirst_Throws_WhenNoItems ()
     {
-      (from o in QueryFactory.CreateLinqQuery<Order> ()
+      (from o in QueryFactory.CreateLinqQuery<Order>()
        where false
-       select o).First ();
+       select o).First();
     }
 
     [Test]
     public void QueryWithFirstOrDefault ()
     {
-      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> ()
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
                          orderby o.ID
-                         select o).FirstOrDefault ();
+                         select o).FirstOrDefault();
       Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.InvalidOrder)));
     }
 
     [Test]
     public void QueryWithFirstOrDefault_ReturnsNull_WhenNoItems ()
     {
-      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> ()
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
                          where false
-                         select o).FirstOrDefault ();
+                         select o).FirstOrDefault();
       Assert.That (queryResult, Is.Null);
     }
 
     [Test]
     public void QueryWithSingle ()
     {
-      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> () 
-                         where o.OrderNumber == 1 select o).Single ();
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
+                         where o.OrderNumber == 1
+                         select o).Single();
       Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
     }
 
@@ -138,25 +139,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
     public void QueryWithSingle_ThrowsException_WhenMoreThanOneElement ()
     {
-     (from o in QueryFactory.CreateLinqQuery<Order> ()
-      select o).Single ();
+      (from o in QueryFactory.CreateLinqQuery<Order>()
+       select o).Single();
     }
 
     [Test]
     public void QueryWithSingleOrDefault_ReturnsSingleItem ()
     {
-      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> () 
-                         where o.OrderNumber == 1 
-                         select o).SingleOrDefault ();
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
+                         where o.OrderNumber == 1
+                         select o).SingleOrDefault();
       Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
     }
 
     [Test]
     public void QueryWithSingleOrDefault_ReturnsNull_WhenNoItem ()
     {
-      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> () 
-                         where o.OrderNumber == 99999 
-                         select o).SingleOrDefault ();
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order>()
+                         where o.OrderNumber == 99999
+                         select o).SingleOrDefault();
       Assert.That (queryResult, Is.EqualTo (null));
     }
 
@@ -164,8 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
     public void QueryWithSingleOrDefault_ThrowsException_WhenMoreThanOneElement ()
     {
-      (from o in QueryFactory.CreateLinqQuery<Order> ()
-       select o).SingleOrDefault ();
+      (from o in QueryFactory.CreateLinqQuery<Order>()
+       select o).SingleOrDefault();
     }
 
     [Test]
@@ -188,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryDistinctTest ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
                    from oi in o.OrderItems
                    where o.OrderNumber == 1
                    select o).Distinct();
@@ -307,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void Query_WithOfType_DerivedType ()
     {
-      var query = QueryFactory.CreateLinqQuery<Customer> ().OfType<Customer> ();
+      var query = QueryFactory.CreateLinqQuery<Customer>().OfType<Customer>();
 
       CheckQueryResult (
           query,
@@ -321,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void Query_WithOfType_SameType ()
     {
-      var query = QueryFactory.CreateLinqQuery<Company> ().OfType<Customer> ();
+      var query = QueryFactory.CreateLinqQuery<Company>().OfType<Customer>();
 
       CheckQueryResult (
           query,
@@ -333,10 +334,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidOperationException))]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void Query_WithOfType_UnrelatedType ()
     {
-      var query = QueryFactory.CreateLinqQuery<Company> ().OfType<Order> ();
+      var query = QueryFactory.CreateLinqQuery<Company>().OfType<Order>();
 
       CheckQueryResult (query);
     }
@@ -354,8 +355,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = QueryFactory.CreateLinqQuery<Computer>().Any (c => c.SerialNumber == "123456");
 
-      Assert.IsFalse(query);
+      Assert.IsFalse (query);
     }
-    
+
+    [Test]
+    public void QueryWithAny_InSubquery ()
+    {
+      var query = from c in QueryFactory.CreateLinqQuery<Computer>()
+                  where (from c2 in QueryFactory.CreateLinqQuery<Computer>() select c2).Any()
+                  select c;
+
+      CheckQueryResult (
+          query, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4, DomainObjectIDs.Computer5);
+    }
   }
 }
