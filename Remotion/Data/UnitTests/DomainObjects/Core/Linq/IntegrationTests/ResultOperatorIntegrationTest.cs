@@ -340,6 +340,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query);
     }
+
+    [Test]
+    public void QueryWithAny_WithoutPredicate ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Computer>().Any();
+
+      Assert.IsTrue (query);
+    }
+
+    [Test]
+    public void QueryWithAny_WithPredicate ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Computer>().Any (c => c.SerialNumber == "123456");
+
+      Assert.IsFalse(query);
+    }
     
   }
 }

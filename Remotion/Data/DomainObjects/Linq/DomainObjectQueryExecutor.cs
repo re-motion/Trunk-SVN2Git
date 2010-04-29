@@ -104,7 +104,11 @@ namespace Remotion.Data.DomainObjects.Linq
       var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Scalar);
-      return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
+      object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
+      if (typeof(T) == typeof(bool))
+        return (T)(object) Convert.ToBoolean (scalarValue);
+      else
+        return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
     }
 
     /// <summary>
