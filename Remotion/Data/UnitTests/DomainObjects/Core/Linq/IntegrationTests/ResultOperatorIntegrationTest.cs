@@ -358,6 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.IsFalse (query);
     }
 
+    // TODO Review 2665: Use a more realistic test, e.g., from o in Orders where !o.OrderItems.Any() => should return OrderWithoutOrderItems
     [Test]
     public void QueryWithAny_InSubquery ()
     {
