@@ -74,9 +74,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var newInstance = DomainObjectMother.GetNewObject();
       var deletedInstance = DomainObjectMother.GetDeletedObject(ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
 
-      var unchangedObjects = _dataManager.GetLoadedData (StateType.Unchanged);
-      var changedOrNewObjects = _dataManager.GetLoadedData (StateType.Changed, StateType.New);
-      var deletedOrUnchangedObjects = _dataManager.GetLoadedData (StateType.Deleted, StateType.Unchanged);
+      var unchangedObjects = _dataManager.GetLoadedDataByObjectState (StateType.Unchanged);
+      var changedOrNewObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New);
+      var deletedOrUnchangedObjects = _dataManager.GetLoadedDataByObjectState (StateType.Deleted, StateType.Unchanged);
 
       Assert.That (unchangedObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (unchangedInstance) }));
       Assert.That (changedOrNewObjects.ToArray (), Is.EquivalentTo (new[] { CreateDataTuple (changedInstance), CreateDataTuple (newInstance) }));
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetChangedData_Empty ()
     {
-      var changedDomainObjects = _dataManager.GetChangedData ();
+      var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
       Assert.That (changedDomainObjects.ToArray(), Is.Empty);
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DomainObjectMother.GetDiscardedObject (ClientTransactionMock);
       DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
 
-      var changedDomainObjects = _dataManager.GetChangedData ();
+      var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
       
       var expected = new[] { 
           CreateDataTuple (changedInstance), 
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (orderWithChangedRelation.State, Is.EqualTo (StateType.Changed));
       Assert.That (orderWithChangedRelation.InternalDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
-      var changedDomainObjects = _dataManager.GetChangedData ();
+      var changedDomainObjects = _dataManager.GetChangedDataByObjectState ();
       
       var expected = CreateDataTuple (orderWithChangedRelation);
       Assert.That (changedDomainObjects.ToArray (), List.Contains (expected));

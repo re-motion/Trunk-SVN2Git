@@ -99,7 +99,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     return DataContainerMap.Select (dc => Tuple.Create (dc.DomainObject, dc));
   }
 
-  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedData (params StateType[] domainObjectStates)
+  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedDataByObjectState (params StateType[] domainObjectStates)
   {
     ArgumentUtility.CheckNotNullOrEmpty ("domainObjectStates", domainObjectStates);
 
@@ -113,14 +113,14 @@ public class DataManager : ISerializable, IDeserializationCallback
     return matchingObjects;
   }
 
-  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedData ()
+  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetChangedDataByObjectState ()
   {
-    return GetLoadedData (StateType.Changed, StateType.Deleted, StateType.New);
+    return GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted, StateType.New);
   }
 
   public IEnumerable<DataContainer> GetChangedDataContainersForCommit ()
   {
-    foreach (var tuple in GetChangedData ())
+    foreach (var tuple in GetChangedDataByObjectState ())
     {
       var domainObject = tuple.Item1;
       var dataContainer = tuple.Item2;

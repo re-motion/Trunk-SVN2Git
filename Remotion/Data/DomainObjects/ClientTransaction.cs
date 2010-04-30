@@ -828,7 +828,7 @@ public abstract class ClientTransaction : IDataSource
   /// <returns><see langword="true"/> if at least one <see cref="DomainObject"/> in this <b>ClientTransaction</b> has been changed; otherwise, <see langword="false"/>.</returns>
   public virtual bool HasChanged ()
   {
-    return _dataManager.GetChangedData().Any();
+    return _dataManager.GetChangedDataByObjectState().Any();
   }
 
   /// <summary>
@@ -841,7 +841,7 @@ public abstract class ClientTransaction : IDataSource
     using (EnterNonDiscardingScope ())
     {
       BeginCommit();
-      var changedButNotDeletedDomainObjects = _dataManager.GetLoadedData (StateType.Changed, StateType.New).Select (tuple => tuple.Item1).ToArray();
+      var changedButNotDeletedDomainObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New).Select (tuple => tuple.Item1).ToArray();
 
       var changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
@@ -860,7 +860,7 @@ public abstract class ClientTransaction : IDataSource
     {
       BeginRollback();
 
-      var changedButNotNewItems = _dataManager.GetLoadedData (StateType.Changed, StateType.Deleted).Select (tuple => tuple.Item1).ToArray();
+      var changedButNotNewItems = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted).Select (tuple => tuple.Item1).ToArray();
 
       _dataManager.Rollback ();
 
@@ -1537,7 +1537,7 @@ public abstract class ClientTransaction : IDataSource
 
   private IEnumerable<DomainObject> GetChangedDomainObjects ()
   {
-    return _dataManager.GetChangedData ().Select (tuple => tuple.Item1);
+    return _dataManager.GetChangedDataByObjectState ().Select (tuple => tuple.Item1);
   }
 
   public virtual ITransaction ToITransation ()
