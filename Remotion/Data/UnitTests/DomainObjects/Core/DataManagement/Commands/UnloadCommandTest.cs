@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _transaction = new ClientTransactionMock ();
       _dataManager = _transaction.DataManager;
-      _dataContainerMap = _dataManager.DataContainerMap;
+      _dataContainerMap = DataManagerTestHelper.GetDataContainerMap (_dataManager);
       _relationEndPointMap = _dataManager.RelationEndPointMap;
     }
 

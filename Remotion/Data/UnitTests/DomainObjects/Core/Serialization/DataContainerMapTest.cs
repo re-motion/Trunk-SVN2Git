@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -38,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainerMapIsFlattenedSerializable ()
     {
-      DataContainerMap map = ClientTransactionMock.DataManager.DataContainerMap;
+      DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (ClientTransactionMock.DataManager);
 
       DataContainerMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
       Assert.IsNotNull (deserializedMap);
@@ -47,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainerMap_Content ()
     {
-      DataContainerMap map = ClientTransactionMock.DataManager.DataContainerMap;
+      DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (ClientTransactionMock.DataManager);
       Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreEqual (1, map.Count);
 

@@ -229,7 +229,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     return true;
   }
 
-  public DataContainerMap DataContainerMap
+  public IDataContainerMapReadOnlyView DataContainerMap
   {
     get { return _dataContainerMap; }
   }

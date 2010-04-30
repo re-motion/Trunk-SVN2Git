@@ -24,8 +24,8 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-public class DataContainerMap : IEnumerable<DataContainer>, IFlattenedSerializable
-{
+  public class DataContainerMap : IFlattenedSerializable, IDataContainerMapReadOnlyView
+  {
   // types
 
   // static members and constants

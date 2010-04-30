@@ -175,6 +175,7 @@
     <Compile Include="DataManagement\Commands\NopCommand.cs" />
     <Compile Include="DataManagement\Commands\UnloadCommand.cs" />
     <Compile Include="DataManagement\DataManagementCommandExtensions.cs" />
+    <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
     <Compile Include="DataManagement\ICollectionEndPointData.cs" />
     <Compile Include="DataManagement\LazyLoadableCollectionEndPointData.cs" />
