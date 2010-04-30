@@ -20,9 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -36,45 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       base.SetUp();
 
       _map = new DataContainerMap (ClientTransactionMock);
-    }
-
-    [Test]
-    public void GetByState ()
-    {
-      var newDataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var newDataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      var changedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem1, null, pd => pd.DefaultValue);
-      changedDataContainer.MarkAsChanged ();
-      var unchangedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem2, null, pd => pd.DefaultValue);
-      var deletedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem3, null, pd => pd.DefaultValue);
-      deletedDataContainer.Delete ();
-      var discardedDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderItem4, null, pd => pd.DefaultValue);
-      discardedDataContainer.Discard ();
-
-      var map = new DataContainerMap (ClientTransactionMock);
-      map.Register (newDataContainer1);
-      map.Register (newDataContainer2);
-      map.Register (changedDataContainer);
-      map.Register (unchangedDataContainer);
-      map.Register (deletedDataContainer);
-      map.Register (discardedDataContainer);
-
-      Assert.That (map.GetByState (StateType.New).ToArray (), Is.EquivalentTo (new[] { newDataContainer1, newDataContainer2 }));
-      Assert.That (map.GetByState (StateType.Changed).ToArray (), Is.EquivalentTo (new[] { changedDataContainer }));
-      Assert.That (map.GetByState (StateType.Unchanged).ToArray (), Is.EquivalentTo (new[] { unchangedDataContainer }));
-      Assert.That (map.GetByState (StateType.Deleted).ToArray (), Is.EquivalentTo (new[] { deletedDataContainer }));
-      Assert.That (map.GetByState (StateType.Discarded).ToArray (), Is.EquivalentTo (new[] { discardedDataContainer }));
-    }
-
-    private DataContainer CreateNewOrderDataContainer ()
-    {
-      Order order = Order.NewObject();
-      order.OrderNumber = 10;
-      order.DeliveryDate = new DateTime (2006, 1, 1);
-      order.Official = Official.GetObject (DomainObjectIDs.Official1);
-      order.Customer = Customer.GetObject (DomainObjectIDs.Customer1);
-
-      return order.InternalDataContainer;
     }
 
     [Test]

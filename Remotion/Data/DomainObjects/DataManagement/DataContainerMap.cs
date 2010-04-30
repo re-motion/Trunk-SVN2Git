@@ -59,11 +59,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     get { return _dataContainers.Count; }
   }
 
-  public IEnumerable<DataContainer> GetByState (StateType state)
-  {
-    return _dataContainers.Cast<DataContainer> ().Where (dc => dc.State == state);
-  }
-
   public void CommitAllDataContainers ()
   {
     foreach (DataContainer dataContainer in _dataContainers)

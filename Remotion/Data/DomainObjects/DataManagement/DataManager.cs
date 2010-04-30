@@ -151,7 +151,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Commit ()
   {
-    var deletedDataContainers = _dataContainerMap.GetByState (StateType.Deleted).ToList();
+    var deletedDataContainers = GetLoadedData (StateType.Deleted).Select (tuple => tuple.Item2).ToList();
 
     _relationEndPointMap.CommitAllEndPoints ();
     
@@ -163,7 +163,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Rollback ()
   {
-    var newDataContainers = _dataContainerMap.GetByState (StateType.New).ToList();
+    var newDataContainers = GetLoadedData (StateType.New).Select (tuple => tuple.Item2).ToList ();
 
     // roll back end point state before discarding objects because Discard checks that no dangling end points are created
     _relationEndPointMap.RollbackAllEndPoints ();
