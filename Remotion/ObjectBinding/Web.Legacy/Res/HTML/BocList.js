@@ -107,12 +107,6 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
         var rowBlock = new BocList_RowBlock (row, selectorControl);
         selectedRows.Rows[selectorControl.id] = rowBlock;
         selectedRows.Length++;
-        
-        if (   selectedRows.Selection == _bocList_rowSelectionSingleCheckBox
-            || selectedRows.Selection == _bocList_rowSelectionSingleRadioButton)
-        {
-          break;
-        }
       }
     }
   }
