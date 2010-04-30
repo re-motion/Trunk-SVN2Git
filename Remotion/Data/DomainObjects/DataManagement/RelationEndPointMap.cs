@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class RelationEndPointMap : IEnumerable, IFlattenedSerializable
+  public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
     // types
 
@@ -179,36 +179,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         RegisterEndPointsForExistingDataContainer (dataContainer);
     }
 
-    public void CheckMandatoryRelations (DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).AssociatedRelationEndPointIDs)
-      {
-        if (endPointID.Definition.IsMandatory)
-        {
-          RelationEndPoint endPoint = _relationEndPoints[endPointID];
-          if (endPoint != null)
-            endPoint.CheckMandatory();
-        }
-      }
-    }
-
-    public bool HasRelationChanged (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
-      {
-        RelationEndPoint endPoint = _relationEndPoints[endPointID];
-        if (endPoint != null && endPoint.HasChanged)
-          return true;
-      }
-
-      return false;
-    }
-    
-    // TODO: This method probably belongs to DataManager rather than RelationEndPointMap.
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
@@ -277,9 +247,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _relationEndPoints.Remove (endPointID);
     }
 
-    public IEnumerator GetEnumerator ()
+    public IEnumerator<RelationEndPoint> GetEnumerator ()
     {
-      return _relationEndPoints.GetEnumerator();
+      return _relationEndPoints.Cast<RelationEndPoint>().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
     }
 
     private void RegisterEndPointsForNewDataContainer (DataContainer dataContainer)

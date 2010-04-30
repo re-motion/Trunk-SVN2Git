@@ -1034,7 +1034,7 @@ public abstract class ClientTransaction : IDataSource
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
     DataContainer dataContainer = GetDataContainer(domainObject);
-    return _dataManager.RelationEndPointMap.HasRelationChanged (dataContainer);
+    return _dataManager.HasRelationChanged (dataContainer);
   }
 
   /// <summary>

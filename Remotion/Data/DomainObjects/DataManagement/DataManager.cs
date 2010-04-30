@@ -122,14 +122,13 @@ public class DataManager : ISerializable, IDeserializationCallback
   {
     foreach (var tuple in GetChangedDataByObjectState ())
     {
-      var domainObject = tuple.Item1;
       var dataContainer = tuple.Item2;
       var state = tuple.Item3;
 
       Assertion.IsTrue (state != StateType.NotLoadedYet);
 
       if (state != StateType.Deleted)
-        _relationEndPointMap.CheckMandatoryRelations (domainObject);
+        CheckMandatoryRelations (dataContainer);
 
       if (dataContainer.State != StateType.Unchanged) // filter out those items whose state is only Changed due to relation changes
         yield return dataContainer;
@@ -138,7 +137,31 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public IEnumerable<RelationEndPoint> GetChangedRelationEndPoints ()
   {
-    return _relationEndPointMap.Cast<RelationEndPoint>().Where (endPoint => endPoint.HasChanged);
+    return _relationEndPointMap.Where (endPoint => endPoint.HasChanged);
+  }
+
+  public bool HasRelationChanged (DataContainer dataContainer)
+  {
+    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+    return dataContainer.AssociatedRelationEndPointIDs
+        .Select (endPointID => _relationEndPointMap[endPointID])
+        .Any (endPoint => endPoint != null && endPoint.HasChanged);
+  }
+
+  public void CheckMandatoryRelations (DataContainer dataContainer)
+  {
+    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+    foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
+    {
+      if (endPointID.Definition.IsMandatory)
+      {
+        RelationEndPoint endPoint = _relationEndPointMap[endPointID];
+        if (endPoint != null)
+          endPoint.CheckMandatory ();
+      }
+    }
   }
 
   public void RegisterDataContainer (DataContainer dataContainer)

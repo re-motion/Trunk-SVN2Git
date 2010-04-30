@@ -575,6 +575,84 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.CreateDeleteCommand (discardedObject);
     }
 
+    [Test]
+    public void CheckMandatoryRelations_AllRelationsOk ()
+    {
+      var dataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
+
+      _dataManager.CheckMandatoryRelations (dataContainer);
+    }
+
+    [Test]
+    [ExpectedException (typeof (MandatoryRelationNotSetException), ExpectedMessage = 
+        "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official' of domain object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' cannot be null.")]
+    public void CheckMandatoryRelations_RelationsNotOk ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
+      Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+
+      _dataManager.CheckMandatoryRelations (dataContainer);
+    }
+
+    [Test]
+    public void CheckMandatoryRelations_UnregisteredRelations_Ignored ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      foreach (var endPointID in dataContainer.AssociatedRelationEndPointIDs)
+        _dataManager.RelationEndPointMap.RemoveEndPoint (endPointID);
+
+      _dataManager.CheckMandatoryRelations (dataContainer);
+    }
+
+    [Test]
+    public void HasRelationChanged_True ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
+      var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      endPoint.OppositeObjectID = DomainObjectIDs.Official1;
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      var result = _dataManager.HasRelationChanged (dataContainer);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void HasRelationChanged_False ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var result = _dataManager.HasRelationChanged (dataContainer);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void HasRelationChanged_IgnoresUnregisteredEndPoints ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (dataContainer.ID, "Official");
+      var endPoint = (RealObjectEndPoint) _dataManager.RelationEndPointMap[endPointID];
+      endPoint.OppositeObjectID = DomainObjectIDs.Official1;
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      _dataManager.RelationEndPointMap.RemoveEndPoint (endPointID);
+
+      Assert.That (_dataManager.HasRelationChanged (dataContainer), Is.False);
+    }
+
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
