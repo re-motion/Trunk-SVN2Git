@@ -112,21 +112,8 @@ namespace Remotion.Web.ExecutionEngine
       if (ControlHelper.IsDesignMode (_page))
         return;
 
-      _wxeForm = WxeForm.Replace (_page.HtmlForm);
-      _page.HtmlForm = _wxeForm;
-
-      if (CurrentPageStep != null)
-        _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.PageTokenID, CurrentPageStep.PageToken);
-
-      _wxeForm.LoadPostData += Form_LoadPostData;
-
-      var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>();
-      var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
-      HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-      var styleUrl = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
-      HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      _page.PreInit += HandlePagePreInit;
+      _page.Init += HandlePageInit;
     }
 
     public NameValueCollection EnsurePostBackModeDetermined (HttpContext context)
@@ -169,6 +156,27 @@ namespace Remotion.Web.ExecutionEngine
         return collection;
     }
 
+    private void HandlePagePreInit (object sender, EventArgs eventArgs)
+    {
+      _wxeForm = WxeForm.Replace (_page.HtmlForm);
+      _page.HtmlForm = _wxeForm;
+
+      if (CurrentPageStep != null)
+        _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.PageTokenID, CurrentPageStep.PageToken);
+
+      _wxeForm.LoadPostData += Form_LoadPostData;
+    }
+
+    private void HandlePageInit (object sender, EventArgs e)
+    {
+      var resourceUrlFactory = SafeServiceLocator.Current.GetInstance<IResourceUrlFactory> ();
+      var scriptUrl = resourceUrlFactory.CreateResourceUrl (typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
+      HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+
+      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      var styleUrl = themedResourceUrlResolver.GetResourceUrl (_page, ResourceType.Html, c_styleFileUrl);
+      HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+    }
 
     private void Form_LoadPostData (object sender, EventArgs e)
     {
