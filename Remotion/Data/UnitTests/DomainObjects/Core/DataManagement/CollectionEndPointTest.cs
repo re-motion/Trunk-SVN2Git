@@ -752,6 +752,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_customerEndPoint.IsDataAvailable, Is.False);
     }
 
+    [Test]
+    public void GetOppositeRelationEndPoints ()
+    {
+      var oppositeEndPoints = _customerEndPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray();
+
+      var expectedID1 = RelationEndPointObjectMother.CreateRelationEndPointID (_order1.ID, "Customer");
+      var expected1 = ClientTransactionMock.DataManager.RelationEndPointMap[expectedID1];
+      Assert.That (expected1, Is.Not.Null);
+
+      var expectedID2 = RelationEndPointObjectMother.CreateRelationEndPointID (_orderWithoutOrderItem.ID, "Customer");
+      var expected2 = ClientTransactionMock.DataManager.RelationEndPointMap[expectedID2];
+      Assert.That (expected2, Is.Not.Null);
+
+      Assert.That (oppositeEndPoints, Is.EquivalentTo (new[] { expected1, expected2, }));
+    }
+
     private LazyLoadableCollectionEndPointData GetEndPointData (CollectionEndPoint endPoint)
     {
       return (LazyLoadableCollectionEndPointData) PrivateInvoke.GetNonPublicField (endPoint, "_data");

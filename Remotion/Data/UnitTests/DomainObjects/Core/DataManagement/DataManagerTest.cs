@@ -653,6 +653,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_dataManager.HasRelationChanged (dataContainer), Is.False);
     }
 
+    [Test]
+    public void GetOppositeRelationEndPoints ()
+    {
+      var dataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+
+      var endPoints = _dataManager.GetOppositeRelationEndPoints (dataContainer).ToArray ();
+
+      var expectedIDs = new[] {
+        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem1, "Order"),
+        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem2, "Order"),
+        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order"),
+        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders"),
+        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders"),
+      };
+      var expectedEndPoints = expectedIDs.Select (id => _dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id)).ToArray();
+      Assert.That (endPoints, Is.EquivalentTo (expectedEndPoints));
+    }
+
     private Tuple<DomainObject, DataContainer, StateType> CreateDataTuple (DomainObject domainObject)
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];

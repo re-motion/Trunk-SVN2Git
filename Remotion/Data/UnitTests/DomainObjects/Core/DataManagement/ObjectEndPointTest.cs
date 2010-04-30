@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -272,6 +273,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var nonPartnerCompany = Company.GetObject (DomainObjectIDs.Company1);
       endPoint.SetOppositeObjectAndNotify (nonPartnerCompany);
+    }
+
+    [Test]
+    public void GetOppositeRelationEndPoints_NullEndPoint ()
+    {
+      _endPoint.OppositeObjectID = null;
+
+      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray();
+
+      Assert.That (oppositeEndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void GetOppositeRelationEndPoints_UnidirectionalEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
+      var endPoint = RelationEndPointObjectMother.CreateRealObjectEndPoint (endPointID);
+
+      Assert.That (endPoint.Definition.GetOppositeEndPointDefinition ().IsAnonymous, Is.True);
+
+      var oppositeEndPoints = endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
+
+      Assert.That (oppositeEndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void GetOppositeRelationEndPoints_NonNullEndPoint ()
+    {
+      var oppositeEndPoints = _endPoint.GetOppositeRelationEndPoints (ClientTransactionMock.DataManager).ToArray ();
+
+      var expectedID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
+      var expected = ClientTransactionMock.DataManager.RelationEndPointMap[expectedID];
+      Assert.That (expectedID, Is.Not.Null);
+
+      Assert.That (oppositeEndPoints, Is.EqualTo (new[] { expected }));
     }
   }
 }

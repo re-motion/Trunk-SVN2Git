@@ -178,10 +178,10 @@
     <Compile Include="DataManagement\IDataContainerMapReadOnlyView.cs" />
     <Compile Include="DataManagement\IDataManagementCommand.cs" />
     <Compile Include="DataManagement\ICollectionEndPointData.cs" />
+    <Compile Include="DataManagement\IRelationEndPointMapReadOnlyView.cs" />
     <Compile Include="DataManagement\LazyLoadableCollectionEndPointData.cs" />
     <Compile Include="DataManagement\IObjectEndPoint.cs" />
     <Compile Include="DataManagement\ObjectEndPointExtensions.cs" />
-    <Compile Include="DataManagement\OppositeRelationEndPointFinder.cs" />
     <Compile Include="DataManagement\EndPointExtensions.cs" />
     <Compile Include="DataManagement\RealObjectEndPoint.cs" />
     <Compile Include="DataManagement\RelationEndPointValueChecker.cs" />

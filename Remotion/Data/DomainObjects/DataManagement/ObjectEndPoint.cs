@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -124,11 +126,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
+// ReSharper disable RedundantCheckBeforeAssignment
       if (OppositeObjectID != sourceObjectEndPoint.OppositeObjectID)
         OppositeObjectID = sourceObjectEndPoint.OppositeObjectID;
+// ReSharper restore RedundantCheckBeforeAssignment
 
       if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
         Touch ();
+    }
+
+    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager)
+    {
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
+      if (oppositeEndPointDefinition.IsAnonymous || OppositeObjectID == null)
+      {
+        return Enumerable.Empty<RelationEndPoint> ();
+      }
+      else
+      {
+        var oppositeEndPointID = new RelationEndPointID (OppositeObjectID, oppositeEndPointDefinition);
+        return new[] { dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID) };
+      }
     }
 
     private void CheckNewRelatedObjectType (DomainObject newRelatedObject)

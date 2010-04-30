@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -60,6 +61,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     public override void Touch ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager)
     {
       throw new NotImplementedException();
     }

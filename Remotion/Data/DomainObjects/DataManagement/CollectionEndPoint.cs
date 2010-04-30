@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
@@ -248,6 +249,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new CollectionEndPointReplaceSameCommand (this, replacedObject, _data.CollectionData);
       else
         return new CollectionEndPointReplaceCommand (this, replacedObject, index, replacementObject, _data.CollectionData);
+    }
+
+    public override IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager)
+    {
+      var oppositeEndPointDefinition = Definition.GetOppositeEndPointDefinition ();
+
+      Assertion.IsFalse (oppositeEndPointDefinition.IsAnonymous);
+
+      return from oppositeDomainObject in OppositeDomainObjects.Cast<DomainObject> ()
+             let oppositeEndPointID = new RelationEndPointID (oppositeDomainObject.ID, oppositeEndPointDefinition)
+             select dataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
     }
 
     #region Serialization

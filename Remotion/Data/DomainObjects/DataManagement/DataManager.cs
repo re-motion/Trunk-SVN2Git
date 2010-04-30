@@ -20,6 +20,7 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -57,7 +58,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink = clientTransaction.TransactionEventSink;
     _dataContainerMap = new DataContainerMap (clientTransaction);
     _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
-    _discardedDataContainers = new Dictionary<ObjectID, DataContainer> ();
+    _discardedDataContainers = new Dictionary<ObjectID, DataContainer>();
   }
 
   // methods and properties
@@ -140,6 +141,15 @@ public class DataManager : ISerializable, IDeserializationCallback
     return _relationEndPointMap.Where (endPoint => endPoint.HasChanged);
   }
 
+  public IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataContainer dataContainer)
+  {
+    return from endPointID in dataContainer.AssociatedRelationEndPointIDs
+           let endPoint = RelationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID)
+           let oppositeRelationEndPoints = endPoint.GetOppositeRelationEndPoints (this)
+           from oppositeEndPoint in oppositeRelationEndPoints
+           select oppositeEndPoint;
+  }
+
   public bool HasRelationChanged (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
@@ -217,7 +227,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     }
     catch (InvalidOperationException ex)
     {
-      var message = string.Format ("Cannot discard data container '{0}', it might leave dangling references: '{1}'", dataContainer.ID, ex.Message);
+      var message = String.Format ("Cannot discard data container '{0}', it might leave dangling references: '{1}'", dataContainer.ID, ex.Message);
       throw new ArgumentException (message, "dataContainer", ex);
     }
 
@@ -234,16 +244,14 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
   {
-    Maybe
-        .ForValue (relationEndPoint as IObjectEndPoint)
+    Maybe.ForValue (relationEndPoint as IObjectEndPoint)
         .Where (endPoint => endPoint.OppositeObjectID != null)
-        .Select (endPoint => string.Format ("End point '{0}' still references object '{1}'.", endPoint.ID, endPoint.OppositeObjectID))
+        .Select (endPoint => String.Format ("End point '{0}' still references object '{1}'.", endPoint.ID, endPoint.OppositeObjectID))
         .Do (message => { throw new InvalidOperationException (message); });
 
-    Maybe
-        .ForValue (relationEndPoint as ICollectionEndPoint)
+    Maybe.ForValue (relationEndPoint as ICollectionEndPoint)
         .Where (endPoint => endPoint.OppositeDomainObjects.Count != 0)
-        .Select (endPoint => string.Format (
+        .Select (endPoint => String.Format (
             "End point '{0}' still references objects '{1}'.", 
             endPoint.ID, 
             SeparatedStringBuilder.Build (", ", endPoint.OppositeDomainObjects, (DomainObject obj) => obj.ID.ToString())))
@@ -304,7 +312,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink = _clientTransaction.TransactionEventSink;
     _dataContainerMap = doInfo.GetValue<DataContainerMap> ();
     _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap> ();
-    _discardedDataContainers = new Dictionary<ObjectID, DataContainer> ();
+    _discardedDataContainers = new Dictionary<ObjectID, DataContainer>();
 
     ObjectID[] discardedIDs = doInfo.GetArray<ObjectID> ();
     DataContainer[] discardedContainers = doInfo.GetArray<DataContainer> ();

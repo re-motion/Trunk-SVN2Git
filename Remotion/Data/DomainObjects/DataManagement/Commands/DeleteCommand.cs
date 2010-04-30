@@ -107,8 +107,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public ExpandedCommand ExpandToAllRelatedObjects ()
     {
-      var allOppositeRelationEndPoints = 
-          OppositeRelationEndPointFinder.GetOppositeRelationEndPoints (_clientTransaction.DataManager.RelationEndPointMap, _deletedObject);
+      var allOppositeRelationEndPoints = _clientTransaction.DataManager.GetOppositeRelationEndPoints (
+          _clientTransaction.GetDataContainer (_deletedObject));
 
       var commands = from oppositeEndPoint in allOppositeRelationEndPoints
                      select oppositeEndPoint.CreateRemoveCommand (_deletedObject);

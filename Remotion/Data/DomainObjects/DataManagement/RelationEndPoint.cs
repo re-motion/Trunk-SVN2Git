@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -55,6 +56,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public abstract void EnsureDataAvailable ();
     public abstract void Touch ();
+    public abstract IEnumerable<RelationEndPoint> GetOppositeRelationEndPoints (DataManager dataManager);
 
     public abstract void Commit ();
     public abstract void Rollback ();
