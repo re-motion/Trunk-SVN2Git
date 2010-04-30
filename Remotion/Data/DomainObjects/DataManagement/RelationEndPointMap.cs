@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
+  public class RelationEndPointMap : /*IRelationEndPointMapReadOnlyView,*/ IFlattenedSerializable
   {
     // types
 
