@@ -139,6 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (resolvedJoinInfo.RightKeyColumn.ColumnName, Is.EqualTo ("CustomerID"));
       Assert.That (resolvedJoinInfo.RightKeyColumn.Type, Is.EqualTo (typeof (ObjectID)));
       Assert.That (resolvedJoinInfo.RightKeyColumn.OwningTableAlias, Is.EqualTo ("t0"));
+      // TODO Review 2597: Check IsPrimaryKey properties
     }
 
     [Test]
@@ -198,7 +199,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
       Assert.That (sqlColumnExpression.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
+      // TODO Review 2597: Check IsPrimaryKey
     }
+
+    // TODO Review 2597: Test missing for "ID" member; also check IsPrimaryKey there
 
     [Test]
     public void ResolveMemberExpression_RedirectedProperty ()
@@ -303,6 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
       Assert.That (((SqlColumnExpression) result).OwningTableAlias, Is.EqualTo (columnExpression.OwningTableAlias));
       Assert.That (((SqlColumnExpression) result).ColumnName, Is.EqualTo ("ClassID"));
+      // TODO Review 2597: Check IsPrimaryKey
     }
 
     [Test]

@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
-      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, propertyDefinition.IsObjectID);
+      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, propertyDefinition.IsObjectID); // TODO Review 2597: IsPrimaryKey is always false here because we already checked primary key. Add a test with a foreign key property (e.g., OrderItem.Order - IsObjectID will be true for this property) - IsPrimaryKey should be false
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
