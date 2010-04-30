@@ -231,7 +231,7 @@ public class TestTabbedForm : TestWxeBasePage
   {
     base.OnPreRender (e);
     string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
-    string theme = SafeServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
+    string theme = Global.PreferQuirksModeRendering ? "" : SafeServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
     NavigationTabs.StatusText = mode + " " + theme;
   }
 
