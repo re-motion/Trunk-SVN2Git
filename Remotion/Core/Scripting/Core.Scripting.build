@@ -36,7 +36,7 @@
       <warnaserror refid="doc-warn-as-error"/>
       <sources failonempty="true">
         <include name="*.cs"/>
-        <include name="StableBinding/**/*.cs" />
+        <include name="StableBindingImplementation/**/*.cs" />
         <include name="Properties/**/*.cs" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
