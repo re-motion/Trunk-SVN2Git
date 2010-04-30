@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-public class DataContainerMap : IEnumerable, IFlattenedSerializable
+public class DataContainerMap : IEnumerable<DataContainer>, IFlattenedSerializable
 {
   // types
 
@@ -93,14 +93,15 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     _dataContainers.Remove (dataContainer);
   }
 
-  #region IEnumerable Members
-
-  public IEnumerator GetEnumerator ()
+  public IEnumerator<DataContainer> GetEnumerator ()
   {
-    return _dataContainers.GetEnumerator ();
+    return _dataContainers.Cast<DataContainer>().GetEnumerator ();
   }
 
-  #endregion
+  IEnumerator IEnumerable.GetEnumerator ()
+  {
+    return GetEnumerator ();
+  }
 
   #region Serialization
   protected DataContainerMap (FlattenedDeserializationInfo info)

@@ -96,12 +96,14 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
   {
-    return DataContainerMap.Cast<DataContainer> ().Select (dc => Tuple.Create (dc.DomainObject, dc));
+    return DataContainerMap.Select (dc => Tuple.Create (dc.DomainObject, dc));
   }
 
-  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedData (params StateType[] states)
+  public IEnumerable<Tuple<DomainObject, DataContainer, StateType>> GetLoadedData (params StateType[] domainObjectStates)
   {
-    var stateSet = new StateValueSet (states);
+    ArgumentUtility.CheckNotNullOrEmpty ("domainObjectStates", domainObjectStates);
+
+    var stateSet = new StateValueSet (domainObjectStates);
 
     var matchingObjects = from tuple in GetLoadedData ()
                           let domainObject = tuple.Item1
@@ -151,7 +153,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Commit ()
   {
-    var deletedDataContainers = GetLoadedData (StateType.Deleted).Select (tuple => tuple.Item2).ToList();
+    var deletedDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.Deleted).ToList();
 
     _relationEndPointMap.CommitAllEndPoints ();
     
@@ -163,7 +165,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public void Rollback ()
   {
-    var newDataContainers = GetLoadedData (StateType.New).Select (tuple => tuple.Item2).ToList ();
+    var newDataContainers = _dataContainerMap.Where (dc => dc.State == StateType.New).ToList ();
 
     // roll back end point state before discarding objects because Discard checks that no dangling end points are created
     _relationEndPointMap.RollbackAllEndPoints ();
