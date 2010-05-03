@@ -125,35 +125,43 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
 
   if (hasDimensions)
   {
-    //activateTableHeader only on first scroll
-    var scrollTimer = null;
-    var container = tableBlock.children().eq(0);
-    var horizontalScroll = container.scrollLeft();
-    container.bind('scroll', function(event)
-    {
-    // don't do nothing if is horizontal scrolling
+    BocList_FixUpScrolling(tableBlock);
+  }
+
+  BocList_syncCheckboxes(bocList);
+}
+
+function BocList_FixUpScrolling(tableBlock)
+{
+  //activateTableHeader only on first scroll
+  var scrollTimer = null;
+  var container = tableBlock.children().eq(0);
+  var horizontalScroll = 0;
+
+  container.bind('scroll', function (event)
+  {
+    // return if is horizontal scrolling
     var currentHorizontalScroll = $(this).scrollLeft();
-    if (currentHorizontalScroll != horizontalScroll)
+    if (currentHorizontalScroll != horizontalScroll && currentHorizontalScroll > 0)
     {
-        horizontalScroll = currentHorizontalScroll;
-        return;
+      horizontalScroll = currentHorizontalScroll;
+      return;
     }
+
     var currentBocList = $(this);
     BocList_activateTableHeader(currentBocList);
     if (scrollTimer) clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(function() { BocList_fixHeaderPosition(currentBocList) }, 50);
-    });
+    scrollTimer = setTimeout(function () { BocList_fixHeaderPosition(currentBocList) }, 50);
+  });
 
-    //activateTableHeader on window resize
-    var resizeTimer = null;
-    $(window).bind('resize', function()
-    {
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() { BocList_activateTableHeader(container); }, 50);
-    });
-    } 
-      BocList_syncCheckboxes(bocList);
-  }
+  //activateTableHeader on window resize
+  var resizeTimer = null;
+  $(window).bind('resize', function ()
+  {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { BocList_activateTableHeader(container); }, 50);
+  });
+}
 
 
 
