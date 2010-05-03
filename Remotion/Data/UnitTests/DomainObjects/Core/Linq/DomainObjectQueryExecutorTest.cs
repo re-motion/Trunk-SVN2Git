@@ -611,7 +611,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlTable = new SqlTable (unresolvedTableInfo);
       var sqlStatement = new SqlStatement (
           new StreamedScalarValueInfo (typeof (string)),
-          new SqlColumnExpression (typeof (Order), "o", "ID", false), // TODO Review 2597: Should actually be true
+          new SqlColumnExpression (typeof (Order), "o", "ID", true),
           new[] { sqlTable },
           new Ordering[] { },
           null,

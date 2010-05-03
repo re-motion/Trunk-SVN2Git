@@ -358,16 +358,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.IsFalse (query);
     }
 
-    // TODO Review 2665: Use a more realistic test, e.g., from o in Orders where !o.OrderItems.Any() => should return OrderWithoutOrderItems
     [Test]
     public void QueryWithAny_InSubquery ()
     {
-      var query = from c in QueryFactory.CreateLinqQuery<Computer>()
-                  where (from c2 in QueryFactory.CreateLinqQuery<Computer>() select c2).Any()
-                  select c;
+      var query = from o in QueryFactory.CreateLinqQuery<Order>()
+                  where !o.OrderItems.Any()
+                  select o;
 
-      CheckQueryResult (
-          query, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4, DomainObjectIDs.Computer5);
+      CheckQueryResult (query, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
     }
 
     [Test]

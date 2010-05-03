@@ -138,10 +138,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (resolvedJoinInfo.LeftKeyColumn.ColumnName, Is.EqualTo ("ID"));
       Assert.That (resolvedJoinInfo.LeftKeyColumn.OwningTableAlias, Is.EqualTo ("c"));
       Assert.That (resolvedJoinInfo.LeftKeyColumn.Type, Is.EqualTo (typeof (ObjectID)));
+      Assert.That (resolvedJoinInfo.LeftKeyColumn.IsPrimaryKey, Is.True);
       Assert.That (resolvedJoinInfo.RightKeyColumn.ColumnName, Is.EqualTo ("CustomerID"));
       Assert.That (resolvedJoinInfo.RightKeyColumn.Type, Is.EqualTo (typeof (ObjectID)));
       Assert.That (resolvedJoinInfo.RightKeyColumn.OwningTableAlias, Is.EqualTo ("t0"));
-      // TODO Review 2597: Check IsPrimaryKey properties
+      Assert.That (resolvedJoinInfo.RightKeyColumn.IsPrimaryKey, Is.False);
     }
 
     [Test]
@@ -319,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
       Assert.That (((SqlColumnExpression) result).OwningTableAlias, Is.EqualTo (columnExpression.OwningTableAlias));
       Assert.That (((SqlColumnExpression) result).ColumnName, Is.EqualTo ("ClassID"));
-      // TODO Review 2597: Check IsPrimaryKey
+      Assert.That (((SqlColumnExpression) result).IsPrimaryKey, Is.False);
     }
 
     [Test]
