@@ -26,17 +26,14 @@ namespace Remotion.Reflection.CodeGeneration.DynamicMethods
   /// </summary>
   public class PropertyGetterGenerator
   {
-    private readonly ILGenerator _ilGenerator;
-
-    public PropertyGetterGenerator (ILGenerator ilGenerator)
+    public PropertyGetterGenerator ()
     {
-      ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
 
-      _ilGenerator = ilGenerator;
     }
 
-    public void BuildWrapperMethod (MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
+    public void BuildWrapperMethod (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
     {
+      ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
       ArgumentUtility.CheckNotNull ("wrappedGetMethod", wrappedGetMethod);
       ArgumentUtility.CheckNotNull ("wrapperReturnType", wrapperReturnType);
       ArgumentUtility.CheckNotNullOrItemsNull ("wrapperParameterTypes", wrapperParameterTypes);
@@ -49,13 +46,13 @@ namespace Remotion.Reflection.CodeGeneration.DynamicMethods
             wrappedGetMethod.ReturnType);
       }
 
-      _ilGenerator.Emit (OpCodes.Ldarg_0);
-      _ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.DeclaringType);
-      _ilGenerator.EmitCall (OpCodes.Callvirt, wrappedGetMethod, null);
+      ilGenerator.Emit (OpCodes.Ldarg_0);
+      ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.DeclaringType);
+      ilGenerator.EmitCall (OpCodes.Callvirt, wrappedGetMethod, null);
       //if (wrappedGetMethod.ReturnType.IsValueType)
       //  _ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
 
-      _ilGenerator.Emit (OpCodes.Ret);
+      ilGenerator.Emit (OpCodes.Ret);
     }
   }
 }

@@ -270,6 +270,7 @@
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithReferenceTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\DerivedClassWithReferenceTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\SimpleReferenceType.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\EventSignatureStringBuilderTest.cs" />

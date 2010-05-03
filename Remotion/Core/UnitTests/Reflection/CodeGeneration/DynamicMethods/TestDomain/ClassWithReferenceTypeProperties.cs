@@ -21,5 +21,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods.TestDomain
   public class ClassWithReferenceTypeProperties
   {
     public virtual SimpleReferenceType PropertyWithPublicGetterAndSetter { get; set; }
+    private SimpleReferenceType PropertyWithPrivateGetterAndSetter { get; set; }
+    public void SetPropertyWithPrivateGetterAndSetter (SimpleReferenceType value)
+    {
+      PropertyWithPrivateGetterAndSetter = value;
+    }
   }
 }

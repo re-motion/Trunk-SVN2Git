@@ -26,9 +26,10 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
 {
   [TestFixture]
-  public class PropertyGetterGeneratorTest
+  public class PropertyGetterGeneratorTest : MethodGenerationTestBase
   {
     [Test]
+    [Ignore]
     public void Build_ForPublicPropertyGetter_ForReferenceType ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
@@ -37,16 +38,39 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
+      var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static)
+          .SetParameterTypes (parameterTypes)
+          .SetReturnType (returnType);
+
+      var generator = new PropertyGetterGenerator();
+      generator.BuildWrapperMethod (method.ILGenerator, methodInfo, returnType, parameterTypes);
+
+      var obj = new ClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType() };
+
+      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.PropertyWithPublicGetterAndSetter));
+    }
+
+    [Test]
+    public void Build_ForPrivatePropertyGetter_ForReferenceType ()
+    {
+      Type declaringType = typeof (ClassWithReferenceTypeProperties);
+      var propertyInfo = declaringType.GetProperty ("PropertyWithPrivateGetterAndSetter", BindingFlags.NonPublic| BindingFlags.Instance);
+      var methodInfo = propertyInfo.GetGetMethod (true);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
       var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
       var ilGenerator = dynamicMethod.GetILGenerator();
 
-      var generator = new PropertyGetterGenerator ();
+      var generator = new PropertyGetterGenerator();
       generator.BuildWrapperMethod (ilGenerator, methodInfo, returnType, parameterTypes);
 
       var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
 
-      var obj = new ClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType () };
-      Assert.That (propertyGetter (obj), Is.SameAs (obj.PropertyWithPublicGetterAndSetter));
+      var expectedValue = new SimpleReferenceType();
+      var obj = new ClassWithReferenceTypeProperties();
+      obj.SetPropertyWithPrivateGetterAndSetter (expectedValue);
+      Assert.That (propertyGetter (obj), Is.SameAs (expectedValue));
     }
 
     [Test]
