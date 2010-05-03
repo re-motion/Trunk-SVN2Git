@@ -369,5 +369,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (
           query, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4, DomainObjectIDs.Computer5);
     }
+
+    [Test]
+    public void QueryWithAll ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Computer>().All (c => c.SerialNumber == "123456");
+
+      Assert.IsFalse (query);
+    }
+
+    [Test]
+    [Ignore("TODO: 2691")]
+    public void QueryWithAllAfterIncompatibleResultOperator ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Computer>().Take (10).Take (20).All (c => c.SerialNumber == "123456");
+
+      Assert.IsFalse (query);
+    }
+
+    [Test]
+    public void QueryWithAll_InSubquery ()
+    {
+      var query = from o in QueryFactory.CreateLinqQuery<Order>()
+                  where o.OrderItems.All (oi => oi.Position == 1)
+                  select o;
+
+      CheckQueryResult (
+          query,
+          DomainObjectIDs.OrderWithoutOrderItem,
+          DomainObjectIDs.Order2,
+          DomainObjectIDs.Order3,
+          DomainObjectIDs.Order4,
+          DomainObjectIDs.InvalidOrder);
+    }
   }
 }
