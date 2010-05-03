@@ -83,22 +83,18 @@ div.singleView div.content
   height: 100%;
 }
 
+body.msie7 div.singleViewView div.content
+{
+  width: 98%;
+  height: 98%;
+}
+
 div.singleViewView
 {
   padding: 1px;
   vertical-align: top; 	
   margin: 0;
   overflow: hidden;
-}
-
-body.msie7 div.singleViewView div.content
-{
-  margin-left: -2px;
-}
-
-body.msie7 div.singleViewView div.content > div
-{
-  padding-left: 2px;
 }
 
 

@@ -86,12 +86,8 @@ div.singleView div.content
 
 body.msie7 div.singleViewView div.content
 {
-  margin-left: -2px;
-}
-
-body.msie7 div.singleViewView div.content > div
-{
-  padding-left: 2px;
+  width: 98%;
+  height: 98%;
 }
 
 div.singleViewView
