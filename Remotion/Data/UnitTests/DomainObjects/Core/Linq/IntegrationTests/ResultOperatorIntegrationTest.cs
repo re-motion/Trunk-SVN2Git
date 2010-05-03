@@ -371,9 +371,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithAll ()
     {
-      var query = QueryFactory.CreateLinqQuery<Computer>().All (c => c.SerialNumber == "123456");
+      var result1 = QueryFactory.CreateLinqQuery<Computer>().All (c => c.SerialNumber == "123456");
+      Assert.That (result1, Is.False);
 
-      Assert.IsFalse (query);
+      var result2 = QueryFactory.CreateLinqQuery<Computer> ().All (c => c.SerialNumber != string.Empty);
+      Assert.That (result2, Is.True);
     }
 
     [Test]
@@ -388,17 +390,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void QueryWithAll_InSubquery ()
     {
-      var query = from o in QueryFactory.CreateLinqQuery<Order>()
+      var query1 = from o in QueryFactory.CreateLinqQuery<Order>()
                   where o.OrderItems.All (oi => oi.Position == 1)
                   select o;
 
       CheckQueryResult (
-          query,
+          query1,
           DomainObjectIDs.OrderWithoutOrderItem,
           DomainObjectIDs.Order2,
           DomainObjectIDs.Order3,
           DomainObjectIDs.Order4,
           DomainObjectIDs.InvalidOrder);
+
+      var query2 = from c in QueryFactory.CreateLinqQuery<Customer> ()
+                  where c.Orders.All (o => o.OrderItems.Count() > 0)
+                  select c;
+
+      CheckQueryResult (
+          query2,
+          DomainObjectIDs.Customer2,
+          DomainObjectIDs.Customer3,
+          DomainObjectIDs.Customer4);
     }
   }
 }
