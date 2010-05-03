@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private SqlTable _orderTable;
     private SqlTable _customerTable;
     private SqlTable _companyTable;
+    private SqlTable _orderItemTable;
 
     [SetUp]
     public void SetUp ()
@@ -48,6 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _resolver = new MappingResolver();
       _generator = new UniqueIdentifierGenerator();
       _orderTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
+      _orderItemTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (OrderItem), "OrderItemTable", "o"));
       _customerTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Customer), "Customer", "c"));
       _companyTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Company), "Company", "c"));
     }
@@ -199,10 +201,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
       Assert.That (sqlColumnExpression.OwningTableAlias, Is.EqualTo ("o"));
       Assert.That (sqlColumnExpression.Type, Is.EqualTo (typeof (int)));
-      // TODO Review 2597: Check IsPrimaryKey
+      Assert.That (sqlColumnExpression.IsPrimaryKey, Is.False);
     }
 
-    // TODO Review 2597: Test missing for "ID" member; also check IsPrimaryKey there
+    [Test]
+    public void ResolveMemberExpression_IDMember ()
+    {
+      var property = typeof (Order).GetProperty ("ID");
+
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable, property, _generator);
+
+      Assert.That (sqlColumnExpression, Is.Not.Null);
+      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo("ID"));
+      Assert.That (sqlColumnExpression.IsPrimaryKey, Is.True);
+    }
 
     [Test]
     public void ResolveMemberExpression_RedirectedProperty ()
