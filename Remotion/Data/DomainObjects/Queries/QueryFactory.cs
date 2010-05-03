@@ -36,6 +36,9 @@ namespace Remotion.Data.DomainObjects.Queries
   /// </summary>
   public static class QueryFactory
   {
+    private static readonly MethodCallTransformerRegistry s_methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
+    private static readonly ResultOperatorHandlerRegistry s_resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault ();
+    
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with the default implementation of the SQL 
     /// generation.
@@ -59,14 +62,11 @@ namespace Remotion.Data.DomainObjects.Queries
         where T: DomainObject
     {
       var context = new SqlPreparationContext();
-      // TODO Review 2620: Because the registries use reflection-based type scanning, they should be cached: refactor into private static readonly fields
-      var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault();
-      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator();
       var resolver = new MappingResolver();
 
       return new DomainObjectQueryable<T> (
-        ObjectFactory.Create<DefaultSqlPreparationStage> (ParamList.Create (methodCallTransformerRegistry, resultOperatorHandlerRegistry, context, generator)),
+        ObjectFactory.Create<DefaultSqlPreparationStage> (ParamList.Create (s_methodCallTransformerRegistry, s_resultOperatorHandlerRegistry, context, generator)),
         ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator)),
         ObjectFactory.Create<DefaultSqlGenerationStage>(ParamList.Empty));
     }
