@@ -106,6 +106,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ExecuteScalar_Boolean ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Any());
+      QueryModel model = ParseQuery (expression);
+
+      var result = _computerExecutor.ExecuteScalar<bool> (model);
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
     public void ExecuteScalar_WithFetches ()
     {
       var expression = ExpressionHelper.MakeExpression (

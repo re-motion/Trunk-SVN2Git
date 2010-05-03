@@ -105,12 +105,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Scalar);
       object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
-      // TODO Review 2664: Use ChangeType instead; this should always work: return (T) Convert.ChangeType (scalarValue, typeof (T));
-      // TODO Review 2664: Add unit tests for ExecuteScalar with boolean true, false
-      if (typeof(T) == typeof(bool))
-        return (T)(object) Convert.ToBoolean (scalarValue);
-      else
-        return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
+      return (T) Convert.ChangeType (scalarValue, typeof (T));
     }
 
     /// <summary>
