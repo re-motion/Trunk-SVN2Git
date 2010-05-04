@@ -412,5 +412,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Customer3,
           DomainObjectIDs.Customer4);
     }
+
+    [Test]
+    public void DefaultIsEmpty_WithoutJoin ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                  where o.ID == DomainObjectIDs.Order1
+                  select o).DefaultIfEmpty();
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void DefaultIsEmpty_WithoutJoin_EmptyResult ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == -1
+                   select o).DefaultIfEmpty ();
+
+      Assert.That (query.ToArray().Count(), Is.EqualTo (1));
+      Assert.That (query.ToArray ()[0], Is.Null);
+    }
+
+    [Test]
+    public void DefaultIsEmpty_WithJoin ()
+    {
+      var query = (from c in QueryFactory.CreateLinqQuery<Order>()
+                  join k in QueryFactory.CreateLinqQuery<Customer>() on c.Customer equals k
+                  where c.OrderNumber == 5
+                  select c).DefaultIfEmpty();
+
+      CheckQueryResult (query, DomainObjectIDs.Order4);
+    }
   }
 }
