@@ -135,14 +135,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).TableAlias, Is.EqualTo ("t0"));
       Assert.That (((ResolvedSimpleTableInfo) resolvedJoinInfo.ForeignTableInfo).ItemType, Is.EqualTo (typeof (Order)));
 
-      Assert.That (resolvedJoinInfo.LeftKeyColumn.ColumnName, Is.EqualTo ("ID"));
-      Assert.That (resolvedJoinInfo.LeftKeyColumn.OwningTableAlias, Is.EqualTo ("c"));
-      Assert.That (resolvedJoinInfo.LeftKeyColumn.Type, Is.EqualTo (typeof (ObjectID)));
-      Assert.That (resolvedJoinInfo.LeftKeyColumn.IsPrimaryKey, Is.True);
-      Assert.That (resolvedJoinInfo.RightKeyColumn.ColumnName, Is.EqualTo ("CustomerID"));
-      Assert.That (resolvedJoinInfo.RightKeyColumn.Type, Is.EqualTo (typeof (ObjectID)));
-      Assert.That (resolvedJoinInfo.RightKeyColumn.OwningTableAlias, Is.EqualTo ("t0"));
-      Assert.That (resolvedJoinInfo.RightKeyColumn.IsPrimaryKey, Is.False);
+      Assert.That (((SqlColumnExpression) resolvedJoinInfo.LeftKey).ColumnName, Is.EqualTo ("ID"));
+      Assert.That (((SqlColumnExpression) resolvedJoinInfo.LeftKey).OwningTableAlias, Is.EqualTo ("c"));
+      Assert.That (resolvedJoinInfo.LeftKey.Type, Is.EqualTo (typeof (ObjectID)));
+      Assert.That (((SqlColumnExpression) resolvedJoinInfo.LeftKey).IsPrimaryKey, Is.True);
+      Assert.That (((SqlColumnExpression) resolvedJoinInfo.RightKey).ColumnName, Is.EqualTo ("CustomerID"));
+      Assert.That (resolvedJoinInfo.RightKey.Type, Is.EqualTo (typeof (ObjectID)));
+      Assert.That (((SqlColumnExpression) resolvedJoinInfo.RightKey).OwningTableAlias, Is.EqualTo ("t0"));
+      Assert.That (((SqlColumnExpression) resolvedJoinInfo.RightKey).IsPrimaryKey, Is.False);
     }
 
     [Test]

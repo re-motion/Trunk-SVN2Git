@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedSimpleTableInfo (tableInfo.ItemType, viewName, generator.GetUniqueIdentifier ("t"));
     }
 
-    public ResolvedJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
+    public ResolvedLeftJoinInfo ResolveJoinInfo (UnresolvedJoinInfo joinInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("joinInfo", joinInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Linq
           GetJoinColumnName (rightEndPoint),
           rightEndPoint.IsVirtual);
 
-      return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey, joinInfo.MemberInfo);
+      return new ResolvedLeftJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
 
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
