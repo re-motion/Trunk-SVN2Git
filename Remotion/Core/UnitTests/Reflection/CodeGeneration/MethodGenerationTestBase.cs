@@ -20,7 +20,7 @@ using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
-  public class MethodGenerationTestBase : CodeGenerationBaseTest
+  public abstract class MethodGenerationTestBase : CodeGenerationBaseTest
   {
     private CustomClassEmitter _classEmitter;
 
@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public override void SetUp ()
     {
       base.SetUp();
-      _classEmitter = new CustomClassEmitter (Scope, UniqueName, typeof (object));
+      _classEmitter = new CustomClassEmitter (Scope, UniqueName, typeof (object), new Type[0], TypeAttributes.Class | TypeAttributes.Public, true);
     }
 
     public override void TearDown ()
@@ -77,7 +77,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     protected MethodInfo GetMethod (object instance, IMethodEmitter method)
     {
-      return GetMethod ((Type) ((object) instance.GetType()), method);
+      return GetMethod (instance.GetType(), method);
     }
 
     protected MethodInfo BuildTypeAndGetMethod (IMethodEmitter method)
