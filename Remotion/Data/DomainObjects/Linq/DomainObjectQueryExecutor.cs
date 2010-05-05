@@ -125,6 +125,9 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
+      if (!typeof (DomainObject).IsAssignableFrom (typeof (T)))
+        return ExecuteScalar<T> (queryModel);
+
       var sequence = ExecuteCollection<T> (queryModel);
 
       if (returnDefaultWhenEmpty)
@@ -243,7 +246,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      CheckStreamedDataInfo (queryModel);
+      if(queryType==QueryType.Collection)
+        EnsureQueryReturnsDomainObject (queryModel);
       var command = CreateSqlCommand (queryModel);
 
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
@@ -363,12 +367,8 @@ namespace Remotion.Data.DomainObjects.Linq
         return null;
     }
 
-    private void CheckStreamedDataInfo (QueryModel queryModel)
+    private void EnsureQueryReturnsDomainObject (QueryModel queryModel)
     {
-      var streamedScalarValueInfo = queryModel.GetOutputDataInfo() as StreamedScalarValueInfo;
-      if (streamedScalarValueInfo != null)
-        return;
-
       var streamedSingleValueInfo = queryModel.GetOutputDataInfo() as StreamedSingleValueInfo;
       if (streamedSingleValueInfo != null && typeof (DomainObject).IsAssignableFrom (streamedSingleValueInfo.DataType))
         return;

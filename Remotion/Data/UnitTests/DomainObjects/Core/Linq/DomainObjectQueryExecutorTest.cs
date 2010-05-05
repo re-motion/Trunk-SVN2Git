@@ -164,6 +164,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ExecuteSingle_DomainObjectNotAssignableFromResultType ()
+    {
+      var expression =
+          ExpressionHelper.MakeExpression (
+              () => (from o in QueryFactory.CreateLinqQuery<Order> () select o.OrderNumber).Max());
+      QueryModel model = ParseQuery (expression);
+
+      var result = _orderExecutor.ExecuteSingle<int> (model, true);
+      Assert.That (result, Is.EqualTo(6));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteSingle_NoCurrentTransaction ()
     {
