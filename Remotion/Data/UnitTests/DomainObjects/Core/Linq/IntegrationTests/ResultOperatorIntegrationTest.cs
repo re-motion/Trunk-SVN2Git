@@ -430,17 +430,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                    where o.OrderNumber == -1
                    select o).DefaultIfEmpty ();
 
+      // TODO Review 2669: Rewrite CheckQueryResult to be able to handle null arguments, use CheckQueryResult (query, null)
       Assert.That (query.ToArray().Count(), Is.EqualTo (1));
       Assert.That (query.ToArray ()[0], Is.Null);
     }
 
+    // TODO Review 2669: Not really interesting - join into is the important stuff
     [Test]
     public void DefaultIsEmpty_WithJoin ()
     {
-      var query = (from c in QueryFactory.CreateLinqQuery<Order>()
-                  join k in QueryFactory.CreateLinqQuery<Customer>() on c.Customer equals k
-                  where c.OrderNumber == 5
-                  select c).DefaultIfEmpty();
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>()
+                  join c in QueryFactory.CreateLinqQuery<Customer>() on o.Customer equals c
+                  where o.OrderNumber == 5
+                  select o).DefaultIfEmpty();
 
       CheckQueryResult (query, DomainObjectIDs.Order4);
     }
