@@ -446,5 +446,85 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Order4);
     }
+
+    [Test]
+    public void Max_OnTopLevel ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o.OrderNumber).Max();
+
+      Assert.That(query, Is.EqualTo(6));
+    }
+
+    [Test]
+    public void Max_InSubquery ()
+    {
+      var query =
+          (from o in QueryFactory.CreateLinqQuery<Order>()
+           where (from s2 in QueryFactory.CreateLinqQuery<Order>() select s2.OrderNumber).Max()== 6
+           select o);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
+        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);   
+    }
+
+    [Test]
+    public void Min_OnTopLevel ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o.OrderNumber).Min ();
+
+      Assert.That (query, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void Min_InSubquery ()
+    {
+      var query =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
+           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Min () == 1
+           select o);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
+        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+    }
+
+    [Test]
+    public void Avaerage_OnTopLevel ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Average(o=>o.OrderNumber);
+
+      Assert.That (query, Is.EqualTo (3.0));
+    }
+
+    [Test]
+    public void Average_InSubquery ()
+    {
+      var query =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
+           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Average() == 3.0
+           select o);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
+        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+    }
+
+    [Test]
+    public void Sum_OnTopLevel ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Sum(o => o.OrderNumber);
+
+      Assert.That (query, Is.EqualTo (21));
+    }
+
+    [Test]
+    public void Sum_InSubquery ()
+    {
+      var query =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
+           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Sum () == 21
+           select o);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
+        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+    }
   }
 }
