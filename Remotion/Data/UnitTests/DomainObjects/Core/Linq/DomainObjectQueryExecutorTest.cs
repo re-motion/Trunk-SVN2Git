@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private DefaultSqlPreparationStage _preparationStage;
     private DefaultMappingResolutionStage _resolutionStage;
     private DefaultSqlGenerationStage _generationStage;
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
 
     public override void SetUp ()
     {

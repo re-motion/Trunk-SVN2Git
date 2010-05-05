@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   [TestFixture]
   public class DomainObjectQueryableTest
   {
-    private SqlPreparationContext _context;
+    private ISqlPreparationContext _context;
     private DefaultSqlPreparationStage _preparationStage;
     private DefaultMappingResolutionStage _mappingResolutionStage;
     private DefaultSqlGenerationStage _sqlGenerationStage;
