@@ -246,8 +246,9 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
-      if(queryType==QueryType.Collection)
+      if (queryType == QueryType.Collection)
         EnsureQueryReturnsDomainObject (queryModel);
+
       var command = CreateSqlCommand (queryModel);
 
       CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
