@@ -80,7 +80,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           null,
           null,
           false,
-          false,
           AggregationModifier.None);
       var tableInfo = new ResolvedSubStatementTableInfo ("Student", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
@@ -104,7 +103,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new Ordering[] { },
           null,
           null,
-          false,
           false,
           AggregationModifier.None);
 

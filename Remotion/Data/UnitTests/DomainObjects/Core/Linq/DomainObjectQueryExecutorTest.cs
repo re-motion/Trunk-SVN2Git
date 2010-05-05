@@ -617,7 +617,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           null,
           null,
           false,
-          false,
           AggregationModifier.None);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
