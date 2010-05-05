@@ -72,8 +72,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ResolveTableReferenceExpression_SubStatementTableInfo_TableTypeNotInheritedFromDomainObject ()
     {
-      var sqlStatement = new SqlStatement (new StreamedSequenceInfo(typeof(string), Expression.Constant('t')), Expression.Constant ("test"), new SqlTable[] { }, new Ordering[] { }, null, null, false, false);
-      var tableInfo = new ResolvedSubStatementTableInfo ("Student",sqlStatement);
+      var sqlStatement = new SqlStatement (
+          new StreamedSequenceInfo (typeof (string), Expression.Constant ('t')),
+          Expression.Constant ("test"),
+          new SqlTable[] { },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false,
+          AggregationModifier.None);
+      var tableInfo = new ResolvedSubStatementTableInfo ("Student", sqlStatement);
       var sqlTable = new SqlTable (tableInfo);
       var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
 
@@ -88,7 +97,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo", false);
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      var sqlStatement = new SqlStatement (new StreamedSequenceInfo(typeof(Student[]), Expression.Constant(new Student())), selectProjection, new[] { sqlTable }, new Ordering[] { }, null, null, false, false);
+      var sqlStatement = new SqlStatement (
+          new StreamedSequenceInfo (typeof (Student[]), Expression.Constant (new Student())),
+          selectProjection,
+          new[] { sqlTable },
+          new Ordering[] { },
+          null,
+          null,
+          false,
+          false,
+          AggregationModifier.None);
 
       var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo ("q", sqlStatement));
       var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);
@@ -195,8 +213,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_ReturnsSqlColumnExpression ()
     {
       var property = typeof (Order).GetProperty ("OrderNumber");
-      
-      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable,property, _generator);
+
+      var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable, property, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
       Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("OrderNo"));
@@ -213,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable, property, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
-      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo("ID"));
+      Assert.That (sqlColumnExpression.ColumnName, Is.EqualTo ("ID"));
       Assert.That (sqlColumnExpression.IsPrimaryKey, Is.True);
     }
 
@@ -221,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_RedirectedProperty ()
     {
       var property = typeof (Order).GetProperty ("RedirectedOrderNumber");
-      
+
       var sqlColumnExpression = (SqlColumnExpression) _resolver.ResolveMemberExpression (_orderTable, property, _generator);
 
       Assert.That (sqlColumnExpression, Is.Not.Null);
@@ -244,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var property = typeof (Order).GetProperty ("Customer");
 
-      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (_orderTable,property, _generator);
+      var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (_orderTable, property, _generator);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
       Assert.That (sqlEntityRefMemberExpression.MemberInfo, Is.SameAs (property));
@@ -255,7 +273,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_CardinalityOne_MemberIsTheNonForeignKeySide ()
     {
       var property = typeof (Employee).GetProperty ("Computer");
-      
+
       var sqlEntityRefMemberExpression = (SqlEntityRefMemberExpression) _resolver.ResolveMemberExpression (_customerTable, property, _generator);
 
       Assert.That (sqlEntityRefMemberExpression, Is.Not.Null);
@@ -274,12 +292,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (result, Is.TypeOf (typeof (SqlColumnExpression)));
       Assert.That (((SqlColumnExpression) result).OwningTableAlias, Is.EqualTo ("s"));
       Assert.That (((SqlColumnExpression) result).ColumnName, Is.EqualTo ("AboveInheritanceIdentifier"));
-      Assert.That (result.Type, Is.EqualTo(typeof(string)));
+      Assert.That (result.Type, Is.EqualTo (typeof (string)));
     }
 
 
     [Test]
-    [ExpectedException (typeof (UnmappedItemException), ExpectedMessage = "The type 'Remotion.Data.DomainObjects.DomainObject' does not identify a queryable table.")]
+    [ExpectedException (typeof (UnmappedItemException),
+        ExpectedMessage = "The type 'Remotion.Data.DomainObjects.DomainObject' does not identify a queryable table.")]
     public void ResolveMemberExpression_InvalidDeclaringType_ThrowsUnmappedItemException ()
     {
       var property = typeof (Student).GetProperty ("First");
@@ -295,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_InvalidMember_ThrowsUnmappedItemException ()
     {
       var property = typeof (Order).GetProperty ("NotInMapping");
-      
+
       _resolver.ResolveMemberExpression (_orderTable, property, _generator);
     }
 
@@ -304,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ResolveMemberExpression_OnColumn_UnMappedProperty ()
     {
       var property = typeof (Order).GetProperty ("NotInMapping");
-      var columnExpression = new SqlColumnExpression(typeof(string), "o", "Name", false);
+      var columnExpression = new SqlColumnExpression (typeof (string), "o", "Name", false);
 
       _resolver.ResolveMemberExpression (columnExpression, property);
     }
@@ -346,7 +365,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException(typeof(UnmappedItemException))]
+    [ExpectedException (typeof (UnmappedItemException))]
     public void ResolveTypeCheck_NoDomainTypeWithDifferentDesiredType ()
     {
       var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (object), "Table", "t"));
@@ -381,20 +400,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (false));
     }
-    
+
 
     [Test]
     public void ResolveTypeCheck_ExpressionTypeIsAssignableFromDesiredType ()
     {
       var tableReferenceExpression = new SqlTableReferenceExpression (_companyTable);
       var sqlEntityExpression = (SqlEntityExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
-      
+
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Customer));
 
-      var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty("ID"));
-      var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty("ClassID"));
+      var idExpression = Expression.MakeMemberAccess (sqlEntityExpression, typeof (DomainObject).GetProperty ("ID"));
+      var classIDExpression = Expression.MakeMemberAccess (idExpression, typeof (ObjectID).GetProperty ("ClassID"));
       var expectedExpression = Expression.Equal (classIDExpression, new SqlLiteralExpression ("Customer"));
-      
+
       ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
   }
