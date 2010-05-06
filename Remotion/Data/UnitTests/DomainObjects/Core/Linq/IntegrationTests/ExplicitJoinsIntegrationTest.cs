@@ -34,5 +34,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           where c.OrderNumber == 5
           select c , DomainObjectIDs.Order4);
     }
+
+    //TODO: 2668
+    //[Test]
+    //public void ExplicitJoinWithInto_Once ()
+    //{
+      
+    //}
   }
 }

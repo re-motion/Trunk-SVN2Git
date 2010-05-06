@@ -49,31 +49,31 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
+    private readonly ISqlPreparationContext _context;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
     /// </summary>
     /// <param name="startingClassDefinition">The <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started 
-    /// with. This determines the <see cref="StorageProvider"/> used for the query.</param>
+    ///   with. This determines the <see cref="StorageProvider"/> used for the query.</param>
     /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
-    public DomainObjectQueryExecutor (
-        ClassDefinition startingClassDefinition,
-        ISqlPreparationStage preparationStage,
-        IMappingResolutionStage resolutionStage,
-        ISqlGenerationStage generationStage)
+    /// <param name="context"></param>
+    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage, ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
+      ArgumentUtility.CheckNotNull ("context", context);
 
       _startingClassDefinition = startingClassDefinition;
 
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
+      _context = context;
     }
 
     /// <summary>
@@ -412,7 +412,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>the generated <see cref="SqlStatement"/></returns>
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
-      var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel);
+      var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel, _context);
       return _resolutionStage.ResolveSqlStatement (sqlStatement);
     }
 

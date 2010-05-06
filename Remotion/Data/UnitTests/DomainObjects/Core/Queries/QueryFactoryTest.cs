@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var sqlStatement = sqlStatementBuilder.GetSqlStatement();
 
       preparationStageMock
-          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Is.Anything))
+          .Expect (mock => mock.PrepareSqlStatement (Arg<QueryModel>.Is.Anything, Arg<ISqlPreparationContext>.Is.Anything))
           .Return (sqlStatement);
       resolutionStageMock
           .Expect (mock => mock.ResolveSqlStatement (sqlStatement))
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class TestSqlPreparationStageMixin
   {
     [OverrideTarget]
-    public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel)
+    public virtual SqlStatement PrepareSqlStatement (QueryModel queryModel, ISqlPreparationContext context)
     {
       var builder = new SqlStatementBuilder { DataInfo = new StreamedScalarValueInfo (typeof (string)), SelectProjection = Expression.Constant ("Value added by preparation mixin") };
       return builder.GetSqlStatement();

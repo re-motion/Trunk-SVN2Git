@@ -43,24 +43,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [SetUp]
     public void SetUp ()
     {
-      _context = new SqlPreparationContext ();
       var methodCallTransformerRegistry = MethodCallTransformerRegistry.CreateDefault ();
       var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
       var generator = new UniqueIdentifierGenerator ();
       var resolver = new MappingResolver ();
 
-      _preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, _context, generator);
+      _preparationStage = new DefaultSqlPreparationStage (methodCallTransformerRegistry, resultOperatorHandlerRegistry, generator);
       _mappingResolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _sqlGenerationStage = new DefaultSqlGenerationStage();
+      _context = new SqlPreparationContext ();
 
-      _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage);
+      _queryableWithOrder = new DomainObjectQueryable<Order> (_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _context);
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void Initialization_WrongType ()
     {
-      new DomainObjectQueryable<DomainObject>(_preparationStage, _mappingResolutionStage, _sqlGenerationStage);
+      new DomainObjectQueryable<DomainObject>(_preparationStage, _mappingResolutionStage, _sqlGenerationStage, _context);
     }
 
     [Test]
@@ -109,13 +109,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var generator = new UniqueIdentifierGenerator();
       var context = new SqlPreparationContext();
       var sqlPreparationStage = new DefaultSqlPreparationStage (
-          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), context, generator);
+          MethodCallTransformerRegistry.CreateDefault(), ResultOperatorHandlerRegistry.CreateDefault(), generator);
       var mappinResolutionStage = new DefaultMappingResolutionStage (new MappingResolver(), generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       
       var expectedProvider = new DefaultQueryProvider (
           typeof (DomainObjectQueryable<>),
-          new DomainObjectQueryExecutor (classDefinition, sqlPreparationStage, mappinResolutionStage, sqlGenerationStage));
+          new DomainObjectQueryExecutor (classDefinition, sqlPreparationStage, mappinResolutionStage, sqlGenerationStage, context));
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));
