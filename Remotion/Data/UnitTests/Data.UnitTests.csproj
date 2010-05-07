@@ -455,7 +455,7 @@
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\RelationChangingTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\RelationReadingTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SecurityClientTransactionExtensionTestHelper.cs" />
-    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SerializatiionTest.cs" />
+    <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\SerializationTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionFactoryTest.cs" />
     <Compile Include="DomainObjects\Security\SetupFixture.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\NonSecurableObject.cs" />

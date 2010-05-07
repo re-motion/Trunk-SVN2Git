@@ -16,20 +16,19 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class SerializatiionTest
+  public class SerializationTest
   {
     [Test]
     public void Serialization ()
     {
-      SecurityClientTransactionExtension extension = new SecurityClientTransactionExtension ();
-      SecurityClientTransactionExtension deserializedExtension = Serializer.SerializeAndDeserialize (extension);
+      var extension = new SecurityClientTransactionExtension ();
+      var deserializedExtension = Serializer.SerializeAndDeserialize (extension);
 
       Assert.AreNotSame (extension, deserializedExtension);
     }
