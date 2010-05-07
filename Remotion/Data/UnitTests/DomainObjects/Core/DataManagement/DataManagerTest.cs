@@ -401,6 +401,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void ClearDiscardedFlag ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+
+      _dataManager.MarkObjectDiscarded (domainObject);
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.True);
+
+      _dataManager.ClearDiscardedFlag (domainObject.ID);
+
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+    }
+
+    [Test]
+    public void ClearDiscardedFlag_Ignores_NonDiscardedObject ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+
+      _dataManager.ClearDiscardedFlag (domainObject.ID);
+
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+    }
+
+    [Test]
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);

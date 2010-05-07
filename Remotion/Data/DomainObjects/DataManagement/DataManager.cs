@@ -260,6 +260,13 @@ public class DataManager : ISerializable, IDeserializationCallback
     _discardedObjects.Add (domainObject.ID, domainObject);
   }
 
+  public void ClearDiscardedFlag (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+    _discardedObjects.Remove (objectID);
+  }
+
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
   {
     Maybe.ForValue (relationEndPoint as IObjectEndPoint)
