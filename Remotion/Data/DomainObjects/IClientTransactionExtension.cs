@@ -22,8 +22,15 @@ using Remotion.Data.DomainObjects.Queries;
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Interface for extending the <see cref="ClientTransaction"/> by observing events within the DomainObjects framework.
+  /// Interface for extending the <see cref="ClientTransaction"/> by observing events within the re-store framework.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  /// The <see cref="ClientTransaction.Current"/> property is not guaranteed to be set to the affected <see cref="ClientTransaction"/> when 
+  /// a notification method is executed. Implementations that require access to the calling transaction must use the
+  /// parameters passed to each notification method.
+  /// </para>
+  /// </remarks>
   public interface IClientTransactionExtension
   {
     /// <summary>

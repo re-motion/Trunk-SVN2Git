@@ -25,8 +25,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Defines an interface for objects listening for events occuring in the scope of a ClientTransaction.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// This is similar to <see cref="IClientTransactionExtension"/>, but where <see cref="IClientTransactionExtension"/> is for the public,
   /// <see cref="IClientTransactionListener"/> is for internal usage (and therefore provides more events).
+  /// </para>
+  /// <para>
+  /// The <see cref="ClientTransaction.Current"/> property is not guaranteed to be set to the affected <see cref="ClientTransaction"/> when 
+  /// a notification method is executed. Implementations that require access to the calling transaction must have the transaction passed to them via
+  /// the constructors.
+  /// </para>
   /// </remarks>
   public interface IClientTransactionListener : INullObject
   {
