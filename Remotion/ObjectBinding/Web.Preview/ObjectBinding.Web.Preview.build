@@ -50,7 +50,6 @@
         <include name="${build.outputdir}/Remotion.ObjectBinding.Web.dll" />
         <include name="${build.outputdir}/Remotion.Web.dll" />
         <include name="${build.outputdir}/log4net.dll" />
-        <include name="${build.outputdir}/AjaxControlToolkit.dll" />
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Design.dll"/>
