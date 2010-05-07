@@ -439,7 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
                   join c in QueryFactory.CreateLinqQuery<Customer>() on o.Customer equals c into goc
                   from oc in goc
                   where o.OrderNumber == 5
-                  select oc).DefaultIfEmpty();
+                  select oc).DefaultIfEmpty(); // TODO Review 2691: Typical use case for DefaultIfEmpty is to apply it to the into variable (from oc in goc.DefaultIfEmpty); find a test example where it makes a difference (i.e., where the left join produces a different example then an inner join would)
 
       CheckQueryResult (query, DomainObjectIDs.Customer4);
     }
