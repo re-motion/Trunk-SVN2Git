@@ -33,6 +33,12 @@ div.tabbedMultiView div.wrapper
  background-color: white;
 }
 
+body.msie7 div.tabbedMultiViewActiveView div.content
+{
+  width: 97.5%;
+  height: 97.5%;
+}
+
 div.tabbedMultiView div.content
 {
 }
