@@ -1,6 +1,6 @@
 Component				License			Source                                             	Custom Build
 =============================================================================================================================================
-AjaxControlToolkit			MS-PL			http://ajaxcontroltoolkit.codeplex.com/			
+Autofac.*					MIT			http://code.google.com/p/autofac/
 IronPython.*				ML-PL			http://ironpython.codeplex.com/
 Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex.com/
 Microsoft.Scripting.*			MS-PL			http://dlr.codeplex.com/
