@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
@@ -24,6 +25,7 @@ using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
@@ -124,19 +126,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, HasAccessDelegate doDelegate)
     {
       IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy ();
-      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum))).Do (doDelegate);
+      Expect
+          .Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+          .WhenCalled (mi => CheckCurrentTransaction())
+          .Do (doDelegate);
     }
 
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, bool returnValue)
     {
       IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy ();
-      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum))).Return (returnValue);
+      Expect
+          .Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+          .WhenCalled (mi => CheckCurrentTransaction ())
+          .Return (returnValue);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Type securableObjectType, Enum accessTypeEnum, HasStatelessAccessDelegate doDelegate)
     {
       Expect
           .Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+          .WhenCalled (mi => CheckCurrentTransaction ())
           .Do (doDelegate);
     }
 
@@ -144,22 +153,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       Expect
           .Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
+          .WhenCalled (mi => CheckCurrentTransaction ())
           .Return (returnValue);
     }
 
     public void ExpectPermissionReflectorGetRequiredPropertyWritePermissions (string propertyName, params Enum[] returnedAccessTypes)
     {
-      Expect.Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName)).Return (returnedAccessTypes);
+      Expect
+          .Call (_mockPermissionReflector.GetRequiredPropertyWritePermissions (typeof (SecurableObject), propertyName))
+          .WhenCalled (mi => CheckCurrentTransaction ())
+          .Return (returnedAccessTypes);
     }
 
     public void ExpectPermissionReflectorGetRequiredPropertyReadPermissions (string propertyName, params Enum[] returnedAccessTypes)
     {
-      Expect.Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName)).Return (returnedAccessTypes);
+      Expect
+          .Call (_mockPermissionReflector.GetRequiredPropertyReadPermissions (typeof (SecurableObject), propertyName))
+          .WhenCalled (mi => CheckCurrentTransaction ())
+          .Return (returnedAccessTypes);
     }
 
     public void ExpectSecurityProviderGetAccess (SecurityContext context, params Enum[] returnedAccessTypes)
     {
-      Expect.Call (_mockSecurityProvider.GetAccess (context, _stubUser)).Return (Array.ConvertAll<Enum, AccessType> (returnedAccessTypes, AccessType.Get));
+      Expect
+          .Call (_mockSecurityProvider.GetAccess (context, _stubUser))
+          .WhenCalled (mi => CheckCurrentTransaction ())
+          .Return (Array.ConvertAll (returnedAccessTypes, AccessType.Get));
+    }
+
+    private void CheckCurrentTransaction ()
+    {
+      Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
     }
   }
 }

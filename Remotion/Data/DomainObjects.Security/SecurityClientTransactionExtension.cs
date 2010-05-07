@@ -41,7 +41,211 @@ namespace Remotion.Data.DomainObjects.Security
 
     // methods and properties
 
+    public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("queryResult", queryResult);
+
+      if (clientTransaction.ParentTransaction != null)
+        return queryResult; // filtering already done in parent transaction
+
+      if (_isActive)
+        return queryResult;
+
+      if (SecurityFreeSection.IsActive)
+        return queryResult;
+
+      var queryResultList = new List<T> (queryResult.AsEnumerable ());
+      SecurityClient securityClient = GetSecurityClient ();
+      
+      clientTransaction.Execute (() =>
+      {
+        for (int i = queryResultList.Count - 1; i >= 0; i--)
+        {
+          var securableObject = queryResultList[i] as ISecurableObject;
+          if (securableObject == null)
+            continue;
+
+          bool hasAccess;
+          try
+          {
+            _isActive = true;
+            hasAccess = securityClient.HasAccess (securableObject, AccessType.Get (GeneralAccessTypes.Find));
+          }
+          finally
+          {
+            _isActive = false;
+          }
+          if (!hasAccess)
+            queryResultList.RemoveAt (i);
+        }
+      });
+
+      if (queryResultList.Count != queryResult.Count)
+        return new QueryResult<T> (queryResult.Query, queryResultList.ToArray ());
+      else
+        return queryResult;
+    }
+
+    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      if (_isActive)
+        return;
+
+      if (!(typeof (ISecurableObject).IsAssignableFrom (type)))
+        return;
+
+      if (SecurityFreeSection.IsActive)
+        return;
+
+      SecurityClient securityClient = GetSecurityClient ();
+      try
+      {
+        _isActive = true;
+        clientTransaction.Execute (() => securityClient.CheckConstructorAccess (type));
+      }
+      finally
+      {
+        _isActive = false;
+      }
+    }
+
+    public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      if (_isActive)
+        return;
+
+      if (SecurityFreeSection.IsActive)
+        return;
+
+      if (domainObject.TransactionContext[clientTransaction].State == StateType.New)
+        return;
+
+      var securableObject = domainObject as ISecurableObject;
+      if (securableObject == null)
+        return;
+
+      SecurityClient securityClient = GetSecurityClient ();
+      try
+      {
+        _isActive = true;
+        clientTransaction.Execute (() => securityClient.CheckAccess (securableObject, AccessType.Get (GeneralAccessTypes.Delete)));
+      }
+      finally
+      {
+        _isActive = false;
+      }
+    }
+
+    public virtual void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+
+      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Name);
+    }
+
+    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
+      PropertyReading (clientTransaction, domainObject, propertyName);
+    }
+
+    private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    {
+      if (_isActive)
+        return;
+
+      if (SecurityFreeSection.IsActive)
+        return;
+
+      var securableObject = domainObject as ISecurableObject;
+      if (securableObject == null)
+        return;
+
+      SecurityClient securityClient = GetSecurityClient ();
+      try
+      {
+        _isActive = true;
+        clientTransaction.Execute (() => securityClient.CheckPropertyReadAccess (securableObject, GetSimplePropertyName (propertyName)));
+      }
+      finally
+      {
+        _isActive = false;
+      }
+    }
+
+    public virtual void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+
+      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Name);
+    }
+
+    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("propertyName", propertyName);
+
+      PropertyChanging (clientTransaction, domainObject, propertyName);
+    }
+
+    private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    {
+      if (_isActive)
+        return;
+
+      if (SecurityFreeSection.IsActive)
+        return;
+
+      var securableObject = domainObject as ISecurableObject;
+      if (securableObject == null)
+        return;
+
+      SecurityClient securityClient = GetSecurityClient ();
+      try
+      {
+        _isActive = true;
+        clientTransaction.Execute (() => securityClient.CheckPropertyWriteAccess (securableObject, GetSimplePropertyName (propertyName)));
+      }
+      finally
+      {
+        _isActive = false;
+      }
+    }
+
+    //TODO: Move to reflection Utility and test
+    // Note: maybe use MappingConfiguration.NameResolver.GetProperty (string propertyName).Name instead?
+    private string GetSimplePropertyName (string propertyName)
+    {
+      int lastIndex = propertyName.LastIndexOf ('.');
+      if (lastIndex != -1 && lastIndex + 1 < propertyName.Length)
+        return propertyName.Substring (lastIndex + 1);
+      return propertyName;
+    }
+
+    private SecurityClient GetSecurityClient ()
+    {
+      if (_securityClient == null)
+        _securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      return _securityClient;
+    }
+
     #region IClientTransactionExtension Implementation
+
+    void IClientTransactionExtension.SubTransactionCreating (ClientTransaction parentClientTransaction)
+    {
+    }
+
+    void IClientTransactionExtension.SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+    }
 
     void IClientTransactionExtension.ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
@@ -102,206 +306,5 @@ namespace Remotion.Data.DomainObjects.Security
 
     #endregion
 
-    public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
-    {
-      ArgumentUtility.CheckNotNull ("queryResult", queryResult);
-
-      if (clientTransaction.ParentTransaction != null)
-        return queryResult; // filtering already done in parent transaction
-
-      if (_isActive)
-        return queryResult;
-
-      if (SecurityFreeSection.IsActive)
-        return queryResult;
-
-      var queryResultList = new List<T> (queryResult.AsEnumerable());
-
-      SecurityClient securityClient = GetSecurityClient ();
-
-      for (int i = queryResultList.Count - 1; i >= 0; i--)
-      {
-        var securableObject = queryResultList[i] as ISecurableObject;
-        if (securableObject == null)
-          continue;
-
-        bool hasAccess;
-        try
-        {
-          _isActive = true;
-          hasAccess = securityClient.HasAccess (securableObject, AccessType.Get (GeneralAccessTypes.Find));
-        }
-        finally
-        {
-          _isActive = false;
-        }
-        if (!hasAccess)
-          queryResultList.RemoveAt (i);
-      }
-
-      if (queryResultList.Count != queryResult.Count)
-        return new QueryResult<T> (queryResult.Query, queryResultList.ToArray ());
-      else
-        return queryResult;
-    }
-
-    public void SubTransactionCreating (ClientTransaction parentClientTransaction)
-    {
-    }
-
-    public void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
-    {
-    }
-
-    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      if (_isActive)
-        return;
-
-      if (!(typeof (ISecurableObject).IsAssignableFrom (type)))
-        return;
-
-      if (SecurityFreeSection.IsActive)
-        return;
-
-      SecurityClient securityClient = GetSecurityClient ();
-      try
-      {
-        _isActive = true;
-        securityClient.CheckConstructorAccess (type);
-      }
-      finally
-      {
-        _isActive = false;
-      }
-    }
-
-    public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      if (_isActive)
-        return;
-
-      if (SecurityFreeSection.IsActive)
-        return;
-
-      if (domainObject.State == StateType.New)
-        return;
-
-      ISecurableObject securableObject = domainObject as ISecurableObject;
-      if (securableObject == null)
-        return;
-
-      SecurityClient securityClient = GetSecurityClient ();
-      try
-      {
-        _isActive = true;
-        securityClient.CheckAccess (securableObject, AccessType.Get (GeneralAccessTypes.Delete));
-      }
-      finally
-      {
-        _isActive = false;
-      }
-    }
-
-    public virtual void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      PropertyReading (dataContainer.DomainObject, propertyValue.Name);
-    }
-
-    public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      PropertyReading (domainObject, propertyName);
-    }
-
-    private void PropertyReading (DomainObject domainObject, string propertyName)
-    {
-      if (_isActive)
-        return;
-
-      if (SecurityFreeSection.IsActive)
-        return;
-
-      ISecurableObject securableObject = domainObject as ISecurableObject;
-      if (securableObject == null)
-        return;
-
-      SecurityClient securityClient = GetSecurityClient ();
-      try
-      {
-        _isActive = true;
-        securityClient.CheckPropertyReadAccess (securableObject, GetSimplePropertyName (propertyName));
-      }
-      finally
-      {
-        _isActive = false;
-      }
-    }
-
-    public virtual void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      PropertyChanging (dataContainer.DomainObject, propertyValue.Name);
-    }
-
-    public virtual void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-
-      PropertyChanging (domainObject, propertyName);
-    }
-
-    private void PropertyChanging (DomainObject domainObject, string propertyName)
-    {
-      if (_isActive)
-        return;
-
-      if (SecurityFreeSection.IsActive)
-        return;
-
-      ISecurableObject securableObject = domainObject as ISecurableObject;
-      if (securableObject == null)
-        return;
-
-      SecurityClient securityClient = GetSecurityClient ();
-      try
-      {
-        _isActive = true;
-        securityClient.CheckPropertyWriteAccess (securableObject, GetSimplePropertyName (propertyName));
-      }
-      finally
-      {
-        _isActive = false;
-      }
-    }
-
-    //TODO: Move to reflection Utility and test
-    // Note: maybe use MappingConfiguration.NameResolver.GetProperty (string propertyName).Name instead?
-    private string GetSimplePropertyName (string propertyName)
-    {
-      int lastIndex = propertyName.LastIndexOf ('.');
-      if (lastIndex != -1 && lastIndex + 1 < propertyName.Length)
-        return propertyName.Substring (lastIndex + 1);
-      return propertyName;
-    }
-
-    private SecurityClient GetSecurityClient ()
-    {
-      if (_securityClient == null)
-        _securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return _securityClient;
-    }
   }
 }

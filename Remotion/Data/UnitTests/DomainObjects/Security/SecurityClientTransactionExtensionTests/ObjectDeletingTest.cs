@@ -28,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   {
     private SecurityClientTransactionExtensionTestHelper _testHelper;
     private IClientTransactionExtension _extension;
-    private IDisposable _transactionScope;
 
     [SetUp]
     public void SetUp ()
@@ -37,14 +36,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _extension = new SecurityClientTransactionExtension ();
 
       _testHelper.SetupSecurityConfiguration ();
-      _transactionScope = _testHelper.Transaction.EnterDiscardingScope ();
     }
 
     [TearDown]
     public void TearDown ()
     {
       _testHelper.TearDownSecurityConfiguration ();
-      _transactionScope.Dispose ();
     }
 
     [Test]
@@ -132,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
       _testHelper.ReplayAll ();
 
-      securableObject.Delete ();
+      _testHelper.Transaction.Execute (securableObject.Delete);
 
       _testHelper.VerifyAll ();
     }

@@ -30,7 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   {
     private SecurityClientTransactionExtensionTestHelper _testHelper;
     private IClientTransactionExtension _extension;
-    private IDisposable _transactionScope;
 
     [SetUp]
     public void SetUp ()
@@ -39,14 +38,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _extension = new SecurityClientTransactionExtension ();
 
       _testHelper.SetupSecurityConfiguration ();
-      _transactionScope = _testHelper.Transaction.EnterDiscardingScope ();
     }
 
     [TearDown]
     public void TearDown ()
     {
       _testHelper.TearDownSecurityConfiguration ();
-      _transactionScope.Dispose ();
     }
 
     [Test]
@@ -57,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
@@ -73,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
@@ -88,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
@@ -105,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.Not.SameAs (queryResult));
@@ -124,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.Not.SameAs (queryResult));
@@ -141,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
@@ -162,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       QueryResult<DomainObject> finalResult;
       using (new SecurityFreeSection ())
       {
-        finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+        finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
       }
 
       _testHelper.VerifyAll ();
@@ -187,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, hasAccess);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+      var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
 
@@ -215,7 +212,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction ().CreateSubTransaction(), queryResult);
+      var subTransaction = _testHelper.Transaction.CreateSubTransaction ();
+      var finalResult = _extension.FilterQueryResult (subTransaction, queryResult);
+      subTransaction.Discard ();
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));

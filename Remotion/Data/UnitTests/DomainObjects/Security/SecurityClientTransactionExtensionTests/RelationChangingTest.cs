@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
 using Remotion.Security;
@@ -29,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
   {
     private SecurityClientTransactionExtensionTestHelper _testHelper;
     private IClientTransactionExtension _extension;
-    private IDisposable _transactionScope;
 
     [SetUp]
     public void SetUp ()
@@ -38,14 +36,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _extension = new SecurityClientTransactionExtension ();
 
       _testHelper.SetupSecurityConfiguration ();
-      _transactionScope = _testHelper.Transaction.EnterDiscardingScope ();
     }
 
     [TearDown]
     public void TearDown ()
     {
       _testHelper.TearDownSecurityConfiguration ();
-      _transactionScope.Dispose ();
     }
 
     [Test]
@@ -57,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
+      _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -72,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
+      _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
     }
 
     [Test]
@@ -84,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
+        _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
       }
 
       _testHelper.VerifyAll ();
@@ -97,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), nonSecurableObject, "Parent", null, null);
+      _extension.RelationChanging (_testHelper.Transaction, nonSecurableObject, "Parent", null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -107,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject newObject = _testHelper.CreateSecurableObject ();
-      securableObject.OtherParent = _testHelper.CreateSecurableObject ();
+      _testHelper.Transaction.Execute (() => securableObject.OtherParent = _testHelper.CreateSecurableObject ());
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("Parent", TestAccessTypes.First);
       HasAccessDelegate hasAccess = delegate
@@ -118,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
+      _extension.RelationChanging (_testHelper.Transaction, securableObject, "Parent", null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -138,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      securableObject.Parent = newObject;
+      _testHelper.Transaction.Execute (() => securableObject.Parent = newObject);
 
       _testHelper.VerifyAll ();
     }
@@ -148,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject oldObject = _testHelper.CreateSecurableObject ();
-      securableObject.Parent = oldObject;
+      _testHelper.Transaction.Execute (() => securableObject.Parent = oldObject);
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
@@ -159,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      securableObject.Parent = null;
+      _testHelper.Transaction.Execute (() => securableObject.Parent = null);
 
       _testHelper.VerifyAll ();
     }
@@ -181,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      securableObject.Children.Add (newObject);
+      _testHelper.Transaction.Execute (() => securableObject.Children.Add (newObject));
 
       _testHelper.VerifyAll ();
     }
@@ -191,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject oldObject = _testHelper.CreateSecurableObject ();
-      securableObject.Children.Add (oldObject);
+      _testHelper.Transaction.Execute (() => securableObject.Children.Add (oldObject));
       _testHelper.AddExtension (_extension);
       using (_testHelper.Ordered ())
       {
@@ -204,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       }
       _testHelper.ReplayAll ();
 
-      securableObject.Children.Remove (oldObject);
+      _testHelper.Transaction.Execute (() => securableObject.Children.Remove (oldObject));
 
       _testHelper.VerifyAll ();
     }
