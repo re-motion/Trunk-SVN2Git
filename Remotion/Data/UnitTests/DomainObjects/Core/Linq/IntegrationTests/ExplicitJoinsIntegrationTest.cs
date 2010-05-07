@@ -60,7 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO: 2668")]
     public void ExplicitJoinWithInto_InSubstatement_Once ()
     {
       CheckQueryResult (
@@ -70,11 +69,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
              join si in QueryFactory.CreateLinqQuery<OrderItem> () on so equals si.Order into goi
              from oi in goi
              select oi.Order.OrderNumber).First ()
-          select o);
+          select o,
+          DomainObjectIDs.Order4);
     }
 
     [Test]
-    [Ignore ("TODO: 2668")]
     public void ExplicitJoinWithInto_InSubstatement_Twice ()
     {
       CheckQueryResult (
@@ -86,11 +85,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
              from oi in goi
              from oc in goc
              select oi.Order.OrderNumber).First ()
-          select o);
+          select o,
+          DomainObjectIDs.Order4);
     }
 
     [Test]
-    [Ignore ("TODO: 2668")]
     public void ExplicitJoinWithInto_InTwoSubstatements ()
     {
       CheckQueryResult (
@@ -108,24 +107,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           select o);
     }
 
-    //[Test]
-    //[Ignore ("TODO: 2668")]
-    //public void ExplicitJoinWithInto_InSameStatementAndInSubstatement ()
-    //{
-    //  CheckQueryResult (
-    //    from o in QueryFactory.CreateLinqQuery<Order> ()
-    //    join i in QueryFactory.CreateLinqQuery<OrderItem> () on o equals i.Order into goi
-    //    from oi in goi
-    //    where oi.Product ==
-    //    (from o in QueryFactory.CreateLinqQuery<Order> ()
-    //     join i in QueryFactory.CreateLinqQuery<OrderItem> () equals a into gia
-    //     from ia in gia
-    //     select ia.FirstName).First ()
-    //    select kc.Name,
-    //    ""
-    //    );
-    //}
-
-
+    [Test]
+    public void ExplicitJoinWithInto_InSameStatementAndInSubstatement ()
+    {
+      CheckQueryResult (
+        from o in QueryFactory.CreateLinqQuery<Order> ()
+        join i in QueryFactory.CreateLinqQuery<OrderItem> () on o equals i.Order into goi
+        from oi in goi
+        where oi.Product ==
+        (from so in QueryFactory.CreateLinqQuery<Order> ()
+         join si in QueryFactory.CreateLinqQuery<OrderItem> () on so equals si.Order into gia
+         from ia in gia
+         select ia.Product).First ()
+        select oi,
+        DomainObjectIDs.OrderItem5);
+    }
+    
   }
 }
