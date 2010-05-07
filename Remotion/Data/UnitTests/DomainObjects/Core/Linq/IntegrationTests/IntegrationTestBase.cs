@@ -34,16 +34,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       T[] results = query.ToArray ();
       T[] expected = GetExpectedObjects<T> (expectedObjectIDs);
-      Assert.That (
-          results.Length, 
-          Is.EqualTo (expected.Length), 
-          "Number of returned objects doesn't match; returned: " + SeparatedStringBuilder.Build (", ", results, obj => obj.ID.ToString()));
+      if (expectedObjectIDs != null)
+      {
+        Assert.That (
+            results.Length,
+            Is.EqualTo (expected.Length),
+            "Number of returned objects doesn't match; returned: " + SeparatedStringBuilder.Build (", ", results, obj => obj.ID.ToString()));
+      }
       Assert.That (results, Is.EquivalentTo (expected));
     }
 
     protected T[] GetExpectedObjects<T> (params ObjectID[] expectedObjectIDs)
         where T: DomainObject
     {
+      if(expectedObjectIDs==null)
+        return new T[] { null };
       return (from id in expectedObjectIDs 
               select (id == null ? null : (T) LifetimeService.GetObject (ClientTransactionMock, id, false))).ToArray ();
     }
