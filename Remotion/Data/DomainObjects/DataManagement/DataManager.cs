@@ -209,8 +209,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap.RollbackAllDataContainers ();
   }
 
- // This method might leave dangling end points, so it must only be used from scenarios where it is guaranteed that nothing points back to the
-  // discarded object.
   public void Discard (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

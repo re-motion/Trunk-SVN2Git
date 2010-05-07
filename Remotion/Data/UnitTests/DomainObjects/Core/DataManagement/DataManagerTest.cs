@@ -387,6 +387,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void MarkObjectDiscarded_RaisesNotification ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+
+      _dataManager.MarkObjectDiscarded (domainObject);
+
+      listener.AssertWasCalled (mock => mock.DataManagerMarkingObjectDiscarded (domainObject.ID));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "Cannot discard object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'; there is a DataContainer registered for that object. "
         + "Discard the DataContainer instead of the object.")]

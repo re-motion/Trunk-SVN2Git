@@ -58,11 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       _parentTransaction = parentTransaction;
 
-      var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
-          .Select (id => _parentTransaction.DataManager.GetDiscardedObject (id));
-      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
-      foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
-        MarkAsDiscarded (objectToBeDiscarded);
+      TransferDeletedAndDiscardedObjects();
 
       parentTransaction.NotifyOfSubTransactionCreated (this);
     }
@@ -94,20 +90,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      //if (DataManager.IsDiscarded (id))
-      //{
-      //  // Trying to load a data container for a discarded object. To mimic the behavior of RootClientTransaction, we will throw an
-      //  // ObjectNotFoundException here.
-      //  throw new ObjectNotFoundException (id);
-      //}
-      //else
+      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        using (TransactionUnlocker.MakeWriteable (ParentTransaction))
-        {
-          DomainObject parentObject = ParentTransaction.GetObject (id, false);
-          DataContainer thisDataContainer = TransferParentObject (parentObject);
-          return thisDataContainer;
-        }
+        DomainObject parentObject = ParentTransaction.GetObject (id, false);
+        DataContainer thisDataContainer = TransferParentObject (parentObject);
+        return thisDataContainer;
       }
     }
 
@@ -199,6 +186,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       return ParentTransaction.QueryManager.GetScalar (query);
     }
+
+    private void TransferDeletedAndDiscardedObjects ()
+    {
+      var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
+          .Select (id => _parentTransaction.DataManager.GetDiscardedObject (id));
+      var deletedObjects = _parentTransaction.DataManager.DataContainerMap.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
+      foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
+        DataManager.MarkObjectDiscarded (objectToBeDiscarded);
+    }
+
 
     private DataContainer TransferParentObject (DomainObject parentObject)
     {
@@ -337,22 +334,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         else
           parentEndPoint.SetValueFrom (endPoint);
       }
-    }
-
-    private void MarkAsDiscarded (DomainObject objectToBeDiscarded)
-    {
-      var newDiscardedContainer = DataContainer.CreateNew (objectToBeDiscarded.ID);
-
-      newDiscardedContainer.SetDomainObject (objectToBeDiscarded);
-      newDiscardedContainer.RegisterWithTransaction (this);
-
-      var command = DataManager.CreateDeleteCommand (objectToBeDiscarded);
-      command.Perform(); // no bidirectional changes, no events
-
-      Assertion.IsTrue (
-          DataManager.IsDiscarded (newDiscardedContainer.ID),
-          "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");
-      Assertion.IsTrue (DataManager.GetDiscardedObject (newDiscardedContainer.ID) == objectToBeDiscarded);
     }
   }
 }
