@@ -20,7 +20,6 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -43,7 +42,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   private DataContainerMap _dataContainerMap;
   private RelationEndPointMap _relationEndPointMap;
-  private Dictionary<ObjectID, DataContainer> _discardedDataContainers;
+  private Dictionary<ObjectID, DomainObject> _discardedObjects;
   
   private object[] _deserializedData; // only used for deserialization
 
@@ -58,7 +57,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink = clientTransaction.TransactionEventSink;
     _dataContainerMap = new DataContainerMap (clientTransaction);
     _relationEndPointMap = new RelationEndPointMap (clientTransaction, collectionEndPointChangeDetectionStrategy);
-    _discardedDataContainers = new Dictionary<ObjectID, DataContainer>();
+    _discardedObjects = new Dictionary<ObjectID, DomainObject> ();
   }
 
   // methods and properties
@@ -70,29 +69,29 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public int DiscardedObjectCount
   {
-    get { return _discardedDataContainers.Count; }
+    get { return _discardedObjects.Count; }
   }
 
   public IEnumerable<ObjectID> DiscardedObjectIDs
   {
-    get { return _discardedDataContainers.Keys; }
+    get { return _discardedObjects.Keys; }
   }
 
   public bool IsDiscarded (ObjectID id)
   {
     ArgumentUtility.CheckNotNull ("id", id);
-    return _discardedDataContainers.ContainsKey (id);
+    return _discardedObjects.ContainsKey (id);
   }
 
-  public DataContainer GetDiscardedDataContainer (ObjectID id)
+  public DomainObject GetDiscardedObject (ObjectID id)
   {
     ArgumentUtility.CheckNotNull ("id", id);
 
-    DataContainer discardedDataContainer;
-    if (!_discardedDataContainers.TryGetValue (id, out discardedDataContainer))
+    DomainObject discardedDomainObject;
+    if (!_discardedObjects.TryGetValue (id, out discardedDomainObject))
       throw new ArgumentException (String.Format ("The object '{0}' has not been discarded.", id), "id");
     else
-      return discardedDataContainer;
+      return discardedDomainObject;
   }
 
   public IEnumerable<Tuple<DomainObject, DataContainer>> GetLoadedData ()
@@ -237,9 +236,9 @@ public class DataManager : ISerializable, IDeserializationCallback
     _dataContainerMap.Remove (dataContainer.ID);
 
     dataContainer.Discard ();
-    
+
     _transactionEventSink.DataManagerMarkingObjectDiscarded (dataContainer.ID);
-    _discardedDataContainers.Add (dataContainer.ID, dataContainer);
+    _discardedObjects.Add (dataContainer.ID, dataContainer.DomainObject);
   }
 
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
@@ -312,16 +311,16 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink = _clientTransaction.TransactionEventSink;
     _dataContainerMap = doInfo.GetValue<DataContainerMap> ();
     _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap> ();
-    _discardedDataContainers = new Dictionary<ObjectID, DataContainer>();
+    _discardedObjects = new Dictionary<ObjectID, DomainObject>();
 
-    ObjectID[] discardedIDs = doInfo.GetArray<ObjectID> ();
-    DataContainer[] discardedContainers = doInfo.GetArray<DataContainer> ();
+    var discardedIDs = doInfo.GetArray<ObjectID> ();
+    var discardedObjects = doInfo.GetArray<DomainObject> ();
 
-    if (discardedIDs.Length != discardedContainers.Length)
-      throw new SerializationException ("Invalid serilization data: discarded ID and data container counts do not match.");
+    if (discardedIDs.Length != discardedObjects.Length)
+      throw new SerializationException ("Invalid serilization data: discarded ID and object counts do not match.");
 
     for (int i = 0; i < discardedIDs.Length; ++i)
-      _discardedDataContainers.Add (discardedIDs[i], discardedContainers[i]);
+      _discardedObjects.Add (discardedIDs[i], discardedObjects[i]);
 
     _deserializedData = null;
     doInfo.SignalDeserializationFinished ();
@@ -334,13 +333,13 @@ public class DataManager : ISerializable, IDeserializationCallback
     doInfo.AddValue (_dataContainerMap);
     doInfo.AddHandle (_relationEndPointMap);
 
-    var discardedIDs = new ObjectID[_discardedDataContainers.Count];
-    _discardedDataContainers.Keys.CopyTo (discardedIDs, 0);
+    var discardedIDs = new ObjectID[_discardedObjects.Count];
+    _discardedObjects.Keys.CopyTo (discardedIDs, 0);
     doInfo.AddArray (discardedIDs);
 
-    var discardedContainers = new DataContainer[_discardedDataContainers.Count];
-    _discardedDataContainers.Values.CopyTo (discardedContainers, 0);
-    doInfo.AddArray (discardedContainers);
+    var discardedObjects = new DomainObject[_discardedObjects.Count];
+    _discardedObjects.Values.CopyTo (discardedObjects, 0);
+    doInfo.AddArray (discardedObjects);
 
     info.AddValue ("doInfo.GetData", doInfo.GetData());
   }

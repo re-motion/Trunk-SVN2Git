@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (oppositeObjectID == null)
         return null;
       else if (includeDeleted && clientTransaction.DataManager.IsDiscarded (oppositeObjectID))
-        return clientTransaction.DataManager.GetDiscardedDataContainer (oppositeObjectID).DomainObject;
+        return clientTransaction.DataManager.GetDiscardedObject (oppositeObjectID);
       else
         return clientTransaction.GetObject (oppositeObjectID, includeDeleted);
     }

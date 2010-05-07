@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _parentTransaction = parentTransaction;
 
       var discardedObjects = _parentTransaction.DataManager.DiscardedObjectIDs
-          .Select (id => _parentTransaction.DataManager.GetDiscardedDataContainer (id).DomainObject);
+          .Select (id => _parentTransaction.DataManager.GetDiscardedObject (id));
       var deletedObjects = _parentTransaction.DataManager.DataContainerMap.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
       foreach (var objectToBeDiscarded in discardedObjects.Concat (deletedObjects))
         MarkAsDiscarded (objectToBeDiscarded);
@@ -352,7 +352,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (
           DataManager.IsDiscarded (newDiscardedContainer.ID),
           "newDiscardedContainer.Delete must have inserted the DataContainer into the list of discarded objects");
-      Assertion.IsTrue (DataManager.GetDiscardedDataContainer (newDiscardedContainer.ID) == newDiscardedContainer);
+      Assertion.IsTrue (DataManager.GetDiscardedObject (newDiscardedContainer.ID) == objectToBeDiscarded);
     }
   }
 }

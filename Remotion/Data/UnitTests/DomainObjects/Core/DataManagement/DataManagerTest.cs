@@ -22,6 +22,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -251,6 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void IsDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.False);
@@ -263,13 +265,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetDiscardedDataContainer ()
+    public void GetDiscardedObject ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
-      _dataManager.Rollback ();
 
-      Assert.That (_dataManager.GetDiscardedDataContainer (dataContainer.ID), Is.SameAs (dataContainer));
+      _dataManager.Discard (dataContainer);
+
+      Assert.That (_dataManager.GetDiscardedObject (dataContainer.ID), Is.SameAs (dataContainer.DomainObject));
     }
 
     [Test]
@@ -277,13 +281,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         + "not been discarded.\r\nParameter name: id")]
     public void GetDiscardedDataContainerThrowsWhenNotDiscarded ()
     {
-      _dataManager.GetDiscardedDataContainer (DomainObjectIDs.Order1);
+      _dataManager.GetDiscardedObject (DomainObjectIDs.Order1);
     }
 
     [Test]
     public void Discard_RemovesEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
@@ -298,6 +303,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_RemovesDataContainer ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.SameAs (dataContainer));
@@ -311,6 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_DiscardsDataContainer ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       _dataManager.Discard (dataContainer);
@@ -322,6 +329,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Discard_MarksDataContainerDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
@@ -385,6 +393,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_RemovesDeletedEndPoints ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.OrderTicket1, null, pd => pd.DefaultValue);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
@@ -401,6 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_RemovesDeletedDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
@@ -418,6 +428,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_DiscardsDeletedDataContainers ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
@@ -434,6 +445,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Commit_MarksDeletedDataContainersAsDiscarded ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       dataContainer.Delete ();
@@ -482,6 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RemovesNewEndPoints ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       var endPointID = new RelationEndPointID (dataContainer.ID, typeof (OrderTicket).FullName + ".Order");
@@ -496,6 +509,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_RemovesNewDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.State, Is.EqualTo (StateType.New));
@@ -509,6 +523,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_DiscardsNewDataContainers ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.IsDiscarded, Is.False);
@@ -522,6 +537,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Rollback_MarksNewDataContainersAsDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      SetDomainObject (dataContainer);
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (_dataManager.IsDiscarded (DomainObjectIDs.Order1), Is.False);
@@ -675,6 +691,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var dataContainer = ClientTransactionMock.DataManager.DataContainerMap[domainObject.ID];
       return Tuple.Create (domainObject, dataContainer, domainObject.State);
+    }
+
+    private void SetDomainObject (DataContainer dataContainer)
+    {
+      dataContainer.SetDomainObject (LifetimeService.GetObjectReference (ClientTransactionMock, dataContainer.ID));
     }
   }
 }

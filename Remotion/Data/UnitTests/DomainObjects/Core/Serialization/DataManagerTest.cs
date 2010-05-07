@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      DataManager dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy());
+      var dataManager = new DataManager (ClientTransactionMock, new RootCollectionEndPointChangeDetectionStrategy());
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.IsNotNull (dataManager2);
       Assert.AreNotSame (dataManager2, dataManager);
@@ -46,15 +46,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 
-      Order discardedOrder = Order.NewObject ();
+      Order discardedOrder = Order.NewObject();
       DataContainer discardedContainer = discardedOrder.InternalDataContainer;
-      discardedOrder.Delete ();
+      discardedOrder.Delete();
 
       Assert.AreNotEqual (0, dataManager.DataContainerMap.Count);
       Assert.AreNotEqual (0, dataManager.RelationEndPointMap.Count);
       Assert.AreEqual (1, dataManager.DiscardedObjectCount);
       Assert.IsTrue (dataManager.IsDiscarded (discardedContainer.ID));
-      Assert.AreSame (discardedContainer, dataManager.GetDiscardedDataContainer (discardedContainer.ID));
+      Assert.AreSame (discardedOrder, dataManager.GetDiscardedObject (discardedContainer.ID));
 
       Tuple<ClientTransaction, DataManager> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreNotEqual (0, deserializedData.Item2.RelationEndPointMap.Count);
       Assert.AreEqual (1, deserializedData.Item2.DiscardedObjectCount);
       Assert.IsTrue (deserializedData.Item2.IsDiscarded (discardedContainer.ID));
-      Assert.IsNotNull (deserializedData.Item2.GetDiscardedDataContainer (discardedContainer.ID));
+      Assert.IsNotNull (deserializedData.Item2.GetDiscardedObject (discardedContainer.ID));
 
       Assert.AreSame (deserializedData.Item1, PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"));
       Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"));
@@ -75,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 
-      Order discardedOrder = Order.NewObject ();
-      discardedOrder.Delete ();
+      Order discardedOrder = Order.NewObject();
+      discardedOrder.Delete();
 
       for (int i = 0; i < 500; ++i)
       {
@@ -84,11 +84,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         newOrder.OrderTicket = OrderTicket.NewObject();
       }
 
-      SerializationInfo info = new SerializationInfo (typeof (DataManager), new FormatterConverter ());
-      ((ISerializable) dataManager).GetObjectData (info, new StreamingContext ());
-      object[] data = (object[]) info.GetValue ("doInfo.GetData", typeof (object[]));
+      var info = new SerializationInfo (typeof (DataManager), new FormatterConverter());
+      ((ISerializable) dataManager).GetObjectData (info, new StreamingContext());
+      var data = (object[]) info.GetValue ("doInfo.GetData", typeof (object[]));
       Console.WriteLine ("Object stream:");
-      Dump ((object[])data[0]);
+      Dump ((object[]) data[0]);
       Console.WriteLine ("Int stream:");
       Dump ((int[]) data[1]);
       Console.WriteLine ("Bool stream:");
@@ -98,17 +98,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     private void Dump<T> (T[] data)
     {
       Console.WriteLine ("The data array contains {0} elements.", data.Length);
-      Dictionary<Type, int> types = new Dictionary<Type, int> ();
-      foreach (T o in data)
+      var types = new Dictionary<Type, int>();
+      foreach (var o in data)
       {
         Type type = o != null ? o.GetType() : typeof (void);
         if (!types.ContainsKey (type))
           types.Add (type, 0);
         ++types[type];
       }
-      List<KeyValuePair<Type, int>> typeList = new List<KeyValuePair<Type, int>> (types);
-      typeList.Sort (delegate (KeyValuePair<Type, int> one, KeyValuePair<Type, int> two) { return one.Value.CompareTo (two.Value); });
-      foreach (KeyValuePair<Type, int> entry in typeList)
+      var typeList = new List<KeyValuePair<Type, int>> (types);
+      typeList.Sort ((one, two) => one.Value.CompareTo (two.Value));
+      foreach (var entry in typeList)
         Console.WriteLine ("{0}: {1}", entry.Key != typeof (void) ? entry.Key.ToString() : "<null>", entry.Value);
     }
   }
