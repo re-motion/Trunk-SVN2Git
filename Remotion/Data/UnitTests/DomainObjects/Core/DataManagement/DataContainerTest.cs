@@ -854,6 +854,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void HasDomainObject_False ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      Assert.That (dc.HasDomainObject, Is.False);
+    }
+
+    [Test]
+    public void HasDomainObject_True ()
+    {
+      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      dc.SetDomainObject (domainObject);
+
+      Assert.That (dc.HasDomainObject, Is.True);
+    }
+
+    [Test]
     public void RegisterNewDataContainer ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);

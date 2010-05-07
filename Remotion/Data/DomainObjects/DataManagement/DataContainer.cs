@@ -243,16 +243,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Gets the <see cref="Remotion.Data.DomainObjects.DomainObject"/> associated with the <see cref="DataContainer"/>.
     /// </summary>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
+    /// <exception cref="InvalidOperationException">This instance has not been associated with a <see cref="DomainObject"/> yet.</exception>
     public DomainObject DomainObject
     {
       get
       {
-        if (_domainObject == null)
+        if (!HasDomainObject)
           throw new InvalidOperationException ("This DataContainer has not been associated with a DomainObject yet.");
 
         return _domainObject;
       }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance has been associated with a <see cref="DomainObjects.DomainObject"/>.
+    /// </summary>
+    /// <value>
+    /// 	<see langword="true"/> if this instance has a <see cref="DomainObjects.DomainObject"/>; otherwise, <see langword="false"/>.
+    /// </value>
+    public bool HasDomainObject
+    {
+      get { return _domainObject != null; }
     }
 
     /// <summary>

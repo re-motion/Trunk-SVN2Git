@@ -247,7 +247,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_dataManager.RelationEndPointMap[endPointID], Is.Not.Null);
     }
-
     [Test]
     public void IsDiscarded ()
     {
@@ -326,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_MarksDataContainerDiscarded ()
+    public void Discard_MarksObjectDiscarded ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
       SetDomainObject (dataContainer);
@@ -339,6 +338,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.True);
       listenerMock.AssertWasCalled (mock => mock.DataManagerMarkingObjectDiscarded (dataContainer.ID));
+    }
+
+    [Test]
+    public void Discard_WithoutDomainObject_DataContainerNotMarkedDiscarded ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Not.Null);
+
+      _dataManager.Discard (dataContainer);
+      
+      Assert.That (_dataManager.DataContainerMap[dataContainer.ID], Is.Null);
+      Assert.That (_dataManager.IsDiscarded (dataContainer.ID), Is.False);
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerMarkingObjectDiscarded (dataContainer.ID));
     }
 
     [Test]

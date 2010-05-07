@@ -237,8 +237,11 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     dataContainer.Discard ();
 
-    _transactionEventSink.DataManagerMarkingObjectDiscarded (dataContainer.ID);
-    _discardedObjects.Add (dataContainer.ID, dataContainer.DomainObject);
+    if (dataContainer.HasDomainObject)
+    {
+      _transactionEventSink.DataManagerMarkingObjectDiscarded (dataContainer.ID);
+      _discardedObjects.Add (dataContainer.ID, dataContainer.DomainObject);
+    }
   }
 
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
