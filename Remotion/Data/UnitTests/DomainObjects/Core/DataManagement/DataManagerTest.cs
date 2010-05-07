@@ -375,6 +375,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void MarkObjectDiscarded ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.False);
+
+      _dataManager.MarkObjectDiscarded (domainObject);
+
+      Assert.That (_dataManager.IsDiscarded (domainObject.ID), Is.True);
+      Assert.That (_dataManager.GetDiscardedObject (domainObject.ID), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot discard object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'; there is a DataContainer registered for that object. "
+        + "Discard the DataContainer instead of the object.")]
+    public void MarkObjectDiscarded_DataContainerExists ()
+    {
+      var domainObject = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      var dataContainer = DataContainer.CreateNew (domainObject.ID);
+      dataContainer.SetDomainObject (domainObject);
+      _dataManager.RegisterDataContainer (dataContainer);
+
+      _dataManager.MarkObjectDiscarded (domainObject);
+    }
+
+    [Test]
     public void Commit_CommitsRelationEndPointMap ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);

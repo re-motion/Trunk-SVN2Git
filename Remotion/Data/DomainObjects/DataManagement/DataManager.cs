@@ -239,9 +239,25 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     if (dataContainer.HasDomainObject)
     {
-      _transactionEventSink.DataManagerMarkingObjectDiscarded (dataContainer.ID);
-      _discardedObjects.Add (dataContainer.ID, dataContainer.DomainObject);
+      var domainObject = dataContainer.DomainObject;
+      MarkObjectDiscarded(domainObject);
     }
+  }
+
+  public void MarkObjectDiscarded (DomainObject domainObject)
+  {
+    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+    if (DataContainerMap[domainObject.ID] != null)
+    {
+      var message = string.Format (
+          "Cannot discard object '{0}'; there is a DataContainer registered for that object. Discard the DataContainer instead of the object.", 
+          domainObject.ID);
+      throw new InvalidOperationException (message);
+    }
+
+    _transactionEventSink.DataManagerMarkingObjectDiscarded (domainObject.ID);
+    _discardedObjects.Add (domainObject.ID, domainObject);
   }
 
   private bool EnsureEndPointReferencesNothing (RelationEndPoint relationEndPoint)
