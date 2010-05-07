@@ -59,7 +59,8 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
-    /// <param name="context"></param>
+    /// <param name="context"></param> 
+    // TODO Review 2668: Remove context parameter, it doesn't really provide any functionality; instead, pass null to PrepareSqlStatement below
     public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage, ISqlPreparationContext context)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
