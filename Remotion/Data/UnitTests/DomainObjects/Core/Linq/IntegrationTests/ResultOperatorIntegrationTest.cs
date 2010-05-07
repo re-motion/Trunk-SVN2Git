@@ -379,7 +379,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO: 2691")]
     public void QueryWithAll_AfterIncompatibleResultOperator ()
     {
       var query = QueryFactory.CreateLinqQuery<Computer>().Take (10).Take (20).All (c => c.SerialNumber == "123456");
