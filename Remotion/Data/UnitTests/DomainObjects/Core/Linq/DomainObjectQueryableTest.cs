@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
       Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetItem(containsObjectMethod),
+          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (containsObjectMethod),
           Is.SameAs (typeof (ContainsObjectExpressionNode)));
     }
 
@@ -89,16 +89,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
 
       Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetItem(fetchOneMethod),
+          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchOneMethod),
           Is.SameAs (typeof (FetchOneExpressionNode)));
       Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetItem(fetchManyMethod),
+          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchManyMethod),
           Is.SameAs (typeof (FetchManyExpressionNode)));
       Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetItem(thenFetchOneMethod),
+          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod),
           Is.SameAs (typeof (ThenFetchOneExpressionNode)));
       Assert.That (
-          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetItem(thenFetchManyMethod),
+          ((DefaultQueryProvider) _queryableWithOrder.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod),
           Is.SameAs (typeof (ThenFetchManyExpressionNode)));
     }
     
