@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Tracing
@@ -155,7 +156,6 @@ namespace Remotion.Data.DomainObjects.Tracing
     {
       object result = ExecuteWithProfiler (() => _command.ExecuteScalar());
       _persistenceListener.QueryCompleted (_connectionID, _queryID, TimeSpan.Zero, 1);
-
       return result;
     }
 
@@ -171,10 +171,10 @@ namespace Remotion.Data.DomainObjects.Tracing
 
     private T ExecuteWithProfiler<T> (Func<T> operation)
     {
-      Stopwatch stopWatch = Stopwatch.StartNew();
       try
       {
         _persistenceListener.QueryExecuting (_connectionID, _queryID, _command.CommandText, ConvertToDictionary (_command.Parameters));
+        var stopWatch = Stopwatch.StartNew();
         T result = operation();
         _persistenceListener.QueryExecuted (_connectionID, _queryID, stopWatch.Elapsed);
         return result;
@@ -188,10 +188,7 @@ namespace Remotion.Data.DomainObjects.Tracing
 
     private IDictionary<string, object> ConvertToDictionary (IDataParameterCollection parameters)
     {
-      var dictionary = new Dictionary<string, object>();
-      foreach (IDbDataParameter parameter in parameters)
-        dictionary.Add (parameter.ParameterName, parameter.Value);
-      return dictionary;
+      return parameters.Cast<IDbDataParameter>().ToDictionary (parameter => parameter.ParameterName, parameter => parameter.Value);
     }
   }
 } 
