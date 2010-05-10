@@ -145,7 +145,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      var factory = !IsDesignMode ? ServiceLocator.GetInstance<IBocTextValueRendererFactory> () : new BocTextValueRendererFactory ();
+      var factory = ServiceLocator.GetInstance<IBocTextValueRendererFactory>();
       var renderer = factory.CreateRenderer (Context, this, ServiceLocator);
       renderer.Render (writer);
     }
