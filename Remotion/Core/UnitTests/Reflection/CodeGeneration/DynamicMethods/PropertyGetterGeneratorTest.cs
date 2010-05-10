@@ -29,6 +29,29 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
   public class PropertyGetterGeneratorTest : MethodGenerationTestBase
   {
     [Test]
+    public void Build_ForPrivatePropertyGetter_ForReferenceType ()
+    {
+      Type declaringType = typeof (ClassWithReferenceTypeProperties);
+      var propertyInfo = declaringType.GetProperty ("PropertyWithPrivateGetterAndSetter", BindingFlags.NonPublic | BindingFlags.Instance);
+      var methodInfo = propertyInfo.GetGetMethod (true);
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
+      var ilGenerator = dynamicMethod.GetILGenerator ();
+
+      var generator = new PropertyGetterGenerator ();
+      generator.BuildWrapperMethod (ilGenerator, methodInfo, returnType, parameterTypes);
+
+      var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
+
+      var expectedValue = new SimpleReferenceType ();
+      var obj = new ClassWithReferenceTypeProperties ();
+      obj.SetPropertyWithPrivateGetterAndSetter (expectedValue);
+      Assert.That (propertyGetter (obj), Is.SameAs (expectedValue));
+    }
+
+    [Test]
     public void Build_ForPublicPropertyGetter_ForReferenceType ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
@@ -37,7 +60,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static)
+      var method = ClassEmitter.CreateMethod ("Build_ForPublicPropertyGetter_ForReferenceType", MethodAttributes.Public | MethodAttributes.Static)
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 
@@ -50,47 +73,24 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     }
 
     [Test]
-    public void Build_ForPrivatePropertyGetter_ForReferenceType ()
-    {
-      Type declaringType = typeof (ClassWithReferenceTypeProperties);
-      var propertyInfo = declaringType.GetProperty ("PropertyWithPrivateGetterAndSetter", BindingFlags.NonPublic | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetGetMethod (true);
-
-      Type returnType = typeof (object);
-      Type[] parameterTypes = new[] { typeof (object) };
-      var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
-      var ilGenerator = dynamicMethod.GetILGenerator();
-
-      var generator = new PropertyGetterGenerator();
-      generator.BuildWrapperMethod (ilGenerator, methodInfo, returnType, parameterTypes);
-
-      var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
-
-      var expectedValue = new SimpleReferenceType();
-      var obj = new ClassWithReferenceTypeProperties();
-      obj.SetPropertyWithPrivateGetterAndSetter (expectedValue);
-      Assert.That (propertyGetter (obj), Is.SameAs (expectedValue));
-    }
-
-    [Test]
     public void Build_ForOverriddenPropertyGetter_ForReferenceType ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
-      var methodInfo = propertyInfo.GetGetMethod();
+      var methodInfo = propertyInfo.GetGetMethod ();
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
-      var ilGenerator = dynamicMethod.GetILGenerator();
+      var method = ClassEmitter.CreateMethod ("Build_ForOverriddenPropertyGetter_ForReferenceType", MethodAttributes.Public | MethodAttributes.Static)
+          .SetParameterTypes (parameterTypes)
+          .SetReturnType (returnType);
 
-      var generator = new PropertyGetterGenerator();
-      generator.BuildWrapperMethod (ilGenerator, methodInfo, returnType, parameterTypes);
+      var generator = new PropertyGetterGenerator ();
+      generator.BuildWrapperMethod (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
-      var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
+      var obj = new DerivedClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType () };
 
-      var obj = new DerivedClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType() };
-      Assert.That (propertyGetter (obj), Is.SameAs (obj.PropertyWithPublicGetterAndSetter));
+      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.SameAs (obj.PropertyWithPublicGetterAndSetter));
     }
 
     [Test]
@@ -104,11 +104,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
-      var ilGenerator = dynamicMethod.GetILGenerator();
+      var method = ClassEmitter.CreateMethod ("Build_ReturnTypesDoNotMatch", MethodAttributes.Public | MethodAttributes.Static)
+          .SetParameterTypes (parameterTypes)
+          .SetReturnType (returnType);
 
-      var generator = new PropertyGetterGenerator();
-      generator.BuildWrapperMethod (ilGenerator, methodInfo, typeof (string), parameterTypes);
+      var generator = new PropertyGetterGenerator ();
+      generator.BuildWrapperMethod (method.ILGenerator, methodInfo, typeof (string), parameterTypes);
     }
   }
 }
