@@ -268,6 +268,7 @@
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\PropertyGetterGeneratorTest.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithReferenceTypeProperties.cs" />
+    <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithValueTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\DerivedClassWithReferenceTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\SimpleReferenceType.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodGenerationTestBase.cs" />

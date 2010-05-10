@@ -73,7 +73,28 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     }
 
     [Test]
-    public void Build_ForOverriddenPropertyGetter_ForReferenceType ()
+    public void Build_ForPublicPropertyGetter_ForValueType ()
+    {
+      Type declaringType = typeof (ClassWithValueTypeProperties);
+      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
+      var methodInfo = propertyInfo.GetGetMethod ();
+
+      Type returnType = typeof (object);
+      Type[] parameterTypes = new[] { typeof (object) };
+      var method = ClassEmitter.CreateMethod ("Build_ForPublicPropertyGetter_ForValueType", MethodAttributes.Public | MethodAttributes.Static)
+          .SetParameterTypes (parameterTypes)
+          .SetReturnType (returnType);
+
+      var generator = new PropertyGetterGenerator ();
+      generator.BuildWrapperMethod (method.ILGenerator, methodInfo, returnType, parameterTypes);
+
+      var obj = new ClassWithValueTypeProperties { PropertyWithPublicGetterAndSetter = 100 };
+
+      Assert.That (BuildInstanceAndInvokeMethod (method, obj), Is.EqualTo (obj.PropertyWithPublicGetterAndSetter));
+    }
+
+    [Test]
+    public void Build_ForOverriddenPropertyGetter ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
@@ -81,7 +102,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
 
       Type returnType = typeof (object);
       Type[] parameterTypes = new[] { typeof (object) };
-      var method = ClassEmitter.CreateMethod ("Build_ForOverriddenPropertyGetter_ForReferenceType", MethodAttributes.Public | MethodAttributes.Static)
+      var method = ClassEmitter.CreateMethod ("Build_ForOverriddenPropertyGetter", MethodAttributes.Public | MethodAttributes.Static)
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 

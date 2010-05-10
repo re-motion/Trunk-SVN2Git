@@ -49,8 +49,8 @@ namespace Remotion.Reflection.CodeGeneration.DynamicMethods
       ilGenerator.Emit (OpCodes.Ldarg_0);
       ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.DeclaringType);
       ilGenerator.Emit (OpCodes.Callvirt, wrappedGetMethod);
-      //if (wrappedGetMethod.ReturnType.IsValueType)
-      //  _ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
+      if (wrappedGetMethod.ReturnType.IsValueType)
+        ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
 
       ilGenerator.Emit (OpCodes.Ret);
     }
