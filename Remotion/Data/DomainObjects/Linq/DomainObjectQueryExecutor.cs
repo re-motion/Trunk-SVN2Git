@@ -34,7 +34,7 @@ using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Logging;
 using Remotion.Utilities;
-using SqlCommandBuilder=Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
+using SqlCommandBuilder = Remotion.Data.Linq.SqlBackend.SqlGeneration.SqlCommandBuilder;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -59,22 +59,19 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="preparationStage">The <see cref="ISqlPreparationStage"/> provides methods to prepare the <see cref="SqlStatement"/> based on a <see cref="QueryModel"/>.</param>
     /// <param name="resolutionStage">The <see cref="IMappingResolutionStage"/> provides methods to resolve the expressions in the <see cref="SqlStatement"/>.</param>
     /// <param name="generationStage">The <see cref="ISqlGenerationStage"/> provides methods to generate sql text for the given <see cref="SqlStatement"/>.</param>
-    /// <param name="context"></param> 
     // TODO Review 2668: Remove context parameter, it doesn't really provide any functionality; instead, pass null to PrepareSqlStatement below
-    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage, ISqlPreparationContext context)
+    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, ISqlPreparationStage preparationStage, IMappingResolutionStage resolutionStage, ISqlGenerationStage generationStage)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
       ArgumentUtility.CheckNotNull ("preparationStage", preparationStage);
       ArgumentUtility.CheckNotNull ("resolutionStage", resolutionStage);
       ArgumentUtility.CheckNotNull ("generationStage", generationStage);
-      ArgumentUtility.CheckNotNull ("context", context);
 
       _startingClassDefinition = startingClassDefinition;
 
       _generationStage = generationStage;
       _resolutionStage = resolutionStage;
       _preparationStage = preparationStage;
-      _context = context;
     }
 
     /// <summary>
@@ -413,7 +410,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>the generated <see cref="SqlStatement"/></returns>
     protected virtual SqlStatement TransformAndResolveQueryModel (QueryModel queryModel)
     {
-      var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel, _context);
+      var sqlStatement = _preparationStage.PrepareSqlStatement (queryModel, null);
       return _resolutionStage.ResolveSqlStatement (sqlStatement);
     }
 

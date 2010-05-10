@@ -77,10 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _resolutionStage = new DefaultMappingResolutionStage (resolver, generator);
       _generationStage = new DefaultSqlGenerationStage();
 
-      _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
-      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
-      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
-      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+      _computerExecutor = new DomainObjectQueryExecutor (_computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      _orderExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      _customerExecutor = new DomainObjectQueryExecutor (_customerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
+      _companyExecutor = new DomainObjectQueryExecutor (_companyClassDefinition, _preparationStage, _resolutionStage, _generationStage);
     }
 
     [Test]
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new QueryParameterCollection());
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           typeof (DomainObjectCollection));
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+          _orderClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       executorMock
           .Expect (
               mock => mock.CreateQuery (
@@ -633,7 +633,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           AggregationModifier.None);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
-          _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context);
+          _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
       executorMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (executorMock, "TransformAndResolveQueryModel", queryModel))
           .Return (sqlStatement);
@@ -646,7 +646,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
-        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage, _context);
+        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
       }
     }
@@ -656,7 +656,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
-        var queryable = new DomainObjectQueryable<Computer> (_preparationStage, _resolutionStage, _generationStage, _context);
+        var queryable = new DomainObjectQueryable<Computer> (_preparationStage, _resolutionStage, _generationStage);
         var executor = queryable.GetExecutor();
 
         var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
@@ -670,7 +670,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
       {
-        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage, _context);
+        var queryable = new DomainObjectQueryable<Order> (_preparationStage, _resolutionStage, _generationStage);
         var executor = queryable.GetExecutor();
 
         ClassDefinition classDefinition = executor.StartingClassDefinition;
@@ -693,7 +693,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
         var executor =
             ObjectFactory.Create<DomainObjectQueryExecutor> (
-                ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context));
+                ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
@@ -709,7 +709,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = ParseQuery (query.Expression);
         var executor =
             ObjectFactory.Create<DomainObjectQueryExecutor> (
-                ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage, _context));
+                ParamList.Create (_orderClassDefinition, _preparationStage, _resolutionStage, _generationStage));
 
         executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
