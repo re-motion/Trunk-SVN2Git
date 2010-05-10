@@ -178,9 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       Expect
           .Call (_mockSecurityProvider.GetAccess (context, _stubUser))
           .WhenCalled (mi => CheckCurrentTransaction ())
-// ReSharper disable RedundantTypeArgumentsOfMethod
-          .Return (Array.ConvertAll<Enum, AccessType> (returnedAccessTypes, AccessType.Get)); // type should be inferrable, but older versions of csc.exe can't do it
-// ReSharper restore RedundantTypeArgumentsOfMethod
+          .Return (Array.ConvertAll<Enum, AccessType> (returnedAccessTypes, AccessType.Get));
     }
 
     private void CheckCurrentTransaction ()
