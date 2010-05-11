@@ -21,22 +21,18 @@ using System.Collections.Generic;
 
 namespace Remotion.Mixins.Globalization
 {
+  /// <summary>
+  /// Extends <see cref="ResourceManagerResolver{TAttribute}"/> to detect resources added via mixins.
+  /// </summary>
+  /// <typeparam name="TAttribute">The type of the resource attribute to be resolved by this class.</typeparam>
   public class MixedResourceManagerResolver<TAttribute> : ResourceManagerResolver<TAttribute>
       where TAttribute : Attribute, IResourcesAttribute
   {
-    public override IResourceManager GetResourceManager (Type objectType, bool includeHierarchy, out Type definingType)
+    public override IEnumerable<ResourceDefinition<TAttribute>> GetResourceDefinitionStream (Type type, bool includeHierarchy)
     {
-      if (MixinTypeUtility.IsGeneratedConcreteMixedType (objectType))
-        objectType = MixinTypeUtility.GetUnderlyingTargetType (objectType);
+      type = MixinTypeUtility.GetUnderlyingTargetType (type); // this adjusts type if it is a mixin engine-generated type, otherwise ignores it
 
-      return base.GetResourceManager (objectType, includeHierarchy, out definingType);
-    }
-
-    protected override object GetResourceManagerSetCacheKey (Type definingType, bool includeHierarchy)
-    {
-      return Tuple.Create (
-          base.GetResourceManagerSetCacheKey (definingType, includeHierarchy),
-          MixinConfiguration.ActiveConfiguration.GetContext (definingType));
+      return base.GetResourceDefinitionStream (type, includeHierarchy);
     }
 
     protected override ResourceDefinition<TAttribute> GetResourceDefinition (Type type, Type currentType)
@@ -48,6 +44,13 @@ namespace Remotion.Mixins.Globalization
 				AddSupplementingAttributesFromMixins (currentType, resourcesOnType);
 			}
       return resourcesOnType;
+    }
+
+    protected override object GetResourceManagerSetCacheKey (Type definingType, bool includeHierarchy)
+    {
+      return Tuple.Create (
+          base.GetResourceManagerSetCacheKey (definingType, includeHierarchy),
+          MixinConfiguration.ActiveConfiguration.GetContext (definingType));
     }
 
     private void AddSupplementingAttributesFromMixins (Type type, ResourceDefinition<TAttribute> resourcesOnType)

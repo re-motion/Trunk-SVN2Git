@@ -30,7 +30,7 @@ namespace Remotion.Globalization
   public class ResourceManagerResolver<TAttribute>
       where TAttribute : Attribute, IResourcesAttribute
   {
-    private readonly InterlockedCache<object, ResourceManagerSet> _resourceManagerWrappersCache = new InterlockedCache<object, ResourceManagerSet>();
+    private readonly InterlockedCache<object, ResourceManagerCacheEntry> _resourceManagerWrappersCache = new InterlockedCache<object, ResourceManagerCacheEntry> ();
     private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
 
     protected ResourceManagerFactory ResourceManagerFactory
@@ -55,48 +55,76 @@ namespace Remotion.Globalization
 
     /// <summary>
     ///   Returns a <c>IResourceManager</c> set for the resource containers specified
-    ///   in the class declaration of the type.
+    ///   in the class declaration of the type, throwing an exception if no resources can be found.
     /// </summary>
     /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/Common/*' />
     /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType" or @name="includeHierarchy" or @name="definingType"]' />
-    public virtual IResourceManager GetResourceManager (Type objectType, bool includeHierarchy, out Type definingType)
+    public IResourceManager GetResourceManager (Type objectType, bool includeHierarchy, out Type definingType)
     {
+      ArgumentUtility.CheckNotNull ("objectType", objectType);
 
-      IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions = GetResourceDefinitionStream (objectType, includeHierarchy);
-      ResourceDefinition<TAttribute> firstResourceDefinition = resourceDefinitions.FirstOrDefault ();
-      if (firstResourceDefinition == null)
+      var cacheEntry = GetResourceManagerCacheEntry (objectType, includeHierarchy);
+      if (cacheEntry.IsEmpty)
       {
         string message = string.Format ("Type {0} and its base classes do not define the attribute {1}.", objectType.FullName, typeof (TAttribute).Name);
         throw new ResourceException (message);
       }
 
-      definingType = firstResourceDefinition.Type;
-
-      //  Look in cache and continue with the cached resource manager wrapper, if one is found
-      object key = GetResourceManagerSetCacheKey (firstResourceDefinition.Type, includeHierarchy);
-      return _resourceManagerWrappersCache.GetOrCreateValue (key, delegate { return CreateResourceManagerSet (resourceDefinitions); });
+      definingType = cacheEntry.DefiningType;
+      return cacheEntry.ResourceManager;
     }
 
-    public IEnumerable<ResourceDefinition<TAttribute>> GetResourceDefinitionStream (Type type, bool includeHierarchy)
+    /// <summary>
+    /// Tries to get a <see cref="IResourceManager"/> for the given <paramref name="objectType"/> (see 
+    /// <see cref="GetResourceManager(System.Type,bool,out System.Type)"/>), returning <see langword="null" /> if the type has no resources defined. 
+    /// The <see cref="IResourceManager"/> is retrieved from the cache if possible; if not, a new <see cref="IResourceManager"/> is created and added
+    /// to the cache.
+    /// </summary>
+    /// <param name="objectType">The type to get an <see cref="IResourceManager"/> for.</param>
+    /// <param name="includeHierarchy">Determines whether to include all resources defined in the <paramref name="objectType"/>'s hierarchy. If
+    /// set to <see langword="false" />, only those of the first type with resources in the hierarchy are included.</param>
+    /// <returns>
+    /// A <see cref="ResourceManagerCacheEntry"/> object for the given <paramref name="objectType"/>. The object is 
+    /// <see cref="ResourceManagerCacheEntry.Empty"/> if no resources could be found.
+    /// </returns>
+    public virtual ResourceManagerCacheEntry GetResourceManagerCacheEntry (Type objectType, bool includeHierarchy)
     {
-			Type currentType = type;
-			while (currentType != null)
+      ArgumentUtility.CheckNotNull ("objectType", objectType);
+
+      // 1. Try to get resource manager from cache using objectType.
+      // 2. If miss, get resource definition stream.
+      // 3. Get first type from definition stream. Try to get resource manager from cache using that type.
+      // 4. If miss, create resource manager from definition stream.
+      // Steps 2-4 happen in CreateCacheEntry.
+
+      var key = GetResourceManagerSetCacheKey (objectType, includeHierarchy);
+      var cacheEntry = _resourceManagerWrappersCache.GetOrCreateValue (
+          key,
+          arg => CreateCacheEntry (objectType, includeHierarchy));
+
+      return cacheEntry;
+    }
+
+    public virtual IEnumerable<ResourceDefinition<TAttribute>> GetResourceDefinitionStream (Type type, bool includeHierarchy)
+    {
+      Type currentType = type;
+      while (currentType != null)
       {
-				ResourceDefinition<TAttribute> definition = GetResourceDefinition (type, currentType);
+        ResourceDefinition<TAttribute> definition = GetResourceDefinition (type, currentType);
         if (definition.HasResources)
         {
           yield return definition;
           if (!includeHierarchy)
             yield break;
         }
-				currentType = currentType.BaseType;
+        currentType = currentType.BaseType;
       }
     }
 
     protected virtual ResourceDefinition<TAttribute> GetResourceDefinition (Type type, Type currentType)
     {
-			TAttribute[] resourceAttributes = AttributeUtility.GetCustomAttributes<TAttribute> (currentType, false);
-			return new ResourceDefinition<TAttribute> (currentType, resourceAttributes);
+      TAttribute[] resourceAttributes = AttributeUtility.GetCustomAttributes<TAttribute> (currentType, false);
+      return new ResourceDefinition<TAttribute> (currentType, resourceAttributes);
     }
 
     protected virtual object GetResourceManagerSetCacheKey (Type definingType, bool includeHierarchy)
@@ -104,9 +132,37 @@ namespace Remotion.Globalization
       return definingType.AssemblyQualifiedName + "/" + includeHierarchy;
     }
 
+    private ResourceManagerCacheEntry CreateCacheEntry (Type objectType, bool includeHierarchy)
+    {
+      var resourceDefinitions = GetResourceDefinitionStream (objectType, includeHierarchy);
+
+      // Get the first resource definition in the stream (this is the type itself, or the first base class that has a resource definition).
+      // If that first definition's defining type already has a resource manager, we'll use that resource manager. Otherwise, we'll create a new one
+      // and store it for that first type.
+      var firstResourceDefinition = resourceDefinitions.FirstOrDefault ();
+      if (firstResourceDefinition == null)
+        return ResourceManagerCacheEntry.Empty;
+
+      if (firstResourceDefinition.Type == objectType)
+      {
+        // Note: We cannot add the new entry to the cache here - the caller will do that.
+        return ResourceManagerCacheEntry.Create (firstResourceDefinition.Type, CreateResourceManagerSet (resourceDefinitions));
+      }
+      else
+      {
+        // Create or get the entry for the base class from cache.
+        // Then reuse that cache entry for the objectType.
+
+        object firstDefinitionKey = GetResourceManagerSetCacheKey (firstResourceDefinition.Type, includeHierarchy);
+        return _resourceManagerWrappersCache.GetOrCreateValue (
+            firstDefinitionKey,
+            arg => ResourceManagerCacheEntry.Create (firstResourceDefinition.Type, CreateResourceManagerSet (resourceDefinitions)));
+      }
+    }
+
     private ResourceManagerSet CreateResourceManagerSet (IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions)
     {
-      List<ResourceManager> resourceManagers = new List<ResourceManager> ();
+      var resourceManagers = new List<ResourceManager> ();
       foreach (ResourceDefinition<TAttribute> definition in resourceDefinitions)
       {
         foreach (Tuple<Type, TAttribute[]> attributePair in definition.GetAllAttributePairs ())
@@ -117,8 +173,9 @@ namespace Remotion.Globalization
       }
 
       //  Create a new resource mananger wrapper set and return it.
-      ResourceManager[] resourceManagerArray = resourceManagers.ToArray ();
+      var resourceManagerArray = resourceManagers.ToArray ();
       return ResourceManagerWrapper.CreateWrapperSet (resourceManagerArray);
     }
+
   }
 }

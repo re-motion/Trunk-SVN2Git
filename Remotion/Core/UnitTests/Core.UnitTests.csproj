@@ -200,6 +200,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
     <Compile Include="FunctionalProgramming\MaybeTest.cs" />
+    <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />

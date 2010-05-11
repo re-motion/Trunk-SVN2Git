@@ -297,6 +297,17 @@ namespace Remotion.UnitTests.Mixins.Globalization
 			}
 		}
 
+    [Test]
+    public void GetResourceDefinitions_ForGeneratedType ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass<ClassWithMultiLingualResourcesAttributes> ().AddMixin<NullMixin> ().EnterScope ())
+      {
+        var generatedType = TypeFactory.GetConcreteType (typeof (ClassWithMultiLingualResourcesAttributes));
+        var definitions = _resolver.GetResourceDefinitionStream (generatedType, true);
+        Assert.That (definitions.ToArray (), Is.Not.Empty);
+      }
+    }
+
 		[Test]
 		public void GetResourceManager_InheritanceFalse_SuccessOnTypeAndBase_SuccessOnMixin ()
 		{
@@ -357,7 +368,8 @@ namespace Remotion.UnitTests.Mixins.Globalization
     {
       using (MixinConfiguration.BuildNew ().ForClass<ClassWithMultiLingualResourcesAttributes> ().AddMixin<NullMixin>().EnterScope ())
       {
-        IResourceManager resourceManager = _resolver.GetResourceManager (TypeFactory.GetConcreteType (typeof (ClassWithMultiLingualResourcesAttributes)), true);
+        var generatedType = TypeFactory.GetConcreteType (typeof (ClassWithMultiLingualResourcesAttributes));
+        IResourceManager resourceManager = _resolver.GetResourceManager (generatedType, true);
         resourceManager.GetString ("Foo");
       }
     }

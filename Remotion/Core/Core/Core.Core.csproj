@@ -201,6 +201,7 @@
     <Compile Include="ExtensibleEnums\IExtensibleEnumDefinition.cs" />
     <Compile Include="ExtensibleEnums\Infrastructure\IExtensibleEnumValueDiscoveryService.cs" />
     <Compile Include="FunctionalProgramming\Maybe.cs" />
+    <Compile Include="Globalization\ResourceManagerCacheEntry.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifier.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\OverrideInterfaceMappingAttribute.cs" />

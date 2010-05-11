@@ -103,7 +103,8 @@ namespace Remotion.Globalization
 				where TAttribute: Attribute, IResourcesAttribute
 		{
 			ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
-      return resolver.GetResourceDefinitionStream (objectTypeToGetResourceFor, false).FirstOrDefault () != null;
+      
+      return !resolver.GetResourceManagerCacheEntry (objectTypeToGetResourceFor, false).IsEmpty;
 		}
 	}
 }
