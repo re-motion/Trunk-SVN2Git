@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ParseQuery (expression);
 
       var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Scalar);
-      Assert.That (query.Statement, Is.EqualTo ("SELECT COUNT(*) AS [value] FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] = @1)"));
+      Assert.That (query.Statement, Is.EqualTo ("SELECT COUNT(*) FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
