@@ -94,6 +94,12 @@ div.bocListFakeTableHead table
   border-style: none;
 }
 
+body.msie7 table.bocListTable,
+body.msie7 div.bocListFakeTableHead table
+{
+  width: 98%;
+}
+
 /*  Style applied to the table head block of the BocList's table.  */
 tbody.bocListTableBody
 {
