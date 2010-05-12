@@ -70,53 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ResolveTableReferenceExpression_SubStatementTableInfo_TableTypeNotInheritedFromDomainObject ()
-    {
-      var sqlStatement = new SqlStatement (
-          new StreamedSequenceInfo (typeof (string), Expression.Constant ('t')),
-          Expression.Constant ("test"),
-          new SqlTable[] { },
-          new Ordering[] { },
-          null,
-          null,
-          false,
-          AggregationModifier.None);
-      var tableInfo = new ResolvedSubStatementTableInfo ("Student", sqlStatement);
-      var sqlTable = new SqlTable (tableInfo);
-      var tableReferenceExpression = new SqlTableReferenceExpression (sqlTable);
-
-      var sqlValueTableReferenceExpression =
-          (SqlValueTableReferenceExpression) _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
-
-      Assert.That (((SqlTable) sqlValueTableReferenceExpression.SqlTable).TableInfo, Is.EqualTo (tableInfo));
-    }
-
-    [Test]
-    public void ResolveTableReferenceExpression_NoTable_InSubStatement ()
-    {
-      var selectProjection = new SqlColumnExpression (typeof (int), "o", "OrderNo", false);
-      var sqlTable = new SqlTable (new ResolvedSimpleTableInfo (typeof (Order), "Order", "o"));
-      var sqlStatement = new SqlStatement (
-          new StreamedSequenceInfo (typeof (Student[]), Expression.Constant (new Student())),
-          selectProjection,
-          new[] { sqlTable },
-          new Ordering[] { },
-          null,
-          null,
-          false,
-          AggregationModifier.None);
-
-      var subStatementTable = new SqlTable (new ResolvedSubStatementTableInfo ("q", sqlStatement));
-      var tableReferenceExpression = new SqlTableReferenceExpression (subStatementTable);
-      var result = _resolver.ResolveTableReferenceExpression (tableReferenceExpression, _generator);
-
-      var fakeTable = new SqlTable (subStatementTable.GetResolvedTableInfo());
-
-      Assert.That (result, Is.TypeOf (typeof (SqlValueTableReferenceExpression)));
-      Assert.That (((SqlTable) ((SqlValueTableReferenceExpression) result).SqlTable).TableInfo, Is.EqualTo (fakeTable.TableInfo));
-    }
-
-    [Test]
     public void ResolveTableInfo ()
     {
       var unresolvedTableInfo = new UnresolvedTableInfo (typeof (Order));

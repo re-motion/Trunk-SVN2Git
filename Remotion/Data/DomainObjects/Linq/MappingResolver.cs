@@ -96,9 +96,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      if (!typeof (DomainObject).IsAssignableFrom (tableReferenceExpression.Type))
-        return new SqlValueTableReferenceExpression (tableReferenceExpression.SqlTable);
-
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
