@@ -629,8 +629,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           new Ordering[] { },
           null,
           null,
-          false,
-          AggregationModifier.None);
+          false);
 
       var executorMock = new MockRepository().PartialMock<DomainObjectQueryExecutor> (
           _computerClassDefinition, _preparationStage, _resolutionStage, _generationStage);
