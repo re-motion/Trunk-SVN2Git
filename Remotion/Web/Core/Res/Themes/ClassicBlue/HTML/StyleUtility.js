@@ -92,7 +92,7 @@ StyleUtility.OnResize = function(element) {
   StyleUtility.ShowBorderSpans(element, topRight[0], bottomLeft[0], bottomRight[0]);
 }
 
-StyleUtility.AddBrowserSwitch = function()
+StyleUtility.AddBrowserSwitch = function ()
 {
   var browser;
   var version = parseInt($.browser.version); ;
@@ -113,6 +113,20 @@ StyleUtility.AddBrowserSwitch = function()
     browser = 'opera';
   }
 
+  StyleUtility.AddPlatformSwitch();
+
   if (!$('body').hasClass(browser))
     $('body').addClass(browser);
+}
+
+StyleUtility.AddPlatformSwitch = function ()
+{
+  var platform = "unknown";
+  if (navigator.appVersion.indexOf("Win") != -1)    platform = "win";
+  if (navigator.appVersion.indexOf("Mac") != -1)    platform = "mac";
+  if (navigator.appVersion.indexOf("Linux") != -1)  platform = "lin";
+  if (navigator.appVersion.indexOf("X11") != -1)    platform = "nix";
+
+  if (!$('body').hasClass(platform))
+    $('body').addClass(platform);
 }
