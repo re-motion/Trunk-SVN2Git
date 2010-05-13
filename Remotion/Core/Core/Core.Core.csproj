@@ -222,7 +222,7 @@
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\ImplementedInterfaceRequiredMethodDefinitionBuilder.cs" />
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IntroducedInterfaceRequiredMethodDefinitionCollector.cs" />
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IRequiredMethodDefinitionCollector.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\PropertyGetterGenerator.cs" />
+    <Compile Include="Reflection\CodeGeneration\DynamicMethods\PropertyGetterEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />

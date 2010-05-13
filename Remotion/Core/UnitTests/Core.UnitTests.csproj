@@ -267,7 +267,7 @@
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\DynamicMethods\PropertyGetterGeneratorTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\DynamicMethods\PropertyGetterEmitterTest.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithReferenceTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\ClassWithValueTypeProperties.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\TestDomain\DerivedClassWithReferenceTypeProperties.cs" />

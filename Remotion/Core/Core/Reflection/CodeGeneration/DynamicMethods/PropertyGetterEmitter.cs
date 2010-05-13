@@ -24,14 +24,14 @@ namespace Remotion.Reflection.CodeGeneration.DynamicMethods
   /// <summary>
   /// Builds the IL code needed to access a property getter.
   /// </summary>
-  public class PropertyGetterGenerator
+  public class PropertyGetterEmitter
   {
-    public PropertyGetterGenerator ()
+    public PropertyGetterEmitter ()
     {
 
     }
 
-    public void BuildWrapperMethod (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
+    public void EmitWrapperMethodBody (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
     {
       ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
       ArgumentUtility.CheckNotNull ("wrappedGetMethod", wrappedGetMethod);
