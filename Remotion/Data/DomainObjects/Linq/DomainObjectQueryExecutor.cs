@@ -49,7 +49,6 @@ namespace Remotion.Data.DomainObjects.Linq
     private readonly ISqlPreparationStage _preparationStage;
     private readonly IMappingResolutionStage _resolutionStage;
     private readonly ISqlGenerationStage _generationStage;
-    private readonly ISqlPreparationContext _context;
 
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
