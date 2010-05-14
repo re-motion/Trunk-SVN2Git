@@ -11,7 +11,7 @@ span.bocDateValue
   height:2em;
   line-height:2em;
   margin-right:0.2em;
-  min-width:12em;
+  min-width:14em;
   padding:0;
   white-space:nowrap;
   zoom: 1;
@@ -123,10 +123,10 @@ body.webkit span.bocDateValue a.bocPicker12Hours
 	top: 0.2em;
 }
 
-body.webkit span.bocDate24Hours,
-body.webkit span.bocDate12Hours
+body.webkit span.bocDateValue span.bocDate24Hours,
+body.webkit span.bocDateValue span.bocDate12Hours
 {
-  right:9.1em;
+  right:3.25em;
 }
 
 body.webkit span.bocDate24HoursWithSeconds,
