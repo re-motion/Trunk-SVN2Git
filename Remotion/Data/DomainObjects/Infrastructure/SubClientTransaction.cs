@@ -57,6 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (parentTransaction.IsReadOnly);
 
       _parentTransaction = parentTransaction;
+      AddListener (new SubClientTransactionListener (this));
 
       TransferDeletedAndDiscardedObjects();
 
@@ -259,6 +260,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void PersistNewDataContainer (DataContainer dataContainer)
     {
+      Assertion.IsTrue (_parentTransaction.DataManager.IsDiscarded (dataContainer.ID));
+      _parentTransaction.DataManager.ClearDiscardedFlag (dataContainer.ID);
+
       Assertion.IsNull (GetParentDataContainerWithoutLoading (dataContainer.ID), "a new data container cannot be known to the parent");
       Assertion.IsFalse (dataContainer.IsDiscarded);
 

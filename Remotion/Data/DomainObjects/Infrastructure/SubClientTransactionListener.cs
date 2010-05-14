@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
@@ -22,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Implements events that need to be specially handled in the context of sub-transactions.
   /// </summary>
+  [Serializable]
   public class SubClientTransactionListener : ClientTransactionListenerBase
   {
     private readonly SubClientTransaction _clientTransaction;
@@ -29,6 +31,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public SubClientTransactionListener (SubClientTransaction clientTransaction)
     {
       _clientTransaction = clientTransaction;
+    }
+
+    public SubClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
     }
 
     public override void DataContainerMapRegistering (DataContainer container)

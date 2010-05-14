@@ -22,12 +22,26 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using System.Linq;
+using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
   public class SubClientTransactionTest : ClientTransactionBaseTest
   {
+    [Test]
+    public void Initialization_AddsSubTransactionListener ()
+    {
+      var subTx = (SubClientTransaction) ClientTransactionMock.CreateSubTransaction ();
+
+      var eventSink = ClientTransactionTestHelper.GetTransactionEventSink (subTx);
+      var listener = eventSink.Listeners.OfType<SubClientTransactionListener>().SingleOrDefault ();
+
+      Assert.That (listener, Is.Not.Null);
+      Assert.That (listener.ClientTransaction, Is.SameAs (subTx));
+    }
+
     [Test]
     public void CollectionEndPointChangeDetectionStrategy ()
     {
@@ -69,6 +83,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         Assert.That (relatedObjects, 
             Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
       }
+    }
+
+    [Test]
+    public void PersistData_NewDataContainer_ClearsDiscardFlagInParent ()
+    {
+      var subTx = (SubClientTransaction) ClientTransactionMock.CreateSubTransaction ();
+
+      var instance = subTx.Execute (() => ClassWithAllDataTypes.NewObject ());
+      Assert.That (ClientTransactionMock.DataManager.IsDiscarded (instance.ID), Is.True);
+
+      ((IDataSource) subTx).PersistData (new[] { subTx.Execute (() => instance.InternalDataContainer) });
+
+      Assert.That (ClientTransactionMock.DataManager.IsDiscarded (instance.ID), Is.False);
+
     }
   }
 }

@@ -314,9 +314,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [ExpectedException (typeof (BulkLoadException), ExpectedMessage =
-        "There were errors when loading a bulk of DomainObjects:\r\n"
-        + "Object 'ClassWithAllDataTypes|.*|System.Guid' could not be found.\r\nObject 'ClassWithAllDataTypes|.*|System.Guid' could not be found.",
+    [ExpectedException (
+        typeof (ObjectDiscardedException), 
+        ExpectedMessage = "Object 'ClassWithAllDataTypes|.*|System.Guid' is already discarded.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateChildWithInvalidOutParameter ()
     {

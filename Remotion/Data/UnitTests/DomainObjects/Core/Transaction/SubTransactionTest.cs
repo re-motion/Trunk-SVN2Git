@@ -193,6 +193,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void DomainObjects_CreatedInSubTransaction_InvalidInParent ()
+    {
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      using (subTransaction.EnterDiscardingScope ())
+      {
+        Order order = Order.NewObject ();
+        Assert.AreEqual (StateType.New, order.TransactionContext[subTransaction].State);
+        Assert.AreEqual (StateType.Discarded, order.TransactionContext[ClientTransactionMock].State);
+      }
+    }
+
+    [Test]
+    public void DomainObjects_CreatedInSubTransaction_CommitMakesValidInParent ()
+    {
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      using (subTransaction.EnterDiscardingScope ())
+      {
+        var instance = ClassWithAllDataTypes.NewObject ();
+        Assert.AreEqual (StateType.New, instance.TransactionContext[subTransaction].State);
+        Assert.AreEqual (StateType.Discarded, instance.TransactionContext[ClientTransactionMock].State);
+        subTransaction.Commit ();
+        Assert.AreEqual (StateType.New, instance.TransactionContext[ClientTransactionMock].State);
+      }
+    }
+
+    [Test]
     public void DomainObjects_LoadedInParent_CanBeUsedInSubTransactions ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -234,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectDiscardedException))]
     public void Parent_CannotAccessObject_CreatedInSubTransaction ()
     {
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();

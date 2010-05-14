@@ -31,6 +31,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private readonly List<IClientTransactionListener> _listeners = new List<IClientTransactionListener>();
 
+    public IEnumerable<IClientTransactionListener> Listeners
+    {
+      get { return _listeners; }
+    }
+
     public void AddListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);

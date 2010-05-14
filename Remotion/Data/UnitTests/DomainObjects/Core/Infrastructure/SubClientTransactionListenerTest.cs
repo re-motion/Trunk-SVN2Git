@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -74,6 +75,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor1).IsDiscarded (DomainObjectIDs.Order1), Is.False);
       Assert.That (ClientTransactionTestHelper.GetDataManager (_ancestor2).IsDiscarded (DomainObjectIDs.Order1), Is.False);
       Assert.That (ClientTransactionTestHelper.GetDataManager (_subTransaction).IsDiscarded (DomainObjectIDs.Order1), Is.False);
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      Serializer.SerializeAndDeserialize (_listener);
     }
   }
 }

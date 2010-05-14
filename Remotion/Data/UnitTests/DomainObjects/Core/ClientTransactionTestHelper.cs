@@ -88,5 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       AddListener (clientTransaction, listenerMock);
       return listenerMock;
     }
+
+    public static CompoundClientTransactionListener GetTransactionEventSink (ClientTransaction clientTransaction)
+    {
+      return (CompoundClientTransactionListener) PrivateInvoke.GetNonPublicProperty (clientTransaction, "TransactionEventSink");
+    }
   }
 }
