@@ -151,7 +151,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    bool INullObject.IsNull
+    public virtual bool IsNull
     {
       get { return false; }
     }

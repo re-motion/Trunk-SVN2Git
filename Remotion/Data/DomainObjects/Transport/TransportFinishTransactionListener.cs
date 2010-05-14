@@ -16,14 +16,12 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
-  internal class TransportFinishTransactionListener : IClientTransactionListener
+  internal class TransportFinishTransactionListener : ClientTransactionListenerBase
   {
     private readonly ClientTransaction _transaction;
     private readonly Func<DomainObject, bool> _filter;
@@ -37,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Transport
       _filter = filter;
     }
 
-    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       using (_transaction.EnterNonDiscardingScope ())
       {
@@ -62,162 +60,6 @@ namespace Remotion.Data.DomainObjects.Transport
           }
         }
       }
-    }
-
-    public void TransactionInitializing ()
-    {
-      // not handled by this listener
-    }
-
-    public void TransactionDiscarding ()
-    {
-      // not handled by this listener
-    }
-
-    public void SubTransactionCreating ()
-    {
-      // not handled by this listener
-    }
-
-    public void SubTransactionCreated (ClientTransaction subTransaction)
-    {
-      // not handled by this listener
-    }
-
-    public void NewObjectCreating (Type type, DomainObject instance)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectDeleting (DomainObject domainObject)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectDeleted (DomainObject domainObject)
-    {
-      // not handled by this listener
-    }
-
-    public void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
-    {
-      // not handled by this listener
-    }
-
-    public void PropertyValueRead (DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
-    {
-      // not handled by this listener
-    }
-
-    public void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
-    {
-      // not handled by this listener
-    }
-
-    public void PropertyValueChanged (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationChanged (DomainObject domainObject, string propertyName)
-    {
-      // not handled by this listener
-    }
-
-    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
-    {
-      // not handled by this listener
-      return queryResult;
-    }
-
-    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      // not handled by this listener
-    }
-
-    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      // not handled by this listener
-    }
-
-    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
-    {
-      // not handled by this listener
-    }
-
-    public void DataManagerMarkingObjectDiscarded (ObjectID id)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerMapRegistering (DataContainer container)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerMapUnregistering (DataContainer container)
-    {
-      // not handled by this listener
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return false; }
     }
   }
 }

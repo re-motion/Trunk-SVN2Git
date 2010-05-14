@@ -18,13 +18,12 @@ using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
   [Serializable]
-  public class TransportTransactionListener : IClientTransactionListener
+  public class TransportTransactionListener : ClientTransactionListenerBase
   {
     [NonSerialized]
     private readonly DomainObjectTransporter _transporter;
@@ -35,72 +34,7 @@ namespace Remotion.Data.DomainObjects.Transport
       _transporter = transporter;
     }
 
-    public void TransactionInitializing ()
-    {
-      // not handled by this listener
-    }
-
-    public void TransactionDiscarding ()
-    {
-      // not handled by this listener
-    }
-
-    public void SubTransactionCreating ()
-    {
-      // not handled by this listener
-    }
-
-    public void SubTransactionCreated (ClientTransaction subTransaction)
-    {
-      // not handled by this listener
-    }
-
-    public void NewObjectCreating (Type type, DomainObject instance)
-    {
-      
-    }
-
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
-    {
-      
-    }
-
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      
-    }
-
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      
-    }
-
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      
-    }
-
-    public void ObjectDeleting (DomainObject domainObject)
-    {
-      
-    }
-
-    public void ObjectDeleted (DomainObject domainObject)
-    {
-      
-    }
-
-    public void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
-    {
-      
-    }
-
-    public void PropertyValueRead (DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
-    {
-      
-    }
-
-    public void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public override void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
       if (_transporter == null)
         throw new InvalidOperationException ("Cannot use the transported transaction for changing properties after it has been deserialized.");
@@ -113,94 +47,14 @@ namespace Remotion.Data.DomainObjects.Transport
       }
     }
 
-    public void PropertyValueChanged (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
-    {
-      
-    }
-
-    public void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess)
-    {
-      
-    }
-
-    public void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
-    {
-      
-    }
-
-    public void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
-    {
-      
-    }
-
-    public void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-    {
-      
-    }
-
-    public void RelationChanged (DomainObject domainObject, string propertyName)
-    {
-      
-    }
-
-    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
-    {
-      return queryResult;
-    }
-
-    public void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw new InvalidOperationException ("The transport transaction cannot be committed.");
     }
 
-    public void TransactionCommitted (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      
-    }
-
-    public void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionRollingBack (ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw new InvalidOperationException ("The transport transaction cannot be rolled back.");
-    }
-
-    public void TransactionRolledBack (ReadOnlyCollection<DomainObject> domainObjects)
-    {
-      
-    }
-
-    public void RelationEndPointMapRegistering (RelationEndPoint endPoint)
-    {
-      
-    }
-
-    public void RelationEndPointMapUnregistering (RelationEndPointID endPointID)
-    {
-      
-    }
-
-    public void RelationEndPointUnloading (RelationEndPoint endPoint)
-    {
-
-    }
-
-    public void DataManagerMarkingObjectDiscarded (ObjectID id)
-    {
-      
-    }
-
-    public void DataContainerMapRegistering (DataContainer container)
-    {
-      
-    }
-
-    public void DataContainerMapUnregistering (DataContainer container)
-    {
-      
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return false; }
     }
   }
 }
