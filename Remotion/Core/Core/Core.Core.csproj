@@ -224,6 +224,7 @@
     <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilding\IRequiredMethodDefinitionCollector.cs" />
     <Compile Include="Reflection\CodeGeneration\DynamicMethods\PropertyGetterEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
+    <Compile Include="Reflection\IPropertyInformation.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\CastClassExpression.cs" />
     <Compile Include="Reflection\MemberSignatureEqualityComparer.cs" />
+    <Compile Include="Reflection\PropertyInfoAdapter.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\EventSignatureStringBuilder.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\IMemberSignatureStringBuilder.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelper.cs" />
