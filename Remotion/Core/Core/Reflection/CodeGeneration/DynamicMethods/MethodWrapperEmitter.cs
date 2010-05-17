@@ -22,16 +22,16 @@ using Remotion.Utilities;
 namespace Remotion.Reflection.CodeGeneration.DynamicMethods
 {
   /// <summary>
-  /// Builds the IL code needed to access a property getter.
+  /// Builds the IL code needed to wrap a method call.
   /// </summary>
-  public class PropertyGetterEmitter
+  public class MethodWrapperEmitter
   {
-    public PropertyGetterEmitter ()
+    public MethodWrapperEmitter ()
     {
 
     }
 
-    public void EmitWrapperMethodBody (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
+    public void EmitMethodBody (ILGenerator ilGenerator, MethodInfo wrappedGetMethod, Type wrapperReturnType, Type[] wrapperParameterTypes)
     {
       ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
       ArgumentUtility.CheckNotNull ("wrappedGetMethod", wrappedGetMethod);
@@ -48,7 +48,18 @@ namespace Remotion.Reflection.CodeGeneration.DynamicMethods
 
       ilGenerator.Emit (OpCodes.Ldarg_0);
       ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.DeclaringType);
+
+      if (wrappedGetMethod.GetParameters().Length > 0)
+      {
+        ilGenerator.Emit (OpCodes.Ldarg_1);
+        ilGenerator.Emit (OpCodes.Castclass, wrappedGetMethod.GetParameters()[0].ParameterType);
+      }
+
       ilGenerator.Emit (OpCodes.Callvirt, wrappedGetMethod);
+      
+      if (wrapperReturnType == typeof (void))
+        return;
+
       if (wrappedGetMethod.ReturnType.IsValueType)
         ilGenerator.Emit (OpCodes.Box, wrappedGetMethod.ReturnType);
 

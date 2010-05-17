@@ -26,10 +26,10 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
 {
   [TestFixture]
-  public class PropertyGetterEmitterTest : MethodGenerationTestBase
+  public class MethodWrapperEmitterTest : MethodGenerationTestBase
   {
     [Test]
-    public void EmitWrapperMethodBody_ForPrivatePropertyGetter_ForReferenceType ()
+    public void EmitMethodBody_ForPrivatePropertyGetter_ForReferenceType ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPrivateGetterAndSetter", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -40,8 +40,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
       var dynamicMethod = new DynamicMethod ("", returnType, parameterTypes, declaringType, false);
       var ilGenerator = dynamicMethod.GetILGenerator();
 
-      var emitter = new PropertyGetterEmitter();
-      emitter.EmitWrapperMethodBody (ilGenerator, methodInfo, returnType, parameterTypes);
+      var emitter = new MethodWrapperEmitter();
+      emitter.EmitMethodBody (ilGenerator, methodInfo, returnType, parameterTypes);
 
       var propertyGetter = (Func<object, object>) dynamicMethod.CreateDelegate (typeof (Func<object, object>));
 
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     }
 
     [Test]
-    public void EmitWrapperMethodBody_ForPublicPropertyGetter_ForReferenceType ()
+    public void EmitMethodBody_ForPublicPropertyGetter_ForReferenceType ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
@@ -64,8 +64,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 
-      var emitter = new PropertyGetterEmitter();
-      emitter.EmitWrapperMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
+      var emitter = new MethodWrapperEmitter();
+      emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
       var obj = new ClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType() };
 
@@ -73,7 +73,30 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     }
 
     [Test]
-    public void EmitWrapperMethodBody_ForPublicPropertyGetter_ForValueType ()
+    public void EmitMethodBody_ForPublicPropertySetter_ForReferenceType ()
+    {
+      Type declaringType = typeof (ClassWithReferenceTypeProperties);
+      var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
+      var methodInfo = propertyInfo.GetSetMethod ();
+
+      Type returnType = typeof (void);
+      Type[] parameterTypes = new[] { typeof (object), typeof (object) };
+      var method = ClassEmitter.CreateMethod (MethodInfo.GetCurrentMethod ().Name, MethodAttributes.Public | MethodAttributes.Static)
+          .SetParameterTypes (parameterTypes)
+          .SetReturnType (returnType);
+
+      var emitter = new MethodWrapperEmitter ();
+      emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
+
+      var value = new SimpleReferenceType ();
+      var obj = new ClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = value };
+      BuildInstanceAndInvokeMethod (method, obj, value);
+
+      Assert.That (obj.PropertyWithPublicGetterAndSetter, Is.SameAs( value));
+    }
+
+    [Test]
+    public void EmitMethodBody_ForPublicPropertyGetter_ForValueType ()
     {
       Type declaringType = typeof (ClassWithValueTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
@@ -85,8 +108,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 
-      var emitter = new PropertyGetterEmitter();
-      emitter.EmitWrapperMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
+      var emitter = new MethodWrapperEmitter();
+      emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
       var obj = new ClassWithValueTypeProperties { PropertyWithPublicGetterAndSetter = 100 };
 
@@ -94,7 +117,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     }
 
     [Test]
-    public void EmitWrapperMethodBody_ForOverriddenPropertyGetter ()
+    public void EmitMethodBody_ForOverriddenPropertyGetter ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
@@ -106,8 +129,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 
-      var emitter = new PropertyGetterEmitter();
-      emitter.EmitWrapperMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
+      var emitter = new MethodWrapperEmitter();
+      emitter.EmitMethodBody (method.ILGenerator, methodInfo, returnType, parameterTypes);
 
       var obj = new DerivedClassWithReferenceTypeProperties { PropertyWithPublicGetterAndSetter = new SimpleReferenceType() };
 
@@ -117,7 +140,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
     [Test]
     [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
         "The ReturnType of the wrappedGetMethod cannot be assigned to the wrapperReturnType.\r\nParameter name: wrappedGetMethod")]
-    public void EmitWrapperMethodBody_ReturnTypesDoNotMatch ()
+    public void EmitMethodBody_ReturnTypesDoNotMatch ()
     {
       Type declaringType = typeof (ClassWithReferenceTypeProperties);
       var propertyInfo = declaringType.GetProperty ("PropertyWithPublicGetterAndSetter", BindingFlags.Public | BindingFlags.Instance);
@@ -129,8 +152,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods
           .SetParameterTypes (parameterTypes)
           .SetReturnType (returnType);
 
-      var emitter = new PropertyGetterEmitter();
-      emitter.EmitWrapperMethodBody (method.ILGenerator, methodInfo, typeof (string), parameterTypes);
+      var emitter = new MethodWrapperEmitter();
+      emitter.EmitMethodBody (method.ILGenerator, methodInfo, typeof (string), parameterTypes);
     }
   }
 }
