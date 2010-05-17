@@ -18,8 +18,11 @@ using System;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.BindableObject.Properties
+namespace Remotion.Reflection
 {
+  /// <summary>
+  /// Implements the <see cref="IPropertyInformation"/> interface to wrap a <see cref="PropertyInfo"/> instance.
+  /// </summary>
   public class PropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;

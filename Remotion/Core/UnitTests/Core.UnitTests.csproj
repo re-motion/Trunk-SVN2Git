@@ -278,6 +278,10 @@
     <Compile Include="Reflection\PropertyInfoAdapterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithOverridingProperty.cs" />
+    <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithReferenceType.cs" />
+    <Compile Include="Reflection\PropertyInfoAdapterTestDomain\ClassWithValueType.cs" />
+    <Compile Include="Reflection\PropertyInfoAdapterTestDomain\IInterfaceWithReferenceType.cs" />
+    <Compile Include="Reflection\PropertyInfoAdapterTestDomain\SampleAttribute.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\EventSignatureStringBuilderTest.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilderIntegrationTest.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelperTest.cs" />

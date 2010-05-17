@@ -20,6 +20,7 @@ using Remotion.ExtensibleEnums;
 using Remotion.Globalization;
 using Remotion.Mixins.Globalization;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject

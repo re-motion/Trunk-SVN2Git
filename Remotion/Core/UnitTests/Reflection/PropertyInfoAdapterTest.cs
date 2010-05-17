@@ -18,13 +18,13 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyInfoAdapterTestDomain;
-using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
+using Remotion.UnitTests.Reflection.CodeGeneration.DynamicMethods.TestDomain;
+using Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
+namespace Remotion.UnitTests.Reflection
 {
   [TestFixture]
   public class PropertyInfoAdapterTest
@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       _adapter = new PropertyInfoAdapter (_property, null);
 
       _explicitInterfaceImplementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+          "Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
       _explicitInterfaceDeclarationProperty = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ExplicitInterfaceScalar");
       _explicitInterfaceAdapter = new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty);
@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (_explicitInterfaceAdapter.Name, Is.EqualTo (_explicitInterfaceImplementationProperty.Name));
       Assert.That (
           _explicitInterfaceAdapter.Name,
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
+          Is.EqualTo ("Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
     }
 
     [Test]
@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CanBeSetFromOutside_ExplicitInterfaceReadOnlyScalar ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
+          "Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
       
       var adapter = new PropertyInfoAdapter (propertyInfo);
@@ -196,27 +196,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetCustomAttribute ()
     {
       Assert.That (
-          _adapter.GetCustomAttribute<ObjectBindingAttribute> (true),
-          Is.EqualTo (
-              AttributeUtility.GetCustomAttribute<ObjectBindingAttribute> (_property, true)));
+          _adapter.GetCustomAttribute<SampleAttribute> (true),
+          Is.EqualTo (AttributeUtility.GetCustomAttribute<SampleAttribute> (_property, true)));
     }
 
     [Test]
     public void GetCustomAttributes ()
     {
       Assert.That (
-          _adapter.GetCustomAttributes<ObjectBindingAttribute> (true),
-          Is.EqualTo (
-              AttributeUtility.GetCustomAttributes<ObjectBindingAttribute> (_property, true)));
+          _adapter.GetCustomAttributes<SampleAttribute> (true),
+          Is.EqualTo (AttributeUtility.GetCustomAttributes<SampleAttribute> (_property, true)));
     }
 
     [Test]
     public void IsDefined ()
     {
       Assert.That (
-          _adapter.IsDefined<ObjectBindingAttribute> (true),
-          Is.EqualTo (
-              AttributeUtility.IsDefined<ObjectBindingAttribute> (_property, true)));
+          _adapter.IsDefined<SampleAttribute> (true),
+          Is.EqualTo (AttributeUtility.IsDefined<SampleAttribute> (_property, true)));
     }
 
     [Test]

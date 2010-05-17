@@ -20,6 +20,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Linq;
 

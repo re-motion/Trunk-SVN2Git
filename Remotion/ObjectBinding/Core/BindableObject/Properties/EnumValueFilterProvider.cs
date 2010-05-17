@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties

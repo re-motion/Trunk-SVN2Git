@@ -17,7 +17,7 @@
 using System;
 using System.Reflection;
 
-namespace Remotion.ObjectBinding.BindableObject.Properties
+namespace Remotion.Reflection
 {
   /// <summary>
   /// Provides information about a property of a bindable object and offers a way to get or set the property's value.

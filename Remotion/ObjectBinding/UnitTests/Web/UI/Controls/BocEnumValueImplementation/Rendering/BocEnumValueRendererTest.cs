@@ -28,6 +28,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using System.Web;
+using Remotion.Reflection;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Rhino.Mocks;

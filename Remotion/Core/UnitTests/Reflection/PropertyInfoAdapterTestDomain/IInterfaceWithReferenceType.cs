@@ -16,8 +16,12 @@
 // 
 namespace Remotion.UnitTests.Reflection.PropertyInfoAdapterTestDomain
 {
-  public class ClassWithOverridingProperty : ClassWithBaseProperty
+  public interface IInterfaceWithReferenceType<T>
+      where T : class
   {
-    public override int BaseProperty { get { return 0; } }
+    T ExplicitInterfaceScalar { get; set; }
+    T ExplicitInterfaceReadOnlyScalar { get; }
+    T ImplicitInterfaceScalar { get; set; }
+    T ImplicitInterfaceReadOnlyScalar { get; }
   }
 }
