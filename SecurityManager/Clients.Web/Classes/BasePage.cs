@@ -74,16 +74,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     private void RegisterStyleSheets ()
     {
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
+      var globalStyleFileUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (BasePage), ResourceType.Html, c_globalStyleFileUrl);
+      HtmlHeadAppender.Current.RegisterStylesheetLink (c_globalStyleFileKey, globalStyleFileUrl, HtmlHeadAppender.Priority.Library);
+
+      var themedResourceUrlResolver = ServiceLocator.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
       string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
-
-      HtmlHeadAppender.Current.RegisterStylesheetLink (this.GetType () + "style", href);
-
-      if (!HtmlHeadAppender.Current.IsRegistered (c_globalStyleFileKey))
-      {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (this, typeof (BasePage), ResourceType.Html, ResourceTheme, c_globalStyleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (c_globalStyleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
-      }
+      HtmlHeadAppender.Current.RegisterStylesheetLink (this.GetType () + "style", href, HtmlHeadAppender.Priority.Page);
     }
 
     IResourceManager IObjectWithResources.GetResourceManager ()
@@ -106,9 +102,9 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       get { return SafeServiceLocator.Current; }
     }
 
-    protected ResourceTheme ResourceTheme
+    protected IResourceUrlFactory ResourceUrlFactory
     {
-      get { return ServiceLocator.GetInstance<ResourceTheme> (); }
+      get { return ServiceLocator.GetInstance<IResourceUrlFactory> (); }
     }
   }
 }

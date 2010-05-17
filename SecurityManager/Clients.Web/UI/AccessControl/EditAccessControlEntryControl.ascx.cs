@@ -87,21 +87,21 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           {
               ItemID = c_clearAllMenuItemID,
               Text = AccessControlResources.AllPermissionsMenu_ClearAllPermissions_Text,
-              Icon = new IconInfo (GetIconUrl ("PermissionUndefined.gif"))
+              Icon = new IconInfo (GetIconUrl ("PermissionUndefined.gif").GetUrl())
           });
       AllPermisionsMenu.MenuItems.Add (
           new WebMenuItem
           {
               ItemID = c_grantAllMenuItemID,
               Text = AccessControlResources.AllPermissionsMenu_GrantAllPermissions_Text,
-              Icon = new IconInfo (GetIconUrl ("PermissionGranted.gif"))
+              Icon = new IconInfo (GetIconUrl ("PermissionGranted.gif").GetUrl())
           });
       AllPermisionsMenu.MenuItems.Add (
           new WebMenuItem
           {
               ItemID = c_denyAllMenuItemID,
               Text = AccessControlResources.AllPermissionsMenu_DenyAllPermissions_Text,
-              Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif"))
+              Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif").GetUrl())
           });
       AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
     }
@@ -111,14 +111,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       base.OnPreRender (e);
 
       if (string.IsNullOrEmpty (SpecificGroupField.ServicePath))
-        SecurityManagerSearchWebService.BindServiceToControl(SpecificGroupField);
+        SecurityManagerSearchWebService.BindServiceToControl (SpecificGroupField);
 
       if (string.IsNullOrEmpty (SpecificUserField.ServicePath))
         SecurityManagerSearchWebService.BindServiceToControl (SpecificUserField);
 
       if (IsCollapsed)
       {
-        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry, ServiceLocator);
+        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry, ResourceUrlFactory);
         CollapsedTenantInformation.SetRenderMethodDelegate (
             (writer, control) => collapsedRenderer.RenderTenant (writer, new ControlWrapper (control)));
         CollapsedGroupInformation.SetRenderMethodDelegate (
@@ -131,18 +131,18 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       DetailsCell.Attributes.Add ("colspan", (4 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count + 3).ToString());
 
-      DeleteAccessControlEntryButton.Icon = new IconInfo (GetIconUrl ("DeleteItem.gif"));
+      DeleteAccessControlEntryButton.Icon = new IconInfo (GetIconUrl ("DeleteItem.gif").GetUrl());
       DeleteAccessControlEntryButton.Icon.AlternateText = AccessControlResources.DeleteAccessControlEntryButton_Text;
 
       if (IsCollapsed)
       {
-        ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Expand.gif");
+        ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Expand.gif").GetUrl();
         ToggleAccessControlEntryButton.Icon.AlternateText = AccessControlResources.ExpandAccessControlEntryButton_Text;
         DetailsView.Visible = false;
       }
       else
       {
-        ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Collapse.gif");
+        ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Collapse.gif").GetUrl();
         ToggleAccessControlEntryButton.Icon.AlternateText = AccessControlResources.CollapseAccessControlEntryButton_Text;
         DetailsView.Visible = true;
       }
@@ -380,9 +380,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     }
 
-    private string GetIconUrl (string url)
+    private IResourceUrl GetIconUrl (string url)
     {
-      return ResourceUrlResolver.GetResourceUrl (this, typeof (EditAccessControlEntryControl), ResourceType.Image, ResourceTheme, url);
+      return ResourceUrlFactory.CreateThemedResourceUrl (typeof (EditAccessControlEntryControl), ResourceType.Image, url);
     }
   }
 }

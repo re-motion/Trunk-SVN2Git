@@ -16,7 +16,6 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
@@ -66,8 +65,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private IconInfo GetIcon (string resourceUrl, string alternateText)
     {
-      return new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, typeof (EditUserControl), ResourceType.Image, ResourceTheme, resourceUrl))
+      return new IconInfo (ResourceUrlFactory.CreateThemedResourceUrl (typeof (EditUserControl), ResourceType.Image, resourceUrl).GetUrl())
              { AlternateText = alternateText };
     }
 

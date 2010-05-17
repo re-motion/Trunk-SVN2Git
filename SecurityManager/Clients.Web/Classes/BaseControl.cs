@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     // construction and disposing
 
     // methods and properties
-  
+
     public new BasePage Page
     {
       get { return (BasePage) base.Page; }
@@ -94,12 +94,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     IResourceManager IObjectWithResources.GetResourceManager ()
     {
-      return this.GetResourceManager ();
+      return this.GetResourceManager();
     }
 
     protected virtual IResourceManager GetResourceManager ()
     {
-      Type type = this.GetType ();
+      Type type = this.GetType();
 
       if (MultiLingualResources.ExistsResource (type))
         return MultiLingualResources.GetResourceManager (type, true);
@@ -112,9 +112,9 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       get { return SafeServiceLocator.Current; }
     }
 
-    protected ResourceTheme ResourceTheme
+    protected IResourceUrlFactory ResourceUrlFactory
     {
-      get { return ServiceLocator.GetInstance<ResourceTheme> (); }
+      get { return ServiceLocator.GetInstance<IResourceUrlFactory>(); }
     }
   }
 }

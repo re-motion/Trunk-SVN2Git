@@ -1,22 +1,23 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
-// The re-motion Core Framework is free software; you can redistribute it 
-// and/or modify it under the terms of the GNU Lesser General Public License 
-// version 3.0 as published by the Free Software Foundation.
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License version 3.0 
+// as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-// GNU Lesser General Public License for more details.
+// GNU Affero General Public License for more details.
 // 
-// You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program; if not, see http://www.gnu.org/licenses.
+// 
+// Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
 using System.Web;
 using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -32,15 +33,15 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
   public class CollapsedAccessControlConditionsRenderer
   {
     private readonly AccessControlEntry _accessControlEntry;
-    private readonly IServiceLocator _serviceLocator;
+    private readonly IResourceUrlFactory _resourceUrlFactory;
 
-    public CollapsedAccessControlConditionsRenderer (AccessControlEntry accessControlEntry, IServiceLocator serviceLocator)
+    public CollapsedAccessControlConditionsRenderer (AccessControlEntry accessControlEntry, IResourceUrlFactory resourceUrlFactory)
     {
       ArgumentUtility.CheckNotNull ("currentAccessControlEntry", accessControlEntry);
-      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+      ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
 
       _accessControlEntry = accessControlEntry;
-      _serviceLocator = serviceLocator;
+      _resourceUrlFactory = resourceUrlFactory;
     }
 
     public AccessControlEntry AccessControlEntry
@@ -59,11 +60,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           writer.Write (HttpUtility.HtmlEncode (AccessControlResources.TenantCondition_None));
           break;
         case TenantCondition.OwningTenant:
-          RenderTenantHierarchyIcon (writer, container);
+          RenderTenantHierarchyIcon (writer);
           RenderPropertyPathString (writer, "TenantCondition");
           break;
         case TenantCondition.SpecificTenant:
-          RenderTenantHierarchyIcon (writer, container);
+          RenderTenantHierarchyIcon (writer);
           RenderLabelAfterPropertyPathString (writer, "SpecificTenant.DisplayName");
           break;
         default:
@@ -82,11 +83,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           writer.Write (HttpUtility.HtmlEncode (AccessControlResources.GroupCondition_None));
           break;
         case GroupCondition.OwningGroup:
-          RenderGroupHierarchyIcon (writer, container);
+          RenderGroupHierarchyIcon (writer);
           RenderPropertyPathString (writer, "GroupCondition");
           break;
         case GroupCondition.SpecificGroup:
-          RenderGroupHierarchyIcon (writer, container);
+          RenderGroupHierarchyIcon (writer);
           RenderLabelAfterPropertyPathString (writer, "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
@@ -167,7 +168,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       return propertyPath.Properties[propertyPath.Properties.Length - 2].DisplayName;
     }
 
-    private void RenderTenantHierarchyIcon (HtmlTextWriter writer, IControl container)
+    private void RenderTenantHierarchyIcon (HtmlTextWriter writer)
     {
       string url;
       string text;
@@ -189,11 +190,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new ArgumentOutOfRangeException();
       }
 
-      var icon = new IconInfo (GetIconUrl (url, container)) { AlternateText = text };
+      var icon = new IconInfo (GetIconUrl (url).GetUrl()) { AlternateText = text };
       icon.Render (writer);
     }
 
-    private void RenderGroupHierarchyIcon (HtmlTextWriter writer, IControl container)
+    private void RenderGroupHierarchyIcon (HtmlTextWriter writer)
     {
       string url;
       string text;
@@ -225,18 +226,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new ArgumentOutOfRangeException();
       }
 
-      var icon = new IconInfo (GetIconUrl (url, container)) { AlternateText = text };
+      var icon = new IconInfo (GetIconUrl (url).GetUrl()) { AlternateText = text };
       icon.Render (writer);
     }
 
-    private string GetIconUrl (string url, IControl container)
+    private IResourceUrl GetIconUrl (string url)
     {
-      return ResourceUrlResolver.GetResourceUrl (container, typeof (CollapsedAccessControlConditionsRenderer), ResourceType.Image, ResourceTheme, url);
-    }
-  
-    protected ResourceTheme ResourceTheme
-    {
-      get { return _serviceLocator.GetInstance<ResourceTheme> (); }
+      return _resourceUrlFactory.CreateThemedResourceUrl (typeof (CollapsedAccessControlConditionsRenderer), ResourceType.Image, url);
     }
   }
 }
