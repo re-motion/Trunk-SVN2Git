@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Security.Configuration;
 using Remotion.Utilities;
@@ -66,13 +66,7 @@ namespace Remotion.Security
 
       AccessType[] actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
 
-      foreach (AccessType requiredAccessType in requiredAccessTypes)
-      {
-        if (Array.IndexOf (actualAccessTypes, requiredAccessType) < 0)
-          return false;
-      }
-
-      return true;
+      return requiredAccessTypes.All (requiredAccessType => actualAccessTypes.Contains (requiredAccessType));
     }
 
     private AccessType[] GetAccessFromLocalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
@@ -87,15 +81,15 @@ namespace Remotion.Security
 
     private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
     {
-      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> globalAccessTypeCache = _globalCacheProvider.GetCache ();
+      var globalAccessTypeCache = _globalCacheProvider.GetCache ();
       if (globalAccessTypeCache == null)
         throw new InvalidOperationException ("IGlobalAccesTypeCacheProvider.GetAccessTypeCache() evaluated and returned null.");
 
-      ISecurityContext context = factory.CreateSecurityContext ();
+      var context = factory.CreateSecurityContext ();
       if (context == null)
         throw new InvalidOperationException ("ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");
 
-      Tuple<ISecurityContext, ISecurityPrincipal> key = new Tuple<ISecurityContext, ISecurityPrincipal> (context, principal);
+      var key = new Tuple<ISecurityContext, ISecurityPrincipal> (context, principal);
 
       AccessType[] value;
       if (!globalAccessTypeCache.TryGetValue (key, out value))
@@ -106,10 +100,7 @@ namespace Remotion.Security
 
     private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, ISecurityContext context, ISecurityPrincipal principal)
     {
-      AccessType[] actualAccessTypes = securityProvider.GetAccess (context, principal);
-      if (actualAccessTypes == null)
-        actualAccessTypes = new AccessType[0];
-      return actualAccessTypes;
+      return securityProvider.GetAccess (context, principal) ?? new AccessType[0];
     }
   }
 }
