@@ -23,22 +23,19 @@ using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation;
 using Remotion.Data.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.UnitTests.Linq.Core;
-using Remotion.Data.Linq.UnitTests.Linq.Core.TestDomain;
 using Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlStatementModel;
 using Rhino.Mocks;
 
 namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOperatorHandlers
 {
   [TestFixture]
-  public class SumResultOperatorHandlerTest
+  public class AggregationResultOperatorHandlerTest
   {
     private ISqlPreparationStage _stageMock;
     private UniqueIdentifierGenerator _generator;
-    private SumResultOperatorHandler _handler;
+    private TestableAggregationResultOperatorHandler _handler;
     private SqlStatementBuilder _sqlStatementBuilder;
-    private QueryModel _queryModel;
     private SqlPreparationContext _context;
 
     [SetUp]
@@ -46,12 +43,11 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     {
       _stageMock = MockRepository.GenerateMock<ISqlPreparationStage> ();
       _generator = new UniqueIdentifierGenerator ();
-      _handler = new SumResultOperatorHandler ();
+      _handler = new TestableAggregationResultOperatorHandler();
       _sqlStatementBuilder = new SqlStatementBuilder (SqlStatementModelObjectMother.CreateSqlStatement ())
       {
         DataInfo = new StreamedSequenceInfo (typeof (int[]), Expression.Constant (5))
       };
-      _queryModel = new QueryModel (ExpressionHelper.CreateMainFromClause_Cook (), ExpressionHelper.CreateSelectClause ());
       _context = new SqlPreparationContext ();
     }
 
@@ -59,26 +55,13 @@ namespace Remotion.Data.Linq.UnitTests.Linq.SqlBackend.SqlPreparation.ResultOper
     public void HandleResultOperator ()
     {
       _sqlStatementBuilder.SelectProjection = new NamedExpression (null, _sqlStatementBuilder.SelectProjection);
-      var averageResultOperator = new SumResultOperator ();
+      var averageResultOperator = new MaxResultOperator ();
 
       _handler.HandleResultOperator (averageResultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
 
-      Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Sum));
-      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedScalarValueInfo)));
-      Assert.That (((StreamedScalarValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
-    }
-
-    [Test]
-    public void HandleResultOperator_SumAfterTopExpression ()
-    {
-      _sqlStatementBuilder.TopExpression = Expression.Constant ("top");
-
-      var resultOperator = new SumResultOperator ();
-
-      _handler.HandleResultOperator (resultOperator, _sqlStatementBuilder, _generator, _stageMock, _context);
-
-      Assert.That (_sqlStatementBuilder.SqlTables.Count, Is.EqualTo (1));
-      Assert.That (((SqlTable) _sqlStatementBuilder.SqlTables[0]).TableInfo, Is.TypeOf (typeof (ResolvedSubStatementTableInfo)));
+      Assert.That (((AggregationExpression) _sqlStatementBuilder.SelectProjection).AggregationModifier, Is.EqualTo (AggregationModifier.Max));
+      Assert.That (_sqlStatementBuilder.DataInfo, Is.TypeOf (typeof (StreamedSingleValueInfo)));
+      Assert.That (((StreamedSingleValueInfo) _sqlStatementBuilder.DataInfo).DataType, Is.EqualTo (typeof (int)));
     }
   }
 }
