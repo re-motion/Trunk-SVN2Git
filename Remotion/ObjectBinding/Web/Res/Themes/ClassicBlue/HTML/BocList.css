@@ -122,6 +122,12 @@ th.bocListTitleCell
   white-space: nowrap;
 }
 
+div.bocListFakeTableHead th.bocListTitleCell
+{
+  border-bottom-width: 1px;
+}
+
+
 body.msie7 th.bocListTitleCell *
 {
   white-space: nowrap;
@@ -327,7 +333,7 @@ div.bocListFakeTableHead
   display: none;
   position: absolute;
   top: 0;
-  left: -1px;
+  left: -1px !important;
   right: 0;
   margin: 0;
   padding:0;
@@ -338,9 +344,4 @@ body.webkit   div.bocListFakeTableHead,
 body.opera    div.bocListFakeTableHead
 {
   left: 0;
-} 
-
-body.msie       div.bocListFakeTableHead
-{
-  left: -1px;
 } 
