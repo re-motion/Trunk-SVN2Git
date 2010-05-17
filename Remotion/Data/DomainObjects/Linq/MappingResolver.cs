@@ -77,12 +77,12 @@ namespace Remotion.Data.DomainObjects.Linq
           rightEndPoint.ClassDefinition.GetViewName(),
           alias);
 
-      var leftKey = new SqlColumnExpression (
+      var leftKey = new SqlColumnExpression ( // becomes joinInfo.OriginatingEntity.GetColumn (GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual))
           keyType,
           joinInfo.OriginatingTable.GetResolvedTableInfo().TableAlias,
           GetJoinColumnName (leftEndPoint),
           leftEndPoint.IsVirtual);
-      var rightKey = new SqlColumnExpression (
+      var rightKey = new SqlColumnExpression ( // becomes new SqlColumnDefinitionExpression
           keyType,
           alias,
           GetJoinColumnName (rightEndPoint),
@@ -91,6 +91,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ResolvedJoinInfo (resolvedSimpleTableInfo, leftKey, rightKey);
     }
 
+    // TODO: Rename to ResolveSimpleTableInfo, pass SimpleTableInfo instead of tableReferenceExpression
     public Expression ResolveTableReferenceExpression (SqlTableReferenceExpression tableReferenceExpression, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("tableReferenceExpression", tableReferenceExpression);
@@ -99,13 +100,17 @@ namespace Remotion.Data.DomainObjects.Linq
       var tableAlias = tableReferenceExpression.SqlTable.GetResolvedTableInfo().TableAlias;
 
       var propertyInfo = typeof (DomainObject).GetProperty ("ID");
+      // becomes SqlColumnDefinitionExpression
       var primaryKeyColumn = new SqlColumnExpression (propertyInfo.PropertyType, tableAlias, propertyInfo.Name, true);
 
+      // becomes SqlColumnDefinitionExpression
       var starColumn = new SqlColumnExpression (tableReferenceExpression.Type, tableAlias, "*", false);
 
+      // becomes SqlEntityDefinitionExpression
       return new SqlEntityExpression (tableReferenceExpression.SqlTable, primaryKeyColumn, starColumn);
     }
 
+    // becomes Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
     public Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
     {
       ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
@@ -121,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID", true);
+        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID", true); // becomes originatingEntity.GetColumn (property.PropertyType, "ID", true)
 
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
       if (relationData != null)
@@ -144,6 +149,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message);
       }
 
+      // becomes originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StorageSpecificName, false)
       return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, false); 
     }
 
@@ -153,6 +159,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
+        // becomes sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false)
         return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
 
       throw new UnmappedItemException (
