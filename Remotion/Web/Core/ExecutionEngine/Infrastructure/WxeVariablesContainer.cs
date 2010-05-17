@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Reflection;
@@ -25,11 +26,13 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
+  /// <summary>
+  /// Holds all variables available in a <see cref="WxeFunction"/>.
+  /// </summary>
   [Serializable]
   public class WxeVariablesContainer
   {
-    /// <summary> Hashtable&lt;Type, WxeParameterDeclaration[]&gt; </summary>
-    private static readonly Hashtable s_parameterDeclarations = new Hashtable();
+    private static readonly InterlockedCache<Type, WxeParameterDeclaration[]> s_parameterDeclarations = new InterlockedCache<Type, WxeParameterDeclaration[]>();
 
     public static WxeParameterDeclaration[] GetParameterDeclarations (Type type)
     {
@@ -37,42 +40,29 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (!typeof (WxeFunction).IsAssignableFrom (type))
         throw new ArgumentException ("Type " + type.FullName + " is not derived from WxeFunction.", "type");
 
-      return GetParameterDeclarationsUnchecked (type);
+      return s_parameterDeclarations.GetOrCreateValue (type, GetParameterDeclarationsUnchecked);
     }
 
     private static WxeParameterDeclaration[] GetParameterDeclarationsUnchecked (Type type)
     {
-      WxeParameterDeclaration[] declarations = (WxeParameterDeclaration[]) s_parameterDeclarations[type];
-      if (declarations == null)
+      var properties = type.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+      var parameters = new List<WxeParameterDeclaration> (properties.Length);
+      var indices = new List<int> (properties.Length);
+      foreach (PropertyInfo property in properties)
       {
-        lock (type)
+        var parameterAttribute = WxeParameterAttribute.GetAttribute (property);
+        if (parameterAttribute != null)
         {
-          declarations = (WxeParameterDeclaration[]) s_parameterDeclarations[type];
-          if (declarations == null)
-          {
-            PropertyInfo[] properties = type.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            ArrayList parameters = new ArrayList (properties.Length); // ArrayList<WxeParameterDeclaration>
-            ArrayList indices = new ArrayList (properties.Length); // ArrayList<int>
-            foreach (PropertyInfo property in properties)
-            {
-              WxeParameterAttribute parameterAttribute = WxeParameterAttribute.GetAttribute (property);
-              if (parameterAttribute != null)
-              {
-                parameters.Add (
-                    new WxeParameterDeclaration (
-                        property.Name, parameterAttribute.Required, parameterAttribute.Direction, property.PropertyType));
-                indices.Add (parameterAttribute.Index);
-              }
-            }
-
-            declarations = (WxeParameterDeclaration[]) parameters.ToArray (typeof (WxeParameterDeclaration));
-            int[] numberArray = (int[]) indices.ToArray (typeof (int));
-            Array.Sort (numberArray, declarations);
-
-            s_parameterDeclarations.Add (type, declarations);
-          }
+          parameters.Add (
+              new WxeParameterDeclaration (
+                  property.Name, parameterAttribute.Required, parameterAttribute.Direction, property.PropertyType));
+          indices.Add (parameterAttribute.Index);
         }
       }
+
+      var declarations = parameters.ToArray();
+      int[] numberArray = indices.ToArray();
+      Array.Sort (numberArray, declarations);
       return declarations;
     }
 
