@@ -84,7 +84,8 @@ div.singleView div.content
   height: 100%;
 }
 
-body.msie7 div.singleViewView div.content
+body.msie7 div.singleViewView div.content,
+body.nix.mozilla div.singleViewView div.content
 {
   width: 98%;
   height: 98%;
