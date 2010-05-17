@@ -387,6 +387,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 2777")]
+    public void QueryWithOrderBy_BeforeIncompatibleResultOperators ()
+    {
+      var result = QueryFactory.CreateLinqQuery<Computer> ().OrderBy (c => c.SerialNumber).Distinct ().Count();
+
+      Assert.That (result, Is.EqualTo (1));
+    }
+
+    [Test]
     public void QueryWithAll_InSubquery ()
     {
       var query1 = from o in QueryFactory.CreateLinqQuery<Order>()
