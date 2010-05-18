@@ -21,7 +21,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlBackend.MappingResolution;
-using Remotion.Data.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
 using Remotion.Data.Linq.SqlBackend.SqlStatementModel.Unresolved;
@@ -77,12 +76,14 @@ namespace Remotion.Data.DomainObjects.Linq
           rightEndPoint.ClassDefinition.GetViewName(),
           alias);
 
-      var leftKey = new SqlColumnExpression ( // becomes joinInfo.OriginatingEntity.GetColumn (GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual))
+      var leftKey = new SqlColumnExpression (
+          // becomes joinInfo.OriginatingEntity.GetColumn (GetJoinColumnName (leftEndPoint), leftEndPoint.IsVirtual))
           keyType,
-          joinInfo.OriginatingTable.GetResolvedTableInfo().TableAlias,
+          joinInfo.OriginatingEntity.SqlTable.GetResolvedTableInfo().TableAlias,
           GetJoinColumnName (leftEndPoint),
           leftEndPoint.IsVirtual);
-      var rightKey = new SqlColumnExpression ( // becomes new SqlColumnDefinitionExpression
+      var rightKey = new SqlColumnExpression (
+          // becomes new SqlColumnDefinitionExpression
           keyType,
           alias,
           GetJoinColumnName (rightEndPoint),
@@ -110,33 +111,38 @@ namespace Remotion.Data.DomainObjects.Linq
       return new SqlEntityExpression (tableReferenceExpression.SqlTable, primaryKeyColumn, starColumn);
     }
 
-    // becomes Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
-    public Expression ResolveMemberExpression (SqlTableBase sqlTable, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
+    public Expression ResolveMemberExpression (SqlEntityExpression originatingEntity, MemberInfo memberInfo, UniqueIdentifierGenerator generator)
     {
-      ArgumentUtility.CheckNotNull ("sqlTable", sqlTable);
+      ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("generator", generator);
 
-      var tableAlias = sqlTable.GetResolvedTableInfo().TableAlias;
+      var tableAlias = originatingEntity.SqlTable.GetResolvedTableInfo().TableAlias;
       var property = memberInfo as PropertyInfo;
       if (property == null)
       {
         throw new UnmappedItemException (
-            string.Format ("Field '{0}.{1}' cannot be used in a query because it is not a mapped member.", sqlTable.ItemType.Name, memberInfo.Name));
+            string.Format (
+                "Field '{0}.{1}' cannot be used in a query because it is not a mapped member.",
+                originatingEntity.SqlTable.ItemType.Name,
+                memberInfo.Name));
       }
 
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
-        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID", true); // becomes originatingEntity.GetColumn (property.PropertyType, "ID", true)
+      {
+        return new SqlColumnExpression (property.PropertyType, tableAlias, "ID", true);
+            // becomes originatingEntity.GetColumn (property.PropertyType, "ID", true)
+      }
 
       Tuple<RelationDefinition, ClassDefinition, string> relationData = GetRelationData (property);
       if (relationData != null)
-        return new SqlEntityRefMemberExpression (sqlTable, property);
+        return new SqlEntityRefMemberExpression (originatingEntity, property);
 
-      var classDefinition = GetClassDefinition (sqlTable.ItemType);
+      var classDefinition = GetClassDefinition (originatingEntity.SqlTable.ItemType);
       if (classDefinition == null)
       {
         string message = string.Format (
-            "The type '{0}' does not identify a queryable table.", sqlTable.ItemType);
+            "The type '{0}' does not identify a queryable table.", originatingEntity.SqlTable.ItemType);
         throw new UnmappedItemException (message);
       }
 
@@ -150,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
 
       // becomes originatingEntity.GetColumn (property.PropertyType, propertyDefinition.StorageSpecificName, false)
-      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, false); 
+      return new SqlColumnExpression (propertyDefinition.PropertyType, tableAlias, propertyDefinition.StorageSpecificName, false);
     }
 
     public Expression ResolveMemberExpression (SqlColumnExpression sqlColumnExpression, MemberInfo memberInfo)
@@ -159,7 +165,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
       if (memberInfo == typeof (ObjectID).GetProperty ("ClassID"))
-        // becomes sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false)
+          // becomes sqlColumnExpression.Update (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false)
         return new SqlColumnExpression (typeof (string), sqlColumnExpression.OwningTableAlias, "ClassID", false);
 
       throw new UnmappedItemException (
@@ -240,6 +246,5 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       return endPoint.IsVirtual ? "ID" : endPoint.ClassDefinition.GetMandatoryPropertyDefinition (endPoint.PropertyName).StorageSpecificName;
     }
-
   }
 }
