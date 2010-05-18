@@ -40,15 +40,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void NewObjectCreating (Type type, DomainObject instance)
+    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
     }
 
-    public virtual void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
     }
 
-    public virtual void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 

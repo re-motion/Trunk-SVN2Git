@@ -67,16 +67,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
-    public void NewObjectCreating (Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       foreach (var listener in _listeners)
-        listener.NewObjectCreating (type, instance);
+        listener.NewObjectCreating (clientTransaction, type, instance);
     }
 
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       foreach (var listener in _listeners)
-        listener.ObjectsLoading (objectIDs);
+        listener.ObjectsLoading (clientTransaction, objectIDs);
     }
 
     public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
@@ -85,10 +85,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectsUnloaded (unloadedDomainObjects);
     }
 
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)
-        listener.ObjectsLoaded (domainObjects);
+        listener.ObjectsLoaded (clientTransaction, domainObjects);
     }
 
     public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)

@@ -45,15 +45,15 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void NewObjectCreating (Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
     }
 
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
     }
 
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
 

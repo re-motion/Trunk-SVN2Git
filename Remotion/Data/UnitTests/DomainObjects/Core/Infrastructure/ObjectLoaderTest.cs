@@ -192,8 +192,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var result = _objectLoader.LoadObjects (new ObjectID[0], true);
       Assert.That (result, Is.Empty);
 
-      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
 
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
     }
@@ -329,8 +329,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var result = _objectLoader.LoadRelatedObjects (endPointID);
       Assert.That (result, Is.Empty);
 
-      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
 
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
     }
@@ -421,8 +425,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var result = _objectLoader.LoadCollectionQueryResult<Order> (_fakeQuery);
       Assert.That (result, Is.Empty);
 
-      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
 
       Assert.That (transactionEventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
     }
@@ -633,7 +641,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private void ExpectObjectsLoading (params ObjectID[] expectedIDs)
     {
       _eventSinkMock
-          .Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.Equal (expectedIDs)))
+          .Expect (mock => mock.ObjectsLoading (Arg.Is (_clientTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (expectedIDs)))
           .WhenCalled (mi => Assert.That (
               expectedIDs.All (id => _clientTransaction.DataManager.DataContainerMap[id] == null), 
               "ObjectsLoading must be raised before IDs are registered"));
@@ -643,6 +651,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _eventSinkMock
           .Expect (mock => mock.ObjectsLoaded (
+              Arg.Is (_clientTransaction), 
               Arg<ReadOnlyCollection<DomainObject>>.Matches (list =>
                   list.Select (item => item.ID).SequenceEqual (expectedDataContainers.Select (dc => dc.ID)))))
           .WhenCalled (mi =>
@@ -651,10 +660,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                 expectedDataContainers.All (dc => _clientTransaction.DataManager.DataContainerMap[dc.ID] == dc),
                 "ObjectsLoaded must be raised after IDs are registered");
             Assert.That (
-                ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).OnLoadedCalled),
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((Order) item).OnLoadedCalled),
                 "ObjectsLoaded must be raised after OnLoaded is called");
             Assert.That (
-                ((ReadOnlyCollection<DomainObject>) mi.Arguments[0]).All (item => ((Order) item).OnLoadedTx == _clientTransaction),
+                ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]).All (item => ((Order) item).OnLoadedTx == _clientTransaction),
                 "ObjectsLoaded must be raised after OnLoaded is called");
             if (transactionEventReceiver != null)
             {

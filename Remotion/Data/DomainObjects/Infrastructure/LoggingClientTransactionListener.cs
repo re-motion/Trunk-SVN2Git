@@ -57,13 +57,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.Debug ("SubTransactionCreated");
     }
 
-    public void NewObjectCreating (Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("NewObjectCreating: {0}", type.FullName);
     }
 
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectsLoading: {0}", GetObjectIDString (objectIDs));
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("ObjectsUnloaded: {0}", GetDomainObjectsString (unloadedDomainObjects));
     }
 
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectsLoaded: {0}", GetDomainObjectsString (domainObjects));

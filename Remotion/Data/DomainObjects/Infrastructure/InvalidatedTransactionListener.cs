@@ -49,12 +49,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void NewObjectCreating (Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       throw CreateException();
     }
 
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       throw CreateException();
     }
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException ();
     }
 
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw CreateException();
     }

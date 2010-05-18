@@ -89,19 +89,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void NewObjectCreating ()
     {
-      _listener.NewObjectCreating (_domainObject.GetPublicDomainObjectType(), _domainObject);
+      _listener.NewObjectCreating (ClientTransactionMock, _domainObject.GetPublicDomainObjectType(), _domainObject);
     }
 
     [Test]
     public void ObjectsLoading ()
     {
-      _listener.ObjectsLoading (new ReadOnlyCollection<ObjectID> (new ObjectID[0]));
+      _listener.ObjectsLoading (ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0]));
     }
 
     [Test]
     public void ObjectsLoaded ()
     {
-      _listener.ObjectsLoaded (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.ObjectsLoaded (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]

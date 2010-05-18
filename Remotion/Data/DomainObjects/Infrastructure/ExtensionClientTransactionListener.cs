@@ -65,12 +65,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void NewObjectCreating (Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       Extensions.NewObjectCreating (_clientTransaction, type);
     }
 
-    public void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       Extensions.ObjectsLoading (_clientTransaction, objectIDs);
     }
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
     }
 
-    public void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       Extensions.ObjectsLoaded (_clientTransaction, domainObjects);
     }

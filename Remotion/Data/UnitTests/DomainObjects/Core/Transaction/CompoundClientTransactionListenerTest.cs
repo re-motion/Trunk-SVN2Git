@@ -85,10 +85,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreating"), new object[] { ClientTransactionMock });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("SubTransactionCreated"), new object[] { ClientTransactionMock, ClientTransactionMock });
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("NewObjectCreating"), new object[] {typeof (string), null});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("NewObjectCreating"), new object[] { ClientTransactionMock, typeof (string), null});
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoading"), new object[] { new ReadOnlyCollection<ObjectID> (new ObjectID[0]) });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] { new ReadOnlyCollection<DomainObject>(new DomainObject[0]) });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoading"), new object[] { ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0]) });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject>(new DomainObject[0]) });
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloading"), new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloaded"), new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });

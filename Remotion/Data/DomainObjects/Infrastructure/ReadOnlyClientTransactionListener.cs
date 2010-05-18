@@ -68,12 +68,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (_clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
     }
 
-    public virtual void NewObjectCreating (Type type, DomainObject instance)
+    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
     {
       EnsureWriteable ("NewObjectCreating");
     }
 
-    public virtual void ObjectsLoading (ReadOnlyCollection<ObjectID> objectIDs)
+    public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       EnsureWriteable ("ObjectsLoading");
     }
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void ObjectsLoaded (ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }

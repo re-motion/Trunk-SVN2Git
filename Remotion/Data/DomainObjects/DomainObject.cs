@@ -246,7 +246,7 @@ namespace Remotion.Data.DomainObjects
       var publicDomainObjectType = GetPublicDomainObjectType ();
 
       var clientTransaction = ClientTransaction.Current;
-      clientTransaction.TransactionEventSink.NewObjectCreating (publicDomainObjectType, this);
+      clientTransaction.TransactionEventSink.NewObjectCreating (clientTransaction, publicDomainObjectType, this);
 
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (publicDomainObjectType);
       var objectID = clientTransaction.CreateNewObjectID (classDefinition);

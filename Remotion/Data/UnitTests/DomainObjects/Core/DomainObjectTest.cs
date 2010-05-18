@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var instance = _transaction.Execute (() => Order.NewObject ());
 
-      listenerMock.AssertWasCalled (mock => mock.NewObjectCreating (typeof (Order), instance));
+      listenerMock.AssertWasCalled (mock => mock.NewObjectCreating (_transaction, typeof (Order), instance));
     }
 
     [Test]

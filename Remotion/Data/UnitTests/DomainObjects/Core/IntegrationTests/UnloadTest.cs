@@ -956,17 +956,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
           ClientTransactionMock,
-          mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
 
     private void AssertObjectWasLoaded (IClientTransactionListener listenerMock, DomainObject loadedObject)
     {
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { loadedObject })));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
+          Arg.Is (ClientTransactionMock), 
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { loadedObject })));
     }
 
     private void AssertObjectWasLoadedAmongOthers (IClientTransactionListener listenerMock, DomainObject loadedObject)
     {
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { loadedObject })));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
+          Arg.Is (ClientTransactionMock), 
+          Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { loadedObject })));
     }
   }
 }

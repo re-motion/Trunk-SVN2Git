@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
@@ -151,8 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.EnlistDomainObject (instance);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
-          _transaction, 
-          mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+          _transaction,
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
 
       var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
 
@@ -175,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
         _transaction,
-        mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+        mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       
       var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, DomainObjectIDs.Order1);
 
@@ -208,7 +207,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _transaction.EnsureDataAvailable (domainObject.ID);
 
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
 
     [Test]
@@ -223,8 +224,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _transaction.EnsureDataAvailable (domainObject.ID);
 
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1 })));
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject })));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
+          Arg.Is (_transaction), 
+          Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1 })));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
+          Arg.Is (_transaction),
+          Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject })));
       Assert.That (_dataManager.DataContainerMap[domainObject.ID], Is.Not.Null);
       Assert.That (_dataManager.DataContainerMap[domainObject.ID].DomainObject, Is.SameAs (domainObject));
     }
@@ -269,7 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
 
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
 
     [Test]
@@ -286,6 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
+          Arg.Is (_transaction), 
           Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })));
     }
 
@@ -304,8 +310,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
+          Arg.Is (_transaction),
           Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })));
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+          Arg<ClientTransaction>.Is.Anything, 
           Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order3 })));
     }
 
@@ -324,6 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
+          Arg.Is (_transaction), 
           Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject1, domainObject2 })));
     }
 
@@ -458,7 +467,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _transaction.EnlistDomainObject (order);
 
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
 
     [Test]
@@ -524,8 +535,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
 
       eventListenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
+          Arg.Is (clientTransaction), 
           Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.OrderItem2 })));
       eventListenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+          Arg<ClientTransaction>.Is.Anything, 
           Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.OrderItem1 })));
     }
 
@@ -541,7 +554,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
 
       eventListenerMock
-          .Expect (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 })))
+          .Expect (mock => mock.ObjectsLoading (
+              Arg.Is (clientTransaction), 
+              Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 })))
           .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetDataManager (clientTransaction).DataContainerMap.Count, Is.EqualTo (0)));
       eventListenerMock.Replay ();
 
@@ -580,7 +595,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, _orderItemsEndPointID);
 
-      eventListenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { newlyLoadedDataContainer.DomainObject })));
+      eventListenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
+          Arg.Is (clientTransaction), 
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { newlyLoadedDataContainer.DomainObject })));
     }
 
     [Test]
@@ -594,8 +611,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var eventListenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
 
-      eventListenerMock
-          .Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      eventListenerMock.Expect (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       eventListenerMock.Replay ();
 
       var result = ClientTransactionTestHelper.CallLoadRelatedObjects (clientTransaction, endPointID);
@@ -616,7 +632,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionTestHelper.AddListener (clientTransaction, eventListenerMock);
 
       eventListenerMock
-          .Expect (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything))
           .WhenCalled (mi => Assert.That (newlyLoadedDataContainer.ClientTransaction, Is.SameAs (clientTransaction)));
       eventListenerMock.Replay ();
 
@@ -681,8 +697,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var result = ClientTransactionTestHelper.CallLoadObjects (_transaction, new ObjectID[0], false);
       Assert.That (result, Is.Empty);
 
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
     }
 
     private void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)

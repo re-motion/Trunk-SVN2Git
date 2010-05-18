@@ -791,9 +791,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Assert.That (eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
 
         listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
-          Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 })));
+            Arg.Is (subTransaction), 
+            Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 })));
 
-        listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (objects)));
+        listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
+            Arg.Is (subTransaction), 
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equal (objects)));
       }
     }
 
@@ -835,8 +838,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         subTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
         Assert.That (eventReceiver.LoadedDomainObjects, Is.Empty);
 
-        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+            Arg<ClientTransaction>.Is.Anything, 
+            Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (
+            Arg<ClientTransaction>.Is.Anything, 
+            Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       }
     }
 
@@ -868,8 +875,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         subTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
         Assert.That (eventReceiver.LoadedDomainObjects, Is.Empty);
 
-        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
+            Arg<ClientTransaction>.Is.Anything, 
+            Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (
+            Arg<ClientTransaction>.Is.Anything, 
+            Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       }
     }
 

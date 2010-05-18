@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private void RaiseLoadingNotificiations (ReadOnlyCollection<ObjectID> objectIDs)
     {
       if (objectIDs.Count != 0)
-        _eventSink.ObjectsLoading (objectIDs);
+        _eventSink.ObjectsLoading (_clientTransaction, objectIDs);
     }
 
     private void RaiseLoadedNotifications (ReadOnlyCollection<DomainObject> loadedObjects)
@@ -178,7 +178,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           foreach (var loadedDomainObject in loadedObjects)
             loadedDomainObject.OnLoaded();
 
-          _eventSink.ObjectsLoaded (loadedObjects);
+          _eventSink.ObjectsLoaded (_clientTransaction, loadedObjects);
 
           _clientTransaction.OnLoaded (new ClientTransactionEventArgs (loadedObjects));
         }
