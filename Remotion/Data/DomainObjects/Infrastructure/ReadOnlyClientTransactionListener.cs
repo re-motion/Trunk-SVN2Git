@@ -48,22 +48,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public void TransactionInitializing ()
+    public void TransactionInitializing (ClientTransaction clientTransaction)
     {
       // not handled by this listener
     }
 
-    public void TransactionDiscarding ()
+    public void TransactionDiscarding (ClientTransaction clientTransaction)
     {
       // not handled by this listener
     }
 
-    public virtual void SubTransactionCreating ()
+    public virtual void SubTransactionCreating (ClientTransaction clientTransaction)
     {
       EnsureWriteable ("SubTransactionCreating");
     }
 
-    public virtual void SubTransactionCreated (ClientTransaction subTransaction)
+    public virtual void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       Assertion.IsTrue (_clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
     }

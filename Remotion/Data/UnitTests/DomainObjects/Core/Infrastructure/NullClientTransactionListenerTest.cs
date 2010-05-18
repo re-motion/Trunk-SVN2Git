@@ -65,25 +65,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RootTransactionCreating ()
     {
-      _listener.TransactionInitializing ();
+      _listener.TransactionInitializing (ClientTransactionMock);
     }
 
     [Test]
     public void TransactionDiscarding ()
     {
-      _listener.TransactionDiscarding ();
+      _listener.TransactionDiscarding (ClientTransactionMock);
     }
 
     [Test]
     public void SubTransactionCreating ()
     {
-      _listener.SubTransactionCreating();
+      _listener.SubTransactionCreating (ClientTransactionMock);
     }
 
     [Test]
     public void SubTransactionCreated ()
     {
-      _listener.SubTransactionCreated (ClientTransactionMock);
+      _listener.SubTransactionCreated (ClientTransactionMock, ClientTransactionMock);
     }
 
     [Test]

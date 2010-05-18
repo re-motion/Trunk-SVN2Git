@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransactionMock.AddListener (_strictListenerMock);
 
-      _strictListenerMock.Expect (mock => mock.TransactionDiscarding ());
+      _strictListenerMock.Expect (mock => mock.TransactionDiscarding (ClientTransactionMock));
       
       _mockRepository.ReplayAll ();
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransactionMock.AddListener (_strictListenerMock);
 
-      _strictListenerMock.Expect (mock => mock.TransactionDiscarding ());
+      _strictListenerMock.Expect (mock => mock.TransactionDiscarding (ClientTransactionMock));
 
       _mockRepository.ReplayAll ();
 
@@ -426,11 +426,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.SubTransactionCreating ());
+        _strictListenerMock.Expect (mock => mock.SubTransactionCreating (ClientTransactionMock));
         _strictListenerMock.Expect (
             mock =>
             mock.SubTransactionCreated (
-                Arg<ClientTransaction>.Matches (tx => tx != null && tx != ClientTransactionMock && tx.ParentTransaction == ClientTransactionMock)));
+              Arg.Is (ClientTransactionMock), 
+              Arg<ClientTransaction>.Matches (tx => tx != null && tx != ClientTransactionMock && tx.ParentTransaction == ClientTransactionMock)));
       }
 
       _mockRepository.ReplayAll ();

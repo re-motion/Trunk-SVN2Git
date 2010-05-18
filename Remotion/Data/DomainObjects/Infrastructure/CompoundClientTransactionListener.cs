@@ -43,28 +43,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _listeners.Add (listener);
     }
 
-    public void TransactionInitializing ()
+    public void TransactionInitializing (ClientTransaction clientTransaction)
     {
       foreach (var listener in _listeners)
-        listener.TransactionInitializing ();
+        listener.TransactionInitializing (clientTransaction);
     }
 
-    public void TransactionDiscarding ()
+    public void TransactionDiscarding (ClientTransaction clientTransaction)
     {
       foreach (var listener in _listeners)
-        listener.TransactionDiscarding ();
+        listener.TransactionDiscarding (clientTransaction);
     }
 
-    public void SubTransactionCreating ()
+    public void SubTransactionCreating (ClientTransaction clientTransaction)
     {
       foreach (var listener in _listeners)
-        listener.SubTransactionCreating();
+        listener.SubTransactionCreating(clientTransaction);
     }
 
-    public void SubTransactionCreated (ClientTransaction subTransaction)
+    public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       foreach (var listener in _listeners)
-        listener.SubTransactionCreated (subTransaction);
+        listener.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
     public void NewObjectCreating (Type type, DomainObject instance)

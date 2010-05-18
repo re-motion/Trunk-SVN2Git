@@ -37,11 +37,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </remarks>
   public interface IClientTransactionListener : INullObject
   {
-    void TransactionInitializing ();
-    void TransactionDiscarding ();
+    void TransactionInitializing (ClientTransaction clientTransaction);
+    void TransactionDiscarding (ClientTransaction clientTransaction);
 
-    void SubTransactionCreating ();
-    void SubTransactionCreated (ClientTransaction subTransaction);
+    void SubTransactionCreating (ClientTransaction clientTransaction);
+    void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction);
 
 
     /// <summary>

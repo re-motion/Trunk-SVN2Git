@@ -33,25 +33,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LoggingClientTransactionListener));
 
-    public void TransactionInitializing ()
+    public void TransactionInitializing (ClientTransaction clientTransaction)
     {
       if (s_log.IsDebugEnabled)
         s_log.Debug ("TransactionInitializing");
     }
 
-    public void TransactionDiscarding ()
+    public void TransactionDiscarding (ClientTransaction clientTransaction)
     {
       if (s_log.IsDebugEnabled)
         s_log.Debug ("TransactionDiscarding");
     }
 
-    public void SubTransactionCreating ()
+    public void SubTransactionCreating (ClientTransaction clientTransaction)
     {
       if (s_log.IsDebugEnabled)
         s_log.Debug ("SubTransactionCreating");
     }
 
-    public void SubTransactionCreated (ClientTransaction subTransaction)
+    public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       if (s_log.IsDebugEnabled)
         s_log.Debug ("SubTransactionCreated");

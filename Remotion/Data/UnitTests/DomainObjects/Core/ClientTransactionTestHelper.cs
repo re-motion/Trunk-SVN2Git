@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static void EnsureTransactionThrowsOnEvents (ClientTransaction clientTransaction)
     {
       var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
-      listenerMock.Stub (stub => stub.TransactionDiscarding());
+      listenerMock.Stub (stub => stub.TransactionDiscarding (clientTransaction)); // allow TransactionDicarding to be called
       AddListener (clientTransaction, listenerMock);
       listenerMock.Replay (); // no events expected
     }

@@ -1015,7 +1015,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var mockRepository = new MockRepository ();
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
-      listenerMock.Stub (stub => stub.TransactionDiscarding());
+
+      var innerTransaction = new ClientTransactionMock ();
+
+      listenerMock.Stub (stub => stub.TransactionDiscarding (innerTransaction));
 
       listenerMock.ObjectsLoading (Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }));
       listenerMock.DataContainerMapRegistering (null);
@@ -1030,7 +1033,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       order.OrderItems.Added += delegate { };
 
-      var innerTransaction = new ClientTransactionMock ();
       using (innerTransaction.EnterDiscardingScope ())
       {
         innerTransaction.EnlistDomainObject (order);

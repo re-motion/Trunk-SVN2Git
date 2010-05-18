@@ -176,7 +176,7 @@ public abstract class ClientTransaction : IDataSource
     _objectLoader = new ObjectLoader (this, this, TransactionEventSink, new EagerFetcher (_dataManager));
     _enlistedObjectManager = enlistedObjectManager;
 
-    TransactionEventSink.TransactionInitializing();
+    TransactionEventSink.TransactionInitializing (this);
   }
 
   // abstract methods and properties
@@ -467,7 +467,7 @@ public abstract class ClientTransaction : IDataSource
   public virtual bool Discard ()
   {
     if (!_isDiscarded)
-      TransactionEventSink.TransactionDiscarding ();
+      TransactionEventSink.TransactionDiscarding (this);
 
     if (ParentTransaction != null)
       ParentTransaction.IsReadOnly = false;
@@ -1284,7 +1284,7 @@ public abstract class ClientTransaction : IDataSource
   {
     using (EnterNonDiscardingScope ())
     {
-      TransactionEventSink.SubTransactionCreating();
+      TransactionEventSink.SubTransactionCreating (this);
     }
   }
 
@@ -1297,7 +1297,7 @@ public abstract class ClientTransaction : IDataSource
   {
     using (EnterNonDiscardingScope ())
     {
-      TransactionEventSink.SubTransactionCreated (args.SubTransaction);
+      TransactionEventSink.SubTransactionCreated (this, args.SubTransaction);
 
       if (SubTransactionCreated != null)
         SubTransactionCreated (this, args);

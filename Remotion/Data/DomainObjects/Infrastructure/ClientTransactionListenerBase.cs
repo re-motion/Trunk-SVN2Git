@@ -24,19 +24,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public abstract class ClientTransactionListenerBase : IClientTransactionListener
   {
-    public virtual void TransactionInitializing ()
+    public virtual void TransactionInitializing (ClientTransaction clientTransaction)
     {
     }
 
-    public virtual void TransactionDiscarding ()
+    public virtual void TransactionDiscarding (ClientTransaction clientTransaction)
     {
     }
 
-    public virtual void SubTransactionCreating ()
+    public virtual void SubTransactionCreating (ClientTransaction clientTransaction)
     {
     }
 
-    public virtual void SubTransactionCreated (ClientTransaction subTransaction)
+    public virtual void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
     }
 
