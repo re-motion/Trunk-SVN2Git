@@ -438,7 +438,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (subListenerMock.GetMockRepository ().Ordered ())
       {
         subListenerMock
-            .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .Expect (mock => mock.ObjectsUnloading (
+                Arg.Is (_subTransaction), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
             .WhenCalled (
             mi =>
             {
@@ -446,7 +448,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
             });
         subListenerMock
-            .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .Expect (mock => mock.ObjectsUnloaded (
+                Arg.Is (_subTransaction), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
             .WhenCalled (
             mi =>
             {
@@ -455,7 +459,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             });
 
         rootListenerMock
-            .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .Expect (mock => mock.ObjectsUnloading (
+                Arg.Is (_subTransaction), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
             .WhenCalled (
             mi =>
             {
@@ -463,7 +469,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               Assert.That (orderItemB.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Unchanged));
             });
         rootListenerMock
-            .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .Expect (mock => mock.ObjectsUnloaded (
+                Arg.Is (_subTransaction), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
             .WhenCalled (
             mi =>
             {

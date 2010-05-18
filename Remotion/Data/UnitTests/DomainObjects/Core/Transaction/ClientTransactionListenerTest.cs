@@ -143,8 +143,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-          _strictListenerMock.Expect (mock => mock.ObjectDeleting (cwadt));
-          _strictListenerMock.Expect (mock => mock.ObjectDeleted (cwadt));
+          _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, cwadt));
+          _strictListenerMock.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, cwadt));
       }
 
       _mockRepository.ReplayAll ();
@@ -391,7 +391,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.ObjectDeleting (order));
+        _strictListenerMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, order));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (Arg<RelationEndPointID>.Matches (id => id.ObjectID == order.ID)))
@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         _strictListenerMock.Expect (mock => mock.DataContainerMapUnregistering (order.InternalDataContainer));
         _strictListenerMock.Expect (mock => mock.DataManagerMarkingObjectInvalid (order.ID));
-        _strictListenerMock.Expect (mock => mock.ObjectDeleted (order));
+        _strictListenerMock.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, order));
       }
 
       _mockRepository.ReplayAll ();
@@ -469,7 +469,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock
-            .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderTicket1 })))
+            .Expect (mock => mock.ObjectsUnloading (
+                Arg.Is (ClientTransactionMock), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderTicket1 })))
             .WhenCalled (mi => Assert.That (orderTicket1.State, Is.EqualTo (StateType.Unchanged)));
         using (_mockRepository.Unordered ())
         {
@@ -481,7 +483,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
               .Expect (mock => mock.DataContainerMapUnregistering (orderTicket1.InternalDataContainer));
         }
         _strictListenerMock
-            .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderTicket1 })))
+            .Expect (mock => mock.ObjectsUnloaded (
+                Arg.Is (ClientTransactionMock), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderTicket1 })))
             .WhenCalled (mi => Assert.That (orderTicket1.State, Is.EqualTo (StateType.NotLoadedYet)));
       }
 

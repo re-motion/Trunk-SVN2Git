@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable ("ObjectsLoading");
     }
 
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
@@ -88,17 +88,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       EnsureWriteable ("ObjectsUnloading");
     }
 
-    public virtual void ObjectDeleting (DomainObject domainObject)
+    public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       EnsureWriteable ("ObjectDeleting");
     }
 
-    public virtual void ObjectDeleted (DomainObject domainObject)
+    public virtual void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       Assertion.IsFalse(_clientTransaction.IsReadOnly);
     }

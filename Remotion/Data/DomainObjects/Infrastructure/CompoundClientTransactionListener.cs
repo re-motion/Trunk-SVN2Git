@@ -79,10 +79,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectsLoading (clientTransaction, objectIDs);
     }
 
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       foreach (var listener in _listeners)
-        listener.ObjectsUnloaded (unloadedDomainObjects);
+        listener.ObjectsUnloaded (clientTransaction, unloadedDomainObjects);
     }
 
     public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
@@ -91,22 +91,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectsLoaded (clientTransaction, domainObjects);
     }
 
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       foreach (var listener in _listeners)
-        listener.ObjectsUnloading (unloadedDomainObjects);
+        listener.ObjectsUnloading (clientTransaction, unloadedDomainObjects);
     }
 
-    public void ObjectDeleting (DomainObject domainObject)
+    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       foreach (var listener in _listeners)
-        listener.ObjectDeleting (domainObject);
+        listener.ObjectDeleting (clientTransaction, domainObject);
     }
 
-    public void ObjectDeleted (DomainObject domainObject)
+    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       foreach (var listener in _listeners)
-        listener.ObjectDeleted (domainObject);
+        listener.ObjectDeleted (clientTransaction, domainObject);
     }
 
     public void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)

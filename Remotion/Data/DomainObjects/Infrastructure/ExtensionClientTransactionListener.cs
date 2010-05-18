@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.ObjectsLoading (_clientTransaction, objectIDs);
     }
 
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       Extensions.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
     }
@@ -85,17 +85,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.ObjectsLoaded (_clientTransaction, domainObjects);
     }
 
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       Extensions.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
     }
 
-    public void ObjectDeleting (DomainObject domainObject)
+    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       Extensions.ObjectDeleting (_clientTransaction, domainObject);
     }
 
-    public void ObjectDeleted (DomainObject domainObject)
+    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       Extensions.ObjectDeleted (_clientTransaction, domainObject);
     }

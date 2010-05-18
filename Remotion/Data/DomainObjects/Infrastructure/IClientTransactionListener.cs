@@ -54,11 +54,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs);
     void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
 
-    void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
-    void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+    void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+    void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
 
-    void ObjectDeleting (DomainObject domainObject);
-    void ObjectDeleted (DomainObject domainObject);
+    void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject);
+    void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject);
 
     void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess);
     void PropertyValueRead (DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess);

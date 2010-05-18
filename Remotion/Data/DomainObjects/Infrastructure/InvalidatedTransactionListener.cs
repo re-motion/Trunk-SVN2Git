@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       throw CreateException ();
     }
@@ -69,17 +69,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       throw CreateException ();
     }
 
-    public void ObjectDeleting (DomainObject domainObject)
+    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       throw CreateException();
     }
 
-    public void ObjectDeleted (DomainObject domainObject)
+    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       throw CreateException();
     }

@@ -52,19 +52,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public virtual void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
     }
 
-    public virtual void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public virtual void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
     }
 
-    public virtual void ObjectDeleting (DomainObject domainObject)
+    public virtual void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
     }
 
-    public virtual void ObjectDeleted (DomainObject domainObject)
+    public virtual void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
     }
 

@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("ObjectsLoading: {0}", GetObjectIDString (objectIDs));
     }
 
-    public void ObjectsUnloaded (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectsUnloaded: {0}", GetDomainObjectsString (unloadedDomainObjects));
@@ -81,19 +81,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("ObjectsLoaded: {0}", GetDomainObjectsString (domainObjects));
     }
 
-    public void ObjectsUnloading (ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectsUnloading: {0}", GetDomainObjectsString (unloadedDomainObjects));
     }
 
-    public void ObjectDeleting (DomainObject domainObject)
+    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectDeleting: {0}", GetDomainObjectString (domainObject));
     }
 
-    public void ObjectDeleted (DomainObject domainObject)
+    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("ObjectDeleted: {0}", GetDomainObjectString (domainObject));

@@ -90,11 +90,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoading"), new object[] { ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0]) });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject>(new DomainObject[0]) });
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloading"), new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloaded"), new object[] { new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
-      
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleting"), new object[] {order});
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleted"), new object[] {order});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloading"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsUnloaded"), new object[] { ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]) });
+
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleting"), new object[] { ClientTransactionMock, order });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleted"), new object[] { ClientTransactionMock, order });
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("PropertyValueReading"),

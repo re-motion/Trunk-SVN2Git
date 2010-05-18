@@ -484,7 +484,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       using (listenerMock.GetMockRepository ().Ordered ())
       {
         listenerMock
-            .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .Expect (mock => mock.ObjectsUnloading (
+                Arg.Is (ClientTransactionMock), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
             .WhenCalled (
             mi =>
             {
@@ -497,7 +499,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
             });
         listenerMock
-            .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+            .Expect (mock => mock.ObjectsUnloaded (
+                Arg.Is (ClientTransactionMock), 
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
             .WhenCalled (
             mi =>
             {

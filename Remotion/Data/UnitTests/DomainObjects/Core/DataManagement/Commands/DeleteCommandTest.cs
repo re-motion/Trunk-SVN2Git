@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _deleteOrder1Command.NotifyClientTransactionOfBegin ();
 
-      listenerMock.AssertWasCalled (mock => mock.ObjectDeleting (_order1));
+      listenerMock.AssertWasCalled (mock => mock.ObjectDeleting (_transaction, _order1));
     }
 
     [Test]
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       listenerMock
-          .Expect (mock => mock.ObjectDeleting (_order1))
+          .Expect (mock => mock.ObjectDeleting (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       listenerMock.Replay ();
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       using (mockRepository.Ordered ())
       {
-        listenerMock.Expect (mock => mock.ObjectDeleting (_order1));
+        listenerMock.Expect (mock => mock.ObjectDeleting (_transaction, _order1));
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
       }
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 
-      listenerMock.AssertWasCalled (mock => mock.ObjectDeleted (_order1));
+      listenerMock.AssertWasCalled (mock => mock.ObjectDeleted (_transaction, _order1));
     }
 
     [Test]
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       listenerMock
-          .Expect (mock => mock.ObjectDeleted (_order1))
+          .Expect (mock => mock.ObjectDeleted (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       listenerMock.Replay ();
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (mockRepository.Ordered ())
       {
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        listenerMock.Expect (mock => mock.ObjectDeleted (_order1));
+        listenerMock.Expect (mock => mock.ObjectDeleted (_transaction, _order1));
       }
 
       mockRepository.ReplayAll ();

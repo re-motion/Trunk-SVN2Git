@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       _clientTransaction.Execute (delegate
       {
-        _clientTransaction.TransactionEventSink.ObjectDeleting (_deletedObject);
+        _clientTransaction.TransactionEventSink.ObjectDeleting (_clientTransaction, _deletedObject);
         _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
       });
     }
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _clientTransaction.Execute (delegate
       {
         _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
-        _clientTransaction.TransactionEventSink.ObjectDeleted (_deletedObject);
+        _clientTransaction.TransactionEventSink.ObjectDeleted (_clientTransaction, _deletedObject);
       });
     }
 

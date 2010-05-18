@@ -257,7 +257,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       command.NotifyClientTransactionOfBegin();
 
-      listenerMock.AssertWasCalled (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsUnloading (
+          Arg.Is (_transaction), 
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
     }
 
     [Test]
@@ -271,7 +273,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transaction.AddListener (listenerMock);
 
       listenerMock
-          .Expect (mock => mock.ObjectsUnloading (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })))
+          .Expect (mock => mock.ObjectsUnloading (
+              Arg.Is (_transaction), 
+              Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       listenerMock.Replay ();
 
@@ -301,7 +305,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       command.NotifyClientTransactionOfEnd();
 
-      listenerMock.AssertWasCalled (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
+      listenerMock.AssertWasCalled (mock => mock.ObjectsUnloaded (
+          Arg.Is (_transaction), 
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
     }
 
     [Test]
@@ -315,7 +321,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transaction.AddListener (listenerMock);
       
       listenerMock
-          .Expect (mock => mock.ObjectsUnloaded (Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })))
+          .Expect (mock => mock.ObjectsUnloaded (
+              Arg.Is (_transaction), 
+              Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       listenerMock.Replay ();
 

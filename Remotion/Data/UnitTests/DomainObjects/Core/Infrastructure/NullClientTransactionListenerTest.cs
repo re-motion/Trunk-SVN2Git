@@ -107,25 +107,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void ObjectsUnloading ()
     {
-      _listener.ObjectsUnloading (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.ObjectsUnloading (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void ObjectsUnloaded ()
     {
-      _listener.ObjectsUnloaded (new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.ObjectsUnloaded (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void ObjectDeleting ()
     {
-      _listener.ObjectDeleting (_domainObject);
+      _listener.ObjectDeleting (ClientTransactionMock, _domainObject);
     }
 
     [Test]
     public void ObjectDeleted ()
     {
-      _listener.ObjectDeleted (_domainObject);
+      _listener.ObjectDeleted (ClientTransactionMock, _domainObject);
     }
 
     [Test]
