@@ -131,6 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _command.NotifyClientTransactionOfBegin();
 
       listenerMock.AssertWasCalled(mock => mock.RelationChanging (
+          ClientTransactionMock, 
           _endPoint.GetDomainObject (), 
           _endPoint.PropertyName, 
           OldRelatedObject, 
@@ -145,7 +146,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _command.NotifyClientTransactionOfEnd ();
 
-      listenerMock.AssertWasCalled (mock => mock.RelationChanged (_endPoint.GetDomainObject (), _endPoint.PropertyName));
+      listenerMock.AssertWasCalled (mock => mock.RelationChanged (
+          ClientTransactionMock, 
+          _endPoint.GetDomainObject (), 
+          _endPoint.PropertyName));
     }
 
     protected IList<RelationEndPointModificationCommand> GetAllCommands (ExpandedCommand bidirectionalModification)

@@ -22,7 +22,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -93,10 +92,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Command.NotifyClientTransactionOfBegin ();
 
       listenerMock.AssertWasNotCalled (mock => mock.RelationChanging (
-          EndPoint.GetDomainObject (), 
-          EndPoint.PropertyName, 
-          OldRelatedObject, 
-          NewRelatedObject));
+          Arg<ClientTransaction>.Is.Anything, 
+          Arg<DomainObject>.Is.Anything,
+          Arg<string>.Is.Anything,
+          Arg<DomainObject>.Is.Anything,
+          Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
@@ -107,7 +107,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       Command.NotifyClientTransactionOfBegin ();
 
-      listenerMock.AssertWasNotCalled (mock => mock.RelationChanged (EndPoint.GetDomainObject (), EndPoint.PropertyName));
+      listenerMock.AssertWasNotCalled (mock => mock.RelationChanged (
+          Arg<ClientTransaction>.Is.Anything,
+          Arg<DomainObject>.Is.Anything,
+          Arg<string>.Is.Anything));
     }
 
     [Test]

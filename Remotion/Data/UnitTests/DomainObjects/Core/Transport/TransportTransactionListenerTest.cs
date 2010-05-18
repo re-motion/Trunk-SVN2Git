@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     public void Serialization_AndMethodCalled ()
     {
       TransportTransactionListener listener = Serializer.SerializeAndDeserialize (_listener);
-      listener.PropertyValueChanging (null, null, null, null);
+      listener.PropertyValueChanging (ClientTransactionMock, null, null, null, null);
     }
 
     [Test]
@@ -56,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       _transporter.Load (DomainObjectIDs.Computer1);
 
-      Computer source = (Computer) _transporter.GetTransportedObject(DomainObjectIDs.Computer1);
-      _listener.PropertyValueChanging (source.InternalDataContainer,
+      var source = (Computer) _transporter.GetTransportedObject(DomainObjectIDs.Computer1);
+      _listener.PropertyValueChanging (ClientTransactionMock, source.InternalDataContainer,
           source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       _transporter.Load (DomainObjectIDs.Computer2);
 
       Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction().GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
-      _listener.PropertyValueChanging (source.InternalDataContainer,
+      _listener.PropertyValueChanging (ClientTransactionMock, source.InternalDataContainer,
           source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
 

@@ -165,13 +165,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (
-            mock => mock.PropertyValueReading (
-                        order.InternalDataContainer,
+            mock => mock.PropertyValueReading (ClientTransactionMock, order.InternalDataContainer,
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"],
                         ValueAccess.Current));
         _strictListenerMock.Expect (
-            mock => mock.PropertyValueRead (
-                        order.InternalDataContainer,
+            mock => mock.PropertyValueRead (ClientTransactionMock, order.InternalDataContainer,
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"],
                         orderNumber,
                         ValueAccess.Current));
@@ -195,14 +193,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (
-            mock => mock.PropertyValueChanging (
-                        order.InternalDataContainer,
+            mock => mock.PropertyValueChanging (ClientTransactionMock, order.InternalDataContainer,
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"],
                         orderNumber,
                         43));
         _strictListenerMock.Expect (
-            mock => mock.PropertyValueChanged (
-                        order.InternalDataContainer,
+            mock => mock.PropertyValueChanged (ClientTransactionMock, order.InternalDataContainer,
                         order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"],
                         orderNumber,
                         43));
@@ -227,13 +223,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (
-            mock => mock.RelationReading (order, typeof (Order).FullName + ".Customer", ValueAccess.Current));
+            mock => mock.RelationReading (ClientTransactionMock, order, typeof (Order).FullName + ".Customer", ValueAccess.Current));
         _strictListenerMock.Expect (
-            mock => mock.RelationRead (order, typeof (Order).FullName + ".Customer", customer, ValueAccess.Current));
+            mock => mock.RelationRead (ClientTransactionMock, order, typeof (Order).FullName + ".Customer", customer, ValueAccess.Current));
         _strictListenerMock.Expect (
-            mock => mock.RelationReading (order, typeof (Order).FullName + ".OrderItems", ValueAccess.Current));
+            mock => mock.RelationReading (ClientTransactionMock, order, typeof (Order).FullName + ".OrderItems", ValueAccess.Current));
         _strictListenerMock.Expect (
             mock => mock.RelationRead (
+                Arg.Is (ClientTransactionMock), 
                 Arg.Is (order), 
                 Arg.Is (typeof (Order).FullName + ".OrderItems"),
                 Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Matches (domainObjects => domainObjects.SequenceEqual (orderItems.Cast<DomainObject> ())),
@@ -263,24 +260,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.RelationChanging (order, typeof (Order).FullName + ".Customer", oldCustomer, newCustomer));
-        _strictListenerMock.Expect (mock => mock.RelationChanging (newCustomer, typeof (Customer).FullName + ".Orders", null, order));
-        _strictListenerMock.Expect (mock => mock.RelationChanging (oldCustomer, typeof (Customer).FullName + ".Orders", order, null));
+        _strictListenerMock.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, 
+            order, 
+            typeof (Order).FullName + ".Customer", 
+            oldCustomer, 
+            newCustomer));
+        _strictListenerMock.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, 
+            newCustomer, 
+            typeof (Customer).FullName + ".Orders", 
+            null, 
+            order));
+        _strictListenerMock.Expect (mock => mock.RelationChanging (
+            ClientTransactionMock, 
+            oldCustomer, 
+            typeof (Customer).FullName + ".Orders", 
+            order, 
+            null));
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanging (
-                        order.InternalDataContainer,
-                        order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
-                        oldCustomer.ID,
-                        newCustomer.ID));
+                ClientTransactionMock, 
+                order.InternalDataContainer,
+                order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
+                oldCustomer.ID,
+                newCustomer.ID));
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanged (
-                        order.InternalDataContainer,
-                        order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
-                        oldCustomer.ID,
-                        newCustomer.ID));
-        _strictListenerMock.Expect (mock => mock.RelationChanged (oldCustomer, typeof (Customer).FullName + ".Orders"));
-        _strictListenerMock.Expect (mock => mock.RelationChanged (newCustomer, typeof (Customer).FullName + ".Orders"));
-        _strictListenerMock.Expect (mock => mock.RelationChanged (order, typeof (Order).FullName + ".Customer"));
+                ClientTransactionMock, 
+                order.InternalDataContainer,
+                order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
+                oldCustomer.ID,
+                newCustomer.ID));
+        _strictListenerMock.Expect (mock => mock.RelationChanged (
+            ClientTransactionMock, 
+            oldCustomer, 
+            typeof (Customer).FullName + ".Orders"));
+        _strictListenerMock.Expect (mock => mock.RelationChanged (
+            ClientTransactionMock, 
+            newCustomer, 
+            typeof (Customer).FullName + ".Orders"));
+        _strictListenerMock.Expect (mock => mock.RelationChanged (
+            ClientTransactionMock, 
+            order, 
+            typeof (Order).FullName + ".Customer"));
       }
 
       _mockRepository.ReplayAll ();

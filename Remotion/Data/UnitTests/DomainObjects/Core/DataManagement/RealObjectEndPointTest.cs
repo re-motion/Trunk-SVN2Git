@@ -76,10 +76,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Dev.Null = _endPoint.OppositeObjectID;
 
       listenerMock.AssertWasNotCalled (mock => mock.PropertyValueReading (
+          Arg<ClientTransaction>.Is.Anything, 
           Arg<DataContainer>.Is.Anything, 
           Arg<PropertyValue>.Is.Anything, 
           Arg<ValueAccess>.Is.Anything));
       listenerMock.AssertWasNotCalled (mock => mock.PropertyValueRead (
+          Arg<ClientTransaction>.Is.Anything, 
           Arg<DataContainer>.Is.Anything,
           Arg<PropertyValue>.Is.Anything,
           Arg<object>.Is.Anything,

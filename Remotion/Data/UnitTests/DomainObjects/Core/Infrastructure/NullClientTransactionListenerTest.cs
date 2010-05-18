@@ -131,56 +131,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void PropertyValueReading ()
     {
-      _listener.PropertyValueReading (_dataContainer, _propertyValue, ValueAccess.Current);
+      _listener.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueRead ()
     {
-      _listener.PropertyValueRead (_dataContainer, _propertyValue, 0, ValueAccess.Current);
+      _listener.PropertyValueRead (ClientTransactionMock, _dataContainer, _propertyValue, 0, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueChanging ()
     {
-      _listener.PropertyValueChanging (_dataContainer, _propertyValue, 0, 1);
+      _listener.PropertyValueChanging (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1);
     }
 
     [Test]
     public void PropertyValueChanged ()
     {
-      _listener.PropertyValueChanged (_dataContainer, _propertyValue, 0, 1);
+      _listener.PropertyValueChanged (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1);
     }
 
     [Test]
     public void RelationReading ()
     {
-      _listener.RelationReading (_domainObject, "Relation", ValueAccess.Current);
+      _listener.RelationReading (ClientTransactionMock, _domainObject, "Relation", ValueAccess.Current);
     }
 
     [Test]
     public void RelationRead_SingleValue ()
     {
-      _listener.RelationRead (_domainObject, "Relation", _domainObject, ValueAccess.Current);
+      _listener.RelationRead (ClientTransactionMock, _domainObject, "Relation", _domainObject, ValueAccess.Current);
     }
 
     [Test]
     public void RelationRead_MultiValue ()
     {
-      _listener.RelationRead (
-          _domainObject, "Relation", new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection()), ValueAccess.Current);
+      _listener.RelationRead (ClientTransactionMock, _domainObject, "Relation", new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection()), ValueAccess.Current);
     }
 
     [Test]
     public void RelationChanging ()
     {
-      _listener.RelationChanging (_domainObject, "Relation", _domainObject, _domainObject);
+      _listener.RelationChanging (ClientTransactionMock, _domainObject, "Relation", _domainObject, _domainObject);
     }
 
     [Test]
     public void RelationChanged ()
     {
-      _listener.RelationChanged (_domainObject, "Relation");
+      _listener.RelationChanged (ClientTransactionMock, _domainObject, "Relation");
     }
 
     [Test]

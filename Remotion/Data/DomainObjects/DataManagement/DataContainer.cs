@@ -531,7 +531,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectDeletedException (_id);
 
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueChanging (this, args.PropertyValue, args.OldValue, args.NewValue);
+        _clientTransaction.TransactionEventSink.PropertyValueChanging (
+            _clientTransaction, 
+            this, 
+            args.PropertyValue, 
+            args.OldValue, 
+            args.NewValue);
 
       if (args.PropertyValue.Definition.PropertyType != typeof (ObjectID))
       {
@@ -561,7 +566,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueChanged (this, args.PropertyValue, args.OldValue, args.NewValue);
+        _clientTransaction.TransactionEventSink.PropertyValueChanged (_clientTransaction, this, args.PropertyValue, args.OldValue, args.NewValue);
     }
 
     private void UpdateStateAfterPropertyValueChanged (PropertyChangeEventArgs args)
@@ -575,13 +580,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
     {
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueReading (this, propertyValue, valueAccess);
+        _clientTransaction.TransactionEventSink.PropertyValueReading (_clientTransaction, this, propertyValue, valueAccess);
     }
 
     internal void PropertyValueRead (PropertyValue propertyValue, object value, ValueAccess valueAccess)
     {
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueRead (this, propertyValue, value, valueAccess);
+        _clientTransaction.TransactionEventSink.PropertyValueRead (_clientTransaction, this, propertyValue, value, valueAccess);
     }
 
     private void CheckNotDiscarded ()

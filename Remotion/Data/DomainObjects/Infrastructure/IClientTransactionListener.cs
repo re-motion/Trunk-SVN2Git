@@ -60,26 +60,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject);
     void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject);
 
-    void PropertyValueReading (DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess);
-    void PropertyValueRead (DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess);
-    void PropertyValueChanging (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
-    void PropertyValueChanged (DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
+    void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess);
+    void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess);
+    void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
+    void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
-    void RelationReading (DomainObject domainObject, string propertyName, ValueAccess valueAccess);
-    void RelationRead (DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
-    
+    void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
+
     /// <summary>
     /// Indicates that a relation has been read.
     /// </summary>
+    /// <param name="clientTransaction"></param>
     /// <param name="domainObject">The domain object owning the relation that has been read.</param>
     /// <param name="propertyName">The name of the property that has been read.</param>
     /// <param name="relatedObjects">
-    /// A read-only wrapper of the related object data that is returned to the reader. Implementors should check the 
-    /// <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection data in order to avoid reloading 
-    /// an unloaded collection end-point.
+    ///   A read-only wrapper of the related object data that is returned to the reader. Implementors should check the 
+    ///   <see cref="ReadOnlyDomainObjectCollectionAdapter{T}.IsDataAvailable"/> property before accessing the collection data in order to avoid reloading 
+    ///   an unloaded collection end-point.
     /// </param>
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
-    void RelationRead (DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
+    void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
     /// Indicates that a relation is about to change. 
@@ -87,22 +88,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
     /// old collection.
     /// </summary>
+    /// <param name="clientTransaction"></param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="propertyName">The name of the property that changes.</param>
     /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
-    /// replacing an old one.</param>
+    ///   replacing an old one.</param>
     /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
-    /// being replaced by a new one.</param>
-    void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
+    ///   being replaced by a new one.</param>
+    void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
+
     /// <summary>
     /// Indicates that a relation has been changed. 
     /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
     /// replaced in one go, the method is invoked once for each old object that is not in the new collection and once for each new object not in the 
     /// old collection.
     /// </summary>
+    /// <param name="clientTransaction"></param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="propertyName">The name of the property that changes.</param>
-    void RelationChanged (DomainObject domainObject, string propertyName);
+    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
 
     QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject;
 

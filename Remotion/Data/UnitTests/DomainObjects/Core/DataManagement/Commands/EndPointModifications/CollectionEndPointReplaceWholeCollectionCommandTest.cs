@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using System.Reflection;
 using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -165,8 +164,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection.Add (_order2); // new
       
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      listenerMock.Expect (mock => mock.RelationChanging (DomainObject, CollectionEndPoint.PropertyName, _orderWithoutOrderItem, null));
-      listenerMock.Expect (mock => mock.RelationChanging (DomainObject, CollectionEndPoint.PropertyName, null, _order2));
+      listenerMock.Expect (mock => mock.RelationChanging (
+          ClientTransactionMock, 
+          DomainObject, 
+          CollectionEndPoint.PropertyName, 
+          _orderWithoutOrderItem, 
+          null));
+      listenerMock.Expect (mock => mock.RelationChanging (
+          ClientTransactionMock, 
+          DomainObject, 
+          CollectionEndPoint.PropertyName, 
+          null, 
+          _order2));
       listenerMock.Replay ();
 
       ClientTransactionMock.AddListener (listenerMock);
@@ -186,8 +195,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _newCollection.Add (_order2); // new
 
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      listenerMock.Expect (mock => mock.RelationChanged (DomainObject, CollectionEndPoint.PropertyName));
-      listenerMock.Expect (mock => mock.RelationChanged (DomainObject, CollectionEndPoint.PropertyName));
+      listenerMock.Expect (mock => mock.RelationChanged (
+          ClientTransactionMock, 
+          DomainObject, 
+          CollectionEndPoint.PropertyName));
+      listenerMock.Expect (mock => mock.RelationChanged (
+          ClientTransactionMock, 
+          DomainObject, 
+          CollectionEndPoint.PropertyName));
 
       listenerMock.Replay ();
 

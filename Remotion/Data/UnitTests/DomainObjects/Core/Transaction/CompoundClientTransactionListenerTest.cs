@@ -100,6 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           typeof (IClientTransactionListener).GetMethod ("PropertyValueReading"),
           new object[]
               {
+                  ClientTransactionMock, 
                   order.InternalDataContainer,
                   order.InternalDataContainer.PropertyValues[0], ValueAccess.Original
               });
@@ -107,6 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           typeof (IClientTransactionListener).GetMethod ("PropertyValueRead"),
           new object[]
               {
+                  ClientTransactionMock, 
                   order.InternalDataContainer,
                   order.InternalDataContainer.PropertyValues[0], "Foo", ValueAccess.Original
               });
@@ -115,6 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           typeof (IClientTransactionListener).GetMethod ("PropertyValueChanging"),
           new object[]
               {
+                  ClientTransactionMock, 
                   order.InternalDataContainer,
                   order.InternalDataContainer.PropertyValues[0], "Foo", "Bar"
               });
@@ -122,6 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           typeof (IClientTransactionListener).GetMethod ("PropertyValueChanged"),
           new object[]
               {
+                  ClientTransactionMock, 
                   order.InternalDataContainer,
                   order.InternalDataContainer.PropertyValues[0], "Foo", "Bar"
               });
@@ -131,27 +135,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
               "RelationRead",
               new[]
                   {
+                      typeof (ClientTransaction),
                       typeof (DomainObject), typeof (string),
                       typeof (DomainObject), typeof (ValueAccess)
                   }),
-          new object[] {order, "Foo", order, ValueAccess.Original});
+          new object[] { ClientTransactionMock, order, "Foo", order, ValueAccess.Original });
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod (
               "RelationRead",
               new[]
                   {
+                      typeof (ClientTransaction),
                       typeof (DomainObject), typeof (string),
                       typeof (ReadOnlyDomainObjectCollectionAdapter<DomainObject>), typeof (ValueAccess)
                   }),
           new object[]
               {
-                  order, "FooBar",
+                  ClientTransactionMock, order, "FooBar",
                   new ReadOnlyDomainObjectCollectionAdapter<DomainObject>(new DomainObjectCollection()), ValueAccess.Original
               });
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationReading"), new object[] {order, "Whatever", ValueAccess.Current});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationReading"), new object[] { ClientTransactionMock, order, "Whatever", ValueAccess.Current });
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanging"), new object[] {order, "Fred?", order, order2});
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanged"), new object[] {order, "Baz"});
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanging"), new object[] { ClientTransactionMock, order, "Fred?", order, order2 });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanged"), new object[] { ClientTransactionMock, order, "Baz" });
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("TransactionCommitting"),
